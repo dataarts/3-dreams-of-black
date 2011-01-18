@@ -6,11 +6,12 @@ var Part1 = function ( camera, scene, renderer ) {
 
 	this.init = function ( callback ) {
 
-		var geometry = new Cube( 100, 100, 100 );
+		var geometry = new Cube( 100, 100, 100 ),
+			material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } );
 
 		for ( var i = 0; i < 100; i ++ ) {
 
-			var mesh = buildings[ i ] = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true } ) );
+			var mesh = buildings[ i ] = new THREE.Mesh( geometry, material );
 			mesh.position.x = Math.floor( Math.random() * 20 - 10 ) * 100;
 			mesh.position.z = Math.floor( Math.random() * 20 - 10 ) * 100;
 			mesh.scale.y = Math.random() * 10;
