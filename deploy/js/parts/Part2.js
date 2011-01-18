@@ -7,10 +7,11 @@ var Part2 = function ( camera, scene, renderer ) {
 	this.init = function ( callback ) {
 
 		var geometry = new Cube( 100, 100, 100 );
+		var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 
 		for ( var i = 0; i < 100; i ++ ) {
 
-			var mesh = buildings[ i ] = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x000000 } ) );
+			var mesh = buildings[ i ] = new THREE.Mesh( geometry, material );
 			mesh.position.x = Math.floor( Math.random() * 20 - 10 ) * 100;
 			mesh.position.y = - 100;
 			mesh.position.z = Math.floor( Math.random() * 20 - 10 ) * 100;
@@ -49,7 +50,6 @@ var Part2 = function ( camera, scene, renderer ) {
 	};
 
 };
-
 
 Part2.prototype = new Effect();
 Part2.prototype.constructor = Part2;

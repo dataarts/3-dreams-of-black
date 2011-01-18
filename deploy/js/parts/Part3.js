@@ -22,6 +22,5 @@ var Part3 = function ( camera, scene, renderer ) {
 
 };
 
-
 Part3.prototype = new Effect();
 Part3.prototype.constructor = Part3;
