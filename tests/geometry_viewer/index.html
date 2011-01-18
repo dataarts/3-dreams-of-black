@@ -1,0 +1,173 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/> 
+		<title>Geometry Viewer</title>
+		<style type="text/css">
+
+			body {
+				font-family: Monospace;
+				font-size:13px;
+				color: #202020;
+				margin: 10px;
+			}
+
+			input {
+				font-family: Monospace;
+				font-size:13px;
+				color: #202020;
+			}
+
+		</style
+	</head>
+	<body>
+
+		<div id="container" style="background-color: #f0f0f0"></div>
+		<div id="controls" style="padding: 20px">
+			<strong>File</strong><br />
+			<input id="filename" type="text" value="Monkey.js" />
+			<input type="button" value="LOAD" onClick="loadGeometry( document.getElementById( 'filename' ).value );" /><br />
+			<br />
+
+			<strong>Mesh Controls</strong><br />
+			Scale: <a href="#" onClick="scaleMesh( 2 );">Up</a> <a href="#" onClick="scaleMesh( - 2 );">Down</a> - 
+			Move: <a href="#" onClick="moveMesh( 10 );">Up</a> <a href="#" onClick="moveMesh( - 10 );">Down</a>
+		</div>
+
+		<script type="text/javascript" src="js/three.js"></script>
+		<script type="text/javascript" src="js/stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth - 20,
+			SCREEN_HEIGHT = window.innerHeight - 200,
+			SCREEN_WIDTH_HALF = SCREEN_WIDTH  / 2,
+			SCREEN_HEIGHT_HALF = SCREEN_HEIGHT / 2;
+
+			var container, camera, scene, mesh, renderer,
+			man, particle, shadow;
+
+			var script, classname, loaded;
+
+			var stats;
+
+			var lon = 90, lat = 0, phi = 0, theta = 0,
+			mouseX = 0, mouseY = 0;
+
+			init();
+			setInterval( loop, 1000 / 60 );
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.Camera( 45, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
+
+				scene = new THREE.Scene();
+				sceneFloor = new THREE.Scene();
+
+				loadGeometry( 'Monkey.js' );
+
+				renderer = new THREE.CanvasRenderer();
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '10px';
+				container.appendChild( stats.domElement );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function moveMesh( amount ) {
+
+				mesh.position.y += amount;
+			}
+
+			function scaleMesh( amount ) {
+
+				mesh.scale.x = mesh.scale.y = mesh.scale.z += amount;
+			}
+
+			function loadGeometry( filename ) {
+
+				if ( mesh ) {
+
+					scene.removeObject( mesh );
+					document.body.removeChild( script );
+
+				}
+
+				script = document.createElement( 'script' );
+				script.type = 'text/javascript';
+				script.src = 'geometry/' + filename;
+				document.body.appendChild( script );
+
+				classname = filename.split('.')[0];
+				loaded = false;
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouseX = - event.clientX + SCREEN_WIDTH_HALF;
+				mouseY = - event.clientY + SCREEN_HEIGHT_HALF;
+
+			}
+
+			function onWindowResize( event ) {
+
+				SCREEN_WIDTH = window.innerWidth - 20;
+				SCREEN_HEIGHT = window.innerHeight - 200;
+				SCREEN_WIDTH_HALF = SCREEN_WIDTH  / 2;
+				SCREEN_HEIGHT_HALF = SCREEN_HEIGHT / 2;
+
+				camera.projectionMatrix = THREE.Matrix4.makePerspective( 45, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+			}
+
+			function loop() {
+
+				if ( !loaded ) {
+
+					var geometry = eval( 'new ' + classname + '()' );
+
+					if ( geometry ) {
+
+						mesh = new THREE.Mesh( geometry, [ new THREE.MeshColorFillMaterial( 0x000000 ), new THREE.MeshColorStrokeMaterial( 0x808080 ) ] );
+						mesh.scale.x = 80;
+						mesh.scale.y = 80;
+						mesh.scale.z = 80;
+
+						scene.addObject( mesh );
+
+						loaded = true;
+					}
+
+				}
+
+				lon += (mouseX - lon) * 0.01;
+				lat += (mouseY - lat) * 0.01;
+
+				lat = Math.max( - 85, Math.min( 85, lat ) );
+
+				phi = ( 90 - lat ) * Math.PI / 180;
+				theta = ( lon + 180 ) * Math.PI / 180;
+
+				camera.position.x = 500 * Math.sin( phi ) * Math.cos( theta );
+				camera.position.y = 500 * Math.cos( phi );
+				camera.position.z = 500 * Math.sin( phi ) * Math.sin( theta );
+
+				renderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+		</script>
+
+	</body>
+</html>

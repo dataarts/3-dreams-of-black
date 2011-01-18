@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>ROME</title>
+		<style>
+			body {
+
+				font-family: Helvetica, Arial;
+				background-color: #f0f0f0;
+				color: #808080;
+				margin: 0px;
+				overflow: hidden;
+
+			}
+
+			a {
+
+				color: #A0A0A0;
+				text-decoration: none;
+
+			}
+
+			a:hover {
+
+				text-decoration: underline;
+
+			}
+		</style>
+	</head>
+	<body>
+
+		<audio id="audio" autobuffer>
+			<source src="files/Black.ogg">
+		</audio>
+
+		<div id="launcher" style="padding: 100px;">
+
+			<strong>"ROME"</strong><br /><br />
+
+			<a href="#" onClick="start( 0 );">START</a>
+
+			&#x2014; 
+			<a href="#" onClick="start( 0 );">PART 1</a>,
+			<a href="#" onClick="start( 24 );">PART 2</a>,
+			<a href="#" onClick="start( 40 );">PART 3</a>
+
+		</div>
+
+		<script type="text/javascript" src="js/lib/Tween.js"></script>
+		<script type="text/javascript" src="js/lib/Three.js"></script>
+		<script type="text/javascript" src="js/lib/three/renderers/WebGLRenderer2.js"></script>
+
+		<script type="text/javascript" src="js/lib/three/extras/primitives/Cube.js"></script>
+
+		<script type="text/javascript" src="js/Sequencer.js"></script>
+		<script type="text/javascript" src="js/Tune.js"></script>
+
+		<script type="text/javascript" src="js/effects/Effect.js"></script>
+		<script type="text/javascript" src="js/effects/TweenEffect.js"></script>
+
+		<script type="text/javascript" src="js/parts/Part1.js"></script>
+		<script type="text/javascript" src="js/parts/Part2.js"></script>
+		<script type="text/javascript" src="js/parts/Part3.js"></script>
+
+		<script type="text/javascript" src="js/Main.js"></script>
+
+	</body>
+</html> 
