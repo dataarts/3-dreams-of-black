@@ -6,8 +6,8 @@ var Part2 = function ( camera, scene, renderer ) {
 
 	this.init = function ( callback ) {
 
-		var geometry = new Cube( 100, 100, 100 );
-		var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+		var geometry = new Cube( 100, 100, 100 ),
+			material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
 
 		for ( var i = 0; i < 100; i ++ ) {
 
