@@ -4,6 +4,9 @@ container;
 
 var TUNE, QUALITY = 1;
 
+var screenWidth, screenHeight,
+screenWidthHalf, screenHeightHalf;
+
 var time;
 
 init();
@@ -57,6 +60,7 @@ function start( pattern ) {
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
+	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 	setInterval( loop, 1000 / 120 );
 }
@@ -84,13 +88,25 @@ function onDocumentKeyDown( event ) {
 
 }
 
+function onDocumentMouseMove( event ) {
+
+	SharedObject.mouse.x = event.clientX - screenWidthHalf;
+	SharedObject.mouse.y = event.clientY - screenHeightHalf;
+
+}
+
 function onWindowResize( event ) {
 
-	var width = window.innerWidth / QUALITY, height = window.innerHeight / QUALITY;
+	screenWidth = window.innerWidth / QUALITY;
+	screenHeight = window.innerHeight / QUALITY;
 
-	camera.projectionMatrix = THREE.Matrix4.makePerspective( 60, width / height, 1, 20000 ); // TODO: Better API use
+	screenWidthHalf = screenWidth / 2;
+	screenHeightHalf = screenHeight / 2;
 
-	renderer.setSize( width, height );
+	camera.aspect = screenWidth / screenHeight;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize( screenWidth, screenHeight );
 	renderer.domElement.style.width = window.innerWidth + 'px';
 	renderer.domElement.style.height = window.innerHeight + 'px';
 
