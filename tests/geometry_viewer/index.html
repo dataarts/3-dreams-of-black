@@ -23,18 +23,21 @@
 
 		<div id="container" style="background-color: #f0f0f0"></div>
 		<div id="controls" style="padding: 20px">
-			<strong>File</strong><br />
-			<input id="filename" type="text" value="Monkey.js" />
-			<input type="button" value="LOAD" onClick="loadGeometry( document.getElementById( 'filename' ).value );" /><br />
+
+			<strong>Geometry</strong><br />
+			<input id="filename_geometry" type="text" value="Monkey.js" />
+			<input type="button" value="LOAD" onClick="loadGeometry( document.getElementById( 'filename_geometry' ).value );" /><br />
 			<br />
 
 			<strong>Mesh Controls</strong><br />
-			Scale: <a href="#" onClick="scaleMesh( 2 );">Up</a> <a href="#" onClick="scaleMesh( - 2 );">Down</a> - 
-			Move: <a href="#" onClick="moveMesh( 10 );">Up</a> <a href="#" onClick="moveMesh( - 10 );">Down</a>
+			Scale: <a href="#" onClick="scaleMesh( 10 );">+10</a> <a href="#" onClick="scaleMesh( - 10 );">-10</a>
+
 		</div>
 
-		<script type="text/javascript" src="js/three.js"></script>
-		<script type="text/javascript" src="js/stats.js"></script>
+		<script type="text/javascript" src="js/ThreeExtras.js"></script>
+		<script type="text/javascript" src="js/three/renderers/WebGLRenderer2.js"></script>
+
+		<script type="text/javascript" src="js/Stats.js"></script>
 
 		<script type="text/javascript">
 
@@ -46,14 +49,14 @@
 			var container, camera, scene, mesh, renderer,
 			man, particle, shadow;
 
-			var script, classname, loaded;
-
-			var stats;
+			var loader, stats;
 
 			var lon = 90, lat = 0, phi = 0, theta = 0,
 			mouseX = 0, mouseY = 0;
 
 			init();
+			loadGeometry( 'Monkey.js' );
+
 			setInterval( loop, 1000 / 60 );
 
 			function init() {
@@ -63,11 +66,16 @@
 				camera = new THREE.Camera( 45, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
 
 				scene = new THREE.Scene();
-				sceneFloor = new THREE.Scene();
 
-				loadGeometry( 'Monkey.js' );
+				var light = new THREE.DirectionalLight( 0xffffff );
+				light.position.z = 1;
+				light.position.normalize();
 
-				renderer = new THREE.CanvasRenderer();
+				scene.addLight( light );
+
+				loader = new THREE.Loader( true );
+
+				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 
 				container.appendChild( renderer.domElement );
@@ -96,18 +104,25 @@
 
 				if ( mesh ) {
 
+					/*
+					// TODO: Fix WebGLRenderer
 					scene.removeObject( mesh );
-					document.body.removeChild( script );
+					mesh = null;
+					*/
 
+					mesh.visible = false;
 				}
 
-				script = document.createElement( 'script' );
-				script.type = 'text/javascript';
-				script.src = 'geometry/' + filename;
-				document.body.appendChild( script );
+				var callback = function( geometry ) {
 
-				classname = filename.split('.')[0];
-				loaded = false;
+					mesh = new THREE.Mesh( geometry, [ new THREE.MeshLambertMaterial( { color: 0x808080 } ), new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.1, wireframe: true } ) ] );
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = 100;
+					scene.addObject( mesh );
+
+				};
+
+				loader.loadAscii( { model: 'geometry/' + filename, callback: callback } );
+
 			}
 
 			function onDocumentMouseMove( event ) {
@@ -121,33 +136,17 @@
 
 				SCREEN_WIDTH = window.innerWidth - 20;
 				SCREEN_HEIGHT = window.innerHeight - 200;
-				SCREEN_WIDTH_HALF = SCREEN_WIDTH  / 2;
+				SCREEN_WIDTH_HALF = SCREEN_WIDTH / 2;
 				SCREEN_HEIGHT_HALF = SCREEN_HEIGHT / 2;
 
-				camera.projectionMatrix = THREE.Matrix4.makePerspective( 45, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
+				camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+				camera.updateProjectionMatrix();
+
 				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 
 			}
 
 			function loop() {
-
-				if ( !loaded ) {
-
-					var geometry = eval( 'new ' + classname + '()' );
-
-					if ( geometry ) {
-
-						mesh = new THREE.Mesh( geometry, [ new THREE.MeshColorFillMaterial( 0x000000 ), new THREE.MeshColorStrokeMaterial( 0x808080 ) ] );
-						mesh.scale.x = 80;
-						mesh.scale.y = 80;
-						mesh.scale.z = 80;
-
-						scene.addObject( mesh );
-
-						loaded = true;
-					}
-
-				}
 
 				lon += (mouseX - lon) * 0.01;
 				lat += (mouseY - lat) * 0.01;

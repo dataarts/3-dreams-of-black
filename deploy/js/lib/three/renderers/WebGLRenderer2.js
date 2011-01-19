@@ -46,7 +46,9 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 	_gl.enable( _gl.CULL_FACE );
 
 	_gl.enable( _gl.BLEND );
+	_gl.blendEquation( _gl.FUNC_ADD );
 	_gl.blendFunc( _gl.ONE, _gl.ONE_MINUS_SRC_ALPHA );
+
 	_gl.clearColor( 0, 0, 0, 0 );
 
 	this.domElement = _canvas;
@@ -524,7 +526,7 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 					material.fog ? 'uniform vec3 fogColor;' : null,
 
 					'void main() {',
-						'gl_FragColor = vec4( mColor.xyz, mOpacity );',
+						'gl_FragColor = vec4( mColor.rgb, mOpacity );',
 
 						/* Premultiply alpha
 						material.map ? 'vec4 mapColor = texture2D( tMap, vUv );' : null,
