@@ -2,12 +2,10 @@ var audio, sequencer,
 camera, camera2, scene, renderer,
 container;
 
-var TUNE, QUALITY = 1;
-
 var screenWidth, screenHeight,
 screenWidthHalf, screenHeightHalf;
 
-var time;
+var tune, time;
 
 init();
 
@@ -15,25 +13,31 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	camera = new THREE.Camera( 60, 800 / 600, 1, 20000 );
+	screenWidth = window.innerWidth;
+	screenHeight = window.innerHeight;
+
+	screenWidthHalf = screenWidth / 2;
+	screenHeightHalf = screenHeight / 2;
+
+	camera = new THREE.Camera( 60, screenWidth / screenHeight, 1, 20000 );
 	camera.position.z = 500;
 
 	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer2();
-	renderer.setSize( 800, 600 );
+	renderer.setSize( screenWidth, screenHeight );
 
-	TUNE = new Tune( audio );
-	TUNE.setBPM( 85 );
-	TUNE.setRows( 4 );
+	tune = new Tune( audio );
+	tune.setBPM( 85 );
+	tune.setRows( 4 );
 
 	sequencer = new Sequencer();
 
 	// Parts
 
-	sequencer.add( new Part1( camera, scene, renderer ), TUNE.getPatternMS( 0 ), TUNE.getPatternMS( 24 ) );
-	sequencer.add( new Part2( camera, scene, renderer ), TUNE.getPatternMS( 24 ), TUNE.getPatternMS( 40 ) );
-	sequencer.add( new Part3( camera, scene, renderer ), TUNE.getPatternMS( 40 ), TUNE.getPatternMS( 75 ) );
+	sequencer.add( new Part1( camera, scene, renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 24 ) );
+	sequencer.add( new Part2( camera, scene, renderer ), tune.getPatternMS( 24 ), tune.getPatternMS( 40 ) );
+	sequencer.add( new Part3( camera, scene, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 75 ) );
 
 }
 
@@ -54,9 +58,8 @@ function start( pattern ) {
 	document.body.appendChild( time );
 
 	audio.play();
-	audio.currentTime = TUNE.getBeatMS( pattern * TUNE.getRows() ) / 1000;
+	audio.currentTime = tune.getBeatMS( pattern * tune.getRows() ) / 1000;
 
-	onWindowResize();
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
@@ -97,8 +100,8 @@ function onDocumentMouseMove( event ) {
 
 function onWindowResize( event ) {
 
-	screenWidth = window.innerWidth / QUALITY;
-	screenHeight = window.innerHeight / QUALITY;
+	screenWidth = window.innerWidth;
+	screenHeight = window.innerHeight;
 
 	screenWidthHalf = screenWidth / 2;
 	screenHeightHalf = screenHeight / 2;
@@ -107,8 +110,6 @@ function onWindowResize( event ) {
 	camera.updateProjectionMatrix();
 
 	renderer.setSize( screenWidth, screenHeight );
-	renderer.domElement.style.width = window.innerWidth + 'px';
-	renderer.domElement.style.height = window.innerHeight + 'px';
 
 }
 
@@ -116,7 +117,7 @@ function loop() {
 
 	var ms = audio.currentTime * 1000;
 
-	time.innerHTML = ( Math.floor( ms / TUNE.getMS() ) % TUNE.getRows() ) + " / " + ( Math.floor( ( ms / TUNE.getRows() ) / TUNE.getMS() ) ) + " — " + Math.floor( ms );
+	time.innerHTML = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + Math.floor( ms );
 
 	sequencer.update( ms );
 
