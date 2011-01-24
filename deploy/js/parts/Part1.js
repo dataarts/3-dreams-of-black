@@ -11,8 +11,6 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 	}
 
-	//
-
 	this.init = function ( callback ) {
 
 		var geometry = new Cube( 100, 100, 100 );
@@ -34,7 +32,7 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 	this.show = function () {
 
-		events.mousemoved.add( onMouseMove );
+		events.mousemove.add( onMouseMove );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 
@@ -46,7 +44,7 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 	this.hide = function () {
 
-		events.mousemoved.remove( onMouseMove );
+		events.mousemove.remove( onMouseMove );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 

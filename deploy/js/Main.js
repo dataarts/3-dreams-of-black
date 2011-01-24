@@ -1,3 +1,5 @@
+var Signal = signals.Signal;
+
 var audio, sequencer,
 camera, camera2, scene, renderer,
 container, events;
@@ -33,7 +35,9 @@ function init() {
 
 	events = {
 
-		mousemoved : new signals.Signal()
+		mousemove : new Signal(),
+		mousedown : new Signal(),
+		mouseup : new Signal()
 
 	};
 
@@ -99,7 +103,7 @@ function onDocumentKeyDown( event ) {
 
 function onDocumentMouseMove( event ) {
 
-	events.mousemoved.dispatch( event.clientX - screenWidthHalf, event.clientY - screenHeightHalf );
+	events.mousemove.dispatch( event.clientX - screenWidthHalf, event.clientY - screenHeightHalf );
 
 }
 
