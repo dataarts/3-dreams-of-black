@@ -2,7 +2,14 @@ var Part3 = function ( camera, scene, renderer ) {
 
 	Effect.call( this );
 
-	var mesh, elements = [];
+	var mesh, elements = [], mouse = { x: 0, y: 0 };
+
+	function onMouseMove( x, y ) {
+
+		mouse.x = x;
+		mouse.y = y;
+
+	}
 
 	this.init = function ( callback ) {
 
@@ -28,6 +35,8 @@ var Part3 = function ( camera, scene, renderer ) {
 
 	this.show = function () {
 
+		events.mouseMove.add( onMouseMove );
+
 		for ( var i = 0; i < elements.length; i ++ ) {
 
 			scene.addObject( elements[ i ] );
@@ -37,6 +46,8 @@ var Part3 = function ( camera, scene, renderer ) {
 	};
 
 	this.hide = function () {
+
+		events.mouseMove.remove( onMouseMove );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 
@@ -51,8 +62,8 @@ var Part3 = function ( camera, scene, renderer ) {
 		camera.position.y = 50;
 		camera.position.z = - i * 1500 + 1000;
 
-		camera.target.position.x = SharedObject.mouse.x;
-		camera.target.position.y = camera.position.y - SharedObject.mouse.y;
+		camera.target.position.x = mouse.x;
+		camera.target.position.y = camera.position.y - mouse.y;
 		camera.target.position.z = camera.position.z - 1000;
 
 		renderer.render( scene, camera );

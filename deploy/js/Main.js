@@ -1,6 +1,6 @@
 var audio, sequencer,
 camera, camera2, scene, renderer,
-container;
+container, events;
 
 var screenWidth, screenHeight,
 screenWidthHalf, screenHeightHalf;
@@ -31,13 +31,19 @@ function init() {
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
+	events = {
+
+		mouseMove : new signals.Signal()
+
+	};
+
 	sequencer = new Sequencer();
 
 	// Parts
 
-	sequencer.add( new Part1( camera, scene, renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 24 ) );
-	sequencer.add( new Part2( camera, scene, renderer ), tune.getPatternMS( 24 ), tune.getPatternMS( 40 ) );
-	sequencer.add( new Part3( camera, scene, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 75 ) );
+	sequencer.add( new Part1( camera, scene, renderer, events ), tune.getPatternMS( 16 /*0*/ ), tune.getPatternMS( 24 ) );
+	sequencer.add( new Part2( camera, scene, renderer, events ), tune.getPatternMS( 32 /*24*/ ), tune.getPatternMS( 40 ) );
+	sequencer.add( new Part3( camera, scene, renderer, events ), tune.getPatternMS( 75 /*40*/ ), tune.getPatternMS( 75 ) );
 
 }
 
@@ -93,8 +99,7 @@ function onDocumentKeyDown( event ) {
 
 function onDocumentMouseMove( event ) {
 
-	SharedObject.mouse.x = event.clientX - screenWidthHalf;
-	SharedObject.mouse.y = event.clientY - screenHeightHalf;
+	events.mouseMove.dispatch( event.clientX - screenWidthHalf, event.clientY - screenHeightHalf );
 
 }
 
