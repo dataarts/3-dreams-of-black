@@ -36,10 +36,11 @@
 
 		<script type="text/javascript" src="build/Three.js"></script> 
 		<script type="text/javascript" src="model/Scene.js"></script>
-
+		<script type="text/javascript" src="js/Stats.js"></script>
+		
 		<script type="text/javascript">
 
-			var camera, scene, renderer;
+			var camera, scene, renderer, stats;
 
 			init();
 			setInterval( loop, 1000 / 60 );
@@ -56,11 +57,20 @@
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
+				
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
 
 			}
 
 			function loop() {
+			
 				renderer.render(scene, camera);
+				stats.update();
+				
 			}
 
 		</script>
