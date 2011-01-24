@@ -33,7 +33,7 @@ function init() {
 
 	events = {
 
-		mouseMove : new signals.Signal()
+		mousemoved : new signals.Signal()
 
 	};
 
@@ -99,7 +99,7 @@ function onDocumentKeyDown( event ) {
 
 function onDocumentMouseMove( event ) {
 
-	events.mouseMove.dispatch( event.clientX - screenWidthHalf, event.clientY - screenHeightHalf );
+	events.mousemoved.dispatch( event.clientX - screenWidthHalf, event.clientY - screenHeightHalf );
 
 }
 

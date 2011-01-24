@@ -34,7 +34,7 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 	this.show = function () {
 
-		events.mouseMove.add( onMouseMove );
+		events.mousemoved.add( onMouseMove );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 
@@ -46,7 +46,7 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 	this.hide = function () {
 
-		events.mouseMove.remove( onMouseMove );
+		events.mousemoved.remove( onMouseMove );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 
