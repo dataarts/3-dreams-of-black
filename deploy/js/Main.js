@@ -120,9 +120,13 @@ function onWindowResize( event ) {
 
 function loop() {
 
-	var ms = audio.currentTime * 1000;
+	var ms = audio.currentTime * 1000,
+		s = Math.floor( ms ) / 1000,
+		m = Math.floor( s / 60 );
 
-	time.innerHTML = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + Math.floor( ms );
+	s = s - m*60;
+	time.innerHTML = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + Math.floor( ms ) + 
+					 " — " + m + ":" + ( (s < 10) ? "0" : "" ) + s.toFixed(1);
 
 	sequencer.update( ms );
 
