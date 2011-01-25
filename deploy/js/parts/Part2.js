@@ -100,7 +100,6 @@ var Part2 = function ( camera, scene, renderer, events ) {
 		camera.target.position.y = camera.position.y - mouse.y;
 		camera.target.position.z = camera.position.z - 1000;
 
-		renderer.clear();
 		renderer.render( scene, camera );
 
 	};

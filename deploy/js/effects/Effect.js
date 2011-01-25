@@ -1,23 +1,27 @@
 var Effect = function () {
 
-	this.init = function () {
-
-	};
-
-	this.load = function () {
-
-	};
-
-	this.show = function () {
-
-	};
-
-	this.hide = function () {
-
-	};
-
-	this.update = function ( time ) {
-
-	};
-
 };
+
+Effect.prototype = {
+
+	init: function () {
+
+	},
+
+	load: function () {
+
+	},
+
+	show: function () {
+
+	},
+
+	hide: function () {
+
+	},
+
+	update: function ( time ) {
+
+	}
+
+}
