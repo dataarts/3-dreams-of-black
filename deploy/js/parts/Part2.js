@@ -2,7 +2,9 @@ var Part2 = function ( camera, scene, renderer, events ) {
 
 	Effect.call( this );
 
-	var mesh, elements = [], mouse = { x: 0, y: 0 };
+	var mesh, elements = [],
+	train, buffalos,
+	mouse = { x: 0, y: 0 };
 
 	function onMouseMove( x, y ) {
 
@@ -15,27 +17,55 @@ var Part2 = function ( camera, scene, renderer, events ) {
 
 		// Ground
 
-		mesh = new THREE.Mesh( new Plane( 1000, 2000, 50, 100 ), new THREE.MeshBasicMaterial( { color: 0x808080, wireframe: true } ) );
+		mesh = new THREE.Mesh( new Plane( 2000, 4000, 50, 100 ), new THREE.MeshBasicMaterial( { color: 0x93735d, wireframe: true } ) );
 		mesh.rotation.x = - 90 * Math.PI / 180;
 		elements.push( mesh );
 
 		// Train
 
-		var geometry = new Cube( 50, 50, 50 );
-		var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+		train = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshBasicMaterial( { color: 0x000000 } ) );
+		train.position.y = 25;
+
+		var carriage = new THREE.Mesh( new Cube( 50, 50, 200 ) );
+
+		for ( var i = 0; i < 10; i ++ ) {
+
+			carriage.position.z = - i * 250;
+
+			GeometryUtils.merge( train.geometry, carriage );
+		}
+
+		train.geometry.computeBoundingSphere();
+
+		elements.push( train );
+
+		// Buffalos
+
+		buffalos = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshBasicMaterial( { color: 0x000000 } ) );
+		buffalos.position.y = 10;
+
+		var buffalo = new THREE.Mesh( new Cube( 20, 20, 50 ) );
 
 		for ( var i = 0; i < 100; i ++ ) {
 
-			mesh = new THREE.Mesh( geometry, material );
-			mesh.position.z = i * 100 - 1000;
-			elements.push( mesh );
+			buffalo.position.x = Math.floor( Math.random() * 100 - 50 ) * 10;
+			buffalo.position.z = ( Math.random() * 20 - 10 ) * 50;
+
+			GeometryUtils.merge( buffalos.geometry, buffalo );
 		}
+
+		buffalos.geometry.computeBoundingSphere();
+
+		elements.push( buffalos );
 
 	};
 
 	this.show = function () {
 
 		events.mousemove.add( onMouseMove );
+
+		scene.fog = new THREE.Fog( 0x9ca69d, 0, 2000 );
+		renderer.setClearColor( 0x9ca69d, 1 );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 
@@ -59,8 +89,12 @@ var Part2 = function ( camera, scene, renderer, events ) {
 
 	this.update = function ( i ) {
 
-		camera.position.y = 50;
-		camera.position.z = - i * 1500 + 1000;
+		camera.position.y = 75;
+		camera.position.z = - i * 2000 + 1000;
+
+		train.position.z = camera.position.z;
+
+		buffalos.position.z = - i * 2500 + 1500;
 
 		camera.target.position.x = mouse.x;
 		camera.target.position.y = camera.position.y - mouse.y;
