@@ -85,7 +85,7 @@
 
 			var camera, scene, renderer;
 
-			var geometry, objects;
+			var geometry, group;
 
 			var mouseX = 0, mouseY = 0;
 
@@ -111,95 +111,21 @@
 				var geometry = new Cube( 100, 100, 100 );
 				var material = new THREE.MeshNormalMaterial();
 
-				var mesh = new THREE.Mesh( geometry, material );
-				mesh.position.x = 1000;
-				scene.addObject( mesh );
+				group = new THREE.Object3D();
+				scene.addObject( group );
 
-				objects = [];
+				for ( var i = 0; i < 1000; i ++ ) {
 
-				objects.push( mesh );
+					var mesh = new THREE.Mesh( geometry, material );
+					mesh.position.x = Math.random() * 2000 - 1000;
+					mesh.position.y = Math.random() * 2000 - 1000;
+					mesh.position.z = Math.random() * 2000 - 1000;
+					mesh.rotation.x = Math.random() * 360 * ( Math.PI / 180 );
+					mesh.rotation.y = Math.random() * 360 * ( Math.PI / 180 );
+					mesh.updateMatrix();
+					mesh.autoUpdateMatrix = false;
 
-				var amount = 50, child, object = mesh;
-
-				for ( var i = 0; i < amount; i ++ ) {
-
-					child = new THREE.Mesh( geometry, material );
-					child.position.x = 100;
-
-					object.addChild( child );
-					object = child;
-
-					objects.push( child );
-
-				}
-
-				object = mesh;
-
-				for ( var i = 0; i < amount; i ++ ) {
-
-					child = new THREE.Mesh( geometry, material );
-					child.position.x = - 100;
-
-					object.addChild( child );
-					object = child;
-
-					objects.push( child );
-
-				}
-
-				object = mesh;
-
-				for ( var i = 0; i < amount; i ++ ) {
-
-					child = new THREE.Mesh( geometry, material );
-					child.position.y = - 100;
-
-					object.addChild( child );
-					object = child;
-
-					objects.push( child );
-
-				}
-
-				object = mesh;
-
-				for ( var i = 0; i < amount; i ++ ) {
-
-					child = new THREE.Mesh( geometry, material );
-					child.position.y = 100;
-
-					object.addChild( child );
-					object = child;
-
-					objects.push( child );
-
-				}
-
-				object = mesh;
-
-				for ( var i = 0; i < amount; i ++ ) {
-
-					child = new THREE.Mesh( geometry, material );
-					child.position.z = - 100;
-
-					object.addChild( child );
-					object = child;
-
-					objects.push( child );
-
-				}
-
-				object = mesh;
-
-				for ( var i = 0; i < amount; i ++ ) {
-
-					child = new THREE.Mesh( geometry, material );
-					child.position.z = 100;
-
-					object.addChild( child );
-					object = child;
-
-					objects.push( child );
+					group.addChild( mesh );
 
 				}
 
@@ -229,20 +155,16 @@
 
 			function loop() {
 
-				var rx = Math.sin( new Date().getTime() * 0.0007 ) * 0.2,
-				ry = Math.sin( new Date().getTime() * 0.0003 ) * 0.1,
-				rz = Math.sin( new Date().getTime() * 0.0002 ) * 0.1;
+				var rx = Math.sin( new Date().getTime() * 0.0007 ) * 0.5,
+				ry = Math.sin( new Date().getTime() * 0.0003 ) * 0.5,
+				rz = Math.sin( new Date().getTime() * 0.0002 ) * 0.5;
 
 				camera.position.x += ( mouseX - camera.position.x ) * .05;
 				camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
-				for ( var i = 0, l = objects.length; i < l; i ++ ) {
-
-					objects[ i ].rotation.x = rx;
-					objects[ i ].rotation.y = ry;
-					objects[ i ].rotation.z = rz;
-
-				}
+				group.rotation.x = rx;
+				group.rotation.y = ry;
+				group.rotation.z = rz;
 
 				renderer.render( scene, camera );
 
