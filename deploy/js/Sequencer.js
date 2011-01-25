@@ -9,7 +9,7 @@ var Sequencer = function () {
 	_nextEffectToRemove = 0,
 	_time = 0,
 
-	_layersSortNeeded = false;
+	_layersNeedSorting = false;
 
 	this.add = function ( effect, start_time, end_time, layer ) {
 
@@ -56,7 +56,7 @@ var Sequencer = function () {
 
 				_effectsActive.push( effect );
 
-				_layersSortNeeded = true;
+				_layersNeedSorting = true;
 
 			}
 
@@ -76,8 +76,8 @@ var Sequencer = function () {
 
 			if ( effect.__active ) {
 
-				effect.__active = false;
 				effect.hide();
+				effect.__active = false;
 
 				var i = _effectsActive.indexOf( effect );
 
@@ -93,10 +93,10 @@ var Sequencer = function () {
 
 		}
 
-		if ( _layersSortNeeded ) {
+		if ( _layersNeedSorting ) {
 
 			_effectsActive.sort( function ( a, b ) { return a.__layer - b.__layer; } );
-			_layersSortNeeded = false;
+			_layersNeedSorting = false;
 
 		}
 
