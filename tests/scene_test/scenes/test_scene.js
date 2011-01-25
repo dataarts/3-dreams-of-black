@@ -28,6 +28,24 @@ var scene = {
 		"scale"	   : [ 2, 2, 2 ],
 		"visible"  : true		
 	},
+
+	"cone" : {
+		"geometry" : "cone",
+		"materials": [ "lambert_blue" ],
+		"position" : [ -50, 40, -50 ],
+		"rotation" : [ 1.57, 0, 0 ],
+		"scale"	   : [ 1, 1, 1 ],
+		"visible"  : true		
+	},
+
+	"cylinder" : {
+		"geometry" : "cylinder",
+		"materials": [ "lambert_blue" ],
+		"position" : [ 50, 40, -50 ],
+		"rotation" : [ 1.57, 0, 0 ],
+		"scale"	   : [ 1, 1, 1 ],
+		"visible"  : true		
+	},
 	
 	"TextureCube" : {
 		"geometry" : "TextureCube",
@@ -85,6 +103,26 @@ var scene = {
 		"segments_width"  : 32, 
 		"segments_height" : 16
 	},
+ 
+	"cylinder": {
+		"type"    : "cylinder",
+		"numSegs"  : 32, 
+		"topRad"   : 5, 
+		"botRad"   : 5,
+		"height"   : 50,
+		"topOffset": 0,
+		"botOffset": 0
+	},
+
+	"cone": {
+		"type"    : "cylinder",
+		"numSegs"  : 32, 
+		"topRad"   : 0, 
+		"botRad"   : 5,
+		"height"   : 50,
+		"topOffset": 0,
+		"botOffset": 0
+	},
 	
 	"WaltHead": {
 		"type": "bin_mesh",
@@ -130,6 +168,11 @@ var scene = {
 		"type": "MeshLambertMaterial",
 		"parameters": { color: 0x007711 } 
 	},
+
+	"lambert_blue": {
+		"type": "MeshLambertMaterial",
+		"parameters": { color: 0x0055aa } 
+	},
 	
 	"phong_white": {
 		"type": "MeshPhongMaterial",
@@ -173,7 +216,7 @@ var scene = {
 		"aspect": 1.33333,
 		"near"  : 1,
 		"far"   : 1000,
-		"position": [0,0,200],
+		"position": [0,0,100],
 		"target"  : [0,0,0]
 	},
 
