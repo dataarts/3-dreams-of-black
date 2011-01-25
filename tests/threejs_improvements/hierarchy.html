@@ -125,6 +125,7 @@
 
 					child = new THREE.Mesh( geometry, material );
 					child.position.x = 100;
+					child.scale.x = child.scale.y = child.scale.z = i * 0.01 + 1;
 
 					object.addChild( child );
 					object = child;
@@ -139,6 +140,7 @@
 
 					child = new THREE.Mesh( geometry, material );
 					child.position.x = - 100;
+					child.scale.x = child.scale.y = child.scale.z = i * 0.01 + 1;
 
 					object.addChild( child );
 					object = child;
@@ -153,6 +155,7 @@
 
 					child = new THREE.Mesh( geometry, material );
 					child.position.y = - 100;
+					child.scale.x = child.scale.y = child.scale.z = i * 0.01 + 1;
 
 					object.addChild( child );
 					object = child;
@@ -167,6 +170,7 @@
 
 					child = new THREE.Mesh( geometry, material );
 					child.position.y = 100;
+					child.scale.x = child.scale.y = child.scale.z = i * 0.01 + 1;
 
 					object.addChild( child );
 					object = child;
@@ -181,6 +185,7 @@
 
 					child = new THREE.Mesh( geometry, material );
 					child.position.z = - 100;
+					child.scale.x = child.scale.y = child.scale.z = i * 0.01 + 1;
 
 					object.addChild( child );
 					object = child;
@@ -195,6 +200,7 @@
 
 					child = new THREE.Mesh( geometry, material );
 					child.position.z = 100;
+					child.scale.x = child.scale.y = child.scale.z = i * 0.01 + 1;
 
 					object.addChild( child );
 					object = child;
@@ -205,7 +211,7 @@
 
 				renderer = new THREE.WebGLRenderer2();
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				// renderer.sortObjects = false;
+				renderer.sortObjects = false;
 				container.appendChild( renderer.domElement );
 
 				if ( statsEnabled ) {
@@ -229,15 +235,16 @@
 
 			function loop() {
 
-				var rotation = Math.sin( new Date().getTime() * 0.0005 ) * 0.5;
+				var rx = Math.sin( new Date().getTime() * 0.0005 ) * 0.5,
+				ry = Math.sin( new Date().getTime() * 0.0002 ) * 0.5;
 
 				camera.position.x += ( mouseX - camera.position.x ) * .05;
 				camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
 				for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-					objects[ i ].rotation.x = rotation;
-					objects[ i ].rotation.y = rotation;
+					objects[ i ].rotation.x = rx;
+					objects[ i ].rotation.y = ry;
 
 				}
 

@@ -28,7 +28,9 @@ THREE.Projector = function() {
 
 		if ( !object.visible ) return;
 
-		if ( object instanceof THREE.Mesh && isInFrustum( object ) ) {
+		if ( ( object instanceof THREE.Mesh && isInFrustum( object ) ) ||
+			object instanceof THREE.Line ||
+			object instanceof THREE.Particle ) {
 
 			_object = _objectPool[ _objectCount ] = _objectPool[ _objectCount ] || new THREE.RenderableObject();
 
@@ -49,7 +51,7 @@ THREE.Projector = function() {
 			child = object.children[ i ];
 
 			child.autoUpdateMatrix && child.updateMatrix();
-			child.matrix.multiply( object.matrix, child.matrixLocal );
+			child.matrixWorld.multiply( object.matrixWorld, child.matrix );
 
 			projectObject( child, renderList );
 
@@ -72,7 +74,7 @@ THREE.Projector = function() {
 			object = objects[ o ];
 
 			object.autoUpdateMatrix && object.updateMatrix();
-			object.matrix.copy( object.matrixLocal );
+			object.matrixWorld.copy( object.matrix );
 
 			projectObject( object, renderList );
 
@@ -83,8 +85,6 @@ THREE.Projector = function() {
 		return renderList;
 
 	};
-
-	// TODO: Rename to projectElements? Test also using it with projectObjects to speed up sorting?
 
 	this.projectScene = function ( scene, camera, sort ) {
 
@@ -100,7 +100,7 @@ THREE.Projector = function() {
 
 		_projScreenMatrix.multiply( camera.projectionMatrix, camera.matrix );
 
-		objects = this.projectObjects( scene, camera, true ); // scene.objects;
+		objects = this.projectObjects( scene, camera, true );
 
 		for ( o = 0, ol = objects.length; o < ol; o++ ) {
 

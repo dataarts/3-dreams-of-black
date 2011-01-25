@@ -4,12 +4,14 @@
 
 THREE.Object3D = function () {
 
+	this.id = THREE.Object3DCounter.value ++; // TODO: Probably not needed?
+
 	this.position = new THREE.Vector3();
 	this.rotation = new THREE.Vector3();
 	this.scale = new THREE.Vector3( 1, 1, 1 );
 
 	this.matrix = new THREE.Matrix4();
-	this.matrixLocal = new THREE.Matrix4();
+	this.matrixWorld = new THREE.Matrix4();
 	this.rotationMatrix = new THREE.Matrix4();
 	this.tmpMatrix = new THREE.Matrix4();
 
@@ -51,7 +53,7 @@ THREE.Object3D.prototype = {
 	updateMatrix: function () {
 
 		var p = this.position, r = this.rotation, s = this.scale,
-		matrix = this.matrixLocal, rotationMatrix = this.rotationMatrix,
+		matrix = this.matrix, rotationMatrix = this.rotationMatrix,
 		tmpMatrix = this.tmpMatrix;
 
 		matrix.setTranslation( p.x, p.y, p.z );
@@ -68,3 +70,5 @@ THREE.Object3D.prototype = {
 	}
 
 };
+
+THREE.Object3DCounter = { value: 0 };

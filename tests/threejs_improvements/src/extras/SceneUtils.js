@@ -1,15 +1,21 @@
 var SceneUtils = {
 
-	addMesh: function ( scene, geometry, scale, x, y, z, rx, ry, rz, material ) {
+	addMesh: function ( scene, geometry, scale, px, py, pz, rx, ry, rz, material ) {
 
 		var mesh = new THREE.Mesh( geometry, material );
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
-		mesh.position.x = x;
-		mesh.position.y = y;
-		mesh.position.z = z;
+
+		mesh.position.x = px;
+		mesh.position.y = py;
+		mesh.position.z = pz;
+
 		mesh.rotation.x = rx;
 		mesh.rotation.y = ry;
 		mesh.rotation.z = rz;
+
+		mesh.scale.x = scale;
+		mesh.scale.y = scale;
+		mesh.scale.z = scale;
+
 		scene.addObject( mesh );
 
 		return mesh;
@@ -22,9 +28,9 @@ var SceneUtils = {
 		shader.uniforms["tCube"].texture = textureCube;
 
 		var material = new THREE.MeshShaderMaterial( { fragment_shader: shader.fragment_shader,
-													   vertex_shader: shader.vertex_shader,
-													   uniforms: shader.uniforms
-													} ),
+							   vertex_shader: shader.vertex_shader,
+							   uniforms: shader.uniforms
+							} ),
 
 			mesh = new THREE.Mesh( new Cube( size, size, size, 1, 1, null, true ), material );
 

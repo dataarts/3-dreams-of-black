@@ -104,13 +104,11 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 			var geometry, material, m, ml,
 			program, uniforms, attributes;
 
-			object.autoUpdateMatrix && object.updateMatrix();
-
 			// Setup object matrices
 
-			_objectMatrixArray.set( object.matrix.flatten() );
+			_objectMatrixArray.set( object.matrixWorld.flatten() );
 
-			_modelViewMatrix.multiply( camera.matrix, object.matrix );
+			_modelViewMatrix.multiply( camera.matrix, object.matrixWorld );
 			_modelViewMatrixArray.set( _modelViewMatrix.flatten() );
 
 			_normalMatrix = THREE.Matrix4.makeInvert3x3( _modelViewMatrix ).transpose();
