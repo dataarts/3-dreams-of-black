@@ -44,14 +44,14 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 		events.mousemove.add( onMouseMove );
 
+		scene.fog = new THREE.Fog( 0x7d7e76, 0, 5000 );
+		renderer.setClearColor( 0x7d7e76, 1 );
+
 		for ( var i = 0; i < elements.length; i ++ ) {
 
 			scene.addObject( elements[ i ] );
 
 		}
-
-		scene.fog = new THREE.Fog( 0x7d7e76, 0, 5000 );
-		renderer.setClearColor( 0x7d7e76, 1 );
 
 	};
 

@@ -35,9 +35,9 @@ function init() {
 
 	events = {
 
-		mousemove : new Signal(),
+		mousemove : new Signal()/*,
 		mousedown : new Signal(),
-		mouseup : new Signal()
+		mouseup : new Signal()*/
 
 	};
 
@@ -45,9 +45,9 @@ function init() {
 
 	// Parts
 
-	sequencer.add( new Part1( camera, scene, renderer, events ), tune.getPatternMS( 16 /*0*/ ), tune.getPatternMS( 24 ) );
-	sequencer.add( new Part2( camera, scene, renderer, events ), tune.getPatternMS( 32 /*24*/ ), tune.getPatternMS( 40 ) );
-	sequencer.add( new Part3( camera, scene, renderer, events ), tune.getPatternMS( 75 /*40*/ ), tune.getPatternMS( 75 ) );
+	sequencer.add( new Part1( camera, scene, renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ) );
+	sequencer.add( new Part2( camera, scene, renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ) );
+	sequencer.add( new Part3( camera, scene, renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ) );
 
 }
 

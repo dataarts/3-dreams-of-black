@@ -21,21 +21,40 @@ var Part3 = function ( camera, scene, renderer ) {
 
 			for ( var y = 0; y < 102; y ++ ) {
 
-				geometry.vertices[ x + y * 100 ].position.z = Math.sin( x / 10 ) * 50 + Math.cos( y / 10 ) * 50;
+				geometry.vertices[ x + y * 100 ].position.z = Math.sin( x / 5 ) * 20 + Math.cos( y / 5 ) * 20;
 
 			}
 
 		}
 
-		mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x808080, wireframe: true } ) );
-		mesh.rotation.x = 90 * Math.PI / 180;
+		mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x93735d } ) );
+		mesh.rotation.x = - 90 * Math.PI / 180;
 		elements.push( mesh );
+
+		// Objects
+
+		var geometry = new Cube( 50, 100, 50 );
+		var material = new THREE.MeshBasicMaterial( { color: 0x261209 } );
+
+		for ( var i = 0; i < 100; i ++ ) {
+
+			mesh = new THREE.Mesh( geometry, material );
+			mesh.position.x = Math.random() * 4000 - 2000;
+			mesh.position.z = Math.random() * 4000 - 2000;
+			mesh.scale.y = Math.random() * 5;
+
+			elements.push( mesh );
+
+		}
 
 	};
 
 	this.show = function () {
 
 		events.mousemove.add( onMouseMove );
+
+		scene.fog = new THREE.Fog( 0x9ca69d, 0, 2000 );
+		renderer.setClearColor( 0x9ca69d, 1 );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 
@@ -60,7 +79,7 @@ var Part3 = function ( camera, scene, renderer ) {
 	this.update = function ( i ) {
 
 		camera.position.y = 50;
-		camera.position.z = - i * 1500 + 1000;
+		camera.position.z = - i * 2000 + 1000;
 
 		camera.target.position.x = mouse.x;
 		camera.target.position.y = camera.position.y - mouse.y;
