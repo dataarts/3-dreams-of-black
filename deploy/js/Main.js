@@ -129,8 +129,7 @@ function loop() {
 		m = Math.floor( s / 60 );
 
 	s = s - m*60;
-	time.innerHTML = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + Math.floor( ms ) + 
-					 " — " + m + ":" + ( (s < 10) ? "0" : "" ) + s.toFixed(1);
+	time.innerHTML = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + m + ":" + ( (s < 10) ? "0" : "" ) + s.toFixed(1);
 
 	sequencer.update( ms );
 
