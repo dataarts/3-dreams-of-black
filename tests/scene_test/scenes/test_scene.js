@@ -29,6 +29,15 @@ var scene = {
 		"visible"  : true		
 	},
 
+	"torus" : {
+		"geometry" : "torus",
+		"materials": [ "phong_orange" ],
+		"position" : [ 0, 5, -50 ],
+		"rotation" : [ 0, 0, 0 ],
+		"scale"	   : [ 2, 2, 2 ],
+		"visible"  : true		
+	},
+
 	"cone" : {
 		"geometry" : "cone",
 		"materials": [ "lambert_blue" ],
@@ -104,6 +113,14 @@ var scene = {
 		"segments_height" : 16
 	},
  
+	"torus": {
+		"type"    : "torus",
+		"radius"  : 5,
+		"tube"	  : 2,
+		"segmentsR" : 16, 
+		"segmentsT" : 32
+	},
+	
 	"cylinder": {
 		"type"    : "cylinder",
 		"numSegs"  : 32, 
@@ -177,6 +194,11 @@ var scene = {
 	"phong_white": {
 		"type": "MeshPhongMaterial",
 		"parameters": { color: 0xaaaaaa } 
+	},
+
+	"phong_orange": {
+		"type": "MeshPhongMaterial",
+		"parameters": { color:0x000000, specular: 0xaa5500 } 
 	},
 	
 	"face": {
