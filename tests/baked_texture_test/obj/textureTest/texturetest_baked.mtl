@@ -1,0 +1,18 @@
+# 
+# Wavefront material file
+# Created with Kaydara FBX
+# 
+
+newmtl cube_shader
+map_Kd cube_CLR.jpg
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+illum 1
+Tr 1.000000
+
+newmtl floor_shader
+map_Kd floor_CLR.jpg
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+illum 1
+Tr 1.000000
