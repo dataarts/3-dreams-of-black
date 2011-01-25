@@ -21,7 +21,7 @@ function init() {
 	screenWidthHalf = screenWidth / 2;
 	screenHeightHalf = screenHeight / 2;
 
-	camera = new THREE.Camera( 60, screenWidth / screenHeight, 1, 20000 );
+	camera = new THREE.Camera( 60, screenWidth / screenHeight, 1, 10000 );
 	camera.position.z = 500;
 
 	scene = new THREE.Scene();

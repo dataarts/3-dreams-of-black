@@ -62,6 +62,13 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 
 	};
 
+	this.setClearColor = function( hex, alpha ) {
+
+		var color = new THREE.Color( hex );
+		_gl.clearColor( color.r, color.g, color.b, alpha );
+
+	};
+
 	this.clear = function () {
 
 		_gl.clear( _gl.COLOR_BUFFER_BIT | _gl.DEPTH_BUFFER_BIT );

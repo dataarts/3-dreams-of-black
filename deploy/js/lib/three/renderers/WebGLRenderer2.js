@@ -46,9 +46,7 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 	_gl.enable( _gl.CULL_FACE );
 
 	_gl.enable( _gl.BLEND );
-	_gl.blendEquation( _gl.FUNC_ADD );
 	_gl.blendFunc( _gl.ONE, _gl.ONE_MINUS_SRC_ALPHA );
-
 	_gl.clearColor( 0, 0, 0, 0 );
 
 	this.domElement = _canvas;
@@ -61,6 +59,13 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 		_canvas.width = width;
 		_canvas.height = height;
 		_gl.viewport( 0, 0, _canvas.width, _canvas.height );
+
+	};
+
+	this.setClearColor = function( hex, alpha ) {
+
+		var color = new THREE.Color( hex );
+		_gl.clearColor( color.r, color.g, color.b, alpha );
 
 	};
 
@@ -106,13 +111,11 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 			var geometry, material, m, ml,
 			program, uniforms, attributes;
 
-			object.autoUpdateMatrix && object.updateMatrix();
-
 			// Setup object matrices
 
-			_objectMatrixArray.set( object.matrix.flatten() );
+			_objectMatrixArray.set( object.matrixWorld.flatten() );
 
-			_modelViewMatrix.multiply( camera.matrix, object.matrix );
+			_modelViewMatrix.multiply( camera.matrix, object.matrixWorld );
 			_modelViewMatrixArray.set( _modelViewMatrix.flatten() );
 
 			_normalMatrix = THREE.Matrix4.makeInvert3x3( _modelViewMatrix ).transpose();
@@ -526,7 +529,7 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 					material.fog ? 'uniform vec3 fogColor;' : null,
 
 					'void main() {',
-						'gl_FragColor = vec4( mColor.rgb, mOpacity );',
+						'gl_FragColor = vec4( mColor.xyz, mOpacity );',
 
 						/* Premultiply alpha
 						material.map ? 'vec4 mapColor = texture2D( tMap, vUv );' : null,

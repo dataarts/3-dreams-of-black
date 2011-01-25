@@ -16,7 +16,7 @@ var Part2 = function ( camera, scene, renderer, events ) {
 		// Ground
 
 		mesh = new THREE.Mesh( new Plane( 1000, 2000, 50, 100 ), new THREE.MeshBasicMaterial( { color: 0x808080, wireframe: true } ) );
-		mesh.rotation.x = 90 * Math.PI / 180;
+		mesh.rotation.x = - 90 * Math.PI / 180;
 		elements.push( mesh );
 
 		// Train
