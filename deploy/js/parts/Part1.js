@@ -27,12 +27,15 @@ var Part1 = function ( camera, scene, renderer, events ) {
 		for ( var i = 0; i < 300; i ++ ) {
 
 			mesh = new THREE.Mesh( geometry, material );
+
 			mesh.position.x = Math.floor( Math.random() * 40 - 20 ) * 200;
+			if ( mesh.position.x == 0 ) mesh.position.x += 200;
 			mesh.position.z = Math.floor( Math.random() * 40 - 20 ) * 200;
 			mesh.scale.y = Math.random() * Math.random() * 10;
 			mesh.position.y = (mesh.scale.y * 100 ) / 2;
 
-			if ( mesh.position.x == 0 ) mesh.position.x += 200;
+			mesh.autoUpdateMatrix = false;
+			mesh.updateMatrix();
 
 			elements.push( mesh );
 
@@ -76,6 +79,7 @@ var Part1 = function ( camera, scene, renderer, events ) {
 		camera.target.position.y = camera.position.y - mouse.y;
 		camera.target.position.z = camera.position.z - 1000;
 
+		renderer.clear();
 		renderer.render( scene, camera );
 
 	};

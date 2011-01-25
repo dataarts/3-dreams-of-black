@@ -39,9 +39,13 @@ var Part3 = function ( camera, scene, renderer ) {
 		for ( var i = 0; i < 100; i ++ ) {
 
 			mesh = new THREE.Mesh( geometry, material );
+
 			mesh.position.x = Math.random() * 4000 - 2000;
 			mesh.position.z = Math.random() * 4000 - 2000;
 			mesh.scale.y = Math.random() * 5;
+
+			mesh.autoUpdateMatrix = false;
+			mesh.updateMatrix();
 
 			elements.push( mesh );
 
@@ -85,6 +89,7 @@ var Part3 = function ( camera, scene, renderer ) {
 		camera.target.position.y = camera.position.y - mouse.y;
 		camera.target.position.z = camera.position.z - 1000;
 
+		renderer.clear();
 		renderer.render( scene, camera );
 
 	};

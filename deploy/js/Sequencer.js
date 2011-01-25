@@ -9,12 +9,13 @@ var Sequencer = function () {
 	_nextEffectToRemove = 0,
 	_time = 0;
 
-	this.add = function ( effect, start_time, end_time ) {
+	this.add = function ( effect, start_time, end_time, layer ) {
 
 		effect.__active = false;
 		effect.__start_time = start_time;
 		effect.__duration = end_time - start_time;
 		effect.__end_time = end_time;
+		effect.__layer = layer;
 
 		effect.init();
 
@@ -55,7 +56,7 @@ var Sequencer = function () {
 
 			}
 
-			_nextEffect += 1;
+			_nextEffect ++;
 
 		}
 
@@ -74,17 +75,17 @@ var Sequencer = function () {
 				effect.__active = false;
 				effect.hide();
 
-				for ( var i = 0, l = _effectsActive.length; i < l; i++ ) {
+				var i = _effectsActive.indexOf( effect );
 
-					if ( effect == _effectsActive[ i ] ) {
+				if ( i !== -1 ) {
 
-						_effectsActive.splice(i, 1);
-					}
+					_effectsActive.splice( i, 1 );
+
 				}
 
 			}
 
-			_nextEffectToRemove += 1;
+			_nextEffectToRemove ++;
 
 		}
 

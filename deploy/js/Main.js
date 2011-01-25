@@ -28,6 +28,8 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer2();
 	renderer.setSize( screenWidth, screenHeight );
+	renderer.sortObjects = false;
+	renderer.autoClear = false;
 
 	tune = new Tune( audio );
 	tune.setBPM( 85 );

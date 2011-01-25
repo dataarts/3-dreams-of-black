@@ -94,12 +94,13 @@ var Part2 = function ( camera, scene, renderer, events ) {
 
 		train.position.z = camera.position.z;
 
-		buffalos.position.z = - i * 2500 + 1500;
+		buffalos.position.z = - i * 2500 + 1250;
 
 		camera.target.position.x = mouse.x;
 		camera.target.position.y = camera.position.y - mouse.y;
 		camera.target.position.z = camera.position.z - 1000;
 
+		renderer.clear();
 		renderer.render( scene, camera );
 
 	};
