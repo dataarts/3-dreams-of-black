@@ -7,7 +7,7 @@ container, events;
 var screenWidth, screenHeight,
 screenWidthHalf, screenHeightHalf;
 
-var tune, time;
+var tune, time, stats;
 
 init();
 
@@ -61,11 +61,17 @@ function start( pattern ) {
 
 	time = document.createElement( 'div' );
 	time.style.position = 'fixed';
-	time.style.left = '0px';
+	time.style.right = '0px';
 	time.style.top = '0px';
 	time.style.backgroundColor = '#ffffff';
 	time.style.padding = '5px 10px';
 	document.body.appendChild( time );
+
+	stats = new Stats();
+	stats.domElement.style.position = 'fixed';
+	stats.domElement.style.left = '0px';
+	stats.domElement.style.top = '0px';
+	document.body.appendChild( stats.domElement );
 
 	audio.play();
 	audio.currentTime = tune.getBeatMS( pattern * tune.getRows() ) / 1000;
@@ -132,5 +138,6 @@ function loop() {
 	time.innerHTML = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + m + ":" + ( (s < 10) ? "0" : "" ) + s.toFixed(1);
 
 	sequencer.update( ms );
+	stats.update();
 
 }
