@@ -1,0 +1,8 @@
+THREE.Material = function() {
+	
+	
+	
+	
+}
+
+
