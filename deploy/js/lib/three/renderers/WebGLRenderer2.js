@@ -12,7 +12,12 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 	_projector = new THREE.Projector(),
 
 	_canvas = document.createElement( 'canvas' ),
+
+	_clearColor = new THREE.Color( 0x000000 ),
+	_clearOpacity = 0,
+
 	_gl, _currentProgram,
+
 	_modelViewMatrix = new THREE.Matrix4(),
 	_normalMatrix = new THREE.Matrix4(),
 	_viewMatrixArray = new Float32Array( 16 ),
@@ -47,7 +52,7 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 
 	_gl.enable( _gl.BLEND );
 	_gl.blendFunc( _gl.ONE, _gl.ONE_MINUS_SRC_ALPHA );
-	_gl.clearColor( 0, 0, 0, 0 );
+	_gl.clearColor( _clearColor.r, _clearColor.g, _clearColor.b, _clearOpacity );
 
 	this.domElement = _canvas;
 
@@ -62,10 +67,12 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 
 	};
 
-	this.setClearColor = function( hex, alpha ) {
+	this.setClearColor = function( hex, opacity ) {
 
-		var color = new THREE.Color( hex );
-		_gl.clearColor( color.r, color.g, color.b, alpha );
+		_clearColor = hex.setHex( hex );
+		_clearOpacity = opacity;
+
+		_gl.clearColor( _clearColor.r, _clearColor.g, _clearColor.b, _clearOpacity );
 
 	};
 
