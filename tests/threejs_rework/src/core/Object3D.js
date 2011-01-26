@@ -43,7 +43,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 		forceUpdate  = true;
 		
 		if( parentGlobalMatrix )
-			parentGlobalMatrix.multiply( this.localMatrix, this.globalMatrix );
+			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix )
 		else
 			this.globalMatrix.set( this.localMatrix );
 	}

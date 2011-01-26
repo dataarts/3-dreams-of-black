@@ -16,7 +16,7 @@ THREE.RendererWebGL.Scene.update = function( camera ) {
  * Scene capture
  */
 
-THREE.RendererWebGLScene.capture = function( renderable ) {
+THREE.RendererWebGL.Scene.capture = function( renderable ) {
 	
 	var shaderProgram = renderable.material.shaderProgram;
 	

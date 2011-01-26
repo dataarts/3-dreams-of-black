@@ -14,19 +14,33 @@
 		<!-- THREE -->
 
 		<script type="text/javascript" src="src/Three.js"></script>
-		<script type="text/javascript" src="src/math/Math.js"></script>
+
+		<script type="text/javascript" src="src/math/Vector2.js"></script>
 		<script type="text/javascript" src="src/math/Vector3.js"></script>
 		<script type="text/javascript" src="src/math/Vector4.js"></script>
 		<script type="text/javascript" src="src/math/Matrix3.js"></script>
 		<script type="text/javascript" src="src/math/Matrix4.js"></script>
+
 		<script type="text/javascript" src="src/core/Object3D.js"></script>
 		<script type="text/javascript" src="src/core/Scene.js"></script>
-		<script type="text/javascript" src="src/core/Camera.js"></script>
-		<script type="text/javascript" src="src/core/Frustum.js"></script>
-		<script type="text/javascript" src="src/math/Quaternion.js"></script>
+
+		<script type="text/javascript" src="src/camera/Camera.js"></script>
+		<script type="text/javascript" src="src/camera/Frustum.js"></script>
+
 		<script type="text/javascript" src="src/renderable/Mesh.js"></script>
 		<script type="text/javascript" src="src/renderable/Billboard.js"></script>
 		<script type="text/javascript" src="src/renderable/Skin.js"></script>
+
+		<script type="text/javascript" src="src/geometry/Geometry.js"></script>
+		<script type="text/javascript" src="src/geometry/Vertex.js"></script>
+		<script type="text/javascript" src="src/geometry/Face3.js"></script>
+		<script type="text/javascript" src="src/geometry/Face4.js"></script>
+		<script type="text/javascript" src="src/geometry/Rectangle.js"></script>
+		<script type="text/javascript" src="src/geometry/UV.js"></script>
+		<script type="text/javascript" src="src/geometry/Color.js"></script>
+		<script type="text/javascript" src="src/geometry/primitives/Cube.js"></script>
+		<script type="text/javascript" src="src/geometry/primitives/Cylinder.js"></script>
+
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGL.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLScene.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLMesh.js"></script>
@@ -45,6 +59,8 @@
 				
 				var Init = function()
 				{
+					var cube = new THREE.Cube( 100, 100, 100, 1, 1 );
+					
 					var scene  = new THREE.Scene();
 					var mesh   = new THREE.Mesh();
 					var mesh2  = new THREE.Mesh();
