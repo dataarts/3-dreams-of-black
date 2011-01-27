@@ -406,7 +406,7 @@ THREE.Matrix4.scaleMatrix = function ( x, y, z ) {
 
 };
 
-THREE.Matrix4.makeInvert = function ( m1 ) {
+THREE.Matrix4.makeInvert = function ( m1, m2 ) {
 
 	// based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
 
@@ -415,7 +415,7 @@ THREE.Matrix4.makeInvert = function ( m1 ) {
 		n31 = m1.n31, n32 = m1.n32, n33 = m1.n33, n34 = m1.n34,
 		n41 = m1.n41, n42 = m1.n42, n43 = m1.n43, n44 = m1.n44;
 
-	var m2 = new THREE.Matrix4();
+	if( m2 === undefined ) m2 = new THREE.Matrix4();
 
 	m2.n11 = n23*n34*n42 - n24*n33*n42 + n24*n32*n43 - n22*n34*n43 - n23*n32*n44 + n22*n33*n44;
 	m2.n12 = n14*n33*n42 - n13*n34*n42 - n14*n32*n43 + n12*n34*n43 + n13*n32*n44 - n12*n33*n44;

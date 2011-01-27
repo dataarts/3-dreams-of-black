@@ -7,11 +7,13 @@
 
 THREE.Geometry = function () {
 
+	this.id          = "Geometry" + THREE.GeometryIdCounter++;
 	this.vertices    = [];
 	this.faces       = [];
 	this.uvs         = [];
 	this.skinWeights = [];
 	this.skinIndices = [];
+	this.colors      = [];
 
 	this.boundingBox    = null;
 	this.boundingSphere = null;
@@ -466,3 +468,5 @@ THREE.Geometry.prototype = {
 	}
 
 };
+
+THREE.GeometryIdCounter = 0;

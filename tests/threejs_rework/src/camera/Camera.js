@@ -23,9 +23,7 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 	
 	this.frustum           = new THREE.Frustum( this );
 	this.inverseMatrix     = new THREE.Matrix4();
-	this.perspectiveMatrix = new THREE.Matrix4();
-	
-	this.perspectiveMatrix.perspective( FOV, aspect, zNear, zFar );
+	this.perspectiveMatrix = THREE.Matrix4.makePerspective( FOV, aspect, zNear, zFar );
 }
 
 THREE.Camera.prototype             = new THREE.Object3D();
@@ -47,6 +45,6 @@ THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene
 	
 	// update inverse
 	
-	if( wasDirty )		
-		this.globalMatrix.inverse( this.inverseMatrix );
+	if( wasDirty )
+		THREE.Matrix4.makeInvert( this.globalMatrix, this.inverseMatrix );	
 }

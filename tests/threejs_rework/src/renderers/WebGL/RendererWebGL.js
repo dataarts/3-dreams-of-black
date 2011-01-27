@@ -22,13 +22,13 @@ THREE.RendererWebGL.prototype.applyPrototypes = function() {
 
 	THREE.Scene.prototype.update  = THREE.RendererWebGL.Scene.update;	
 	THREE.Scene.prototype.capture = THREE.RendererWebGL.Scene.capture;
-	THREE.Scene.prototype.GL      = this.GL;
+
 	
+	// shader
 	
-	// mesh
+	THREE.ShaderProgram.prototype.GL = this.GL;
+	THREE.ShaderProgramCompiler.GL   = this.GL;
 	
-	THREE.Mesh.prototype.render = THREE.RendererWebGL.Mesh.render;
-	THREE.Mesh.prototype.GL     = this.GL;
 }
 
 
@@ -38,12 +38,7 @@ THREE.RendererWebGL.prototype.applyPrototypes = function() {
 
 THREE.RendererWebGL.prototype.resize = function( width, height ) {
 	
-	this.aspect    = width / height;
-	this.modifiers = {}
-	
-	this.addModifiers( [ "update" ], new THREE.RendererWebGL.Scene());
-	this.addModifiers( [ "render" ], new THREE.RendererWebGL.Mesh());
-	this.addModifiers( [ "render" ], new THREE.RendererWebGL.Skin());
+	this.aspect = width / height;
 }
 
 /*
@@ -64,17 +59,19 @@ THREE.RendererWebGL.prototype.render = function( scene, camera ) {
 	
 	var opaqueShaderProgramDictionary = scene.opaqueShaderProgramDictionary;
 	var transparentShaderProgramList  = scene.transparentShaderProgramList;
+	var lightList                     = scene.lightList;
 	
 	
 	// render opaque
 	
-	for( shaderProgram in opaqueShaderProgramDictionary ) {
+	for( shaderProgramId in opaqueShaderProgramDictionary ) {
 		
-		var renderables = opaqueShaderProgramDictionary[ shaderProgram ];
+		var shaderPrograms = opaqueShaderProgramDictionary[ shaderProgramId ];
 		
-		for( var i = 0; i < renderables.length; i++ ) {
+		for( var s = 0; s < shaderPrograms.length; s++ ) {
 			
-			renderables.render( camera );
+			shaderPrograms[ s ].render( )
+			renderables.render( camera, lightList );
 		}
 	}
 	
