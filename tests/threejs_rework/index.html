@@ -41,12 +41,24 @@
 		<script type="text/javascript" src="src/geometry/primitives/Cube.js"></script>
 		<script type="text/javascript" src="src/geometry/primitives/Cylinder.js"></script>
 
+		<script type="text/javascript" src="src/materials/Material.js"></script>
+		<script type="text/javascript" src="src/materials/MeshLambertMaterial.js"></script>
+
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGL.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLScene.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLMesh.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLSkin.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLLight.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLMaterial.js"></script>
+
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgram.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramProgram.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramAttributes.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramUniforms.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramCompiler.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/Shader.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/shaders/Skin.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/shaders/Texture.js"></script>
 	
 	
 		<!-- Experience Code -->
@@ -55,35 +67,33 @@
 
 			var Experience = function()
 			{
+				var webGL;
+				var scene;
+				var mesh, mesh2;
+				var camera;
+				
 				//--- Init ---
 				
 				var Init = function()
 				{
-					var cube = new THREE.Cube( 100, 100, 100, 1, 1 );
+					webGL = new THREE.RendererWebGL( "canvas" );
 					
-					var scene  = new THREE.Scene();
-					var mesh   = new THREE.Mesh();
-					var mesh2  = new THREE.Mesh();
-					var camera = new THREE.Camera();
+					var cube     = new THREE.Cube( 100, 100, 100, 1, 1 );
+					var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
+					
+					scene  = new THREE.Scene();
+					mesh   = new THREE.Mesh( cube, material );
+					mesh2  = new THREE.Mesh( cube, material );
+					camera = new THREE.Camera();
 	
 	
-	
-					scene.addChild( mesh );
 					mesh.addChild( mesh2 );
+					scene.addChild( mesh );
 					scene.addChild( camera );
-
-					var webGL = new THREE.RendererWebGL( "canvas" );
-	
-					mesh.position.x = 100;
-					var pos = mesh.position.x;
-					
-
-					webGL.render( scene, camera );
-				
 
 					// start rendering
 
-//				    setInterval( Update, 33 );
+				    setInterval( Update, 33 );
 				}
 				
 				
@@ -91,6 +101,7 @@
 				
 				var Update = function()
 				{
+					webGL.render( scene, camera );
 				}
 				
 				

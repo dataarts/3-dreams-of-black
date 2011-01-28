@@ -6,8 +6,10 @@ THREE.Mesh = function( geometry, materials ) {
 
 	THREE.Object3D.call( this );
 	
-	this.geometry  = geometry;
-	this.materials = materials.length ? materials : [ materials ];
+	this.renderable = true;
+	this.geometry   = geometry;
+	this.materials  = materials.length ? materials : [ materials ];
+	
 	this.compileMaterials();
 }
 

@@ -18,17 +18,26 @@ THREE.RendererWebGL.Scene.update = function( camera ) {
 
 THREE.RendererWebGL.Scene.capture = function( renderable ) {
 	
-	var shaderProgram = renderable.material.shaderProgram;
-	
-	if( shaderProgram.blendMode === undefined || shaderProgram.blendMode === "src" )
-	{
-		if( this.opaqueShaderProgramDictionary === undefined )
-			this.opaqueShaderProgramDictionary[ shaderProgram.id ] = [];
+	if( renderable.shaderPrograms === undefined )
+		THREE.ShaderProgramCompiler.compile( renderable );
+		
+		
+	for( var s = 0; s < renderable.shaderPrograms.length; s++ ) {
+		
+		var shaderProgram = renderable.shaderPrograms[ s ];
+		
+		if( shaderProgram.blendMode === "src" ) {
 			
-		this.opaqueShaderProgramDictionary[ shaderProgram.id ].push( renderable );
+			if( this.opaqueShaderProgramDictionary === undefined )
+				this.opaqueShaderProgramDictionary[ shaderProgram.id ] = [];
+			
+			this.opaqueShaderProgramDictionary[ shaderProgram.id ].push( shaderProgram );
+		}
+		else {
+			
+			this.transparentShaderProgramList.push( shaderProgram );
+		}
 	}
-	else
-		this.transparentShaderProgramList.push( renderable );
 };
 
 
