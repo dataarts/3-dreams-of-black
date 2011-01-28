@@ -12,6 +12,7 @@ THREE.Object3D = function() {
 
 	this.localMatrix  = new THREE.Matrix4();
 	this.globalMatrix = new THREE.Matrix4();
+	//this.position     = new THREE.Vector3();
 	this.isDirty      = true;
 
 	this.boundRadius  = 0;
@@ -19,9 +20,21 @@ THREE.Object3D = function() {
 
 	this.added        = new signals.Signal();
 	this.removed      = new signals.Signal();
+
+	this.position = {
+		
+		that: this,
+		
+		get x()      { return this.that.localMatrix.elements[ 12 ]; },
+		set x( val ) { this.that.localMatrix.n14 = val; this.that.isDirty = true; },
 	
-	this.position      .that = this;
-	this.globalPosition.that = this;
+		get y()      { return this.that.localMatrix.elements[ 13 ]; },
+		set y( val ) { this.that.localMatrix.n24 = val; this.that.isDirty = true; },
+	
+		get z()      { return this.that.localMatrix.elements[ 14 ]; },
+		set z( val ) { this.that.localMatrix.n34 = val; this.that.isDirty = true; }
+	}
+
 }
 
 /*
@@ -43,7 +56,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 		forceUpdate  = true;
 		
 		if( parentGlobalMatrix )
-			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix )
+			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
 		else
 			this.globalMatrix.set( this.localMatrix );
 	}
@@ -96,38 +109,3 @@ THREE.Object3D.prototype.removeChild = function() {
 		child.removed.dispatch( this );
 	}
 };
-
-
-/*
- * Position set/get
- */
-
-
-THREE.Object3D.prototype.position = {
-	
-	that: undefined,
-	
-	get x()      { return this.that.localMatrix.elements[ 12 ]; },
-	set x( val ) { this.that.localMatrix.elements[ 12 ] = val; this.that.isDirty = true; },
-
-	get y()      { return this.that.localMatrix.elements[ 13 ]; },
-	set y( val ) { this.that.localMatrix.elements[ 13 ] = val; this.that.isDirty = true; },
-
-	get z()      { return this.that.localMatrix.elements[ 14 ]; },
-	set z( val ) { this.that.localMatrix.elements[ 14 ] = val; this.that.isDirty = true; }
-}
-
-THREE.Object3D.prototype.globalPosition = {
-	
-	that: undefined,
-	
-	get x() { return this.owner.globalMatrix.elements[ 12 ]; },
-	get y() { return this.owner.globalMatrix.elements[ 13 ]; },
-	get z() { return this.owner.globalMatrix.elements[ 14 ]; },
-}
-
-
-/*
- * Rotation set/get
- */
-

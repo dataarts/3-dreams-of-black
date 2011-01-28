@@ -4,8 +4,8 @@ THREE.Shader.skinVertex = (function() {
 
 		"uniform	mat4 	uCameraInverseMatrix;",
 		"uniform 	mat4 	uCameraPerspectiveMatrix;",
-		"uniform 	mat4 	uModelGlobalMatrix;",
-		"uniform	mat3 	uModelNormalMatrix;",
+		"uniform 	mat4 	uMeshGlobalMatrix;",
+		"uniform	mat3 	uMeshNormalMatrix;",
 		
 		"uniform	mat4	uSkinRootInverseMatrix;",
 		"uniform	mat4	uSkinPoses[16];",
@@ -27,9 +27,9 @@ THREE.Shader.skinVertex = (function() {
 			"int  index    = int( aSkinIndices.x );",
 			"vec4 modified = uSkinRootInverseMatrix * uSkinGlobalMatrices[ index ] * uSkinPoses[ index ] * aVertices;",
 
-			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uModelGlobalMatrix * modified;",
+			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * modified;",
 			"vST         = aSTs;",
-			"vLuminance  = max( 0.2, dot( uModelNormalMatrix * aNormals, vec3( 0.0, 0, -1.0 )));",
+			"vLuminance  = max( 0.2, dot( uMeshNormalMatrix * aNormals, vec3( 0.0, 0, -1.0 )));",
 		"}"
 	].join( "\n" );
 	

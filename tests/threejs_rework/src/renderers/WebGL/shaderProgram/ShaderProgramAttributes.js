@@ -2,30 +2,43 @@
  * Helper to extract all existing attributes out of a shader program
  */
 
-THREE.ShaderProgramAttributes = function( GL, program ) {
+THREE.ShaderProgramAttributes = (function() {
+
+	var GL;
+	var program;
 
 	//--- construct ---
 
-	this.GL      = GL;
-	this.program = program;
-	
-	return extractAttributes();
-	
-	
+	var extract = function( incomingProgram ) {
+		
+		GL      = THREE.RendererWebGLContext;
+		program = incomingProgram;
+		
+		return extractAttributes();
+	}
+
+		
 	//--- methods ---
 	
 	function extractAttributes() {
 
 		var attributes = [];
 
-		for( var i = 0; i < THREE.Shaders.attributes.length; i++ )
-			if( attributeExists( THREE.Shaders.attributes[ i ] ))
-				attributes.push( addAttribute( THREE.Shaders.attributes[ i ] ))
+		for( var i = 0; i < THREE.Shader.attributes.length; i++ )
+			if( attributeExists( THREE.Shader.attributes[ i ] ))
+				attributes.push( addAttribute( THREE.Shader.attributes[ i ] ));
+				
+		attributes.dictionary = {};
+		
+		for( var i = 0; i < attributes.length; i++ )
+			attributes.dictionary[ attributes[ i ].name ] = attributes[ i ];
+			
+		return attributes;
 	}
 
 	function attributeExists( info ) {
 
-		var location = this.GL.getAttribLocation( this.program, info.name );
+		var location = GL.getAttribLocation( program, info.name );
 		
 		if( location !== -1 && location !== null && location !== undefined )
 			return true;
@@ -35,8 +48,8 @@ THREE.ShaderProgramAttributes = function( GL, program ) {
 	
 	function addAttribute( info ) {
 		
-		var location = this.GL.getAttribLocation( this.program, info.name );
-		this.GL.enableVertexAttribArray( location );
+		var location = GL.getAttribLocation( program, info.name );
+		GL.enableVertexAttribArray( location );
 		
 		return {
 			
@@ -45,4 +58,12 @@ THREE.ShaderProgramAttributes = function( GL, program ) {
 			name:	  info.name
 		}
 	}
-}
+	
+	//--- public ---
+	
+	return {
+		
+		extract: extract
+	}
+	
+}());

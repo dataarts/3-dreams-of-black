@@ -2,18 +2,20 @@
  * Shader Program
  */
 
-THREE.ShaderProgram = function( vertexShaderId, fragmentShaderId, blendMode )
+THREE.ShaderProgram = function( args )
 {
 	// construct
 	
- 	this.program      = THREE.ShaderProgramProgram   ( this.GL, vertexShaderId, fragmentShaderId );
-	this.uniforms     = THREE.ShaderProgramUniforms  ( this.GL, this.program );
-	this.attributes   = THREE.ShaderProgramAttributes( this.GL, this.program );
+	this.GL           = THREE.RendererWebGLContext;
+ 	this.program      = new THREE.ShaderProgramProgram       ( this.GL, args.vertexShaderId, args.fragmentShaderId );
+	this.uniforms     = THREE.ShaderProgramUniforms  .extract( this.program.program );
+	this.attributes   = THREE.ShaderProgramAttributes.extract( this.program.program );
 	this.elements     = -1;
 	this.elementsSize = -1;
 
 	this.id        = this.program.id;
-	this.blendMode = blendMode !== undefined ? blendMode : "src";
+	this.blendMode = args.blendMode !== undefined ? args.blendMode : "src";
+	this.wireframe = args.wireframe !== undefined ? args.wireframe : false;
 };
 
 
@@ -23,16 +25,14 @@ THREE.ShaderProgram = function( vertexShaderId, fragmentShaderId, blendMode )
 
 THREE.ShaderProgram.prototype.addUniformInput = function( name, type, scope, variable ) {
 	
-	for( var u = 0; u < this.uniforms.length; u++ ) {
+	if( this.uniforms.dictionary[ name ] !== undefined ) {
 		
-		if( this.uniforms[ u ].name === name &&
-			this.uniforms[ u ].type === type ) {
-				
-			this.uniforms[ u ].scope    = scope;
-			this.uniforms[ u ].variable = variable;		
-		}
+		this.uniforms.dictionary[ name ].scope    = scope;
+		this.uniforms.dictionary[ name ].variable = variable;		
+		
+		return;
 	}
-
+	
 	console.log( "Warning: ShaderProgram.addUniformInput: name and type didn't match for " + name + " of type " + type + " in program " + this.program.id );
 };
 
@@ -43,14 +43,12 @@ THREE.ShaderProgram.prototype.addUniformInput = function( name, type, scope, var
 
 THREE.ShaderProgram.prototype.addAttributeBuffer = function( name, type, buffer, size ) {
 	
-	for( var a = 0; a < this.attributes.lenght; a++ ) 
-	{
-		if( this.attributes[ aÊ].name === name &&
-			this.attributes[ a ].type === type ) {
-			
-			this.attributes[ a ].buffer = buffer;
-			return;
-		}
+	if( this.attributes.dictionary[ name ] !== undefined ) {
+		
+		this.attributes.dictionary[ name ].buffer = buffer;
+		this.attributes.dictionary[ name ].size   = size;
+
+		return;
 	}
 	
 	console.log( "Warning: ShaderProgram.addAttributeBuffer: name and type didn't match for " + name + " of type " + type + " in program " + this.program.id );
@@ -75,73 +73,56 @@ THREE.ShaderProgram.prototype.addElementBuffer = function( buffer, size ) {
 	
 THREE.ShaderProgram.prototype.loadProgram = function() {
 		
-    this.GL.useProgram( this.program );
+    this.GL.useProgram( this.program.program );
 }
 
 
 /*
- * Render
+ * Load Uniform
  */
 
-THREE.ShaderProgram.prototype.render = function() {
+THREE.ShaderProgram.prototype.loadUniform = function( name, data ) {
 	
-	/*
-	var LoadUniforms = function( uniforms ) {
-
+	if( this.uniforms.dictionary[ name ] !== undefined ) {
 		
+		var uniform = this.uniforms.dictionary[ name ];
 		
-		for( uniform in uniforms ) {
+		if( uniform.name.indexOf( "Array" === -1 )) {
 			
-			if( this.uniforms[ uniform ] != undefined && this.uniforms[ uniform ] != -1 ) {
-				
-				var data = uniforms[ uniform ];
-				var type = uniforms[ uniform + "Type" ];
-				
-				if( data !== undefined && type !== undefined )
-				{
-					     if( type === "Float32Array"        ) loadUniformFloat32Array       ( uniform, data );
-					else if( type === "Sampler2D"           ) loadUniformSampler2D          ( uniform, data );
-					else if( type === "ArrayOfFloat32Array" ) loadUniformArrayOfFloat32Array( uniform, data );
-					else if( type === "Float32"             ) loadUniformFloat32            ( uniform, data );
-				}
-				else DDD.Error( "ShaderProgram.LoadUniforms: Either data or type is undefined!" );
-			}
+			this.doLoadUniform( uniform.type, uniform.location, data );
+		}
+		else {
+
+			for( var l = 0; l < uniform.location.length && l < data.length; l++ )
+				this.doLoadUniform( uniform.type, uniform.location[ l ], data[ l ] );			
 		}
 	}
+}
 
+THREE.ShaderProgram.prototype.doLoadUniform = function( type, location, data ) {
 
-	function loadUniformFloat32Array( uniform, data ) {
-		
-		if( data.length === 16 )
-		    this.GL.uniformMatrix4fv( this.uniforms[ uniform ], false, data );
-		else if( data.length === 9 )
-		    this.GL.uniformMatrix3fv( this.uniforms[ uniform ], false, data );
+	switch( type ) 
+	{ 
+	   case "mat3": 
+			this.GL.uniformMatrix3fv( location, false, new Float32Array( data ));
+	     	break; 
+
+	   case "mat4": 
+			this.GL.uniformMatrix4fv( location, false, new Float32Array( data ));
+	     	break; 
+
+	   case "1i": 
+			this.GL.uniform1i( location, data );
+	     	break; 
+
+	   case "1f": 
+			this.GL.uniform1f( location, data );
+	     	break; 
+
+	   case "vec3": 
+			this.GL.uniformVec3( location, data );
+	     	break; 
 	}
-
-	
-	function loadUniformArrayOfFloat32Array( uniform, data ) {
-
-		if( this.uniforms[ uniform ].length !== undefined && data.length !== undefined ) {
-			
-			for( var i = 0; i < this.uniforms[ uniform ].length && i < data.length; i++ ) {
-				
-				if( data[ i ].length === 16 )
-					this.GL.uniformMatrix4fv( this.uniforms[ uniform ][ i ], false, data[ i ] );
-				else
-					this.GL.uniform4fv( this.uniforms[ uniform ][ i ], data[ i ] );
-			}
-		}
-	}
-
-
-	function loadUniformSampler2D( uniform, data ) {
-		
-	}
-
-
-	function loadUniformFloat32( uniform, data ) {
-		
-	}*/
 }
 
 
@@ -151,41 +132,50 @@ THREE.ShaderProgram.prototype.render = function() {
 
 THREE.ShaderProgram.prototype.render = function() {
 	
-	loadUniforms();
-	bindAttributes();
-	bindTextures();
-	drawElements();
+	this.loadUniformInputs();
+	this.bindAttributeBuffers();
+	this.bindTextures();
 
-    this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, elements );
-    this.GL.drawElements( this.GL.TRIANGLES, size, this.GL.UNSIGNED_SHORT, 0 );
+	// draw elements
+
+    this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, this.elements );
+    this.GL.drawElements( this.GL.TRIANGLES, this.elementsSize, this.GL.UNSIGNED_SHORT, 0 );
 }
 
-/*
-	var LoadAttributes = function( attributes )
-	{
-		for( attribute in attributes ) {
-			
-			if( this.attributes[ attribute ] != undefined && this.attributes[ attribute ] != -1 ) {
 
-			    this.GL.bindBuffer( this.GL.ARRAY_BUFFER, attributes[ attribute ] );
-			    this.GL.vertexAttribPointer( this.attributes[ attribute ], attributes[ attribute + "Size" ], this.GL.FLOAT, false, 0, 0 );
+THREE.ShaderProgram.prototype.bindAttributeBuffers = function() {
+	
+	for( var a = 0; a < this.attributes.length; a++ ) {
+		
+	    this.GL.bindBuffer( this.GL.ARRAY_BUFFER, this.attributes[ a ].buffer );
+	    this.GL.vertexAttribPointer( this.attributes[ a ].buffer, this.attributes[ a ].size, this.GL.FLOAT, false, 0, 0 );
+	}
+}
+	
+THREE.ShaderProgram.prototype.loadUniformInputs = function() {
+	
+	for( var i = 0; i < this.uniforms.length; i++ ) {
+		
+		if( this.uniforms[ i ].scope !== undefined ) {
+			
+			// HACK! Need to find better way to access input
+			
+			if( this.uniforms[ i ].scope[ this.uniforms[ i ].variable ].flatten !== undefined ) {
+				
+				this.loadUniform( this.uniforms[ i ].name, this.uniforms[ i ].scope[ this.uniforms[ i ].variable ].flatten());
+				continue;
 			}
+			
+			// END HACK!
+			
+			this.loadUniform( this.uniforms[ i ].name, this.uniforms[ i ].scope[ this.uniforms[ i ].variable ] );
 		}
 	}
+}
+
+THREE.ShaderProgram.prototype.bindTextures = function() {
 	
+	//this.GL.activeTexture( texture.GLTextureId );
+	//this.GL.bindTexture  ( this.GL.TEXTURE_2D, texture.GLTexture );
+}
 	
-	
-	var LoadTexture = function( texture ) {
-		
-    	this.GL.activeTexture( texture.GLTextureId );
-    	this.GL.bindTexture  ( this.GL.TEXTURE_2D, texture.GLTexture );
-	}
-	
-	
-	
-	var DrawElements = function( elements, size )
-	{
-	    this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, elements );
-	    this.GL.drawElements( this.GL.TRIANGLES, size, this.GL.UNSIGNED_SHORT, 0 );
-	}
-*/

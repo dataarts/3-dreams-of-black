@@ -6,11 +6,10 @@ THREE.Mesh = function( geometry, materials ) {
 
 	THREE.Object3D.call( this );
 	
-	this.renderable = true;
-	this.geometry   = geometry;
-	this.materials  = materials.length ? materials : [ materials ];
-	
-	this.compileMaterials();
+	this.renderable   = true;
+	this.geometry     = geometry;
+	this.materials    = materials.length ? materials : [ materials ];
+	this.normalMatrix = new THREE.Matrix4();
 }
 
 THREE.Mesh.prototype             = new THREE.Object3D();
@@ -19,23 +18,13 @@ THREE.Mesh.prototype.supr        = THREE.Object3D.prototype;
 
 
 /*
- * Add Material
+ * Update
  */
-
-THREE.Mesh.prototype.addMaterial = function( newMaterials ) {
-	
-	if( newMaterials.length )
-		materials.concat( newMaterials );
-	else
-		materials.push( newMaterials );
-
-	this.compileMaterials();
-}
-
-
 /*
- * Functions set by renderer
- */
+THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+	
+	this.supr.update.call( this, parentGlobalMatrix, forceUpdate, scene, camera );
+	
+	// todo: update normal matrix
+}*/
 
-THREE.Mesh.prototype.compileMaterials = function() {};
-THREE.Mesh.prototype.render           = function() {};

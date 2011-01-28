@@ -13,7 +13,7 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 	
 	this.FOV      = FOV      || 45;
 	this.aspect   = aspect   || 1.0;
-	this.zNear    = zNear    || 0;
+	this.zNear    = zNear    || 0.1;
 	this.zFar     = zFar     || 1000;
 	this.renderer = renderer || THREE.RendererWebGL;
 	this.target   = target   || new THREE.Object3D();
@@ -23,7 +23,7 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 	
 	this.frustum           = new THREE.Frustum( this );
 	this.inverseMatrix     = new THREE.Matrix4();
-	this.perspectiveMatrix = THREE.Matrix4.makePerspective( FOV, aspect, zNear, zFar );
+	this.perspectiveMatrix = THREE.Matrix4.makePerspective( this.FOV, this.aspect, this.zNear, this.zFar );
 }
 
 THREE.Camera.prototype             = new THREE.Object3D();

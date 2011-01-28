@@ -28,7 +28,7 @@ THREE.RendererWebGL.Scene.capture = function( renderable ) {
 		
 		if( shaderProgram.blendMode === "src" ) {
 			
-			if( this.opaqueShaderProgramDictionary === undefined )
+			if( this.opaqueShaderProgramDictionary[ shaderProgram.id ] === undefined )
 				this.opaqueShaderProgramDictionary[ shaderProgram.id ] = [];
 			
 			this.opaqueShaderProgramDictionary[ shaderProgram.id ].push( shaderProgram );

@@ -2,18 +2,6 @@
  * Shader Program Compiler: compiles all data within a mesh to a ShaderProgram. Beware: This is magic.
  */
 
-THREE.ShaderProgramCompiler = {};
-THREE.ShaderProgramCompiler.compile = function( mesh ) {
-	
-	mesh.shaderPrograms = [];
-	
-	for( var m = 0; m < mesh.materials.length; m++ ) {
-
-		var material = mesh.materials[ m ];
-		var program;
-		var textures;
-		var chunks;
-		
 		
 		/*
 		 * TODO!
@@ -28,98 +16,161 @@ THREE.ShaderProgramCompiler.compile = function( mesh ) {
 		 * Jag har precis gjort laddningen šver till GPUn men inte matchat mot shader programet
 		 */
 		
-		if( typeof material === THREE.MeshShaderMaterial ) {
+
+
+THREE.ShaderProgramCompiler = (function() {
+	
+	// cache
+	
+	var mesh;
+	var materials;
+	var geometry;
+	var geometryChunks;
+	var faces;
+	var vertices;
+	var skinWeights;
+	var skinIndices;
+	var uv0s;
+	var uv1s;
+	var colors;
+	var shaderCodeInfos;
+	var textureBuffers;
+	var geoBuffers;
+	var GL;
+	
+	
+	//--- compile ---
+	
+	var compile = function( incomingMesh ) {
+		
+		GL             = THREE.RendererWebGLContext;
+		mesh           = incomingMesh;
+		materials      = mesh.materials;
+		geometry       = mesh.geometry;
+		geometryChunks = mesh.geometry.geometryChunks;
+		faces          = mesh.geometry.faces;
+		vertices       = mesh.geometry.vertices;
+		skinWeights    = mesh.geometry.skinWeights;
+		skinIndices    = mesh.geometry.skinIndices;
+		uv0s           = mesh.geometry.uvs;
+		colors         = mesh.geometry.colors;
+		uv1s           = [];
+
+		shaderCodeInfos = processShaderCode();
+		textureBuffers  = processTextureMaps();
+		geoBuffers      = processGeometry();
+		
+		mesh.shaderPrograms = processShaderPrograms();
+	}
+		
+
+	//--- compile shader code ---
+		
+	function processShaderCode() {
+		
+		shaderCodeInfos = [];
+		
+		// todo: assign base material if no exists
+		
+		// compile material shader code
+		
+		for( var m = 0; m < materials.length; m++ ) {
+	
+			var material = materials[ m ];
 			
-			program = new THREE.ShaderProgram( material.vertex_shader, material.fragment_shader );
+			// todo: compile other types of material and store in THREE.Shader[ shaderCodeId ] = "actual code";
 			
-			processTextureMaps   ( mesh, program );
-			processGeometryChunks( mesh, program );
-			addUniformInputs     ( mesh, program );
-			
-			mesh.shaderPrograms.push( program );
+			if( material instanceof THREE.MeshShaderMaterial ) {
+	
+				shaderCodeInfos.push( new THREE.ShaderProgramCompiler.ShaderCodeInfo( [ material ], material.vertex_shader, material.fragment_shader ));
+				break;	
+			}
 		}
+		
+		return shaderCodeInfos;
 	}
 	
 	
 	//--- process texture maps ---
 	
-	function processTextureMaps( mesh ) {
+	function processTextureMaps() {
 		
-		// already processed?
+		// maps processed?
 	}	
 	
 	
 	//--- process geometry chunks ---
 	
-	function processGeometryChunks( mesh ) {
+	function processGeometry() {
 		
-		// already processed?
+		// buffers processed?
 		
-		if( THREE.ShaderProgramCompiler.chunkDictionary[ mesh.geometry.id ] === undefined ) {
+		if( THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ] === undefined ) {
 			
-			THREE.ShaderProgramCompiler.chunkDictionary[ mesh.geometry.id ]	= [];	
+			THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ] = [];	
 	
 			
 			// loop through chunks
 			
-			for( chunkName in mesh.geometry.geometryChunks ) {
+			for( chunkName in geometryChunks ) {
 				
-				var chunk       = mesh.geometry.geometryChunks[ chunkName ];
-				var vertices    = [];
-				var normals     = [];
-				var colors      = [];
-				var uv0s        = [];
-				var uv1s        = [];
-				var skinWeights = [];
-				var skinIndices = [];
-				var faces       = [];
+				var chunk           = geometryChunks[ chunkName ];
+				var tempVertices    = [];
+				var tempNormals     = [];
+				var tempColors      = [];
+				var tempUV0s        = [];
+				var tempUV1s        = [];
+				var tempSkinWeights = [];
+				var tempSkinIndices = [];
+				var tempFaces       = [];
+				var vertexCounter   = 0;
 				
 				
 				// loop through faces
 				
-				for( var f = 0; f < chunk.faces; f++ ) {
+				for( var f = 0; f < chunk.faces.length; f++ ) {
 					
-					var face          = mesh.faces[ chunk.faces[ f ]];
-					var faceIndices   = face.d === undefined ? [ "a", "b", "c" ] : [ "a", "b", "c", "a", "c", "d" ];
-					var vertexCounter = 0;
+					var face          = faces[ chunk.faces[ f ]];
+					var faceIndices   = face instanceof THREE.Face3 ? [ "a", "b", "c" ] : [ "a", "b", "c", "a", "c", "d" ];
+					var uvIndices     = face instanceof THREE.Face3 ? [ 0, 1, 2 ]       : [ 0, 1, 2, 0, 2, 3 ];
 					
 					for( var i = 0; i < faceIndices.length; i++ ) {
 						
-						faces.push( vertexCounter++ );
+						tempFaces.push( vertexCounter++ );
 						
-						vertices.push( mesh.vertices[ face[ faceIndices[ i ]]].position.x );  
-						vertices.push( mesh.vertices[ face[ faceIndices[ i ]]].position.y );  
-						vertices.push( mesh.vertices[ face[ faceIndices[ i ]]].position.z );  
-						vertices.push( 1 );	// pad for faster vertex shader
+						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.x );  
+						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
+						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
+						tempVertices.push( 1 );	// pad for faster vertex shader
 						
-						normals.push( face.normal.x );
-						normals.push( face.normal.y );
-						normals.push( face.normal.z );
+						tempNormals.push( face.normal.x );
+						tempNormals.push( face.normal.y );
+						tempNormals.push( face.normal.z );
 						
-						if( mesh.uvs.length > 0 ) {
+						if( uv0s.length > 0 ) {
 							
-							uv0s.push( mesh.uvs[ face[ faceIndices[ i ]]].u );
-							uv0s.push( mesh.uvs[ face[ faceIndices[ i ]]].v );
+							tempUV0s.push( uv0s[ f ][ uvIndices[ i ]].u );
+							tempUV0s.push( uv0s[ f ][ uvIndices[ i ]].v );
 						}
 						
-						if( mesh.colors.length > 0 ) {
+						if( colors.length > 0 ) {
 							
-							colors.push( mesh.colors[ face[ faceIndices[ i ]]].r );
-							colors.push( mesh.colors[ face[ faceIndices[ i ]]].g );
-							colors.push( mesh.colors[ face[ faceIndices[ i ]]].b );
+							tempColors.push( colors[ face[ faceIndices[ i ]]].r );
+							tempColors.push( colors[ face[ faceIndices[ i ]]].g );
+							tempColors.push( colors[ face[ faceIndices[ i ]]].b );
 						}
 						
-						if( mesh.geometry.skinWeights.length > 0 ) {
+						if( skinWeights.length > 0 ) {
 							
-							skinWeights.push( mesh.skinWeights[ face[ faceIndices[ i ]]].x );
-							skinWeights.push( mesh.skinWeights[ face[ faceIndices[ i ]]].y );
-							skinWeights.push( mesh.skinWeights[ face[ faceIndices[ i ]]].z );
-							skinWeights.push( mesh.skinWeights[ face[ faceIndices[ i ]]].w );
+							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].x );
+							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].y );
+							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].z );
+							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].w );
 	
-							skinIndices.push( mesh.skinIndices[ face[ faceIndices[ i ]]].x );
-							skinIndices.push( mesh.skinIndices[ face[ faceIndices[ i ]]].y );
-							skinIndices.push( mesh.skinIndices[ face[ faceIndices[ i ]]].z );
-							skinIndices.push( mesh.skinIndices[ face[ faceIndices[ i ]]].w );
+							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].x );
+							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].y );
+							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].z );
+							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].w );
 						}
 					}
 				}
@@ -127,32 +178,30 @@ THREE.ShaderProgramCompiler.compile = function( mesh ) {
 
 				// bind to GL
 				
-				var attributes = [];
+				var attributeBuffers = [];
+				var elementBuffer;
 				
-				if( vertices   .length > 0 ) attributes.push( bindBuffer( "aVertices",    "vec4", vertices,    4 ));
-				if( normals    .length > 0 ) attributes.push( bindBuffer( "aNormals",     "vec3", normals,     3 ));
-				if( colors     .length > 0 ) attributes.push( bindBuffer( "aColors",      "vec3", colors,      3 ));
-				if( uv0s       .length > 0 ) attributes.push( bindBuffer( "aUVs",         "vec2", uv0s,        2 ));
-				if( skinWeights.length > 0 ) attributes.push( bindBuffer( "aSkinWeights", "vec4", skinWeights, 4 ));
-				if( skinIndices.length > 0 ) attributes.push( bindBuffer( "aSkinIndices", "vec4", skinIndices, 4 ));
+				if( tempVertices   .length > 0 ) attributeBuffers.push( bindBuffer( "aVertices",    "vec4", tempVertices,    4 ));
+				if( tempNormals    .length > 0 ) attributeBuffers.push( bindBuffer( "aNormals",     "vec3", tempNormals,     3 ));
+				if( tempColors     .length > 0 ) attributeBuffers.push( bindBuffer( "aColors",      "vec3", tempColors,      3 ));
+				if( tempUV0s       .length > 0 ) attributeBuffers.push( bindBuffer( "aUV0s",        "vec2", tempUV0s,        2 ));
+				if( tempSkinWeights.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinWeights", "vec4", tempSkinWeights, 4 ));
+				if( tempSkinIndices.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinIndices", "vec4", tempSkinIndices, 4 ));
+				if( tempFaces      .length > 0 ) elementBuffer = bindElement( tempFaces, tempFaces.length );
 				
-				var elements = bindElement( faces, faces.length );
-				var chunk    = new THREE.ShaderProgramCompiler.ChunkBuffers( attributes, elements );
-				
-				THREE.ShaderProgramCompiler.chunkDictionary[ mesh.geometry.id ].push( chunk )
+				if( attributeBuffers.length > 0 && elementBuffer !== undefined ) {
+					
+					var buffers = new THREE.ShaderProgramCompiler.GLBuffers( chunkName, attributeBuffers, elementBuffer );
+					THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ].push( buffers )
+				}
 			}
 		}
 		
-		// add attributes to shader program
-		
-		var chunkBuffers = THREE.ShaderProgramCompiler.chunkDictionary[ mesh.geometry.id ];
-		
-		for( var c = 0; c < chunkBuffers.length; c++ ) {
-			
-			
-		}
+		return THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ];
 	}
 	
+	
+	//--- helper: bind buffer ---
 	
 	function bindBuffer( name, type, data, size ) {
 		
@@ -161,36 +210,118 @@ THREE.ShaderProgramCompiler.compile = function( mesh ) {
 		info.name   = name;
 		info.type   = type;
 		info.size   = size;
-		info.buffer = this.GL.creatBuffer();
+		info.buffer = GL.createBuffer();
 
-		this.GL.bindBuffer( this.GL.ARRAY_BUFFER, info.buffer );
-		this.GL.bufferData( this.GL.ARRAY_BUFFER, new Float32Array( data ), this.GL.STATIC_DRAW );
+		GL.bindBuffer( GL.ARRAY_BUFFER, info.buffer );
+		GL.bufferData( GL.ARRAY_BUFFER, new Float32Array( data ), GL.STATIC_DRAW );
 		
 		return info;
 	}
+	
+	
+	//--- helper: bind elements ---
 	
 	function bindElement( data, size ) {
 		
 		var info = {};
 		
 		info.name   = "elements";
-		info.type   = "?";
+		info.type   = "elements";
 		info.size   = size;
-		info.buffer = this.GL.createBuffer();
+		info.buffer = GL.createBuffer();
 				
-		this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, info.buffer );
-     	this.GL.bufferData( this.GL.ELEMENT_ARRAY_BUFFER, new Uint16Array( data ), this.GL.STATIC_DRAW );
+		GL.bindBuffer( GL.ELEMENT_ARRAY_BUFFER, info.buffer );
+     	GL.bufferData( GL.ELEMENT_ARRAY_BUFFER, new Uint16Array( data ), GL.STATIC_DRAW );
 		
 		return info;
 	}
+	
+	
+	//--- process shader programs ---
+	
+	function processShaderPrograms() {
+		
+		var programs = [];
+		
+		for( chunkName in geometryChunks ) {
+			
+			var chunk = geometryChunks[ chunkName ];
+			var program;
+			
+			if( chunk.materials === undefined || chunk.materials[ 0 ] === undefined ) {
+			
+				// add uniform inputs (that are automatically updated on ShaderProgram.render)
+			
+				program = new THREE.ShaderProgram( shaderCodeInfos[ 0 ] ); // is [ 0 ] going to work?
+ 				
+				program.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh, "globalMatrix" );
+				program.addUniformInput( "uMeshNormalMatrix", "mat3", mesh, "normalMatrix" );
+
+				// todo: add sampler uniform if exists
+				// todo: add skin uniform if exists
+				
+				
+				// add attribute and element buffers
+				
+				for( var b = 0; b < geoBuffers.length; b++ ) {
+					
+					if( geoBuffers[ b ].chunkName === chunkName ) {
+						
+						var attributeBuffers = geoBuffers[ b ].attributeBuffers;
+						var elementBuffer    = geoBuffers[ b ].elementBuffer;
+						
+						for( var a = 0; a < attributeBuffers.length; a++ ) {
+							
+							program.addAttributeBuffer( attributeBuffers[ a ].name,
+														attributeBuffers[ a ].type,
+														attributeBuffers[ a ].buffer,
+														attributeBuffers[ a ].size );
+						}
+	
+						program.addElementBuffer( elementBuffer.buffer, elementBuffer.size );
+					}
+				}
+			}
+			else {
+				
+				// todo: match chunk.materials against shaderCodeIds[ x ].originalMaterials
+			}
+			
+			programs.push( program );
+		}
+		
+		return programs;
+	}
+	
+	//--- public ---
+	
+	return {
+		
+		compile: compile
+	}
+}());
+
+
+/*
+ * Dictionaries and helpers
+ */
+
+THREE.ShaderProgramCompiler.geometryBuffersDictionary = {};
+THREE.ShaderProgramCompiler.textureBuffersDictionary  = {};
+
+THREE.ShaderProgramCompiler.ShaderCodeInfo = function( originalMaterials, vertexShaderId, fragmentShaderId ) {
+	
+	this.originalMaterials = originalMaterials;
+	this.vertexShaderId    = vertexShaderId;
+	this.fragmentShaderId  = fragmentShaderId;
+	this.blendMode         = "src";
+	this.wireframe         = false;
 }
 
-THREE.ShaderProgramCompiler.chunkDictionary   = {};
-THREE.ShaderProgramCompiler.textureDictionary = {};
-
-THREE.ShaderProgramCompiler.ChunkBuffers = function( attributes, elements ) {
+THREE.ShaderProgramCompiler.GLBuffers = function( chunkName, attributes, elements ) {
 	
-	this.attributes = attributes;
-	this.elements   = elements;
+	this.chunkName        = chunkName;
+	this.attributeBuffers = attributes;
+	this.elementBuffer    = elements;
 }
 

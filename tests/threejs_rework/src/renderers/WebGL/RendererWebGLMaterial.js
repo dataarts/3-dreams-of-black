@@ -1,6 +1,0 @@
-THREE.RendererWebGL.Material = {}
-
-/*
- * compile
- */
-

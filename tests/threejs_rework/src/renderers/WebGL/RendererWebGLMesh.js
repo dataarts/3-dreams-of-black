@@ -1,2 +1,0 @@
-THREE.RendererWebGL.Mesh = {}
-

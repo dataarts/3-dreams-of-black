@@ -6,7 +6,7 @@ THREE.Shader = (function() {
 		
 		getShader: function( id ) {
 			
-			if( typeof that[ id ] === "string" )
+			if( that[ id ] instanceof String )
 				return that[ id ];
 		},
 		

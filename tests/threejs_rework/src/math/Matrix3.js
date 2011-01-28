@@ -16,6 +16,12 @@ THREE.Matrix3.prototype = {
 
 		return this;
 
-	}
+	},
 
+	// TEMPORARY HACK!
+
+	flatten: function() {
+		
+		return [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
+	}
 };
