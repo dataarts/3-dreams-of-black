@@ -69,7 +69,7 @@ THREE.WebGLRenderer2 = function ( antialias ) {
 
 	this.setClearColor = function( hex, opacity ) {
 
-		_clearColor = hex.setHex( hex );
+		_clearColor.setHex( hex );
 		_clearOpacity = opacity;
 
 		_gl.clearColor( _clearColor.r, _clearColor.g, _clearColor.b, _clearOpacity );

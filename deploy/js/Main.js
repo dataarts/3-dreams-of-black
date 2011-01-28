@@ -35,11 +35,16 @@ function init() {
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
+	time = "";
+
 	events = {
 
 		mousemove : new Signal()
 
 	};
+
+	GUI.start();
+	GUI.add( camera.position, "y", -1000, 1000, 10 );
 
 	sequencer = new Sequencer();
 
@@ -69,14 +74,6 @@ function start( pattern ) {
 	container = document.createElement( 'div' );
 	container.appendChild( renderer.domElement );
 	document.body.appendChild( container );
-
-	time = document.createElement( 'div' );
-	time.style.position = 'fixed';
-	time.style.right = '0px';
-	time.style.top = '0px';
-	time.style.backgroundColor = '#ffffff';
-	time.style.padding = '5px 10px';
-	document.body.appendChild( time );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
@@ -146,7 +143,7 @@ function loop() {
 		m = Math.floor( s / 60 );
 
 	s = s - m*60;
-	time.innerHTML = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + m + ":" + ( (s < 10) ? "0" : "" ) + s.toFixed(1);
+	time = ( Math.floor( ms / tune.getMS() ) % tune.getRows() ) + " / " + ( Math.floor( ( ms / tune.getRows() ) / tune.getMS() ) ) + " — " + m + ":" + ( (s < 10) ? "0" : "" ) + s.toFixed(1);
 
 	sequencer.update( ms );
 	stats.update();
