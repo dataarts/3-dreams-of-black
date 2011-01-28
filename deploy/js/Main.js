@@ -44,7 +44,7 @@ function init() {
 	};
 
 	GUI.start();
-	GUI.add( camera.position, "y", -1000, 1000, 10 );
+	GUI.add( camera.position, 'y', - 1000, 1000, 10 ).setName('Camera Y');
 
 	sequencer = new Sequencer();
 

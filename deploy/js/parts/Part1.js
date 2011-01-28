@@ -47,6 +47,8 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 		events.mousemove.add( onMouseMove );
 
+		camera.position.y = 50;
+
 		scene.fog = new THREE.Fog( 0x7d7e76, 0, 5000 );
 		renderer.setClearColor( 0x7d7e76, 1 );
 
@@ -72,7 +74,6 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 	this.update = function ( i ) {
 
-		camera.position.y = 50;
 		camera.position.z = - i * 1500 + 1000;
 
 		camera.target.position.x = mouse.x;
