@@ -1,34 +1,33 @@
 var StringController = function() {
 
 	this.type = "string";
-
-	var that = this;
-
-	Controller.apply(this, arguments);
-
-	this.value = this.getTargetValue();
-
-	var input = document.createElement('input');
-	input.setAttribute('value', this.value);
-	input.setAttribute('spellcheck', 'false');
-
-	this.domElement.addEventListener('mouseup', function() {
-		input.focus();
-		input.select();
-	}, false);
-
-	input.addEventListener('keyup', function() {
-		that.updateValue(input.value);
-		that.setTargetValue(that.value);
-	}, false);
-
-	this.domElement.appendChild(input);
-
-	this.updateValue = function(val) {
-		that.value = val;
-		input.setAttribute('value', that.value);
-	}
-
+	
+	var _this = this;
+    Controller.apply(this, arguments);
+    
+    var input = document.createElement('input');
+    
+    var initialValue = this.getValue();
+    
+    input.setAttribute('value', initialValue);
+    input.setAttribute('spellcheck', 'false');
+    
+    this.domElement.addEventListener('mouseup', function() {
+    	input.focus();
+    	input.select();
+    }, false);
+    
+    input.addEventListener('keyup', function() {
+        _this.setValue(input.value);
+    }, false);
+    
+    this.updateDisplay = function() {
+    	input.value = _this.getValue();
+    }
+    
+    this.domElement.appendChild(input);
+    
 };
+
 StringController.prototype = new Controller();
 StringController.prototype.constructor = StringController;
