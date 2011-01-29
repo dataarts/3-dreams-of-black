@@ -1,7 +1,7 @@
 var GUI = function () {
 
 	var _this = this, open = false,
-	controllers = [], controllersWatched = [];
+	controllers = [], controllersListened = [];
 
 	this.domElement = document.createElement('div');
 	this.domElement.setAttribute('id', 'guidat');
@@ -24,8 +24,8 @@ var GUI = function () {
 
 	// Controllers Watcher
 	setInterval( function() {
-		for (var c in controllersWatched) {
-			controllersWatched[c].watchTargetValue();
+		for (var c in controllersListened) {
+			controllersListened[c].listenTargetValue();
 		}
 	}, 1000 / 60 );
 
@@ -105,9 +105,9 @@ var GUI = function () {
 
 	};
 
-	this.watchController = function(c) {
+	this.listenController = function(c) {
 
-		controllersWatched.push(c);
+		controllersListened.push(c);
 
 	}
 

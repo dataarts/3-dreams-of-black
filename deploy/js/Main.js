@@ -79,8 +79,8 @@ function start( pattern ) {
 	gui = new GUI();
 	document.body.appendChild( gui.domElement );
 
-	gui.add( audio, 'currentTime', 0, 210, 10 ).setName( 'Time' ).setWatched();
-	gui.add( camera.position, 'y', - 1000, 1000, 10 ).setName( 'Camera Y' );
+	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+	gui.add( camera.position, 'y', - 1000, 1000, 10 ).name( 'Camera Y' );
 
 	audio.play();
 	audio.currentTime = tune.getBeatMS( pattern * tune.getRows() ) / 1000;
