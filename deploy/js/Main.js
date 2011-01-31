@@ -11,6 +11,19 @@ var tune, time, stats, gui;
 
 init();
 
+var playback = {
+	
+	p1a: function() { skip_to_pattern( 0 ) },
+	p1b: function() { skip_to_pattern( 16 ) },
+	
+	p2a: function() { skip_to_pattern( 24 ) },
+	p2b: function() { skip_to_pattern( 32 ) },
+	
+	p3a: function() { skip_to_pattern( 40 ) },
+	p3b: function() { skip_to_pattern( 48 ) }
+	
+}
+
 function init() {
 
 	audio = document.getElementById( 'audio' );
@@ -62,6 +75,12 @@ function init() {
 
 }
 
+function skip_to_pattern( pattern ) {
+	
+	audio.currentTime = tune.getBeatMS( pattern * tune.getRows() ) / 1000;
+	
+}
+
 function start( pattern ) {
 
 	document.body.removeChild( document.getElementById( 'launcher' ) );
@@ -81,9 +100,26 @@ function start( pattern ) {
 
 	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 	gui.add( camera.position, 'y', - 1000, 1000, 10 ).name( 'Camera Y' );
+	
+	var p1a, p1b, p2a, p2b, p3a, p3b;
+	
+	p1a = gui.add( playback, 'p1a' ).name( '2D City' ).domElement.style;
+	p1b = gui.add( playback, 'p1b' ).name( '3D City' ).domElement.style;
+	p2a = gui.add( playback, 'p2a' ).name( '2D Train' ).domElement.style;
+	p2b = gui.add( playback, 'p2b' ).name( '3D Train' ).domElement.style;
+	p3a = gui.add( playback, 'p3a' ).name( '2D Dunes' ).domElement.style;
+	p3b = gui.add( playback, 'p3b' ).name( '3D Dunes' ).domElement.style;
+	
+	p1a.backgroundColor = p1b.backgroundColor = "hsl(200,25%,50%)";
+	p2a.backgroundColor = p2b.backgroundColor = "hsl(120,65%,40%)";
+	p3a.backgroundColor = p3b.backgroundColor = "hsl(40,65%,50%)";
+	
+	p1a.borderLeft = p1b.borderLeft = "solid 5px hsl(200,95%,50%)";
+	p2a.borderLeft = p2b.borderLeft = "solid 5px hsl(120,95%,40%)";
+	p3a.borderLeft = p3b.borderLeft = "solid 5px hsl(40,95%,50%)";
 
 	audio.play();
-	audio.currentTime = tune.getBeatMS( pattern * tune.getRows() ) / 1000;
+	skip_to_pattern( pattern );
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
