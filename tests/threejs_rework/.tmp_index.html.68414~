@@ -37,8 +37,6 @@
 		<script type="text/javascript" src="src/core/UV.js"></script>
 		<script type="text/javascript" src="src/core/Color.js"></script>
 
-		<script type="text/javascript" src="src/extras/io/Loader.js"></script>
-
 		<script type="text/javascript" src="src/objects/Object3D.js"></script>
 		<script type="text/javascript" src="src/objects/Mesh.js"></script>
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
@@ -54,27 +52,6 @@
 		<script type="text/javascript" src="src/materials/Material.js"></script>
 		<script type="text/javascript" src="src/materials/MeshLambertMaterial.js"></script>
 		<script type="text/javascript" src="src/materials/MeshShaderMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/Material.js"></script>
-		<script type="text/javascript" src="src/materials/LineBasicMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/MeshBasicMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/MeshPhongMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/MeshDepthMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/MeshNormalMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/MeshFaceMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/MeshShaderMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/ParticleBasicMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/ParticleCircleMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/ParticleDOMMaterial.js"></script>
-		<script type="text/javascript" src="src/materials/Texture.js"></script>
-		<script type="text/javascript" src="src/materials/RenderTarget.js"></script>
-		<script type="text/javascript" src="src/materials/Uniforms.js"></script>
-		<script type="text/javascript" src="src/materials/mappings/CubeReflectionMapping.js"></script>
-		<script type="text/javascript" src="src/materials/mappings/CubeRefractionMapping.js"></script>
-		<script type="text/javascript" src="src/materials/mappings/LatitudeReflectionMapping.js"></script>
-		<script type="text/javascript" src="src/materials/mappings/LatitudeRefractionMapping.js"></script>
-		<script type="text/javascript" src="src/materials/mappings/SphericalReflectionMapping.js"></script>
-		<script type="text/javascript" src="src/materials/mappings/SphericalRefractionMapping.js"></script>
-		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
 
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGL.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLScene.js"></script>
@@ -98,7 +75,6 @@
 				var renderer;
 				var scene;
 				var mesh, mesh2;
-				var bone0, bone1, bone2;
 				var camera;
 				var rotationMatrix;
 				var time = 0;
@@ -106,56 +82,24 @@
 				
 				//--- Init ---
 				
-				var Init = function( female )
+				var Init = function()
 				{
 					var cube     = new THREE.Cube( 100, 100, 100, 1, 1 );
-					var material = new THREE.MeshShaderMaterial( { vertex_shader: "skinVertex", fragment_shader: "textureFragment" } );
-					
-					female.skinWeights = [];
-					female.skinIndices = [];
-					
-					for( var i = 0; i < female.vertices.length; i++ ) {
-						
-						if( female.vertices[ i ].position.y < 50 )
-							female.skinIndices.push( new THREE.Vector4( 0, 0, 0, 0 ));
-						else if( female.vertices[ i ].position.y < 100 )
-							female.skinIndices.push( new THREE.Vector4( 1, 0, 0, 0 ));
-						else
-							female.skinIndices.push( new THREE.Vector4( 2, 0, 0, 0 ));
-
-						female.skinWeights.push( new THREE.Vector4( 1, 0, 0, 0 ));
-					}
-					
+					var material = new THREE.MeshShaderMaterial( { vertex_shader: "textureVertex", fragment_shader: "textureFragment" } );
 					
 					scene  = new THREE.Scene();
-					mesh   = new THREE.Skin( female, material );
+					mesh   = new THREE.Mesh( cube, material );
+					mesh2  = new THREE.Mesh( cube, material );
 					camera = new THREE.Camera();
 
-					mesh.position.z = -400;
-					mesh.position.y = -100;
-
+					mesh.position.z = -800;
+					mesh2.position.z = -50;
+					mesh2.position.y = 150;
+	
+					mesh.addChild( mesh2 );
 					scene.addChild( mesh );
 					scene.addChild( camera );
 
-
-					// bones
-					
-					bone0 = mesh.addBone();  
-					bone1 = mesh.addBone();  
-					bone2 = mesh.addBone();  
-
-					mesh.addChild( bone0 );
-					bone0.addChild( bone1 );
-					bone1.addChild( bone2 );
-
-					bone1.position.y = 50;
-					bone2.position.y = 50;
-					
-					mesh.pose();
-
-
-
-					// renderer
 
 					renderer = new THREE.RendererWebGL();
 					renderer.setSize( window.innerWidth, window.innerHeight );
@@ -170,28 +114,19 @@
 				    setInterval( Update, 33 );
 					
 				}
-
-
-				var load = function() {
-
-					var loader = new THREE.Loader();
-					loader.loadAscii( { model: "assets/female02/Female02_slim.js", callback: Init } );
-				}
 				
 				
 				//--- Update ---
 				
 				var Update = function()
 				{
-					mesh.rotation.y = time;
-					
-					bone0.rotation.x = Math.sin( time ) * 0.25;
-					bone1.rotation.x = Math.sin( time ) * 0.5;
-					bone2.rotation.x = Math.sin( time ) * 1;
+					mesh.rotation.x = time;
+					mesh.rotation.y = time * 0.5;
+					mesh.rotation.z = time * 0.25;
 					
 					renderer.render( scene, camera );
 
-					time += 0.02;
+					time += 0.05;
 				}
 				
 				
@@ -199,12 +134,12 @@
 				
 				return {
 					
-					load: load
+					Init: Init
 				}
 			}();
 		
 		</script>
 	</head>
-	<body onload="Experience.load();">
+	<body onload="Experience.Init();">
 	</body>
 </html>

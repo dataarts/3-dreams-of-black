@@ -65,6 +65,7 @@ THREE.ShaderProgramUniforms = (function() {
 		}
 		else {
 
+
 			var index = 0;
 			var locations = [];
 			

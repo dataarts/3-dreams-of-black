@@ -5,8 +5,8 @@
 
 THREE.RendererWebGL = function( contextId ) {
 
-	this.canvas = document.getElementById( contextId );
-	this.GL     = this.canvas.getContext( "experimental-webgl" );
+	this.domElement = document.createElement( 'canvas' );
+	this.GL         = this.domElement.getContext( "experimental-webgl" );
 	
     this.GL.clearColor	( 0.0, 0.0, 0.0, 1.0 );
     this.GL.clearDepth	( 1.0 );
@@ -16,10 +16,9 @@ THREE.RendererWebGL = function( contextId ) {
 	this.GL.cullFace    ( this.GL.BACK );
 	this.GL.pixelStorei ( this.GL.UNPACK_FLIP_Y_WEBGL, true );
 
-	this.resize();
-
 	this.applyPrototypes();
-	THREE.RendererWebGLContext = this.GL;
+
+	THREE.RendererWebGLContext = this.GL;		// this is no good
 };
 
 /*
@@ -39,11 +38,13 @@ THREE.RendererWebGL.prototype.applyPrototypes = function() {
  * Resize
  */
 
-THREE.RendererWebGL.prototype.resize = function() {
-	
-	this.width  = canvas.clientWidth;
-	this.height = canvas.clientWidth;
-	this.aspect = this.width / this.height;
+THREE.RendererWebGL.prototype.setSize = function( wantedWidth, wantedHeight ) {
+
+	this.domElement.width  = wantedWidth;
+	this.domElement.height = wantedHeight;
+	this.aspect            = wantedWidth / wantedHeight;
+
+	this.GL.viewport( 0, 0, wantedWidth, wantedHeight );
 }
 
 /*
@@ -54,13 +55,15 @@ THREE.RendererWebGL.prototype.render = function( scene, camera ) {
 	
 	// update camera
 	
-	if( camera.aspect !== this.aspect ) 
+	if( camera.aspect !== this.aspect ) {
+		
 		camera.aspect = this.aspect;
+		camera.updatePerspectiveMatrix();
+	}
 
 
 	// clear
 
-   	this.GL.viewport( 0, 0, this.width, this.height);
     this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
 	
 
@@ -82,8 +85,8 @@ THREE.RendererWebGL.prototype.render = function( scene, camera ) {
 		if( shaderPrograms.length > 0 ) {
 			
 			shaderPrograms[ 0 ].loadProgram();
-			shaderPrograms[ 0 ].loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten() );
-			shaderPrograms[ 0 ].loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten() );
+			shaderPrograms[ 0 ].loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32());
+			shaderPrograms[ 0 ].loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32());
 			shaderPrograms[ 0 ].loadUniform( "uSceneFogFar",             scene.fogFar             );
 			shaderPrograms[ 0 ].loadUniform( "uSceneFogNear",            scene.fogNear            );
 			shaderPrograms[ 0 ].loadUniform( "uSceneFogColor",           scene.fogColor           );

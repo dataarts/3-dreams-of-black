@@ -2,21 +2,6 @@
  * Shader Program Compiler: compiles all data within a mesh to a ShaderProgram. Beware: This is magic.
  */
 
-		
-		/*
-		 * TODO!
-		 * Varje chunk Šr ett shader program!
-		 * Just nu Šr det kodat lite sŒ att varje material Šr det, men det Šr fel
-		 * Om dŠremot ett MeshFaceMaterial finns, sŒ Šr de faces som har det materialet samlat
-		 * i en chunk som dŠrfšr ska ha det materialet, resten ska ha de andra materialen
-		 * 
-		 * Att gšra: kompilera ihop material som inte Šr MeshShaderMaterial, som till exempel
-		 * lambert och sŒ vidare. Och gšra stšd fšr wireframe.
-		 * 
-		 * Jag har precis gjort laddningen šver till GPUn men inte matchat mot shader programet
-		 */
-		
-
 
 THREE.ShaderProgramCompiler = (function() {
 	
@@ -154,7 +139,7 @@ THREE.ShaderProgramCompiler = (function() {
 						}
 						
 						if( colors.length > 0 ) {
-							
+
 							tempColors.push( colors[ face[ faceIndices[ i ]]].r );
 							tempColors.push( colors[ face[ faceIndices[ i ]]].g );
 							tempColors.push( colors[ face[ faceIndices[ i ]]].b );
@@ -248,19 +233,26 @@ THREE.ShaderProgramCompiler = (function() {
 			var chunk = geometryChunks[ chunkName ];
 			var program;
 			
-			if( chunk.materials === undefined || chunk.materials[ 0 ] === undefined ) {
+			//if( chunk.materials === undefined || chunk.materials[ 0 ] === undefined ) {
+			if( true ) {
 			
 				// add uniform inputs (that are automatically updated on ShaderProgram.render)
 			
 				program = new THREE.ShaderProgram( shaderCodeInfos[ 0 ] ); // is [ 0 ] going to work?
  				
-				program.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh, "globalMatrix" );
-				program.addUniformInput( "uMeshNormalMatrix", "mat3", mesh, "normalMatrix" );
+				program.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
+			//	program.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix.webGL, "normalMatrix" );
+				
+				if( mesh instanceof THREE.Skin ) {
 
+					program.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32" );
+					program.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "bones"     );
+					program.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoses" );
+				}
+				
 				// todo: add sampler uniform if exists
-				// todo: add skin uniform if exists
-				
-				
+
+
 				// add attribute and element buffers
 				
 				for( var b = 0; b < geoBuffers.length; b++ ) {

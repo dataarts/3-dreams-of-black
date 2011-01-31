@@ -1,7 +1,12 @@
 THREE.Matrix3 = function () {
 
 	this.m = [];
-
+	this.flat = new Array(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	
+	this.flatten = function() {
+	
+		return this.flat;
+	}
 };
 
 THREE.Matrix3.prototype = {
@@ -15,13 +20,5 @@ THREE.Matrix3.prototype = {
 		tmp = m[5]; m[5] = m[7]; m[7] = tmp;
 
 		return this;
-
-	},
-
-	// TEMPORARY HACK!
-
-	flatten: function() {
-		
-		return [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ];
 	}
 };

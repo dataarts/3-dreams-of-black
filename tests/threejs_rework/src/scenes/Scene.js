@@ -37,3 +37,10 @@ THREE.Scene.prototype.capture = function( renderable ) {
 	
 	// set by renderer
 }
+
+
+/*
+ * Backward Compatibility
+ */
+
+ THREE.Scene.prototype.addObject = THREE.Object3D.prototype.addChild;

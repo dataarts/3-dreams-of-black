@@ -11,7 +11,7 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 	
 	// set arguments
 	
-	this.FOV      = FOV      || 45;
+	this.FOV      = FOV      || 60;
 	this.aspect   = aspect   || 1.0;
 	this.zNear    = zNear    || 0.1;
 	this.zFar     = zFar     || 1000;
@@ -30,6 +30,15 @@ THREE.Camera.prototype             = new THREE.Object3D();
 THREE.Camera.prototype.constructor = THREE.Camera;
 THREE.Camera.prototype.supr        = THREE.Object3D.prototype;
 
+/*
+ * Update perspective matrix
+ */
+
+THREE.Camera.prototype.updatePerspectiveMatrix = function() {
+	
+	this.perspectiveMatrix = THREE.Matrix4.makePerspective( this.FOV, this.aspect, this.zNear, this.zFar );
+} 
+
 
 /*
  * Update
@@ -40,7 +49,7 @@ THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene
 	// call "super"
 	
 	var wasDirty = this.isDirty;
-	this.supr.update.call( this, parentGlobalMatrix, forceUpdate, scene, camera )
+	this.supr.update.call( this, parentGlobalMatrix, forceUpdate, scene, camera );
 	
 	
 	// update inverse

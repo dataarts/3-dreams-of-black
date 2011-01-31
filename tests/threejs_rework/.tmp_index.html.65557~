@@ -109,31 +109,19 @@
 				var Init = function( female )
 				{
 					var cube     = new THREE.Cube( 100, 100, 100, 1, 1 );
-					var material = new THREE.MeshShaderMaterial( { vertex_shader: "skinVertex", fragment_shader: "textureFragment" } );
-					
-					female.skinWeights = [];
-					female.skinIndices = [];
-					
-					for( var i = 0; i < female.vertices.length; i++ ) {
-						
-						if( female.vertices[ i ].position.y < 50 )
-							female.skinIndices.push( new THREE.Vector4( 0, 0, 0, 0 ));
-						else if( female.vertices[ i ].position.y < 100 )
-							female.skinIndices.push( new THREE.Vector4( 1, 0, 0, 0 ));
-						else
-							female.skinIndices.push( new THREE.Vector4( 2, 0, 0, 0 ));
-
-						female.skinWeights.push( new THREE.Vector4( 1, 0, 0, 0 ));
-					}
-					
+					var material = new THREE.MeshShaderMaterial( { vertex_shader: "textureVertex", fragment_shader: "textureFragment" } );
 					
 					scene  = new THREE.Scene();
 					mesh   = new THREE.Skin( female, material );
+					mesh2  = new THREE.Mesh( cube, material );
 					camera = new THREE.Camera();
 
 					mesh.position.z = -400;
 					mesh.position.y = -100;
-
+					mesh2.position.z = -50;
+					mesh2.position.y = 150;
+	
+//					mesh.addChild( mesh2 );
 					scene.addChild( mesh );
 					scene.addChild( camera );
 
@@ -185,13 +173,9 @@
 				{
 					mesh.rotation.y = time;
 					
-					bone0.rotation.x = Math.sin( time ) * 0.25;
-					bone1.rotation.x = Math.sin( time ) * 0.5;
-					bone2.rotation.x = Math.sin( time ) * 1;
-					
 					renderer.render( scene, camera );
 
-					time += 0.02;
+					time += 0.05;
 				}
 				
 				
