@@ -59,11 +59,14 @@ function drawFrame(frame, scale) {
 		
 		// draw face
 		context.fillStyle = "#"+currentColor;
+		context.strokeStyle = "#"+currentColor;
+		context.lineWidth = 1;
 		context.beginPath();  
 		context.moveTo(p1x, p1y);  
 		context.lineTo(p2x, p2y);  
 		context.lineTo(p3x, p3y); 
 		context.lineTo(p1x, p1y);
+		context.stroke(); 
 		context.fill(); 
 	}
 
