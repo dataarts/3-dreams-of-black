@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 		<style type="text/css">
 			body {
-				color: #ffffff;
+				color: #000;
 				font-family:Monospace;
 				font-size:13px;
 				text-align:center;
@@ -93,7 +93,7 @@
 
 					"if ( length(lightWeighting) < 1.00 ) {",
 
-						"if ( ( mod(gl_FragCoord.x, 4.0) + mod(gl_FragCoord.y, 4.0) ) > 6.00 ) {",
+						"if ( ( mod(gl_FragCoord.x, 4.001) + mod(gl_FragCoord.y, 4.0) ) > 6.00 ) {",
 
 							"gl_FragColor = vec4( uLineColor1, 1.0 );",
 
@@ -103,7 +103,7 @@
 
 					"if ( length(lightWeighting) < 0.50 ) {",
 
-						"if ( ( mod(gl_FragCoord.x + 2.0, 4.0) + mod(gl_FragCoord.y + 2.0, 4.0) ) > 6.00 ) {",
+						"if ( ( mod(gl_FragCoord.x + 2.0, 4.001) + mod(gl_FragCoord.y + 2.0, 4.0) ) > 6.00 ) {",
 
 							"gl_FragColor = vec4( uLineColor1, 1.0 );",
 
