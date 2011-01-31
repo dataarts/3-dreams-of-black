@@ -28,9 +28,15 @@
 				text-decoration: underline;
 
 			}
+			
+			.disabled a { color: #808080; cursor: text }
+			.disabled a:hover { text-decoration: none }
+			
+			#progress { background-color:#f7f7f7; width:115px; height:5px; margin:5px 0 }
+			#bar { background-color:#d0d0d0; width:0px; height:5px; margin:0 }
 		</style>
 	</head>
-	<body>
+	<body onload="init()">
 
 		<audio id="audio" autobuffer>
 			<source src="files/Black.ogg">
@@ -38,11 +44,15 @@
 
 		<div id="launcher" style="padding: 100px;">
 
-			<strong>"ROME"</strong><br /><br />
+			<strong>"ROME"</strong><br />
 
-			PART 1 &#x2014; <a href="#" onClick="start( 0 );">2D</a>, <a href="#" onClick="start( 16 );">3D</a><br />
-			PART 2 &#x2014; <a href="#" onClick="start( 24 );">2D</a>, <a href="#" onClick="start( 32 );">3D</a><br />
-			PART 3 &#x2014; <a href="#" onClick="start( 40 );">2D</a>, <a href="#" onClick="start( 48 );">3D</a>
+			<div id="progress"><div id="bar"></div></div>
+			
+			<div id="buttons_parts" class="disabled">
+				PART 1 &#x2014; <a href="#" id="b_1a">2D</a>, <a href="#" id="b_1b">3D</a><br />
+				PART 2 &#x2014; <a href="#" id="b_2a">2D</a>, <a href="#" id="b_2b">3D</a><br />
+				PART 3 &#x2014; <a href="#" id="b_3a">2D</a>, <a href="#" id="b_3b">3D</a>
+			</div>
 
 		</div>
 

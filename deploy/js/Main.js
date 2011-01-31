@@ -9,24 +9,35 @@ screenWidthHalf, screenHeightHalf;
 
 var tune, time, stats, gui;
 
-init();
+var MAX_PROGRESS = 0, 
+	
+PARTS_SCHEDULE = {
+"1a" : 0,	// city  2d
+"1b" : 16,	// city  3d
+"2a" : 24,	// train 2d
+"2b" : 32,	// train 3d
+"3a" : 40,	// dunes 2d
+"3b" : 48	// dunes 3d
+};
+
+function $( id ) { return document.getElementById( id ); }
 
 var playback = {
 	
-	p1a: function() { skip_to_pattern( 0 ) },
-	p1b: function() { skip_to_pattern( 16 ) },
+	p1a: function() { skip_to_pattern( PARTS_SCHEDULE[ "1a" ] ) },
+	p1b: function() { skip_to_pattern( PARTS_SCHEDULE[ "1b" ] ) },
 	
-	p2a: function() { skip_to_pattern( 24 ) },
-	p2b: function() { skip_to_pattern( 32 ) },
+	p2a: function() { skip_to_pattern( PARTS_SCHEDULE[ "2a" ] ) },
+	p2b: function() { skip_to_pattern( PARTS_SCHEDULE[ "2b" ] ) },
 	
-	p3a: function() { skip_to_pattern( 40 ) },
-	p3b: function() { skip_to_pattern( 48 ) }
+	p3a: function() { skip_to_pattern( PARTS_SCHEDULE[ "3a" ] ) },
+	p3b: function() { skip_to_pattern( PARTS_SCHEDULE[ "3b" ] ) }
 	
 }
 
 function init() {
 
-	audio = document.getElementById( 'audio' );
+	audio = $( 'audio' );
 
 	screenWidth = window.innerWidth;
 	screenHeight = window.innerHeight;
@@ -71,8 +82,25 @@ function init() {
 	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 2 );
 
 	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 2 );
+	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 2 );	
 
+	MAX_PROGRESS = $( "progress" ).offsetWidth;
+	
+	callback_final();
+	
+}
+
+function callback_final() {
+	
+	$( "buttons_parts" ).className = "";
+	$( "bar" ).style.width = MAX_PROGRESS + "px";
+	
+	function create_start( i ) { return function() { start( PARTS_SCHEDULE[ buttons[i] ] ) } }
+	
+	var i, buttons = [ "1a", "1b", "2a", "2b", "3a", "3b" ];
+	for( i = 0; i < buttons.length; i++ )
+		$( "b_" + buttons[ i ] ).addEventListener( "click", create_start( i ) );
+	
 }
 
 function skip_to_pattern( pattern ) {
@@ -82,8 +110,8 @@ function skip_to_pattern( pattern ) {
 }
 
 function start( pattern ) {
-
-	document.body.removeChild( document.getElementById( 'launcher' ) );
+	
+	document.body.removeChild( $( 'launcher' ) );
 
 	container = document.createElement( 'div' );
 	container.appendChild( renderer.domElement );
@@ -127,6 +155,7 @@ function start( pattern ) {
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 	setInterval( loop, 1000 / 120 );
+	
 }
 
 function onDocumentKeyDown( event ) {
