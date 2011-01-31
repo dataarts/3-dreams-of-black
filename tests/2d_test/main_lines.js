@@ -32,6 +32,7 @@ function drawFrame(frame, scale) {
 	var verts = window["v"+currentFrame];
 	var colors = window["c"+currentFrame];
 	var index = window["i"+currentFrame];
+	var lines = window["l"+currentFrame];
 	
 	var currentColorCount = 0;
 	var currentColor = colors[currentColorCount].toString(16);
@@ -67,6 +68,33 @@ function drawFrame(frame, scale) {
 		context.lineTo(p1x, p1y);
 		context.stroke(); 
 		context.fill(); 
+	}
+
+	// lines
+	context.strokeStyle = "#333333";
+	context.lineWidth = 4;
+	
+	for (var i=0; i<lines.length; ++i ) {
+		var shape = lines[i];
+		context.beginPath(); 
+	
+		for (var j=0; j<shape.length; j+=2 ) {
+			var x = (shape[j]+offset)*scale;
+			var y = (shape[j+1]+offset)*scale;
+			if (j == 0) {
+				// start
+				context.moveTo(x, y);
+			} else {
+				// in between
+				context.lineTo(x, y); 
+			}
+			// end to start
+			if (j == (shape.length-2)) {
+				context.lineTo((shape[0]+offset)*scale, (shape[1]+offset)*scale); 
+			}
+		}
+		context.stroke(); 
+		context.closePath();
 	}
 
 }
