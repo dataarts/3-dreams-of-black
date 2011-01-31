@@ -10,10 +10,15 @@ THREE.Object3D = function() {
 	this.parent		  = undefined;
 	this.children     = [];
 
+	this.isDirty      = true;
 	this.localMatrix  = new THREE.Matrix4();
 	this.globalMatrix = new THREE.Matrix4();
+
 	//this.position     = new THREE.Vector3();
-	this.isDirty      = true;
+	this.rotation       = new THREE.Vector3();
+	this.rotationMatrix = new THREE.Matrix4();
+	this.tempMatrix     = new THREE.Matrix4();
+	
 
 	this.boundRadius  = 0;
 	this.screenZ      = 0;
@@ -24,17 +29,16 @@ THREE.Object3D = function() {
 	this.position = {
 		
 		that: this,
-		
-		get x()      { return this.that.localMatrix.elements[ 12 ]; },
+
+		get x()      { return this.that.localMatrix.n14; },
 		set x( val ) { this.that.localMatrix.n14 = val; this.that.isDirty = true; },
 	
-		get y()      { return this.that.localMatrix.elements[ 13 ]; },
+		get y()      { return this.that.localMatrix.n24; },
 		set y( val ) { this.that.localMatrix.n24 = val; this.that.isDirty = true; },
 	
-		get z()      { return this.that.localMatrix.elements[ 14 ]; },
+		get z()      { return this.that.localMatrix.n34; },
 		set z( val ) { this.that.localMatrix.n34 = val; this.that.isDirty = true; }
-	}
-
+	};
 }
 
 /*
@@ -46,6 +50,24 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 	// visible?
 	
 	if( !this.visible ) return;
+
+	
+	// TEMP!
+	
+	this.localMatrix.setTranslation( this.localMatrix.n14, this.localMatrix.n24, this.localMatrix.n34 );
+
+	this.rotationMatrix.setRotationX( this.rotation.x );
+
+	if ( this.rotation.y != 0 ) this.rotationMatrix.multiplySelf( this.tempMatrix.setRotationY( this.rotation.y ) );
+	if ( this.rotation.z != 0 ) this.rotationMatrix.multiplySelf( this.tempMatrix.setRotationZ( this.rotation.z ) );
+
+	this.localMatrix.multiplySelf( this.rotationMatrix );
+	
+	this.isDirty = true;
+	
+	
+	// ENDTEMP!
+
 
 
 	// update this
@@ -70,7 +92,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 	
 	// check camera frustum and add to scene capture list
 	
-	if( this.renderable && camera.frustum.contains( this )) {
+	if( scene && this.renderable && camera.frustum.contains( this )) {
 		
 		this.screenZ = camera.frustum.screenZ;
 		scene.capture( this );

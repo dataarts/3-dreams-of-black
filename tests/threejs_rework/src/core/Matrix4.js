@@ -13,9 +13,48 @@ THREE.Matrix4 = function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33
 	this.n31 = n31 || 0; this.n32 = n32 || 0; this.n33 = n33 || 1; this.n34 = n34 || 0;
 	this.n41 = n41 || 0; this.n42 = n42 || 0; this.n43 = n43 || 0; this.n44 = n44 || 1;
 
-	this.flat = new Array( 16 );
-	this.m33 = new THREE.Matrix3();
+	this.flat   = new Array( 16 );
+	this.m33    = new THREE.Matrix3();
 
+
+	// WebGL additions - NEEDS TO BE DISCUSSED!
+
+	if( typeof Float32Array !== 'undefined' ) {
+
+		var that = this;		
+		this.float32Array = new Float32Array( 16 ),
+		this.flatten32 = function() {
+			
+			var flat = that.float32Array;
+			
+			flat[ 0  ] = that.n11; flat[ 1  ] = that.n21; flat[ 2  ] = that.n31; flat[ 3  ] = that.n41;
+			flat[ 4  ] = that.n12; flat[ 5  ] = that.n22; flat[ 6  ] = that.n32; flat[ 7  ] = that.n42;
+			flat[ 8  ] = that.n13; flat[ 9  ] = that.n23; flat[ 10 ] = that.n33; flat[ 11 ] = that.n43;
+			flat[ 12 ] = that.n14; flat[ 13 ] = that.n24; flat[ 14 ] = that.n34; flat[ 15 ] = that.n44;
+	
+			return flat;
+		}
+
+		/*
+		this.webGL = {
+			
+			that:     	  this,
+			float32Array: new Float32Array( 16 ),
+			
+			get flatFloat32Array() {
+				
+				var flat = this.float32Array;
+				var mat  = this.that;
+				
+				flat[ 0  ] = mat.n11; flat[ 1  ] = mat.n21; flat[ 2  ] = mat.n31; flat[ 3  ] = mat.n41;
+				flat[ 4  ] = mat.n12; flat[ 5  ] = mat.n22; flat[ 6  ] = mat.n32; flat[ 7  ] = mat.n42;
+				flat[ 8  ] = mat.n13; flat[ 9  ] = mat.n23; flat[ 10 ] = mat.n33; flat[ 11 ] = mat.n43;
+				flat[ 12 ] = mat.n14; flat[ 13 ] = mat.n24; flat[ 14 ] = mat.n34; flat[ 15 ] = mat.n44;
+		
+				return flat;
+			}
+		}*/
+	}
 };
 
 THREE.Matrix4.prototype = {

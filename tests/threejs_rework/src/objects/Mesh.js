@@ -8,7 +8,7 @@ THREE.Mesh = function( geometry, materials ) {
 	
 	this.renderable   = true;
 	this.geometry     = geometry;
-	this.materials    = materials.length ? materials : [ materials ];
+	this.materials    = materials && materials.length ? materials : [ materials ];
 	this.normalMatrix = new THREE.Matrix4();
 }
 
