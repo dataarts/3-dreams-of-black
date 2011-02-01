@@ -11,27 +11,31 @@ var tune, time, stats, gui;
 
 var MAX_PROGRESS = 0, 
 	
-PARTS_SCHEDULE = {
-"1a" : 0,	// city  2d
-"1b" : 16,	// city  3d
-"2a" : 24,	// train 2d
-"2b" : 32,	// train 3d
-"3a" : 40,	// dunes 2d
-"3b" : 48	// dunes 3d
+SCHEDULE = {
+"intro" : 0, // driving 2d
+"1a" : 8,	 // city  2d
+"1b" : 16,	 // city  3d
+"2a" : 24,	 // train 2d
+"2b" : 32,	 // train 3d
+"3a" : 40,	 // dunes 2d
+"3b" : 48,	 // dunes 3d
+"end": 75
 };
 
 function $( id ) { return document.getElementById( id ); }
 
 var playback = {
 	
-	p1a: function() { skip_to_pattern( PARTS_SCHEDULE[ "1a" ] ) },
-	p1b: function() { skip_to_pattern( PARTS_SCHEDULE[ "1b" ] ) },
+	pi:  function() { skip_to_pattern( SCHEDULE[ "intro" ] ) },
 	
-	p2a: function() { skip_to_pattern( PARTS_SCHEDULE[ "2a" ] ) },
-	p2b: function() { skip_to_pattern( PARTS_SCHEDULE[ "2b" ] ) },
+	p1a: function() { skip_to_pattern( SCHEDULE[ "1a" ] ) },
+	p1b: function() { skip_to_pattern( SCHEDULE[ "1b" ] ) },
 	
-	p3a: function() { skip_to_pattern( PARTS_SCHEDULE[ "3a" ] ) },
-	p3b: function() { skip_to_pattern( PARTS_SCHEDULE[ "3b" ] ) }
+	p2a: function() { skip_to_pattern( SCHEDULE[ "2a" ] ) },
+	p2b: function() { skip_to_pattern( SCHEDULE[ "2b" ] ) },
+	
+	p3a: function() { skip_to_pattern( SCHEDULE[ "3a" ] ) },
+	p3b: function() { skip_to_pattern( SCHEDULE[ "3b" ] ) }
 	
 }
 
@@ -69,20 +73,20 @@ function init() {
 
 	// Parts
 
-	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
+	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( SCHEDULE[ "intro" ] ), tune.getPatternMS( SCHEDULE[ "end" ] ), 0 );
 
-	sequencer.add( new Part1( camera, scene, renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new Part2( camera, scene, renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
-	sequencer.add( new Part3( camera, scene, renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new Part1( camera, scene, renderer, events ), tune.getPatternMS( SCHEDULE[ "1b" ] ), tune.getPatternMS( SCHEDULE[ "2a" ] ), 1 );
+	sequencer.add( new Part2( camera, scene, renderer, events ), tune.getPatternMS( SCHEDULE[ "2b" ] ), tune.getPatternMS( SCHEDULE[ "3a" ] ), 1 );
+	sequencer.add( new Part3( camera, scene, renderer, events ), tune.getPatternMS( SCHEDULE[ "3b" ] ), tune.getPatternMS( SCHEDULE[ "end" ] ), 1 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 2 );
+	sequencer.add( new FadeInEffect( 0x000000, renderer ),  tune.getPatternMS( SCHEDULE[ "1a" ] ) - 850, tune.getPatternMS( SCHEDULE[ "1a" ] ), 2 );
+	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( SCHEDULE[ "1a" ] ),       tune.getPatternMS( SCHEDULE[ "1a" ] ) + 400, 2 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 2 );
+	sequencer.add( new FadeInEffect( 0x000000, renderer ),  tune.getPatternMS( SCHEDULE[ "2a" ] ) - 850, tune.getPatternMS( SCHEDULE[ "2a" ] ), 2 );
+	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( SCHEDULE[ "2a" ] ),       tune.getPatternMS( SCHEDULE[ "2a" ] ) + 400, 2 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 2 );	
+	sequencer.add( new FadeInEffect( 0x000000, renderer ),  tune.getPatternMS( SCHEDULE[ "3a" ] ) - 850, tune.getPatternMS( SCHEDULE[ "3a" ] ), 2 );
+	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( SCHEDULE[ "3a" ] ),       tune.getPatternMS( SCHEDULE[ "3a" ] ) + 400, 2 );
 
 	MAX_PROGRESS = $( "progress" ).offsetWidth;
 	
@@ -95,9 +99,9 @@ function callback_final() {
 	$( "buttons_parts" ).className = "";
 	$( "bar" ).style.width = MAX_PROGRESS + "px";
 	
-	function create_start( i ) { return function() { start( PARTS_SCHEDULE[ buttons[i] ] ) } }
+	function create_start( i ) { return function() { start( SCHEDULE[ buttons[i] ] ) } }
 	
-	var i, buttons = [ "1a", "1b", "2a", "2b", "3a", "3b" ];
+	var i, buttons = [ "i", "1a", "1b", "2a", "2b", "3a", "3b" ];
 	for( i = 0; i < buttons.length; i++ )
 		$( "b_" + buttons[ i ] ).addEventListener( "click", create_start( i ) );
 	
@@ -129,8 +133,9 @@ function start( pattern ) {
 	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 	gui.add( camera.position, 'y', - 1000, 1000, 10 ).name( 'Camera Y' );
 	
-	var p1a, p1b, p2a, p2b, p3a, p3b;
+	var pi, p1a, p1b, p2a, p2b, p3a, p3b;
 	
+	pi  = gui.add( playback, 'pi' ).name( 'Intro' ).domElement.style;
 	p1a = gui.add( playback, 'p1a' ).name( '2D City' ).domElement.style;
 	p1b = gui.add( playback, 'p1b' ).name( '3D City' ).domElement.style;
 	p2a = gui.add( playback, 'p2a' ).name( '2D Train' ).domElement.style;
@@ -138,13 +143,19 @@ function start( pattern ) {
 	p3a = gui.add( playback, 'p3a' ).name( '2D Dunes' ).domElement.style;
 	p3b = gui.add( playback, 'p3b' ).name( '3D Dunes' ).domElement.style;
 	
+	pi.backgroundColor = "hsl(200,5%,50%)";
+	
 	p1a.backgroundColor = p1b.backgroundColor = "hsl(200,25%,50%)";
 	p2a.backgroundColor = p2b.backgroundColor = "hsl(120,65%,40%)";
 	p3a.backgroundColor = p3b.backgroundColor = "hsl(40,65%,50%)";
 	
+	pi.borderLeft = "solid 5px hsl(200,95%,50%)";
+	
 	p1a.borderLeft = p1b.borderLeft = "solid 5px hsl(200,95%,50%)";
 	p2a.borderLeft = p2b.borderLeft = "solid 5px hsl(120,95%,40%)";
 	p3a.borderLeft = p3b.borderLeft = "solid 5px hsl(40,95%,50%)";
+	
+	gui.domElement.style.backgroundColor = "#222";
 
 	audio.play();
 	skip_to_pattern( pattern );
