@@ -173,7 +173,7 @@ function callback_final() {
 	
 	var i, buttons = [ "i", "1a", "1b", "2a", "2b", "3a", "3b" ];
 	for( i = 0; i < buttons.length; i++ )
-		$( "b_" + buttons[ i ] ).addEventListener( "click", create_start( i ) );
+		$( "b_" + buttons[ i ] ).addEventListener( "click", create_start( i ), false );
 	
 }
 
