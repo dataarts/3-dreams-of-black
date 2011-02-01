@@ -2,7 +2,7 @@
  * Helper for creating Shader Program and reuse if already exists
  */
 
-THREE.ShaderProgramProgram = function( GL, vertexShaderId, fragmentShaderId ) {
+THREE.WebGLBatchProgram = function( GL, vertexShaderId, fragmentShaderId ) {
 	
 	//--- Construct ---
 	
@@ -12,25 +12,25 @@ THREE.ShaderProgramProgram = function( GL, vertexShaderId, fragmentShaderId ) {
 	this.program         = 0;
 	this.id              = vertexShaderId + "_" + fragmentShaderId;
 	
-	if( THREE.ShaderProgramProgramDictionary[ this.id ] === undefined ) {
+	if( THREE.WebGLBatchProgramDictionary[ this.id ] === undefined ) {
 		
 		this.initVertexShader  ( vertexShaderId   );
 		this.initFragmentShader( fragmentShaderId );
 		this.initShaderProgram();
 	
-		THREE.ShaderProgramProgramDictionary[ this.id ] = this.program;
+		THREE.WebGLBatchProgramDictionary[ this.id ] = this.program;
 	}
 	else {
 		
-		this.program = THREE.ShaderProgramProgramDictionary[ this.id ];
+		this.program = THREE.WebGLBatchProgramDictionary[ this.id ];
 	}
 }
 
-THREE.ShaderProgramProgram.prototype.initVertexShader = function( id ) {
+THREE.WebGLBatchProgram.prototype.initVertexShader = function( id ) {
 	
 	this.vertexShader = this.GL.createShader( this.GL.VERTEX_SHADER );
 	
-	this.GL.shaderSource ( this.vertexShader, THREE.Shader[ id ] );
+	this.GL.shaderSource ( this.vertexShader, THREE.WebGLShaderDefinitions[ id ] );
 	this.GL.compileShader( this.vertexShader );
 
     if( !this.GL.getShaderParameter( this.vertexShader, this.GL.COMPILE_STATUS ))
@@ -41,11 +41,11 @@ THREE.ShaderProgramProgram.prototype.initVertexShader = function( id ) {
 }
 
 
-THREE.ShaderProgramProgram.prototype.initFragmentShader = function( id ) {
+THREE.WebGLBatchProgram.prototype.initFragmentShader = function( id ) {
 	
 	this.fragmentShader = this.GL.createShader( this.GL.FRAGMENT_SHADER );
 	
-	this.GL.shaderSource ( this.fragmentShader, THREE.Shader[ id ] );
+	this.GL.shaderSource ( this.fragmentShader, THREE.WebGLShaderDefinitions[ id ] );
 	this.GL.compileShader( this.fragmentShader );
 
     if( !this.GL.getShaderParameter( this.fragmentShader, this.GL.COMPILE_STATUS )) 
@@ -56,7 +56,7 @@ THREE.ShaderProgramProgram.prototype.initFragmentShader = function( id ) {
 }
 
 
-THREE.ShaderProgramProgram.prototype.initShaderProgram = function() {
+THREE.WebGLBatchProgram.prototype.initShaderProgram = function() {
 	
     this.program = this.GL.createProgram();
 
@@ -76,4 +76,4 @@ THREE.ShaderProgramProgram.prototype.initShaderProgram = function() {
  * Dictionary and helpers
  */
 
-THREE.ShaderProgramProgramDictionary = {};
+THREE.WebGLBatchProgramDictionary = {};

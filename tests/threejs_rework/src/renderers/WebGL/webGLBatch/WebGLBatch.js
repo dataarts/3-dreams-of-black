@@ -2,14 +2,14 @@
  * Shader Program
  */
 
-THREE.ShaderProgram = function( args )
+THREE.WebGLBatch = function( args )
 {
 	// construct
 	
-	this.GL           = THREE.RendererWebGLContext;
- 	this.program      = new THREE.ShaderProgramProgram       ( this.GL, args.vertexShaderId, args.fragmentShaderId );
-	this.uniforms     = THREE.ShaderProgramUniforms  .extract( this.program.program );
-	this.attributes   = THREE.ShaderProgramAttributes.extract( this.program.program );
+	this.GL           = THREE.WebGLRendererContext;
+ 	this.program      = new THREE.WebGLBatchProgram       ( this.GL, args.vertexShaderId, args.fragmentShaderId );
+	this.uniforms     = THREE.WebGLBatchUniforms  .extract( this.program.program );
+	this.attributes   = THREE.WebGLBatchAttributes.extract( this.program.program );
 	this.elements     = -1;
 	this.elementsSize = -1;
 
@@ -23,7 +23,7 @@ THREE.ShaderProgram = function( args )
  * Add Uniform
  */
 
-THREE.ShaderProgram.prototype.addUniformInput = function( name, type, scope, variable ) {
+THREE.WebGLBatch.prototype.addUniformInput = function( name, type, scope, variable ) {
 	
 	if( this.uniforms.dictionary[ name ] !== undefined && this.uniforms.dictionary[ name ].type === type ) {
 		
@@ -41,7 +41,7 @@ THREE.ShaderProgram.prototype.addUniformInput = function( name, type, scope, var
  * Add Attribute Buffer
  */
 
-THREE.ShaderProgram.prototype.addAttributeBuffer = function( name, type, buffer, size ) {
+THREE.WebGLBatch.prototype.addAttributeBuffer = function( name, type, buffer, size ) {
 	
 	if( this.attributes.dictionary[ name ] !== undefined ) {
 		
@@ -59,7 +59,7 @@ THREE.ShaderProgram.prototype.addAttributeBuffer = function( name, type, buffer,
  * Add Element Buffer
  */
 
-THREE.ShaderProgram.prototype.addElementBuffer = function( buffer, size ) {
+THREE.WebGLBatch.prototype.addElementBuffer = function( buffer, size ) {
 	
 	this.elements     = buffer;
 	this.elementsSize = size; 
@@ -71,7 +71,7 @@ THREE.ShaderProgram.prototype.addElementBuffer = function( buffer, size ) {
  * Load Program
  */
 	
-THREE.ShaderProgram.prototype.loadProgram = function() {
+THREE.WebGLBatch.prototype.loadProgram = function() {
 		
     this.GL.useProgram( this.program.program );
 }
@@ -81,7 +81,7 @@ THREE.ShaderProgram.prototype.loadProgram = function() {
  * Load Uniform
  */
 
-THREE.ShaderProgram.prototype.loadUniform = function( name, data ) {
+THREE.WebGLBatch.prototype.loadUniform = function( name, data ) {
 	
 	if( this.uniforms.dictionary[ name ] !== undefined ) {
 		
@@ -92,8 +92,6 @@ THREE.ShaderProgram.prototype.loadUniform = function( name, data ) {
 			this.doLoadUniform( uniform.type, uniform.location, data );
 		}
 		else {
-
-			// todo: check if data is value/function
 
 			if( typeof data[ 0 ] === "function" ) {
 				
@@ -109,7 +107,7 @@ THREE.ShaderProgram.prototype.loadUniform = function( name, data ) {
 	}
 }
 
-THREE.ShaderProgram.prototype.doLoadUniform = function( type, location, data ) {
+THREE.WebGLBatch.prototype.doLoadUniform = function( type, location, data ) {
 
 	switch( type ) 
 	{ 
@@ -145,7 +143,7 @@ THREE.ShaderProgram.prototype.doLoadUniform = function( type, location, data ) {
  * Render
  */	
 
-THREE.ShaderProgram.prototype.render = function() {
+THREE.WebGLBatch.prototype.render = function() {
 	
 	this.loadUniformInputs();
 	this.bindAttributeBuffers();
@@ -158,7 +156,7 @@ THREE.ShaderProgram.prototype.render = function() {
 }
 
 
-THREE.ShaderProgram.prototype.bindAttributeBuffers = function() {
+THREE.WebGLBatch.prototype.bindAttributeBuffers = function() {
 	
 	for( var a = 0; a < this.attributes.length; a++ ) {
 		
@@ -168,7 +166,7 @@ THREE.ShaderProgram.prototype.bindAttributeBuffers = function() {
 }
 	
 	
-THREE.ShaderProgram.prototype.loadUniformInputs = function() {
+THREE.WebGLBatch.prototype.loadUniformInputs = function() {
 	
 	for( var i = 0; i < this.uniforms.length; i++ ) {
 		
@@ -185,7 +183,7 @@ THREE.ShaderProgram.prototype.loadUniformInputs = function() {
 	}
 }
 
-THREE.ShaderProgram.prototype.bindTextures = function() {
+THREE.WebGLBatch.prototype.bindTextures = function() {
 	
 	//this.GL.activeTexture( texture.GLTextureId );
 	//this.GL.bindTexture  ( this.GL.TEXTURE_2D, texture.GLTexture );

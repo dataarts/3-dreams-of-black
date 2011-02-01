@@ -2,7 +2,7 @@
  * Helper to extract all uniforms out of a shader program
  */
 
-THREE.ShaderProgramUniforms = (function() {
+THREE.WebGLBatchUniforms = (function() {
 
 	var GL;
 	var program;
@@ -11,7 +11,7 @@ THREE.ShaderProgramUniforms = (function() {
 	
 	var extract = function( incomingProgram ) {
 		
-		GL       = THREE.RendererWebGLContext;
+		GL       = THREE.WebGLRendererContext;
 		program  = incomingProgram;
 		
 		return extractUniforms();
@@ -25,9 +25,9 @@ THREE.ShaderProgramUniforms = (function() {
 
 		var uniforms = [];
 		
-		for( var i = 0; i < THREE.Shader.uniforms.length; i++ )
-			if( uniformExists( THREE.Shader.uniforms[ i ] ))
-				uniforms.push( addUniform( THREE.Shader.uniforms[ i ] ));
+		for( var i = 0; i < THREE.WebGLShaderDefinitions.uniforms.length; i++ )
+			if( uniformExists( THREE.WebGLShaderDefinitions.uniforms[ i ] ))
+				uniforms.push( addUniform( THREE.WebGLShaderDefinitions.uniforms[ i ] ));
 
 		uniforms.dictionary = {};
 		

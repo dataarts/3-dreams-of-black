@@ -2,7 +2,7 @@
  * Helper to extract all existing attributes out of a shader program
  */
 
-THREE.ShaderProgramAttributes = (function() {
+THREE.WebGLBatchAttributes = (function() {
 
 	var GL;
 	var program;
@@ -11,7 +11,7 @@ THREE.ShaderProgramAttributes = (function() {
 
 	var extract = function( incomingProgram ) {
 		
-		GL      = THREE.RendererWebGLContext;
+		GL      = THREE.WebGLRendererContext;
 		program = incomingProgram;
 		
 		return extractAttributes();
@@ -24,9 +24,9 @@ THREE.ShaderProgramAttributes = (function() {
 
 		var attributes = [];
 
-		for( var i = 0; i < THREE.Shader.attributes.length; i++ )
-			if( attributeExists( THREE.Shader.attributes[ i ] ))
-				attributes.push( addAttribute( THREE.Shader.attributes[ i ] ));
+		for( var i = 0; i < THREE.WebGLShaderDefinitions.attributes.length; i++ )
+			if( attributeExists( THREE.WebGLShaderDefinitions.attributes[ i ] ))
+				attributes.push( addAttribute( THREE.WebGLShaderDefinitions.attributes[ i ] ));
 				
 		attributes.dictionary = {};
 		

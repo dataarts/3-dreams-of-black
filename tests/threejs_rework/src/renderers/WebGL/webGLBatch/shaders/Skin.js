@@ -1,4 +1,4 @@
-THREE.Shader.skinVertex = (function() {
+THREE.WebGLShaderDefinitions.skinVertex = (function() {
 	
 	return [
 

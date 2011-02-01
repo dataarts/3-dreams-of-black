@@ -1,6 +1,6 @@
 //--- Texture Vertex Shader ---
 
-THREE.Shader.textureVertex = (function() {
+THREE.WebGLShaderDefinitions.textureVertex = (function() {
 	
 	return [
 	
@@ -21,7 +21,7 @@ THREE.Shader.textureVertex = (function() {
 
 //--- Texture Fragment Shader ---
 
-THREE.Shader.textureFragment = (function() {
+THREE.WebGLShaderDefinitions.textureFragment = (function() {
 	
 	return [ 	
 	

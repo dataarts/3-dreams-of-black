@@ -3,7 +3,7 @@
  */
 
 
-THREE.ShaderProgramCompiler = (function() {
+THREE.WebGLBatchCompiler = (function() {
 	
 	// cache
 	
@@ -28,7 +28,7 @@ THREE.ShaderProgramCompiler = (function() {
 	
 	var compile = function( incomingMesh ) {
 		
-		GL             = THREE.RendererWebGLContext;
+		GL             = THREE.WebGLRendererContext;
 		mesh           = incomingMesh;
 		materials      = mesh.materials;
 		geometry       = mesh.geometry;
@@ -45,7 +45,7 @@ THREE.ShaderProgramCompiler = (function() {
 		textureBuffers  = processTextureMaps();
 		geoBuffers      = processGeometry();
 		
-		mesh.shaderPrograms = processShaderPrograms();
+		mesh.webGLBatches = processWebGLBatches();
 	}
 		
 
@@ -67,7 +67,7 @@ THREE.ShaderProgramCompiler = (function() {
 			
 			if( material instanceof THREE.MeshShaderMaterial ) {
 	
-				shaderCodeInfos.push( new THREE.ShaderProgramCompiler.ShaderCodeInfo( [ material ], material.vertex_shader, material.fragment_shader ));
+				shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( [ material ], material.vertex_shader, material.fragment_shader ));
 				break;	
 			}
 		}
@@ -90,9 +90,9 @@ THREE.ShaderProgramCompiler = (function() {
 		
 		// buffers processed?
 		
-		if( THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ] === undefined ) {
+		if( THREE.WebGLBatchCompiler.geometryBuffersDictionary[ geometry.id ] === undefined ) {
 			
-			THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ] = [];	
+			THREE.WebGLBatchCompiler.geometryBuffersDictionary[ geometry.id ] = [];	
 	
 			
 			// loop through chunks
@@ -176,13 +176,13 @@ THREE.ShaderProgramCompiler = (function() {
 				
 				if( attributeBuffers.length > 0 && elementBuffer !== undefined ) {
 					
-					var buffers = new THREE.ShaderProgramCompiler.GLBuffers( chunkName, attributeBuffers, elementBuffer );
-					THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ].push( buffers )
+					var buffers = new THREE.WebGLBatchCompiler.GLBuffers( chunkName, attributeBuffers, elementBuffer );
+					THREE.WebGLBatchCompiler.geometryBuffersDictionary[ geometry.id ].push( buffers )
 				}
 			}
 		}
 		
-		return THREE.ShaderProgramCompiler.geometryBuffersDictionary[ geometry.id ];
+		return THREE.WebGLBatchCompiler.geometryBuffersDictionary[ geometry.id ];
 	}
 	
 	
@@ -224,30 +224,30 @@ THREE.ShaderProgramCompiler = (function() {
 	
 	//--- process shader programs ---
 	
-	function processShaderPrograms() {
+	function processWebGLBatches() {
 		
-		var programs = [];
+		var batches = [];
 		
 		for( chunkName in geometryChunks ) {
 			
 			var chunk = geometryChunks[ chunkName ];
-			var program;
+			var batch;
 			
 			//if( chunk.materials === undefined || chunk.materials[ 0 ] === undefined ) {
 			if( true ) {
 			
 				// add uniform inputs (that are automatically updated on ShaderProgram.render)
 			
-				program = new THREE.ShaderProgram( shaderCodeInfos[ 0 ] ); // is [ 0 ] going to work?
+				batch = new THREE.WebGLBatch( shaderCodeInfos[ 0 ] ); // is [ 0 ] going to work?
  				
-				program.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
-			//	program.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix.webGL, "normalMatrix" );
+				batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
+				batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix.webGL, "normalMatrix" );
 				
 				if( mesh instanceof THREE.Skin ) {
 
-					program.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32" );
-					program.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "bones"     );
-					program.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoses" );
+					batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32" );
+					batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "bones"     );
+					batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoses" );
 				}
 				
 				// todo: add sampler uniform if exists
@@ -264,13 +264,13 @@ THREE.ShaderProgramCompiler = (function() {
 						
 						for( var a = 0; a < attributeBuffers.length; a++ ) {
 							
-							program.addAttributeBuffer( attributeBuffers[ a ].name,
+							batch.addAttributeBuffer( attributeBuffers[ a ].name,
 														attributeBuffers[ a ].type,
 														attributeBuffers[ a ].buffer,
 														attributeBuffers[ a ].size );
 						}
 	
-						program.addElementBuffer( elementBuffer.buffer, elementBuffer.size );
+						batch.addElementBuffer( elementBuffer.buffer, elementBuffer.size );
 					}
 				}
 			}
@@ -279,10 +279,10 @@ THREE.ShaderProgramCompiler = (function() {
 				// todo: match chunk.materials against shaderCodeIds[ x ].originalMaterials
 			}
 			
-			programs.push( program );
+			batches.push( batch );
 		}
 		
-		return programs;
+		return batches;
 	}
 	
 	//--- public ---
@@ -298,10 +298,10 @@ THREE.ShaderProgramCompiler = (function() {
  * Dictionaries and helpers
  */
 
-THREE.ShaderProgramCompiler.geometryBuffersDictionary = {};
-THREE.ShaderProgramCompiler.textureBuffersDictionary  = {};
+THREE.WebGLBatchCompiler.geometryBuffersDictionary = {};
+THREE.WebGLBatchCompiler.textureBuffersDictionary  = {};
 
-THREE.ShaderProgramCompiler.ShaderCodeInfo = function( originalMaterials, vertexShaderId, fragmentShaderId ) {
+THREE.WebGLBatchCompiler.ShaderCodeInfo = function( originalMaterials, vertexShaderId, fragmentShaderId ) {
 	
 	this.originalMaterials = originalMaterials;
 	this.vertexShaderId    = vertexShaderId;
@@ -310,7 +310,7 @@ THREE.ShaderProgramCompiler.ShaderCodeInfo = function( originalMaterials, vertex
 	this.wireframe         = false;
 }
 
-THREE.ShaderProgramCompiler.GLBuffers = function( chunkName, attributes, elements ) {
+THREE.WebGLBatchCompiler.GLBuffers = function( chunkName, attributes, elements ) {
 	
 	this.chunkName        = chunkName;
 	this.attributeBuffers = attributes;

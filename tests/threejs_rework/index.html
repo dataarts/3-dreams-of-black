@@ -76,17 +76,17 @@
 		<script type="text/javascript" src="src/materials/mappings/SphericalRefractionMapping.js"></script>
 		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
 
-		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGL.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/RendererWebGLScene.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLRenderer.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLRendererScene.js"></script>
 
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgram.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramProgram.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramAttributes.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramUniforms.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/ShaderProgramCompiler.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/Shader.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/shaders/Skin.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/shaders/Texture.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatch.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchProgram.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchAttributes.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchUniforms.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompiler.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLShaderDefinitions.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Skin.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Texture.js"></script>
 	
 	
 		<!-- Experience Code -->
@@ -157,7 +157,7 @@
 
 					// renderer
 
-					renderer = new THREE.RendererWebGL();
+					renderer = new THREE.WebGLRenderer();
 					renderer.setSize( window.innerWidth, window.innerHeight );
 
 					var container = document.createElement( "div" );
