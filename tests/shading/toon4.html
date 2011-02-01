@@ -206,9 +206,11 @@
 
 				} );
 
+				// var material2 = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+
 				loader = new THREE.Loader( true );
 				document.body.appendChild( loader.statusDomElement );
-				loader.loadAscii( { model: "obj/leeperrysmith/LeePerrySmith.js", callback: function( geometry ) { createMesh( geometry, scene, 10, material, material ) } } );
+				loader.loadAscii( { model: "obj/leeperrysmith/LeePerrySmith.js", callback: function( geometry ) { createMesh( geometry, scene, 10, material, material2 ) } } );
 
 				renderer = new THREE.WebGLRenderer();
 				container.appendChild( renderer.domElement );
@@ -226,19 +228,18 @@
 
 			function  createMesh( geometry, scene, scale, material, material2 ) {
 
-				mesh = new THREE.Mesh( geometry, material );
-				mesh.position.x = -50;
-				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
-				scene.addObject( mesh );
-
-				loader.statusDomElement.style.display = "none";
-
 				meshOutline = new THREE.Mesh( geometry, material2 );
-				meshOutline.position.x = 50;
+				meshOutline.position.x = 10;
 				meshOutline.scale.x = meshOutline.scale.y = meshOutline.scale.z = scale;
 				meshOutline.flipSided = true;
 				// meshOutline.doubleSided = false;
 				scene.addObject( meshOutline );
+
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				scene.addObject( mesh );
+
+				loader.statusDomElement.style.display = "none";
 
 			}
 
