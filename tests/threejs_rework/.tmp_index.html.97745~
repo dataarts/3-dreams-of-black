@@ -131,7 +131,7 @@
 					mesh   = new THREE.Skin( female, material );
 					camera = new THREE.Camera();
 
-					mesh.position.z = -200;
+					mesh.position.z = -400;
 					mesh.position.y = -100;
 
 					scene.addChild( mesh );
@@ -183,11 +183,11 @@
 				
 				var Update = function()
 				{
-					mesh.rotation.y = time * 15;
+					mesh.rotation.y = time;
 					
-					bone0.rotation.x = Math.sin( time ) * 10;
-					bone1.rotation.x = Math.sin( time ) * 25;
-					bone2.rotation.x = Math.sin( time ) * 45;
+					bone0.rotation.x = Math.sin( time ) * 0.25;
+					bone1.rotation.x = Math.sin( time ) * 0.5;
+					bone2.rotation.x = Math.sin( time ) * 1;
 					
 					renderer.render( scene, camera );
 

@@ -16,7 +16,6 @@ THREE.Matrix4 = function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33
 	this.flat   = new Array( 16 );
 	this.m33    = new THREE.Matrix3();
 
-
 	// WebGL additions - NEEDS TO BE DISCUSSED!
 
 	if( typeof Float32Array !== 'undefined' ) {
@@ -34,30 +33,57 @@ THREE.Matrix4 = function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33
 	
 			return flat;
 		}
-
-		/*
-		this.webGL = {
-			
-			that:     	  this,
-			float32Array: new Float32Array( 16 ),
-			
-			get flatFloat32Array() {
-				
-				var flat = this.float32Array;
-				var mat  = this.that;
-				
-				flat[ 0  ] = mat.n11; flat[ 1  ] = mat.n21; flat[ 2  ] = mat.n31; flat[ 3  ] = mat.n41;
-				flat[ 4  ] = mat.n12; flat[ 5  ] = mat.n22; flat[ 6  ] = mat.n32; flat[ 7  ] = mat.n42;
-				flat[ 8  ] = mat.n13; flat[ 9  ] = mat.n23; flat[ 10 ] = mat.n33; flat[ 11 ] = mat.n43;
-				flat[ 12 ] = mat.n14; flat[ 13 ] = mat.n24; flat[ 14 ] = mat.n34; flat[ 15 ] = mat.n44;
-		
-				return flat;
-			}
-		}*/
 	}
 };
 
 THREE.Matrix4.prototype = {
+
+	setPosition: function( vec3 ) {
+		
+		this.n14 = vec3.x;
+		this.n24 = vec3.y;
+		this.n34 = vec3.z;
+		
+		return this;
+	},
+
+	setRotationFromEuler: function( vec3 ) {
+		
+		var x = vec3.x * Math.PI / 180;
+		var y = vec3.y * Math.PI / 180;
+		var z = vec3.z * Math.PI / 180;
+		
+	    var ch = Math.cos( y  );
+	    var sh = Math.sin( y  );
+	    var ca = Math.cos( -z );
+	    var sa = Math.sin( -z );
+	    var cb = Math.cos( x  );
+	    var sb = Math.sin( x  );
+	
+	    this.n11 = ch * ca;
+	    this.n12 = sh*sb - ch*sa*cb;
+	    this.n13 = ch*sa*sb + sh*cb;
+	    this.n21 = sa;
+	    this.n22 = ca*cb;
+	    this.n23 = -ca*sb;
+	    this.n31 = -sh*ca;
+	    this.n32 = sh*sa*cb + ch*sb;
+	    this.n33 = -sh*sa*sb + ch*cb;		
+	},
+
+	scale: function( vec3 ) {
+		
+		var x = vec3.x;
+		var y = vec3.y;
+		var z = vec3.z;
+		
+		this.n11 *= x; this.n12 *= x; this.n13 *= x;
+		this.n21 *= y; this.n22 *= y; this.n23 *= y;
+		this.n31 *= z; this.n32 *= z; this.n33 *= z;
+
+		return this;
+	},
+	
 
 	identity: function () {
 

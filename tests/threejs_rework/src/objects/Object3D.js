@@ -10,36 +10,16 @@ THREE.Object3D = function() {
 	this.parent		  = undefined;
 	this.children     = [];
 
-	this.isDirty      = true;
+	this.position     = new THREE.Vector3();
+	this.rotation     = new THREE.Vector3();
+	this.scale        = new THREE.Vector3( 1, 1, 1 );
 	this.localMatrix  = new THREE.Matrix4();
 	this.globalMatrix = new THREE.Matrix4();
 
-	//this.position     = new THREE.Vector3();
-	this.rotation       = new THREE.Vector3();
-	this.rotationMatrix = new THREE.Matrix4();
-	this.tempMatrix     = new THREE.Matrix4();
-	
-
 	this.boundRadius  = 0;
 	this.screenZ      = 0;
-
-	this.added        = new signals.Signal();
-	this.removed      = new signals.Signal();
-
-	this.position = {
-		
-		that: this,
-
-		get x()      { return this.that.localMatrix.n14; },
-		set x( val ) { this.that.localMatrix.n14 = val; this.that.isDirty = true; },
-	
-		get y()      { return this.that.localMatrix.n24; },
-		set y( val ) { this.that.localMatrix.n24 = val; this.that.isDirty = true; },
-	
-		get z()      { return this.that.localMatrix.n34; },
-		set z( val ) { this.that.localMatrix.n34 = val; this.that.isDirty = true; }
-	};
 }
+
 
 /*
  * Update
@@ -52,30 +32,50 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 	if( !this.visible ) return;
 
 	
-	// TEMP!
+	// update position
 	
-	this.localMatrix.setTranslation( this.localMatrix.n14, this.localMatrix.n24, this.localMatrix.n34 );
-
-	this.rotationMatrix.setRotationX( this.rotation.x );
-
-	if ( this.rotation.y != 0 ) this.rotationMatrix.multiplySelf( this.tempMatrix.setRotationY( this.rotation.y ) );
-	if ( this.rotation.z != 0 ) this.rotationMatrix.multiplySelf( this.tempMatrix.setRotationZ( this.rotation.z ) );
-
-	this.localMatrix.multiplySelf( this.rotationMatrix );
+	var isDirty = false;
 	
-	this.isDirty = true;
-	
-	
-	// ENDTEMP!
-
-
-
-	// update this
-
-	if( forceUpdate || this.isDirty ) {
+	if( this.position.isDirty ) {
 		
-		this.isDirty = false;
-		forceUpdate  = true;
+		this.localMatrix.setPosition( this.position );
+		this.position.isDirty = false;
+		isDirty = true;
+	}
+
+
+	// update rotation
+
+	if( this.rotation.isDirty ) {
+		
+		this.localMatrix.setRotationFromEuler( this.rotation );
+		this.rotation.isDirty = false;
+
+		if( this.scale.isDirty || this.scale.x !== 1 || this.scale.y !== 1 || this.scale.z !== 1 ) {
+			
+			this.localMatrix.scale( this.scale );
+			this.scale.isDirty = false;
+		}
+
+		isDirty = true;
+	}
+
+
+	// update scale
+	
+	if( this.scale.isDirty ) {
+		
+		this.localMatrix.setRotationFromEuler( this.rotation );
+		this.localMatrix.scale( this.scale );
+		
+		this.scale.isDirty = false;
+		isDirty = true;
+	}
+
+
+	if( forceUpdate || isDirty ) {
+		
+		forceUpdate = true;
 		
 		if( parentGlobalMatrix )
 			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
@@ -112,7 +112,6 @@ THREE.Object3D.prototype.addChild = function( child ) {
 	if( this.children.indexOf( child ) === -1 ) {
 		
 		this.children.push( child );
-		child.added.dispatch( this );
 	}
 };
 
@@ -128,6 +127,5 @@ THREE.Object3D.prototype.removeChild = function() {
 	if( childIndex !== -1 )	{
 		
 		this.children.splice( childIndex, 1 );
-		child.removed.dispatch( this );
 	}
 };
