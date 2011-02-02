@@ -19,22 +19,29 @@ THREE.WebGLShaderDefinitions = {
 		{ name: "uSceneFogFar", 			type: "1f" },
 		{ name: "uSceneFogColor", 			type: "vec3" },
 		{ name: "uColor",					type: "vec3" },
-		{ name:	"uMap0", 					type: "sampler" },
-		{ name: "uMap1", 					type: "sampler" },
-		{ name: "uLightMap", 				type: "sampler" },
-		{ name: "uEnvMap", 					type: "sampler" },
-		{ name: "uBumpMap", 				type: "sampler" },
-		{ name: "uNormalMap",				type: "sampler" }
+		{ name:	"uMap0", 					type: "sampler2D" },
+		{ name: "uMap1", 					type: "sampler2D" },
+		{ name: "uLightMap", 				type: "sampler2D" },
+		{ name: "uEnvMap", 					type: "sampler2D" },
+		{ name: "uBumpMap", 				type: "sampler2D" },
+		{ name: "uNormalMap",				type: "sampler2D" }
 	],
 	
 	attributes: [
 	
-		{ name: "aVertices", 	type: "vec4" },	
-		{ name: "aNormals",  	type: "vec3" },	
-		{ name: "aColors",   	type: "vec3" },	
-		{ name: "aUV0s",     	type: "vec2" },	
-		{ name: "aUV1s",     	type: "vec2" },	
+		{ name: "aVertex", 		type: "vec4" },	
+		{ name: "aNormal",  	type: "vec3" },	
+		{ name: "aColor",   	type: "vec3" },	
+		{ name: "aUV0",     	type: "vec2" },	
+		{ name: "aUV1",     	type: "vec2" },	
 		{ name: "aSkinIndices", type: "vec4" },	
 		{ name: "aSkinWeights", type: "vec4" },	
+	],
+	
+	varyings: [
+	
+		{ name: "vUV0", 	type: "vec2" },
+		{ name: "vUV1", 	type: "vec2" },
+		{ name: "vEnvUV", 	type: "vec2" }
 	]
 }

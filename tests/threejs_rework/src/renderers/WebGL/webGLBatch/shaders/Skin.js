@@ -16,7 +16,6 @@ THREE.WebGLShaderDefinitions.skinVertex = (function() {
 		
 		"void main(void)",
 		"{",
-		
 			"int  index    = int( aSkinIndices.x );",
 			"vec4 modified = uBonesRootInverseMatrix * uBoneGlobalMatrices[ index ] * uBonePoseMatrices[ index ] * aVertices;",
 			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * modified;",

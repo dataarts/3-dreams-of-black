@@ -10,7 +10,13 @@ THREE.WebGLShaderDefinitions.lambertVertex = (function() {
 		"uniform 	mat4 	uCameraPerspectiveMatrix;",
 		"uniform 	mat4 	uMeshGlobalMatrix;",
 		
+		"uniform	mat4	uBonesRootInverseMatrix;",
+		"uniform	mat4	uBoneGlobalMatrices[16];",
+		"uniform	mat4	uBonePoseMatrices[16];",
+		
 		"attribute 	vec4 	aVertices;",
+		"attribute	vec4	aSkinIndices;",
+		"attribute	vec4	aSkinWeights;",
 		"attribute	vec2	aUV0s;",
 		
 		"varying 	vec2	vUV0;",
@@ -18,7 +24,9 @@ THREE.WebGLShaderDefinitions.lambertVertex = (function() {
 		"void main(void)",
 		"{",
 			"vUV0 = aUV0s;",
-			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * aVertices;",
+			"int  index    = int( aSkinIndices.x );",
+			"gl_Position = uBonesRootInverseMatrix * uBoneGlobalMatrices[ index ] * uBonePoseMatrices[ index ] * aVertices;",
+			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * gl_Position;",
 		"}"
 	].join( "\n" );
 
