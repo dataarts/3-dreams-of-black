@@ -109,18 +109,23 @@
 			'outline' : {
 
 				uniforms: {
+				
+				"displacement":  { type: "f", value: 0.5 },
 
 				},
 
 				vertex_shader: [
 
+					"uniform float displacement;",
 					"varying vec3 vNormal;",
 
 					"void main() {",
 
-						"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+						"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 						"vNormal = normalize( normalMatrix * normal );",
-						"gl_Position += vec4( vNormal, 1.0 );",
+
+						"vec4 displacedPosition = vec4( vNormal.xyz * displacement, 0.0 ) + mvPosition;",
+						"gl_Position = projectionMatrix * displacedPosition;",
 
 					"}"
 
@@ -206,13 +211,17 @@
 
 				} );
 
-				// var material2 = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+				var wireframe = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe:true } );
+				material = [ new THREE.MeshBasicMaterial( { color: 0xff0000 } ), wireframe ];
+				//var material2 = [ new THREE.MeshBasicMaterial( { color: 0x000000 }), wireframe ];
+				
+				material2 = [ material2, new THREE.MeshBasicMaterial( { color: 0x000000, wireframe:true } ) ];
 
 				loader = new THREE.Loader( true );
 				document.body.appendChild( loader.statusDomElement );
 				loader.loadAscii( { model: "obj/leeperrysmith/LeePerrySmith.js", callback: function( geometry ) { createMesh( geometry, scene, 10, material, material2 ) } } );
 
-				renderer = new THREE.WebGLRenderer();
+				renderer = new THREE.WebGLRenderer( { clearAlpha:1, clearColor:0xffffff });
 				container.appendChild( renderer.domElement );
 
 				stats = new Stats();
