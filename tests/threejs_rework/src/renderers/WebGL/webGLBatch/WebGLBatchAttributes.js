@@ -12,7 +12,7 @@ THREE.WebGLBatchAttributes = (function() {
 	var extract = function( incomingProgram ) {
 		
 		GL      = THREE.WebGLRendererContext;
-		program = incomingProgram;
+		program = incomingProgram.program;
 		
 		return extractAttributes();
 	}

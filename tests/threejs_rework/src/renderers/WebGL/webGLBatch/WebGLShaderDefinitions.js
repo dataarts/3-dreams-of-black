@@ -18,8 +18,13 @@ THREE.WebGLShaderDefinitions = {
 		{ name: "uSceneFogNear",            type: "1f" },
 		{ name: "uSceneFogFar", 			type: "1f" },
 		{ name: "uSceneFogColor", 			type: "vec3" },
+		{ name: "uColor",					type: "vec3" },
 		{ name:	"uMap0", 					type: "sampler" },
-		{ name: "uMap1", 					type: "sampler" }
+		{ name: "uMap1", 					type: "sampler" },
+		{ name: "uLightMap", 				type: "sampler" },
+		{ name: "uEnvMap", 					type: "sampler" },
+		{ name: "uBumpMap", 				type: "sampler" },
+		{ name: "uNormalMap",				type: "sampler" }
 	],
 	
 	attributes: [

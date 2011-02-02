@@ -2,11 +2,11 @@
  * Helper for creating Shader Program and reuse if already exists
  */
 
-THREE.WebGLBatchProgram = function( GL, vertexShaderId, fragmentShaderId ) {
+THREE.WebGLBatchProgram = function( vertexShaderId, fragmentShaderId ) {
 	
 	//--- Construct ---
 	
-	this.GL              = GL;
+	this.GL              = THREE.WebGLRendererContext;
 	this.vertexShader    = 0;
 	this.fragmentShader  = 0;
 	this.program         = 0;

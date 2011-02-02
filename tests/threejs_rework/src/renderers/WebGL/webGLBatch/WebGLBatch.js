@@ -6,12 +6,15 @@ THREE.WebGLBatch = function( args )
 {
 	// construct
 	
-	this.GL           = THREE.WebGLRendererContext;
- 	this.program      = new THREE.WebGLBatchProgram       ( this.GL, args.vertexShaderId, args.fragmentShaderId );
-	this.uniforms     = THREE.WebGLBatchUniforms  .extract( this.program.program );
-	this.attributes   = THREE.WebGLBatchAttributes.extract( this.program.program );
-	this.elements     = -1;
-	this.elementsSize = -1;
+	this.GL            = THREE.WebGLRendererContext;
+ 	this.program       = new THREE.WebGLBatchProgram       ( args.vertexShaderId, args.fragmentShaderId );
+	this.uniforms      = THREE.WebGLBatchUniforms  .extract( this.program );
+	this.attributes    = THREE.WebGLBatchAttributes.extract( this.program );
+	this.textures      = [];
+	this.uniformInputs = [];
+	this.elements      = -1;
+	this.elementsSize  = -1;
+	
 
 	this.id        = this.program.id;
 	this.blendMode = args.blendMode !== undefined ? args.blendMode : "src";
@@ -30,10 +33,12 @@ THREE.WebGLBatch.prototype.addUniformInput = function( name, type, scope, variab
 		this.uniforms.dictionary[ name ].scope    = scope;
 		this.uniforms.dictionary[ name ].variable = variable;		
 		
+		this.uniformInputs.push( this.uniforms.dictionary[ name ] );
+		
 		return;
 	}
 	
-	console.log( "Warning: ShaderProgram.addUniformInput: name and type didn't match for " + name + " of type " + type + " in program " + this.program.id );
+	console.log( "Warning: WebGLBatch.addUniformInput: name/type mismatch: " + name + "/" + type + " program: " + this.program.id );
 };
 
 
@@ -51,7 +56,7 @@ THREE.WebGLBatch.prototype.addAttributeBuffer = function( name, type, buffer, si
 		return;
 	}
 	
-	console.log( "Warning: ShaderProgram.addAttributeBuffer: name and type didn't match for " + name + " of type " + type + " in program " + this.program.id );
+	console.log( "Warning: WebGLBatch.addAttributeBuffer: name/type mismatch: " + name + "/" + type + " program: " + this.program.id );
 };
 
 
@@ -65,6 +70,23 @@ THREE.WebGLBatch.prototype.addElementBuffer = function( buffer, size ) {
 	this.elementsSize = size; 
 }
 
+
+/*
+ * Add Texture
+ */
+
+THREE.WebGLBatch.prototype.addTexture = function( name, buffer ) {
+	
+	if( this.uniforms.dictionary[ name ] !== undefined ) {
+		
+		this.uniforms.dictionary[ name ].buffer = buffer;
+		this.textures.push( this.uniforms.dictionary[ name ] );
+		
+		return;
+	}
+
+	console.log( "Warning: WebGLBatch.addTexture: name/type mismatch: " + name + "/sampler program: " + this.program.id );
+}  
 
 
 /*
@@ -168,24 +190,28 @@ THREE.WebGLBatch.prototype.bindAttributeBuffers = function() {
 	
 THREE.WebGLBatch.prototype.loadUniformInputs = function() {
 	
-	for( var i = 0; i < this.uniforms.length; i++ ) {
+	for( var i = 0; i < this.uniformInputs.length; i++ ) {
 		
-		var scope    = this.uniforms[ i ].scope;
-		var variable = this.uniforms[ i ].variable;
+		var scope    = this.uniformInputs[ i ].scope;
+		var variable = this.uniformInputs[ i ].variable;
 		
-		if( scope !== undefined ) {
-			
-			if( typeof scope[ variable ] === "function" )
-				this.loadUniform( this.uniforms[ i ].name, scope[ variable ]() );
-			else
-				this.loadUniform( this.uniforms[ i ].name, scope[ variable ] );
-		}
+		if( typeof scope[ variable ] === "function" )
+			this.loadUniform( this.uniformInputs[ i ].name, scope[ variable ]() );
+		else
+			this.loadUniform( this.uniformInputs[ i ].name, scope[ variable ] );
 	}
 }
 
 THREE.WebGLBatch.prototype.bindTextures = function() {
 	
-	//this.GL.activeTexture( texture.GLTextureId );
-	//this.GL.bindTexture  ( this.GL.TEXTURE_2D, texture.GLTexture );
+	for( var t = 0; t < this.textures.length; t++ ) {
+		
+	    this.GL.activeTexture( this.GL[ "TEXTURE" + t ] );
+	    this.GL.bindTexture  ( this.GL.TEXTURE_2D, this.textures[ t ].buffer );
+	    this.GL.uniform1i    ( this.textures[ t ].location, t );
+	}
 }
+
+
+
 	

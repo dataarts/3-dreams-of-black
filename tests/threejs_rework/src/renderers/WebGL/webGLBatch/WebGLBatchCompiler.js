@@ -1,5 +1,6 @@
 /*
- * Shader Program Compiler: compiles all data within a mesh to a ShaderProgram. Beware: This is magic.
+ * Shader Program Compiler: compiles all data within a mesh to a ShaderProgram. 
+ * Beware: This is all magic.
  */
 
 
@@ -42,7 +43,7 @@ THREE.WebGLBatchCompiler = (function() {
 		uv1s           = [];
 
 		shaderCodeInfos = processShaderCode();
-		textureBuffers  = processTextureMaps();
+		shaderCodeInfos = processTextureMaps();
 		geoBuffers      = processGeometry();
 		
 		mesh.webGLBatches = processWebGLBatches();
@@ -53,24 +54,60 @@ THREE.WebGLBatchCompiler = (function() {
 		
 	function processShaderCode() {
 		
-		shaderCodeInfos = [];
+		// set geometry.materials on all chunks that don't have materials
+		// remove all other materials on a chunk if one of them is a MeshShaderMaterial as
+		// it cannot compile properly with others
 		
-		// todo: assign base material if no exists
-		// todo: compile all (but MeshShaderMaterials) into one single material 
-		
-		for( var m = 0; m < materials.length; m++ ) {
-	
-			var material = materials[ m ];
+		for( var chunkName in geometryChunks ) {
 			
-			if( material instanceof THREE.MeshShaderMaterial ) {
-	
-				shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( [ material ], material.vertex_shader, material.fragment_shader ));
-				break;	
-			}
-			else if( material instanceof THREE.LambertMaterial ) {
+			var chunk = geometryChunks[ chunkName ];
+			
+			if( chunk.materials.length === 0 || chunk.materials[ 0 ] === undefined )
+				chunk.materials = materials;
 				
-				shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( [ material ], "lambertVertex", "lambertFragment" ));
-				break;
+			for( var m = 0; m < chunk.materials.length; m++ ) {
+				
+				if( chunk.materials[ m ] instanceof THREE.MeshShaderMaterial ) {
+					
+					chunk.materials = [ chunk.materials[ m ]];
+					break;
+				}
+			}
+		}
+
+
+		// todo: assign base material if no exists
+		// todo: process each geometry chunk to find all material combinations
+		// todo: compile all combinations (but MeshShaderMaterials) into single shaders 
+		
+		shaderCodeInfos = [];
+
+		for( var chunkName in geometryChunks ) {
+			
+			var chunk = geometryChunks[ chunkName ];
+			
+			// check so not exist
+			
+			for( var s = 0; s < shaderCodeInfos.length; s++ ) {
+				
+				if( shaderCodeInfos[ s ].originalMaterials === chunk.materials )
+					break;
+			}
+			
+			
+			// create material
+			
+			if( s === shaderCodeInfos.length ) {
+				
+				if( chunk.materials[ 0 ] instanceof THREE.MeshShaderMaterial ) {
+					
+					shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( chunk.materials, chunk.materials[ 0 ].vertex_shader, chunk.materials[ 0 ].fragment_shader ));
+				}
+				else {
+					
+					THREE.WebGLBatchCompilerMaterials.compile( chunk.materials );
+					shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( chunk.materials, THREE.WebGLBatchCompilerMaterials.vertexShader, THREE.WebGLBatchCompilerMaterials.fragmentShader ));
+				}
 			}
 		}
 		
@@ -82,8 +119,98 @@ THREE.WebGLBatchCompiler = (function() {
 	
 	function processTextureMaps() {
 		
-		// maps processed?
+		var textures = [];
+		
+		for( var s = 0; s < shaderCodeInfos.length; s++ ) {
+			
+			for( var m = 0; m < shaderCodeInfos[ s ].originalMaterials.length; m++ ) {
+				
+				var material = shaderCodeInfos[ s ].originalMaterials[ m ];
+				
+				if( material.map !== undefined && material.map !== null )
+					bindTexture( material.map, shaderCodeInfos[ s ], "uMap0" );
+				
+				if( material.env_map !== undefined && material.env_map !== null )
+					bindTexture( material.env_map, shaderCodeInfos[ s ], "uEnvMap" );
+			}
+		}
+
+		return shaderCodeInfos;
 	}	
+
+	function bindTexture( texture, shaderCodeInfo, uniform ) {
+
+		// early out
+
+		if( texture.image === undefined || texture.image.src === undefined )
+			return;
+		
+		
+		// check if already added
+		
+		for( var s = 0; s < shaderCodeInfos.length; s++ ) {
+			
+			if( shaderCodeInfos[ s ].originalTextures[ uniform ]           !== -1 && 
+				shaderCodeInfos[ s ].originalTextures[ uniform ].image     !== undefined && 
+				shaderCodeInfos[ s ].originalTextures[ uniform ].image.src !== undefined && 
+				shaderCodeInfos[ s ].originalTextures[ uniform ].image.src === texture.image.src ) {
+
+				shaderCodeInfo.originalTextures[ uniform ] = shaderCodeInfos[ s ].originalTextures[ uniform ];
+				shaderCodeInfo.textureBuffers  [ uniform ] = shaderCodeInfos[ s ].textureBuffers  [ uniform ];
+				return;
+			}
+		}
+		
+		// add
+		
+		shaderCodeInfo.originalTextures[ uniform ] = texture;
+		shaderCodeInfo.textureBuffers  [ uniform ] = GL.createTexture();
+		
+		GL.bindTexture   ( GL.TEXTURE_2D, shaderCodeInfo.textureBuffers[ uniform ] );
+	    GL.texImage2D    ( GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, texture.image );
+		GL.texParameteri ( GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, convertThreeParameterToGL( texture.wrap_s ));
+		GL.texParameteri ( GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, convertThreeParameterToGL( texture.wrap_t ));
+
+		GL.texParameteri ( GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, convertThreeParameterToGL( texture.mag_filter ));
+		GL.texParameteri ( GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, convertThreeParameterToGL( texture.min_filter ));
+		GL.generateMipmap( GL.TEXTURE_2D );
+		GL.bindTexture   ( GL.TEXTURE_2D, null );
+	}
+	
+	
+	function convertThreeParameterToGL( p ) {
+
+		switch( p ) {
+
+			case THREE.RepeatWrapping: 				return GL.REPEAT; 					break;
+			case THREE.ClampToEdgeWrapping: 		return GL.CLAMP_TO_EDGE; 			break;
+			case THREE.MirroredRepeatWrapping: 		return GL.MIRRORED_REPEAT; 			break;
+
+			case THREE.NearestFilter: 				return GL.NEAREST; 					break;
+			case THREE.NearestMipMapNearestFilter: 	return GL.NEAREST_MIPMAP_NEAREST; 	break;
+			case THREE.NearestMipMapLinearFilter: 	return GL.NEAREST_MIPMAP_LINEAR; 	break;
+
+			case THREE.LinearFilter: 				return GL.LINEAR; 					break;
+			case THREE.LinearMipMapNearestFilter: 	return GL.LINEAR_MIPMAP_NEAREST;	break;
+			case THREE.LinearMipMapLinearFilter: 	return GL.LINEAR_MIPMAP_LINEAR; 	break;
+
+			case THREE.ByteType: 					return GL.BYTE; 					break;
+			case THREE.UnsignedByteType: 			return GL.UNSIGNED_BYTE; 			break;
+			case THREE.ShortType: 					return GL.SHORT; 					break;
+			case THREE.UnsignedShortType: 			return GL.UNSIGNED_SHORT; 			break;
+			case THREE.IntType: 					return GL.INT; 						break;
+			case THREE.UnsignedShortType: 			return GL.UNSIGNED_INT; 			break;
+			case THREE.FloatType: 					return GL.FLOAT; 					break;
+
+			case THREE.AlphaFormat: 				return GL.ALPHA; 					break;
+			case THREE.RGBFormat: 					return GL.RGB; 						break;
+			case THREE.RGBAFormat: 					return GL.RGBA; 					break;
+			case THREE.LuminanceFormat:		 		return GL.LUMINANCE; 				break;
+			case THREE.LuminanceAlphaFormat: 		return GL.LUMINANCE_ALPHA; 			break;
+		}
+
+		return 0;
+	};
 	
 	
 	//--- process geometry chunks ---
@@ -136,8 +263,8 @@ THREE.WebGLBatchCompiler = (function() {
 						
 						if( uv0s.length > 0 ) {
 							
-							tempUV0s.push( uv0s[ f ][ uvIndices[ i ]].u );
-							tempUV0s.push( uv0s[ f ][ uvIndices[ i ]].v );
+							tempUV0s.push( uv0s[ chunk.faces[ f ] ][ uvIndices[ i ]].u );
+							tempUV0s.push( uv0s[ chunk.faces[ f ] ][ uvIndices[ i ]].v );
 						}
 						
 						if( colors.length > 0 ) {
@@ -232,22 +359,11 @@ THREE.WebGLBatchCompiler = (function() {
 		
 		for( chunkName in geometryChunks ) {
 			
-			var chunk = geometryChunks[ chunkName ];
-			var batch;
-			
-			if( chunk.materials === undefined || chunk.materials[ 0 ] === undefined ) {
-			
-				batch = new THREE.WebGLBatch( shaderCodeInfos[ 0 ] ); // is [ 0 ] going to work?
- 			}
-			else {
-				
-				batch = new THREE.WebGLBatch( getShaderCodeInfo( chunk.materials ));
-				
-				// todo: match chunk.materials against shaderCodeIds[ x ].originalMaterials
-			}
+			var chunk          = geometryChunks[ chunkName ];
+			var shaderCodeInfo = getShaderCodeInfo( chunk.materials );
+			var batch          = new THREE.WebGLBatch( shaderCodeInfo );
 
-			// add uniform inputs that will be update on render
-			
+
 			batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
 			batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
 			
@@ -261,9 +377,10 @@ THREE.WebGLBatchCompiler = (function() {
 			
 			// add sampler uniform if exists
 
-			if( true ) {
+			for( var uniform in shaderCodeInfo.textureBuffers ) {
 				
-				
+				if( shaderCodeInfo.textureBuffers[ uniform ] !== -1 ) 
+					batch.addTexture( uniform, shaderCodeInfo.textureBuffers[ uniform ] );
 			}
 
 
@@ -279,12 +396,13 @@ THREE.WebGLBatchCompiler = (function() {
 					for( var a = 0; a < attributeBuffers.length; a++ ) {
 						
 						batch.addAttributeBuffer( attributeBuffers[ a ].name,
-													attributeBuffers[ a ].type,
-													attributeBuffers[ a ].buffer,
-													attributeBuffers[ a ].size );
+												  attributeBuffers[ a ].type,
+												  attributeBuffers[ a ].buffer,
+												  attributeBuffers[ a ].size );
 					}
 
 					batch.addElementBuffer( elementBuffer.buffer, elementBuffer.size );
+					break;
 				}
 			}
 
@@ -297,9 +415,15 @@ THREE.WebGLBatchCompiler = (function() {
 	
 	//--- get shader code info ---
 	
-	function getShaderCodeInfo( materials ) {
+	function getShaderCodeInfo( originalMaterials ) {
 		
+		for( var i = 0; i < shaderCodeInfos.length; i++ ) {
+			
+			if( shaderCodeInfos[ i ].originalMaterials == originalMaterials )
+				return shaderCodeInfos[ i ];
+		}
 		
+		return shaderCodeInfos[ 0 ];
 	}
 	
 	
@@ -326,6 +450,8 @@ THREE.WebGLBatchCompiler.ShaderCodeInfo = function( originalMaterials, vertexSha
 	this.fragmentShaderId  = fragmentShaderId;
 	this.blendMode         = "src";
 	this.wireframe         = false;
+	this.originalTextures  = { uMap0: -1, uMap1: -1, uEnvMap: -1, uNormalMap: -1 };
+	this.textureBuffers    = { uMap0: -1, uMap1: -1, uEnvMap: -1, uNormalMap: -1 };
 }
 
 THREE.WebGLBatchCompiler.GLBuffers = function( chunkName, attributes, elements ) {
