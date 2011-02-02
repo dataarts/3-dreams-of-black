@@ -38,7 +38,8 @@
 			var camera;
 			var scene;
 			var webglRenderer;
-			
+			var projector;
+
 			var directionalLight, pointLight;
 
 			var windowHalfX = window.innerWidth >> 1;
@@ -55,6 +56,11 @@
 
 			var cubefollowX = 0;
 			var cubefollowY = 0;
+
+			var emitter;
+			var emitterMesh;
+
+			var emitterFollowMesh;
 
 			var cubeRef;
 			var cubeRefMesh;
@@ -105,6 +111,8 @@
 
 				scene = new THREE.Scene();
 
+				projector = new THREE.Projector();
+				
 				// LIGHTS
 				var ambient = new THREE.AmbientLight( 0x333333 );
 				scene.addLight( ambient );
@@ -118,19 +126,28 @@
 				
 				greyCity();
 				
+				//emitter
+				emitter = new Cube( 10, 10, 10, 1, 1 );
+				emitterMesh = addMesh( emitter, 1,  300, FLOOR, -100, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x33FF33 } ) );
+				emitterMesh.visible = false;
+
+				//emitterFollow
+				emitterFollowMesh = addMesh( emitter, 1,  300, FLOOR, -100, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
+				emitterFollowMesh.visible = false;
+
 				// cubes
 				var cube = new Cube( 10, 10, 10, 1, 1 );
 				var material = new THREE.MeshLambertMaterial( { color: 0x33DD33 } );
 
 				for (var i=0; i<150; ++i ) {
 					
-					var x = (Math.random()*8000)-4000;
-					var y = 1+(i*3);
-					var z = (Math.random()*8000)-4000;
+					var x = camera.position.x;
+					var y = camera.position.y+100;
+					var z = camera.position.z;
 	
 					var c = addMesh( cube, 1,  x, FLOOR+150+y, z, 0,0,0, material );
 
-					var obj = {c:c, y:y, yspeed:0, scale:0, alivetime:i};
+					var obj = {c:c, x:x, y:y, z:z, tox:x, toy:y, toz:z, scale:0, alivetime:i};
 					cubeArray.push(obj);
 				}
 
@@ -182,51 +199,112 @@
 				for (var i=0; i<cubeArray.length; ++i ) {
 					var obj = cubeArray[i];
 					var c = obj.c;
+					var x = obj.x;
 					var y = obj.y;
-					var yspeed = obj.yspeed;
+					var z = obj.z;
+					var tox = obj.tox;
+					var toy = obj.toy;
+					var toz = obj.toz;
+
 					var scale = obj.scale;
 					var alivetime = obj.alivetime;
 					
-					//++alivetime;
-					alivetime += 0.5;
+					alivetime += 0.35;
 
-					yspeed += 0.1;
-					y -= yspeed;
+					var divider = 15;
 
-					if (y < FLOOR) {
-						y = FLOOR;
-						yspeed = 0;
-					}
-
+					var moveX = (tox-x)/divider;
+					var moveY = (toy-y)/divider;
+					var moveZ = (toz-z)/divider;
+					
+					x += moveX;
+					y += moveY;
+					z += moveZ;	
+					
 					// respawn
 					if (alivetime > 150) {
-						console.log("re")
-						y = cubeRefMesh.position.y;
-						c.position.x = cubeRefMesh.position.x+(Math.random()*50)-25;
-						c.position.z = cubeRefMesh.position.z+(Math.random()*50)-25;
+						x = emitterFollowMesh.position.x + (Math.random()*200)-100//camera.position.x;
+						y = FLOOR-10;
+						z = emitterFollowMesh.position.z + (Math.random()*200)-100//camera.position.z;
 
 						c.rotation.x = Math.random()*Math.PI;
 						c.rotation.z = Math.random()*Math.PI;
 						
-						yspeed = 0;
-						alivetime = 1;
+						cubeArray[i].tox = emitterFollowMesh.position.x;
+						cubeArray[i].toy = emitterFollowMesh.position.y;
+						cubeArray[i].toz = emitterFollowMesh.position.z;
+
+						alivetime = 0;
 					}
 
+					c.position.x = x;
 					c.position.y = y;
-					
-					scale = Math.max( (alivetime)/30, 0.5);
+					c.position.z = z;
+
+					var sin = Math.sin(alivetime/10)/30;
+					scale += sin;
 					scale = Math.min(scale,2);
+					scale = Math.max(scale,0.5);
 					c.scale.x = c.scale.y = c.scale.z = scale;
 						
-					c.rotation.x += yspeed/30;
-					c.rotation.z += yspeed/30;
+					c.rotation.x += scale/200;
+					c.rotation.z += scale/200;
 
+					cubeArray[i].x = x;
 					cubeArray[i].y = y;
-					cubeArray[i].yspeed = yspeed;
+					cubeArray[i].z = z;
 					cubeArray[i].scale = scale;
 					cubeArray[i].alivetime = alivetime;
 
 				}
+			}
+
+			function updateEmitter() {
+				var moveX = (mouseX-followX)/20;
+				var moveY = (mouseY-followY)/20;
+
+				followX += moveX;
+				followY += moveY;
+
+				emitterMesh.position.y = FLOOR;
+
+				var vector = new THREE.Vector3( ( followX / window.innerWidth ) * 2 - 1, - ( followY / window.innerHeight ) * 2 + 1, 0.5 );
+				projector.unprojectVector( vector, camera );
+
+				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+
+				var intersects = ray.intersectScene( scene );
+				
+				if ( intersects.length > 0) {
+					for (var i=0; i<intersects.length; ++i ) {
+						var check;
+						if (vector.z < 0) {
+							check = intersects[i].point.z < camera.position.z;
+						} else {
+							check = intersects[i].point.z > camera.position.z;
+						}
+						if (intersects[i].object != emitterFollowMesh && check && intersects[i].distance > 20) {
+							emitterMesh.position = intersects[i].point;
+							break;
+						}
+					}
+
+				}
+
+				// follow
+				var tox = emitterMesh.position.x;
+				var toy = emitterMesh.position.y;
+				var toz = emitterMesh.position.z;
+
+				var divider = 10;
+
+				var moveX = (tox-emitterFollowMesh.position.x)/divider;
+				var moveY = (toy-emitterFollowMesh.position.y)/divider;
+				var moveZ = (toz-emitterFollowMesh.position.z)/divider;
+				
+				emitterFollowMesh.position.x += moveX;
+				emitterFollowMesh.position.y += moveY;
+				emitterFollowMesh.position.z += moveZ;				
 			}
 
 			function loop() {
@@ -238,11 +316,11 @@
 					camera.position.x = -450;
 				}
 
-				var mx = ( mouseX - windowHalfX )/100;
-				var my = ( mouseY - windowHalfY )/100;
+				var mx = ( mouseX - windowHalfX )/300;
+				var my = ( mouseY - windowHalfY )/300;
 
-				var moveX = (mx-cubefollowX)/40;
-				var moveY = (my-cubefollowY)/40;
+				var moveX = (mx-cubefollowX)/20;
+				var moveY = (my-cubefollowY)/20;
 
 				cubefollowX += moveX;
 				cubefollowY += moveY;
@@ -251,11 +329,8 @@
 				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX));
 				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY));
 
-				var distX = camera.position.x-cubeRefMesh.position.x;
-				var distZ = camera.position.z-cubeRefMesh.position.z;
-
-				var angleRad = Math.atan2(distZ, distX);
-
+				updateEmitter();
+	
 				runAll();
 
 				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );

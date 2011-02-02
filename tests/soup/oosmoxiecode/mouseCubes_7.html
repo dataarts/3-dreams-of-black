@@ -119,23 +119,23 @@
 				greyCity();
 				
 				// cubes
-				var cube = new Cube( 10, 10, 10, 1, 1 );
+				var cube = new Cube( 4, 4, 4, 1, 1 );
 				var material = new THREE.MeshLambertMaterial( { color: 0x33DD33 } );
 
-				for (var i=0; i<150; ++i ) {
+				for (var i=0; i<100; ++i ) {
 					
-					var x = (Math.random()*8000)-4000;
-					var y = 1+(i*3);
-					var z = (Math.random()*8000)-4000;
+					var x = camera.position.x;
+					var y = camera.position.y-10;
+					var z = camera.position.z;
 	
-					var c = addMesh( cube, 1,  x, FLOOR+150+y, z, 0,0,0, material );
+					var c = addMesh( cube, 1,  x, FLOOR+150+y, z, i/10,0,0, material );
 
-					var obj = {c:c, y:y, yspeed:0, scale:0, alivetime:i};
+					var obj = {c:c, x:x, y:y, z:z, lastx:x, lasty:y, lastz:z, scale:1};
 					cubeArray.push(obj);
 				}
 
 				//cubeRef
-				cubeRef = new Cube( 10, 10, 10, 1, 1 );
+				cubeRef = new Cube( 15, 15, 15, 1, 1 );
 				cubeRefMesh = addMesh( cubeRef, 1,  50, FLOOR, -130, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
 				cubeRefMesh.visible = false;
 				camera.target = cubeRefMesh;
@@ -146,6 +146,7 @@
 				addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, new THREE.MeshLambertMaterial( { color:0x777777 } ), true );
 
 				addMesh( plane, 100,  0, FLOOR+400, 0, 1.57,0,0, new THREE.MeshLambertMaterial( { color:0xDEFFFF } ), false );
+
 
 				try {
 					webglRenderer = new THREE.WebGLRenderer( scene );
@@ -179,58 +180,72 @@
 			}
 
 			function runAll () {
+
 				for (var i=0; i<cubeArray.length; ++i ) {
 					var obj = cubeArray[i];
 					var c = obj.c;
+					var x = obj.x;
 					var y = obj.y;
-					var yspeed = obj.yspeed;
+					var z = obj.z;
 					var scale = obj.scale;
-					var alivetime = obj.alivetime;
+					var lastx = x;
+					var lasty = y;
+					var lastz = z;
 					
-					//++alivetime;
-					alivetime += 0.5;
+					var dist = 100+(Math.sin(r)*50);
 
-					yspeed += 0.1;
-					y -= yspeed;
+					if (i == 0) {
+						var tox = camera.position.x + (dist*Math.cos(cubefollowX));
+						var toy = (camera.position.y-15)-(dist*Math.sin(cubefollowY));
+						var toz = camera.position.z + (dist*Math.sin(cubefollowX));
+					} else {
+						var prevx = cubeArray[i-1].lastx;
+						var prevy = cubeArray[i-1].lasty;
+						var prevz = cubeArray[i-1].lastz;
 
-					if (y < FLOOR) {
-						y = FLOOR;
-						yspeed = 0;
+						var tox = prevx;
+						var toy = prevy;
+						var toz = prevz;
 					}
 
-					// respawn
-					if (alivetime > 150) {
-						console.log("re")
-						y = cubeRefMesh.position.y;
-						c.position.x = cubeRefMesh.position.x+(Math.random()*50)-25;
-						c.position.z = cubeRefMesh.position.z+(Math.random()*50)-25;
+					var divider = 4;
 
-						c.rotation.x = Math.random()*Math.PI;
-						c.rotation.z = Math.random()*Math.PI;
-						
-						yspeed = 0;
-						alivetime = 1;
-					}
+					var moveX = (tox-x)/divider;
+					var moveY = (toy-y)/divider;
+					var moveZ = (toz-z)/divider;
 
+					x += moveX;
+					y += moveY;
+					z += moveZ;
+					
+					c.position.x = x;
 					c.position.y = y;
-					
-					scale = Math.max( (alivetime)/30, 0.5);
-					scale = Math.min(scale,2);
-					c.scale.x = c.scale.y = c.scale.z = scale;
-						
-					c.rotation.x += yspeed/30;
-					c.rotation.z += yspeed/30;
+					c.position.z = z;
 
+					var sin = Math.sin(x/10)/30;
+					scale += sin;
+					scale = Math.min(scale,5);
+					scale = Math.max(scale,0.25);
+					c.scale.x = c.scale.y = c.scale.z = scale;
+
+					c.rotation.x += scale/50;
+					c.rotation.y += scale/50;
+					c.rotation.z += scale/50;
+
+					cubeArray[i].x = x;
 					cubeArray[i].y = y;
-					cubeArray[i].yspeed = yspeed;
-					cubeArray[i].scale = scale;
-					cubeArray[i].alivetime = alivetime;
+					cubeArray[i].z = z;
+					cubeArray[i].lastx = lastx;
+					cubeArray[i].lasty = lasty;
+					cubeArray[i].lastz = lastz;
 
 				}
 			}
 
 			function loop() {
-				var dist = 100;
+				var dist = 500;
+
+				r += 0.05;
 
 				camera.position.x += 0.35;
 
@@ -244,17 +259,15 @@
 				var moveX = (mx-cubefollowX)/40;
 				var moveY = (my-cubefollowY)/40;
 
-				cubefollowX += moveX;
-				cubefollowY += moveY;
+				var extrax = Math.cos(r)/200;
+				var extray = Math.sin(r)/200;
 
+				cubefollowX += moveX + extrax;
+				cubefollowY += moveY + extray;
+				
 				cubeRefMesh.position.x = camera.position.x + (dist*Math.cos(cubefollowX));
 				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX));
 				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY));
-
-				var distX = camera.position.x-cubeRefMesh.position.x;
-				var distZ = camera.position.z-cubeRefMesh.position.z;
-
-				var angleRad = Math.atan2(distZ, distX);
 
 				runAll();
 
