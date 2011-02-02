@@ -32,8 +32,6 @@
 	<body>
 
 		<div id="container"></div> 
-		<div id="info"><a href="hxxp://github.com/mrdoob/three.js" target="_blank">three.js</a> - hatching demo - 
-		shader based on crosshatch by <a href="hxxp://learningwebgl.com/blog/?p=2858">Giles Thomas</a></div> 
 
 		<script type="text/javascript" src="js/ThreeExtras.js"></script>
 		<script type="text/javascript" src="js/Stats.js"></script>
@@ -173,11 +171,11 @@
 				light.position.y = 0;
 				light.position.z = 1;
 				scene.addLight( light );
-				
+
 				start_time = new Date().getTime();
-				
+
 				shader1 = ShaderTest["hatching"];
-				
+
 				material = new THREE.MeshShaderMaterial( {
 
 					uniforms: Uniforms.clone( shader1.uniforms ),
