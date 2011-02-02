@@ -90,7 +90,6 @@
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Texture.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
 	
-		<script type="text/javascript" src="src/animation/Animation.js"></script>
 	
 		<!-- Experience Code -->
 	
@@ -159,8 +158,6 @@
 					
 					mesh.pose();
 
-
-					var animation = new THREE.Animation( bone0, testAnimation );
 
 
 					// renderer
