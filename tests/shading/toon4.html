@@ -109,23 +109,20 @@
 				'outline' : {
 
 					uniforms: {
-				
-					"displacement":  { type: "f", value: 0.3 },
+
+					"linewidth":  { type: "f", value: 0.3 },
 
 					},
 
 					vertex_shader: [
 
-						"uniform float displacement;",
-						"varying vec3 vNormal;",
+						"uniform float linewidth;",
 
 						"void main() {",
 
 							"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
-							"vNormal = normalize( normalMatrix * normal );",
-
-							"vec4 displacedPosition = vec4( vNormal.xyz * displacement, 0.0 ) + mvPosition;",
-							"gl_Position = projectionMatrix * displacedPosition;",
+							"vec4 displacement = vec4( normalize( normalMatrix * normal ) * linewidth, 0.0 ) + mvPosition;",
+							"gl_Position = projectionMatrix * displacement;",
 
 						"}"
 
