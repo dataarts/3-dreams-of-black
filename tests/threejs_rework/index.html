@@ -113,11 +113,8 @@
 					var date = new Date();
 					var curDate = null;
 					
-			//		do { curDate = new Date(); } 
-			//		while(curDate-date < 2000 );
-					
 					var cube     = new THREE.Cube( 100, 100, 100, 1, 1 );
-//					var material = new THREE.MeshShaderMaterial( { vertex_shader: "skinVertex", fragment_shader: "textureFragment" } );
+					var material = new THREE.MeshShaderMaterial( { vertex_shader: "colorVertex", fragment_shader: "colorFragment" } );
 					
 					female.skinWeights = [];
 					female.skinIndices = [];

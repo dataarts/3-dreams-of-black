@@ -76,9 +76,7 @@ THREE.WebGLBatchCompiler = (function() {
 		}
 
 
-		// todo: assign base material if no exists
-		// todo: process each geometry chunk to find all material combinations
-		// todo: compile all combinations (but MeshShaderMaterials) into single shaders 
+		// create materials
 		
 		shaderCodeInfos = [];
 
@@ -105,8 +103,8 @@ THREE.WebGLBatchCompiler = (function() {
 				}
 				else {
 					
-					THREE.WebGLBatchCompilerMaterials.compile( chunk.materials );
-					shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( chunk.materials, THREE.WebGLBatchCompilerMaterials.vertexShader, THREE.WebGLBatchCompilerMaterials.fragmentShader ));
+					THREE.WebGLBatchCompilerMaterials.compile( chunk.materials, mesh instanceof THREE.Skin );
+					shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( chunk.materials, THREE.WebGLBatchCompilerMaterials.vertexShaderId, THREE.WebGLBatchCompilerMaterials.fragmentShaderId ));
 				}
 			}
 		}
@@ -178,41 +176,7 @@ THREE.WebGLBatchCompiler = (function() {
 	}
 	
 	
-	function convertThreeParameterToGL( p ) {
 
-		switch( p ) {
-
-			case THREE.RepeatWrapping: 				return GL.REPEAT; 					break;
-			case THREE.ClampToEdgeWrapping: 		return GL.CLAMP_TO_EDGE; 			break;
-			case THREE.MirroredRepeatWrapping: 		return GL.MIRRORED_REPEAT; 			break;
-
-			case THREE.NearestFilter: 				return GL.NEAREST; 					break;
-			case THREE.NearestMipMapNearestFilter: 	return GL.NEAREST_MIPMAP_NEAREST; 	break;
-			case THREE.NearestMipMapLinearFilter: 	return GL.NEAREST_MIPMAP_LINEAR; 	break;
-
-			case THREE.LinearFilter: 				return GL.LINEAR; 					break;
-			case THREE.LinearMipMapNearestFilter: 	return GL.LINEAR_MIPMAP_NEAREST;	break;
-			case THREE.LinearMipMapLinearFilter: 	return GL.LINEAR_MIPMAP_LINEAR; 	break;
-
-			case THREE.ByteType: 					return GL.BYTE; 					break;
-			case THREE.UnsignedByteType: 			return GL.UNSIGNED_BYTE; 			break;
-			case THREE.ShortType: 					return GL.SHORT; 					break;
-			case THREE.UnsignedShortType: 			return GL.UNSIGNED_SHORT; 			break;
-			case THREE.IntType: 					return GL.INT; 						break;
-			case THREE.UnsignedShortType: 			return GL.UNSIGNED_INT; 			break;
-			case THREE.FloatType: 					return GL.FLOAT; 					break;
-
-			case THREE.AlphaFormat: 				return GL.ALPHA; 					break;
-			case THREE.RGBFormat: 					return GL.RGB; 						break;
-			case THREE.RGBAFormat: 					return GL.RGBA; 					break;
-			case THREE.LuminanceFormat:		 		return GL.LUMINANCE; 				break;
-			case THREE.LuminanceAlphaFormat: 		return GL.LUMINANCE_ALPHA; 			break;
-		}
-
-		return 0;
-	};
-	
-	
 	//--- process geometry chunks ---
 	
 	function processGeometry() {
@@ -245,12 +209,29 @@ THREE.WebGLBatchCompiler = (function() {
 				for( var f = 0; f < chunk.faces.length; f++ ) {
 					
 					var face          = faces[ chunk.faces[ f ]];
-					var faceIndices   = face instanceof THREE.Face3 ? [ "a", "b", "c" ] : [ "a", "b", "c", "a", "c", "d" ];
-					var uvIndices     = face instanceof THREE.Face3 ? [ 0, 1, 2 ]       : [ 0, 1, 2, 0, 2, 3 ];
-					
+					var faceIndices   = face instanceof THREE.Face3 ? [ "a", "b", "c" ] : [ "a", "b", "c", "d" ];
+					var uvIndices     = face instanceof THREE.Face3 ? [ 0, 1, 2 ]       : [ 0, 1, 2, 3 ];
+
+					if( face instanceof THREE.Face3 ) {
+						
+						tempFaces.push( vertexCounter + 0 );
+						tempFaces.push( vertexCounter + 1 );
+						tempFaces.push( vertexCounter + 2 );
+					}
+					else {
+						
+						tempFaces.push( vertexCounter + 0 );
+						tempFaces.push( vertexCounter + 1 );
+						tempFaces.push( vertexCounter + 2 );
+
+						tempFaces.push( vertexCounter + 0 );
+						tempFaces.push( vertexCounter + 2 );
+						tempFaces.push( vertexCounter + 3 );
+					}
+ 					
 					for( var i = 0; i < faceIndices.length; i++ ) {
 						
-						tempFaces.push( vertexCounter++ );
+						vertexCounter++;
 						
 						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.x );  
 						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
@@ -295,10 +276,10 @@ THREE.WebGLBatchCompiler = (function() {
 				var attributeBuffers = [];
 				var elementBuffer;
 				
-				if( tempVertices   .length > 0 ) attributeBuffers.push( bindBuffer( "aVertices",    "vec4", tempVertices,    4 ));
-				if( tempNormals    .length > 0 ) attributeBuffers.push( bindBuffer( "aNormals",     "vec3", tempNormals,     3 ));
-				if( tempColors     .length > 0 ) attributeBuffers.push( bindBuffer( "aColors",      "vec3", tempColors,      3 ));
-				if( tempUV0s       .length > 0 ) attributeBuffers.push( bindBuffer( "aUV0s",        "vec2", tempUV0s,        2 ));
+				if( tempVertices   .length > 0 ) attributeBuffers.push( bindBuffer( "aVertex",      "vec4", tempVertices,    4 ));
+				if( tempNormals    .length > 0 ) attributeBuffers.push( bindBuffer( "aNormal",      "vec3", tempNormals,     3 ));
+				if( tempColors     .length > 0 ) attributeBuffers.push( bindBuffer( "aColor",       "vec3", tempColors,      3 ));
+				if( tempUV0s       .length > 0 ) attributeBuffers.push( bindBuffer( "aUV0",         "vec2", tempUV0s,        2 ));
 				if( tempSkinWeights.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinWeights", "vec4", tempSkinWeights, 4 ));
 				if( tempSkinIndices.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinIndices", "vec4", tempSkinIndices, 4 ));
 				if( tempFaces      .length > 0 ) elementBuffer = bindElement( tempFaces, tempFaces.length );
@@ -425,7 +406,45 @@ THREE.WebGLBatchCompiler = (function() {
 		
 		return shaderCodeInfos[ 0 ];
 	}
+
+
+	//--- conversion helper ---
+
+	function convertThreeParameterToGL( p ) {
+
+		switch( p ) {
+
+			case THREE.RepeatWrapping: 				return GL.REPEAT; 					break;
+			case THREE.ClampToEdgeWrapping: 		return GL.CLAMP_TO_EDGE; 			break;
+			case THREE.MirroredRepeatWrapping: 		return GL.MIRRORED_REPEAT; 			break;
+
+			case THREE.NearestFilter: 				return GL.NEAREST; 					break;
+			case THREE.NearestMipMapNearestFilter: 	return GL.NEAREST_MIPMAP_NEAREST; 	break;
+			case THREE.NearestMipMapLinearFilter: 	return GL.NEAREST_MIPMAP_LINEAR; 	break;
+
+			case THREE.LinearFilter: 				return GL.LINEAR; 					break;
+			case THREE.LinearMipMapNearestFilter: 	return GL.LINEAR_MIPMAP_NEAREST;	break;
+			case THREE.LinearMipMapLinearFilter: 	return GL.LINEAR_MIPMAP_LINEAR; 	break;
+
+			case THREE.ByteType: 					return GL.BYTE; 					break;
+			case THREE.UnsignedByteType: 			return GL.UNSIGNED_BYTE; 			break;
+			case THREE.ShortType: 					return GL.SHORT; 					break;
+			case THREE.UnsignedShortType: 			return GL.UNSIGNED_SHORT; 			break;
+			case THREE.IntType: 					return GL.INT; 						break;
+			case THREE.UnsignedShortType: 			return GL.UNSIGNED_INT; 			break;
+			case THREE.FloatType: 					return GL.FLOAT; 					break;
+
+			case THREE.AlphaFormat: 				return GL.ALPHA; 					break;
+			case THREE.RGBFormat: 					return GL.RGB; 						break;
+			case THREE.RGBAFormat: 					return GL.RGBA; 					break;
+			case THREE.LuminanceFormat:		 		return GL.LUMINANCE; 				break;
+			case THREE.LuminanceAlphaFormat: 		return GL.LUMINANCE_ALPHA; 			break;
+		}
+
+		return 0;
+	};
 	
+		
 	
 	//--- public ---
 	
