@@ -1,6 +1,8 @@
-//--- Texture Vertex Shader ---
+/*
+ * Lambert shader
+ */
 
-THREE.WebGLShaderDefinitions.textureVertex = (function() {
+THREE.WebGLShaderDefinitions.lambertVertex = (function() {
 	
 	return [
 	
@@ -9,13 +11,13 @@ THREE.WebGLShaderDefinitions.textureVertex = (function() {
 		"uniform 	mat4 	uMeshGlobalMatrix;",
 		
 		"attribute 	vec4 	aVertices;",
-		"attribute	vec2	aUVs;",
+		"attribute	vec2	aUV0s;",
 		
-		"varying 	vec2	vUV;",
+		"varying 	vec2	vUV0;",
 		
 		"void main(void)",
 		"{",
-			"vUV = aUVs;",
+			"vUV0 = aUV0s;",
 			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * aVertices;",
 		"}"
 	].join( "\n" );
@@ -23,9 +25,7 @@ THREE.WebGLShaderDefinitions.textureVertex = (function() {
 }());
 
 
-//--- Texture Fragment Shader ---
-
-THREE.WebGLShaderDefinitions.textureFragment = (function() {
+THREE.WebGLShaderDefinitions.lambertFragment = (function() {
 	
 	return [ 	
 	
@@ -33,12 +33,16 @@ THREE.WebGLShaderDefinitions.textureFragment = (function() {
 			"precision highp float;",
 		"#endif",		
 
-		"uniform	sampler2d	uMap0;",
-		"varying	vec2		vUV;",
+		"uniform	sampler2D	uMap0;",
+		"uniform	sampler2D	uMap1;",
+		"uniform	sampler2D	uEnvMap;",
+		"uniform	sampler2D	uNormalMap;",
+		
+		"varying	vec2		vUV0;",
 
 		"void main( void )",
 		"{",
-			"gl_FragColor = texture2D( uMap0, vUV );",
+			"gl_FragColor = texture2D( uMap0, vUV0 );",
 		"}"
 	].join( "\n" );
 

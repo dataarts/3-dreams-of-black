@@ -7,6 +7,25 @@ THREE.Matrix3 = function () {
 	
 		return this.flat;
 	}
+	
+
+	// WebGL additions - NEEDS TO BE DISCUSSED!
+
+	if( typeof Float32Array !== 'undefined' ) {
+
+		var that = this;		
+		this.float32Array = new Float32Array( 9 ),
+		this.flatten32 = function() {
+			
+			var flat = that.float32Array;
+			
+			flat[ 0  ] = 1; flat[ 1  ] = 0; flat[ 2 ] = 0;
+			flat[ 3  ] = 0; flat[ 4  ] = 1; flat[ 5 ] = 0;
+			flat[ 6  ] = 0; flat[ 7  ] = 0; flat[ 8 ] = 1;
+	
+			return flat;
+		}
+	}
 };
 
 THREE.Matrix3.prototype = {

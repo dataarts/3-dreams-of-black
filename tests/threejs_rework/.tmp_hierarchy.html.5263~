@@ -78,7 +78,6 @@
 		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/Shader.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/shaders/Skin.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/shaders/Texture.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/shaderProgram/shaders/Lambert.js"></script>
 
 		<script type="text/javascript" src="src/extras/primitives/Cube.js"></script>
 

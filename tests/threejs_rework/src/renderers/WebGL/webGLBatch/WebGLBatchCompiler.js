@@ -56,19 +56,21 @@ THREE.WebGLBatchCompiler = (function() {
 		shaderCodeInfos = [];
 		
 		// todo: assign base material if no exists
-		
-		// compile material shader code
+		// todo: compile all (but MeshShaderMaterials) into one single material 
 		
 		for( var m = 0; m < materials.length; m++ ) {
 	
 			var material = materials[ m ];
 			
-			// todo: compile other types of material and store in THREE.Shader[ shaderCodeId ] = "actual code";
-			
 			if( material instanceof THREE.MeshShaderMaterial ) {
 	
 				shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( [ material ], material.vertex_shader, material.fragment_shader ));
 				break;	
+			}
+			else if( material instanceof THREE.LambertMaterial ) {
+				
+				shaderCodeInfos.push( new THREE.WebGLBatchCompiler.ShaderCodeInfo( [ material ], "lambertVertex", "lambertFragment" ));
+				break;
 			}
 		}
 		
@@ -233,57 +235,73 @@ THREE.WebGLBatchCompiler = (function() {
 			var chunk = geometryChunks[ chunkName ];
 			var batch;
 			
-			//if( chunk.materials === undefined || chunk.materials[ 0 ] === undefined ) {
-			if( true ) {
-			
-				// add uniform inputs (that are automatically updated on ShaderProgram.render)
+			if( chunk.materials === undefined || chunk.materials[ 0 ] === undefined ) {
 			
 				batch = new THREE.WebGLBatch( shaderCodeInfos[ 0 ] ); // is [ 0 ] going to work?
- 				
-				batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
-				batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix.webGL, "normalMatrix" );
-				
-				if( mesh instanceof THREE.Skin ) {
-
-					batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32" );
-					batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "bones"     );
-					batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoses" );
-				}
-				
-				// todo: add sampler uniform if exists
-
-
-				// add attribute and element buffers
-				
-				for( var b = 0; b < geoBuffers.length; b++ ) {
-					
-					if( geoBuffers[ b ].chunkName === chunkName ) {
-						
-						var attributeBuffers = geoBuffers[ b ].attributeBuffers;
-						var elementBuffer    = geoBuffers[ b ].elementBuffer;
-						
-						for( var a = 0; a < attributeBuffers.length; a++ ) {
-							
-							batch.addAttributeBuffer( attributeBuffers[ a ].name,
-														attributeBuffers[ a ].type,
-														attributeBuffers[ a ].buffer,
-														attributeBuffers[ a ].size );
-						}
-	
-						batch.addElementBuffer( elementBuffer.buffer, elementBuffer.size );
-					}
-				}
-			}
+ 			}
 			else {
+				
+				batch = new THREE.WebGLBatch( getShaderCodeInfo( chunk.materials ));
 				
 				// todo: match chunk.materials against shaderCodeIds[ x ].originalMaterials
 			}
+
+			// add uniform inputs that will be update on render
 			
+			batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
+			batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
+			
+			if( mesh instanceof THREE.Skin ) {
+
+				batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32" );
+				batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "bones"     );
+				batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoses" );
+			}
+			
+			
+			// add sampler uniform if exists
+
+			if( true ) {
+				
+				
+			}
+
+
+			// add attribute and element buffers
+			
+			for( var b = 0; b < geoBuffers.length; b++ ) {
+				
+				if( geoBuffers[ b ].chunkName === chunkName ) {
+					
+					var attributeBuffers = geoBuffers[ b ].attributeBuffers;
+					var elementBuffer    = geoBuffers[ b ].elementBuffer;
+					
+					for( var a = 0; a < attributeBuffers.length; a++ ) {
+						
+						batch.addAttributeBuffer( attributeBuffers[ a ].name,
+													attributeBuffers[ a ].type,
+													attributeBuffers[ a ].buffer,
+													attributeBuffers[ a ].size );
+					}
+
+					batch.addElementBuffer( elementBuffer.buffer, elementBuffer.size );
+				}
+			}
+
 			batches.push( batch );
 		}
 		
 		return batches;
 	}
+	
+	
+	//--- get shader code info ---
+	
+	function getShaderCodeInfo( materials ) {
+		
+		
+	}
+	
 	
 	//--- public ---
 	
