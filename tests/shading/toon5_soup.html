@@ -148,10 +148,23 @@
 				light.position.z = 1;
 				scene.addLight( light );
 
+				renderer = new THREE.WebGLRenderer();
+				container.appendChild( renderer.domElement );
+
 				var geometry = new Torus( 50, 20, 15, 15 );
 
 				shader = ShaderTest["hatching"];
 
+				material_base = new THREE.MeshShaderMaterial( {
+
+					uniforms: Uniforms.clone( shader.uniforms ),
+					vertex_shader: shader.vertex_shader,
+					fragment_shader: shader.fragment_shader
+
+				} );
+
+				renderer.initMaterial( material_base, scene.lights, scene.fog );
+				
 				for ( var i = 0; i < 100; i ++ ) {
 
 					material = new THREE.MeshShaderMaterial( {
@@ -161,6 +174,8 @@
 						fragment_shader: shader.fragment_shader
 
 					} );
+					
+					material.program = material_base.program;
 
 					material.uniforms.uDirLightPos.value = light.position;
 					material.uniforms.uDirLightColor.value = light.color;
@@ -179,8 +194,6 @@
 
 				}
 
-				renderer = new THREE.WebGLRenderer();
-				container.appendChild( renderer.domElement );
 
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
