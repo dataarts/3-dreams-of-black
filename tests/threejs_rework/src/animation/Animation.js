@@ -90,6 +90,13 @@ THREE.Animation.prototype.play = function( loop, useJITCompiledData ) {
 	this.isPlaying = true;
 	this.startTime = new Date().getTime();
 	
+	// reset keyframe cache
+	
+	for( var t = 0; this.tree.length; t++ ) {
+		
+		
+	}	
+	
 	this.update();
 }
 
@@ -108,6 +115,8 @@ THREE.Animation.prototype.update = function() {
 	for( var t = 0, tl = this.data.tree.length; t < lt; t++ ) {
 		
 		var object = this.data.tree[ t ];
+		
+		
 	}
 	
 	
