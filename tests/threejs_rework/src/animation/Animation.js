@@ -93,9 +93,29 @@ THREE.Animation = function( root, data ) {
 	this.isPlaying = false;
 	this.loop      = true;
 	
-	// TEMP
+	var vec  = new THREE.Vector3();
+	var quat = new THREE.Quaternion();
 	
-	this.currentTimeCounter = 0;
+	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
+		
+		for( var k = 0; k < this.data.hierarchy[ h ].keys.length; k++ ) {
+		
+			if( this.data.hierarchy[ h ].keys[ k ].rot ) {
+				
+				vec.x = this.data.hierarchy[ h ].keys[ k ].rot[ 0 ];
+				vec.y = this.data.hierarchy[ h ].keys[ k ].rot[ 1 ];
+				vec.z = this.data.hierarchy[ h ].keys[ k ].rot[ 2 ];
+				
+				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion();
+				this.data.hierarchy[ h ].keys[ k ].rot.setFromEuler( vec );
+				
+/*				this.data.hierarchy[ h ].keys[ k ].rot[ 0 ] = quat.x;
+				this.data.hierarchy[ h ].keys[ k ].rot[ 1 ] = quat.y;
+				this.data.hierarchy[ h ].keys[ k ].rot[ 2 ] = quat.z;
+				this.data.hierarchy[ h ].keys[ k ].rot[ 3 ] = quat.w;*/
+			}	
+		}
+	}
 }
 
 
@@ -161,7 +181,7 @@ THREE.Animation.prototype.update = function() {
 	
 	var currentTime         = ( new Date().getTime() - this.startTime ) * 0.001;
 	var unloopedCurrentTime = currentTime;
-	var types       = [ "pos", "rot", "scl" ];
+	var types               = [ "pos", "rot", "scl" ];
 	var scale;
 	var relative;
 	var object;
@@ -227,10 +247,16 @@ THREE.Animation.prototype.update = function() {
 
 			if( type === "rot" ) {
 				
+				/*
 				vector   = object.object3D.rotation; 
 				vector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
 				vector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
 				vector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
+				*/
+				
+				THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.object3D.quaternion, scale );
+				
+//				object.object3D.quaternion.setFromEuler( vector );
 			}
 			
 			// lerp pos/scl 
