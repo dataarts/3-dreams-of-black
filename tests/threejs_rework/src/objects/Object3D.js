@@ -15,6 +15,7 @@ THREE.Object3D = function() {
 	this.scale        = new THREE.Vector3( 1, 1, 1 );
 	this.localMatrix  = new THREE.Matrix4();
 	this.globalMatrix = new THREE.Matrix4();
+	this.quaternion   = new THREE.Quaternion();
 
 	this.boundRadius  = 0;
 	this.screenZ      = 0;
@@ -40,6 +41,23 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 		
 		this.localMatrix.setPosition( this.position );
 		this.position.isDirty = false;
+		isDirty = true;
+	}
+
+	// update quaternion (overrules rotation by forcing rotation.isDirty=false)
+	
+	if( this.quaternion.isDirty ) {
+		
+		this.localMatrix.setRotationFromQuaternion( this.quaternion );
+		this.quaternion.isDirty = false;
+		this.rotation  .isDirty = false;
+		
+		if( this.scale.isDirty || this.scale.x !== 1 || this.scale.y !== 1 || this.scale.z !== 1 ) {
+			
+			this.localMatrix.scale( this.scale );
+			this.scale.isDirty = false;
+		}
+		
 		isDirty = true;
 	}
 
