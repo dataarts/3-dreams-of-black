@@ -106,6 +106,7 @@
 				var rotationMatrix;
 				var time = 0;
 				var container;
+				var animation;
 				
 				//--- Init ---
 				
@@ -159,8 +160,9 @@
 					
 					mesh.pose();
 
+					mesh.rotation.y = 45;
 
-					var animation = new THREE.Animation( bone0, testAnimation );
+					animation = new THREE.Animation( bone0, testAnimation );
 					animation.play();
 
 
@@ -192,12 +194,13 @@
 				
 				var Update = function()
 				{
-					mesh.rotation.y = time * 15;
+	/*				mesh.rotation.y = time * 15;
 					
 					bone0.rotation.x = Math.sin( time ) * 10;
 					bone1.rotation.x = Math.sin( time ) * 25;
 					bone2.rotation.x = Math.sin( time ) * 45;
-					
+		*/
+					animation.update();			
 					renderer.render( scene, camera );
 
 					time += 0.02;

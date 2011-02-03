@@ -23,11 +23,17 @@ THREE.WebGLBatchCompiler = (function() {
 	var textureBuffers;
 	var geoBuffers;
 	var GL;
+	var doLog;
 	
 	
 	//--- compile ---
 	
-	var compile = function( incomingMesh ) {
+	var compile = function( incomingMesh, _doLog ) {
+		
+		doLog = _doLog || false;
+		
+		var ms = new Date().getTime();	
+		log( "THREE.WebGLBatchCompiler.compile: Start" );
 		
 		GL             = THREE.WebGLRendererContext;
 		mesh           = incomingMesh;
@@ -47,8 +53,16 @@ THREE.WebGLBatchCompiler = (function() {
 		geoBuffers      = processGeometry();
 		
 		mesh.webGLBatches = processWebGLBatches();
+
+		log( "THREE.WebGLBatchCompiler.compile: End. Took " + ( new Date().getTime() - ms ) + " ms." );		
 	}
 		
+	var log = function( msg ) {
+		
+		if( doLog )
+			console.log( msg );
+	}
+
 
 	//--- compile shader code ---
 		
@@ -173,6 +187,8 @@ THREE.WebGLBatchCompiler = (function() {
 		GL.texParameteri ( GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, convertThreeParameterToGL( texture.min_filter ));
 		GL.generateMipmap( GL.TEXTURE_2D );
 		GL.bindTexture   ( GL.TEXTURE_2D, null );
+
+		log( "--> THREE.WebGLBatchCompiler.bindTexture: src=" + texture.image.src + " size=" + texture.image.width + "x" + texture.image.height );
 	}
 	
 	
@@ -310,6 +326,8 @@ THREE.WebGLBatchCompiler = (function() {
 		GL.bindBuffer( GL.ARRAY_BUFFER, info.buffer );
 		GL.bufferData( GL.ARRAY_BUFFER, new Float32Array( data ), GL.STATIC_DRAW );
 		
+		log( "--> THREE.WebGLBatchCompiler.bindBuffer: " + name + " numElements=" + ( data.length / size ));
+
 		return info;
 	}
 	
@@ -327,6 +345,8 @@ THREE.WebGLBatchCompiler = (function() {
 				
 		GL.bindBuffer( GL.ELEMENT_ARRAY_BUFFER, info.buffer );
      	GL.bufferData( GL.ELEMENT_ARRAY_BUFFER, new Uint16Array( data ), GL.STATIC_DRAW );
+		
+		log( "--> THREE.WebGLBatchCompiler.bindElement: numElements=" + ( data.length / 3 ));
 		
 		return info;
 	}
@@ -390,6 +410,8 @@ THREE.WebGLBatchCompiler = (function() {
 			batches.push( batch );
 		}
 		
+		log( "--> THREE.WebGLBatchCompiler.processWebGLBatches: numBatches=" + batches.length );
+
 		return batches;
 	}
 	
