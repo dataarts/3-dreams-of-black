@@ -2,7 +2,7 @@ var testAnimation = {
 
 	name: 	"hello",
 	fps: 	30,
-	length: 10,
+	length: 8,
 	JIT: 	undefined,	
 	
 	tree: [ 
@@ -12,15 +12,20 @@ var testAnimation = {
 			animation: [ 
 				
 				{ time: 0,
+				  index: 0,
 				  pos: [ 0, 0, 0 ],
 				  rot: [ 0, 0, 0 ],
-				  scl: [ 0, 0, 0 ] },
+				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 4,
+				  index: 1,
 				  rot: [ 10, 0, 0 ] },
 	
 				{ time: 8,
-				  rot: [ 0, 0, 0 ] },
+				  index: 2,
+				  pos: [ 0, 0, 0 ],
+				  rot: [ 0, 0, 0 ],
+				  scl: [ 1, 1, 1 ] },
 				
 			]
 		}, 
@@ -31,15 +36,20 @@ var testAnimation = {
 			animation: [
 			
 				{ time: 0,
+				  index: 0,
 				  pos: [ 0, 0, 0 ],
 				  rot: [ 0, 0, 0 ],
-				  scl: [ 0, 0, 0 ] },
+				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 5,
+				  index: 1,
 				  rot: [ -5, 0, 0 ] },
 	
 				{ time: 8,
-				  rot: [ 0, 0, 0 ] },
+				  index: 2,
+				  pos: [ 0, 0, 0 ],
+				  rot: [ 0, 0, 0 ],
+				  scl: [ 1, 1, 1 ] },
 	
 			]
 		}, 
@@ -50,19 +60,24 @@ var testAnimation = {
 			 animation: [
 			 
 				{ time: 0,
+				  index: 0,
 				  pos: [ 0, 0, 0 ],
 				  rot: [ 0, 0, 0 ],
-				  scl: [ 0, 0, 0 ] },
+				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 3,
+				  index: 1,
 				  rot: [ 5, 0, 0 ] },
 	
 				{ time: 6,
+				  index: 2,
 				  rot: [ -5, 0, 0 ] },
 	
-				{ time: 10,
-				  rot: [ 0, 0, 0 ] },
-	
+				{ time: 8,
+				  index: 3,
+				  pos: [ 0, 0, 0 ],
+				  rot: [ 0, 0, 0 ],
+				  scl: [ 1, 1, 1 ] },
 		 	]
 		}
 	]
@@ -77,7 +92,11 @@ THREE.Animation = function( root, data ) {
 
 	this.startTime = 0;
 	this.isPlaying = false;
-	this.isLooping = true;
+	this.loop      = true;
+	
+	// TEMP
+	
+	this.currentTimeCounter = 0;
 }
 
 
@@ -90,14 +109,31 @@ THREE.Animation.prototype.play = function( loop, useJITCompiledData ) {
 	this.isPlaying = true;
 	this.startTime = new Date().getTime();
 	
-	// reset keyframe cache
+	// reset keyframe cache and set object
 	
 	for( var t = 0; this.tree.length; t++ ) {
 		
+		this.tree[ t ].prevPosKey = this.data.tree[ t ].animation[ 0 ];
+		this.tree[ t ].prevRotKey = this.data.tree[ t ].animation[ 0 ];
+		this.tree[ t ].prevSclKey = this.data.tree[ t ].animation[ 0 ];
 		
+		this.tree[ t ].nextPosKey = this.getNextKeyWith( "pos", t, 1 );
+		this.tree[ t ].nextRotKey = this.getNextKeyWith( "rot", t, 1 );
+		this.tree[ t ].nextSclKey = this.getNextKeyWith( "scl", t, 1 );
 	}	
 	
 	this.update();
+}
+
+THREE.Animation.prototype.getNextKeyWith = function( type, t, key ) {
+	
+	var animation = this.data.tree[ t ].animation;
+	
+	for( ; key < animation.length; key++ ) {
+		
+		if( animation[ key ][ type ] !== undefined )
+			return animation[ key ];
+	}
 }
 
 THREE.Animation.prototype.pause = function() {
@@ -109,17 +145,50 @@ THREE.Animation.prototype.stop = function() {
 }
 
 THREE.Animation.prototype.update = function() {
+
+	// early out
 	
-	var currentTime = new Date().getTime() - this.lastTime;
+	if( !this.isPlaying ) return;
 	
-	for( var t = 0, tl = this.data.tree.length; t < lt; t++ ) {
+	
+	// update
+	
+	var currentTime = this.currentTimeCounter++;//new Date().getTime() - this.startTime;
+	
+	for( var t = 0, tl = this.tree.length; t < lt; t++ ) {
 		
-		var object = this.data.tree[ t ];
+		var object = this.tree[ t ];
+
+		
+		// switch keyframes?
+		
+		if( object.nextKey.time < currentTime ) {
+			
+			// loop or stop?
+			
+			if( object.nextKey.index + 1 == this.data.tree[ t ].animation.length ) {
+				
+				if( this.loop ) {
+					
+					object.prevKey = object.nextKey;
+					object.nextKey = this.data.tree[ t ].animation[ 0 ];
+				}
+				else this.stop();
+			}
+
+			else {
+				
+				object.prevKey = object.nextKey;
+				object.nextKey = this.data.tree[ t ].animation[ object.nextKey.index + 1 ];
+			}
+		}
 		
 		
+		// interpolate and set
+		
+		var prevKey = object.prevKey;
+		var nextKey = object.nextKey;
 	}
-	
-	
 }
 
 
