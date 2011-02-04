@@ -792,6 +792,7 @@ THREE.Loader.prototype = {
 				}
 				
 				THREE.Loader.prototype.bones( scope, data.bones );
+				THREE.Loader.prototype.animation( scope, data.animation );
 				
 			}
 			
@@ -1000,6 +1001,11 @@ THREE.Loader.prototype = {
 
 		scope.bones = bones;
 
+	},
+	
+	animation: function( scope, animation ) {
+		
+		scope.animation = animation;
 	},
 	
 	si: function( scope, a, b, c, d ) {

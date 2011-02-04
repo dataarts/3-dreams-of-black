@@ -140,7 +140,7 @@ THREE.Animation.prototype.update = function() {
 	}
 
 	
-	for( var h = 0, hl = 3/*this.hierarchy.length*/; h < hl; h++ ) {
+	for( var h = 0, hl = this.hierarchy.length; h < hl; h++ ) {
 		
 		object = this.hierarchy[ h ];
 		
