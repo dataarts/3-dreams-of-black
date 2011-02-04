@@ -6,7 +6,6 @@ THREE.Mesh = function( geometry, materials ) {
 
 	THREE.Object3D.call( this );
 	
-	this.renderable   = true;
 	this.geometry     = geometry;
 	this.materials    = materials && materials.length ? materials : [ materials ];
 	this.normalMatrix = new THREE.Matrix4();
@@ -20,11 +19,24 @@ THREE.Mesh.prototype.supr        = THREE.Object3D.prototype;
 /*
  * Update
  */
-/*
+
 THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
 	
-	this.supr.update.call( this, parentGlobalMatrix, forceUpdate, scene, camera );
+	if( this.visible && this.autoUpdateMatrix ) {
+		
+		if( this.supr.updateMatrix.call( this, parentGlobalMatrix, forceUpdate, scene, camera )) {
+			
+			// todo: update normal matrix
+		}
+	}
 	
-	// todo: update normal matrix
-}*/
+
+	// check camera frustum and add to scene capture list
+	
+	if( scene && camera && camera.frustum.contains( this )) {
+		
+		this.screenZ = camera.frustum.screenZ;
+		scene.capture( this );
+	}
+}
 

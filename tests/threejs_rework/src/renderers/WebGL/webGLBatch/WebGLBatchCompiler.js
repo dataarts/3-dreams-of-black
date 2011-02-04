@@ -23,11 +23,17 @@ THREE.WebGLBatchCompiler = (function() {
 	var textureBuffers;
 	var geoBuffers;
 	var GL;
+	var doLog;
 	
 	
 	//--- compile ---
 	
-	var compile = function( incomingMesh ) {
+	var compile = function( incomingMesh, _doLog ) {
+		
+		doLog = _doLog || false;
+		
+		var ms = new Date().getTime();	
+		log( "THREE.WebGLBatchCompiler.compile: Start" );
 		
 		GL             = THREE.WebGLRendererContext;
 		mesh           = incomingMesh;
@@ -42,13 +48,28 @@ THREE.WebGLBatchCompiler = (function() {
 		colors         = mesh.geometry.colors;
 		uv1s           = [];
 
-		shaderCodeInfos = processShaderCode();
-		shaderCodeInfos = processTextureMaps();
-		geoBuffers      = processGeometry();
-		
+		if( checkBatchCache()) {
+			
+			log( "THREE.WebGLBatchCompiler.compile: End. Cloning existing." );		
+			return;
+		}
+
+		shaderCodeInfos   = processShaderCode();
+		shaderCodeInfos   = processTextureMaps();
+		geoBuffers        = processGeometry();
 		mesh.webGLBatches = processWebGLBatches();
+
+		addToBatchCache();
+
+		log( "THREE.WebGLBatchCompiler.compile: End. Took " + ( new Date().getTime() - ms ) + " ms." );		
 	}
 		
+	var log = function( msg ) {
+		
+		if( doLog )
+			console.log( msg );
+	}
+
 
 	//--- compile shader code ---
 		
@@ -173,6 +194,8 @@ THREE.WebGLBatchCompiler = (function() {
 		GL.texParameteri ( GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, convertThreeParameterToGL( texture.min_filter ));
 		GL.generateMipmap( GL.TEXTURE_2D );
 		GL.bindTexture   ( GL.TEXTURE_2D, null );
+
+		log( "--> THREE.WebGLBatchCompiler.bindTexture: src=" + texture.image.src + " size=" + texture.image.width + "x" + texture.image.height );
 	}
 	
 	
@@ -310,6 +333,8 @@ THREE.WebGLBatchCompiler = (function() {
 		GL.bindBuffer( GL.ARRAY_BUFFER, info.buffer );
 		GL.bufferData( GL.ARRAY_BUFFER, new Float32Array( data ), GL.STATIC_DRAW );
 		
+		log( "--> THREE.WebGLBatchCompiler.bindBuffer: " + name + " numElements=" + ( data.length / size ));
+
 		return info;
 	}
 	
@@ -328,6 +353,8 @@ THREE.WebGLBatchCompiler = (function() {
 		GL.bindBuffer( GL.ELEMENT_ARRAY_BUFFER, info.buffer );
      	GL.bufferData( GL.ELEMENT_ARRAY_BUFFER, new Uint16Array( data ), GL.STATIC_DRAW );
 		
+		log( "--> THREE.WebGLBatchCompiler.bindElement: numElements=" + ( data.length / 3 ));
+		
 		return info;
 	}
 	
@@ -342,17 +369,17 @@ THREE.WebGLBatchCompiler = (function() {
 			
 			var chunk          = geometryChunks[ chunkName ];
 			var shaderCodeInfo = getShaderCodeInfo( chunk.materials );
-			var batch          = new THREE.WebGLBatch( shaderCodeInfo );
-
-
+			var batch          = new THREE.WebGLBatch();
+			
+			batch.init( shaderCodeInfo );
 			batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
 			batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
 			
 			if( mesh instanceof THREE.Skin ) {
 
-				batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32" );
-				batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "bones"     );
-				batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoses" );
+				batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32"        );
+				batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "boneMatrices"     );
+				batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoseMatrices" );
 			}
 			
 			
@@ -390,6 +417,8 @@ THREE.WebGLBatchCompiler = (function() {
 			batches.push( batch );
 		}
 		
+		log( "--> THREE.WebGLBatchCompiler.processWebGLBatches: numBatches=" + batches.length );
+
 		return batches;
 	}
 	
@@ -444,7 +473,62 @@ THREE.WebGLBatchCompiler = (function() {
 		return 0;
 	};
 	
+	
+	//--- Add to batch cache ---
+	
+	function addToBatchCache() {
 		
+		THREE.WebGLBatchCompiler.batchCache.push( new THREE.WebGLBatchCompiler.batchCacheObject( geometry, materials, mesh.webGLBatches ));
+	}
+
+	
+
+	//--- check batch cache ---
+	
+	function checkBatchCache() {
+		
+		var cache = THREE.WebGLBatchCompiler.batchCache;
+		
+		for( var c = 0; c < cache.length; c++ ) {
+			
+			if( geometry === cache[ c ].geometry &&	materials.length === cache[ c ].materials.length ) {
+				
+				var allMatch = true;
+				
+				for( var m = 0; m < materials.length; m++ ) {
+					
+					if( materials[ m ] !== cache[ c ].materials[ m ] ) {
+						
+						allMatch = false;
+						break;
+					}
+				}
+	
+				if( allMatch ) {
+					
+					var batches = [];
+					
+					for( var b = 0; b < cache[ c ].webGLBatches.length; b++ ) {
+						
+						batches[ b ] = new THREE.WebGLBatch();
+						batches[ b ].initFrom( cache[ c ].webGLBatches[ b ] );
+							
+						batches[ b ].addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
+						batches[ b ].addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
+					}
+			
+					mesh.webGLBatches = batches;
+					return true;
+				}
+			} 
+		}
+		
+		return false;
+	}
+	
+	
+	
+			
 	
 	//--- public ---
 	
@@ -461,6 +545,14 @@ THREE.WebGLBatchCompiler = (function() {
 
 THREE.WebGLBatchCompiler.geometryBuffersDictionary = {};
 THREE.WebGLBatchCompiler.textureBuffersDictionary  = {};
+THREE.WebGLBatchCompiler.batchCache = [];
+
+THREE.WebGLBatchCompiler.batchCacheObject = function( geometry, materials, webGLBatches ) {
+	
+	this.geometry     = geometry;
+	this.materials    = materials;
+	this.webGLBatches = webGLBatches;
+}
 
 THREE.WebGLBatchCompiler.ShaderCodeInfo = function( originalMaterials, vertexShaderId, fragmentShaderId ) {
 	
@@ -479,4 +571,3 @@ THREE.WebGLBatchCompiler.GLBuffers = function( chunkName, attributes, elements )
 	this.attributeBuffers = attributes;
 	this.elementBuffer    = elements;
 }
-

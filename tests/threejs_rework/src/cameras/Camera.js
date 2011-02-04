@@ -46,14 +46,6 @@ THREE.Camera.prototype.updatePerspectiveMatrix = function() {
 
 THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
 	
-	// call "super"
-	
-	var wasDirty = this.isDirty;
-	this.supr.update.call( this, parentGlobalMatrix, forceUpdate, scene, camera );
-	
-	
-	// update inverse
-	
-	if( wasDirty )
+	if( this.supr.update.call( this, parentGlobalMatrix, forceUpdate, scene, camera ) )
 		THREE.Matrix4.makeInvert( this.globalMatrix, this.inverseMatrix );	
 }

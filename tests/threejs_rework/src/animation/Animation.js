@@ -2,25 +2,30 @@ var testAnimation = {
 
 	name: 	"hello",
 	fps: 	30,
-	length: 10,
+	length: 8,
 	JIT: 	undefined,	
 	
-	tree: [ 
+	hierarchy: [ 
 
 		{
 			parent: -1,
-			animation: [ 
+			keys: [ 
 				
 				{ time: 0,
+				  index: 0,
+				  rot: [ 0, 0, 0, 0 ],
 				  pos: [ 0, 0, 0 ],
-				  rot: [ 0, 0, 0 ],
-				  scl: [ 0, 0, 0 ] },
+				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 4,
-				  rot: [ 10, 0, 0 ] },
+				  index: 1,
+				  rot: [ 10, 0, 0, 0 ] },
 	
 				{ time: 8,
-				  rot: [ 0, 0, 0 ] },
+				  index: 2,
+				  rot: [ 0, 0, 0, 0 ],
+				  pos: [ 0, 0, 0 ],
+				  scl: [ 1, 1, 1 ] },
 				
 			]
 		}, 
@@ -28,41 +33,50 @@ var testAnimation = {
 	
 		{ 
 			parent: 0,
-			animation: [
+			keys: [
 			
 				{ time: 0,
-				  pos: [ 0, 0, 0 ],
-				  rot: [ 0, 0, 0 ],
-				  scl: [ 0, 0, 0 ] },
+				  index: 0,
+				  rot: [ 0, 0, 0, 0 ],
+				  pos: [ 0, 0.66, 0 ],
+				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 5,
-				  rot: [ -5, 0, 0 ] },
+				  index: 1,
+				  rot: [ 20, 0, 0, 0 ] },
 	
 				{ time: 8,
-				  rot: [ 0, 0, 0 ] },
-	
+				  index: 2,
+				  rot: [ 0, 0, 0, 0 ],
+				  pos: [ 0, 0.66, 0 ],
+				  scl: [ 1, 1, 1 ] },
 			]
 		}, 
 			 
 	
 		{ 
 			 parent: 1,
-			 animation: [
+			 keys: [
 			 
 				{ time: 0,
-				  pos: [ 0, 0, 0 ],
-				  rot: [ 0, 0, 0 ],
-				  scl: [ 0, 0, 0 ] },
+				  index: 0,
+				  rot: [ 0, 0, 0, 0 ],
+				  pos: [ 0, 0.66, 0 ],
+				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 3,
-				  rot: [ 5, 0, 0 ] },
+				  index: 1,
+				  rot: [ -45, 0, 0, 0 ] },
 	
 				{ time: 6,
-				  rot: [ -5, 0, 0 ] },
+				  index: 2,
+				  rot: [ +45, 0, 0, 0 ] },
 	
-				{ time: 10,
-				  rot: [ 0, 0, 0 ] },
-	
+				{ time: 8,
+				  index: 3,
+				  rot: [ 0, 0, 0, 0 ],
+				  pos: [ 0, 0.66, 0 ],
+				  scl: [ 1, 1, 1 ] },
 		 	]
 		}
 	]
@@ -73,11 +87,34 @@ THREE.Animation = function( root, data ) {
 	
 	this.root = root;
 	this.data = data;
-	this.tree = this.matchTree( root, data );
+	this.hierarchy = this.matchHierarchy( root, data );
 
 	this.startTime = 0;
 	this.isPlaying = false;
-	this.isLooping = true;
+	this.loop      = true;
+	
+	var vec  = new THREE.Vector3();
+	var quat = new THREE.Quaternion();
+	
+	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
+		
+		for( var k = 0; k < this.data.hierarchy[ h ].keys.length; k++ ) {
+		
+			if( this.data.hierarchy[ h ].keys[ k ].rot ) {
+				
+				vec.x = this.data.hierarchy[ h ].keys[ k ].rot[ 0 ];
+				vec.y = this.data.hierarchy[ h ].keys[ k ].rot[ 1 ];
+				vec.z = this.data.hierarchy[ h ].keys[ k ].rot[ 2 ];
+				
+				// TEMP!
+				
+				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion();
+				this.data.hierarchy[ h ].keys[ k ].rot.setFromEuler( vec );
+				
+				// ENDTEMP!
+			}	
+		}
+	}
 }
 
 
@@ -90,7 +127,41 @@ THREE.Animation.prototype.play = function( loop, useJITCompiledData ) {
 	this.isPlaying = true;
 	this.startTime = new Date().getTime();
 	
+	
+	// reset key cache
+	
+	for( var h = 0; h < this.hierarchy.length; h++ ) {
+		
+		if( this.hierarchy[ h ].prevKey === undefined ) {
+			
+			this.hierarchy[ h ].prevKey = { pos: 0, rot: 0, scl: 0 };
+			this.hierarchy[ h ].nextKey = { pos: 0, rot: 0, scl: 0 };
+		}
+		
+		this.hierarchy[ h ].prevKey.pos = this.data.hierarchy[ h ].keys[ 0 ];
+		this.hierarchy[ h ].prevKey.rot = this.data.hierarchy[ h ].keys[ 0 ];
+		this.hierarchy[ h ].prevKey.scl = this.data.hierarchy[ h ].keys[ 0 ];
+		
+		this.hierarchy[ h ].nextKey.pos = this.getNextKeyWith( "pos", h, 1 );
+		this.hierarchy[ h ].nextKey.rot = this.getNextKeyWith( "rot", h, 1 );
+		this.hierarchy[ h ].nextKey.scl = this.getNextKeyWith( "scl", h, 1 );
+	}	
+	
 	this.update();
+}
+
+THREE.Animation.prototype.getNextKeyWith = function( type, h, key ) {
+	
+	var keys = this.data.hierarchy[ h ].keys;
+	
+	for( ; key < keys.length; key++ ) {
+		
+		if( keys[ key ][ type ] !== undefined )
+			return keys[ key ];
+	}
+	
+	console.log( "THREE.Animation.getNextKeyWith: missing " + type + " in animation " + this.data.name );
+	return this.data.hierarchy[ h ].keys[ 0 ];
 }
 
 THREE.Animation.prototype.pause = function() {
@@ -102,59 +173,141 @@ THREE.Animation.prototype.stop = function() {
 }
 
 THREE.Animation.prototype.update = function() {
+
+	// early out
 	
-	var currentTime = new Date().getTime() - this.lastTime;
+	if( !this.isPlaying ) return;
 	
-	for( var t = 0, tl = this.data.tree.length; t < lt; t++ ) {
+	
+	// update
+	
+	var currentTime         = ( new Date().getTime() - this.startTime ) * 0.001;
+	var unloopedCurrentTime = currentTime;
+	var types               = [ "pos", "rot", "scl" ];
+	var scale;
+	var relative;
+	var object;
+	var vector;
+	var prevXYZ, nextXYZ;
+
+
+	// looped?
+	
+	if( currentTime >= this.data.length ) {
 		
-		var object = this.data.tree[ t ];
+		this.startTime = new Date().getTime() - ( currentTime - this.data.length ) * 1000;
+		currentTime = ( new Date().getTime() - this.startTime ) * 0.001;
 	}
+
 	
-	
+	for( var h = 0, hl = this.hierarchy.length; h < hl; h++ ) {
+		
+		object = this.hierarchy[ h ];
+		
+		for( var t = 0; t < 3; t++ ) {
+			
+			// get keys
+			
+			var type    = types[ t ];
+			var prevKey = object.prevKey[ type ];
+			var nextKey = object.nextKey[ type ];
+			
+			
+			// switch keys?
+						
+			if( nextKey.time < unloopedCurrentTime ) {
+
+				if( nextKey.time >= this.data.length ) {
+					
+					if( this.loop ) {
+						
+						prevKey = this.data.hierarchy[ h ].keys[ 0 ];
+						nextKey = this.getNextKeyWith( type, h, 1 );
+					}
+					else {
+						
+						this.stop();
+						return;
+					}
+				}
+				else {
+					
+					prevKey = nextKey;
+					nextKey = this.getNextKeyWith( type, h, nextKey.index + 1 );
+				}
+
+				object.prevKey[ type ] = prevKey;
+				object.nextKey[ type ] = nextKey;
+			}
+			
+			
+			// interpolate rot (quaternion slerp)
+			
+			scale   = ( currentTime - prevKey.time ) / ( nextKey.time - prevKey.time );
+			prevXYZ = prevKey[ type ];
+			nextXYZ = nextKey[ type ];
+
+			if( type === "rot" ) {
+				
+				THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.object3D.quaternion, scale );
+			}
+			
+			// lerp pos/scl 
+						
+			else {
+				
+				vector   = type === "pos" ? object.object3D.position : object.object3D.scale; 
+				vector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
+				vector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
+				vector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
+			}
+		}
+	}
 }
 
 
+
 /*
- * Match object3d and animation tree structures
+ * Match object3d and animation hierarchy structures
  */
 
-THREE.Animation.prototype.matchTree = function( root, data ) {
+THREE.Animation.prototype.matchHierarchy = function( root, data ) {
 	
-	
-	// build tree from root
+	// build hierarchy from root
 
-	var tree = [ { parent: -1, object3D: root } ];
+	var hierarchy = [ { parent: -1, object3D: root } ];
 
 	for( var c = 0; c < root.children.length; c++ )
-		this.matchTreeRecurse( root.children[ c ], tree, 0 );
+		this.matchHierarchyRecurse( root.children[ c ], hierarchy, 0 );
 
 
-	// compare trees
+	// compare hierarchys
 	
-	if( tree.length === data.tree.length ) {
+	if( hierarchy.length === data.hierarchy.length ) {
 		
-		for( var t = 0; t < tree.length; t++ ) {
+		for( var t = 0; t < hierarchy.length; t++ ) {
 			
-			if( tree[ t ].parent !== data.tree[ t ].parent ) {
+			if( hierarchy[ t ].parent !== data.hierarchy[ t ].parent ) {
 				
-				console.log( "THREE.Animation.matchTree: mismatch!" );
+				console.log( "THREE.Animation.matchhierarchy: mismatch!" );
 				return null;
 			}
 		}
 	}
 	else {
 		
-		console.log( "THREE.Animation.matchTree: mismatch" );
-		return [ tree[ 0 ]];
+		console.log( "THREE.Animation.matchhierarchy: mismatch" );
+		return [ hierarchy[ 0 ]];
 	} 
 	
-	return tree;
+	return hierarchy;
 }
 
-THREE.Animation.prototype.matchTreeRecurse = function( root, tree, parentNumber ) {
+
+THREE.Animation.prototype.matchHierarchyRecurse = function( root, hierarchy, parentNumber ) {
 	
-	tree.push( { parent: parentNumber, object3D: root } );
+	hierarchy.push( { parent: parentNumber, object3D: root } );
 	
 	for( var c = 0; c < root.children.length; c++ )
-		this.matchTreeRecurse( root.children[ c ], tree, parentNumber + 1 );
+		this.matchHierarchyRecurse( root.children[ c ], hierarchy, parentNumber + 1 );
 }

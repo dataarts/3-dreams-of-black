@@ -8,13 +8,12 @@ THREE.WebGLRenderer = function( contextId ) {
 	this.domElement = document.createElement( 'canvas' );
 	this.GL         = this.domElement.getContext( "experimental-webgl" );
 	
-    this.GL.clearColor	( 0.0, 0.0, 0.0, 1.0 );
+    this.GL.clearColor	( 1.0, 1.0, 1.0, 1.0 );
     this.GL.clearDepth	( 1.0 );
     this.GL.enable		( this.GL.DEPTH_TEST );
     this.GL.depthFunc	( this.GL.LEQUAL );
 	this.GL.enable      ( this.GL.CULL_FACE );
 	this.GL.cullFace    ( this.GL.BACK );
-//	this.GL.pixelStorei ( this.GL.UNPACK_FLIP_Y_WEBGL, true );
 
 	this.applyPrototypes();
 

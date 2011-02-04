@@ -18,8 +18,10 @@ THREE.WebGLRenderer.Scene.update = function( camera ) {
 
 THREE.WebGLRenderer.Scene.capture = function( renderable ) {
 	
-	if( renderable.webGLBatches === undefined )
+	if( renderable.webGLBatches === undefined ) {
+
 		THREE.WebGLBatchCompiler.compile( renderable );
+	}
 		
 		
 	for( var s = 0; s < renderable.webGLBatches.length; s++ ) {

@@ -53,6 +53,13 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 					addFragmentUniform( "uMap0" );										
 					addFragment       ( "gl_FragColor = texture2D( uMap0, vUV0 );" ); 
 				}
+				else {
+					
+					vertexId   += "Color";
+					fragmentId += "Color";
+
+					addFragment       ( "gl_FragColor = vec4( 1, 0, 1, 1 );" );
+				}
 			}
 		}
 
@@ -69,8 +76,14 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 			addAttribute( "aSkinIndices" );
 			addAttribute( "aSkinWeights" );
 		
-			addVertex( "int  index  = int( aSkinIndices.x );" );
-			addVertex( "gl_Position = uBonesRootInverseMatrix * uBoneGlobalMatrices[ index ] * uBonePoseMatrices[ index ] * aVertex;"	);
+			addVertex( "int i;" );
+			
+			addVertex( "i = int( aSkinIndices.x );" );
+			addVertex( "gl_Position = uBonesRootInverseMatrix * uBoneGlobalMatrices[ i ] * uBonePoseMatrices[ i ] * aVertex * aSkinWeights.x;" );
+
+			addVertex( "i = int( aSkinIndices.y );" );
+			addVertex( "gl_Position += uBonesRootInverseMatrix * uBoneGlobalMatrices[ i ] * uBonePoseMatrices[ i ] * aVertex * aSkinWeights.y;" );
+
 			addVertex( "gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * gl_Position;" );
 		}
 		else

@@ -4,8 +4,8 @@
 
 THREE.Object3D = function() {
 
-	this.visible      = true;
-	this.renderable   = false;
+	this.visible          = true;
+	this.autoUpdateMatrix = true;
 	
 	this.parent		  = undefined;
 	this.children     = [];
@@ -15,7 +15,8 @@ THREE.Object3D = function() {
 	this.scale        = new THREE.Vector3( 1, 1, 1 );
 	this.localMatrix  = new THREE.Matrix4();
 	this.globalMatrix = new THREE.Matrix4();
-
+	this.quaternion   = new THREE.Quaternion();
+	
 	this.boundRadius  = 0;
 	this.screenZ      = 0;
 }
@@ -29,8 +30,23 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 
 	// visible?
 	
-	if( !this.visible ) return;
+	if( !this.visible ) return false;
+	
+	
+	// update matrix?
+	
+	if( this.autoUpdateMatrix )
+		return this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera );
 
+	return false;
+};
+
+
+/*
+ * Update Matrix
+ */
+
+THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
 	
 	// update position
 	
@@ -40,6 +56,23 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 		
 		this.localMatrix.setPosition( this.position );
 		this.position.isDirty = false;
+		isDirty = true;
+	}
+
+	// update quaternion (overrules rotation by forcing rotation.isDirty=false)
+	
+	if( this.quaternion.isDirty ) {
+		
+		this.localMatrix.setRotationFromQuaternion( this.quaternion );
+		this.quaternion.isDirty = false;
+		this.rotation  .isDirty = false;
+		
+		if( this.scale.isDirty || this.scale.x !== 1 || this.scale.y !== 1 || this.scale.z !== 1 ) {
+			
+			this.localMatrix.scale( this.scale );
+			this.scale.isDirty = false;
+		}
+		
 		isDirty = true;
 	}
 
@@ -73,6 +106,8 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 	}
 
 
+	// update global
+
 	if( forceUpdate || isDirty ) {
 		
 		forceUpdate = true;
@@ -89,14 +124,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 	for( var i = 0; i < this.children.length; i++ )
 		this.children[ i ].update( this.globalMatrix, forceUpdate, scene, camera );
 	
-	
-	// check camera frustum and add to scene capture list
-	
-	if( scene && this.renderable && camera.frustum.contains( this )) {
-		
-		this.screenZ = camera.frustum.screenZ;
-		scene.capture( this );
-	}
+	return isDirty;
 };
 
 
@@ -106,11 +134,12 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 
 THREE.Object3D.prototype.addChild = function( child ) {
 	
-	if( child.parent !== undefined )
-		child.parent.removeChild( child );
-		
 	if( this.children.indexOf( child ) === -1 ) {
+
+		if( child.parent !== undefined )
+			child.parent.removeChild( child );
 		
+		child.parent = this;		
 		this.children.push( child );
 	}
 };

@@ -49,9 +49,10 @@ THREE.Matrix4.prototype = {
 
 	setRotationFromEuler: function( vec3 ) {
 		
-		var x = vec3.x * Math.PI / 180;
-		var y = vec3.y * Math.PI / 180;
-		var z = vec3.z * Math.PI / 180;
+		var c = Math.PI / 360;
+		var x = vec3.x * c;
+		var y = vec3.y * c;
+		var z = vec3.z * c;
 		
 	    var ch = Math.cos( y  );
 	    var sh = Math.sin( y  );
@@ -69,6 +70,39 @@ THREE.Matrix4.prototype = {
 	    this.n31 = -sh*ca;
 	    this.n32 = sh*sa*cb + ch*sb;
 	    this.n33 = -sh*sa*sb + ch*cb;		
+	},
+
+	setRotationFromQuaternion: function( quat ) {
+
+		var x = quat.x, y = quat.y, z = quat.z, w = quat.w;
+	
+		var x2 = x + x;
+		var y2 = y + y;
+		var z2 = z + z;
+	
+		var xx = x*x2;
+		var xy = x*y2;
+		var xz = x*z2;
+	
+		var yy = y*y2;
+		var yz = y*z2;
+		var zz = z*z2;
+	
+		var wx = w*x2;
+		var wy = w*y2;
+		var wz = w*z2;
+	
+		this.n11 = 1 - (yy + zz);
+		this.n12 = xy - wz;
+		this.n13 = xz + wy;
+	
+		this.n21 = xy + wz;
+		this.n22 = 1 - (xx + zz);
+		this.n23 = yz - wx;
+	
+		this.n31 = xz - wy;
+		this.n32 = yz + wx;
+		this.n33 = 1 - (xx + yy);
 	},
 
 	scale: function( vec3 ) {
