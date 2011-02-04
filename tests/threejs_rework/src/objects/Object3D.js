@@ -30,9 +30,15 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 
 	// visible?
 	
-	if( !this.visible         ) return false;
-	if( this.autoUpdateMatrix ) 
+	if( !this.visible ) return false;
+	
+	
+	// update matrix?
+	
+	if( this.autoUpdateMatrix )
 		return this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera );
+
+	return false;
 };
 
 
@@ -99,6 +105,8 @@ THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdat
 		isDirty = true;
 	}
 
+
+	// update global
 
 	if( forceUpdate || isDirty ) {
 		
