@@ -63,6 +63,12 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 
     this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
 	
+	
+	// clear cache
+	
+	THREE.WebGLBatchCurrentElementId    = -1;
+	THREE.WebGLBatchCurrentAttributesId = -1;
+	
 
 	// update scene
 	

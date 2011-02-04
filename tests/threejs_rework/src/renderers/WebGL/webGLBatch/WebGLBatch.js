@@ -73,9 +73,15 @@ THREE.WebGLBatch.prototype.render = function() {
 
 	this.loadUniformInputs();
 
+
 	// draw elements
 
-    this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, this.elements );
+	if( this.elements !== THREE.WebGLBatchCurrentElementId ) {
+		
+		THREE.WebGLBatchCurrentElementId = this.elements;
+	    this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, this.elements );
+	}
+	
     this.GL.drawElements( this.GL.TRIANGLES, this.elementsSize, this.GL.UNSIGNED_SHORT, 0 );
 }
 
@@ -255,7 +261,6 @@ THREE.WebGLBatch.prototype.doLoadUniform = function( type, location, data ) {
 	     	break; 
 	}
 }
-
 
 
 
