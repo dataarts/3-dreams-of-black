@@ -1,87 +1,6 @@
-var testAnimation = {
-
-	name: 	"hello",
-	fps: 	30,
-	length: 8,
-	JIT: 	undefined,	
-	
-	hierarchy: [ 
-
-		{
-			parent: -1,
-			keys: [ 
-				
-				{ time: 0,
-				  index: 0,
-				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 0, 0 ],
-				  scl: [ 1, 1, 1 ] },
-				  
-				{ time: 4,
-				  index: 1,
-				  rot: [ 10, 0, 0, 0 ] },
-	
-				{ time: 8,
-				  index: 2,
-				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 0, 0 ],
-				  scl: [ 1, 1, 1 ] },
-				
-			]
-		}, 
-			
-	
-		{ 
-			parent: 0,
-			keys: [
-			
-				{ time: 0,
-				  index: 0,
-				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 0.66, 0 ],
-				  scl: [ 1, 1, 1 ] },
-				  
-				{ time: 5,
-				  index: 1,
-				  rot: [ 20, 0, 0, 0 ] },
-	
-				{ time: 8,
-				  index: 2,
-				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 0.66, 0 ],
-				  scl: [ 1, 1, 1 ] },
-			]
-		}, 
-			 
-	
-		{ 
-			 parent: 1,
-			 keys: [
-			 
-				{ time: 0,
-				  index: 0,
-				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 0.66, 0 ],
-				  scl: [ 1, 1, 1 ] },
-				  
-				{ time: 3,
-				  index: 1,
-				  rot: [ -45, 0, 0, 0 ] },
-	
-				{ time: 6,
-				  index: 2,
-				  rot: [ +45, 0, 0, 0 ] },
-	
-				{ time: 8,
-				  index: 3,
-				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 0.66, 0 ],
-				  scl: [ 1, 1, 1 ] },
-		 	]
-		}
-	]
-}
-
+/*
+ * Animation System
+ */
 
 THREE.Animation = function( root, data ) {
 	
@@ -92,26 +11,47 @@ THREE.Animation = function( root, data ) {
 	this.startTime = 0;
 	this.isPlaying = false;
 	this.loop      = true;
+
+
+/*	var vec = new THREE.Vector3();
+
+	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
+
+		for( var k = 0; k < this.data.hierarchy[ h ].keys.length; k++ ) {
+
+			if( this.data.hierarchy[ h ].keys[ k ].rot ) {
+
+				vec.x = this.data.hierarchy[ h ].keys[ k ].rot[ 0 ];
+				vec.y = this.data.hierarchy[ h ].keys[ k ].rot[ 1 ];
+				vec.z = this.data.hierarchy[ h ].keys[ k ].rot[ 2 ];
+
+				// TEMP!
+
+				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion();
+				this.data.hierarchy[ h ].keys[ k ].rot.setFromEuler( vec );
+
+				// ENDTEMP!
+			}	
+		}
+	}
 	
-	var vec  = new THREE.Vector3();
-	var quat = new THREE.Quaternion();
+	return;*/
 	
 	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
 		
 		for( var k = 0; k < this.data.hierarchy[ h ].keys.length; k++ ) {
 		
-			if( this.data.hierarchy[ h ].keys[ k ].rot ) {
+			// set index
+			
+			this.data.hierarchy[ h ].keys[ k ].index = k;
+		
+			// create quaternions
+		
+			if( this.data.hierarchy[ h ].keys[ k ].rot !== undefined &&
+			  !(this.data.hierarchy[ h ].keys[ k ].rot instanceof THREE.Quaternion)) {
 				
-				vec.x = this.data.hierarchy[ h ].keys[ k ].rot[ 0 ];
-				vec.y = this.data.hierarchy[ h ].keys[ k ].rot[ 1 ];
-				vec.z = this.data.hierarchy[ h ].keys[ k ].rot[ 2 ];
-				
-				// TEMP!
-				
-				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion();
-				this.data.hierarchy[ h ].keys[ k ].rot.setFromEuler( vec );
-				
-				// ENDTEMP!
+				var quat = this.data.hierarchy[ h ].keys[ k ].rot;
+				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion( quat[0], quat[1], quat[2], quat[3] ); 
 			}	
 		}
 	}

@@ -115,7 +115,7 @@
 				document.body.appendChild( container );
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = 10200;
+				camera.position.z = 7200;
 
 				scene = new THREE.Scene();
 				scene.addChild( camera );
