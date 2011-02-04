@@ -14,6 +14,8 @@ THREE.WebGLRenderer = function( contextId ) {
     this.GL.depthFunc	( this.GL.LEQUAL );
 	this.GL.enable      ( this.GL.CULL_FACE );
 	this.GL.cullFace    ( this.GL.BACK );
+    this.GL.pixelStorei(this.GL.UNPACK_FLIP_Y_WEBGL, true);
+
 
 	this.applyPrototypes();
 

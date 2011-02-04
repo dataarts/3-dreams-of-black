@@ -2,11 +2,12 @@
  * Animation System
  */
 
-THREE.Animation = function( root, data ) {
+THREE.Animation = function( skin, data ) {
 	
-	this.root = root;
+	this.skin = skin;
+	this.root = skin.bones[ 0 ];
 	this.data = data;
-	this.hierarchy = this.matchHierarchy( root, data );
+	this.hierarchy = this.matchHierarchy( this.root, data );
 
 	this.startTime = 0;
 	this.isPlaying = false;
@@ -99,8 +100,7 @@ THREE.Animation.prototype.getNextKeyWith = function( type, h, key ) {
 		if( keys[ key ][ type ] !== undefined )
 			return keys[ key ];
 	}
-	
-	console.log( "THREE.Animation.getNextKeyWith: missing " + type + " in animation " + this.data.name );
+
 	return this.data.hierarchy[ h ].keys[ 0 ];
 }
 
@@ -140,7 +140,7 @@ THREE.Animation.prototype.update = function() {
 	}
 
 	
-	for( var h = 0, hl = this.hierarchy.length; h < hl; h++ ) {
+	for( var h = 0, hl = 3/*this.hierarchy.length*/; h < hl; h++ ) {
 		
 		object = this.hierarchy[ h ];
 		
@@ -215,15 +215,27 @@ THREE.Animation.prototype.matchHierarchy = function( root, data ) {
 	
 	// build hierarchy from root
 
-	var hierarchy = [ { parent: -1, object3D: root } ];
+	var hierarchy = [];
+
+	for( var h = 0; h < this.skin.bones.length; h++ ) {
+		
+		hierarchy[ h ] = { object3D: this.skin.bones[ h ] };
+	}
+
+/*	var hierarchy = [ { parent: -1, object3D: root } ];
 
 	for( var c = 0; c < root.children.length; c++ )
 		this.matchHierarchyRecurse( root.children[ c ], hierarchy, 0 );
+*/
 
+/*	var hierarchy = [];
+	this.matchHierarchyRecurse( root, hierarchy, -1 );
+*/
+		
 
 	// compare hierarchys
 	
-	if( hierarchy.length === data.hierarchy.length ) {
+/*	if( hierarchy.length === data.hierarchy.length ) {
 		
 		for( var t = 0; t < hierarchy.length; t++ ) {
 			
@@ -238,7 +250,7 @@ THREE.Animation.prototype.matchHierarchy = function( root, data ) {
 		
 		console.log( "THREE.Animation.matchhierarchy: mismatch" );
 		return [ hierarchy[ 0 ]];
-	} 
+	}*/ 
 	
 	return hierarchy;
 }

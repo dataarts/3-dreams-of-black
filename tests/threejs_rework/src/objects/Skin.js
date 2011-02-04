@@ -17,7 +17,7 @@ THREE.Skin = function( geometry, materials ) {
 		
 		for( var b = 0; b < this.geometry.bones.length; b++ ) {
 			
-			var bone = new THREE.Object3D();
+			var bone = this.addBone();
 			
 			bone.position.x   = this.geometry.bones[ b ].pos[ 0 ];
 			bone.position.y   = this.geometry.bones[ b ].pos[ 1 ];
@@ -26,17 +26,16 @@ THREE.Skin = function( geometry, materials ) {
 			bone.quaternion.y = this.geometry.bones[ b ].rotq[ 1 ];
 			bone.quaternion.z = this.geometry.bones[ b ].rotq[ 2 ];
 			bone.quaternion.w = this.geometry.bones[ b ].rotq[ 3 ];
-	
-			this.addBone( bone );
+
+			bone.name = "bone" + b;
 		}
 		
 		for( var b = 0; b < this.bones.length; b++ ) {
 			
-			if( this.geometry.bones[ b ].parent !== -1 ) 
-				this.bones[ this.geometry.bones[ b ].parent ].addChild( this.bones[ b ] );
-			else
+			if( this.geometry.bones[ b ].parent === -1 ) 
 				this.addChild( this.bones[ b ] );
-			
+			else
+				this.bones[ this.geometry.bones[ b ].parent ].addChild( this.bones[ b ] );
 		}
 		
 		this.pose();
@@ -46,6 +45,31 @@ THREE.Skin = function( geometry, materials ) {
 THREE.Skin.prototype             = new THREE.Mesh();
 THREE.Skin.prototype.constructor = THREE.Skin;
 THREE.Skin.prototype.supr        = THREE.Mesh.prototype;
+
+
+/*
+ * Update
+ */
+
+THREE.Skin.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+	
+	if( this.visible && this.autoUpdateMatrix ) {
+		
+		if( this.supr.updateMatrix.call( this, parentGlobalMatrix, forceUpdate, scene, camera )) {
+			
+			THREE.Matrix4.makeInvert( this.globalMatrix, this.bonesRootInverse );	
+		}
+	}
+	
+
+	// check camera frustum and add to scene capture list
+	
+	if( scene && camera && camera.frustum.contains( this )) {
+		
+		this.screenZ = camera.frustum.screenZ;
+		scene.capture( this );
+	}
+}
 
 
 /*

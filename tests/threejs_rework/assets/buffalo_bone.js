@@ -8,6 +8,21 @@
 var model = {
 
 	'materials': [{
+		"a_dbg_color" : 0xeeeeee,
+		"a_dbg_index" : 0,
+		"a_dbg_name" : "_03_-_Default1noCulli__03_-_Default1noCulli",
+		"col_ambient" : [0.0, 0.0, 0.0],
+		"col_diffuse" : [0.64000000000000001, 0.64000000000000001, 0.64000000000000001],
+		"col_specular" : [0.16500000000000001, 0.16500000000000001, 0.16500000000000001],
+		"illumination" : 2,
+		"map_diffuse" : "Buffalo_Body.png",
+		"optical_density" : 1.0,
+		"specular_coef" : 154.901961,
+		"transparency" : 1.0
+		}],
+
+
+	'materialsEMPA': [{
 	"a_dbg_color" : 0xFFFFFF,
 	"a_dbg_index" : 0, 
 	"a_dbg_name" : "buffalo-buffalo_body"
