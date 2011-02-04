@@ -159,6 +159,9 @@ THREE.Animation.prototype.getNextKeyWith = function( type, h, key ) {
 		if( keys[ key ][ type ] !== undefined )
 			return keys[ key ];
 	}
+	
+	console.log( "THREE.Animation.getNextKeyWith: missing " + type + " in animation " + this.data.name );
+	return this.data.hierarchy[ h ].keys[ 0 ];
 }
 
 THREE.Animation.prototype.pause = function() {

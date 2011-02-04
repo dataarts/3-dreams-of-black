@@ -48,11 +48,18 @@ THREE.WebGLBatchCompiler = (function() {
 		colors         = mesh.geometry.colors;
 		uv1s           = [];
 
-		shaderCodeInfos = processShaderCode();
-		shaderCodeInfos = processTextureMaps();
-		geoBuffers      = processGeometry();
-		
+		if( checkBatchCache()) {
+			
+			log( "THREE.WebGLBatchCompiler.compile: End. Cloning existing." );		
+			return;
+		}
+
+		shaderCodeInfos   = processShaderCode();
+		shaderCodeInfos   = processTextureMaps();
+		geoBuffers        = processGeometry();
 		mesh.webGLBatches = processWebGLBatches();
+
+		addToBatchCache();
 
 		log( "THREE.WebGLBatchCompiler.compile: End. Took " + ( new Date().getTime() - ms ) + " ms." );		
 	}
@@ -362,9 +369,9 @@ THREE.WebGLBatchCompiler = (function() {
 			
 			var chunk          = geometryChunks[ chunkName ];
 			var shaderCodeInfo = getShaderCodeInfo( chunk.materials );
-			var batch          = new THREE.WebGLBatch( shaderCodeInfo );
-
-
+			var batch          = new THREE.WebGLBatch();
+			
+			batch.init( shaderCodeInfo );
 			batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
 			batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
 			
@@ -466,7 +473,62 @@ THREE.WebGLBatchCompiler = (function() {
 		return 0;
 	};
 	
+	
+	//--- Add to batch cache ---
+	
+	function addToBatchCache() {
 		
+		THREE.WebGLBatchCompiler.batchCache.push( new THREE.WebGLBatchCompiler.batchCacheObject( geometry, materials, mesh.webGLBatches ));
+	}
+
+	
+
+	//--- check batch cache ---
+	
+	function checkBatchCache() {
+		
+		var cache = THREE.WebGLBatchCompiler.batchCache;
+		
+		for( var c = 0; c < cache.length; c++ ) {
+			
+			if( geometry === cache[ c ].geometry &&	materials.length === cache[ c ].materials.length ) {
+				
+				var allMatch = true;
+				
+				for( var m = 0; m < materials.length; m++ ) {
+					
+					if( materials[ m ] !== cache[ c ].materials[ m ] ) {
+						
+						allMatch = false;
+						break;
+					}
+				}
+	
+				if( allMatch ) {
+					
+					var batches = [];
+					
+					for( var b = 0; b < cache[ c ].webGLBatches.length; b++ ) {
+						
+						batches[ b ] = new THREE.WebGLBatch();
+						batches[ b ].initFrom( cache[ c ].webGLBatches[ b ] );
+							
+						batches[ b ].addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
+						batches[ b ].addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
+					}
+			
+					mesh.webGLBatches = batches;
+					return true;
+				}
+			} 
+		}
+		
+		return false;
+	}
+	
+	
+	
+			
 	
 	//--- public ---
 	
@@ -483,6 +545,14 @@ THREE.WebGLBatchCompiler = (function() {
 
 THREE.WebGLBatchCompiler.geometryBuffersDictionary = {};
 THREE.WebGLBatchCompiler.textureBuffersDictionary  = {};
+THREE.WebGLBatchCompiler.batchCache = [];
+
+THREE.WebGLBatchCompiler.batchCacheObject = function( geometry, materials, webGLBatches ) {
+	
+	this.geometry     = geometry;
+	this.materials    = materials;
+	this.webGLBatches = webGLBatches;
+}
 
 THREE.WebGLBatchCompiler.ShaderCodeInfo = function( originalMaterials, vertexShaderId, fragmentShaderId ) {
 	
@@ -501,4 +571,3 @@ THREE.WebGLBatchCompiler.GLBuffers = function( chunkName, attributes, elements )
 	this.attributeBuffers = attributes;
 	this.elementBuffer    = elements;
 }
-

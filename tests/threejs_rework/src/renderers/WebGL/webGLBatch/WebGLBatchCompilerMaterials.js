@@ -53,6 +53,13 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 					addFragmentUniform( "uMap0" );										
 					addFragment       ( "gl_FragColor = texture2D( uMap0, vUV0 );" ); 
 				}
+				else {
+					
+					vertexId   += "Color";
+					fragmentId += "Color";
+
+					addFragment       ( "gl_FragColor = vec4( 1, 0, 1, 1 );" );
+				}
 			}
 		}
 

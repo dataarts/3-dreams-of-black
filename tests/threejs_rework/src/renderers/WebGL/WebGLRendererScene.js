@@ -20,7 +20,7 @@ THREE.WebGLRenderer.Scene.capture = function( renderable ) {
 	
 	if( renderable.webGLBatches === undefined ) {
 
-		THREE.WebGLBatchCompiler.compile( renderable, true );
+		THREE.WebGLBatchCompiler.compile( renderable );
 	}
 		
 		

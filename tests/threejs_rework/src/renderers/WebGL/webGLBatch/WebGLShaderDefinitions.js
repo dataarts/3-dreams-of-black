@@ -18,7 +18,7 @@ THREE.WebGLShaderDefinitions = {
 		{ name: "uSceneFogNear",            type: "1f" },
 		{ name: "uSceneFogFar", 			type: "1f" },
 		{ name: "uSceneFogColor", 			type: "vec3" },
-		{ name: "uColor",					type: "vec3" },
+		{ name: "uColor",					type: "vec4" },
 		{ name:	"uMap0", 					type: "sampler2D" },
 		{ name: "uMap1", 					type: "sampler2D" },
 		{ name: "uLightMap", 				type: "sampler2D" },
@@ -42,6 +42,7 @@ THREE.WebGLShaderDefinitions = {
 	
 		{ name: "vUV0", 	type: "vec2" },
 		{ name: "vUV1", 	type: "vec2" },
-		{ name: "vEnvUV", 	type: "vec2" }
+		{ name: "vEnvUV", 	type: "vec2" },
+		{ name: "vNormal",  type: "vec3" }
 	]
 }
