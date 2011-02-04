@@ -1,0 +1,362 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>darkness</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#DEFFFF;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+		<script type="text/javascript" src="build/ThreeExtras.js"></script>
+
+		<script type="text/javascript" src="Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = 0;
+
+			var container;
+			var stats;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+			var projector;
+			
+			var directionalLight, pointLight;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var render_gl = 1;
+			var has_gl = 0;
+
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var cubefollowX = 0;
+			var cubefollowY = 0;
+
+			var cubeRef;
+			var cubeRefMesh;
+
+			var boxcar;
+			var boxcarMesh;
+
+			var groundMesh;
+			var currentDistance;
+
+			var cubeArray = [];
+
+			var r = 0;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
+				
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = false;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+
+				return mesh;
+			}		
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+
+				camera.position.z = 10000;
+				camera.position.x = 4800;
+				camera.position.y = FLOOR+540;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.Fog( 0x003300, 2000, 25000 );
+
+
+				projector = new THREE.Projector();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x333333 );
+				scene.addLight( ambient );
+
+				directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 2;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+
+				pointLight = new THREE.PointLight( 0xffffee );
+				pointLight.position.x = 0;
+				pointLight.position.y = FLOOR+8000;
+				pointLight.position.z = 0;
+				scene.addLight( pointLight );
+
+				//cubeRef
+				cubeRef = new Cube( 10, 10, 10, 1, 1 );
+				cubeRefMesh = addMesh( cubeRef, 1,  camera.position.x, camera.position.y-20, camera.position.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
+				cubeRefMesh.visible = false;
+				camera.target = cubeRefMesh;
+				
+				// boxcar
+				boxcar = new Cube( 30, 20, 3000, 1, 1 );
+				boxcarMesh = addMesh( boxcar, 1,  camera.position.x, camera.position.y-30, camera.position.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x000000 } ) );
+				//boxcarMesh.visible = false;
+
+				// terrain
+				var img = new Image();
+				img.onload = function () {
+					var data = getHeightData(img);
+
+					// plane
+					plane = new Plane( 100, 100, 31, 31 );
+
+					for ( var i = 0, l = plane.vertices.length; i < l; i++ ) {
+						plane.vertices[i].position.z = data[i];
+					}
+
+					var planeMesh = addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, getFloorMaterial() );
+					planeMesh.scale.y *= 4;
+					//planeMesh.visible = false;
+					//planeMesh.doubleSided = true;
+				};
+				img.src = "assets/heightmap32.jpg";
+
+				// plane
+				var ground = new Plane( 500, 500, 1, 1 );
+				groundMesh = addMesh( ground, 100,  0, FLOOR-1, 0, -1.57,0,0, getFloorMaterial() );
+				//groundMesh.visible = false;
+
+				// lines
+				var i, line, vector1, vector2, material, p;
+
+				var geometry = new THREE.Geometry();
+				
+				for ( i = 0; i < 100; ++i ) {
+
+					vector1 = new THREE.Vector3( -500 , (Math.random()*200)-100, (Math.random()*1000)-500 );
+
+					vector2 = vector1.clone();
+					vector2.x = 500;
+					vector2.y = (Math.random()*200)-100;
+					vector2.z += (Math.random()*100)-50;
+
+					geometry.vertices.push( new THREE.Vertex( vector1 ) );
+					geometry.vertices.push( new THREE.Vertex( vector2 ) );
+					
+				}
+
+				var lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.6, linewidth: 1 } );
+
+				for( i = 0; i < 100; ++i ) {
+					line = new THREE.Line( geometry, lineMaterial, THREE.LinePieces );
+					line.scale.x = line.scale.y = line.scale.z = 1;
+					//line.rotation.y = Math.random() * Math.PI;
+
+					line.updateMatrix();
+					scene.addObject( line );
+
+					var x = camera.position.x;
+					var y = FLOOR-300;
+					var z = camera.position.z;
+
+					var obj = {c:line, x:x, y:y, z:z, scale:1, toscale:1, alivetime:i};
+					cubeArray.push(obj);
+				}
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( { scene: scene, clearColor: 0x00FFFF, clearAlpha: 0.15 } );
+					webglRenderer.setFaceCulling(0);
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+				
+			}
+
+			function getHeightData(img) {
+				var canvas = document.createElement( 'canvas' );
+				canvas.width = 32;
+				canvas.height = 32;
+				var context = canvas.getContext( '2d' );
+
+				var size = 32 * 32, data = new Float32Array( size );
+
+				context.drawImage(img,0,0);
+
+				for ( var i = 0; i < size; i ++ ) {
+					data[i] = 0
+				}
+
+				var imgd = context.getImageData(0, 0, 32, 32);
+				var pix = imgd.data;
+
+				var j=0;
+				for (var i = 0, n = pix.length; i < n; i += (4)) {
+					var all = pix[i]+pix[i+1]+pix[i+2];
+					data[j++] = all/25;
+				}
+
+				return data;
+
+			}
+
+			function getFloorMaterial () {
+				return [new THREE.MeshLambertMaterial( { color:0x336600, shading: THREE.FlatShading } ), new THREE.MeshLambertMaterial( { color:0x225500, wireframe: true } ) ];
+			}
+
+			function getMaterial() {
+				var c = Math.random() * 0xffffff;
+				return new THREE.MeshLambertMaterial( { color:c } );
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+			function runAll () {
+				for (var i=0; i<cubeArray.length; ++i ) {
+					var obj = cubeArray[i];
+					var c = obj.c;
+					var x = obj.x;
+					var y = obj.y;
+					var z = obj.z;
+					var scale = obj.scale;
+					var toscale = obj.toscale;
+
+					var alivetime = obj.alivetime;
+					
+					alivetime += 0.05;
+
+					var divider = 200;
+					
+					var moveScale = (toscale-scale)/divider;
+					
+					scale += moveScale;
+					
+					// respawn
+					if (alivetime > 100) {
+						//console.log("re")
+						x = camera.position.x;
+						y = FLOOR+100;
+						z = camera.position.z-2000;
+
+						//c.rotation.y = Math.random()*Math.PI;
+						scale = 0.1;
+						toscale = 3+Math.random()*3;
+
+						alivetime = 0;
+					}
+
+					c.position.x = x;
+					c.position.y = y;
+					c.position.z = z;
+
+					c.scale.x = scale;
+					c.scale.y = c.scale.z = 1;
+
+					cubeArray[i].x = x;
+					cubeArray[i].y = y;
+					cubeArray[i].z = z;
+					cubeArray[i].scale = scale;
+					cubeArray[i].toscale = toscale;
+					cubeArray[i].alivetime = alivetime;
+
+				}
+			}
+
+			function loop() {
+				var dist = 1200;
+				
+				r += 0.05;
+
+				camera.position.z -= 5;
+				pointLight.position.y -= 3;
+				pointLight.position.z = camera.position.z;
+
+				if (camera.position.z < -10000 ) {
+					camera.position.z = 10000;
+					pointLight.position.y = FLOOR+9000;
+				}
+
+				var mx = ( mouseX - windowHalfX )/200;
+				var my = ( mouseY - windowHalfY )/200;
+
+				var moveX = (mx-cubefollowX)/20;
+				var moveY = (my-cubefollowY)/20;
+
+				cubefollowX += moveX;
+				cubefollowY += moveY;
+
+				cubeRefMesh.position.x = camera.position.x + (dist*Math.cos(cubefollowX-3.14));
+				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX-3.14));
+				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY-0.25));
+
+				camera.position.y += Math.sin(camera.position.z/40)/2;
+
+				boxcarMesh.position.x = camera.position.x;
+				boxcarMesh.position.z = camera.position.z;
+				boxcarMesh.position.y = camera.position.y-30;
+				
+				runAll();
+
+				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>
