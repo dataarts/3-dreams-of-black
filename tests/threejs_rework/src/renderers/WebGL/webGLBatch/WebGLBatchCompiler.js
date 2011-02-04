@@ -370,9 +370,9 @@ THREE.WebGLBatchCompiler = (function() {
 			
 			if( mesh instanceof THREE.Skin ) {
 
-				batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32" );
-				batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "bones"     );
-				batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoses" );
+				batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32"        );
+				batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "boneMatrices"     );
+				batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoseMatrices" );
 			}
 			
 			

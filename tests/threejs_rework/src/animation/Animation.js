@@ -38,7 +38,7 @@ var testAnimation = {
 				{ time: 0,
 				  index: 0,
 				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 50, 0 ],
+				  pos: [ 0, 0.66, 0 ],
 				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 5,
@@ -48,7 +48,7 @@ var testAnimation = {
 				{ time: 8,
 				  index: 2,
 				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 50, 0 ],
+				  pos: [ 0, 0.66, 0 ],
 				  scl: [ 1, 1, 1 ] },
 			]
 		}, 
@@ -61,7 +61,7 @@ var testAnimation = {
 				{ time: 0,
 				  index: 0,
 				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 50, 0 ],
+				  pos: [ 0, 0.66, 0 ],
 				  scl: [ 1, 1, 1 ] },
 				  
 				{ time: 3,
@@ -75,7 +75,7 @@ var testAnimation = {
 				{ time: 8,
 				  index: 3,
 				  rot: [ 0, 0, 0, 0 ],
-				  pos: [ 0, 50, 0 ],
+				  pos: [ 0, 0.66, 0 ],
 				  scl: [ 1, 1, 1 ] },
 		 	]
 		}
@@ -106,13 +106,12 @@ THREE.Animation = function( root, data ) {
 				vec.y = this.data.hierarchy[ h ].keys[ k ].rot[ 1 ];
 				vec.z = this.data.hierarchy[ h ].keys[ k ].rot[ 2 ];
 				
+				// TEMP!
+				
 				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion();
 				this.data.hierarchy[ h ].keys[ k ].rot.setFromEuler( vec );
 				
-/*				this.data.hierarchy[ h ].keys[ k ].rot[ 0 ] = quat.x;
-				this.data.hierarchy[ h ].keys[ k ].rot[ 1 ] = quat.y;
-				this.data.hierarchy[ h ].keys[ k ].rot[ 2 ] = quat.z;
-				this.data.hierarchy[ h ].keys[ k ].rot[ 3 ] = quat.w;*/
+				// ENDTEMP!
 			}	
 		}
 	}
@@ -247,16 +246,7 @@ THREE.Animation.prototype.update = function() {
 
 			if( type === "rot" ) {
 				
-				/*
-				vector   = object.object3D.rotation; 
-				vector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
-				vector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
-				vector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
-				*/
-				
 				THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.object3D.quaternion, scale );
-				
-//				object.object3D.quaternion.setFromEuler( vector );
 			}
 			
 			// lerp pos/scl 
