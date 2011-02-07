@@ -27,6 +27,7 @@
 		<script type="text/javascript" src="src/core/Vector2.js"></script>
 		<script type="text/javascript" src="src/core/Vector3.js"></script>
 		<script type="text/javascript" src="src/core/Vector4.js"></script>
+		<script type="text/javascript" src="src/core/Quaternion.js"></script>
 		<script type="text/javascript" src="src/core/Matrix3.js"></script>
 		<script type="text/javascript" src="src/core/Matrix4.js"></script>
 		<script type="text/javascript" src="src/core/Geometry.js"></script>
@@ -90,6 +91,8 @@
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Texture.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
 	
+		<script type="text/javascript" src="src/animation/Animation.js"></script>
+		<script type="text/javascript" src="src/animation/AnimationTestData.js"></script>
 	
 		<!-- Experience Code -->
 	
@@ -105,6 +108,7 @@
 				var rotationMatrix;
 				var time = 0;
 				var container;
+				var animation;
 				
 				//--- Init ---
 				
@@ -114,38 +118,85 @@
 					var curDate = null;
 					
 					var cube     = new THREE.Cube( 100, 100, 100, 1, 1 );
-					var material = new THREE.MeshShaderMaterial( { vertex_shader: "colorVertex", fragment_shader: "colorFragment" } );
-					
+					var material = new THREE.MeshShaderMaterial( { vertex_shader: "skinVertex", fragment_shader: "textureFragment" } );
+
+					var weights = [1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0];
+					var indices = [0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1];
+	
 					female.skinWeights = [];
 					female.skinIndices = [];
 					
-					for( var i = 0; i < female.vertices.length; i++ ) {
+					for( var i = 0; i < weights.length; i += 2 ) {
+					
+						female.skinWeights.push( new THREE.Vector4( weights[ i + 0 ], weights[ i + 1 ], 0, 0 ));
+//						female.skinWeights.push( new THREE.Vector4( 1, 0, 0, 0 ));
+						female.skinIndices.push( new THREE.Vector4( indices[ i + 0 ], indices[ i + 1 ], 0, 0 ));
+					}
+					
+					
+					female.bones = [
+		{	// Id: 0
+			parent: -1, 
+			pos: [0,0,0],
+			rot: [0,0,0],
+			rotq: [0,0,0,1]
+		},
+		
+		{	// Id: 1
+			parent: 0, 
+			pos: [0,0.66,0],
+			rot: [0,0,0],
+			rotq: [0,0,0,1]
+		},
+		
+		{	// Id: 2
+			parent: 1, 
+			pos: [0,0.66,0],
+			rot: [0,0,0],
+			rotq: [0,0,0,1]
+		},
+		
+		{	// Id: 3
+			parent: 2, 
+			pos: [0,0.66,0],
+			rot: [0,0,0],
+			rotq: [0,0,0,1]
+		},
+		
+	];
+
+					
+		/*			for( var i = 0; i < female.vertices.length; i++ ) {
 						
-						if( female.vertices[ i ].position.y < 50 )
+						if( female.vertices[ i ].position.y < 0.66 )
 							female.skinIndices.push( new THREE.Vector4( 0, 0, 0, 0 ));
-						else if( female.vertices[ i ].position.y < 100 )
+						else if( female.vertices[ i ].position.y < (0.66*2) )
 							female.skinIndices.push( new THREE.Vector4( 1, 0, 0, 0 ));
 						else
 							female.skinIndices.push( new THREE.Vector4( 2, 0, 0, 0 ));
 
 						female.skinWeights.push( new THREE.Vector4( 1, 0, 0, 0 ));
 					}
-					
+			*/	
 					
 					scene  = new THREE.Scene();
-					mesh   = new THREE.Skin( female, female.materials );
+					mesh   = new THREE.Skin( female, material );// female.materials );
 					camera = new THREE.Camera();
 
-					mesh.position.z = -200;
-					mesh.position.y = -100;
+					mesh.position.z = -5;
+					mesh.position.y = 1;
 
 					scene.addChild( mesh );
 					scene.addChild( camera );
-
+/*
+					bone0 = mesh.bones[ 0 ];
+					bone1 = mesh.bones[ 1 ];
+					bone2 = mesh.bones[ 2 ];
+*/
 
 					// bones
 					
-					bone0 = mesh.addBone();  
+		/*			bone0 = mesh.addBone();  
 					bone1 = mesh.addBone();  
 					bone2 = mesh.addBone();  
 
@@ -156,8 +207,12 @@
 					bone1.position.y = 50;
 					bone2.position.y = 50;
 					
-					mesh.pose();
+					mesh.pose();*/
+				//	mesh.rotation.y = 90;
 
+
+					animation = new THREE.Animation( mesh, tube2 );
+					animation.play();
 
 
 					// renderer
@@ -172,7 +227,7 @@
 
 					// start rendering
 
-				    setInterval( Update, 33 );
+				    setInterval( Update, 1000/60 );
 					
 				}
 
@@ -180,7 +235,8 @@
 				var load = function() {
 
 					var loader = new THREE.Loader();
-					loader.loadAscii( { model: "assets/female02/Female02_slim.js", callback: Init } );
+//					loader.loadAscii( { model: "assets/female02/Female02_slim.js", callback: Init } );
+					loader.loadAscii( { model: "assets/j1.js", callback: Init } );
 				}
 				
 				
@@ -188,12 +244,18 @@
 				
 				var Update = function()
 				{
-					mesh.rotation.y = time * 15;
-					
-					bone0.rotation.x = Math.sin( time ) * 10;
-					bone1.rotation.x = Math.sin( time ) * 25;
-					bone2.rotation.x = Math.sin( time ) * 45;
-					
+		/*			bone0.rotation.z = Math.sin( time ) * 10;
+					bone1.rotation.z = Math.sin( time ) * 25;
+					bone2.rotation.z = Math.sin( time ) * 45;
+		*/
+			//		camera.position.x = Math.sin( time ) * 2;
+		
+					camera.position.x = Math.sin( time ) * 2;
+					camera.position.z = Math.cos( time ) * 2;
+					camera.rotation.y = time * Math.PI * 45;
+//					mesh.rotation.x += 10;
+		
+					animation.update();			
 					renderer.render( scene, camera );
 
 					time += 0.02;

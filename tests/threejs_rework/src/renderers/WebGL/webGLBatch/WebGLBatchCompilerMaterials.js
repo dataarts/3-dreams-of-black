@@ -70,19 +70,19 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 			vertexId += "Skin";
 			
 			addUniform( "uBonesRootInverseMatrix" );
-			addUniform( "uBoneGlobalMatrices[16]" );
-			addUniform( "uBonePoseMatrices[16]" );
+			addUniform( "uBoneGlobalMatrices[20]" );
+			addUniform( "uBonePoseMatrices[20]" );
 		
 			addAttribute( "aSkinIndices" );
 			addAttribute( "aSkinWeights" );
-		
-			addVertex( "int i;" );
-			
-			addVertex( "i = int( aSkinIndices.x );" );
-			addVertex( "gl_Position = uBonesRootInverseMatrix * uBoneGlobalMatrices[ i ] * uBonePoseMatrices[ i ] * aVertex * aSkinWeights.x;" );
-			addVertex( "i = int( aSkinIndices.y );" );
-			addVertex( "gl_Position += uBonesRootInverseMatrix * uBoneGlobalMatrices[ i ] * uBonePoseMatrices[ i ] * aVertex * aSkinWeights.y;" );
-			addVertex( "gl_Position  = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * gl_Position;" );
+			addAttribute( "aSkinVertexA" );
+			addAttribute( "aSkinVertexB" );
+
+			addVertex( "int a = int( aSkinIndices.x );" );
+			addVertex( "int b = int( aSkinIndices.y );" );
+			addVertex( "gl_Position  = uBoneGlobalMatrices[ a ] * aSkinVertexA * aSkinWeights.x;" );
+			addVertex( "gl_Position += uBoneGlobalMatrices[ b ] * aSkinVertexB * aSkinWeights.y;" );
+			addVertex( "gl_Position  = uCameraPerspectiveMatrix * uCameraInverseMatrix * gl_Position;" );
 		}
 		else
 			addVertex( "gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * aVertex;" );

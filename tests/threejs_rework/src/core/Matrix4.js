@@ -49,7 +49,7 @@ THREE.Matrix4.prototype = {
 
 	setRotationFromEuler: function( vec3 ) {
 		
-		var c = Math.PI / 360;
+		var c = Math.PI / 180;
 		var x = vec3.x * c;
 		var y = vec3.y * c;
 		var z = vec3.z * c;

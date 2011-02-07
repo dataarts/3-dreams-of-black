@@ -16,6 +16,10 @@ THREE.WebGLBatchCompiler = (function() {
 	var vertices;
 	var skinWeights;
 	var skinIndices;
+	var skinVerticesA;
+	var skinVerticesB;
+	var skinVerticesC;
+	var skinVerticesD;
 	var uv0s;
 	var uv1s;
 	var colors;
@@ -44,6 +48,10 @@ THREE.WebGLBatchCompiler = (function() {
 		vertices       = mesh.geometry.vertices;
 		skinWeights    = mesh.geometry.skinWeights;
 		skinIndices    = mesh.geometry.skinIndices;
+		skinVerticesA  = mesh.geometry.skinVerticesA;
+		skinVerticesB  = mesh.geometry.skinVerticesB;
+		skinVerticesC  = mesh.geometry.skinVerticesC;
+		skinVerticesD  = mesh.geometry.skinVerticesD;
 		uv0s           = mesh.geometry.uvs;
 		colors         = mesh.geometry.colors;
 		uv1s           = [];
@@ -215,16 +223,18 @@ THREE.WebGLBatchCompiler = (function() {
 			
 			for( chunkName in geometryChunks ) {
 				
-				var chunk           = geometryChunks[ chunkName ];
-				var tempVertices    = [];
-				var tempNormals     = [];
-				var tempColors      = [];
-				var tempUV0s        = [];
-				var tempUV1s        = [];
-				var tempSkinWeights = [];
-				var tempSkinIndices = [];
-				var tempFaces       = [];
-				var vertexCounter   = 0;
+				var chunk           	= geometryChunks[ chunkName ];
+				var tempVertices    	= [];
+				var tempNormals     	= [];
+				var tempColors      	= [];
+				var tempUV0s        	= [];
+				var tempUV1s        	= [];
+				var tempSkinWeights 	= [];
+				var tempSkinIndices 	= [];
+				var tempSkinVerticesA 	= [];
+				var tempSkinVerticesB 	= [];
+				var tempFaces       	= [];
+				var vertexCounter   	= 0;
 				
 				
 				// loop through faces
@@ -256,14 +266,18 @@ THREE.WebGLBatchCompiler = (function() {
 						
 						vertexCounter++;
 						
-						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.x );  
-						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
-						tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
-						tempVertices.push( 1 );	// pad for faster vertex shader
+						if( skinWeights.length == 0 ) {
+							
+							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.x );  
+							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
+							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
+							tempVertices.push( 1 );	// pad for faster vertex shader
+							
+							tempNormals.push( face.normal.x );
+							tempNormals.push( face.normal.y );
+							tempNormals.push( face.normal.z );
+						}
 						
-						tempNormals.push( face.normal.x );
-						tempNormals.push( face.normal.y );
-						tempNormals.push( face.normal.z );
 						
 						if( uv0s.length > 0 ) {
 							
@@ -289,6 +303,18 @@ THREE.WebGLBatchCompiler = (function() {
 							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].y );
 							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].z );
 							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].w );
+
+							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].x );  
+							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].y );  
+							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].z );  
+							tempSkinVerticesA.push( 1 );	// pad for faster vertex shader
+
+							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].x );  
+							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].y );  
+							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].z );  
+							tempSkinVerticesB.push( 1 );	// pad for faster vertex shader
+							
+							// todo: insert more influences
 						}
 					}
 				}
@@ -299,13 +325,15 @@ THREE.WebGLBatchCompiler = (function() {
 				var attributeBuffers = [];
 				var elementBuffer;
 				
-				if( tempVertices   .length > 0 ) attributeBuffers.push( bindBuffer( "aVertex",      "vec4", tempVertices,    4 ));
-				if( tempNormals    .length > 0 ) attributeBuffers.push( bindBuffer( "aNormal",      "vec3", tempNormals,     3 ));
-				if( tempColors     .length > 0 ) attributeBuffers.push( bindBuffer( "aColor",       "vec3", tempColors,      3 ));
-				if( tempUV0s       .length > 0 ) attributeBuffers.push( bindBuffer( "aUV0",         "vec2", tempUV0s,        2 ));
-				if( tempSkinWeights.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinWeights", "vec4", tempSkinWeights, 4 ));
-				if( tempSkinIndices.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinIndices", "vec4", tempSkinIndices, 4 ));
-				if( tempFaces      .length > 0 ) elementBuffer = bindElement( tempFaces, tempFaces.length );
+				if( tempVertices     .length > 0 ) attributeBuffers.push( bindBuffer( "aVertex",      "vec4", tempVertices,    	 4 ));
+				if( tempNormals      .length > 0 ) attributeBuffers.push( bindBuffer( "aNormal",      "vec3", tempNormals,     	 3 ));
+				if( tempColors       .length > 0 ) attributeBuffers.push( bindBuffer( "aColor",       "vec3", tempColors,      	 3 ));
+				if( tempUV0s         .length > 0 ) attributeBuffers.push( bindBuffer( "aUV0",         "vec2", tempUV0s,        	 2 ));
+				if( tempSkinWeights  .length > 0 ) attributeBuffers.push( bindBuffer( "aSkinWeights", "vec4", tempSkinWeights, 	 4 ));
+				if( tempSkinIndices  .length > 0 ) attributeBuffers.push( bindBuffer( "aSkinIndices", "vec4", tempSkinIndices, 	 4 ));
+				if( tempSkinVerticesA.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinVertexA", "vec4", tempSkinVerticesA, 4 ));
+				if( tempSkinVerticesB.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinVertexB", "vec4", tempSkinVerticesB, 4 ));
+				if( tempFaces        .length > 0 ) elementBuffer = bindElement( tempFaces, tempFaces.length );
 				
 				if( attributeBuffers.length > 0 && elementBuffer !== undefined ) {
 					
@@ -372,15 +400,20 @@ THREE.WebGLBatchCompiler = (function() {
 			var batch          = new THREE.WebGLBatch();
 			
 			batch.init( shaderCodeInfo );
-			batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
-			batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
+			
+			
+			// handle skin/mesh
 			
 			if( mesh instanceof THREE.Skin ) {
 
-				batch.addUniformInput( "uBonesRootInverseMatrix", "mat4",      mesh.bonesRootInverse, "flatten32"        );
-				batch.addUniformInput( "uBoneGlobalMatrices",     "mat4Array", mesh,                  "boneMatrices"     );
-				batch.addUniformInput( "uBonePoseMatrices",       "mat4Array", mesh,                  "bonePoseMatrices" );
+				batch.addUniformInput( "uBoneGlobalMatrices", "mat4Array", mesh, "boneMatrices" );
 			}
+			else {
+				
+				batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
+				batch.addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
+			}
+			
 			
 			
 			// add sampler uniform if exists

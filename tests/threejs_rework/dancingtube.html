@@ -184,7 +184,7 @@
 					camera = new THREE.Camera();
 
 					mesh.position.z = -5;
-					mesh.position.y = 1;
+					mesh.position.y = 0;
 
 					scene.addChild( mesh );
 					scene.addChild( camera );
@@ -244,13 +244,7 @@
 				
 				var Update = function()
 				{
-		/*			bone0.rotation.z = Math.sin( time ) * 10;
-					bone1.rotation.z = Math.sin( time ) * 25;
-					bone2.rotation.z = Math.sin( time ) * 45;
-		*/
-			//		camera.position.x = Math.sin( time ) * 2;
-		
-					mesh.rotation.x += 10;
+					mesh.rotation.y++;
 		
 					animation.update();			
 					renderer.render( scene, camera );

@@ -11,12 +11,13 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 	
 	// set arguments
 	
-	this.FOV      = FOV      || 60;
+	this.FOV      = FOV      || 50;
 	this.aspect   = aspect   || 1.0;
 	this.zNear    = zNear    || 0.1;
 	this.zFar     = zFar     || 1000;
 	this.renderer = renderer || THREE.RendererWebGL;
-	this.target   = target   || new THREE.Object3D();
+	this.target   = target   || { position: new THREE.Vector3( 0, 0, 0 ) };
+	this.up       = new THREE.Vector3( 0, 1, 0 );
 	
 
 	// init
@@ -45,6 +46,9 @@ THREE.Camera.prototype.updatePerspectiveMatrix = function() {
  */
 
 THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+	
+//	this.globalMatrix.lookAt( this.position, this.target.position, this.up );
+//	this.globalMatrix.set( this.localMatrix );
 	
 	if( this.supr.update.call( this, parentGlobalMatrix, forceUpdate, scene, camera ) )
 		THREE.Matrix4.makeInvert( this.globalMatrix, this.inverseMatrix );	

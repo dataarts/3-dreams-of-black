@@ -29,13 +29,17 @@ THREE.WebGLShaderDefinitions = {
 	
 	attributes: [
 	
-		{ name: "aVertex", 		type: "vec4" },	
-		{ name: "aNormal",  	type: "vec3" },	
-		{ name: "aColor",   	type: "vec3" },	
-		{ name: "aUV0",     	type: "vec2" },	
-		{ name: "aUV1",     	type: "vec2" },	
-		{ name: "aSkinIndices", type: "vec4" },	
-		{ name: "aSkinWeights", type: "vec4" },	
+		{ name: "aVertex", 			type: "vec4" },	
+		{ name: "aSkinVertexA",		type: "vec4" },	
+		{ name: "aSkinVertexB",		type: "vec4" },	
+		{ name: "aSkinVertexC",		type: "vec4" },	
+		{ name: "aSkinVertexD",		type: "vec4" },	
+		{ name: "aNormal",  		type: "vec3" },	
+		{ name: "aColor",   		type: "vec3" },	
+		{ name: "aUV0",     		type: "vec2" },	
+		{ name: "aUV1",     		type: "vec2" },	
+		{ name: "aSkinIndices", 	type: "vec4" },	
+		{ name: "aSkinWeights", 	type: "vec4" },	
 	],
 	
 	varyings: [

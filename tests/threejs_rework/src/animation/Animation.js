@@ -195,6 +195,7 @@ THREE.Animation.prototype.update = function() {
 			// lerp pos/scl 
 						
 			else {
+//			else if( type === "pos" ){
 				
 				vector   = type === "pos" ? object.object3D.position : object.object3D.scale; 
 				vector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;

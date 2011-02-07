@@ -8,7 +8,7 @@ THREE.WebGLRenderer = function( contextId ) {
 	this.domElement = document.createElement( 'canvas' );
 	this.GL         = this.domElement.getContext( "experimental-webgl" );
 	
-    this.GL.clearColor	( 1.0, 1.0, 1.0, 1.0 );
+    this.GL.clearColor	( 0.8, 0.8, 0.8, 1.0 );
     this.GL.clearDepth	( 1.0 );
     this.GL.enable		( this.GL.DEPTH_TEST );
     this.GL.depthFunc	( this.GL.LEQUAL );
