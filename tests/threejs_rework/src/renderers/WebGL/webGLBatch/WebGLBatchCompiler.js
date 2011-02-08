@@ -545,9 +545,16 @@ THREE.WebGLBatchCompiler = (function() {
 						
 						batches[ b ] = new THREE.WebGLBatch();
 						batches[ b ].initFrom( cache[ c ].webGLBatches[ b ] );
+			
+						if( mesh instanceof THREE.Skin ) {
+			
+							batches[ b ].addUniformInput( "uBoneGlobalMatrices", "mat4Array", mesh, "boneMatrices" );
+						}
+						else {
 							
-						batches[ b ].addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
-						batches[ b ].addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
+							batches[ b ].addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
+							batches[ b ].addUniformInput( "uMeshNormalMatrix", "mat3", mesh.normalMatrix, "flatten32" );
+						}
 					}
 			
 					mesh.webGLBatches = batches;

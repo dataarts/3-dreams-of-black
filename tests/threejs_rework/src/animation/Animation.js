@@ -22,7 +22,7 @@ THREE.Animation = function( skin, data ) {
 	}
 
 
-	// create quaternions
+	// fix data
 	
 	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
 		
@@ -189,6 +189,11 @@ THREE.Animation.prototype.update = function() {
 			nextXYZ = nextKey[ type ];
 
 			if( type === "rot" ) {
+
+				if( scale < 0 || scale > 1 ) {
+					
+					console.log( "Scale out of bounds:" + scale ); 
+				}
 
 				THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.quaternion, scale );
 			}
