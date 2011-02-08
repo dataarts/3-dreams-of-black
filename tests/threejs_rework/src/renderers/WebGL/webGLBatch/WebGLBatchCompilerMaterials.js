@@ -78,10 +78,8 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 			addAttribute( "aSkinVertexA" );
 			addAttribute( "aSkinVertexB" );
 
-			addVertex( "int a = int( aSkinIndices.x );" );
-			addVertex( "int b = int( aSkinIndices.y );" );
-			addVertex( "gl_Position  = uBoneGlobalMatrices[ a ] * aSkinVertexA * aSkinWeights.x;" );
-			addVertex( "gl_Position += uBoneGlobalMatrices[ b ] * aSkinVertexB * aSkinWeights.y;" );
+			addVertex( "gl_Position  = (uBoneGlobalMatrices[ int( aSkinIndices.x ) ] * aSkinVertexA) * aSkinWeights.x;" );
+			addVertex( "gl_Position += (uBoneGlobalMatrices[ int( aSkinIndices.y ) ] * aSkinVertexB) * aSkinWeights.y;" );
 			addVertex( "gl_Position  = uCameraPerspectiveMatrix * uCameraInverseMatrix * gl_Position;" );
 		}
 		else

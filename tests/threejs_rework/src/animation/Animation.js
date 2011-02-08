@@ -4,52 +4,45 @@
 
 THREE.Animation = function( skin, data ) {
 	
-	this.skin = skin;
-	this.root = skin.bones[ 0 ];
-	this.data = data;
-	this.hierarchy = this.matchHierarchy( this.root, data );
+	this.skin      = skin;
+	this.data      = data;
+	this.hierarchy = [];
 
 	this.startTime = 0;
 	this.isPlaying = false;
 	this.loop      = true;
 
 
-/*	var vec = new THREE.Vector3();
+	// setup hierarchy
 
-	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
-
-		for( var k = 0; k < this.data.hierarchy[ h ].keys.length; k++ ) {
-
-			if( this.data.hierarchy[ h ].keys[ k ].rot ) {
-
-				vec.x = this.data.hierarchy[ h ].keys[ k ].rot[ 0 ];
-				vec.y = this.data.hierarchy[ h ].keys[ k ].rot[ 1 ];
-				vec.z = this.data.hierarchy[ h ].keys[ k ].rot[ 2 ];
-
-				// TEMP!
-
-				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion();
-				this.data.hierarchy[ h ].keys[ k ].rot.setFromEuler( vec );
-
-				// ENDTEMP!
-			}	
-		}
+	for( var b = 0; b < this.skin.bones.length; b++ ) {
+		
+		this.skin.bones[ b ].useQuaternion = true;
+		this.hierarchy.push( this.skin.bones[ b ] );
 	}
-	
-	return;*/
+
+
+	// create quaternions
 	
 	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
 		
 		for( var k = 0; k < this.data.hierarchy[ h ].keys.length; k++ ) {
+		
+			// remove minus times
+			
+			if( this.data.hierarchy[ h ].keys[ k ].time < 0 )
+				this.data.hierarchy[ h ].keys[ k ].time = 0;
+		
 		
 			// set index
 			
 			this.data.hierarchy[ h ].keys[ k ].index = k;
+	
 		
 			// create quaternions
 		
 			if( this.data.hierarchy[ h ].keys[ k ].rot !== undefined &&
-			  !(this.data.hierarchy[ h ].keys[ k ].rot instanceof THREE.Quaternion)) {
+			  !(this.data.hierarchy[ h ].keys[ k ].rot instanceof THREE.Quaternion )) {
 				
 				var quat = this.data.hierarchy[ h ].keys[ k ].rot;
 				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion( quat[0], quat[1], quat[2], quat[3] ); 
@@ -66,7 +59,7 @@ THREE.Animation = function( skin, data ) {
 THREE.Animation.prototype.play = function( loop, useJITCompiledData ) {
 
 	this.isPlaying = true;
-	this.startTime = new Date().getTime();
+	this.startTime = new Date().getTime() * 0.001;
 	
 	
 	// reset key cache
@@ -121,7 +114,7 @@ THREE.Animation.prototype.update = function() {
 	
 	// update
 	
-	var currentTime         = ( new Date().getTime() - this.startTime ) * 0.001;
+	var currentTime         = new Date().getTime() * 0.001 - this.startTime;
 	var unloopedCurrentTime = currentTime;
 	var types               = [ "pos", "rot", "scl" ];
 	var scale;
@@ -133,10 +126,13 @@ THREE.Animation.prototype.update = function() {
 
 	// looped?
 	
-	if( currentTime >= this.data.length ) {
+	if( currentTime > this.data.length ) {
 		
-		this.startTime = new Date().getTime() - ( currentTime - this.data.length ) * 1000;
-		currentTime = ( new Date().getTime() - this.startTime ) * 0.001;
+		while( currentTime > this.data.length )
+			currentTime -= this.data.length;
+		
+		this.startTime = new Date().getTime() * 0.001 - currentTime;
+		currentTime    = new Date().getTime() * 0.001 - this.startTime;
 	}
 
 	
@@ -152,12 +148,13 @@ THREE.Animation.prototype.update = function() {
 			var prevKey = object.prevKey[ type ];
 			var nextKey = object.nextKey[ type ];
 			
-			
 			// switch keys?
 						
 			if( nextKey.time < unloopedCurrentTime ) {
 
-				if( nextKey.time >= this.data.length ) {
+				// did we loop?
+
+				if( currentTime < unloopedCurrentTime ) {
 					
 					if( this.loop ) {
 						
@@ -172,8 +169,12 @@ THREE.Animation.prototype.update = function() {
 				}
 				else {
 					
-					prevKey = nextKey;
-					nextKey = this.getNextKeyWith( type, h, nextKey.index + 1 );
+					do {
+						
+						prevKey = nextKey;
+						nextKey = this.getNextKeyWith( type, h, nextKey.index + 1 );
+					}
+					while( nextKey.time < currentTime )
 				}
 
 				object.prevKey[ type ] = prevKey;
@@ -188,16 +189,15 @@ THREE.Animation.prototype.update = function() {
 			nextXYZ = nextKey[ type ];
 
 			if( type === "rot" ) {
-				
-				THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.object3D.quaternion, scale );
+
+				THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.quaternion, scale );
 			}
 			
 			// lerp pos/scl 
 						
 			else {
-//			else if( type === "pos" ){
 				
-				vector   = type === "pos" ? object.object3D.position : object.object3D.scale; 
+				vector   = type === "pos" ? object.position : object.scale; 
 				vector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
 				vector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
 				vector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
@@ -207,60 +207,3 @@ THREE.Animation.prototype.update = function() {
 }
 
 
-
-/*
- * Match object3d and animation hierarchy structures
- */
-
-THREE.Animation.prototype.matchHierarchy = function( root, data ) {
-	
-	// build hierarchy from root
-
-	var hierarchy = [];
-
-	for( var h = 0; h < this.skin.bones.length; h++ ) {
-		
-		hierarchy[ h ] = { object3D: this.skin.bones[ h ] };
-	}
-
-/*	var hierarchy = [ { parent: -1, object3D: root } ];
-
-	for( var c = 0; c < root.children.length; c++ )
-		this.matchHierarchyRecurse( root.children[ c ], hierarchy, 0 );
-*/
-
-/*	var hierarchy = [];
-	this.matchHierarchyRecurse( root, hierarchy, -1 );
-*/
-		
-
-	// compare hierarchys
-	
-/*	if( hierarchy.length === data.hierarchy.length ) {
-		
-		for( var t = 0; t < hierarchy.length; t++ ) {
-			
-			if( hierarchy[ t ].parent !== data.hierarchy[ t ].parent ) {
-				
-				console.log( "THREE.Animation.matchhierarchy: mismatch!" );
-				return null;
-			}
-		}
-	}
-	else {
-		
-		console.log( "THREE.Animation.matchhierarchy: mismatch" );
-		return [ hierarchy[ 0 ]];
-	}*/ 
-	
-	return hierarchy;
-}
-
-
-THREE.Animation.prototype.matchHierarchyRecurse = function( root, hierarchy, parentNumber ) {
-	
-	hierarchy.push( { parent: parentNumber, object3D: root } );
-	
-	for( var c = 0; c < root.children.length; c++ )
-		this.matchHierarchyRecurse( root.children[ c ], hierarchy, parentNumber + 1 );
-}

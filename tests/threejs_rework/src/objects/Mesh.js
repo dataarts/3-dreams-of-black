@@ -22,21 +22,31 @@ THREE.Mesh.prototype.supr        = THREE.Object3D.prototype;
 
 THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
 	
-	if( this.visible && this.autoUpdateMatrix ) {
+	// visible and auto update?
+	
+	if( this.visible && this.autoUpdateMatrix )
+	{
+		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera )
 		
-		if( this.supr.updateMatrix.call( this, parentGlobalMatrix, forceUpdate, scene, camera )) {
+		if( forceUpdate ) {
 			
-			// todo: update normal matrix
+			// update normal matrix
 		}
-	}
-	
 
-	// check camera frustum and add to scene capture list
+
+		// update children
 	
-	if( scene && camera && camera.frustum.contains( this )) {
+		for( var i = 0; i < this.children.length; i++ )
+			this.children[ i ].update( this.globalMatrix, forceUpdate, scene, camera );
+
+
+		// check camera frustum and add to scene capture list
 		
-		this.screenZ = camera.frustum.screenZ;
-		scene.capture( this );
+		if( scene && camera && camera.frustum.contains( this )) {
+			
+			this.screenZ = camera.frustum.screenZ;
+			scene.capture( this );
+		}
 	}
 }
 

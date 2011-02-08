@@ -26,9 +26,9 @@ THREE.Skin = function( geometry, materials ) {
 			bone.quaternion.y = this.geometry.bones[ b ].rotq[ 1 ];
 			bone.quaternion.z = this.geometry.bones[ b ].rotq[ 2 ];
 			bone.quaternion.w = this.geometry.bones[ b ].rotq[ 3 ];
-			bone.scale.x      = 1;//this.geometry.bones[ b ].scl [ 0 ];
-			bone.scale.y      = 1;//this.geometry.bones[ b ].scl [ 1 ];
-			bone.scale.z      = 1;//this.geometry.bones[ b ].scl [ 2 ];
+			bone.scale.x      = this.geometry.bones[ b ].scl !== undefined ? this.geometry.bones[ b ].scl[ 0 ] : 1;
+			bone.scale.y      = this.geometry.bones[ b ].scl !== undefined ? this.geometry.bones[ b ].scl[ 1 ] : 1;
+			bone.scale.z      = this.geometry.bones[ b ].scl !== undefined ? this.geometry.bones[ b ].scl[ 2 ] : 1;
 		}
 		
 		for( var b = 0; b < this.bones.length; b++ ) {
@@ -47,31 +47,6 @@ THREE.Skin.prototype             = new THREE.Mesh();
 THREE.Skin.prototype.constructor = THREE.Skin;
 THREE.Skin.prototype.supr        = THREE.Mesh.prototype;
 
-
-/*
- * Update
- */
-
-THREE.Skin.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
-	
-	if( this.visible && this.autoUpdateMatrix ) {
-		
-		if( this.supr.updateMatrix.call( this, parentGlobalMatrix, forceUpdate, scene, camera )) {
-			
-//			this.pose();
-			THREE.Matrix4.makeInvert( this.globalMatrix, this.bonesRootInverse );	
-		}
-	}
-	
-
-	// check camera frustum and add to scene capture list
-	
-	if( scene && camera && camera.frustum.contains( this )) {
-		
-		this.screenZ = camera.frustum.screenZ;
-		scene.capture( this );
-	}
-}
 
 
 /*
@@ -114,34 +89,26 @@ THREE.Skin.prototype.pose = function() {
 		
 		orgVertex = this.geometry.vertices[ i ].position;
 
-		vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
-		this.geometry.skinVerticesA.push( this.boneInverses[ this.geometry.skinIndices[ i ].x ].multiplyVector3( vertex ));
+		var indexA = this.geometry.skinIndices[ i ].x;
+		var indexB = this.geometry.skinIndices[ i ].y;
 
 		vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
-		this.geometry.skinVerticesB.push( this.boneInverses[ this.geometry.skinIndices[ i ].y ].multiplyVector3( vertex ));
+		this.geometry.skinVerticesA.push( this.boneInverses[ indexA ].multiplyVector3( vertex ));
+
+		vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
+		this.geometry.skinVerticesB.push( this.boneInverses[ indexB ].multiplyVector3( vertex ));
+		
+		// todo: add more influences
+
+
+		// normalize weights
+
+		if( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y !== 1 ) {
+			
+			var len = ( 1.0 - ( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y )) * 0.5;
+			this.geometry.skinWeights[ i ].x += len;
+			this.geometry.skinWeights[ i ].y += len;
+		}
 	}
 }
 
-
-
-/*
-
-THREE.Skin.prototype.pose = function() {
-	
-	THREE.Matrix4.makeInvert( this.globalMatrix, this.bonesRootInverse );
-
-	var tempMatrix = new THREE.Matrix4();
-
-	this.boneMatrices     = [];
-	this.bonePoseMatrices = [];
-
-	for( var b = 0; b < this.bones.length; b++ ) {
-
-		this.bonePoses[ b ] = tempMatrix.multiply( this.bonesRootInverse, this.bones[ b ].globalMatrix );
-		this.bonePoses[ b ] = THREE.Matrix4.makeInvert( tempMatrix );
-		
-		this.boneMatrices    [ b ] = this.bones    [ b ].globalMatrix.flatten32;
-		this.bonePoseMatrices[ b ] = this.bonePoses[ b ].flatten32;
-	}	
-}
-*/

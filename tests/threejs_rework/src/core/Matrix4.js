@@ -194,6 +194,14 @@ THREE.Matrix4.prototype = {
 		return v;
 
 	},
+	
+	mulitplyVector3OnlyZ: function( v ) {
+		
+		var vx = v.x, vy = v.y, vz = v.z,
+		d = 1 / ( this.n41 * vx + this.n42 * vy + this.n43 * vz + this.n44 );
+
+		return ( this.n31 * vx + this.n32 * vy + this.n33 * vz + this.n34 ) * d;
+	},
 
 	multiplyVector4: function ( v ) {
 

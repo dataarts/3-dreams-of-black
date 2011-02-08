@@ -127,24 +127,25 @@
 					scene = new THREE.Scene();
 
 					camera = new THREE.Camera();
-					camera.position.z = 120;
+					camera.position.z = 225;
 					scene.addChild( camera );
 
 					node = new THREE.Object3D();
+					node.position.y = 0;
 
 					skin            = new THREE.Skin( buffalo, buffalo.materials );
-					skin.position.z = 40;
+					skin.position.z = 0;
 //					skin.rotation.x = -270;
 
 					animation = new THREE.Animation( skin, buffalo.animation );
 
 
-					var cube            = new THREE.Cube( 10, 10, 10 );
+					var cube            = new THREE.Cube( 0.1, 0.1, 0.1 );
 					var cubeMesh        = new THREE.Mesh( cube, buffalo.materials );
-					cubeMesh.position.z = -40;
+					cubeMesh.position.z = -2;
 					
 					node.addChild( skin );
-					node.addChild( cubeMesh );
+		//			node.addChild( cubeMesh );
 					scene.addChild( node );
 
 
@@ -169,7 +170,9 @@
 				var load = function() {
 
 					var loader = new THREE.Loader();
-					loader.loadAscii( { model: "assets/scene/models/buffalo_bone.js", callback: Init } );
+//					loader.loadAscii( { model: "assets/scene/models/joint1.js", callback: Init } );
+					loader.loadAscii( { model: "assets/scene/models/spine1.js", callback: Init } );
+//					loader.loadAscii( { model: "assets/scene/models/buffalo_bone.js", callback: Init } );
 //					loader.loadAscii( { model: "assets/buffalo_bone2.js", callback: Init } );
 				}
 				
@@ -180,15 +183,16 @@
 				{
 					animation.update();			
 					
-					node.rotation.y++;
+				//	node.rotation.y++;
 					
 /*					for( var i = 0; i < skin.bones.length; i++ ) {
 						
 						skin.bones[ i ].rotation.x += 0.1;
 					} 
 	*/				
-					//	skin.bones[ 3 ].rotation.x += 0.1;
-				//	skin.rotation.y += 2;
+			/*		skin.bones[ 1 ].useQuaternion = false;
+					skin.bones[ 1 ].rotation.x = Math.sin( time * 2 ) * 40;*/
+					skin.rotation.y = 90;
 	
 					time += 0.01;
 					

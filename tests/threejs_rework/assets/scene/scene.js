@@ -10,12 +10,12 @@ var scene = {
 	
 "objects": 
 {	
-	"buffalo_bone" : {
-		"geometry" : "buffalo_bone",
-		"materials": [ "buffalo-buffalo_body" ],
-		"position" : [ 4.2288,86.8779,-52.7717 ],
-		"rotation" : [ 0,90,347.2545 ],
-		"scale"	   : [ 4.3,4.3,4.3 ],
+	"spine1" : {
+		"geometry" : "spine1",
+		"materials": [ "buffalo_mat" ],
+		"position" : [ 0,0,0 ],
+		"rotation" : [ 0,0,0 ],
+		"scale"	   : [ 1,1,1 ],
 		"visible"  : true		
 	},
 	
@@ -23,26 +23,26 @@ var scene = {
 
 "geometries":
 {	
-	"buffalo_bone": {
+	"spine1": {
 		"type": "ascii_mesh",
-		"url" : url_models + "buffalo_bone.js"
+		"url" : url_models + "spine1.js"
 	},
 	
 },
 
 "textures":
 {	
-	"Buffalo_Body": {
-		"url": url_textures + "Buffalo_Body.png"
+	"Buffalo_Mat": {
+		"url": url_textures + "Buffalo_Mat.png"
 	},
 	
 },
 
 "materials":
 {	
-	"buffalo-buffalo_body": {
+	"buffalo_mat": {
 		"type": "MeshLambertMaterial",
-		"parameters": { color:0xFFFFFF, map: "Buffalo_Body",  }
+		"parameters": { color:0xFFFFFF, map: "Buffalo_Mat",  }
 	},
 	
 	"face": {

@@ -103,6 +103,8 @@
 				var renderer;
 				var scene;
 				var mesh, mesh2;
+				var skin;
+				var node;
 				var bone0, bone1, bone2;
 				var camera;
 				var rotationMatrix;
@@ -112,109 +114,40 @@
 				
 				//--- Init ---
 				
-				var Init = function( female )
-				{
-					var date = new Date();
-					var curDate = null;
+				var startAnimation = function() {
 					
-					var cube     = new THREE.Cube( 100, 100, 100, 1, 1 );
-					var material = new THREE.MeshShaderMaterial( { vertex_shader: "skinVertex", fragment_shader: "textureFragment" } );
-
-	/*				var weights = [1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,0.9945,0.0055,0.5011,0.4989,0.9938,0.0062,0.5044,0.4956,0.9961,0.0039,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0];
-					var indices = [0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,0,1,0,1,1,0,1,2,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1];
-	
-					female.skinWeights = [];
-					female.skinIndices = [];
-					
-					for( var i = 0; i < weights.length; i += 2 ) {
-					
-						female.skinWeights.push( new THREE.Vector4( weights[ i + 0 ], weights[ i + 1 ], 0, 0 ));
-//						female.skinWeights.push( new THREE.Vector4( 1, 0, 0, 0 ));
-						female.skinIndices.push( new THREE.Vector4( indices[ i + 0 ], indices[ i + 1 ], 0, 0 ));
-					}
-					
-					
-					female.bones = [
-		{	// Id: 0
-			parent: -1, 
-			pos: [0,0,0],
-			rot: [0,0,0],
-			rotq: [0,0,0,1]
-		},
-		
-		{	// Id: 1
-			parent: 0, 
-			pos: [0,0.66,0],
-			rot: [0,0,0],
-			rotq: [0,0,0,1]
-		},
-		
-		{	// Id: 2
-			parent: 1, 
-			pos: [0,0.66,0],
-			rot: [0,0,0],
-			rotq: [0,0,0,1]
-		},
-		
-		{	// Id: 3
-			parent: 2, 
-			pos: [0,0.66,0],
-			rot: [0,0,0],
-			rotq: [0,0,0,1]
-		},
-		
-	];
-
-					
-					for( var i = 0; i < female.vertices.length; i++ ) {
-						
-						if( female.vertices[ i ].position.y < 0.66 )
-							female.skinIndices.push( new THREE.Vector4( 0, 0, 0, 0 ));
-						else if( female.vertices[ i ].position.y < (0.66*2) )
-							female.skinIndices.push( new THREE.Vector4( 1, 0, 0, 0 ));
-						else
-							female.skinIndices.push( new THREE.Vector4( 2, 0, 0, 0 ));
-
-						female.skinWeights.push( new THREE.Vector4( 1, 0, 0, 0 ));
-					}
-			*/	
-					
-					scene  = new THREE.Scene();
-					mesh   = new THREE.Skin( female, material );// female.materials );
-					camera = new THREE.Camera();
-
-					camera.position.z = 5;
-
-					mesh.position.z = 0;
-					mesh.position.y = 0;
-
-					scene.addChild( mesh );
-					scene.addChild( camera );
-/*
-					bone0 = mesh.bones[ 0 ];
-					bone1 = mesh.bones[ 1 ];
-					bone2 = mesh.bones[ 2 ];
-*/
-
-					// bones
-					
-		/*			bone0 = mesh.addBone();  
-					bone1 = mesh.addBone();  
-					bone2 = mesh.addBone();  
-
-					mesh.addChild( bone0 );
-					bone0.addChild( bone1 );
-					bone1.addChild( bone2 );
-
-					bone1.position.y = 50;
-					bone2.position.y = 50;
-					
-					mesh.pose();*/
-				//	mesh.rotation.y = 90;
-
-
-					animation = new THREE.Animation( mesh, tube2 );
 					animation.play();
+				}
+				
+				var Init = function( buffalo )
+				{
+			
+					document.addEventListener( 'click', startAnimation, false );
+					
+					scene = new THREE.Scene();
+
+					camera = new THREE.Camera();
+					camera.position.z = 120;
+					scene.addChild( camera );
+
+					node = new THREE.Object3D();
+
+					skin            = new THREE.Skin( buffalo, buffalo.materials );
+					skin.position.z = 40;
+//					skin.rotation.x = -270;
+
+					animation = new THREE.Animation( skin, buffalo.animation );
+
+
+					var cube            = new THREE.Cube( 10, 10, 10 );
+					var cubeMesh        = new THREE.Mesh( cube, buffalo.materials );
+					cubeMesh.position.z = -40;
+					
+					node.addChild( skin );
+					node.addChild( cubeMesh );
+					scene.addChild( node );
+
+
 
 
 					// renderer
@@ -230,15 +163,14 @@
 					// start rendering
 
 				    setInterval( Update, 1000/60 );
-					
 				}
 
 
 				var load = function() {
 
 					var loader = new THREE.Loader();
-//					loader.loadAscii( { model: "assets/female02/Female02_slim.js", callback: Init } );
-					loader.loadAscii( { model: "assets/j1.js", callback: Init } );
+					loader.loadAscii( { model: "assets/scene/models/buffalo_bone.js", callback: Init } );
+//					loader.loadAscii( { model: "assets/buffalo_bone2.js", callback: Init } );
 				}
 				
 				
@@ -246,12 +178,21 @@
 				
 				var Update = function()
 				{
-					mesh.rotation.y++;
-		
 					animation.update();			
+					
+					node.rotation.y++;
+					
+/*					for( var i = 0; i < skin.bones.length; i++ ) {
+						
+						skin.bones[ i ].rotation.x += 0.1;
+					} 
+	*/				
+					//	skin.bones[ 3 ].rotation.x += 0.1;
+				//	skin.rotation.y += 2;
+	
+					time += 0.01;
+					
 					renderer.render( scene, camera );
-
-					time += 0.02;
 				}
 				
 				
