@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - spherical vs</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #ffffff;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				font-weight: bold;
+
+				background-color: #ffffff;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+			}
+
+			a {
+
+				color: #ee0000;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div> 
+
+		<script type="text/javascript" src="js/ThreeExtras.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var ShaderTest = {
+
+				'test' : {
+
+					uniforms: {
+
+						"fogColor": { type: "c", value: new THREE.Color( 0xffffff ) }
+
+					},
+
+					vertex_shader: [
+
+						"void main() {",
+
+							"float f = 0.001;",
+							"vec4 p = modelViewMatrix * vec4( position, 1.0 );",
+							"p.y += sin( p.z * f ) * 200.0;",
+							"p.y -= cos( p.x * f ) * 200.0;",
+							"p.y += 300.0;",
+							"gl_Position = projectionMatrix * p;",
+
+						"}"
+
+					].join("\n"),
+
+					fragment_shader: [
+
+						"uniform vec3 fogColor;",
+
+						"void main() {",
+
+							"gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );",
+
+							"float depth = gl_FragCoord.z / gl_FragCoord.w;",
+							"float fogFactor = smoothstep( -500.0, 3000.0, depth );",
+							"gl_FragColor = mix( gl_FragColor, vec4( fogColor, 1.0 ), fogFactor );",
+
+						"}"
+
+					].join("\n")
+
+				}
+
+			}
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var material, mesh, shader,light;
+
+			var mouseX = 0, mouseY = 0,
+			lat = 0, lon = 0, phy = 0, theta = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			setInterval( loop, 1000 / 60 );
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.Camera( 50, windowHalfX / windowHalfY, 1, 3000 );
+				camera.position.y = 150;
+				// camera.target.position.y = 150;
+				camera.target.position.z = - 1000;
+
+				scene = new THREE.Scene();
+
+				var geometry = new Plane( 10000, 10000, 200, 200 );
+
+				var shader = ShaderTest["test"];
+
+				var material = new THREE.MeshShaderMaterial( {
+
+					uniforms: shader.uniforms,
+					vertex_shader: shader.vertex_shader,
+					fragment_shader: shader.fragment_shader
+
+				} );
+
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.rotation.x = - 90 * Math.PI / 180;
+				scene.addObject( mesh );
+
+				var geometry = new Cube( 50, 100, 50, 20, 10, 20 );
+
+				for ( var i = 0; i < 500; i ++ ) {
+
+					mesh = new THREE.Mesh( geometry, material );
+					mesh.position.x = Math.random() * 10000 - 5000;
+					mesh.position.y = 50;
+					mesh.position.z = Math.random() * 10000 - 5000;
+
+					scene.addObject( mesh );
+
+				}
+
+				renderer = new THREE.WebGLRenderer();
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+
+				onWindowResize();
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize( event ) {
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function loop() {
+
+				// var time = new Date().getTime() * 0.0004;
+				var speed = 10;
+
+				for ( var i = 1, j = scene.objects.length; i < j; i ++ ) {
+
+					var object = scene.objects[ i ];
+					object.position.z += speed;
+					if ( object.position.z > 5000 ) object.position.z -= 10000;
+
+				}
+
+				renderer.render( scene, camera );
+				stats.update();
+
+			}
+
+		</script>
+
+	</body>
+</html>

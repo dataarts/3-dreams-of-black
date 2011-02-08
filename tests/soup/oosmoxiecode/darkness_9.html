@@ -1,0 +1,429 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>darkness</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#DEFFFF;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+		<script type="text/javascript" src="build/ThreeExtras.js"></script>
+
+		<script type="text/javascript" src="Stats.js"></script>
+		<script type="text/javascript" src="Cylinder.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = 0;
+
+			var container;
+			var stats;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+			var projector;
+			
+			var directionalLight, pointLight;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var render_gl = 1;
+			var has_gl = 0;
+
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var cubefollowX = 0;
+			var cubefollowY = 0;
+
+			var cubeRef;
+			var cubeRefMesh;
+
+			var boxcar;
+			var boxcarMesh;
+
+			var groundMesh;
+			var currentDistance;
+
+			var sphereMesh;
+
+			var cubeArray = [];
+			var vertArray = [];
+
+			var r = 0;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
+				
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = false;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+
+				return mesh;
+			}		
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+
+				camera.position.z = 10000;
+				camera.position.x = 4800;
+				camera.position.y = FLOOR+540;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.Fog( 0x003300, 2000, 25000 );
+
+
+				projector = new THREE.Projector();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x333333 );
+				scene.addLight( ambient );
+
+				directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 2;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+
+				pointLight = new THREE.PointLight( 0xffffee );
+				pointLight.position.x = 0;
+				pointLight.position.y = FLOOR+8000;
+				pointLight.position.z = 0;
+				scene.addLight( pointLight );
+
+				//cubeRef
+				cubeRef = new Cube( 10, 10, 10, 1, 1 );
+				cubeRefMesh = addMesh( cubeRef, 1,  camera.position.x, camera.position.y-20, camera.position.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
+				cubeRefMesh.visible = false;
+				camera.target = cubeRefMesh;
+				
+				// boxcar
+				boxcar = new Cube( 30, 20, 3000, 1, 1 );
+				boxcarMesh = addMesh( boxcar, 1,  camera.position.x, camera.position.y-30, camera.position.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x000000 } ) );
+
+				// terrain
+				var img = new Image();
+				img.onload = function () {
+					var data = getHeightData(img);
+
+					// plane
+					plane = new Plane( 100, 100, 31, 31 );
+
+					for ( var i = 0, l = plane.vertices.length; i < l; i++ ) {
+						plane.vertices[i].position.z = data[i];
+					}
+
+					var planeMesh = addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, getFloorMaterial() );
+					planeMesh.scale.y *= 4;
+				};
+				img.src = "assets/heightmap32.jpg";
+
+				// plane
+				var ground = new Plane( 500, 500, 1, 1 );
+				groundMesh = addMesh( ground, 100,  0, FLOOR-1, 0, -1.57,0,0, getFloorMaterial() );
+
+
+				// cubes or now vectors
+				for (var i=0; i<100; ++i ) {
+					var x = camera.position.x;
+					var y = camera.position.y;
+					var z = camera.position.z+500;
+	
+					var c = new THREE.Vector3(x, y, z);
+					var obj = {c:c, x:x, y:y, z:z, tox:x, toy:y, toz:z, scale:0, alivetime:i};
+					cubeArray.push(obj);
+				}
+
+				var tubeMaterial = [ new THREE.MeshBasicMaterial( { color:0x101010 } ) , new THREE.MeshLambertMaterial( { color:0x333333, wireframe: true } ) ];
+				
+				tube = new Cylinder(50,100,10,99,true);
+				tubeMesh = addMesh( tube, 1,  0, 0, 0, 0, 0, 0, tubeMaterial, false );
+
+				for ( var i = 0, l = tube.vertices.length; i < l; i++ ) {
+					var x = tube.vertices[i].position.x;
+					var y = tube.vertices[i].position.y;
+					var z = tube.vertices[i].position.z;
+
+					var obj = {origx:x, origy:y, origz:z};
+					vertArray.push(obj);
+				}
+
+				var sphere = new Sphere( 60, 20, 10 );
+				sphereMesh = addMesh( sphere, 1,  x, y, z, 0,0,0, tubeMaterial );
+				sphereMesh.scale.x = 0.5;
+
+
+				// particle test
+				var geometry = new THREE.Geometry();
+				
+				for (var i = 0; i < 1000; i++) {
+					var vector = new THREE.Vector3( Math.random() * 40 - 20, Math.random() * 40 - 20, Math.random() * 40 - 20 );
+					geometry.vertices.push( new THREE.Vertex( vector ) );					
+				}
+
+				var sprite = ImageUtils.loadTexture( "assets/star3.png" );
+
+				var particleMaterial = new THREE.ParticleBasicMaterial( { size: 24, map: sprite, blending: THREE.BillboardBlending } );
+				//particleMaterial.color.setHSV( 0.0, 0.2, 0.4 );
+
+				particles = new THREE.ParticleSystem( geometry, particleMaterial );
+				particles.sortParticles = true;
+
+				particles.position.x = 0;
+				particles.position.y = 0;
+				particles.position.z = 0;
+
+				particles.updateMatrix();
+				scene.addObject( particles );
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setFaceCulling(0);
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+				
+			}
+
+			function getHeightData(img) {
+				var canvas = document.createElement( 'canvas' );
+				canvas.width = 32;
+				canvas.height = 32;
+				var context = canvas.getContext( '2d' );
+
+				var size = 32 * 32, data = new Float32Array( size );
+
+				context.drawImage(img,0,0);
+
+				for ( var i = 0; i < size; i ++ ) {
+					data[i] = 0
+				}
+
+				var imgd = context.getImageData(0, 0, 32, 32);
+				var pix = imgd.data;
+
+				var j=0;
+				for (var i = 0, n = pix.length; i < n; i += (4)) {
+					var all = pix[i]+pix[i+1]+pix[i+2];
+					data[j++] = all/25;
+				}
+
+				return data;
+
+			}
+
+			function getFloorMaterial () {
+				return [new THREE.MeshLambertMaterial( { color:0x336600, shading: THREE.FlatShading } ), new THREE.MeshLambertMaterial( { color:0x225500, wireframe: true } ) ];
+			}
+
+			function getMaterial() {
+				var c = Math.random() * 0xffffff;
+				return new THREE.MeshLambertMaterial( { color:c } );
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+			function runAll () {
+
+				for (var i=0; i<cubeArray.length; ++i ) {
+					var obj = cubeArray[i];
+					var c = obj.c;
+					var x = obj.x;
+					var y = obj.y;
+					var z = obj.z;
+					var scale = obj.scale;
+					var lastx = x;
+					var lasty = y;
+					var lastz = z;
+					
+					var dist = 100+(Math.sin(r)*50);
+
+					if (i == 0) {
+						var tox = cubeRefMesh.position.x - (300*Math.cos(r));
+						var toy = cubeRefMesh.position.y - (300*Math.sin(r))-25;
+						var toz = cubeRefMesh.position.z //+ (dist*Math.sin(cubefollowX));
+						
+						if (toy < FLOOR+150) {
+							toy = FLOOR+150;
+						}
+
+						sphereMesh.position.x = tox+20;
+						sphereMesh.position.y = toy;
+						sphereMesh.position.z = toz;						
+
+					} else {
+						var prevx = cubeArray[i-1].lastx;
+						var prevy = cubeArray[i-1].lasty;
+						var prevz = cubeArray[i-1].lastz;
+
+						var tox = prevx;
+						var toy = prevy;
+						var toz = prevz;
+					}
+
+					var divider = 3.5;
+
+					var moveX = (tox-x)/divider;
+					var moveY = (toy-y)/divider;
+					var moveZ = (toz-z)/divider;
+
+					x += moveX;
+					y += moveY;
+					z += moveZ;
+					
+					if (y < FLOOR+150) {
+						y = FLOOR+150;
+					}
+
+					c.x = x;
+					c.y = y;
+					c.z = z;
+
+					var sin = Math.sin(y/100)*50;
+
+					// tube
+					for (var j=0; j<10; ++j ) {
+						var index = (i*10)+j;
+
+						var obj = vertArray[index];
+						
+						var verangle = 2 * j / 10 * Math.PI;
+						var extrax = sin * Math.cos(verangle);
+						var extray = sin * Math.cos(verangle);
+						
+						tube.vertices[index].position.x = x-obj.origy+extrax//-obj.x//+extrax;
+						tube.vertices[index].position.y = y+obj.origx+extray//+Math.random()*5//+(obj.y+50);
+						tube.vertices[index].position.z = z-obj.origz+extrax//-obj.z//+extray+extrax;
+
+						if (i==0) {
+							tube.vertices[index].position.x = tox-(obj.origy-obj.origy/2)*1;
+							tube.vertices[index].position.y = toy+(obj.origx-obj.origx/2)*2;
+							tube.vertices[index].position.z = toz-(obj.origz-obj.origz/2)*2;
+						}
+					}
+
+
+					cubeArray[i].x = x;
+					cubeArray[i].y = y;
+					cubeArray[i].z = z;
+					cubeArray[i].lastx = lastx;
+					cubeArray[i].lasty = lasty;
+					cubeArray[i].lastz = lastz;
+
+				}
+
+				for ( var i = 0, l = tube.vertices.length; i < l; i++ ) {
+					particles.geometry.vertices[i].position = tube.vertices[i].position;
+					
+				}
+				particles.updateMatrix();
+
+			}
+
+
+			function loop() {
+				var dist = 1200;
+				
+				r += 0.05;
+
+				camera.position.z -= 5;
+				pointLight.position.y -= 3;
+				pointLight.position.z = camera.position.z;
+
+				if (camera.position.z < -10000 ) {
+					camera.position.z = 10000;
+					pointLight.position.y = FLOOR+9000;
+				}
+
+				var mx = ( mouseX - windowHalfX )/200;
+				var my = ( mouseY - windowHalfY )/200;
+
+				var moveX = (mx-cubefollowX)/20;
+				var moveY = (my-cubefollowY)/20;
+
+				cubefollowX += moveX;
+				cubefollowY += moveY;
+
+				cubeRefMesh.position.x = camera.position.x + (dist*Math.cos(cubefollowX-3.14));
+				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX-3.14));
+				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY-0.25));
+
+				camera.position.y += Math.sin(camera.position.z/40)/2;
+
+				boxcarMesh.position.x = camera.position.x;
+				boxcarMesh.position.z = camera.position.z;
+				boxcarMesh.position.y = camera.position.y-30;
+				
+				runAll();
+			
+				tube.__dirtyVertices = true;
+				particles.geometry.__dirtyVertices = true;
+
+				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>
