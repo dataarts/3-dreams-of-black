@@ -219,7 +219,7 @@
 				scene.addObject( particles );
 
 				try {
-					webglRenderer = new THREE.WebGLRenderer( { scene: scene, clearColor: 0x00FFFF, clearAlpha: 0.15 } );
+					webglRenderer = new THREE.WebGLRenderer( scene );
 					webglRenderer.setFaceCulling(0);
 					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 					container.appendChild( webglRenderer.domElement );
