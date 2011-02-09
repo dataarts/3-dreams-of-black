@@ -123,17 +123,17 @@
 					scene.addChild( camera );
 
 					var materialA = new THREE.MeshLambertMaterial();
-					var materialB = new THREE.MeshShaderMaterial( { vertex_shader: "textureVertex", fragment_shader: "textureFragment" } );
+					var materialB = new THREE.MeshShaderMaterial( "textureVertex", "textureFragment" );
 
-					var cubeA     = new THREE.Cube( 10, 10, 10 );
-					var cubeAMesh = new THREE.Mesh( cubeA, materialA );
+					var cubeA            = new THREE.Cube( 10, 10, 10 );
+					var cubeAMesh        = new THREE.Mesh( cubeA, materialA );
 
-					var cubeB     = new Cylinder( 4, 10, 10, 10, 0, 0 );
-					var cubeBMesh = new THREE.Mesh( cubeB, materialB );
+					var cubeB            = new THREE.Cube( 25, 25, 25 );
+					var cubeBMesh        = new THREE.Mesh( cubeB, materialB );
 					
 					var LOD = new THREE.LOD();
 					
-					LOD.add( cubeAMesh, 0 );
+					LOD.add( cubeAMesh, 0  );
 					LOD.add( cubeBMesh, 150 );
 					
 					scene.addChild( LOD );

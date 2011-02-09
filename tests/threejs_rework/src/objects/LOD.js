@@ -43,24 +43,26 @@ THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, c
 	
 
 	// calc z and show/hide nodes
-	
-	var distance = -camera.inverseMatrix.mulitplyVector3OnlyZ( this.position );
 
-	for( var l = 0; l < this.LODs.length; l++ ) 
-		this.LODs[ l ].object3D.visible = false;
+	if( this.LODs.length > 1 ) {
 		
-	
-	for( var l = 0; l < this.LODs.length; l++ ) {
+		var distance = -camera.inverseMatrix.mulitplyVector3OnlyZ( this.position );
+
+		this.LODs[ 0 ].object3D.visible = true;
 		
-		if( distance < this.LODs[ l ].visibleAtDistance ) {
+		for( var l = 1; l < this.LODs.length; l++ ) {
 			
-			this.LODs[ l ].object3D.visible = true;
-			break;
+			if( distance >= this.LODs[ l ].visibleAtDistance ) {
+				
+				this.LODs[ l - 1 ].object3D.visible = false;
+				this.LODs[ l     ].object3D.visible = true;
+			}
+			else break;
 		}
+		
+		for( ; l < this.LODs.length; l++ ) 
+			this.LODs[ l ].object3D.visible = false;
 	}
-	
-	if( l === this.LODs.length )
-		this.LODs[ l - 1 ].object3D.visible = true;
 	
 
 	// update children
