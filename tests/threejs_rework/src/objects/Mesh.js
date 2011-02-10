@@ -22,11 +22,11 @@ THREE.Mesh.prototype.supr        = THREE.Object3D.prototype;
 
 THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
 	
-	// visible and auto update?
+	// visible, auto update and inside camera frustum?
 	
 	if( this.visible && this.autoUpdateMatrix )
 	{
-		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera )
+		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera );
 		
 		if( forceUpdate ) {
 			
@@ -41,12 +41,10 @@ THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, 
 
 
 		// check camera frustum and add to scene capture list
+
 		
-		if( scene && camera && camera.frustum.contains( this )) {
-			
-			this.screenZ = camera.frustum.screenZ;
+		if( scene && camera && camera.frustumContains( this ))
 			scene.capture( this );
-		}
 	}
 }
 

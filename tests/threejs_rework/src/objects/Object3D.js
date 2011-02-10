@@ -19,8 +19,7 @@ THREE.Object3D = function() {
 	this.useQuaternion  = false;
 	this.screenPosition = new THREE.Vector4(); // xyzr
 	
-	this.boundRadius  = 10;
-	this.screenZ      = 0;
+	this.boundRadius  = 7;
 }
 
 
@@ -32,7 +31,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 
 	// visible and auto update?
 	
-	if( this.visible && this.autoUpdateMatrix )
+	if( this.visible && this.autoUpdateMatrix && camera && camera.frustumContains( this ))
 	{
 		// was updated?
 		
@@ -147,6 +146,7 @@ THREE.Object3D.prototype.addChild = function( child ) {
 		
 		child.parent = this;		
 		this.children.push( child );
+		this.calculateBoundRadius();
 	}
 };
 
@@ -162,5 +162,17 @@ THREE.Object3D.prototype.removeChild = function() {
 	if( childIndex !== -1 )	{
 		
 		this.children.splice( childIndex, 1 );
+		this.calculateBoundRadius();
 	}
 };
+
+
+/*
+ * Calculate Bound Radius
+ */
+
+ THREE.Object3D.prototype.calculateBoundRadius = function( includeChildren ) {
+ 	
+	if( includeChildren === undefined ) 
+		includeChildren = true;
+}

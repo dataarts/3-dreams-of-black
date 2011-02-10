@@ -112,7 +112,6 @@
 				var time = 0;
 				var container;
 				var animation;
-				var LOD;
 				
 				//--- Init ---
 				
@@ -135,11 +134,11 @@
 					var cubeB     = new Cylinder( 4, 10, 10, 10, 0, 0 );
 					var cubeBMesh = new THREE.Mesh( cubeB, materialB );
 					
-					LOD = new THREE.LOD();
+					var LOD = new THREE.LOD();
 					
 					LOD.add( cubeAMesh, 0 );
 					LOD.add( cubeBMesh, 150 );
-					LOD.position.z = -20;
+					LOD.position.x = -2;
 					scene.addChild( LOD );
 	
 	
@@ -165,7 +164,7 @@
 				var Update = function()
 				{
 					time += 0.01;
-					LOD.position.x += 0.5;
+					
 					//camera.position.z++;
 					
 					renderer.render( scene, camera );

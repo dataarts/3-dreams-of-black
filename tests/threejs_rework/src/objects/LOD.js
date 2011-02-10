@@ -43,9 +43,6 @@ THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, c
 	
 	if( camera && camera.frustumContains( this )) {
 		
-		console.log( this.screenPosition.x + " " + this.screenPosition.w );
-		// calc z and show/hide nodes
-	
 		if( this.LODs.length > 1 ) {
 			
 			var distance = -camera.inverseMatrix.mulitplyVector3OnlyZ( this.position );
@@ -72,5 +69,6 @@ THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, c
 		for( var c = 0; c < this.children.length; c++ )
 			this.children[ c ].update( this.globalMatrix, forceUpdate, scene, camera );
 	}
+	else console.log( "OFF!");
 }
 

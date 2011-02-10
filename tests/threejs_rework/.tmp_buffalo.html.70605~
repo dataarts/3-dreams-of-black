@@ -43,7 +43,6 @@
 		<script type="text/javascript" src="src/objects/Object3D.js"></script>
 		<script type="text/javascript" src="src/objects/Mesh.js"></script>
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
-		<script type="text/javascript" src="src/objects/LOD.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
 
@@ -93,7 +92,8 @@
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
 	
 		<script type="text/javascript" src="src/animation/Animation.js"></script>
-		<script type="text/javascript" src="src/animation/AnimationTestData.js"></script>
+
+		<script type="text/javascript" src="js/Stats.js"></script>
 	
 		<!-- Experience Code -->
 	
@@ -111,38 +111,56 @@
 				var rotationMatrix;
 				var time = 0;
 				var container;
-				var animation;
-				var LOD;
+				var animations;
+				var skins;
 				
 				//--- Init ---
 				
+				var startAnimation = function() {
+					
+					for( var i = 0; i < animations.length; i++ )
+						animations[ i ].play();
+					
+//					animation.play();
+				}
+				
+				
+				
 				var Init = function( buffalo )
 				{
-					scene = new THREE.Scene();
-
+					document.addEventListener( 'click', startAnimation, false );
+					
 					camera = new THREE.Camera();
-					camera.position.z = 20;
+					camera.position.z = 1205;
+					camera.position.y = 200;
+					camera.rotation.x = -15;
+
+					scene = new THREE.Scene();
 					scene.addChild( camera );
 
-					camera.update();
-
-					var materialA = new THREE.MeshLambertMaterial();
-					var materialB = new THREE.MeshShaderMaterial( { vertex_shader: "textureVertex", fragment_shader: "textureFragment" } );
-
-					var cubeA     = new THREE.Cube( 10, 10, 10 );
-					var cubeAMesh = new THREE.Mesh( cubeA, materialA );
-
-					var cubeB     = new Cylinder( 4, 10, 10, 10, 0, 0 );
-					var cubeBMesh = new THREE.Mesh( cubeB, materialB );
+					skins = [];
+					animations = [];
 					
-					LOD = new THREE.LOD();
+					var grid = 6;
+					var sep  = 200;
 					
-					LOD.add( cubeAMesh, 0 );
-					LOD.add( cubeBMesh, 150 );
-					LOD.position.z = -20;
-					scene.addChild( LOD );
-	
-	
+					for( var x = 0; x < grid; x++ ) {
+						
+						for( var z = 0; z < grid; z++ ) {
+							
+							var skin = new THREE.Skin( buffalo, buffalo.materials );
+							
+							skin.position.x = -(grid-1) * sep * 0.5 + x * sep; 
+							skin.position.z = -(grid-1) * sep * 0.5 + z * sep; 
+
+							scene.addChild( skin );
+							skins.push( skin );
+							
+							animations.push( new THREE.Animation( skin, buffalo.animation ));
+						}
+					}
+
+
 					// renderer
 
 					renderer = new THREE.WebGLRenderer();
@@ -153,22 +171,45 @@
 					container.appendChild( renderer.domElement );
 					
 
+					// stats
+					
+					stats = new Stats();
+					stats.domElement.style.position = 'absolute';
+					stats.domElement.style.top = '0px';
+					stats.domElement.style.zIndex = 100;
+					container.appendChild( stats.domElement );
+
+
 					// start rendering
 
 				    setInterval( Update, 1000/60 );
 				}
 
 
+				var load = function() {
+
+					var loader = new THREE.Loader();
+					loader.loadAscii( { model: "assets/scene/models/spine1.js", callback: Init } );
+				}
+				
 				
 				//--- Update ---
 				
 				var Update = function()
 				{
-					time += 0.01;
-					LOD.position.x += 0.5;
-					//camera.position.z++;
+				//	animation.update();			
+				//	skin.rotation.y++;
+					
+					for( var i = 0; i < animations.length; i++ ) 
+						animations[ i ].update();
+					
+					for( var i = 0; i < skins.length; i++ ) 
+						skins[ i ].rotation.y++;
 					
 					renderer.render( scene, camera );
+					stats.update();
+					
+					time += 0.01;
 				}
 				
 				
@@ -176,7 +217,7 @@
 				
 				return {
 					
-					load: Init
+					load: load
 				}
 			}();
 		

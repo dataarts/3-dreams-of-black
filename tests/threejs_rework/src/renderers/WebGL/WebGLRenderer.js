@@ -65,8 +65,8 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 		camera.updatePerspectiveMatrix();
 	}
 	
-	camera.width  = this.domWidth;
-	camera.height = this.domHeight;
+	camera.screenCenterX = this.domWidth  * 0.5;
+	camera.screenCenterY = this.domHeight * 0.5;
 
 
 	// clear
