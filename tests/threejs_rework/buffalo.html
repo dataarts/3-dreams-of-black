@@ -102,6 +102,7 @@
 
 			var Experience = function()
 			{
+				var timer;
 				var renderer;
 				var scene;
 				var mesh, mesh2;
@@ -124,13 +125,24 @@
 				}
 				
 				
+				var getTime =function() {
+					
+					var current = new Date().getTime();
+					var delta = current - timer;
+					timer = current;
+					
+					return delta;
+				}
+				
 				
 				var Init = function( buffalo )
 				{
+					console.log( "Loading took: " + getTime() );
+					
 					document.addEventListener( 'click', startAnimation, false );
 					
 					camera = new THREE.Camera();
-					camera.position.z = 1205;
+					camera.position.z = 600;//1205;
 					camera.position.y = 200;
 					camera.rotation.x = -15;
 
@@ -181,11 +193,15 @@
 
 					// start rendering
 
+					console.log( "Init took: " + getTime() );
+					
 				    setInterval( Update, 1000/60 );
 				}
 
 
 				var load = function() {
+
+					timer = new Date().getTime();
 
 					var loader = new THREE.Loader();
 					loader.loadAscii( { model: "assets/scene/models/spine1.js", callback: Init } );

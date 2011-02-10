@@ -80,34 +80,37 @@ THREE.Skin.prototype.pose = function() {
 
 	// project vertices to local 
 
-	this.geometry.skinVerticesA = [];
-	this.geometry.skinVerticesB = [];
-	var orgVertex;
-	var vertex;
-
-	for( var i = 0; i < this.geometry.skinIndices.length; i++ ) {
+	if( this.geometry.skinVerticesA === undefined ) {
 		
-		orgVertex = this.geometry.vertices[ i ].position;
-
-		var indexA = this.geometry.skinIndices[ i ].x;
-		var indexB = this.geometry.skinIndices[ i ].y;
-
-		vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
-		this.geometry.skinVerticesA.push( this.boneInverses[ indexA ].multiplyVector3( vertex ));
-
-		vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
-		this.geometry.skinVerticesB.push( this.boneInverses[ indexB ].multiplyVector3( vertex ));
-		
-		// todo: add more influences
-
-
-		// normalize weights
-
-		if( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y !== 1 ) {
+		this.geometry.skinVerticesA = [];
+		this.geometry.skinVerticesB = [];
+		var orgVertex;
+		var vertex;
+	
+		for( var i = 0; i < this.geometry.skinIndices.length; i++ ) {
 			
-			var len = ( 1.0 - ( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y )) * 0.5;
-			this.geometry.skinWeights[ i ].x += len;
-			this.geometry.skinWeights[ i ].y += len;
+			orgVertex = this.geometry.vertices[ i ].position;
+	
+			var indexA = this.geometry.skinIndices[ i ].x;
+			var indexB = this.geometry.skinIndices[ i ].y;
+	
+			vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
+			this.geometry.skinVerticesA.push( this.boneInverses[ indexA ].multiplyVector3( vertex ));
+	
+			vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
+			this.geometry.skinVerticesB.push( this.boneInverses[ indexB ].multiplyVector3( vertex ));
+			
+			// todo: add more influences
+	
+	
+			// normalize weights
+	
+			if( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y !== 1 ) {
+				
+				var len = ( 1.0 - ( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y )) * 0.5;
+				this.geometry.skinWeights[ i ].x += len;
+				this.geometry.skinWeights[ i ].y += len;
+			}
 		}
 	}
 }

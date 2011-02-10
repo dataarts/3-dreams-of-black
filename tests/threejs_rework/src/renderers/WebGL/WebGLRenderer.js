@@ -20,6 +20,9 @@ THREE.WebGLRenderer = function( contextId ) {
 	this.GL.enable      ( this.GL.CULL_FACE );
     this.GL.pixelStorei ( this.GL.UNPACK_FLIP_Y_WEBGL, true );
 
+	this.GL.enable   ( this.GL.BLEND );
+	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );
+
 	this.applyPrototypes();
 
 	THREE.WebGLRendererContext = this.GL;								// this is no good
@@ -95,8 +98,6 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
 	// render opaque
 
-	this.GL.enable   ( this.GL.BLEND );
-	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );
 	
 	for( shaderBatchId in opaqueWebGLBatchDictionary ) {
 		
@@ -121,7 +122,7 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
 	// todo: sort and render transparent
 
-	this.GL.enable   ( this.GL.BLEND );
-	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );		// to be done on each object
+//	this.GL.enable   ( this.GL.BLEND );
+//	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );		// to be done on each object
 }
 
