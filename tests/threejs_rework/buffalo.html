@@ -111,12 +111,15 @@
 				var rotationMatrix;
 				var time = 0;
 				var container;
-				var animation;
+				var animations;
 				var skins;
 				
 				//--- Init ---
 				
 				var startAnimation = function() {
+					
+					for( var i = 0; i < animations.length; i++ )
+						animations[ i ].play();
 					
 //					animation.play();
 				}
@@ -128,7 +131,7 @@
 					document.addEventListener( 'click', startAnimation, false );
 					
 					camera = new THREE.Camera();
-					camera.position.z = 805;
+					camera.position.z = 1205;
 					camera.position.y = 200;
 					camera.rotation.x = -15;
 
@@ -136,8 +139,10 @@
 					scene.addChild( camera );
 
 					skins = [];
+					animations = [];
+					
 					var grid = 6;
-					var sep  = 150;
+					var sep  = 200;
 					
 					for( var x = 0; x < grid; x++ ) {
 						
@@ -150,6 +155,8 @@
 
 							scene.addChild( skin );
 							skins.push( skin );
+							
+							animations.push( new THREE.Animation( skin, buffalo.animation ));
 						}
 					}
 
@@ -198,9 +205,11 @@
 				//	animation.update();			
 				//	skin.rotation.y++;
 					
-					for( var i = 0; i < skins.length; i++ ) {
+					for( var i = 0; i < animations.length; i++ ) 
+						animations[ i ].update();
+					
+					for( var i = 0; i < skins.length; i++ ) 
 						skins[ i ].rotation.y++;
-					}
 					
 					renderer.render( scene, camera );
 					stats.update();

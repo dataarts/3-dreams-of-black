@@ -6,20 +6,25 @@
 THREE.WebGLRenderer = function( contextId ) {
 
 	this.domElement = document.createElement( 'canvas' );
-	this.GL         = this.domElement.getContext( "experimental-webgl" );
+	this.domWidth   = -1;
+	this.domHeight  = -1;
+	
+	this.GL = this.domElement.getContext( "experimental-webgl", { antialias: true } );
 	
     this.GL.clearColor	( 0.8, 0.8, 0.8, 1.0 );
     this.GL.clearDepth	( 1.0 );
     this.GL.enable		( this.GL.DEPTH_TEST );
     this.GL.depthFunc	( this.GL.LEQUAL );
-	this.GL.enable      ( this.GL.CULL_FACE );
+	this.GL.frontFace   ( this.GL.CCW );
 	this.GL.cullFace    ( this.GL.BACK );
-    this.GL.pixelStorei(this.GL.UNPACK_FLIP_Y_WEBGL, true);
-
+	this.GL.enable      ( this.GL.CULL_FACE );
+    this.GL.pixelStorei ( this.GL.UNPACK_FLIP_Y_WEBGL, true );
+	this.GL.enable      ( this.GL.BLEND );								// should this be done here or per object?
+	this.GL.blendFunc   ( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );
 
 	this.applyPrototypes();
 
-	THREE.WebGLRendererContext = this.GL;		// this is no good
+	THREE.WebGLRendererContext = this.GL;								// this is no good
 };
 
 /*
@@ -39,8 +44,8 @@ THREE.WebGLRenderer.prototype.applyPrototypes = function() {
 
 THREE.WebGLRenderer.prototype.setSize = function( wantedWidth, wantedHeight ) {
 
-	this.domElement.width  = wantedWidth;
-	this.domElement.height = wantedHeight;
+	this.domElement.width  = this.domWidth  = wantedWidth;
+	this.domElement.height = this.domHeight = wantedHeight;
 	this.aspect            = wantedWidth / wantedHeight;
 
 	this.GL.viewport( 0, 0, wantedWidth, wantedHeight );
@@ -59,6 +64,9 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 		camera.aspect = this.aspect;
 		camera.updatePerspectiveMatrix();
 	}
+	
+	camera.width  = this.domWidth;
+	camera.height = this.domHeight;
 
 
 	// clear

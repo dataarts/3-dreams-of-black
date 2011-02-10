@@ -182,6 +182,7 @@ THREE.Matrix4.prototype = {
 
 	},
 
+
 	multiplyVector3: function ( v ) {
 
 		var vx = v.x, vy = v.y, vz = v.z,
@@ -194,6 +195,7 @@ THREE.Matrix4.prototype = {
 		return v;
 
 	},
+
 	
 	mulitplyVector3OnlyZ: function( v ) {
 		

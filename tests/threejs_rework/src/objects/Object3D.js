@@ -10,15 +10,16 @@ THREE.Object3D = function() {
 	this.parent		  = undefined;
 	this.children     = [];
 
-	this.position      = new THREE.Vector3();
-	this.rotation      = new THREE.Vector3();
-	this.scale         = new THREE.Vector3( 1, 1, 1 );
-	this.localMatrix   = new THREE.Matrix4();
-	this.globalMatrix  = new THREE.Matrix4();
-	this.quaternion    = new THREE.Quaternion();
-	this.useQuaternion = false;
+	this.position       = new THREE.Vector3();
+	this.rotation       = new THREE.Vector3();
+	this.scale          = new THREE.Vector3( 1, 1, 1 );
+	this.localMatrix    = new THREE.Matrix4();
+	this.globalMatrix   = new THREE.Matrix4();
+	this.quaternion     = new THREE.Quaternion();
+	this.useQuaternion  = false;
+	this.screenPosition = new THREE.Vector4(); // xyzr
 	
-	this.boundRadius  = 0;
+	this.boundRadius  = 10;
 	this.screenZ      = 0;
 }
 

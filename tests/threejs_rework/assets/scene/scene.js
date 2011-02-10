@@ -13,9 +13,9 @@ var scene = {
 	"spine1" : {
 		"geometry" : "spine1",
 		"materials": [ "buffalo_mat" ],
-		"position" : [ 0,0,0 ],
-		"rotation" : [ 0,0,0 ],
-		"scale"	   : [ 1,1,1 ],
+		"position" : [ 0,-1.523291,0 ],
+		"rotation" : [ 357.553,0,0 ],
+		"scale"	   : [ 1,0.9999999,1 ],
 		"visible"  : true		
 	},
 	
