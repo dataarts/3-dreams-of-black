@@ -53,7 +53,8 @@ THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene
 }
 
 /*
- * frustumContains
+ * FrustumContains
+ * Checks object against projected image (as opposed to ordinary frustum check)
  */
 
 THREE.Camera.prototype.frustumContains = function( object3D ) {

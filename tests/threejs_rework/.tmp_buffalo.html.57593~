@@ -92,7 +92,6 @@
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
 	
 		<script type="text/javascript" src="src/animation/Animation.js"></script>
-		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
 
 		<script type="text/javascript" src="js/Stats.js"></script>
 	
@@ -140,8 +139,8 @@
 					skins = [];
 					animations = [];
 					
-					var grid = 9;
-					var sep  = 180;
+					var grid = 6;
+					var sep  = 200;
 					
 					for( var x = 0; x < grid; x++ ) {
 						
@@ -198,6 +197,9 @@
 				{
 				//	animation.update();			
 				//	skin.rotation.y++;
+					
+					for( var i = 0; i < animations.length; i++ ) 
+						animations[ i ].update();
 					
 					for( var i = 0; i < skins.length; i++ ) 
 						skins[ i ].rotation.y++;

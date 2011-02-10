@@ -58,7 +58,7 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 					vertexId   += "Color";
 					fragmentId += "Color";
 
-					addFragment       ( "gl_FragColor = vec4( 1, 0, 1, 1 );" );
+					addFragment( "gl_FragColor = vec4( 1, 0, 1, 1 );" );
 				}
 			}
 		}

@@ -18,8 +18,6 @@ THREE.Object3D = function() {
 	this.quaternion     = new THREE.Quaternion();
 	this.useQuaternion  = false;
 	this.screenPosition = new THREE.Vector4(); // xyzr
-	
-	this.boundRadius  = 7;
 }
 
 
@@ -31,7 +29,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 
 	// visible and auto update?
 	
-	if( this.visible && this.autoUpdateMatrix && camera && camera.frustumContains( this ))
+	if( this.visible && this.autoUpdateMatrix )
 	{
 		// was updated?
 		
@@ -175,4 +173,6 @@ THREE.Object3D.prototype.removeChild = function() {
  	
 	if( includeChildren === undefined ) 
 		includeChildren = true;
+		
+	// todo: calculate radius
 }

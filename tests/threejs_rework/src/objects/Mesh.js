@@ -26,7 +26,7 @@ THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, 
 	
 	if( this.visible && this.autoUpdateMatrix )
 	{
-		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera );
+		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera )
 		
 		if( forceUpdate ) {
 			

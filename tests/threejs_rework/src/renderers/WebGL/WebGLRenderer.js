@@ -19,8 +19,6 @@ THREE.WebGLRenderer = function( contextId ) {
 	this.GL.cullFace    ( this.GL.BACK );
 	this.GL.enable      ( this.GL.CULL_FACE );
     this.GL.pixelStorei ( this.GL.UNPACK_FLIP_Y_WEBGL, true );
-	this.GL.enable      ( this.GL.BLEND );								// should this be done here or per object?
-	this.GL.blendFunc   ( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );
 
 	this.applyPrototypes();
 
@@ -69,6 +67,12 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	camera.screenCenterY = this.domHeight * 0.5;
 
 
+	// update animation
+	
+	if( THREE.AnimationHandler )
+		THREE.AnimationHandler.update();
+
+
 	// clear
 
     this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
@@ -90,6 +94,9 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
 	
 	// render opaque
+
+	this.GL.enable   ( this.GL.BLEND );
+	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );
 	
 	for( shaderBatchId in opaqueWebGLBatchDictionary ) {
 		
@@ -100,9 +107,9 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 			shaderBatches[ 0 ].loadProgram();
 			shaderBatches[ 0 ].loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32());
 			shaderBatches[ 0 ].loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32());
-			shaderBatches[ 0 ].loadUniform( "uSceneFogFar",             scene.fogFar             );
-			shaderBatches[ 0 ].loadUniform( "uSceneFogNear",            scene.fogNear            );
-			shaderBatches[ 0 ].loadUniform( "uSceneFogColor",           scene.fogColor           );
+			shaderBatches[ 0 ].loadUniform( "uSceneFogFar",             scene.fogFar   );
+			shaderBatches[ 0 ].loadUniform( "uSceneFogNear",            scene.fogNear  );
+			shaderBatches[ 0 ].loadUniform( "uSceneFogColor",           scene.fogColor );
 			
 			for( var s = 0; s < shaderBatches.length; s++ ) {
 				
@@ -113,5 +120,8 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
 	
 	// todo: sort and render transparent
+
+	this.GL.enable   ( this.GL.BLEND );
+	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );		// to be done on each object
 }
 
