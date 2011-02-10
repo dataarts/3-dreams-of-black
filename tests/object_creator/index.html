@@ -1,0 +1,220 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - blob painter - webgl</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				font-family: Monospace;
+				background-color: #000;
+				color: #eee;
+				margin: 0px;
+				overflow: hidden;
+			}
+			a { color: #ffaa00 }
+			
+			#info {
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+			}
+			
+			#oldie {
+				font-family:monospace;
+				font-size:13px;
+
+				text-align:center;
+				background:rgb(0,0,50);
+				color:#fff;
+				padding:1em;
+
+				width:475px;
+				margin:5em auto 0;
+
+				display: none;
+			}
+			
+		</style>
+	</head>
+	<body>
+	
+		<div id="info">
+			<a href="hxxp://github.com/mrdoob/three.js" target="_blank">three.js</a> - blob painter - webgl<br />
+			<strong>click</strong>: add blob, <strong>control + click</strong>: remove blob, <strong>shift + mouse</strong>: rotate, <a href="javascript:save();return false;">save .png</a>
+		</div>
+
+		<center>
+		<div id="oldie">
+			Sorry, your browser doesn't support <a href="hxxp://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</a>.<br/>
+			<br/>
+			Please try in
+			<a href="hxxp://www.chromium.org/getting-involved/dev-channel">Chrome 9+</a> /
+			<a href="hxxp://www.mozilla.com/en-US/firefox/all-beta.html">Firefox 4+</a> /
+			<a href="hxxp://nightly.webkit.org/">Safari OSX 10.6+</a>
+		</div>
+		</center>
+		
+		<link href="js/gui/gui.css" media="screen" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="js/gui/gui.min.js"></script>
+
+		<script type="text/javascript" src="js/ThreeExtras.js"></script>
+		
+		<script type="text/javascript" src="js/ShaderExtras.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript" src="js/blobpainter/BlobInit.js"></script>
+		<script type="text/javascript" src="js/blobpainter/BlobGui.js"></script>
+		<script type="text/javascript" src="js/blobpainter/BlobPainter.js"></script>
+		
+		
+		<script type="text/javascript">
+			
+			if ( !is_browser_compatible() ) { document.getElementById( "oldie" ).style.display = "block"; }
+
+			// config
+			
+			var UNIT = 50, SIZE = 20;
+
+			// globals
+			
+			var globals = {
+			
+				camera	 : null, 
+				scene	 : null, 
+				renderer : null,
+				light	 : null,
+				pointLight : null,
+				stats : null,
+				theta : 45
+				
+			};
+
+			// postprocessing
+			
+			var postprocessing = {
+			
+				material : null, 
+				texture	 : null,
+				camera	 : null,
+				scene	 : null
+				
+			};
+
+			// materials
+			
+			var matlib = {
+			
+				materials : {}, 
+				current_material : null,
+				opacity : 0.8
+				
+			};
+
+			// gui controller
+			
+			var effectController = {
+			
+				material:   "matte",
+				
+				resolution: 28,
+				isolation:  300,
+				
+				floor: true,
+				wallx: false,
+				wallz: false,
+				edges: false,
+				
+				plane:    false,
+				skeleton: true,
+				blobs:    true,
+				
+				hue:		0.0,
+				saturation: 0.0,
+				value:		1.0,
+				opacity:	matlib.opacity,
+				
+				lhue:		 0.04,
+				lsaturation: 1.0,
+				lvalue:		 1.0,
+				
+				lx: 0.5,
+				ly: 0.5,
+				lz: 1.0,
+				
+				postprocessing: true				
+				
+			};
+
+			init( globals, postprocessing, matlib, effectController );
+			updateCamera();
+
+			var painter = new BlobPainter( globals.renderer, globals.scene, globals.camera, effectController, matlib, UNIT, SIZE );
+			painter.updateCubes();
+			
+			setupGui( globals.scene, effectController, matlib, painter, globals );			
+			
+			setInterval( loop, 1000 / 60 );
+			
+			function save() {
+
+				window.open( globals.renderer.domElement.toDataURL( 'image/png' ), 'mywindow' );
+
+			}
+			
+			function updateCamera() {
+
+				var cx, cz, angle;
+
+				angle = globals.theta * Math.PI / 360;
+				cx = 1400 * Math.sin( angle );
+				cz = 1400 * Math.cos( angle );
+
+				globals.camera.position.x = cx;
+				globals.camera.position.z = cz;
+
+			}
+			
+			function loop() {
+
+				if ( painter.controls.isShiftDown ) {
+
+					globals.theta += painter.controls.mouse2D.x * 3;
+					updateCamera();
+
+				}
+				
+				painter.loop( globals.camera );				
+					
+				// postprocessing
+				
+				if ( effectController.postprocessing ) {
+				
+					postprocessing.material.uniforms.time.value += 0.01;
+					
+					globals.renderer.render( globals.scene, globals.camera, postprocessing.texture );
+					globals.renderer.render( postprocessing.scene, postprocessing.camera );
+					
+				} else {
+					
+					globals.renderer.render( globals.scene, globals.camera );
+					
+				}
+				
+				globals.stats.update();
+				
+			}
+
+			function is_browser_compatible() {
+
+				try { var test = new Float32Array(1); } catch(e) { return false; }
+
+				return true;
+
+			}
+
+		</script>
+
+	</body>
+</html>
