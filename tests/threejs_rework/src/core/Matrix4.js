@@ -62,10 +62,10 @@ THREE.Matrix4.prototype = {
 
 	setRotationFromEuler: function( vec3 ) {
 		
-		var c = Math.PI / 180;
-		var x = vec3.x * c;
-		var y = vec3.y * c;
-		var z = vec3.z * c;
+		//var c = Math.PI / 180;
+		var x = vec3.x;// * c;
+		var y = vec3.y;// * c;
+		var z = vec3.z;// * c;
 		
 	    var ch = Math.cos( y  );
 	    var sh = Math.sin( y  );
@@ -186,9 +186,9 @@ THREE.Matrix4.prototype = {
 		x.cross( up, z ).normalize();
 		y.cross( z, x ).normalize();
 
-		this.n11 = x.x; this.n12 = x.y; this.n13 = x.z; this.n14 = x.dot( eye );
-		this.n21 = y.x; this.n22 = y.y; this.n23 = y.z; this.n24 = y.dot( eye );
-		this.n31 = z.x; this.n32 = z.y; this.n33 = z.z; this.n34 = z.dot( eye );
+		this.n11 = x.x; this.n12 = x.y; this.n13 = x.z; this.n14 = - x.dot( eye );
+		this.n21 = y.x; this.n22 = y.y; this.n23 = y.z; this.n24 = - y.dot( eye );
+		this.n31 = z.x; this.n32 = z.y; this.n33 = z.z; this.n34 = - z.dot( eye );
 		this.n41 = 0; this.n42 = 0; this.n43 = 0; this.n44 = 1;
 
 		return this;
