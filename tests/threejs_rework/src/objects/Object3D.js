@@ -18,6 +18,9 @@ THREE.Object3D = function() {
 	this.quaternion     = new THREE.Quaternion();
 	this.useQuaternion  = false;
 	this.screenPosition = new THREE.Vector4(); // xyzr
+	
+	this.boundRadius      = 0;
+	this.boundRadiusScale = 1;
 }
 
 
@@ -25,7 +28,7 @@ THREE.Object3D = function() {
  * Update
  */
 
-THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, camera, renderer ) {
 
 	// visible and auto update?
 	
@@ -33,13 +36,13 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
 	{
 		// was updated?
 		
-		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera );			
+		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate );			
 
 
 		// update children
 	
 		for( var i = 0; i < this.children.length; i++ )
-			this.children[ i ].update( this.globalMatrix, forceUpdate, scene, camera );
+			this.children[ i ].update( this.globalMatrix, forceUpdate, camera, renderer );
 	}
 };
 
@@ -48,7 +51,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, sce
  * Update Matrix
  */
 
-THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdate ) {
 	
 	// update position
 	
@@ -76,6 +79,8 @@ THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdat
 				
 				this.localMatrix.scale( this.scale );
 				this.scale.isDirty = false;
+	
+				this.boundRadiusScale = Math.max( this.scale.x, Math.max( this.scale.y, this.scale.z ));
 			}
 			
 			isDirty = true;
@@ -93,6 +98,8 @@ THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdat
 			
 			this.localMatrix.scale( this.scale );
 			this.scale.isDirty = false;
+			
+			this.boundRadiusScale = Math.max( this.scale.x, Math.max( this.scale.y, this.scale.z ));
 		}
 
 		isDirty = true;
@@ -110,6 +117,8 @@ THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdat
 
 		this.localMatrix.scale( this.scale );
 		this.scale.isDirty = false;
+
+		this.boundRadiusScale = Math.max( this.scale.x, Math.max( this.scale.y, this.scale.z ));
 
 		isDirty = true;
 	}
@@ -144,7 +153,6 @@ THREE.Object3D.prototype.addChild = function( child ) {
 		
 		child.parent = this;		
 		this.children.push( child );
-		this.calculateBoundRadius();
 	}
 };
 
@@ -165,14 +173,3 @@ THREE.Object3D.prototype.removeChild = function() {
 };
 
 
-/*
- * Calculate Bound Radius
- */
-
- THREE.Object3D.prototype.calculateBoundRadius = function( includeChildren ) {
- 	
-	if( includeChildren === undefined ) 
-		includeChildren = true;
-		
-	// todo: calculate radius
-}

@@ -23,7 +23,6 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 
 	// init
 	
-	this.frustum           = new THREE.Frustum( this );
 	this.inverseMatrix     = new THREE.Matrix4();
 	this.perspectiveMatrix = THREE.Matrix4.makePerspective( this.FOV, this.aspect, this.zNear, this.zFar );
 }
@@ -69,7 +68,7 @@ THREE.Camera.prototype.frustumContains = function( object3D ) {
 	// check z
 
 	var inverse = this.inverseMatrix;
-	var radius  = object3D.boundRadius;
+	var radius  = object3D.boundRadius * object3D.boundRadiusScale;
 	var vz1     = ( inverse.n31 * vx0 + inverse.n32 * vy0 + inverse.n33 * vz0 + inverse.n34 );
 
 	if( vz1 - radius > -this.zNear )

@@ -6,7 +6,7 @@ THREE.WebGLBatchProgram = function( vertexShaderId, fragmentShaderId ) {
 	
 	//--- Construct ---
 	
-	this.GL              = THREE.WebGLRendererContext;
+	this.GL              = THREE.WebGLRenderer.Cache.currentGL;
 	this.vertexShader    = 0;
 	this.fragmentShader  = 0;
 	this.program         = 0;

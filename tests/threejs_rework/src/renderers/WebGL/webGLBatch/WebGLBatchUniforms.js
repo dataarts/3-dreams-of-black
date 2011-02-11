@@ -11,7 +11,7 @@ THREE.WebGLBatchUniforms = (function() {
 	
 	var extract = function( incomingProgram ) {
 		
-		GL       = THREE.WebGLRendererContext;
+		GL       = THREE.WebGLRenderer.Cache.currentGL;
 		program  = incomingProgram.program;
 		
 		return extractUniforms();

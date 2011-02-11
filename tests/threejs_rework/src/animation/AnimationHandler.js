@@ -10,10 +10,10 @@ THREE.AnimationHandler = (function() {
 	
 	//--- update ---
 	
-	that.update = function() {
+	that.update = function( time ) {
 		
 		for( var i = 0; i < playing.length; i++ )
-			playing[ i ].update();
+			playing[ i ].update( time );
 	}
 	
 	

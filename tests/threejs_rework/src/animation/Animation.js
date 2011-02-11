@@ -94,7 +94,9 @@ THREE.Animation.prototype.stop = function() {
  * Update
  */
 
-THREE.Animation.prototype.update = function() {
+THREE.Animation.prototype.update = function( time ) {
+
+	// todo: add input time
 
 	// early out
 	
@@ -140,10 +142,8 @@ THREE.Animation.prototype.update = function() {
 		object = this.hierarchy[ h ];
 	
 		if( JIThierarchy[ h ][ frame ] !== undefined ) {
-//		if( false ) {
-		
-//			object.position.isDirty = true;
-			object.localMatrix      = JIThierarchy[ h ][ frame ];
+
+			object.localMatrix = JIThierarchy[ h ][ frame ];
 		}
 		else {
 		

@@ -13,13 +13,6 @@
 		</style>
 
 
-		<!-- Signals -->
-
-		<script type="text/javascript" src="js/signals/signals.js"></script>
-		<script type="text/javascript" src="js/signals/Signal.js"></script>
-		<script type="text/javascript" src="js/signals/SignalBinding.js"></script>
-
-
 		<!-- THREE -->
 
 		<script type="text/javascript" src="src/Three.js"></script>
@@ -78,18 +71,19 @@
 		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
 
 		<script type="text/javascript" src="src/renderers/WebGL/WebGLRenderer.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/WebGLRendererScene.js"></script>
-
+		
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatch.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchProgram.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchAttributes.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchUniforms.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompiler.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompilerMaterials.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLShaderDefinitions.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Skin.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Texture.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompiler.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompilerMaterials.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderDefinitions.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderSkin.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderTexture.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderLambert.js"></script>
 	
 		<script type="text/javascript" src="src/animation/Animation.js"></script>
 		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
@@ -152,7 +146,7 @@
 					skins = [];
 					animations = [];
 					
-					var grid = 9;
+					var grid = 1;
 					var sep  = 180;
 					
 					for( var x = 0; x < grid; x++ ) {
@@ -160,7 +154,7 @@
 						for( var z = 0; z < grid; z++ ) {
 							
 							var skin = new THREE.Skin( buffalo, buffalo.materials );
-							
+							           
 							skin.position.x = -(grid-1) * sep * 0.5 + x * sep; 
 							skin.position.z = -(grid-1) * sep * 0.5 + z * sep; 
 
@@ -216,7 +210,7 @@
 				//	skin.rotation.y++;
 					
 					for( var i = 0; i < skins.length; i++ ) 
-						skins[ i ].rotation.y++;
+						skins[ i ].rotation.y += 0.1;
 					
 					renderer.render( scene, camera );
 					stats.update();

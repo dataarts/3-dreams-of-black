@@ -548,6 +548,37 @@ THREE.Matrix4.makeInvert = function ( m1, m2 ) {
 
 };
 
+THREE.Matrix4.makeNormal = function( m1, m2 ) {
+	
+	return m2;
+	
+	var m33 = THREE.Matrix4.makeInvert3x3( m1 ).transpose();
+	var m   = m33.m;
+	
+	m2.n11 = m[ 0 ];
+	m2.n12 = m[ 1 ];
+	m2.n13 = m[ 2 ];
+	m2.n14 = 0;
+
+	m2.n21 = m[ 3 ];
+	m2.n22 = m[ 4 ];
+	m2.n23 = m[ 5 ];
+	m2.n24 = 0;
+
+	m2.n31 = m[ 6 ];
+	m2.n32 = m[ 7 ];
+	m2.n33 = m[ 8 ];
+	m2.n34 = 0;
+
+	m2.n31 = 0;
+	m2.n32 = 0;
+	m2.n33 = 0;
+	m2.n34 = 1;
+	
+	return m2;
+}
+
+
 THREE.Matrix4.makeInvert3x3 = function ( m1 ) {
 
 	// input:  THREE.Matrix4, output: THREE.Matrix3

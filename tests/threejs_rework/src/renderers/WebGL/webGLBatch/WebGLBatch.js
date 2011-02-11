@@ -2,60 +2,58 @@
  * Shader Program
  */
 
-THREE.WebGLBatch = function()
+THREE.WebGLBatch = function( args )
 {
-}
-
-THREE.WebGLBatch.prototype.init = function( args ) {
+	// copy?
 	
-	// construct
+	if( args instanceof THREE.WebGLBatch ) {
+		
+		this.GL       		= args.GL;
+		this.program  		= args.program;
+		this.attributes 	= args.attributes;
+		this.attributesId   = args.attributesId;
+		this.textures 		= args.textures;
+		this.elements 		= args.elements;
+		this.elementsSize 	= args.elementsSize;
+		this.id 			= "webGLBatch" + THREE.WebGLBatchAttributesIdCounter++;
+		this.programId      = args.programId;
+		this.blendMode 		= args.blendMode;
+		this.wireframe 		= args.wireframe;
 	
-	this.GL            = THREE.WebGLRendererContext;
- 	this.program       = new THREE.WebGLBatchProgram       ( args.vertexShaderId, args.fragmentShaderId );
-	this.uniforms      = THREE.WebGLBatchUniforms  .extract( this.program );
-	this.attributes    = THREE.WebGLBatchAttributes.extract( this.program );
-	this.attributesId  = THREE.WebGLBatchAttributesIdCounter++;
-	this.textures      = [];
-	this.uniformInputs = [];
-	this.elements      = -1;
-	this.elementsSize  = -1;
+		// mesh specifics
 	
-
-	this.id        = this.program.id;
-	this.blendMode = args.blendMode !== undefined ? args.blendMode : "src";
-	this.wireframe = args.wireframe !== undefined ? args.wireframe : false;
-}
-
-/*
- * Clone
- */
-
-THREE.WebGLBatch.prototype.initFrom = function( batch ) {
+		this.uniforms            = [];
+		this.uniforms.dictionary = {};
+		this.uniformInputs       = [];
 	
-	this.GL       		= batch.GL;
-	this.program  		= batch.program;
-	this.attributes 	= batch.attributes;
-	this.attributesId   = batch.attributesId;
-	this.textures 		= batch.textures;
-	this.elements 		= batch.elements;
-	this.elementsSize 	= batch.elementsSize;
-	this.id 			= batch.id;
-	this.blendMode 		= batch.blendMode;
-	this.wireframe 		= batch.wireframe;
-
-	// mesh specifics
-
-	this.uniforms            = [];
-	this.uniforms.dictionary = {};
-	this.uniformInputs       = [];
-
-	for( var u = 0; u < batch.uniforms.length; u++ )
-	{
-		this.uniforms[ u ] = { name:     batch.uniforms[ u ].name,
-							   type:     batch.uniforms[ u ].type,
-							   location: batch.uniforms[ u ].location };
-							   
-		this.uniforms.dictionary[ batch.uniforms[ u ].name ] = this.uniforms[ u ];
+		for( var u = 0; u < args.uniforms.length; u++ )
+		{
+			this.uniforms[ u ] = { name:     args.uniforms[ u ].name,
+								   type:     args.uniforms[ u ].type,
+								   location: args.uniforms[ u ].location };
+								   
+			this.uniforms.dictionary[ args.uniforms[ u ].name ] = this.uniforms[ u ];
+		}
+	}
+	
+	// create new
+	
+	else {
+		
+		this.GL            = THREE.WebGLRenderer.Cache.currentGL;
+	 	this.program       = new THREE.WebGLBatchProgram( args.vertexShaderId, args.fragmentShaderId );
+		this.uniforms      = THREE.WebGLBatchUniforms  .extract( this.program );
+		this.attributes    = THREE.WebGLBatchAttributes.extract( this.program );
+		this.attributesId  = THREE.WebGLBatchAttributesIdCounter++;
+		this.textures      = [];
+		this.uniformInputs = [];
+		this.elements      = -1;
+		this.elementsSize  = -1;
+	
+		this.programId = this.program.id;
+		this.id        = "webGLBatch" + THREE.WebGLBatchIdCounter++;
+		this.blendMode = args.blendMode !== undefined ? args.blendMode : "src";
+		this.wireframe = args.wireframe !== undefined ? args.wireframe : false;
 	}
 }
 
@@ -66,20 +64,26 @@ THREE.WebGLBatch.prototype.initFrom = function( batch ) {
 
 THREE.WebGLBatch.prototype.render = function() {
 	
-	if( this.attributesId !== THREE.WebGLBatchCurrentAttributesId ) 
+	if( this.attributesId !== THREE.WebGLRenderer.Cache.currentAttributesId ) {
+		
 		this.bindAttributeBuffers();
-	if( this.textures.length !== 0 ) 
+		THREE.WebGLRenderer.Cache.currentAttributesId = this.attributesId;
+	}
+		
+
+	if( this.textures.length !== 0 ) {
+		
 		this.bindTextures();
+	}
+
 
 	this.loadUniformInputs();
 
 
-	// draw elements
-
-	if( this.elements !== THREE.WebGLBatchCurrentElementId ) {
+	if( this.elements !== THREE.WebGLRenderer.Cache.currentElementId ) {
 		
-		THREE.WebGLBatchCurrentElementId = this.elements;
 	    this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, this.elements );
+		THREE.WebGLRenderer.Cache.currentElementId = this.elements;
 	}
 	
     this.GL.drawElements( this.GL.TRIANGLES, this.elementsSize, this.GL.UNSIGNED_SHORT, 0 );
@@ -93,10 +97,19 @@ THREE.WebGLBatch.prototype.bindAttributeBuffers = function() {
 	    this.GL.bindBuffer( this.GL.ARRAY_BUFFER, this.attributes[ a ].buffer );
 	    this.GL.vertexAttribPointer( this.attributes[ a ].location, this.attributes[ a ].size, this.GL.FLOAT, false, 0, 0 );
 	}
-	
-	THREE.WebGLBatchCurrentAttributesId = this.attributesId;
 }
 	
+
+THREE.WebGLBatch.prototype.bindTextures = function() {
+	
+	for( var t = 0; t < this.textures.length; t++ ) {
+		
+	    this.GL.activeTexture( this.GL[ "TEXTURE" + t ] );
+	    this.GL.bindTexture  ( this.GL.TEXTURE_2D, this.textures[ t ].buffer );
+	    this.GL.uniform1i    ( this.textures[ t ].location, t );
+	}
+}
+
 	
 THREE.WebGLBatch.prototype.loadUniformInputs = function() {
 	
@@ -113,18 +126,9 @@ THREE.WebGLBatch.prototype.loadUniformInputs = function() {
 	}
 }
 
-THREE.WebGLBatch.prototype.bindTextures = function() {
-	
-	for( var t = 0; t < this.textures.length; t++ ) {
-		
-	    this.GL.activeTexture( this.GL[ "TEXTURE" + t ] );
-	    this.GL.bindTexture  ( this.GL.TEXTURE_2D, this.textures[ t ].buffer );
-	    this.GL.uniform1i    ( this.textures[ t ].location, t );
-	}
-}
 
 /*
- * Add Uniform
+ * Add Uniform Input
  */
 
 THREE.WebGLBatch.prototype.addUniformInput = function( name, type, scope, variable ) {
@@ -262,7 +266,5 @@ THREE.WebGLBatch.prototype.doLoadUniform = function( type, location, data ) {
 	}
 }
 
-
-
+THREE.WebGLBatchIdCounter           = 0;
 THREE.WebGLBatchAttributesIdCounter = 0;
-THREE.WebGLBatchCurrentAttributesId = -1;

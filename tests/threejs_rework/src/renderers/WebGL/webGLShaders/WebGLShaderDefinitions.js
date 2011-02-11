@@ -5,7 +5,7 @@ THREE.WebGLShaderDefinitions = {
 		{ name: "uCameraInverseMatrix",     type: "mat4" },
 		{ name: "uCameraPerspectiveMatrix", type: "mat4" },
 		{ name: "uMeshGlobalMatrix",       	type: "mat4" },
-		{ name: "uMeshNormalMatrix",       	type: "mat3" },
+		{ name: "uMeshNormalMatrix",       	type: "mat4" },
 		{ name: "uBonesRootInverseMatrix",  type: "mat4" },
 		{ name: "uBoneGlobalMatrices",      type: "mat4Array" },
 		{ name: "uBonePoseMatrices",		type: "mat4Array" },
@@ -34,7 +34,7 @@ THREE.WebGLShaderDefinitions = {
 		{ name: "aSkinVertexB",		type: "vec4" },	
 		{ name: "aSkinVertexC",		type: "vec4" },	
 		{ name: "aSkinVertexD",		type: "vec4" },	
-		{ name: "aNormal",  		type: "vec3" },	
+		{ name: "aNormal",  		type: "vec4" },	
 		{ name: "aColor",   		type: "vec3" },	
 		{ name: "aUV0",     		type: "vec2" },	
 		{ name: "aUV1",     		type: "vec2" },	
@@ -47,6 +47,6 @@ THREE.WebGLShaderDefinitions = {
 		{ name: "vUV0", 	type: "vec2" },
 		{ name: "vUV1", 	type: "vec2" },
 		{ name: "vEnvUV", 	type: "vec2" },
-		{ name: "vNormal",  type: "vec3" }
+		{ name: "vNormal",  type: "vec4" }
 	]
 }

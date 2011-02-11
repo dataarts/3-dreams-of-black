@@ -102,7 +102,6 @@ THREE.Skin.prototype.pose = function() {
 			
 			// todo: add more influences
 	
-	
 			// normalize weights
 	
 			if( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y !== 1 ) {

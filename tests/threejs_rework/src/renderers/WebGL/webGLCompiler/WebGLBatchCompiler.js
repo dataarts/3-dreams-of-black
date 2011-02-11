@@ -39,7 +39,7 @@ THREE.WebGLBatchCompiler = (function() {
 		var ms = new Date().getTime();	
 		log( "THREE.WebGLBatchCompiler.compile: Start" );
 		
-		GL             = THREE.WebGLRendererContext;
+		GL             = THREE.WebGLRenderer.Cache.currentGL;
 		mesh           = incomingMesh;
 		materials      = mesh.materials;
 		geometry       = mesh.geometry;
@@ -271,11 +271,12 @@ THREE.WebGLBatchCompiler = (function() {
 							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.x );  
 							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
 							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
-							tempVertices.push( 1 );	// pad for faster vertex shader
+							tempVertices.push( 1 );				// pad for faster vertex shader
 							
 							tempNormals.push( face.normal.x );
 							tempNormals.push( face.normal.y );
 							tempNormals.push( face.normal.z );
+							tempNormals.push( 1 );				// pad for faster vertex shader
 						}
 						
 						
@@ -307,12 +308,12 @@ THREE.WebGLBatchCompiler = (function() {
 							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].x );  
 							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].y );  
 							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].z );  
-							tempSkinVerticesA.push( 1 );	// pad for faster vertex shader
+							tempSkinVerticesA.push( 1 );			// pad for faster vertex shader
 
 							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].x );  
 							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].y );  
 							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].z );  
-							tempSkinVerticesB.push( 1 );	// pad for faster vertex shader
+							tempSkinVerticesB.push( 1 );			// pad for faster vertex shader
 							
 							// todo: insert more influences
 						}
@@ -326,7 +327,7 @@ THREE.WebGLBatchCompiler = (function() {
 				var elementBuffer;
 				
 				if( tempVertices     .length > 0 ) attributeBuffers.push( bindBuffer( "aVertex",      "vec4", tempVertices,    	 4 ));
-				if( tempNormals      .length > 0 ) attributeBuffers.push( bindBuffer( "aNormal",      "vec3", tempNormals,     	 3 ));
+				if( tempNormals      .length > 0 ) attributeBuffers.push( bindBuffer( "aNormal",      "vec4", tempNormals,     	 4 ));
 				if( tempColors       .length > 0 ) attributeBuffers.push( bindBuffer( "aColor",       "vec3", tempColors,      	 3 ));
 				if( tempUV0s         .length > 0 ) attributeBuffers.push( bindBuffer( "aUV0",         "vec2", tempUV0s,        	 2 ));
 				if( tempSkinWeights  .length > 0 ) attributeBuffers.push( bindBuffer( "aSkinWeights", "vec4", tempSkinWeights, 	 4 ));
@@ -397,9 +398,7 @@ THREE.WebGLBatchCompiler = (function() {
 			
 			var chunk          = geometryChunks[ chunkName ];
 			var shaderCodeInfo = getShaderCodeInfo( chunk.materials );
-			var batch          = new THREE.WebGLBatch();
-			
-			batch.init( shaderCodeInfo );
+			var batch          = new THREE.WebGLBatch( shaderCodeInfo );
 			
 			
 			// handle skin/mesh
@@ -543,8 +542,7 @@ THREE.WebGLBatchCompiler = (function() {
 					
 					for( var b = 0; b < cache[ c ].webGLBatches.length; b++ ) {
 						
-						batches[ b ] = new THREE.WebGLBatch();
-						batches[ b ].initFrom( cache[ c ].webGLBatches[ b ] );
+						batches[ b ] = new THREE.WebGLBatch( cache[ c ].webGLBatches[ b ] );
 			
 						if( mesh instanceof THREE.Skin ) {
 			

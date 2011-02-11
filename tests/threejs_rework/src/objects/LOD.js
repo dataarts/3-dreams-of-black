@@ -37,11 +37,13 @@ THREE.LOD.prototype.add = function( object3D, visibleAtDistance ) {
  * Update
  */
 
-THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, camera, renderer ) {
 	
-	forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera );
+	forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate );
 	
 	if( camera && camera.frustumContains( this )) {
+		
+		// set visible on the right lod
 		
 		if( this.LODs.length > 1 ) {
 			
@@ -67,8 +69,7 @@ THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, c
 		// update children
 	
 		for( var c = 0; c < this.children.length; c++ )
-			this.children[ c ].update( this.globalMatrix, forceUpdate, scene, camera );
+			this.children[ c ].update( this.globalMatrix, forceUpdate, camera, renderer );
 	}
-	else console.log( "OFF!");
 }
 
