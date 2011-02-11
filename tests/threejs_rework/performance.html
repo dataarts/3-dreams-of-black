@@ -126,7 +126,7 @@
 //				var material = new THREE.MeshNormalMaterial();
 				var material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
 
-				for ( var i = 0; i < 5000; i ++ ) {
+				for ( var i = 0; i < 7500; i ++ ) {
 
 					var mesh = new THREE.Mesh( geometry, material );
 					mesh.position.x = Math.random() * 10000 - 5000;

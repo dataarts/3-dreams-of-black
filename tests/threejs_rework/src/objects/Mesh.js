@@ -8,8 +8,7 @@ THREE.Mesh = function( geometry, materials ) {
 	
 	this.geometry     = geometry;
 	this.materials    = materials && materials.length ? materials : [ materials ];
-	this.normalMatrix = new THREE.Matrix4();
-	this.normalMatrix = THREE.Matrix4.makeNormal( this.globalMatrix, this.normalMatrix );
+	this.normalMatrix = THREE.Matrix4.makeInvert3x3( this.globalMatrix ).transpose();
 	
 	
 	// calc bound radius
@@ -64,5 +63,6 @@ THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, camera,
 THREE.Mesh.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdate ) {
 
 	if( this.supr.updateMatrix.call( this, parentGlobalMatrix, forceUpdate )) 
-		THREE.Matrix4.makeNormal( this.globalMatrix, this.normalMatrix );
+		this.normalMatrix = THREE.Matrix4.makeInvert3x3( this.globalMatrix ).transpose();
 }
+

@@ -276,7 +276,6 @@ THREE.WebGLBatchCompiler = (function() {
 							tempNormals.push( face.normal.x );
 							tempNormals.push( face.normal.y );
 							tempNormals.push( face.normal.z );
-							tempNormals.push( 1 );				// pad for faster vertex shader
 						}
 						
 						
@@ -327,7 +326,7 @@ THREE.WebGLBatchCompiler = (function() {
 				var elementBuffer;
 				
 				if( tempVertices     .length > 0 ) attributeBuffers.push( bindBuffer( "aVertex",      "vec4", tempVertices,    	 4 ));
-				if( tempNormals      .length > 0 ) attributeBuffers.push( bindBuffer( "aNormal",      "vec4", tempNormals,     	 4 ));
+				if( tempNormals      .length > 0 ) attributeBuffers.push( bindBuffer( "aNormal",      "vec3", tempNormals,     	 3 ));
 				if( tempColors       .length > 0 ) attributeBuffers.push( bindBuffer( "aColor",       "vec3", tempColors,      	 3 ));
 				if( tempUV0s         .length > 0 ) attributeBuffers.push( bindBuffer( "aUV0",         "vec2", tempUV0s,        	 2 ));
 				if( tempSkinWeights  .length > 0 ) attributeBuffers.push( bindBuffer( "aSkinWeights", "vec4", tempSkinWeights, 	 4 ));

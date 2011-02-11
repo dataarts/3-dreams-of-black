@@ -5,18 +5,19 @@ THREE.WebGLShaderDefinitions.normalVertex = (function() {
 	return [
 	
 		"uniform	mat4 	uCameraInverseMatrix;",
+		"uniform	mat3 	uCameraInverseMatrix3x3;",
 		"uniform 	mat4 	uCameraPerspectiveMatrix;",
 		"uniform 	mat4 	uMeshGlobalMatrix;",
-		"uniform 	mat4 	uMeshNormalMatrix;",
+		"uniform 	mat3 	uMeshNormalMatrix;",
 		
 		"attribute 	vec4 	aVertex;",
-		"attribute	vec4	aNormal;",
+		"attribute	vec3	aNormal;",
 		
 		"varying	vec3	vNormal;",
 		
 		"void main(void)",
 		"{",
-			"vNormal     = normalize( uCameraInverseMatrix * uMeshGlobalMatrix * aNormal ).xyz;",
+			"vNormal     = normalize( uCameraInverseMatrix3x3 * uMeshNormalMatrix * aNormal );",
 			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * aVertex;",
 		"}"
 	].join( "\n" );

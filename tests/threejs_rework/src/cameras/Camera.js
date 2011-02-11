@@ -17,7 +17,8 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 	this.zFar          = zFar     || 2000;
 	this.screenCenterX = 0;
 	this.screenCenterY = 0;
-	this.target        = target   || { position: new THREE.Vector3( 0, 0, 0 ) };
+	this.target        = target   || new THREE.Object3D();
+	this.useTarget     = true;
 	this.up            = new THREE.Vector3( 0, 1, 0 );
 	
 
@@ -47,9 +48,31 @@ THREE.Camera.prototype.updatePerspectiveMatrix = function() {
 
 THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
 	
-	if( this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera ))
+	if( this.useTarget ) {
+		
+		this.localMatrix.lookAt( this.position, this.target.position, this.up );
+		
+		if( parentGlobalMatrix )
+			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+		else
+			this.globalMatrix.set( this.localMatrix );
+
 		THREE.Matrix4.makeInvert( this.globalMatrix, this.inverseMatrix );	
+			
+		forceUpdate = true;
+	}
+	else {
+		
+		if( forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera ))
+			THREE.Matrix4.makeInvert( this.globalMatrix, this.inverseMatrix );
+	}
+	
+	// update children
+
+	for( var i = 0; i < this.children.length; i++ )
+		this.children[ i ].update( this.globalMatrix, forceUpdate, camera, renderer );
 }
+
 
 /*
  * FrustumContains

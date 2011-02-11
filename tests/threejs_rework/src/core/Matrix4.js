@@ -21,7 +21,9 @@ THREE.Matrix4 = function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33
 	if( typeof Float32Array !== 'undefined' ) {
 
 		var that = this;		
-		this.float32Array = new Float32Array( 16 ),
+		this.float32Array    = new Float32Array( 16 );
+		this.float32Array3x3 = new Float32Array( 9 );
+		
 		this.flatten32 = function() {
 			
 			var flat = that.float32Array;
@@ -33,13 +35,24 @@ THREE.Matrix4 = function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33
 	
 			return flat;
 		}
+		
+		this.flatten323x3 = function() {
+			
+			var flat = that.float32Array3x3;
+
+			flat[ 0 ] = that.n11; flat[ 1 ] = that.n21; flat[ 2 ] = that.n31;
+			flat[ 3 ] = that.n12; flat[ 4 ] = that.n22; flat[ 5 ] = that.n32;
+			flat[ 6 ] = that.n13; flat[ 7 ] = that.n23; flat[ 8 ] = that.n33;
+			
+			return flat;
+		}
 	}
 };
 
 THREE.Matrix4.prototype = {
 
 	setPosition: function( vec3 ) {
-		
+
 		this.n14 = vec3.x;
 		this.n24 = vec3.y;
 		this.n34 = vec3.z;
@@ -173,9 +186,9 @@ THREE.Matrix4.prototype = {
 		x.cross( up, z ).normalize();
 		y.cross( z, x ).normalize();
 
-		this.n11 = x.x; this.n12 = x.y; this.n13 = x.z; this.n14 = - x.dot( eye );
-		this.n21 = y.x; this.n22 = y.y; this.n23 = y.z; this.n24 = - y.dot( eye );
-		this.n31 = z.x; this.n32 = z.y; this.n33 = z.z; this.n34 = - z.dot( eye );
+		this.n11 = x.x; this.n12 = x.y; this.n13 = x.z; this.n14 = x.dot( eye );
+		this.n21 = y.x; this.n22 = y.y; this.n23 = y.z; this.n24 = y.dot( eye );
+		this.n31 = z.x; this.n32 = z.y; this.n33 = z.z; this.n34 = z.dot( eye );
 		this.n41 = 0; this.n42 = 0; this.n43 = 0; this.n44 = 1;
 
 		return this;
@@ -547,36 +560,6 @@ THREE.Matrix4.makeInvert = function ( m1, m2 ) {
 	return m2;
 
 };
-
-THREE.Matrix4.makeNormal = function( m1, m2 ) {
-	
-	return m2;
-	
-	var m33 = THREE.Matrix4.makeInvert3x3( m1 ).transpose();
-	var m   = m33.m;
-	
-	m2.n11 = m[ 0 ];
-	m2.n12 = m[ 1 ];
-	m2.n13 = m[ 2 ];
-	m2.n14 = 0;
-
-	m2.n21 = m[ 3 ];
-	m2.n22 = m[ 4 ];
-	m2.n23 = m[ 5 ];
-	m2.n24 = 0;
-
-	m2.n31 = m[ 6 ];
-	m2.n32 = m[ 7 ];
-	m2.n33 = m[ 8 ];
-	m2.n34 = 0;
-
-	m2.n31 = 0;
-	m2.n32 = 0;
-	m2.n33 = 0;
-	m2.n34 = 1;
-	
-	return m2;
-}
 
 
 THREE.Matrix4.makeInvert3x3 = function ( m1 ) {

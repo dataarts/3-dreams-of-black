@@ -110,8 +110,9 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 			var batch = batches[ batchId ];
 			
 			batch.loadProgram();
-			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32());
-			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32());
+			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix3x3",  camera.inverseMatrix    .flatten323x3());
 			batch.loadUniform( "uSceneFogFar",             scene.fogFar   );
 			batch.loadUniform( "uSceneFogNear",            scene.fogNear  );
 			batch.loadUniform( "uSceneFogColor",           scene.fogColor );
@@ -139,35 +140,38 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 
 THREE.WebGLRenderer.prototype.addToRenderList = function( renderable ) {
 	
+	// no need to add already added batches
+	
+	if( renderable.webGLAddedToRenderList ) 
+		return true;
+
+	 renderable.webGLAddedToRenderList = true;
+
+
 	// needs to compile?
 	
 	if( renderable.webGLBatches === undefined )
 		THREE.WebGLBatchCompiler.compile( renderable );
 	
 	
-	// no need to add already added batches
+		
+	// add batches
 	
-	if( !renderable.webGLAddedToRenderList ) {
- 		 renderable.webGLAddedToRenderList = true;
+	for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
 		
-		// add batches
+		var batch = renderable.webGLBatches[ b ];
 		
-		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
+		if( batch.blendMode === "src" ) {
 			
-			var batch = renderable.webGLBatches[ b ];
+			var programDictionary = this.renderDictionaryOpaque[ batch.programId ];
 			
-			if( batch.blendMode === "src" ) {
-				
-				var programDictionary = this.renderDictionaryOpaque[ batch.programId ];
-				
-				if( programDictionary === undefined )
-					programDictionary = this.renderDictionaryOpaque[ batch.programId ] = {};
-				 			
-				programDictionary[ batch.id ] = batch;
-			}
-			else {
-				
-			}
+			if( programDictionary === undefined )
+				programDictionary = this.renderDictionaryOpaque[ batch.programId ] = {};
+			 			
+			programDictionary[ batch.id ] = batch;
+		}
+		else {
+			
 		}
 	}
 };
