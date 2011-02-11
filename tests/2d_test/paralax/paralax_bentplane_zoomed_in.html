@@ -111,9 +111,9 @@
 				}
 
 
-				bentplaneMesh = addMesh( bentplane, 2.4,  0, FLOOR+384, -800, 0,0,0, getTextureMaterial("textures/1_mountains2.png") );
-				bentplane2Mesh = addMesh( bentplane, 2.2,  0, FLOOR+384-20, -700, 0,0,0, getTextureMaterial("textures/2_hill2.png") );
-				bentplane3Mesh = addMesh( bentplane, 2,  0, FLOOR+384-40, -600, 0,0,0, getTextureMaterial("textures/3_wood2.png") );
+				bentplaneMesh = addMesh( bentplane, 2.4,  0, FLOOR+384, -800, 0,0,0, getTextureMaterial("textures/1_mountains.png") );
+				bentplane2Mesh = addMesh( bentplane, 2.2,  0, FLOOR+384-20, -700, 0,0,0, getTextureMaterial("textures/2_hill.png") );
+				bentplane3Mesh = addMesh( bentplane, 2,  0, FLOOR+384-40, -600, 0,0,0, getTextureMaterial("textures/3_wood.png") );
 				
 				// bg
 				var bgplane = new Plane( 100, 100, 1, 1 );
@@ -136,7 +136,7 @@
 			}
 			
 			function getTextureMaterial (tex) {
-				var textureMaterial = new THREE.MeshBasicMaterial( { opacity: 1.5, map: new THREE.Texture(), blending: THREE.SubtractiveBlending } );
+				var textureMaterial = new THREE.MeshBasicMaterial( { map: new THREE.Texture(), blending: THREE.BillboardBlending } );
 				var img = new Image();
 				textureMaterial.map.image = img;
 				img.onload = function () {
