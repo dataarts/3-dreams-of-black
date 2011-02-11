@@ -143,7 +143,7 @@ THREE.WebGLRenderer.prototype.addToRenderList = function( renderable ) {
 	// no need to add already added batches
 	
 	if( renderable.webGLAddedToRenderList ) 
-		return true;
+		return;
 
 	 renderable.webGLAddedToRenderList = true;
 

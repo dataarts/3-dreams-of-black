@@ -67,7 +67,7 @@ THREE.Skin.prototype.addBone = function( object3D ) {
 
 THREE.Skin.prototype.pose = function() {
 
-	this.update( this, undefined, true );
+	this.update( undefined, true );
 	
 	for( var b = 0; b < this.bones.length; b++ ) {
 		

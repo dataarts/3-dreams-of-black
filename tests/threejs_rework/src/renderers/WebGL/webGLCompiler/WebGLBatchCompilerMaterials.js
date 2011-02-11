@@ -30,6 +30,7 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 		addUniform  ( "uCameraInverseMatrix" );
 		addUniform  ( "uCameraPerspectiveMatrix" );
 		addUniform  ( "uMeshGlobalMatrix" );
+		addUniform  ( "uMeshNormalMatrix" );
 		addAttribute( "aVertex" );
 		
 		for( var m = 0; m < materials.length; m++ ) {
@@ -63,6 +64,7 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 			}
 		}
 
+
 		// skin?
 
 		if( isSkin ) {
@@ -84,6 +86,7 @@ THREE.WebGLBatchCompilerMaterials = (function() {
 		}
 		else
 			addVertex( "gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * aVertex;" );
+
 
 
 		// round up

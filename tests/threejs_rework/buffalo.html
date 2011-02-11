@@ -110,6 +110,7 @@
 				var skins;
 				var mouseX;
 				var mouseY;
+				var stats;
 				var windowHalfX = window.innerWidth / 2;
 				var windowHalfY = window.innerHeight / 2;
 				
@@ -117,8 +118,8 @@
 				
 				var startAnimation = function() {
 					
-				//	for( var i = 0; i < animations.length; i++ )
-				//		animations[ i ].play();
+					for( var i = 0; i < animations.length; i++ )
+						animations[ i ].play();
 				}
 				
 				
@@ -179,15 +180,15 @@
 							skins.push( skin );
 							
 
-							var mesh = new THREE.Mesh( geometry, material );
+/*							var mesh = new THREE.Mesh( geometry, material );
 							
 							mesh.position.x = skin.position.x;
 							mesh.position.y = skin.position.y;
 							mesh.position.z = skin.position.z;
 							
 							scene.addChild( mesh );
-
-						//	animations.push( new THREE.Animation( skin, buffalo.animation ));
+*/
+							animations.push( new THREE.Animation( skin, buffalo.animation ));
 						}
 					}
 
@@ -233,11 +234,11 @@
 				
 				var Update = function()
 				{
-				//	camera.position.x += (  mouseX - camera.position.x ) * .05;
-					//camera.position.y += ( -mouseY - camera.position.y ) * .05;
+		//			camera.position.x += (  mouseX - camera.position.x ) * .05;
+		//			camera.position.y += ( -mouseY - camera.position.y ) * .05;
 
 					for( var s = 0; s < skins.length; s++ ) 
-						skins[ s ].rotation.y += 0.1;
+						skins[ s ].rotation.y += 0.01;
 
 					renderer.render( scene, camera );
 					stats.update();
