@@ -23,7 +23,8 @@ THREE.Animation = function( skin, data ) {
 
 	for( var b = 0; b < this.skin.bones.length; b++ ) {
 		
-		this.skin.bones[ b ].useQuaternion = true;
+		this.skin.bones[ b ].useQuaternion    = true;
+		this.skin.bones[ b ].autoUpdateMatrix = true;
 		this.hierarchy.push( this.skin.bones[ b ] );
 	}
 }
@@ -143,7 +144,9 @@ THREE.Animation.prototype.update = function( time ) {
 	
 		if( JIThierarchy[ h ][ frame ] !== undefined ) {
 
-			object.localMatrix = JIThierarchy[ h ][ frame ];
+			object.localMatrix         = JIThierarchy[ h ][ frame ];
+			object.autoUpdateMatrix    = false;
+			object.matrixNeedsToUpdate = true;
 		}
 		else {
 		

@@ -118,6 +118,7 @@
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.z = 3200;
+				camera.useTarget = false;
 
 				scene = new THREE.Scene();
 				scene.addChild( camera );

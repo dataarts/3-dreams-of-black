@@ -4,23 +4,24 @@
 
 THREE.Object3D = function() {
 
-	this.visible          = true;
-	this.autoUpdateMatrix = true;
+	this.visible             = true;
+	this.autoUpdateMatrix    = true;
+	this.matrixNeedsToUpdate = true;
 	
-	this.parent		  = undefined;
-	this.children     = [];
+	this.parent		  		 = undefined;
+	this.children     		 = [];
 
-	this.position       = new THREE.Vector3();
-	this.rotation       = new THREE.Vector3();
-	this.scale          = new THREE.Vector3( 1, 1, 1 );
-	this.localMatrix    = new THREE.Matrix4();
-	this.globalMatrix   = new THREE.Matrix4();
-	this.quaternion     = new THREE.Quaternion();
-	this.useQuaternion  = false;
-	this.screenPosition = new THREE.Vector4(); // xyzr
+	this.position            = new THREE.Vector3();
+	this.rotation            = new THREE.Vector3();
+	this.scale               = new THREE.Vector3( 1, 1, 1 );
+	this.localMatrix         = new THREE.Matrix4();
+	this.globalMatrix        = new THREE.Matrix4();
+	this.quaternion          = new THREE.Quaternion();
+	this.useQuaternion       = false;
+	this.screenPosition      = new THREE.Vector4(); // xyzr
 	
-	this.boundRadius      = 0;
-	this.boundRadiusScale = 1;
+	this.boundRadius         = 0;
+	this.boundRadiusScale    = 1;
 }
 
 
@@ -32,11 +33,26 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, cam
 
 	// visible and auto update?
 	
-	if( this.visible && this.autoUpdateMatrix )
+	if( this.visible )
 	{
-		// was updated?
+		// update local
 		
-		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate );			
+		if( this.autoUpdateMatrix )
+			forceUpdate |= this.updateMatrix();			
+
+	
+		// update global
+
+		if( forceUpdate || this.matrixNeedsToUpdate ) {
+			
+			if( parentGlobalMatrix )
+				this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+			else
+				this.globalMatrix.set( this.localMatrix );
+			
+			this.matrixNeedsToUpdate = false;
+			forceUpdate              = true;
+		}
 
 
 		// update children
@@ -51,7 +67,7 @@ THREE.Object3D.prototype.update = function( parentGlobalMatrix, forceUpdate, cam
  * Update Matrix
  */
 
-THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdate ) {
+THREE.Object3D.prototype.updateMatrix = function() {
 	
 	// update position
 	
@@ -123,18 +139,6 @@ THREE.Object3D.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdat
 		isDirty = true;
 	}
 
-
-	// update global
-
-	if( forceUpdate || isDirty ) {
-		
-		isDirty = true;
-		
-		if( parentGlobalMatrix )
-			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
-		else
-			this.globalMatrix.set( this.localMatrix );
-	}
 	
 	return isDirty;
 };

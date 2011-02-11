@@ -45,8 +45,6 @@ THREE.Skin = function( geometry, materials ) {
 
 THREE.Skin.prototype             = new THREE.Mesh();
 THREE.Skin.prototype.constructor = THREE.Skin;
-THREE.Skin.prototype.supr        = THREE.Mesh.prototype;
-
 
 
 /*
@@ -69,7 +67,7 @@ THREE.Skin.prototype.addBone = function( object3D ) {
 
 THREE.Skin.prototype.pose = function() {
 
-	this.update( undefined, true );
+	this.update( this, undefined, true );
 	
 	for( var b = 0; b < this.bones.length; b++ ) {
 		

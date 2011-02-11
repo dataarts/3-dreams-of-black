@@ -11,16 +11,16 @@ THREE.Camera = function( FOV, aspect, zNear, zFar, renderer, target ) {
 	
 	// set arguments
 	
-	this.FOV           = FOV      || 50;
-	this.aspect        = aspect   || 1.0;
-	this.zNear         = zNear    || 0.1;
-	this.zFar          = zFar     || 2000;
-	this.screenCenterX = 0;
-	this.screenCenterY = 0;
-	this.target        = target   || new THREE.Object3D();
-	this.useTarget     = true;
-	this.up            = new THREE.Vector3( 0, 1, 0 );
-	
+	this.FOV              = FOV      || 50;
+	this.aspect           = aspect   || 1.0;
+	this.zNear            = zNear    || 0.1;
+	this.zFar             = zFar     || 2000;
+	this.screenCenterX    = 0;
+	this.screenCenterY    = 0;
+	this.target           = target   || new THREE.Object3D();
+	this.useTarget        = true;
+	this.up               = new THREE.Vector3( 0, 1, 0 );
+
 
 	// init
 	
@@ -50,7 +50,12 @@ THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene
 	
 	if( this.useTarget ) {
 		
+		// local
+		
 		this.localMatrix.lookAt( this.position, this.target.position, this.up );
+		
+		
+		// global
 		
 		if( parentGlobalMatrix )
 			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
@@ -63,8 +68,21 @@ THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, scene
 	}
 	else {
 		
-		if( forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera ))
+		if( this.autoUpdateMatrix )
+			forceUpdate |= this.updateMatrix();			
+			
+		if( forceUpdate || this.matrixNeedsToUpdate ) {
+			
+			if( parentGlobalMatrix )
+				this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+			else
+				this.globalMatrix.set( this.localMatrix );
+			
+			this.matrixNeedsToUpdate = false;
+			forceUpdate              = true;
+
 			THREE.Matrix4.makeInvert( this.globalMatrix, this.inverseMatrix );
+		}
 	}
 	
 	// update children

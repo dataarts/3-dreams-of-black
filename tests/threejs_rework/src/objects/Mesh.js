@@ -33,12 +33,33 @@ THREE.Mesh.prototype.supr        = THREE.Object3D.prototype;
 
 THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, camera, renderer ) {
 	
-	// visible, auto update and inside camera frustum?
+	// visible?
 	
 	if( this.visible )
 	{
+		// update local
+		
 		if( this.autoUpdateMatrix )
-			forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate );
+			forceUpdate |= this.updateMatrix();
+
+
+		// update global
+
+		if( forceUpdate || this.matrixNeedsToUpdate ) {
+			
+			if( parentGlobalMatrix )
+				this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+			else
+				this.globalMatrix.set( this.localMatrix );
+			
+			 this.matrixNeedsToUpdate = false;
+			forceUpdate               = true;
+			
+			
+			// update normal
+
+			this.normalMatrix = THREE.Matrix4.makeInvert3x3( this.globalMatrix ).transpose();
+		}
 
 
 		// update children
@@ -47,7 +68,7 @@ THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, camera,
 			this.children[ i ].update( this.globalMatrix, forceUpdate, camera, renderer );
 
 
-		// check camera frustum and add to renderer capture list
+		// check camera frustum and add to render list
 		
 		if( renderer && camera ) {
 			
@@ -59,10 +80,4 @@ THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, camera,
 	}
 }
 
-
-THREE.Mesh.prototype.updateMatrix = function( parentGlobalMatrix, forceUpdate ) {
-
-	if( this.supr.updateMatrix.call( this, parentGlobalMatrix, forceUpdate )) 
-		this.normalMatrix = THREE.Matrix4.makeInvert3x3( this.globalMatrix ).transpose();
-}
 

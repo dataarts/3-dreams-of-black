@@ -38,9 +38,7 @@
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
-
 		<script type="text/javascript" src="src/cameras/Camera.js"></script>
-		<script type="text/javascript" src="src/cameras/Frustum.js"></script>
 
 		<script type="text/javascript" src="src/extras/primitives/Cube.js"></script>
 		<script type="text/javascript" src="src/extras/primitives/Cylinder.js"></script>
@@ -84,6 +82,7 @@
 		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderSkin.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderTexture.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderLambert.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderNormal.js"></script>
 	
 		<script type="text/javascript" src="src/animation/Animation.js"></script>
 		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
@@ -109,13 +108,17 @@
 				var container;
 				var animations;
 				var skins;
+				var mouseX;
+				var mouseY;
+				var windowHalfX = window.innerWidth / 2;
+				var windowHalfY = window.innerHeight / 2;
 				
 				//--- Init ---
 				
 				var startAnimation = function() {
 					
-					for( var i = 0; i < animations.length; i++ )
-						animations[ i ].play();
+				//	for( var i = 0; i < animations.length; i++ )
+				//		animations[ i ].play();
 				}
 				
 				
@@ -128,17 +131,25 @@
 					return delta;
 				}
 				
+				var onDocumentMouseMove = function(event) {
+
+					mouseX = ( event.clientX - windowHalfX ) * 5;
+					mouseY = ( event.clientY - windowHalfY ) * 2;
+				}
+
 				
 				var Init = function( buffalo )
 				{
 					console.log( "Loading took: " + getTime() );
 					
 					document.addEventListener( 'click', startAnimation, false );
+					document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 					
 					camera = new THREE.Camera();
-					camera.position.z = 600;//1205;
-					camera.position.y = 200;
-					camera.rotation.x = -15;
+					camera.useTarget = false;
+					camera.position.z = 1205;
+					camera.position.y = 100;
+					camera.rotation.x = -15 * Math.PI / 180;
 
 					scene = new THREE.Scene();
 					scene.addChild( camera );
@@ -146,9 +157,13 @@
 					skins = [];
 					animations = [];
 					
-					var grid = 1;
+					var grid = 5;
 					var sep  = 180;
 					
+					var geometry = new THREE.Cube( 50, 50, 50 );
+					var material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
+
+
 					for( var x = 0; x < grid; x++ ) {
 						
 						for( var z = 0; z < grid; z++ ) {
@@ -157,11 +172,22 @@
 							           
 							skin.position.x = -(grid-1) * sep * 0.5 + x * sep; 
 							skin.position.z = -(grid-1) * sep * 0.5 + z * sep; 
+							skin.position.y = -skin.boundRadius * 0.5;
+							skin.rotation.y = Math.random() * 360 * Math.PI / 180;
 
 							scene.addChild( skin );
 							skins.push( skin );
 							
-							animations.push( new THREE.Animation( skin, buffalo.animation ));
+
+							var mesh = new THREE.Mesh( geometry, material );
+							
+							mesh.position.x = skin.position.x;
+							mesh.position.y = skin.position.y;
+							mesh.position.z = skin.position.z;
+							
+							scene.addChild( mesh );
+
+						//	animations.push( new THREE.Animation( skin, buffalo.animation ));
 						}
 					}
 
@@ -171,10 +197,11 @@
 					renderer = new THREE.WebGLRenderer();
 					renderer.setSize( window.innerWidth, window.innerHeight );
 
+
 					var container = document.createElement( "div" );
 					document.body.appendChild( container );
 					container.appendChild( renderer.domElement );
-					
+			
 
 					// stats
 					
@@ -206,15 +233,15 @@
 				
 				var Update = function()
 				{
-				//	animation.update();			
-				//	skin.rotation.y++;
-					
-					for( var i = 0; i < skins.length; i++ ) 
-						skins[ i ].rotation.y += 0.1;
-					
+				//	camera.position.x += (  mouseX - camera.position.x ) * .05;
+					//camera.position.y += ( -mouseY - camera.position.y ) * .05;
+
+					for( var s = 0; s < skins.length; s++ ) 
+						skins[ s ].rotation.y += 0.1;
+
 					renderer.render( scene, camera );
 					stats.update();
-					
+			
 					time += 0.01;
 				}
 				
