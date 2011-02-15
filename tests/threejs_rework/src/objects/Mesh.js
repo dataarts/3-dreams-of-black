@@ -78,6 +78,7 @@ THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, camera,
 				renderer.removeFromRenderList( this );
 		}
 	}
+	else renderer.removeFromRenderList( this );
 }
 
 

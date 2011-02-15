@@ -95,8 +95,7 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
 	// render opaque
 
-   	this.GL.clear  ( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
-	this.GL.disable( this.GL.BLEND );
+   	this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
 	
 	for( var programId in this.renderDictionaryOpaque ) {
 		
@@ -128,11 +127,51 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	}
 	
 	
-	// todo: sort and render transparent
+	// sort transparent
 
-//	this.GL.enable   ( this.GL.BLEND );
-//	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );		// to be done on each object
+	var transparentList       = this.renderDictionaryTransparent.list;
+	var transparentListLength = transparentList.length;
+	var temp;
+
+	for( var t = 0; t < transparentListLength - 1; t++ ) {
+		
+		for( var c = t + 1; c < transparentListLength; c++ ) {
+			
+			if( transparentList[ t ].screenPosition.z > transparentList[ c ].screenPosition.z ) {
+				
+				temp                 = transparentList[ t ];
+				transparentList[ t ] = transparentList[ c ];
+				transparentList[ c ] = temp;
+				
+				transparentList[ t ].webGLSortListIndex = t;
+				transparentList[ c ].webGLSortListIndex = c;
+			}
+		}
+	}
+	
+	
+	// draw transparent
+
+	for( var t = 0; t < transparentListLength; t++ ) {
+		
+		var batches = transparentList[ t ].webGLBatches;
+		
+		for( var b = 0; b < batches.length; b++ ) {
+			
+			var batch = batches[ b ];
+			
+			batch.loadProgram();
+			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix3x3",  camera.inverseMatrix    .flatten323x3());
+			batch.loadUniform( "uSceneFogFar",             scene.fogFar   );
+			batch.loadUniform( "uSceneFogNear",            scene.fogNear  );
+			batch.loadUniform( "uSceneFogColor",           scene.fogColor );
+			batch.render();
+		}
+	}
 }
+
 
 /*
  * AddToRenderList
@@ -155,24 +194,33 @@ THREE.WebGLRenderer.prototype.addToRenderList = function( renderable ) {
 	
 	
 		
-	// add batches
+	// add opaque object's batches
 	
-	for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
+	if( !renderable.webGLIsTransparent ) {
 		
-		var batch = renderable.webGLBatches[ b ];
+		var batch;
+		var programDictionary;
 		
-		if( batch.blendMode === "src" ) {
+		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
 			
-			var programDictionary = this.renderDictionaryOpaque[ batch.programId ];
+			batch             = renderable.webGLBatches[ b ];
+			programDictionary = this.renderDictionaryOpaque[ batch.programId ];
 			
 			if( programDictionary === undefined )
 				programDictionary = this.renderDictionaryOpaque[ batch.programId ] = {};
 			 			
 			programDictionary[ batch.id ] = batch;
 		}
-		else {
-			
-		}
+	}
+	
+	// add transparent/partly transparent object's batches
+	
+	else {
+		
+		renderable.webGLSortListIndex = this.renderDictionaryTransparent.list.length;
+		
+		this.renderDictionaryTransparent[ renderable.webGLBatches[ 0 ].id ] = renderable;	// use 1st batch id as key
+		this.renderDictionaryTransparent.list.push( renderable );
 	}
 };
 
@@ -181,32 +229,39 @@ THREE.WebGLRenderer.prototype.removeFromRenderList = function( renderable ) {
 	
 	// no need to remove if not added
 	
-	if( renderable.webGLAddedToRenderList ) {
-		renderable.webGLAddedToRenderList = false;
+	if( !renderable.webGLAddedToRenderList )
+		return;
+		
+	renderable.webGLAddedToRenderList = false;
 
 		
-		// remove batches
+	// remove batches
+		
+	if( !renderable.webGLIsTransparent ) {
 		
 		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
 			
-			var batch = renderable.webGLBatches[ b ];
+			var batch             = renderable.webGLBatches[ b ];
+			var programDictionary = this.renderDictionaryOpaque[ batch.programId ];
 			
-			if( batch.blendMode === "src" ) {
+			if( programDictionary === undefined )
+				return;
 				
-				var programDictionary = this.renderDictionaryOpaque[ batch.programId ];
+			if( programDictionary[ batch.id ] === undefined )
+				return;
 				
-				if( programDictionary === undefined )
-					return;
-					
-				if( programDictionary[ batch.id ] === undefined )
-					return;
-					
-				delete programDictionary[ batch.id ];
-			}
-			else {
-				
-			}
+			delete programDictionary[ batch.id ];
 		}
+	}
+	else {
+
+		var id = renderable.webGLBatches[ 0 ].id;		// use first batch id as key
+		
+		if( this.renderDictionaryTransparent[ id ] === undefined )
+			return;
+		
+		this.renderDictionaryTransparent.list.splice( renderable.webGLSortListIndex, 1 );
+		delete this.renderDictionaryTransparent[ id ];
 	}
 }
 

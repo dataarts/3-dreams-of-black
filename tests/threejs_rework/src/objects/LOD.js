@@ -39,37 +39,52 @@ THREE.LOD.prototype.add = function( object3D, visibleAtDistance ) {
 
 THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, camera, renderer ) {
 	
-	forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate );
+	// update local
 	
-	if( camera && camera.frustumContains( this )) {
+	if( this.autoUpdateMatrix )
+		forceUpdate |= this.updateMatrix();
+
+
+	// update global
+
+	if( forceUpdate || this.matrixNeedsToUpdate ) {
 		
-		// set visible on the right lod
+		if( parentGlobalMatrix )
+			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+		else
+			this.globalMatrix.set( this.localMatrix );
 		
-		if( this.LODs.length > 1 ) {
+		this.matrixNeedsToUpdate = false;
+		forceUpdate              = true;
+	}
+
+
+	// update lods
+		
+	if( this.LODs.length > 1 ) {
+		
+		var distance = -camera.inverseMatrix.mulitplyVector3OnlyZ( this.position );
+
+		this.LODs[ 0 ].object3D.visible = true;
+		
+		for( var l = 1; l < this.LODs.length; l++ ) {
 			
-			var distance = -camera.inverseMatrix.mulitplyVector3OnlyZ( this.position );
-	
-			this.LODs[ 0 ].object3D.visible = true;
-			
-			for( var l = 1; l < this.LODs.length; l++ ) {
+			if( distance >= this.LODs[ l ].visibleAtDistance ) {
 				
-				if( distance >= this.LODs[ l ].visibleAtDistance ) {
-					
-					this.LODs[ l - 1 ].object3D.visible = false;
-					this.LODs[ l     ].object3D.visible = true;
-				}
-				else break;
+				this.LODs[ l - 1 ].object3D.visible = false;
+				this.LODs[ l     ].object3D.visible = true;
 			}
-			
-			for( ; l < this.LODs.length; l++ ) 
-				this.LODs[ l ].object3D.visible = false;
+			else break;
 		}
 		
-	
-		// update children
-	
-		for( var c = 0; c < this.children.length; c++ )
-			this.children[ c ].update( this.globalMatrix, forceUpdate, camera, renderer );
+		for( ; l < this.LODs.length; l++ ) 
+			this.LODs[ l ].object3D.visible = false;
 	}
+
+
+	// update children
+
+	for( var c = 0; c < this.children.length; c++ )
+		this.children[ c ].update( this.globalMatrix, forceUpdate, camera, renderer );
 }
 

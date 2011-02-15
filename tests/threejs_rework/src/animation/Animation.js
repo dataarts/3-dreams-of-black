@@ -2,9 +2,9 @@
  * Animation System
  */
 
-THREE.Animation = function( skin, data ) {
+THREE.Animation = function( root, data ) {
 	
-	this.skin      = skin;
+	this.root      = root;
 	this.data      = data;
 	this.hierarchy = [];
 
@@ -21,10 +21,16 @@ THREE.Animation = function( skin, data ) {
 
 	// setup hierarchy
 
-	for( var b = 0; b < this.skin.bones.length; b++ ) {
+	if( root instanceof THREE.Skin ) {
 		
-		this.hierarchy.push( this.skin.bones[ b ] );
+		for( var b = 0; b < this.root.bones.length; b++ )
+			this.hierarchy.push( this.root.bones[ b ] );
 	}
+	else {
+		
+		// parse hierarchy and match against animation (somehow)
+	}
+
 }
 
 
@@ -39,17 +45,13 @@ THREE.Animation.prototype.play = function( loop ) {
 		this.isPlaying = true;
 		this.startTime = new Date().getTime() * 0.001;
 
-
-		
-		for( var b = 0; b < this.skin.bones.length; b++ ) {
-			
-			this.skin.bones[ b ].useQuaternion    = true;
-			this.skin.bones[ b ].autoUpdateMatrix = true;
-		}
 		
 		// reset key cache
 		
 		for( var h = 0; h < this.hierarchy.length; h++ ) {
+			
+			this.hierarchy[ h ].useQuaternion    = true;
+			this.hierarchy[ h ].autoUpdateMatrix = true;
 			
 			if( this.hierarchy[ h ].prevKey === undefined ) {
 				
@@ -138,7 +140,7 @@ THREE.Animation.prototype.update = function( time ) {
 		currentTime    = new Date().getTime() * 0.001 - this.startTime;
 	}
 	
-	frame = parseInt( currentTime * this.data.fps );
+	frame = Math.min( parseInt( currentTime * this.data.fps ), parseInt( this.data.length * this.data.fps ));
 	
 	
 	// update
@@ -149,9 +151,10 @@ THREE.Animation.prototype.update = function( time ) {
 	
 		if( JIThierarchy[ h ][ frame ] !== undefined ) {
 
-			object.localMatrix         = JIThierarchy[ h ][ frame ];
-			object.autoUpdateMatrix    = false;
-			object.matrixNeedsToUpdate = true;
+			object.skinMatrix           = JIThierarchy[ h ][ frame ];
+			object.autoUpdateMatrix     = false;
+			object.matrixNeedsToUpdate  = false;
+			this.root.boneMatrices[ h ] = object.skinMatrix.flatten32;
 		}
 		else {
 		
@@ -199,6 +202,9 @@ THREE.Animation.prototype.update = function( time ) {
 				
 				// interpolate rot (quaternion slerp)
 				
+				object.autoUpdateMatrix    = true;
+				object.matrixNeedsToUpdate = true;
+				
 				scale   = ( currentTime - prevKey.time ) / ( nextKey.time - prevKey.time );
 				prevXYZ = prevKey[ type ];
 				nextXYZ = nextKey[ type ];
@@ -221,18 +227,18 @@ THREE.Animation.prototype.update = function( time ) {
 					vector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
 				}
 			}		
-		
-		
-			// create JIT matrix
-			
-			var matrix = new THREE.Matrix4();
-	
-			matrix.setPosition              ( object.position   );
-			matrix.setRotationFromQuaternion( object.quaternion );		
-			matrix.scale                    ( object.scale      );
-			
-			JIThierarchy[ h ][ frame ] = matrix;
 		}
+	}
+	
+	
+	// update JIT?
+	
+	if( JIThierarchy[ 0 ][ frame ] === undefined ) {
+
+		this.hierarchy[ 0 ].update( undefined, true );
+	
+		for( var h = 0; h < this.hierarchy.length; h++ ) 
+			JIThierarchy[ h ][ frame ] = this.hierarchy[ h ].skinMatrix.clone();
 	}
 }
 
@@ -240,7 +246,7 @@ THREE.Animation.prototype.update = function( time ) {
 
 /*
  * Update Object
- */
+ */	
 
 THREE.Animation.prototype.updateObject = function( h, currentTime, unloopedCurrentTime ) {
 	

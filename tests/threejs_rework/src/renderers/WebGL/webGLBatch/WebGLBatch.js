@@ -17,7 +17,7 @@ THREE.WebGLBatch = function( args )
 		this.elementsSize 	= args.elementsSize;
 		this.id 			= "webGLBatch" + THREE.WebGLBatchAttributesIdCounter++;
 		this.programId      = args.programId;
-		this.blendMode 		= args.blendMode;
+		this.blendMode      = args.blendMode;
 		this.wireframe 		= args.wireframe;
 	
 		// mesh specifics
@@ -52,8 +52,8 @@ THREE.WebGLBatch = function( args )
 	
 		this.programId = this.program.id;
 		this.id        = "webGLBatch" + THREE.WebGLBatchIdCounter++;
-		this.blendMode = args.blendMode !== undefined ? args.blendMode : "src";
 		this.wireframe = args.wireframe !== undefined ? args.wireframe : false;
+		this.blendMode = args.blendMode !== undefined ? args.blendMode : THREE.WebGLRendererBlendModes.none;
 	}
 }
 
@@ -84,6 +84,15 @@ THREE.WebGLBatch.prototype.render = function() {
 		
 	    this.GL.bindBuffer( this.GL.ELEMENT_ARRAY_BUFFER, this.elements );
 		THREE.WebGLRenderer.Cache.currentElementId = this.elements;
+	}
+	
+	
+	if( this.blendMode === THREE.WebGLRendererBlendModes.none )
+		this.GL.disable( this.GL.BLEND );
+	else {
+		
+		this.GL.enable   ( this.GL.BLEND );
+		this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA ); // should be set to blend mode, some
 	}
 	
     this.GL.drawElements( this.GL.TRIANGLES, this.elementsSize, this.GL.UNSIGNED_SHORT, 0 );

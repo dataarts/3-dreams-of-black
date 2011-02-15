@@ -1,7 +1,8 @@
-<html>
+<!DOCTYPE HTML>
+<html lang="en">
 	<head>
-		<title>THREE TWO</title>
-		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		<title>three.js - webgl</title>
+		<meta charset="utf-8">
 		<style type="text/css">
 			body {
 				background:#fff;
@@ -11,10 +12,9 @@
 				overflow:hidden;
 			}
 		</style>
+	</head>
 
-
-		<!-- THREE -->
-
+	<body>
 		<script type="text/javascript" src="src/Three.js"></script>
 
 		<script type="text/javascript" src="src/core/Vector2.js"></script>
@@ -37,6 +37,7 @@
 		<script type="text/javascript" src="src/objects/Mesh.js"></script>
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
 		<script type="text/javascript" src="src/objects/Bone.js"></script>
+		<script type="text/javascript" src="src/objects/LOD.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
 		<script type="text/javascript" src="src/cameras/Camera.js"></script>
@@ -90,175 +91,125 @@
 		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
 
 		<script type="text/javascript" src="js/Stats.js"></script>
-	
-		<!-- Experience Code -->
-	
+
 		<script type="text/javascript">
 
-			var Experience = function()
-			{
-				var timer;
-				var renderer;
-				var scene;
-				var mesh, mesh2;
-				var skin;
-				var node;
-				var bone0, bone1, bone2;
-				var camera;
-				var rotationMatrix;
-				var time = 0;
-				var container;
-				var animations;
-				var skins;
-				var mouseX;
-				var mouseY;
-				var stats;
-				var windowHalfX = window.innerWidth / 2;
-				var windowHalfY = window.innerHeight / 2;
-				
-				//--- Init ---
-				
-				var startAnimation = function() {
-					
-					for( var i = 0; i < animations.length; i++ )
-						animations[ i ].play();
-				}
-				
-				
-				var getTime =function() {
-					
-					var current = new Date().getTime();
-					var delta = current - timer;
-					timer = current;
-					
-					return delta;
-				}
-				
-				var onDocumentMouseMove = function(event) {
+			var statsEnabled = true;
 
-					mouseX = ( event.clientX - windowHalfX ) * 5;
-					mouseY = ( event.clientY - windowHalfY ) * 2;
-				}
+			var container, stats;
 
-				
-				var Init = function( buffalo )
-				{
-					console.log( "Loading took: " + getTime() );
-					
-					document.addEventListener( 'click', startAnimation, false );
-					document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-					
-					camera = new THREE.Camera();
-					camera.useTarget = false;
-					camera.position.z = 800;//1205;
-					camera.position.y = 100;
-					camera.rotation.x = -15 * Math.PI / 180;
+			var camera, scene, renderer;
 
-					scene = new THREE.Scene();
-					scene.addChild( camera );
+			var geometry, material;
+			var mesh, zmesh, lightMesh, geometry;
 
-					skins = [];
-					animations = [];
-					
-					var grid = 5;
-					var sep  = 180;
-					
-					var geometry = new THREE.Cube( 50, 50, 50 );
-					var material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
+			var mouseX = 0, mouseY = 0, mouseDown = false;
+			var time = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+			var lastCreation = 0;
 
 
-					for( var x = 0; x < grid; x++ ) {
-						
-						for( var z = 0; z < grid; z++ ) {
-							
-							var skin = new THREE.Skin( buffalo, buffalo.materials );
-							           
-							skin.position.x = -(grid-1) * sep * 0.5 + x * sep; 
-							skin.position.z = -(grid-1) * sep * 0.5 + z * sep; 
-							skin.position.y = -skin.boundRadius * 0.5;
-							skin.rotation.y = Math.random() * 360 * Math.PI / 180;
+			document.addEventListener( 'mousemove', onMouseMove,  false );
+			document.addEventListener( 'mousedown', onMouseDown, false );
+			document.addEventListener( 'mouseup', onMouseUp, false );
 
-							scene.addChild( skin );
-							skins.push( skin );
-							
-
-/*							var mesh = new THREE.Mesh( geometry, material );
-							
-							mesh.position.x = 0;
-							mesh.position.y = skin.position.y;
-							mesh.position.z = skin.position.z;
-							
-							skin.bones[ 5 ].addChild( mesh );*/
-
-							animations.push( new THREE.Animation( skin, buffalo.animation ));
-						}
-					}
+			init();
+			setInterval( loop, 1000 / 60 );
 
 
-					// renderer
+			function init() {
 
-					renderer = new THREE.WebGLRenderer();
-					renderer.setSize( window.innerWidth, window.innerHeight );
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
 
+				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.useTarget = false;
 
-					var container = document.createElement( "div" );
-					document.body.appendChild( container );
-					container.appendChild( renderer.domElement );
-			
+				scene = new THREE.Scene();
+				scene.addChild( camera );
 
-					// stats
-					
+				geometry = new THREE.Cube( 20, 20, 20 );
+				material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				if ( statsEnabled ) {
+
 					stats = new Stats();
 					stats.domElement.style.position = 'absolute';
 					stats.domElement.style.top = '0px';
 					stats.domElement.style.zIndex = 100;
 					container.appendChild( stats.domElement );
-
-
-					// start rendering
-
-					console.log( "Init took: " + getTime() );
-					
-				    setInterval( Update, 1000/60 );
 				}
+			}
 
 
-				var load = function() {
+			function onMouseMove(event) {
 
-					timer = new Date().getTime();
-
-					var loader = new THREE.Loader();
-					loader.loadAscii( { model: "assets/scene/models/spine1.js", callback: Init } );
-				}
-				
-				
-				//--- Update ---
-				
-				var Update = function()
-				{
-				//	camera.position.x += (  mouseX - camera.position.x ) * .05;
-				//	camera.position.y += ( -mouseY - camera.position.y ) * .05;
-
-					for( var s = 0; s < skins.length; s++ ) 
-						skins[ s ].rotation.y += 0.01;
-
-					renderer.render( scene, camera );
-					stats.update();
+				mouseX = ( event.clientX - windowHalfX ) * 10;
+				mouseY = ( event.clientY - windowHalfY ) * 10;
+			}
 			
-					time += 0.01;
-				}
+			function onMouseDown( event ) {
 				
+				mouseDown = true;
+			}
+			
+			function onMouseUp( event ) {
 				
-				//--- public ---
+				mouseDown = false;
+			}
+
+			function loop() {
+
+				time += 0.01;
 				
-				return {
+				camera.position.y = 60;
+				camera.position.x = Math.sin( time ) * 200;
+				camera.position.z = Math.cos( time ) * 200;
+				camera.rotation.y  = (time / (2*Math.PI)) * Math.PI * 2;
+				camera.rotation.x = -0.4;
+				
+				// create
+				
+				if( mouseDown && lastCreation + 150 < new Date().getTime()) {
 					
-					load: load
+					lastCreation = new Date().getTime();
+					
+					var mesh = new THREE.Mesh( geometry, material );
+					var distance = 150;
+					
+					mesh.position.x = camera.position.x - camera.globalMatrix.n13 * distance;
+					mesh.position.z = camera.position.z - camera.globalMatrix.n33 * distance;
+					mesh.rotation.x = Math.random() * Math.PI * 2;
+					mesh.rotation.y = Math.random() * Math.PI * 2;
+					mesh.rotation.z = Math.random() * Math.PI * 2;
+					
+					scene.addChild( mesh );
 				}
-			}();
-		
+
+
+
+
+
+
+				renderer.render( scene, camera );
+
+				if ( statsEnabled ) stats.update();
+			}
+
+
+			function log( text ) {
+
+				var e = document.getElementById("log");
+				e.innerHTML = text + "<br/>" + e.innerHTML;
+			}
+
 		</script>
-	</head>
-	<body onload="Experience.load();">
+
 	</body>
 </html>

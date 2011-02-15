@@ -36,6 +36,8 @@
 		<script type="text/javascript" src="src/objects/Object3D.js"></script>
 		<script type="text/javascript" src="src/objects/Mesh.js"></script>
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
+		<script type="text/javascript" src="src/objects/Bone.js"></script>
+		<script type="text/javascript" src="src/objects/LOD.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
 		<script type="text/javascript" src="src/cameras/Camera.js"></script>
@@ -69,6 +71,7 @@
 		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
 
 		<script type="text/javascript" src="src/renderers/WebGL/WebGLRenderer.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLBlendModes.js"></script>
 		
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatch.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchProgram.js"></script>
@@ -118,7 +121,7 @@
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.z = 3200;
-				camera.useTarget = false;
+			//	camera.useTarget = false;
 
 				scene = new THREE.Scene();
 				scene.addChild( camera );

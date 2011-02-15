@@ -62,10 +62,11 @@ THREE.WebGLBatchCompiler = (function() {
 			return;
 		}
 
-		shaderCodeInfos   = processShaderCode();
-		shaderCodeInfos   = processTextureMaps();
-		geoBuffers        = processGeometry();
-		mesh.webGLBatches = processWebGLBatches();
+		shaderCodeInfos         = processShaderCode();
+		shaderCodeInfos         = processTextureMaps();
+		geoBuffers              = processGeometry();
+		mesh.webGLBatches       = processWebGLBatches();
+		mesh.webGLIsTransparent = processIsTransparent(); 
 
 		addToBatchCache();
 
@@ -76,6 +77,45 @@ THREE.WebGLBatchCompiler = (function() {
 		
 		if( doLog )
 			console.log( msg );
+	}
+	
+	
+	//--- process blend mode ---
+	
+	function processIsTransparent() {
+		
+		var numTransparent = 0;
+		
+		for( var b = 0; b < mesh.webGLBatches.length; b++ ) 
+			if( mesh.webGLBatches[ b ].blendMode !== THREE.WebGLRendererBlendModes.none )
+				numTransparent++;
+		
+		
+		// transparent?
+		
+		if( numTransparent !== 0 ) {
+			
+			// partly transparent? Then sort so opaque batches are rendered first
+			
+			if( numTransparent !== mesh.webGLBatches.length ) {
+				
+				var sortedBatches = [];
+				
+				for( var b = 0; b < mesh.webGLBatches.length; b++ )
+					if( mesh.webGLBatches[ b ].blendMode === THREE.WebGLRendererBlendModes.none )
+						sortedBatches.push( mesh.webGLBatches[ b ] );
+						
+				for( var b = 0; b < mesh.webGLBatches.length; b++ )
+					if( mesh.webGLBatches[ b ].blendMode !== THREE.WebGLRendererBlendModes.none )
+						sortedBatches.push( mesh.webGLBatches[ b ] );
+						
+				mesh.webGLBatches = sortedBatches;
+			}
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 
@@ -404,6 +444,7 @@ THREE.WebGLBatchCompiler = (function() {
 			
 			if( mesh instanceof THREE.Skin ) {
 
+				batch.addUniformInput( "uMeshGlobalMatrix", "mat4", mesh.globalMatrix, "flatten32" );
 				batch.addUniformInput( "uBoneGlobalMatrices", "mat4Array", mesh, "boneMatrices" );
 			}
 			else {
@@ -510,7 +551,7 @@ THREE.WebGLBatchCompiler = (function() {
 	
 	function addToBatchCache() {
 		
-		THREE.WebGLBatchCompiler.batchCache.push( new THREE.WebGLBatchCompiler.batchCacheObject( geometry, materials, mesh.webGLBatches ));
+		THREE.WebGLBatchCompiler.batchCache.push( new THREE.WebGLBatchCompiler.batchCacheObject( geometry, materials, mesh.webGLBatches, mesh.webGLIsTransparent ));
 	}
 
 	
@@ -546,6 +587,7 @@ THREE.WebGLBatchCompiler = (function() {
 			
 						if( mesh instanceof THREE.Skin ) {
 			
+							batches[ b ].addUniformInput( "uMeshGlobalMatrix",   "mat4", mesh.globalMatrix, "flatten32" );
 							batches[ b ].addUniformInput( "uBoneGlobalMatrices", "mat4Array", mesh, "boneMatrices" );
 						}
 						else {
@@ -556,7 +598,9 @@ THREE.WebGLBatchCompiler = (function() {
 
 					}
 			
-					mesh.webGLBatches = batches;
+					mesh.webGLIsTransparent = cache[ c ].isTransparent;
+					mesh.webGLBatches       = batches;
+					
 					return true;
 				}
 			} 
@@ -586,11 +630,12 @@ THREE.WebGLBatchCompiler.geometryBuffersDictionary = {};
 THREE.WebGLBatchCompiler.textureBuffersDictionary  = {};
 THREE.WebGLBatchCompiler.batchCache = [];
 
-THREE.WebGLBatchCompiler.batchCacheObject = function( geometry, materials, webGLBatches ) {
+THREE.WebGLBatchCompiler.batchCacheObject = function( geometry, materials, webGLBatches, isTransparent ) {
 	
-	this.geometry     = geometry;
-	this.materials    = materials;
-	this.webGLBatches = webGLBatches;
+	this.geometry      = geometry;
+	this.materials     = materials;
+	this.webGLBatches  = webGLBatches;
+	this.isTransparent = isTransparent;
 }
 
 THREE.WebGLBatchCompiler.ShaderCodeInfo = function( originalMaterials, vertexShaderId, fragmentShaderId ) {
@@ -598,7 +643,7 @@ THREE.WebGLBatchCompiler.ShaderCodeInfo = function( originalMaterials, vertexSha
 	this.originalMaterials = originalMaterials;
 	this.vertexShaderId    = vertexShaderId;
 	this.fragmentShaderId  = fragmentShaderId;
-	this.blendMode         = "src";
+	this.blendMode         = THREE.WebGLRendererBlendModes.none;//one_oneMinusSrcAlpha;
 	this.wireframe         = false;
 	this.originalTextures  = { uMap0: -1, uMap1: -1, uEnvMap: -1, uNormalMap: -1 };
 	this.textureBuffers    = { uMap0: -1, uMap1: -1, uEnvMap: -1, uNormalMap: -1 };
