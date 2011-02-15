@@ -153,7 +153,7 @@ THREE.WebGLBatch.prototype.addUniformInput = function( name, type, scope, variab
 		return;
 	}
 	
-	console.log( "Warning: WebGLBatch.addUniformInput: name/type mismatch: " + name + "/" + type + " program: " + this.program.id );
+//	console.log( "Warning: WebGLBatch.addUniformInput: name/type mismatch: " + name + "/" + type + " program: " + this.program.id );
 };
 
 
@@ -171,7 +171,7 @@ THREE.WebGLBatch.prototype.addAttributeBuffer = function( name, type, buffer, si
 		return;
 	}
 	
-	console.log( "Warning: WebGLBatch.addAttributeBuffer: name/type mismatch: " + name + "/" + type + " program: " + this.program.id );
+//	console.log( "Warning: WebGLBatch.addAttributeBuffer: name/type mismatch: " + name + "/" + type + " program: " + this.program.id );
 };
 
 
@@ -200,7 +200,7 @@ THREE.WebGLBatch.prototype.addTexture = function( name, buffer ) {
 		return;
 	}
 
-	console.log( "Warning: WebGLBatch.addTexture: name/type mismatch: " + name + "/sampler program: " + this.program.id );
+//	console.log( "Warning: WebGLBatch.addTexture: name/type mismatch: " + name + "/sampler program: " + this.program.id );
 }  
 
 

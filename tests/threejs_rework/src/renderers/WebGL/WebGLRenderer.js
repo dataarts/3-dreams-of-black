@@ -13,7 +13,7 @@ THREE.WebGLRenderer = function( contextId ) {
 	
 	this.GL = this.domElement.getContext( "experimental-webgl", { antialias: true } );
 	
-    this.GL.clearColor	( 0.8, 0.8, 0.8, 1.0 );
+    this.GL.clearColor	( 1.0, 1.0, 1.0, 1.0 );
     this.GL.clearDepth	( 1.0 );
     this.GL.enable		( this.GL.DEPTH_TEST );
     this.GL.depthFunc	( this.GL.LEQUAL );
@@ -265,5 +265,18 @@ THREE.WebGLRenderer.prototype.removeFromRenderList = function( renderable ) {
 	}
 }
 
+/*
+ * Read pixel
+ */
 
+THREE.WebGLRenderer.prototype.readPixel = function( x, y ) {
+
+
+	//this.GL.framebufferRenderbuffer( this.GL.FRAMEBUFFER, this.GL.DEPTH_ATTACHMENT, this.GL.RENDERBUFFER, renderBuf );
+
+	pixel = new Uint8Array( 4 );
+	this.GL.readPixels( x, y, 1, 1, this.GL.RGBA, this.GL.UNSIGNED_BYTE, pixel );
+	
+	return pixel;
+}
 

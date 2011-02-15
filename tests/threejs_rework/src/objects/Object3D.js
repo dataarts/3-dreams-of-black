@@ -172,7 +172,7 @@ THREE.Object3D.prototype.removeChild = function() {
 	if( childIndex !== -1 )	{
 		
 		this.children.splice( childIndex, 1 );
-		this.calculateBoundRadius();
+		child.parent = undefined;
 	}
 };
 
