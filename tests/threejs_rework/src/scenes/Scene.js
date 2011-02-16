@@ -32,13 +32,14 @@ THREE.Scene.prototype.addChild = function( child ) {
 }
 
 THREE.Scene.prototype.addChildRecurse = function( object ) {
-	
+	/*
 	if( object instanceof THREE.Light ) {
 			
 		if( this.lights.indexOf( object ) === -1 )
 			this.lights.push( object );	
 	}
-	else if( !( object instanceof THREE.Camera )) {
+	else */
+    if( !( object instanceof THREE.Camera )) {
 		
 		if( this.objects.indexOf( object ) === -1 )
 			this.objects.push( object );
