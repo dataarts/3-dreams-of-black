@@ -45,7 +45,7 @@ THREE.Scene.prototype.addChildRecurse = function( object ) {
 	}
 	
 	for( var c = 0; c < object.children.length; c++ )
-		recurse( object.children[ c ] );
+		this.addChildRecurse( object.children[ c ] );
 }
 
 
@@ -77,7 +77,7 @@ THREE.Scene.prototype.removeChildRecurse = function( child ) {
 	}
 	
 	for( var c = 0; c < object.children.length; c++ )
-		recurse( object.children[ c ] );
+		this.removeChildRecurse( object.children[ c ] );
 }
 
 
