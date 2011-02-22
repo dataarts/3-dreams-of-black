@@ -11,7 +11,7 @@ var tune, time, stats, gui;
 
 var MAX_PROGRESS = 0,
 
-TIMER = -1,
+RUNNING = false,
 
 SCHEDULE = {
 "intro" : 0, 	// driving 2d
@@ -193,12 +193,14 @@ function start( pattern ) {
 	skip_to_pattern( pattern );
 
 
-	if( TIMER == -1 ) {
+	if( RUNNING == false ) {
 
 		document.addEventListener( 'keydown', onDocumentKeyDown, false );
 		document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
-		TIMER = setInterval( loop, 1000 / 120 );
+		RUNNING = true;
+		
+		loop();
 
 	}
 
@@ -250,6 +252,8 @@ function onWindowResize( event ) {
 
 function loop() {
 
+	requestAnimationFrame( loop, renderer.domElement );
+	
 	var ms = audio.currentTime * 1000,
 		s = Math.floor( ms ) / 1000,
 		m = Math.floor( s / 60 );
