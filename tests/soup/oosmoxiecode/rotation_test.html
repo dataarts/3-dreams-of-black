@@ -65,6 +65,8 @@
 
 			var r = 0;
 
+			var currentNormal;
+
 			document.addEventListener('mousemove', onDocumentMouseMove, false);
 
 			init();
@@ -119,15 +121,14 @@
 				emitterMesh.visible = false;
 
 				// cubes
-				var cube = new Cube( 4, 2, 2, 1, 1 );
-
-				cube.vertices[4].position.z = 0;
-				cube.vertices[5].position.z = 0;
-				cube.vertices[6].position.z = 0;
-				cube.vertices[7].position.z = 0;
-				cube.vertices[4].position.y = 0;
-				cube.vertices[5].position.y = 0;
-				cube.vertices[6].position.y = 0;
+				var cube = new Cube( 2, 2, 4, 1, 1 );
+				cube.vertices[2].position.x = 0;
+				cube.vertices[3].position.x = 0;
+				cube.vertices[6].position.x = 0;
+				cube.vertices[7].position.x = 0;
+				cube.vertices[2].position.y = 0;
+				cube.vertices[3].position.y = 0;
+				cube.vertices[6].position.y = -3;
 				cube.vertices[7].position.y = 0;
 
 
@@ -135,11 +136,13 @@
 
 				for (var i=0; i<20; ++i ) {
 					
-					var x = camera.position.x-20;
-					var y = camera.position.y-10;
-					var z = camera.position.z;
+					var x = camera.position.x-20*i;
+					var y = camera.position.y-10*i;
+					var z = camera.position.z-5*i;
 	
 					var c = addMesh( cube, 1,  x, FLOOR+150+y, z, 0,0,0, material );
+
+					c.autoUpdateMatrix = false;
 
 					var obj = {c:c, x:x, y:y, z:z, lastx:x, lasty:y, lastz:z, scale:1};
 					cubeArray.push(obj);
@@ -184,7 +187,7 @@
 
 			function getMaterial() {
 				var c = Math.random() * 0xffffff;
-				return [ new THREE.MeshLambertMaterial( { color:c } ) , new THREE.MeshLambertMaterial( { color:0x333333, wireframe: true } ) ];
+				return [ new THREE.MeshLambertMaterial( { color:c, opacity: 0.1 } ) , new THREE.MeshLambertMaterial( { color:0x333333, wireframe: true } ) ];
 			}
 
 			function onDocumentMouseMove(event) {
@@ -214,24 +217,21 @@
 						var toy = cubeArray[i-1].lasty;
 						var toz = cubeArray[i-1].lastz;
 					}
+			
+// The fix
+					var zvec = new THREE.Vector3(tox,toy,toz);
+					zvec.subSelf( c.position ).normalize();
 
-// - - - - - - - - - -
+					var xvec = new THREE.Vector3();
+					var yvec = currentNormal.clone();
 
-					var distX = tox-x;
-					var distY = toy-y;
-					var distZ = toz-z;
-
-					var angleX = Math.atan2(distY, distZ);
-
-					var angleY = Math.atan2(distZ, distX);
-
-					var angleZ = Math.atan2(distY, distX);
-
-					c.rotation.y = angleY*-1;
-					//c.rotation.z = angleZ;
-					//c.rotation.x = angleX;
-
-// HERE be failure ^^
+					xvec.cross(zvec, yvec);
+					yvec.cross(zvec, xvec);
+		
+					c.matrix.n11 = xvec.x; c.matrix.n12 = yvec.x; c.matrix.n13 = zvec.x; c.matrix.n14 = x;
+					c.matrix.n21 = xvec.y; c.matrix.n22 = yvec.y; c.matrix.n23 = zvec.y; c.matrix.n24 = y;
+					c.matrix.n31 = xvec.z; c.matrix.n32 = yvec.z; c.matrix.n33 = zvec.z; c.matrix.n34 = z;
+// - - - - - - - -
 
 					var divider = 5;
 
@@ -283,6 +283,14 @@
 						}
 						if (intersects[i].object != emitterMesh && check && intersects[i].distance > 20) {
 							emitterMesh.position = intersects[i].point;
+
+							var face = intersects[i].face;
+							var object = intersects[i].object;
+
+							var normal = object.rotationMatrix.multiplyVector3( face.normal.clone() );
+							
+							currentNormal = normal;
+
 							break;
 						}
 					}

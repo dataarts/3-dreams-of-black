@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - geometry - marching cubes - webgl</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+
+		<div id="container"></div> 
+
+		<script type="text/javascript" src="js/ThreeExtras.js"></script>
+		<script type="text/javascript" src="js/ShaderExtras.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+		<script type="text/javascript" src="js/gui.min.js"></script>
+		
+		<script type="text/javascript" src="js/objects/ShadowMesh.js"></script>
+		<script type="text/javascript" src="js/core/Edge.js"></script>
+
+		<script type="text/javascript">
+
+			var container, stats;
+			var camera, scene, renderer;
+			var light, pointLight;
+			var effect, resolution, numBlobs;
+			var mouseX = 0, mouseY = 0;
+
+
+			init();
+			setInterval( loop, 1000 / 60 );
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 0, 0, 300 );
+
+				scene = new THREE.Scene();				
+				
+				pointLight = new THREE.PointLight( 0xff3300 );
+				pointLight.position.x = 0;
+				pointLight.position.y = 0;
+				pointLight.position.z = 100;
+				scene.addLight( pointLight );
+
+				var cube     = new Cube( 20, 20, 20 );
+				var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
+				var mesh     = new THREE.Mesh( cube, material );			
+				var shadow   = new THREE.ShadowMesh( mesh );
+				var light    = new THREE.DirectionalLight( 0xffffff );
+				
+				light.position.z = -40;
+				light.position.y = 40;
+				light.position.x = 20;
+
+				shadow.calculate( light );
+				
+				scene.addObject( mesh );
+				
+				var mesh2 = new THREE.Mesh( shadow.geometry, material );
+				mesh2.position.x = 40;
+				scene.addObject( mesh2 );
+				
+				
+				
+				renderer = new THREE.WebGLRenderer( { clearColor: 0xffffff, clearAlpha: 1 } );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				
+				container.innerHTML = "";
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+			}
+
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = event.clientX - window.innerWidth  * 0.5;
+				mouseY = event.clientY - window.innerHeight * 0.5;
+			}
+
+			
+			function loop() {
+
+				camera.position.x = mouseX;
+				camera.position.y = mouseY;
+
+				renderer.render( scene, camera );
+				stats.update();
+			}
+
+		</script>
+
+	</body>
+</html>
