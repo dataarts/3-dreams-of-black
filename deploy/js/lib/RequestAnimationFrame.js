@@ -1,14 +1,13 @@
 /**
  * Provides requestAnimationFrame in a cross browser way.
- * @author greggman / http://greggman.com/
+ * @author paulirish / http://paulirish.com/
  */
 
 if ( !window.requestAnimationFrame ) {
 
 	window.requestAnimationFrame = ( function() {
 
-		return window.requestAnimationFrame ||
-		window.webkitRequestAnimationFrame ||
+		return window.webkitRequestAnimationFrame ||
 		window.mozRequestAnimationFrame ||
 		window.oRequestAnimationFrame ||
 		window.msRequestAnimationFrame ||
