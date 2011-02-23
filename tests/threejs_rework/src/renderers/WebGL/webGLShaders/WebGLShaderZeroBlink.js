@@ -35,8 +35,11 @@ THREE.WebGLShaderDefinitions.zeroBlinkFragment = (function() {
 		"void main( void )",
 		"{",
 			"float depth  = gl_FragCoord.z / gl_FragCoord.w;",
-		   	"float color0 = clamp( 1.0 - smoothstep( 1.0,   350.0, depth ), 0.3, 0.9 );",
-		   	"float color1 = clamp(       smoothstep( 150.0, 500.0, depth ), 0.3, 0.9 );",
+		   	"float color0 = ( 1.0 - smoothstep( 1.0,   250.0, depth )) * 0.7 + 0.3;",
+		   	"float color1 =         smoothstep( 250.0, 500.0, depth )  * 0.7 + 0.3;",
+			"if( depth > 246.0 && depth < 254.0 )",
+			"gl_FragColor = vec4( 1.0, 0.5, 0.5, 1.0 );",
+			"else",
 			"gl_FragColor = depth < 250.0 ? vec4( color0, color0, color0, 1.0 ) : vec4( color1, color1, color1, 1.0 );",
 		"}"
 	].join( "\n" );

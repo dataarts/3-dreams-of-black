@@ -38,6 +38,7 @@
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
 		<script type="text/javascript" src="src/objects/Bone.js"></script>
 		<script type="text/javascript" src="src/objects/LOD.js"></script>
+		<script type="text/javascript" src="src/lights/Light.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
 		<script type="text/javascript" src="src/cameras/Camera.js"></script>
@@ -110,7 +111,7 @@
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
 			var lastCreation = 0;
-
+			var objectRoot;
 
 			document.addEventListener( 'mousemove', onMouseMove,  false );
 			document.addEventListener( 'mousedown', onMouseDown, false );
@@ -126,30 +127,17 @@
 				document.body.appendChild( container );
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.useTarget = false;
+				camera.useTarget  = false;
+				camera.position.z = 250;
 
 				scene = new THREE.Scene();
 				scene.addChild( camera );
 
-				// create particles
+				objectRoot = new THREE.Object3D();
+				scene.addChild( objectRoot );
 
-				geometry = new THREE.Cube( 0.4, 0.4, 0.4 );
-				material = new THREE.MeshShaderMaterial( { vertex_shader: "zeroBlinkVertex", fragment_shader: "zeroBlinkFragment" } );
-/*
-				for( var i = 0; i < 500; i++ ) {
-					
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.position.x = ( Math.random() - 0.5 ) * 300; 
-					mesh.position.y = ( Math.random() - 0.5 ) * 300; 
-					mesh.position.z = ( Math.random() - 0.5 ) * 300; 
-					
-					scene.addChild( mesh );
-				}
-*/				
-				// end create
-				
 				geometry = new THREE.Cube( 15, 15, 15 );
-				//material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
+				material = new THREE.MeshShaderMaterial( { vertex_shader: "zeroBlinkVertex", fragment_shader: "zeroBlinkFragment" } );
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -163,6 +151,81 @@
 					stats.domElement.style.zIndex = 100;
 					container.appendChild( stats.domElement );
 				}
+			}
+
+
+			function loop() {
+
+				var rotationSpace  = 0.15;
+				var rotationSpaceX = rotationSpace * window.innerWidth;
+				var rotationSpaceY = rotationSpace * window.innerHeight;
+				var rotationSpeed  = 0.05;
+
+				if( mouseX < rotationSpaceX )
+					objectRoot.rotation.y += rotationSpeed * ( 1.0 - mouseX / rotationSpaceX );
+				else if( mouseX > window.innerWidth - rotationSpaceX )
+					objectRoot.rotation.y -= rotationSpeed * ( mouseX - window.innerWidth + rotationSpaceX ) / rotationSpaceX;
+				
+/*				if( mouseY < rotationSpaceY )
+					objectRoot.rotation.z += rotationSpeed * ( 1.0 - mouseY / rotationSpaceY );
+				else if( mouseY > window.innerHeight - rotationSpaceY )
+					objectRoot.rotation.z -= rotationSpeed * ( mouseY - window.innerHeight + rotationSpaceY ) / rotationSpaceY;
+
+
+/*				if( mouseX < rotationSpaceX )
+					objectRoot.localMatrix.rotateAroundAxis( new THREE.Vector3( 0, 1, 0 ), +rotationSpeed * ( 1.0 - mouseX / rotationSpaceX ));
+				else if( mouseX > window.innerWidth - rotationSpaceX )
+					objectRoot.localMatrix.rotateAroundAxis( new THREE.Vector3( 0, 1, 0 ), -rotationSpeed * ( mouseX - window.innerWidth + rotationSpaceX ) / rotationSpaceX );
+
+				if( mouseY < rotationSpaceY )
+					objectRoot.localMatrix.rotateAroundAxis( new THREE.Vector3( 1, 0, 0 ), +rotationSpeed * ( 1.0 - mouseY / rotationSpaceY ));
+				else if( mouseY > window.innerHeight - rotationSpaceY )
+					objectRoot.localMatrix.rotateAroundAxis( new THREE.Vector3( 1, 0, 0 ), -rotationSpeed * ( mouseY - window.innerHeight + rotationSpaceY ) / rotationSpaceY );
+
+				objectRoot.autoUpdateMatrix    = false;	
+				objectRoot.matrixNeedsToUpdate = true;
+				*/
+				
+				
+				// create
+				
+				if( mouseDown && lastCreation + 60 < new Date().getTime()) {
+					
+					lastCreation = new Date().getTime();
+					
+					// position
+
+					var dir = new THREE.Vector3( camera.globalMatrix.n13, 0, camera.globalMatrix.n33 );
+					dir.normalize();
+					
+					var zOffset = camera.position.z;
+					var xOffset = ( 1 * mouseX / window.innerWidth  - 0.5 ) * zOffset;
+					var yOffset = ( 1 * mouseY / window.innerHeight - 0.5 ) * zOffset;
+					
+					
+					// create
+					
+					var mesh = new THREE.Mesh( geometry, material );
+					
+					mesh.position.x = camera.position.x - dir.x * zOffset + dir.z * xOffset * 2;
+					mesh.position.y = camera.position.y - yOffset;
+					mesh.position.z = camera.position.z - dir.z * zOffset - dir.x * xOffset * 2;
+					mesh.rotation.x = Math.random() * Math.PI * 2;
+					mesh.rotation.y = Math.random() * Math.PI * 2;
+					mesh.rotation.z = Math.random() * Math.PI * 2;
+					mesh.update();
+					mesh.autoUpdateMatrix = false;
+					
+					mesh.localMatrix = THREE.Matrix4.makeInvert( objectRoot.globalMatrix ).multiplySelf( mesh.globalMatrix );
+					
+					
+					objectRoot.addChild( mesh );
+				}
+
+				
+				renderer.render( scene, camera );
+				
+				if ( statsEnabled ) stats.update();
 			}
 
 
@@ -182,65 +245,6 @@
 				mouseDown = false;
 			}
 
-			function loop() {
-
-				time += 0.01;
-				
-				var distance = 250;
-
-				camera.position.y = 60;
-				camera.position.x = Math.sin( time ) * distance;
-				camera.position.z = Math.cos( time ) * distance;
-				camera.rotation.y = time;
-				
-				// create
-				
-				renderer.render( scene, camera );
-				
-				if( mouseDown && lastCreation + 60 < new Date().getTime()) {
-					
-					lastCreation = new Date().getTime();
-					
-					var zValue = renderer.readPixel( mouseX, window.innerHeight - mouseY );					
-				//	var depth  = camera.perspectiveMatrix.n34 / ( zValue * -2.0 + 1.0 - camera.perspectiveMatrix.n33 ) * -1;
-					
-				//	console.log( zValue );
-
-
-					// position
-					
-					var dir = new THREE.Vector3( camera.globalMatrix.n13, 0, camera.globalMatrix.n33 );
-					dir.normalize();
-					
-					var zOffset = distance;
-					var xOffset = ( 1 * mouseX / window.innerWidth  - 0.5 ) * zOffset;
-					var yOffset = ( 1 * mouseY / window.innerHeight - 0.5 ) * zOffset;
-					
-					
-					// create
-					
-					var mesh = new THREE.Mesh( geometry, material );
-					
-					mesh.position.x = camera.position.x - dir.x * zOffset + dir.z * xOffset * 2;
-					mesh.position.y = camera.position.y - yOffset;
-					mesh.position.z = camera.position.z - dir.z * zOffset - dir.x * xOffset * 2;
-					mesh.rotation.x = Math.random() * Math.PI * 2;
-					mesh.rotation.y = Math.random() * Math.PI * 2;
-					mesh.rotation.z = Math.random() * Math.PI * 2;
-					mesh.update();
-					mesh.autoUpdateMatrix = false;
-					
-					scene.addChild( mesh );
-				}
-
-
-
-
-
-
-
-				if ( statsEnabled ) stats.update();
-			}
 
 
 			function log( text ) {
