@@ -12,6 +12,9 @@ THREE.ShadowMesh = function( mesh ) {
 	
 	this.originalGeometry = mesh.geometry;
 	this.geometry         = undefined;
+	
+	this.indices = [ "a", "b", "c", "d" ];
+
 }
 
 THREE.ShadowMesh.prototype             = new THREE.Object3D();
@@ -23,10 +26,10 @@ THREE.ShadowMesh.prototype.supr        = THREE.Object3D.prototype;
  * Calculate
  */
 
-THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
+THREE.ShadowMesh.prototype.calculate = function( light, extrusionLength ) {
 	
 	
-	extrutionLength = extrutionLength || 100;
+	extrusionLength = extrusionLength || 100;
 	
 	
 	// copy original geometry?
@@ -34,10 +37,11 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 	if( this.geometry === undefined ) {
 		
 		this.copyGeometry( this.originalGeometry );
-	}
-	else {
+
+	} else {
 		
 		// todo: clear all extruded faces from geometry and reset back-cap position
+
 	}
 
 	
@@ -62,7 +66,7 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 				
 				faceB = faces[ fb ];
 				
-				if( result = this.facesShareEdge( vertices, faceA, faceB )) {
+				if( result = this.facesShareEdge( vertices, faceA, faceB ) ) {
 				
 					edge = new THREE.Edge( result );
 				
@@ -77,6 +81,7 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 					
 					faceA.edges.push( edge );
 					faceB.edges.push( edge );
+
 				}
 			}
 		}
@@ -95,28 +100,32 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 		edges[ e ].markFacesInShadow( lightDirection );
 	
 	
-	lightDirection.multiplyScalar( extrutionLength );
+	lightDirection.multiplyScalar( extrusionLength );
 
-	for( var f = 0; f < faces.length; f++ ) {
+	var face, f, n, i, 
+		fl = faces.length;
+	
+	for( f = 0; f < fl; f++ ) {
 		
-		var face = faces[ f ];
+		face = faces[ f ];
 		
 		if( face.isInShadow ) {
 			
-			var indices;
-			
 			if( face instanceof THREE.Face4 )
-				indices = [ "a", "b", "c", "d" ];
+				n = 4;
 			else
-				indices = [ "a", "b", "c" ];
+				n = 3;
 			
-			for( var i = 0; i < indices.length; i++ ) {
+			for( i = 0; i < n; i++ ) {
 				
 				// todo: add rotation of object
 				
-				vertices[ face[ indices[ i ]]].position.addSelf( lightDirection );
+				vertices[ face[ this.indices[ i ] ] ].position.addSelf( lightDirection );
+
 			}
+
 		}
+
 	}
 	
 	
@@ -127,47 +136,52 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 		var edge = edges[ e ];
 		
 		if( edge.belongsToSilhouette )
-			faces.push( edge.extrutionFace );
+			faces.push( edge.extrusionFace );
+
 	}
 	
 	this.geometry.computeFaceNormals();
 	this.geometry.sortFacesByMaterial();
+
 }
 
 
 /*
- * Faces Share Edge?
+ * Faces share edge?
  */
 
 THREE.ShadowMesh.prototype.facesShareEdge = function( vertices, faceA, faceB ) {
 
-	var indicesA;
-	var indicesB;
-	var indexA;
-	var indexB;
-	var savedVertexA;
-	var savedVertexB;
-	var savedIndexA;
-	var savedIndexB;
-	var indexLetters;
-	var numMatches = 0;
+	var indicesA,
+		indicesB,
+		indexA,
+		indexB,
+		vertexA,
+		vertexB,
+		savedVertexA,
+		savedVertexB,
+		savedIndexA,
+		savedIndexB,
+		indexLetters,
+		a, b,
+		numMatches = 0;
 	
-	if( faceA instanceof THREE.Face4 ) indicesA = [ "a", "b", "c", "d" ];
-	else                               indicesA = [ "a", "b", "c" ];
+	if( faceA instanceof THREE.Face4 ) indicesA = 4;
+	else                               indicesA = 3;
 	
-	if( faceB instanceof THREE.Face4 ) indicesB = [ "a", "b", "c", "d" ];
-	else                               indicesB = [ "a", "b", "c" ];
+	if( faceB instanceof THREE.Face4 ) indicesB = 4;
+	else                               indicesB = 3;
 	
 	
-	for( var a = 0; a < indicesA.length; a++ ) {
+	for( a = 0; a < indicesA; a++ ) {
 		
-		var indexA  = faceA[ indicesA[ a ]];
-		var vertexA = vertices[ indexA ]; 
+		indexA  = faceA[ this.indices[ a ] ];
+		vertexA = vertices[ indexA ]; 
 	
-		for( var b = 0; b < indicesB.length; b++ ) {
+		for( b = 0; b < indicesB; b++ ) {
 
-			var indexB  = faceB[ indicesB[ b ]];
-			var vertexB = vertices[ indexB ];
+			indexB  = faceB[ this.indices[ b ] ];
+			vertexB = vertices[ indexB ];
 			
 			if( Math.abs( vertexA.position.x - vertexB.position.x ) < 0.0001 &&
 				Math.abs( vertexA.position.y - vertexB.position.y ) < 0.0001 &&
@@ -181,12 +195,13 @@ THREE.ShadowMesh.prototype.facesShareEdge = function( vertices, faceA, faceB ) {
  					savedVertexB = vertexB;
 					savedIndexA  = indexA;
 					savedIndexB  = indexB;
-					indexLetters = indicesA[ a ];
+					indexLetters = this.indices[ a ];
+
 				}
 				
 				if( numMatches === 2 ) {
 
-					indexLetters += indicesA[ a ];
+					indexLetters += this.indices[ a ];
 					
 					if( indexLetters === "ad" || indexLetters === "ac" ) {
 						
@@ -196,9 +211,10 @@ THREE.ShadowMesh.prototype.facesShareEdge = function( vertices, faceA, faceB ) {
 							vertices	: [ savedVertexA, vertexA, vertexB, savedVertexB ],
 							indices		: [ savedIndexA,  indexA,  indexB,  savedIndexB  ],
 							extrudable	: true
+
 						};
-					}
-					else {
+
+					} else {
 						
 						return {
 							
@@ -206,7 +222,9 @@ THREE.ShadowMesh.prototype.facesShareEdge = function( vertices, faceA, faceB ) {
 							vertices	: [ savedVertexA, savedVertexB, vertexB, vertexA  ],
 							indices		: [ savedIndexA,  savedIndexB,  indexB,  indexA   ],
 							extrudable	: true
+
 						};
+
 					}
 				}
 			}
@@ -214,6 +232,7 @@ THREE.ShadowMesh.prototype.facesShareEdge = function( vertices, faceA, faceB ) {
 	}
 
 	return undefined;
+
 }
 
 
@@ -224,33 +243,44 @@ THREE.ShadowMesh.prototype.facesShareEdge = function( vertices, faceA, faceB ) {
 
 THREE.ShadowMesh.prototype.copyGeometry = function( originalGeometry ) {
 	
-	this.geometry         = new THREE.Geometry();
+	this.geometry = new THREE.Geometry();
 	this.originalGeometry = originalGeometry;
-	var vertices          = originalGeometry.vertices;
+	
+	var vertices = originalGeometry.vertices,
+		originalVertices = originalGeometry.vertices,
+		fl = originalGeometry.faces.length,
+		faces = this.geometry.faces,
+		vertices = this.geometry.vertices,
+		face, i, f, n, vertex, numVertices;
 
-	for( var f = 0; f < originalGeometry.faces.length; f++ ) {
+	for( f = 0; f < fl; f++ ) {
 		
-		var face        = originalGeometry.faces[ f ];
-		var numVertices = this.geometry.vertices.length;
-		var indices;
+		face = originalGeometry.faces[ f ];
 
-		if( face instanceof THREE.Face4 ) {
+		numVertices = vertices.length;
+
+		if ( face instanceof THREE.Face4 ) {
 			
-			indices = [ "a", "b", "c", "d" ];
-			this.geometry.faces.push( new THREE.Face4( numVertices, numVertices+1, numVertices+2, numVertices+3 ));
-		}
-		else {
+			n = 4;
+			faces.push( new THREE.Face4( numVertices, numVertices + 1, numVertices + 2, numVertices + 3 ) );
+		
+		} else {
 			
-          	indices = [ "a", "b", "c" ];
-			this.geometry.faces.push( new THREE.Face3( numVertices, numVertices+1, numVertices+2 ));
+          	n = 3;
+			faces.push( new THREE.Face3( numVertices, numVertices + 1, numVertices + 2 ) );
+
 		}
 
+		for( i = 0; i < n; i++ ) {
+			
+			vertex = originalVertices[ face[ this.indices[ i ] ] ];
+			vertices.push( new THREE.Vertex( vertex.position.clone(), vertex.normal.clone() ) );
 
-		for( var i = 0; i < indices.length; i++ )
-			this.geometry.vertices.push( new THREE.Vertex( vertices[ face[ indices[ i ]]].position.clone(),
-														   vertices[ face[ indices[ i ]]].normal  .clone()));
+		}
+
 	}
 
 	this.geometry.computeFaceNormals();
+
 }
 

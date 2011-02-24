@@ -10,8 +10,9 @@ THREE.Edge = function( parameters ) {
 	
 	if( parameters.extrudable ) {
 		
-		this.extrutionFace       = new THREE.Face4( parameters.indices[ 0 ], parameters.indices[ 1 ], parameters.indices[ 2 ], parameters.indices[ 3 ] );
+		this.extrusionFace       = new THREE.Face4( parameters.indices[ 0 ], parameters.indices[ 1 ], parameters.indices[ 2 ], parameters.indices[ 3 ] );
 		this.belongsToSilhouette = false;
+
 	}
 }
 
@@ -34,5 +35,6 @@ THREE.Edge.prototype.markFacesInShadow = function( lightDirection ) {
 		this.belongsToSilhouette = true;
 	else
 		this.belongsToSilhouette = false;
+
 }
 
