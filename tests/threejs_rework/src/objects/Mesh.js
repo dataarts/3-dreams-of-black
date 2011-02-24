@@ -8,7 +8,18 @@ THREE.Mesh = function( geometry, materials ) {
 	
 	this.geometry     = geometry;
 	this.materials    = materials && materials.length ? materials : [ materials ];
-	this.normalMatrix = new THREE.Matrix4();
+	this.normalMatrix = THREE.Matrix4.makeInvert3x3( this.globalMatrix ).transpose();
+	
+	
+	// calc bound radius
+	
+	if( this.geometry ) {
+		
+		if( !this.geometry.boundingSphere )
+			 this.geometry.computeBoundingSphere();
+	
+		this.boundRadius = geometry.boundingSphere.radius;
+	}
 }
 
 THREE.Mesh.prototype             = new THREE.Object3D();
@@ -20,33 +31,54 @@ THREE.Mesh.prototype.supr        = THREE.Object3D.prototype;
  * Update
  */
 
-THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+THREE.Mesh.prototype.update = function( parentGlobalMatrix, forceUpdate, camera, renderer ) {
 	
-	// visible and auto update?
+	// visible?
 	
-	if( this.visible && this.autoUpdateMatrix )
+	if( this.visible )
 	{
-		forceUpdate |= this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera )
+		// update local
 		
-		if( forceUpdate ) {
+		if( this.autoUpdateMatrix )
+			forceUpdate |= this.updateMatrix();
+
+
+		// update global
+
+		if( forceUpdate || this.matrixNeedsToUpdate ) {
 			
-			// update normal matrix
+			if( parentGlobalMatrix )
+				this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+			else
+				this.globalMatrix.set( this.localMatrix );
+			
+			 this.matrixNeedsToUpdate = false;
+			forceUpdate               = true;
+			
+			
+			// update normal
+
+			this.normalMatrix = THREE.Matrix4.makeInvert3x3( this.globalMatrix ).transpose();
 		}
 
 
 		// update children
 	
 		for( var i = 0; i < this.children.length; i++ )
-			this.children[ i ].update( this.globalMatrix, forceUpdate, scene, camera );
+			this.children[ i ].update( this.globalMatrix, forceUpdate, camera, renderer );
 
 
-		// check camera frustum and add to scene capture list
+		// check camera frustum and add to render list
 		
-		if( scene && camera && camera.frustum.contains( this )) {
+		if( renderer && camera ) {
 			
-			this.screenZ = camera.frustum.screenZ;
-			scene.capture( this );
+			if( camera.frustumContains( this ))
+				renderer.addToRenderList( this );
+			else
+				renderer.removeFromRenderList( this );
 		}
 	}
+	else renderer.removeFromRenderList( this );
 }
+
 

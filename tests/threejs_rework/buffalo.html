@@ -13,13 +13,6 @@
 		</style>
 
 
-		<!-- Signals -->
-
-		<script type="text/javascript" src="js/signals/signals.js"></script>
-		<script type="text/javascript" src="js/signals/Signal.js"></script>
-		<script type="text/javascript" src="js/signals/SignalBinding.js"></script>
-
-
 		<!-- THREE -->
 
 		<script type="text/javascript" src="src/Three.js"></script>
@@ -43,11 +36,11 @@
 		<script type="text/javascript" src="src/objects/Object3D.js"></script>
 		<script type="text/javascript" src="src/objects/Mesh.js"></script>
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
+		<script type="text/javascript" src="src/objects/Bone.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
-
 		<script type="text/javascript" src="src/cameras/Camera.js"></script>
-		<script type="text/javascript" src="src/cameras/Frustum.js"></script>
+		<script type="text/javascript" src="src/lights/Light.js"></script>
 
 		<script type="text/javascript" src="src/extras/primitives/Cube.js"></script>
 		<script type="text/javascript" src="src/extras/primitives/Cylinder.js"></script>
@@ -78,20 +71,24 @@
 		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
 
 		<script type="text/javascript" src="src/renderers/WebGL/WebGLRenderer.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/WebGLRendererScene.js"></script>
-
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLBlendModes.js"></script>
+		
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatch.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchProgram.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchAttributes.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchUniforms.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompiler.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompilerMaterials.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLShaderDefinitions.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Skin.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Texture.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompiler.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompilerMaterials.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderDefinitions.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderSkin.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderTexture.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderLambert.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderNormal.js"></script>
 	
 		<script type="text/javascript" src="src/animation/Animation.js"></script>
+		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
 
 		<script type="text/javascript" src="js/Stats.js"></script>
 	
@@ -101,6 +98,7 @@
 
 			var Experience = function()
 			{
+				var timer;
 				var renderer;
 				var scene;
 				var mesh, mesh2;
@@ -111,63 +109,103 @@
 				var rotationMatrix;
 				var time = 0;
 				var container;
-				var animation;
+				var animations;
 				var skins;
+				var mouseX;
+				var mouseY;
+				var stats;
+				var windowHalfX = window.innerWidth / 2;
+				var windowHalfY = window.innerHeight / 2;
 				
 				//--- Init ---
 				
 				var startAnimation = function() {
 					
-//					animation.play();
+					for( var i = 0; i < animations.length; i++ )
+						animations[ i ].play();
 				}
 				
 				
+				var getTime =function() {
+					
+					var current = new Date().getTime();
+					var delta = current - timer;
+					timer = current;
+					
+					return delta;
+				}
+				
+				var onDocumentMouseMove = function(event) {
+
+					mouseX = ( event.clientX - windowHalfX ) * 5;
+					mouseY = ( event.clientY - windowHalfY ) * 2;
+				}
+
 				
 				var Init = function( buffalo )
 				{
+					console.log( "Loading took: " + getTime() );
+					
 					document.addEventListener( 'click', startAnimation, false );
+					document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 					
 					camera = new THREE.Camera();
-					camera.position.z = 805;
-					camera.position.y = 200;
-					camera.rotation.x = -15;
+					camera.useTarget = false;
+					camera.position.z = 800;//1205;
+					camera.position.y = 100;
+					camera.rotation.x = -15 * Math.PI / 180;
 
 					scene = new THREE.Scene();
 					scene.addChild( camera );
 
 					skins = [];
-					var grid = 6;
-					var sep  = 150;
+					animations = [];
 					
+					var grid = 5;
+					var sep  = 180;
+					
+					var geometry = new THREE.Cube( 50, 50, 50 );
+					var material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
+
+
 					for( var x = 0; x < grid; x++ ) {
 						
 						for( var z = 0; z < grid; z++ ) {
 							
 							var skin = new THREE.Skin( buffalo, buffalo.materials );
-							
+							           
 							skin.position.x = -(grid-1) * sep * 0.5 + x * sep; 
 							skin.position.z = -(grid-1) * sep * 0.5 + z * sep; 
+							skin.position.y = -skin.boundRadius * 0.5;
+							skin.rotation.y = Math.random() * 360 * Math.PI / 180;
 
 							scene.addChild( skin );
 							skins.push( skin );
+							
+
+/*							var mesh = new THREE.Mesh( geometry, material );
+							
+							mesh.position.x = 0;
+							mesh.position.y = skin.position.y;
+							mesh.position.z = skin.position.z;
+							
+							skin.bones[ 5 ].addChild( mesh );*/
+
+							animations.push( new THREE.Animation( skin, buffalo.animation ));
 						}
 					}
 
-/*					skin      = new THREE.Skin( buffalo, buffalo.materials );
-					animation = new THREE.Animation( skin, buffalo.animation );
-					
-					scene.addChild( skin );
-*/
 
 					// renderer
 
 					renderer = new THREE.WebGLRenderer();
 					renderer.setSize( window.innerWidth, window.innerHeight );
 
+
 					var container = document.createElement( "div" );
 					document.body.appendChild( container );
 					container.appendChild( renderer.domElement );
-					
+			
 
 					// stats
 					
@@ -180,11 +218,15 @@
 
 					// start rendering
 
+					console.log( "Init took: " + getTime() );
+					
 				    setInterval( Update, 1000/60 );
 				}
 
 
 				var load = function() {
+
+					timer = new Date().getTime();
 
 					var loader = new THREE.Loader();
 					loader.loadAscii( { model: "assets/scene/models/spine1.js", callback: Init } );
@@ -195,16 +237,15 @@
 				
 				var Update = function()
 				{
-				//	animation.update();			
-				//	skin.rotation.y++;
-					
-					for( var i = 0; i < skins.length; i++ ) {
-						skins[ i ].rotation.y++;
-					}
-					
+				//	camera.position.x += (  mouseX - camera.position.x ) * .05;
+				//	camera.position.y += ( -mouseY - camera.position.y ) * .05;
+
+					for( var s = 0; s < skins.length; s++ ) 
+						skins[ s ].rotation.y += 0.01;
+
 					renderer.render( scene, camera );
 					stats.update();
-					
+			
 					time += 0.01;
 				}
 				

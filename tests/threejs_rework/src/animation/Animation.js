@@ -2,9 +2,9 @@
  * Animation System
  */
 
-THREE.Animation = function( skin, data ) {
+THREE.Animation = function( root, data ) {
 	
-	this.skin      = skin;
+	this.root      = root;
 	this.data      = data;
 	this.hierarchy = [];
 
@@ -13,42 +13,24 @@ THREE.Animation = function( skin, data ) {
 	this.loop      = true;
 
 
+	// need to initialize data?
+
+	if( !this.data.initialized )
+		THREE.AnimationHandler.initData( this.data );
+
+
 	// setup hierarchy
 
-	for( var b = 0; b < this.skin.bones.length; b++ ) {
+	if( root instanceof THREE.Skin ) {
 		
-		this.skin.bones[ b ].useQuaternion = true;
-		this.hierarchy.push( this.skin.bones[ b ] );
+		for( var b = 0; b < this.root.bones.length; b++ )
+			this.hierarchy.push( this.root.bones[ b ] );
+	}
+	else {
+		
+		// parse hierarchy and match against animation (somehow)
 	}
 
-
-	// fix data
-	
-	for( var h = 0; h < this.data.hierarchy.length; h++ ) {
-		
-		for( var k = 0; k < this.data.hierarchy[ h ].keys.length; k++ ) {
-		
-			// remove minus times
-			
-			if( this.data.hierarchy[ h ].keys[ k ].time < 0 )
-				this.data.hierarchy[ h ].keys[ k ].time = 0;
-		
-		
-			// set index
-			
-			this.data.hierarchy[ h ].keys[ k ].index = k;
-	
-		
-			// create quaternions
-		
-			if( this.data.hierarchy[ h ].keys[ k ].rot !== undefined &&
-			  !(this.data.hierarchy[ h ].keys[ k ].rot instanceof THREE.Quaternion )) {
-				
-				var quat = this.data.hierarchy[ h ].keys[ k ].rot;
-				this.data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion( quat[0], quat[1], quat[2], quat[3] ); 
-			}	
-		}
-	}
 }
 
 
@@ -56,33 +38,223 @@ THREE.Animation = function( skin, data ) {
  * Play
  */
 
-THREE.Animation.prototype.play = function( loop, useJITCompiledData ) {
+THREE.Animation.prototype.play = function( loop ) {
 
-	this.isPlaying = true;
-	this.startTime = new Date().getTime() * 0.001;
-	
-	
-	// reset key cache
-	
-	for( var h = 0; h < this.hierarchy.length; h++ ) {
+	if( !this.isPlaying ) {
 		
-		if( this.hierarchy[ h ].prevKey === undefined ) {
+		this.isPlaying = true;
+		this.startTime = new Date().getTime() * 0.001;
+
+		
+		// reset key cache
+		
+		for( var h = 0; h < this.hierarchy.length; h++ ) {
 			
-			this.hierarchy[ h ].prevKey = { pos: 0, rot: 0, scl: 0 };
-			this.hierarchy[ h ].nextKey = { pos: 0, rot: 0, scl: 0 };
-		}
+			this.hierarchy[ h ].useQuaternion    = true;
+			this.hierarchy[ h ].autoUpdateMatrix = true;
+			
+			if( this.hierarchy[ h ].prevKey === undefined ) {
+				
+				this.hierarchy[ h ].prevKey = { pos: 0, rot: 0, scl: 0 };
+				this.hierarchy[ h ].nextKey = { pos: 0, rot: 0, scl: 0 };
+			}
+			
+			this.hierarchy[ h ].prevKey.pos = this.data.hierarchy[ h ].keys[ 0 ];
+			this.hierarchy[ h ].prevKey.rot = this.data.hierarchy[ h ].keys[ 0 ];
+			this.hierarchy[ h ].prevKey.scl = this.data.hierarchy[ h ].keys[ 0 ];
+			
+			this.hierarchy[ h ].nextKey.pos = this.getNextKeyWith( "pos", h, 1 );
+			this.hierarchy[ h ].nextKey.rot = this.getNextKeyWith( "rot", h, 1 );
+			this.hierarchy[ h ].nextKey.scl = this.getNextKeyWith( "scl", h, 1 );
+		}	
 		
-		this.hierarchy[ h ].prevKey.pos = this.data.hierarchy[ h ].keys[ 0 ];
-		this.hierarchy[ h ].prevKey.rot = this.data.hierarchy[ h ].keys[ 0 ];
-		this.hierarchy[ h ].prevKey.scl = this.data.hierarchy[ h ].keys[ 0 ];
+		this.update();
 		
-		this.hierarchy[ h ].nextKey.pos = this.getNextKeyWith( "pos", h, 1 );
-		this.hierarchy[ h ].nextKey.rot = this.getNextKeyWith( "rot", h, 1 );
-		this.hierarchy[ h ].nextKey.scl = this.getNextKeyWith( "scl", h, 1 );
-	}	
-	
-	this.update();
+		THREE.AnimationHandler.add( this );
+	}
 }
+
+
+/*
+ * Pause
+ */
+
+THREE.Animation.prototype.pause = function() {
+	
+	THREE.AnimationHandler.remove( this );
+	
+	// todo
+}
+
+
+/*
+ * Stop
+ */
+
+THREE.Animation.prototype.stop = function() {
+	
+	this.isPlaying = false;
+	THREE.AnimationHandler.remove( this );
+}
+
+
+/*
+ * Update
+ */
+
+THREE.Animation.prototype.update = function( time ) {
+
+	// todo: add input time
+
+	// early out
+	
+	if( !this.isPlaying ) return;
+
+
+	// vars
+	
+	var types = [ "pos", "rot", "scl" ];
+	var scale;
+	var relative;
+	var vector;
+	var prevXYZ, nextXYZ;
+	var object;
+	var frame;
+	var JIThierarchy = this.data.JIT.hierarchy;
+	
+	
+	// update
+	
+	var currentTime         = new Date().getTime() * 0.001 - this.startTime;
+	var unloopedCurrentTime = currentTime;
+
+
+	// looped?
+	
+	if( currentTime > this.data.length ) {
+		
+		while( currentTime > this.data.length )
+			currentTime -= this.data.length;
+		
+		this.startTime = new Date().getTime() * 0.001 - currentTime;
+		currentTime    = new Date().getTime() * 0.001 - this.startTime;
+	}
+	
+	frame = Math.min( parseInt( currentTime * this.data.fps ), parseInt( this.data.length * this.data.fps ));
+	
+	
+	// update
+	
+	for( var h = 0, hl = this.hierarchy.length; h < hl; h++ )
+	{
+		object = this.hierarchy[ h ];
+	
+		if( JIThierarchy[ h ][ frame ] !== undefined ) {
+
+			object.skinMatrix           = JIThierarchy[ h ][ frame ];
+			object.autoUpdateMatrix     = false;
+			object.matrixNeedsToUpdate  = false;
+			this.root.boneMatrices[ h ] = object.skinMatrix.flatten32;
+		}
+		else {
+		
+			for( var t = 0; t < 3; t++ ) {
+				
+				// get keys
+				
+				var type    = types[ t ];
+				var prevKey = object.prevKey[ type ];
+				var nextKey = object.nextKey[ type ];
+				
+				// switch keys?
+							
+				if( nextKey.time < unloopedCurrentTime ) {
+		
+					// did we loop?
+		
+					if( currentTime < unloopedCurrentTime ) {
+						
+						if( this.loop ) {
+							
+							prevKey = this.data.hierarchy[ h ].keys[ 0 ];
+							nextKey = this.getNextKeyWith( type, h, 1 );
+						}
+						else {
+							
+							this.stop();
+							return;
+						}
+					}
+					else {
+						
+						do {
+							
+							prevKey = nextKey;
+							nextKey = this.getNextKeyWith( type, h, nextKey.index + 1 );
+						}
+						while( nextKey.time < currentTime )
+					}
+		
+					object.prevKey[ type ] = prevKey;
+					object.nextKey[ type ] = nextKey;
+				}
+				
+				
+				// interpolate rot (quaternion slerp)
+				
+				object.autoUpdateMatrix    = true;
+				object.matrixNeedsToUpdate = true;
+				
+				scale   = ( currentTime - prevKey.time ) / ( nextKey.time - prevKey.time );
+				prevXYZ = prevKey[ type ];
+				nextXYZ = nextKey[ type ];
+		
+				if( type === "rot" ) {
+		
+					if( scale < 0 || scale > 1 )
+						console.log( "Scale out of bounds:" + scale ); 
+		
+					THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.quaternion, scale );
+				}
+				
+				// lerp pos/scl 
+							
+				else {
+					
+					vector   = type === "pos" ? object.position : object.scale; 
+					vector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
+					vector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
+					vector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
+				}
+			}		
+		}
+	}
+	
+	
+	// update JIT?
+	
+	if( JIThierarchy[ 0 ][ frame ] === undefined ) {
+
+		this.hierarchy[ 0 ].update( undefined, true );
+	
+		for( var h = 0; h < this.hierarchy.length; h++ ) 
+			JIThierarchy[ h ][ frame ] = this.hierarchy[ h ].skinMatrix.clone();
+	}
+}
+
+
+
+/*
+ * Update Object
+ */	
+
+THREE.Animation.prototype.updateObject = function( h, currentTime, unloopedCurrentTime ) {
+	
+
+}
+		
+		
+
 
 THREE.Animation.prototype.getNextKeyWith = function( type, h, key ) {
 	
@@ -97,118 +269,16 @@ THREE.Animation.prototype.getNextKeyWith = function( type, h, key ) {
 	return this.data.hierarchy[ h ].keys[ 0 ];
 }
 
-THREE.Animation.prototype.pause = function() {
-	
-}
-
-THREE.Animation.prototype.stop = function() {
-	
-}
-
-THREE.Animation.prototype.update = function() {
-
-	// early out
-	
-	if( !this.isPlaying ) return;
-	
-	
-	// update
-	
-	var currentTime         = new Date().getTime() * 0.001 - this.startTime;
-	var unloopedCurrentTime = currentTime;
-	var types               = [ "pos", "rot", "scl" ];
-	var scale;
-	var relative;
-	var object;
-	var vector;
-	var prevXYZ, nextXYZ;
 
 
-	// looped?
-	
-	if( currentTime > this.data.length ) {
-		
-		while( currentTime > this.data.length )
-			currentTime -= this.data.length;
-		
-		this.startTime = new Date().getTime() * 0.001 - currentTime;
-		currentTime    = new Date().getTime() * 0.001 - this.startTime;
-	}
 
-	
-	for( var h = 0, hl = this.hierarchy.length; h < hl; h++ ) {
-		
-		object = this.hierarchy[ h ];
-		
-		for( var t = 0; t < 3; t++ ) {
-			
-			// get keys
-			
-			var type    = types[ t ];
-			var prevKey = object.prevKey[ type ];
-			var nextKey = object.nextKey[ type ];
-			
-			// switch keys?
-						
-			if( nextKey.time < unloopedCurrentTime ) {
 
-				// did we loop?
 
-				if( currentTime < unloopedCurrentTime ) {
-					
-					if( this.loop ) {
-						
-						prevKey = this.data.hierarchy[ h ].keys[ 0 ];
-						nextKey = this.getNextKeyWith( type, h, 1 );
-					}
-					else {
-						
-						this.stop();
-						return;
-					}
-				}
-				else {
-					
-					do {
-						
-						prevKey = nextKey;
-						nextKey = this.getNextKeyWith( type, h, nextKey.index + 1 );
-					}
-					while( nextKey.time < currentTime )
-				}
 
-				object.prevKey[ type ] = prevKey;
-				object.nextKey[ type ] = nextKey;
-			}
-			
-			
-			// interpolate rot (quaternion slerp)
-			
-			scale   = ( currentTime - prevKey.time ) / ( nextKey.time - prevKey.time );
-			prevXYZ = prevKey[ type ];
-			nextXYZ = nextKey[ type ];
 
-			if( type === "rot" ) {
 
-				if( scale < 0 || scale > 1 ) {
-					
-					console.log( "Scale out of bounds:" + scale ); 
-				}
 
-				THREE.Quaternion.slerp( prevXYZ, nextXYZ, object.quaternion, scale );
-			}
-			
-			// lerp pos/scl 
-						
-			else {
-				
-				vector   = type === "pos" ? object.position : object.scale; 
-				vector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
-				vector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
-				vector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
-			}
-		}
-	}
-}
+
+
 
 

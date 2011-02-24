@@ -13,15 +13,17 @@ THREE.Matrix3 = function () {
 
 	if( typeof Float32Array !== 'undefined' ) {
 
-		var that = this;		
+		var that = this;	
 		this.float32Array = new Float32Array( 9 ),
+		
 		this.flatten32 = function() {
 			
 			var flat = that.float32Array;
+			var m    = that.m; 
 			
-			flat[ 0  ] = 1; flat[ 1  ] = 0; flat[ 2 ] = 0;
-			flat[ 3  ] = 0; flat[ 4  ] = 1; flat[ 5 ] = 0;
-			flat[ 6  ] = 0; flat[ 7  ] = 0; flat[ 8 ] = 1;
+			flat[ 0  ] = m[ 0 ]; flat[ 1 ] = m[ 1 ]; flat[ 2 ] = m[ 2 ];
+			flat[ 3  ] = m[ 3 ]; flat[ 4 ] = m[ 4 ]; flat[ 5 ] = m[ 5 ];
+			flat[ 6  ] = m[ 6 ]; flat[ 7 ] = m[ 7 ]; flat[ 8 ] = m[ 8 ];
 	
 			return flat;
 		}

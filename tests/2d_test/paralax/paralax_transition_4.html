@@ -1,0 +1,325 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>paralax test</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#2c3333;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+		<!-- test -->
+
+		<script type="text/javascript" src="build/ThreeExtras.js"></script>
+		<script type="text/javascript" src="Tween.js"></script>
+		<script type="text/javascript" src="greycity.js"></script>
+		<script type="text/javascript" src="WebGLRenderer.js"></script>
+
+		<script type="text/javascript" src="Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = 0;
+
+			var container;
+			var stats;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+			
+			var directionalLight, pointLight;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var render_gl = 1;
+			var has_gl = 0;
+
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var mouseFollow = {x:0, y:0, extray:15};
+
+			var leftMouse = false;
+
+			var cubeRef;
+			var cubeRefMesh;
+
+			var bentplaneMesh;
+			var bentplane2Mesh;
+			var bentplane3esh;
+
+			var cameraSpeed = {value: 0};
+
+			var transitionRunning = false;
+			var r = 0;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+			document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+			document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+			document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided ) {
+				
+				var inDouble = doubleSided || false;
+
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = inDouble;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+
+				return mesh;
+			}		
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+				camera.position.z = -130;
+				camera.position.x = -450;
+				camera.position.y = FLOOR+20;
+
+				scene = new THREE.Scene();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x333333 );
+				scene.addLight( ambient );
+
+				directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 2;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+				
+				greyCity();
+
+
+				//cubeRef
+				cubeRef = new Cube( 15, 15, 15, 1, 1 );
+				cubeRefMesh = addMesh( cubeRef, 1,  50, FLOOR, -130, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
+				cubeRefMesh.visible = false;
+				camera.target = cubeRefMesh;
+
+				var bentplane = new Plane( 1024, 512, 39, 9 );
+
+				for ( var i=0; i < bentplane.vertices.length; ++i ) {
+					var col = i%40;
+
+					var sin = 100*Math.sin(col/12.5);
+
+					bentplane.vertices[i].position.z = -sin
+
+				}
+
+
+				bentplaneMesh = addMesh( bentplane, 0.09,  camera.position.x+25, FLOOR+19, camera.position.z, 0,-1.57,0, getTextureMaterial("textures/city_0_2.png") );
+				bentplane2Mesh = addMesh( bentplane, 0.09,  camera.position.x+21, FLOOR+19, camera.position.z, 0,-1.57,0, getTextureMaterial("textures/city_1_2.png") );
+				bentplane3Mesh = addMesh( bentplane, 0.1,  camera.position.x+15, FLOOR+16, camera.position.z, 0,-1.57,0, getTextureMaterial("textures/city_2_2.png") );
+
+				bentplane2Mesh.scale.x = 0.08;
+				bentplane3Mesh.scale.x = 0.08;
+
+				// plane
+				/*plane = new Plane( 100, 100, 1, 1 );
+
+				addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, new THREE.MeshLambertMaterial( { color:0x777777 } ), true );
+
+				addMesh( plane, 100,  0, FLOOR+400, 0, 1.57,0,0, new THREE.MeshLambertMaterial( { color:0xDEFFFF } ), false );
+				*/
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setFaceCulling(0);
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				/*stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );*/
+				
+			}
+
+			function getTextureMaterial (tex) {
+				//var textureMaterial = new THREE.MeshBasicMaterial( { map: new THREE.Texture(), opacity: 0.5, blending: THREE.AdditiveBlending } );
+				var textureMaterial = new THREE.MeshBasicMaterial( { map: new THREE.Texture(), opacity: 0.99999, blending: THREE.BillboardBlending } );
+				//var textureMaterial = new THREE.MeshBasicMaterial( { map: new THREE.Texture() } );
+				//THREE.BillboardBlending
+				var img = new Image();
+				textureMaterial.map.image = img;
+				img.onload = function () {
+					textureMaterial.map.image.loaded = 1;
+				};
+				img.src = tex;
+				
+				return textureMaterial;
+			}
+
+			function getMaterial() {
+				var c = Math.random() * 0xffffff;
+				return new THREE.MeshLambertMaterial( { color:c } );
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = ( event.clientX - windowHalfX );
+				mouseY = ( event.clientY - windowHalfY );
+			}
+
+			function onDocumentMouseDown( event ) {
+				event.preventDefault();
+				event.stopPropagation();
+		
+				startTransition()
+
+				switch ( event.button ) {
+					case 0: leftMouse = true; break;
+				}
+			}
+
+			function onDocumentMouseUp( event ) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				switch ( event.button ) {
+					case 0: leftMouse = false; break;
+				}
+			}
+
+
+
+			function startTransition() {
+				if (transitionRunning) {
+					return;
+				}
+				transitionRunning = true;
+
+				var inPlace = new TWEEN.Tween(mouseFollow)
+							.to({x: 0, y: 0, extray: 20}, 500)
+							.easing(TWEEN.Easing.Sinusoidal.EaseInOut);
+				inPlace.start();
+
+				var speed = new TWEEN.Tween(cameraSpeed)
+							.to({value: 0.4}, 800)
+							.delay(300)
+							.easing(TWEEN.Easing.Sinusoidal.EaseIn);
+				speed.start();
+
+				var plane1 = new TWEEN.Tween(bentplane3Mesh.materials[0])
+							.to({opacity: 0}, 600)
+							.easing(TWEEN.Easing.Sinusoidal.EaseIn)
+							.delay(400);
+				plane1.start();
+
+				var plane2 = new TWEEN.Tween(bentplane2Mesh.materials[0])
+							.to({opacity: 0}, 600)
+							.easing(TWEEN.Easing.Sinusoidal.EaseIn)
+							.delay(450);
+				plane2.start();
+
+				var plane3 = new TWEEN.Tween(bentplaneMesh.materials[0])
+							.to({opacity: 0}, 600)
+							.easing(TWEEN.Easing.Sinusoidal.EaseIn)
+							.delay(500);
+				plane3.start();
+
+
+				var res = new TWEEN.Tween(bentplaneMesh.position)
+							.to({x: -450}, 1000)
+							.easing(TWEEN.Easing.Sinusoidal.EaseIn)
+							.delay(4000)
+							.onComplete(reset);
+				res.start();
+			}
+
+			function reset() {
+				mouseFollow.extray = 15; 
+				
+				bentplaneMesh.materials[0].opacity = 0.99999;
+				bentplane2Mesh.materials[0].opacity = 0.99999;
+				bentplane3Mesh.materials[0].opacity = 0.99999;
+
+				camera.position.x = -450;
+				bentplaneMesh.position.x = camera.position.x+25;
+				
+				cameraSpeed.value = 0;
+				transitionRunning = false;
+			}
+
+			function loop() {
+				if (!transitionRunning) {
+					var moveX = (mouseX-mouseFollow.x)/30;
+					var moveY = (mouseY-mouseFollow.y)/30;
+
+					mouseFollow.x += moveX;
+					mouseFollow.y += moveY;
+
+				} else {
+					camera.position.x += cameraSpeed.value;
+
+					TWEEN.update();
+				}	
+
+				//mouseFollow.x = 0;
+				//mouseFollow.y = 0;
+
+				//cubeRefMesh.position.y = (camera.position.y)+(mouseFollow.y/25)*-1;
+				cubeRefMesh.position.z = (mouseFollow.x/110)+camera.position.z;
+
+				bentplaneMesh.position.z = ((mouseFollow.x/80)*-1)+camera.position.z;
+				bentplane2Mesh.position.z = ((mouseFollow.x/80)*-1)+camera.position.z;
+				bentplane3Mesh.position.z = ((mouseFollow.x/60)*-1)+camera.position.z;
+
+				//camera.position.y = FLOOR+384+25 + (mouseFollow.y/2)*-1;
+				camera.position.y = FLOOR+mouseFollow.extray + (mouseFollow.y/80)*-1;
+
+				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );
+
+				//stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

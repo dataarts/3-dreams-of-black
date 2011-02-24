@@ -21,7 +21,9 @@ THREE.Matrix4 = function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33
 	if( typeof Float32Array !== 'undefined' ) {
 
 		var that = this;		
-		this.float32Array = new Float32Array( 16 ),
+		this.float32Array    = new Float32Array( 16 );
+		this.float32Array3x3 = new Float32Array( 9 );
+		
 		this.flatten32 = function() {
 			
 			var flat = that.float32Array;
@@ -33,13 +35,70 @@ THREE.Matrix4 = function ( n11, n12, n13, n14, n21, n22, n23, n24, n31, n32, n33
 	
 			return flat;
 		}
+		
+		this.flatten323x3 = function() {
+			
+			var flat = that.float32Array3x3;
+
+			flat[ 0 ] = that.n11; flat[ 1 ] = that.n21; flat[ 2 ] = that.n31;
+			flat[ 3 ] = that.n12; flat[ 4 ] = that.n22; flat[ 5 ] = that.n32;
+			flat[ 6 ] = that.n13; flat[ 7 ] = that.n23; flat[ 8 ] = that.n33;
+			
+			return flat;
+		}
 	}
 };
 
 THREE.Matrix4.prototype = {
 
-	setPosition: function( vec3 ) {
+	rotateAroundAxis: function( axis, angle ) {
 		
+        var x   = axis.x, y = axis.y, z = axis.z;
+        var len = Math.sqrt( x*x + y*y + z*z );
+
+        if( !len     ) { return null; }
+        if( len != 1 ) {
+            len = 1 / len;
+            x *= len; 
+            y *= len; 
+            z *= len;
+        }
+        
+        var s = Math.sin( angle );
+        var c = Math.cos( angle );
+        var t = 1-c;
+        
+        var a00 = this.n11, a01 = this.n21, a02 = this.n31, a03 = this.n41;
+        var a10 = this.n12, a11 = this.n22, a12 = this.n32, a13 = this.n42;
+        var a20 = this.n13, a21 = this.n23, a22 = this.n33, a23 = this.n43;
+        
+        // Construct the elements of the rotation matrix
+
+        var b00 = x*x*t + c,   b01 = y*x*t + z*s, b02 = z*x*t - y*s;
+        var b10 = x*y*t - z*s, b11 = y*y*t + c,   b12 = z*y*t + x*s;
+        var b20 = x*z*t + y*s, b21 = y*z*t - x*s, b22 = z*z*t + c;
+        
+        
+        // Perform rotation-specific matrix multiplication
+        
+		this.n11 = a00*b00 + a10*b01 + a20*b02;
+        this.n21 = a01*b00 + a11*b01 + a21*b02;
+        this.n31 = a02*b00 + a12*b01 + a22*b02;
+        this.n41 = a03*b00 + a13*b01 + a23*b02;
+        this.n12 = a00*b10 + a10*b11 + a20*b12;
+        this.n22 = a01*b10 + a11*b11 + a21*b12;
+        this.n32 = a02*b10 + a12*b11 + a22*b12;
+        this.n42 = a03*b10 + a13*b11 + a23*b12;
+        this.n13 = a00*b20 + a10*b21 + a20*b22;
+        this.n23 = a01*b20 + a11*b21 + a21*b22;
+        this.n33 = a02*b20 + a12*b21 + a22*b22;
+        this.n43 = a03*b20 + a13*b21 + a23*b22;
+
+        return this;
+	},
+
+	setPosition: function( vec3 ) {
+
 		this.n14 = vec3.x;
 		this.n24 = vec3.y;
 		this.n34 = vec3.z;
@@ -49,10 +108,10 @@ THREE.Matrix4.prototype = {
 
 	setRotationFromEuler: function( vec3 ) {
 		
-		var c = Math.PI / 180;
-		var x = vec3.x * c;
-		var y = vec3.y * c;
-		var z = vec3.z * c;
+		//var c = Math.PI / 180;
+		var x = vec3.x;// * c;
+		var y = vec3.y;// * c;
+		var z = vec3.z;// * c;
 		
 	    var ch = Math.cos( y  );
 	    var sh = Math.sin( y  );
@@ -182,6 +241,7 @@ THREE.Matrix4.prototype = {
 
 	},
 
+
 	multiplyVector3: function ( v ) {
 
 		var vx = v.x, vy = v.y, vz = v.z,
@@ -194,6 +254,7 @@ THREE.Matrix4.prototype = {
 		return v;
 
 	},
+
 	
 	mulitplyVector3OnlyZ: function( v ) {
 		
@@ -545,6 +606,7 @@ THREE.Matrix4.makeInvert = function ( m1, m2 ) {
 	return m2;
 
 };
+
 
 THREE.Matrix4.makeInvert3x3 = function ( m1 ) {
 

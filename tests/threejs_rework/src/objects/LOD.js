@@ -37,35 +37,54 @@ THREE.LOD.prototype.add = function( object3D, visibleAtDistance ) {
  * Update
  */
 
-THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, scene, camera ) {
+THREE.LOD.prototype.update = function( parentGlobalMatrix, forceUpdate, camera, renderer ) {
 	
-	forceUpdate = this.updateMatrix( parentGlobalMatrix, forceUpdate, scene, camera );
+	// update local
 	
+	if( this.autoUpdateMatrix )
+		forceUpdate |= this.updateMatrix();
 
-	// calc z and show/hide nodes
-	
-	var distance = -camera.inverseMatrix.mulitplyVector3OnlyZ( this.position );
 
-	for( var l = 0; l < this.LODs.length; l++ ) 
-		this.LODs[ l ].object3D.visible = false;
+	// update global
+
+	if( forceUpdate || this.matrixNeedsToUpdate ) {
 		
-	
-	for( var l = 0; l < this.LODs.length; l++ ) {
+		if( parentGlobalMatrix )
+			this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+		else
+			this.globalMatrix.set( this.localMatrix );
 		
-		if( distance < this.LODs[ l ].visibleAtDistance ) {
-			
-			this.LODs[ l ].object3D.visible = true;
-			break;
-		}
+		this.matrixNeedsToUpdate = false;
+		forceUpdate              = true;
 	}
-	
-	if( l === this.LODs.length )
-		this.LODs[ l - 1 ].object3D.visible = true;
-	
+
+
+	// update lods
+		
+	if( this.LODs.length > 1 ) {
+		
+		var distance = -camera.inverseMatrix.mulitplyVector3OnlyZ( this.position );
+
+		this.LODs[ 0 ].object3D.visible = true;
+		
+		for( var l = 1; l < this.LODs.length; l++ ) {
+			
+			if( distance >= this.LODs[ l ].visibleAtDistance ) {
+				
+				this.LODs[ l - 1 ].object3D.visible = false;
+				this.LODs[ l     ].object3D.visible = true;
+			}
+			else break;
+		}
+		
+		for( ; l < this.LODs.length; l++ ) 
+			this.LODs[ l ].object3D.visible = false;
+	}
+
 
 	// update children
 
 	for( var c = 0; c < this.children.length; c++ )
-		this.children[ c ].update( this.globalMatrix, forceUpdate, scene, camera );
+		this.children[ c ].update( this.globalMatrix, forceUpdate, camera, renderer );
 }
 

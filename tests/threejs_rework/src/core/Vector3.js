@@ -29,6 +29,7 @@ THREE.Vector3 = function ( _x, _y, _z ) {
 	return this.api;
 };
 
+
 THREE.Vector3.prototype = {
 
 	set: function ( x, y, z ) {

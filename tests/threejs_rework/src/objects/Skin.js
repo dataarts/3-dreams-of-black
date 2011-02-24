@@ -9,8 +9,9 @@ THREE.Skin = function( geometry, materials ) {
 	
 	// init bones
 
+	this.identityMatrix = new THREE.Matrix4();
+
 	this.bones        = [];
-	this.boneInverses = [];
 	this.boneMatrices = [];
 	
 	if( this.geometry.bones !== undefined ) {
@@ -19,6 +20,7 @@ THREE.Skin = function( geometry, materials ) {
 			
 			var bone = this.addBone();
 			
+			bone.name         = this.geometry.bones[ b ].name;
 			bone.position.x   = this.geometry.bones[ b ].pos [ 0 ];
 			bone.position.y   = this.geometry.bones[ b ].pos [ 1 ];
 			bone.position.z   = this.geometry.bones[ b ].pos [ 2 ];
@@ -45,22 +47,79 @@ THREE.Skin = function( geometry, materials ) {
 
 THREE.Skin.prototype             = new THREE.Mesh();
 THREE.Skin.prototype.constructor = THREE.Skin;
-THREE.Skin.prototype.supr        = THREE.Mesh.prototype;
 
+
+/*
+ * Update
+ */
+
+THREE.Skin.prototype.update = function( parentGlobalMatrix, forceUpdate, camera, renderer ) {
+	
+	// visible?
+	
+	if( this.visible )
+	{
+		// update local
+		
+		if( this.autoUpdateMatrix )
+			forceUpdate |= this.updateMatrix();
+
+
+		// update global
+
+		if( forceUpdate || this.matrixNeedsToUpdate ) {
+			
+			if( parentGlobalMatrix )
+				this.globalMatrix.multiply( parentGlobalMatrix, this.localMatrix );
+			else
+				this.globalMatrix.set( this.localMatrix );
+			
+			this.matrixNeedsToUpdate = false;
+			forceUpdate              = true;
+			
+			
+			// update normal
+
+			this.normalMatrix = THREE.Matrix4.makeInvert3x3( this.globalMatrix ).transpose();
+		}
+
+
+		// update children
+	
+		for( var i = 0; i < this.children.length; i++ )
+			if( this.children[ i ] instanceof THREE.Bone )
+				this.children[ i ].update( this.identityMatrix, false, camera, renderer );
+			else
+				this.children[ i ].update( this.globalMatrix, forceUpdate, camera, renderer );
+			
+
+
+		// check camera frustum and add to render list
+		
+		if( renderer && camera ) {
+			
+			if( camera.frustumContains( this ))
+				renderer.addToRenderList( this );
+			else
+				renderer.removeFromRenderList( this );
+		}
+	}
+	else renderer.removeFromRenderList( this );
+}
 
 
 /*
  * Add 
  */
 
-THREE.Skin.prototype.addBone = function( object3D ) {
+THREE.Skin.prototype.addBone = function( bone ) {
 	
-	if( object3D === undefined ) 
-		object3D = new THREE.Object3D();
+	if( bone === undefined ) 
+		bone = new THREE.Bone( this );
 	
-	this.bones.push( object3D );
+	this.bones.push( bone );
 	
-	return object3D;
+	return bone;
 }
 
 /*
@@ -70,44 +129,49 @@ THREE.Skin.prototype.addBone = function( object3D ) {
 THREE.Skin.prototype.pose = function() {
 
 	this.update( undefined, true );
+
+
+	var boneInverses = [];
 	
 	for( var b = 0; b < this.bones.length; b++ ) {
 		
-		this.boneInverses.push( THREE.Matrix4.makeInvert( this.bones[ b ].globalMatrix, new THREE.Matrix4()));
-		this.boneMatrices.push( this.bones[ b ].globalMatrix.flatten32 );
+	 	     boneInverses.push( THREE.Matrix4.makeInvert( this.bones[ b ].skinMatrix, new THREE.Matrix4()));
+		this.boneMatrices.push( this.bones[ b ].skinMatrix.flatten32 );
 	}
 	
 
 	// project vertices to local 
 
-	this.geometry.skinVerticesA = [];
-	this.geometry.skinVerticesB = [];
-	var orgVertex;
-	var vertex;
-
-	for( var i = 0; i < this.geometry.skinIndices.length; i++ ) {
+	if( this.geometry.skinVerticesA === undefined ) {
 		
-		orgVertex = this.geometry.vertices[ i ].position;
-
-		var indexA = this.geometry.skinIndices[ i ].x;
-		var indexB = this.geometry.skinIndices[ i ].y;
-
-		vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
-		this.geometry.skinVerticesA.push( this.boneInverses[ indexA ].multiplyVector3( vertex ));
-
-		vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
-		this.geometry.skinVerticesB.push( this.boneInverses[ indexB ].multiplyVector3( vertex ));
-		
-		// todo: add more influences
-
-
-		// normalize weights
-
-		if( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y !== 1 ) {
+		this.geometry.skinVerticesA = [];
+		this.geometry.skinVerticesB = [];
+		var orgVertex;
+		var vertex;
+	
+		for( var i = 0; i < this.geometry.skinIndices.length; i++ ) {
 			
-			var len = ( 1.0 - ( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y )) * 0.5;
-			this.geometry.skinWeights[ i ].x += len;
-			this.geometry.skinWeights[ i ].y += len;
+			orgVertex = this.geometry.vertices[ i ].position;
+	
+			var indexA = this.geometry.skinIndices[ i ].x;
+			var indexB = this.geometry.skinIndices[ i ].y;
+	
+			vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
+			this.geometry.skinVerticesA.push( boneInverses[ indexA ].multiplyVector3( vertex ));
+	
+			vertex = new THREE.Vector3( orgVertex.x, orgVertex.y, orgVertex.z );
+			this.geometry.skinVerticesB.push( boneInverses[ indexB ].multiplyVector3( vertex ));
+			
+			// todo: add more influences
+	
+			// normalize weights
+	
+			if( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y !== 1 ) {
+				
+				var len = ( 1.0 - ( this.geometry.skinWeights[ i ].x + this.geometry.skinWeights[ i ].y )) * 0.5;
+				this.geometry.skinWeights[ i ].x += len;
+				this.geometry.skinWeights[ i ].y += len;
+			}
 		}
 	}
 }

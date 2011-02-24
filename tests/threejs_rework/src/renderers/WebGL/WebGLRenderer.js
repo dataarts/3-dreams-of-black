@@ -5,32 +5,39 @@
 
 THREE.WebGLRenderer = function( contextId ) {
 
-	this.domElement = document.createElement( 'canvas' );
-	this.GL         = this.domElement.getContext( "experimental-webgl" );
+	this.domElement        = document.createElement( 'canvas' );
+	this.domWidth          = -1;
+	this.domHeight         = -1;
+	this.cameraNeedsUpdate = true;
+
 	
-    this.GL.clearColor	( 0.8, 0.8, 0.8, 1.0 );
+	this.GL = this.domElement.getContext( "experimental-webgl", { antialias: true } );
+	
+    this.GL.clearColor	( 1.0, 1.0, 1.0, 1.0 );
     this.GL.clearDepth	( 1.0 );
     this.GL.enable		( this.GL.DEPTH_TEST );
     this.GL.depthFunc	( this.GL.LEQUAL );
-	this.GL.enable      ( this.GL.CULL_FACE );
+	this.GL.frontFace   ( this.GL.CCW );
 	this.GL.cullFace    ( this.GL.BACK );
-    this.GL.pixelStorei(this.GL.UNPACK_FLIP_Y_WEBGL, true);
+	this.GL.enable      ( this.GL.CULL_FACE );
+    this.GL.pixelStorei ( this.GL.UNPACK_FLIP_Y_WEBGL, true );
+
+	this.GL.enable   ( this.GL.BLEND );
+	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );
 
 
-	this.applyPrototypes();
+	this.renderDictionaryOpaque           = {};
+	this.renderDictionaryTransparent      = {};
+	this.renderDictionaryTransparent.list = [];
+	this.renderDictionaryLights           = {};
+	this.renderDictionarySounds           = {};
 
-	THREE.WebGLRendererContext = this.GL;		// this is no good
+
+	THREE.WebGLRenderer.Cache                     = {};
+	THREE.WebGLRenderer.Cache.currentGL           = this.GL;
+	THREE.WebGLRenderer.Cache.currentElementId    = -1;
+	THREE.WebGLRenderer.Cache.currentAttributesId = -1;
 };
-
-/*
- * Apply Prototypes
- */
-
-THREE.WebGLRenderer.prototype.applyPrototypes = function() {
-
-	THREE.Scene.prototype.update  = THREE.WebGLRenderer.Scene.update;	
-	THREE.Scene.prototype.capture = THREE.WebGLRenderer.Scene.capture;
-}
 
 
 /*
@@ -39,11 +46,13 @@ THREE.WebGLRenderer.prototype.applyPrototypes = function() {
 
 THREE.WebGLRenderer.prototype.setSize = function( wantedWidth, wantedHeight ) {
 
-	this.domElement.width  = wantedWidth;
-	this.domElement.height = wantedHeight;
+	this.domElement.width  = this.domWidth  = wantedWidth;
+	this.domElement.height = this.domHeight = wantedHeight;
 	this.aspect            = wantedWidth / wantedHeight;
 
 	this.GL.viewport( 0, 0, wantedWidth, wantedHeight );
+	
+	this.cameraNeedsUpdate = true;
 }
 
 /*
@@ -52,58 +61,222 @@ THREE.WebGLRenderer.prototype.setSize = function( wantedWidth, wantedHeight ) {
 
 THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
-	// update camera
+	// update camera?
 	
-	if( camera.aspect !== this.aspect ) {
+	if( this.cameraNeedsUpdate ) {
 		
-		camera.aspect = this.aspect;
+		this.cameraNeedsUpdate = false;
+		
+		camera.screenCenterX = this.domWidth;
+		camera.screenCenterY = this.domHeight;
+		camera.aspect        = this.aspect;
+		
 		camera.updatePerspectiveMatrix();
 	}
+	
+
+	// update animation
+	
+	if( THREE.AnimationHandler )
+		THREE.AnimationHandler.update();
 
 
-	// clear
-
-    this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
+	// reset cache
 	
-	
-	// clear cache
-	
-	THREE.WebGLBatchCurrentElementId    = -1;
-	THREE.WebGLBatchCurrentAttributesId = -1;
+	THREE.WebGLRenderer.Cache.currentGL           = this.GL;
+	THREE.WebGLRenderer.Cache.currentElementId    = -1;
+	THREE.WebGLRenderer.Cache.currentAttributesId = -1;
 	
 
 	// update scene
 	
-	scene.update( camera );
-	
-	var opaqueWebGLBatchDictionary = scene.opaqueWebGLBatchDictionary;
-	var transparentWebGLBatchList  = scene.transparentWebGLBatchList;
-	var lightList                  = scene.lightList;
+	scene.update( undefined, false, camera, this );
 	
 	
 	// render opaque
+
+   	this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
 	
-	for( shaderBatchId in opaqueWebGLBatchDictionary ) {
+	for( var programId in this.renderDictionaryOpaque ) {
 		
-		var shaderBatches = opaqueWebGLBatchDictionary[ shaderBatchId ];
+		var batches = this.renderDictionaryOpaque[ programId ];
+
 		
-		if( shaderBatches.length > 0 ) {
+		// load common (iterate over batches but break after first)
+		
+		for( var batchId in batches ) {
 			
-			shaderBatches[ 0 ].loadProgram();
-			shaderBatches[ 0 ].loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32());
-			shaderBatches[ 0 ].loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32());
-			shaderBatches[ 0 ].loadUniform( "uSceneFogFar",             scene.fogFar             );
-			shaderBatches[ 0 ].loadUniform( "uSceneFogNear",            scene.fogNear            );
-			shaderBatches[ 0 ].loadUniform( "uSceneFogColor",           scene.fogColor           );
+			var batch = batches[ batchId ];
 			
-			for( var s = 0; s < shaderBatches.length; s++ ) {
+			batch.loadProgram();
+			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix3x3",  camera.inverseMatrix    .flatten323x3());
+			batch.loadUniform( "uSceneFogFar",             scene.fogFar   );
+			batch.loadUniform( "uSceneFogNear",            scene.fogNear  );
+			batch.loadUniform( "uSceneFogColor",           scene.fogColor );
+	
+			break;
+		}
+		
+		
+		// render batches
+		
+		for( var batchId in batches )
+			batches[ batchId ].render();
+	}
+	
+	
+	// sort transparent
+
+	var transparentList       = this.renderDictionaryTransparent.list;
+	var transparentListLength = transparentList.length;
+	var temp;
+
+	for( var t = 0; t < transparentListLength - 1; t++ ) {
+		
+		for( var c = t + 1; c < transparentListLength; c++ ) {
+			
+			if( transparentList[ t ].screenPosition.z > transparentList[ c ].screenPosition.z ) {
 				
-				shaderBatches[ s ].render();
+				temp                 = transparentList[ t ];
+				transparentList[ t ] = transparentList[ c ];
+				transparentList[ c ] = temp;
+				
+				transparentList[ t ].webGLSortListIndex = t;
+				transparentList[ c ].webGLSortListIndex = c;
 			}
 		}
 	}
 	
 	
-	// todo: sort and render transparent
+	// draw transparent
+
+	for( var t = 0; t < transparentListLength; t++ ) {
+		
+		var batches = transparentList[ t ].webGLBatches;
+		
+		for( var b = 0; b < batches.length; b++ ) {
+			
+			var batch = batches[ b ];
+			
+			batch.loadProgram();
+			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix3x3",  camera.inverseMatrix    .flatten323x3());
+			batch.loadUniform( "uSceneFogFar",             scene.fogFar   );
+			batch.loadUniform( "uSceneFogNear",            scene.fogNear  );
+			batch.loadUniform( "uSceneFogColor",           scene.fogColor );
+			batch.render();
+		}
+	}
+}
+
+
+/*
+ * AddToRenderList
+ */
+
+THREE.WebGLRenderer.prototype.addToRenderList = function( renderable ) {
+	
+	// no need to add already added batches
+	
+	if( renderable.webGLAddedToRenderList ) 
+		return;
+
+	 renderable.webGLAddedToRenderList = true;
+
+
+	// needs to compile?
+	
+	if( renderable.webGLBatches === undefined )
+		THREE.WebGLBatchCompiler.compile( renderable );
+	
+	
+		
+	// add opaque object's batches
+	
+	if( !renderable.webGLIsTransparent ) {
+		
+		var batch;
+		var programDictionary;
+		
+		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
+			
+			batch             = renderable.webGLBatches[ b ];
+			programDictionary = this.renderDictionaryOpaque[ batch.programId ];
+			
+			if( programDictionary === undefined )
+				programDictionary = this.renderDictionaryOpaque[ batch.programId ] = {};
+			 			
+			programDictionary[ batch.id ] = batch;
+		}
+	}
+	
+	// add transparent/partly transparent object's batches
+	
+	else {
+		
+		renderable.webGLSortListIndex = this.renderDictionaryTransparent.list.length;
+		
+		this.renderDictionaryTransparent[ renderable.webGLBatches[ 0 ].id ] = renderable;	// use 1st batch id as key
+		this.renderDictionaryTransparent.list.push( renderable );
+	}
+};
+
+
+THREE.WebGLRenderer.prototype.removeFromRenderList = function( renderable ) {
+	
+	// no need to remove if not added
+	
+	if( !renderable.webGLAddedToRenderList )
+		return;
+		
+	renderable.webGLAddedToRenderList = false;
+
+		
+	// remove batches
+		
+	if( !renderable.webGLIsTransparent ) {
+		
+		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
+			
+			var batch             = renderable.webGLBatches[ b ];
+			var programDictionary = this.renderDictionaryOpaque[ batch.programId ];
+			
+			if( programDictionary === undefined )
+				return;
+				
+			if( programDictionary[ batch.id ] === undefined )
+				return;
+				
+			delete programDictionary[ batch.id ];
+		}
+	}
+	else {
+
+		var id = renderable.webGLBatches[ 0 ].id;		// use first batch id as key
+		
+		if( this.renderDictionaryTransparent[ id ] === undefined )
+			return;
+		
+		this.renderDictionaryTransparent.list.splice( renderable.webGLSortListIndex, 1 );
+		delete this.renderDictionaryTransparent[ id ];
+	}
+}
+
+/*
+ * Read pixel
+ */
+
+THREE.WebGLRenderer.prototype.readPixel = function( x, y ) {
+
+
+	//this.GL.framebufferRenderbuffer( this.GL.FRAMEBUFFER, this.GL.DEPTH_ATTACHMENT, this.GL.RENDERBUFFER, renderBuf );
+
+	pixel = new Uint8Array( 4 );
+	this.GL.readPixels( x, y, 1, 1, this.GL.RGBA, this.GL.UNSIGNED_BYTE, pixel );
+	
+	return pixel;
 }
 

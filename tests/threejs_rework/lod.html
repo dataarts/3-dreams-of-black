@@ -43,12 +43,11 @@
 		<script type="text/javascript" src="src/objects/Object3D.js"></script>
 		<script type="text/javascript" src="src/objects/Mesh.js"></script>
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
+		<script type="text/javascript" src="src/objects/Bone.js"></script>
 		<script type="text/javascript" src="src/objects/LOD.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
-
 		<script type="text/javascript" src="src/cameras/Camera.js"></script>
-		<script type="text/javascript" src="src/cameras/Frustum.js"></script>
 
 		<script type="text/javascript" src="src/extras/primitives/Cube.js"></script>
 		<script type="text/javascript" src="src/extras/primitives/Cylinder.js"></script>
@@ -79,21 +78,27 @@
 		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
 
 		<script type="text/javascript" src="src/renderers/WebGL/WebGLRenderer.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/WebGLRendererScene.js"></script>
-
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLBlendModes.js"></script>
+		
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatch.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchProgram.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchAttributes.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchUniforms.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompiler.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompilerMaterials.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLShaderDefinitions.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Skin.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Texture.js"></script>
-		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompiler.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompilerMaterials.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderDefinitions.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderSkin.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderTexture.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderLambert.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderNormal.js"></script>
 	
 		<script type="text/javascript" src="src/animation/Animation.js"></script>
-		<script type="text/javascript" src="src/animation/AnimationTestData.js"></script>
+		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
+
+		<script type="text/javascript" src="js/Stats.js"></script>
+
 	
 		<!-- Experience Code -->
 	
@@ -112,6 +117,7 @@
 				var time = 0;
 				var container;
 				var animation;
+				var LOD;
 				
 				//--- Init ---
 				
@@ -120,22 +126,26 @@
 					scene = new THREE.Scene();
 
 					camera = new THREE.Camera();
+					camera.position.z = 20;
+					camera.useTarget  = false;
 					scene.addChild( camera );
 
+					camera.update();
+
 					var materialA = new THREE.MeshLambertMaterial();
-					var materialB = new THREE.MeshShaderMaterial( "textureVertex", "textureFragment" );
+					var materialB = new THREE.MeshShaderMaterial( { vertex_shader: "textureVertex", fragment_shader: "textureFragment" } );
 
-					var cubeA            = new THREE.Cube( 10, 10, 10 );
-					var cubeAMesh        = new THREE.Mesh( cubeA, materialA );
+					var cubeA     = new THREE.Cube( 10, 10, 10 );
+					var cubeAMesh = new THREE.Mesh( cubeA, materialA );
 
-					var cubeB            = new THREE.Cube( 25, 25, 25 );
-					var cubeBMesh        = new THREE.Mesh( cubeB, materialB );
+					var cubeB     = new Cylinder( 4, 10, 10, 10, 0, 0 );
+					var cubeBMesh = new THREE.Mesh( cubeB, materialB );
 					
-					var LOD = new THREE.LOD();
+					LOD = new THREE.LOD();
 					
-					LOD.add( cubeAMesh, 0  );
+					LOD.add( cubeAMesh, 0 );
 					LOD.add( cubeBMesh, 150 );
-					
+					LOD.position.z = -10;
 					scene.addChild( LOD );
 	
 	
@@ -161,8 +171,8 @@
 				var Update = function()
 				{
 					time += 0.01;
-					
-					camera.position.z++;
+					LOD.position.z -= 1.5;
+					//camera.position.z++;
 					
 					renderer.render( scene, camera );
 				}
