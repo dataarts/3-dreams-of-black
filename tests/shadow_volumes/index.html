@@ -43,7 +43,7 @@
 				pointLight.position.z = 100;
 				scene.addLight( pointLight );
 
-				var cube     = new Cube( 20, 20, 20 );
+				var cube     = new Sphere( 20, 10, 10 );
 				var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
 				var mesh     = new THREE.Mesh( cube, material );			
 				var shadow   = new THREE.ShadowMesh( mesh );

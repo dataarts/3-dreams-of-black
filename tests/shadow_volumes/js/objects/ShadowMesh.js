@@ -47,37 +47,40 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 		
 		var vertices = this.geometry.vertices;
 		var faces    = this.geometry.faces;
-		var edges    = this.geometry.edges      = {};
-					   this.geometry.edges.list = [];
+		var edges    = this.geometry.edges = [];
 		var edge;
 		var result;
 		var faceA;
 		var faceB;
+		var fa, fal = faces.length - 1;
+		var fb, fbl = faces.length;
+		var space = {};
 		
-		for( var fa = 0; fa < faces.length - 1; fa++ ) {
+		
+		// put vertices in lists depending on int
+		
+		var vertex;
+		var x, y, z;
+		
+		for( var v = 0; v < vertices.length; v++ ) {
+			
+			vertex = vertices[ v ].position;
+			x = vertex.x;
+			y = vertex.y;
+			z = vertex.z;
+		}
+		
+		
+		// check faces
+		
+		for( fa = 0; fa < fal; fa++ ) {
 			
 			faceA = faces[ fa ];
 			
-			for( var fb = fa + 1; fb < faces.length; fb++ ) {
+			for( fb = fa + 1; fb < fbl; fb++ ) {
 				
-				faceB = faces[ fb ];
-				
-				if( result = this.facesShareEdge( vertices, faceA, faceB )) {
-				
-					edge = new THREE.Edge( result );
-				
-					edges[ fa + "_" + fb ] = edge;
-					edges.list.push( edge );
-					
-					if( faceA.edges === undefined )
-						faceA.edges = [];
-					
-					if( faceB.edges === undefined )
-						faceB.edges = [];
-					
-					faceA.edges.push( edge );
-					faceB.edges.push( edge );
-				}
+				if( result = this.facesShareEdge( vertices, faceA, faces[ fb ] ))
+					edges.push( new THREE.Edge( result ) );
 			}
 		}
 	}
@@ -88,7 +91,7 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 	var lightDirection = new THREE.Vector3().copy( light.position ).negate().normalize();
 	var faces          = this.geometry.faces;
 	var vertices       = this.geometry.vertices;
-	var edges          = this.geometry.edges.list;
+	var edges          = this.geometry.edges;
 
 
 	for( var e = 0; e < edges.length; e++ )
@@ -103,18 +106,18 @@ THREE.ShadowMesh.prototype.calculate = function( light, extrutionLength ) {
 		
 		if( face.isInShadow ) {
 			
-			var indices;
-			
-			if( face instanceof THREE.Face4 )
-				indices = [ "a", "b", "c", "d" ];
-			else
-				indices = [ "a", "b", "c" ];
-			
-			for( var i = 0; i < indices.length; i++ ) {
+			if( face instanceof THREE.Face4 ) {
 				
-				// todo: add rotation of object
+				vertices[ face.a ].position.addSelf( lightDirection );
+				vertices[ face.b ].position.addSelf( lightDirection );
+				vertices[ face.c ].position.addSelf( lightDirection );
+				vertices[ face.d ].position.addSelf( lightDirection );
+			}
+			else {
 				
-				vertices[ face[ indices[ i ]]].position.addSelf( lightDirection );
+				vertices[ face.a ].position.addSelf( lightDirection );
+				vertices[ face.b ].position.addSelf( lightDirection );
+				vertices[ face.c ].position.addSelf( lightDirection );
 			}
 		}
 	}
