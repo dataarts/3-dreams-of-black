@@ -33,35 +33,32 @@
 				container = document.getElementById( 'container' );
 
 				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 0, 0, 300 );
+				camera.position.set( 0, 0, 200 );
 
 				scene = new THREE.Scene();				
 				
-				pointLight = new THREE.PointLight( 0xff3300 );
+				pointLight = new THREE.PointLight( 0xffffff );
 				pointLight.position.x = 0;
 				pointLight.position.y = 0;
 				pointLight.position.z = 100;
 				scene.addLight( pointLight );
 
-				var cube     = new Sphere( 20, 10, 10 );
-				var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
-				var mesh     = new THREE.Mesh( cube, material );			
-				var shadow   = new THREE.ShadowMesh( mesh );
 				var light    = new THREE.DirectionalLight( 0xffffff );
 				
 				light.position.z = -40;
 				light.position.y = 40;
 				light.position.x = 20;
 
-				shadow.calculate( light );
+				var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } ),
+					shadow_material = new THREE.MeshLambertMaterial( { color: 0x222222, wireframe: true } );
+
+				addGeometryWithShadow( scene, -20, 0, 0, new Cube( 20, 20, 20 ), material, shadow_material, light );
+				addGeometryWithShadow( scene,  20, 0, 0, new Sphere( 20, 64, 32 ), material, shadow_material, light );
 				
-				scene.addObject( mesh );
-				
-				var mesh2 = new THREE.Mesh( shadow.geometry, material );
-				mesh2.position.x = 40;
-				scene.addObject( mesh2 );
-				
-				
+				var loader = new THREE.Loader(),
+					callbackFemale = function( geometry ) { addGeometryWithShadow( scene,  50, 0, 0, geometry, new THREE.MeshFaceMaterial(), shadow_material, light ) };
+
+				loader.loadBinary( { model: "obj/female02/Female02_bin.js", callback: callbackFemale } );
 				
 				renderer = new THREE.WebGLRenderer( { clearColor: 0xffffff, clearAlpha: 1 } );
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -78,6 +75,22 @@
 				document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 			}
 
+			function addGeometryWithShadow( scene, x, y, z, geometry, material, shadow_material, light ) {
+			
+				var mesh   = new THREE.Mesh( geometry, material ),
+					shadow = new THREE.ShadowMesh( mesh );
+
+				shadow.calculate( light );
+				
+				var shadowVolumeMesh = new THREE.Mesh( shadow.geometry, shadow_material );
+				
+				mesh.position.set( x, y, z );
+				shadowVolumeMesh.position.set( x, y, z );
+				
+				scene.addObject( mesh );
+				scene.addObject( shadowVolumeMesh );
+				
+			}
 
 			function onDocumentMouseMove(event) {
 
