@@ -79,7 +79,7 @@ THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, camer
 
 	if( this.useTarget ) {
 
-		// local
+		// local (sets rotation and position)
 
 		this.localMatrix.lookAt( this.position, this.target.position, this.up );
 
@@ -92,7 +92,6 @@ THREE.Camera.prototype.update = function( parentGlobalMatrix, forceUpdate, camer
 			this.globalMatrix.copy( this.localMatrix );
 
 		THREE.Matrix4.makeInvert( this.globalMatrix, this.inverseMatrix );
-		//THREE.Matrix4.makeInvertTo( this.globalMatrix, this.inverseMatrix );
 
 		forceUpdate = true;
 

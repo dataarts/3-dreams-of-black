@@ -104,16 +104,9 @@
 				container = document.getElementById( 'container' );
 
 				scene  = new THREE.Scene();				
-				
 				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
 				//camera.useTarget = false;
 				camera.position.set( 0, 0, 200 );
-				//camera.rotation.y = 45 * Math.PI / 180;
-				camera.update( undefined, true );
-
-				var res = camera.inverseMatrix.multiplyVector3( new THREE.Vector3());
-				
-				return;
 
 				var cube     = new Sphere( 20, 10, 10 );
 				var material = new THREE.MeshLambertMaterial( { color: 0x888888 } );
@@ -121,7 +114,7 @@
 				mesh  = new THREE.Mesh( cube, material );			
 				sound = new THREE.Sound3D( "assets/test.mp3", 350, 1, false );
 				
-		//		sound.play();
+				sound.play();
 
 				mesh .addChild( sound );
 				scene.addChild( mesh  );

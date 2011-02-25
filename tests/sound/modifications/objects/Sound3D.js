@@ -1,4 +1,9 @@
 THREE.Sound3D = function( sources, radius, volume, loop ) {
+
+	// supr
+
+	THREE.Object3D.call( this );
+
 	
 	// flags
 	

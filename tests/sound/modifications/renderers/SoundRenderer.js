@@ -21,7 +21,7 @@ THREE.SoundRenderer = function() {
 		var sound;
 		var sounds = scene.sounds;
 		var s, l = sounds.length;
-		var cameraInverse = camera.globalMatrix;	// THIS SHOULD BE camera.inverseMatrix BUT THAT DOESN'T WORK!?
+		var cameraInverse = camera.inverseMatrix;	// THIS SHOULD BE camera.inverseMatrix BUT THAT DOESN'T WORK!?
 		var viewMatrix    = this.viewMatrix;
 		var viewPosition  = this.viewPosition;
 		

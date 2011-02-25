@@ -1750,6 +1750,8 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 	function isInFrustum( object ) {
 
+		return true;
+
 		var distance, matrix = object.globalMatrix,
 		radius = - object.geometry.boundingSphere.radius * Math.max( object.scale.x, Math.max( object.scale.y, object.scale.z ) );
 
@@ -2297,7 +2299,8 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 	function setupMatrices ( object, camera ) {
 
-		object._modelViewMatrix.multiplyToArray( camera.globalMatrix, object.globalMatrix, object._modelViewMatrixArray );
+//		object._modelViewMatrix.multiplyToArray( camera.globalMatrix, object.globalMatrix, object._modelViewMatrixArray );
+		object._modelViewMatrix.multiplyToArray( camera.inverseMatrix, object.globalMatrix, object._modelViewMatrixArray );
 		THREE.Matrix4.makeInvert3x3( object._modelViewMatrix ).transposeIntoArray( object._normalMatrixArray );
 
 	};

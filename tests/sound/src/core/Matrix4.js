@@ -57,7 +57,7 @@ THREE.Matrix4.prototype = {
 
 	lookAt: function ( eye, center, up ) {
 
-		var x = THREE.Matrix4.__tmpVec1, y = THREE.Matrix4.__tmpVec2, z = THREE.Matrix4.__tmpVec3;
+/*		var x = THREE.Matrix4.__tmpVec1, y = THREE.Matrix4.__tmpVec2, z = THREE.Matrix4.__tmpVec3;
 
 		z.sub( eye, center ).normalize();
 		x.cross( up, z ).normalize();
@@ -67,9 +67,19 @@ THREE.Matrix4.prototype = {
 		this.n21 = y.x; this.n22 = y.y; this.n23 = y.z; this.n24 = - y.dot( eye );
 		this.n31 = z.x; this.n32 = z.y; this.n33 = z.z; this.n34 = - z.dot( eye );
 		this.n41 = 0; this.n42 = 0; this.n43 = 0; this.n44 = 1;
+*/
+
+		var x = THREE.Matrix4.__tmpVec1, y = THREE.Matrix4.__tmpVec2, z = THREE.Matrix4.__tmpVec3;
+
+		z.sub( eye, center ).normalize();
+		x.cross( up, z ).normalize();
+		y.cross( z, x ).normalize();
+
+		this.n11 = x.x; this.n12 = y.x; this.n13 = z.x; this.n14 = eye.x;
+		this.n21 = x.y; this.n22 = y.y; this.n23 = z.y; this.n24 = eye.y;
+		this.n31 = x.z; this.n32 = y.z; this.n33 = z.z; this.n34 = eye.z;
 
 		return this;
-
 	},
 
 	multiplyVector3: function ( v ) {
@@ -694,6 +704,50 @@ THREE.Matrix4.makeInvert = function ( m1, m2 ) {
 	return m2;
 
 };
+
+THREE.Matrix4.makeInvert2 = function( m1, m2 ) {
+	
+    var a00 = m1.n11, a01 = m1.n12, a02 = m1.n13, a03 = m1.n14;
+    var a10 = m1.n21, a11 = m1.n22, a12 = m1.n23, a13 = m1.n24;
+    var a20 = m1.n31, a21 = m1.n32, a22 = m1.n33, a23 = m1.n34;
+    var a30 = m1.n41, a31 = m1.n42, a32 = m1.n43, a33 = m1.n44;
+    
+    var b00 = a00*a11 - a01*a10;
+    var b01 = a00*a12 - a02*a10;
+    var b02 = a00*a13 - a03*a10;
+    var b03 = a01*a12 - a02*a11;
+    var b04 = a01*a13 - a03*a11;
+    var b05 = a02*a13 - a03*a12;
+    var b06 = a20*a31 - a21*a30;
+    var b07 = a20*a32 - a22*a30;
+    var b08 = a20*a33 - a23*a30;
+    var b09 = a21*a32 - a22*a31;
+    var b10 = a21*a33 - a23*a31;
+    var b11 = a22*a33 - a23*a32;
+    
+    var invDet = 1/( b00*b11 - b01*b10 + b02*b09 + b03*b08 - b04*b07 + b05*b06);
+ 
+ 	if( m2 === undefined ) m2 = new THREE.Matrix4();
+   
+    m2.n11 = (  a11*b11 - a12*b10 + a13*b09 ) * invDet;
+    m2.n12 = ( -a01*b11 + a02*b10 - a03*b09 ) * invDet;
+    m2.n13 = (  a31*b05 - a32*b04 + a33*b03 ) * invDet;
+    m2.n14 = ( -a21*b05 + a22*b04 - a23*b03 ) * invDet;
+    m2.n21 = ( -a10*b11 + a12*b08 - a13*b07 ) * invDet;
+    m2.n22 = (  a00*b11 - a02*b08 + a03*b07 ) * invDet;
+    m2.n23 = ( -a30*b05 + a32*b02 - a33*b01 ) * invDet;
+    m2.n24 = (  a20*b05 - a22*b02 + a23*b01 ) * invDet;
+    m2.n31 = (  a10*b10 - a11*b08 + a13*b06 ) * invDet;
+    m2.n32 = ( -a00*b10 + a01*b08 - a03*b06 ) * invDet;
+    m2.n33 = (  a30*b04 - a31*b02 + a33*b00 ) * invDet;
+    m2.n34 = ( -a20*b04 + a21*b02 - a23*b00 ) * invDet;
+    m2.n41 = ( -a10*b09 + a11*b07 - a12*b06 ) * invDet;
+    m2.n42 = (  a00*b09 - a01*b07 + a02*b06 ) * invDet;
+    m2.n43 = ( -a30*b03 + a31*b01 - a32*b00 ) * invDet;
+    m2.n44 = (  a20*b03 - a21*b01 + a22*b00 ) * invDet;
+    
+    return m2;
+}
 
 /*
 THREE.Matrix4.makeInvert = function ( m1 ) {
