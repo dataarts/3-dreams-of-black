@@ -107,19 +107,21 @@
 				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
 				//camera.useTarget = false;
 				camera.position.set( 0, 0, 200 );
+				camera.target.position.set( 100, 100, 0 );
 
 				var geometry = new Cube( 40, 40, 40 );
 				var material = new THREE.MeshNormalMaterial();
 
 				mesh = new THREE.Mesh( geometry, material );
 
-				scene.addChild( mesh  );
+
 
 				var mesh2 = new THREE.Mesh( geometry, material );
 				mesh2.position.x = 100;
 
 				mesh.addChild( mesh2 );
 
+				scene.addChild( mesh  );
 
 				renderer = new THREE.WebGLRenderer( { clearColor: 0xffffff, clearAlpha: 1 } );
 				renderer.setSize( window.innerWidth, window.innerHeight );
