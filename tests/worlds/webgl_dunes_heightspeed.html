@@ -21,18 +21,20 @@
 				padding: 5px;
 				display:none;
 			}
-			
+
 			a { color:red }
-			
-			
+
 			.bar { width:100%; position:absolute; z-index:200 }
+
+			/*
 			#topbar1 { height:75px; background:#000; top:0px;  }
 			#topbar2 { height:200px; background:url(textures/gradient-top.png); top:75px; }
 			#bottombar1 { height:200px; background:url(textures/gradient-bottom2.png); bottom:75px }
 			#bottombar2 { height:75px; background:#000; bottom:0px }
-			
+			*/
+
 			#oldie { z-index:500!important; margin-top:15em!important }
-			
+
 		</style>
 	</head>
 
@@ -41,10 +43,12 @@
 			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - OBJ converter example
 		</div>
 
+		<!--
 		<div class="bar" id="topbar1"></div>
 		<div class="bar" id="topbar2"></div>
 		<div class="bar" id="bottombar1"></div>
 		<div class="bar" id="bottombar2"></div>
+		-->
 
 		<script type="text/javascript" src="js/Three.js"></script>
 
@@ -170,11 +174,14 @@
 			function render() {
 				
 				if ( postprocessing.enabled ) {
-				
+					/*
 					postprocessing.material.uniforms.time.value += 0.01;
 					
 					renderer.render( scene, camera, postprocessing.texture );
 					renderer.render( postprocessing.scene, postprocessing.camera );
+					*/
+					
+					renderer.render( scene, camera );
 					
 				} else {
 					
