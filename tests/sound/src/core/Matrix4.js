@@ -514,7 +514,7 @@ THREE.Matrix4.prototype = {
 		return this;
 
 	},
-
+	/*
 	setRotationFromEuler: function( vec3 ) {
 
 		//var c = Math.PI / 180;
@@ -545,6 +545,29 @@ THREE.Matrix4.prototype = {
 	    this.n33 = - shsa * sb + ch * cb;
 
 	},
+	*/
+
+	setRotationFromEuler: function( vec3 ) {
+
+		var x = vec3.x, y = vec3.y, z = vec3.z,
+		a = Math.cos( x ), b = Math.sin( x ),
+		c = Math.cos( y ), d = Math.sin( y ),
+		e = Math.cos( z ), f = Math.sin( z ),
+		ad = a * d, bd = b * d;
+
+		this.n11 = c * e;
+		this.n12 = - c * f;
+		this.n13 = d;
+
+		this.n21 = bd * e + a * f;
+		this.n22 = - bd * f + a * e;
+		this.n23 = - b * c;
+
+		this.n31 = - ad * e + b * f;
+		this.n32 = ad * f + b * e;
+		this.n33 = a * c;
+
+        },
 
 	setRotationFromQuaternion: function( quat ) {
 
