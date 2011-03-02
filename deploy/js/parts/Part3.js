@@ -60,7 +60,7 @@ var Part3 = function ( camera, scene, renderer ) {
 		camera.position.y = 50;
 
 		scene.fog = new THREE.Fog( 0x9ca69d, 0, 2000 );
-		renderer.setClearColor( 0x9ca69d, 1 );
+		renderer.setClearColorHex( 0x9ca69d, 1 );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 

@@ -50,7 +50,7 @@ var Part1 = function ( camera, scene, renderer, events ) {
 		camera.position.y = 50;
 
 		scene.fog = new THREE.Fog( 0x7d7e76, 0, 5000 );
-		renderer.setClearColor( 0x7d7e76, 1 );
+		renderer.setClearColorHex( 0x7d7e76, 1 );
 
 		for ( var i = 0; i < elements.length; i ++ ) {
 
