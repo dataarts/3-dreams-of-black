@@ -77,6 +77,7 @@ function start( pattern ) {
 	document.body.appendChild( gui.domElement );
 
 	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
