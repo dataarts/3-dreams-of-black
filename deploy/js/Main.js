@@ -83,7 +83,7 @@ function start( pattern ) {
 	gui.add( camera.position, 'y', - 1000, 1000, 10 ).name( 'Camera Y' );
 
 	audio.play();
-	audio.currentTime = tune.getBeatMS( pattern * tune.getRows() ) / 1000;
+	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
@@ -93,6 +93,7 @@ function start( pattern ) {
 	animate();
 
 }
+
 
 function onDocumentKeyDown( event ) {
 
