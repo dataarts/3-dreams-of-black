@@ -2,14 +2,7 @@ var Part3 = function ( renderer, events ) {
 
 	Effect.call( this );
 
-	var camera, world, mouse = { x: 0, y: 0 };
-
-	function onMouseMove( x, y ) {
-
-		mouse.x = x;
-		mouse.y = y;
-
-	}
+	var camera, world;
 
 	this.init = function ( callback ) {
 
@@ -25,15 +18,9 @@ var Part3 = function ( renderer, events ) {
 
 	this.show = function () {
 
-		events.mousemove.add( onMouseMove );
-
-		camera.position.y = 250;
-
 	};
 
 	this.hide = function () {
-
-		events.mousemove.remove( onMouseMove );
 
 	};
 

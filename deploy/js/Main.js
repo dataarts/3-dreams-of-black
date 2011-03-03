@@ -76,8 +76,12 @@ function start( pattern ) {
 	gui = new GUI();
 	document.body.appendChild( gui.domElement );
 
-	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
+	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+
+	gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
+	gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
+	gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
@@ -91,6 +95,25 @@ function start( pattern ) {
 
 }
 
+// Hack for gui-dat :/
+
+this.jumpToPart1 = function () {
+
+	audio.currentTime = tune.getPatternMS( 16 ) / 1000;
+
+}
+
+this.jumpToPart2 = function () {
+
+	audio.currentTime = tune.getPatternMS( 32 ) / 1000;
+
+}
+
+this.jumpToPart3 = function () {
+
+	audio.currentTime = tune.getPatternMS( 48 ) / 1000;
+
+}
 
 function onDocumentKeyDown( event ) {
 

@@ -3,58 +3,29 @@ var Part2World = function () {
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.Fog( 0x9ca69d, 0, 2000 );
+	this.scene.fog = new THREE.FogExp2( 0x083a5c1, 0.00005 );
 
-	// Ground
+	// Lights
 
-	var mesh = new THREE.Mesh( new Plane( 2000, 4000, 50, 100 ), new THREE.MeshBasicMaterial( { color: 0x93735d, wireframe: true } ) );
-	mesh.rotation.x = - 90 * Math.PI / 180;
-	this.scene.addObject( mesh );
+	var ambient = new THREE.AmbientLight( 0x221100 );
+	this.scene.addLight( ambient );
 
-	// Train
+	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight.position.y = 1;
+	directionalLight.position.z = 1;
+	directionalLight.position.normalize();
+	this.scene.addLight( directionalLight );
 
-	var train = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshBasicMaterial( { color: 0x000000 } ) );
-	train.position.y = 25;
+	// Mesh
 
-	var carriage = new THREE.Mesh( new Cube( 50, 50, 200 ) );
+	var loader = new THREE.Loader();
+	loader.loadAscii( { model: "files/models/prairie.js", callback: function( geometry ) {
 
-	for ( var i = 0; i < 10; i ++ ) {
+		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
 
-		carriage.position.z = - i * 250;
+		that.scene.addObject( mesh );
 
-		GeometryUtils.merge( train.geometry, carriage );
-	}
-
-	train.geometry.computeBoundingSphere();
-
-	this.scene.addObject( train );
-
-	// Buffalos
-
-	var buffalos = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshBasicMaterial( { color: 0x000000 } ) );
-	buffalos.position.y = 10;
-
-	var buffalo = new THREE.Mesh( new Cube( 20, 20, 50 ) );
-
-	for ( var i = 0; i < 100; i ++ ) {
-
-		buffalo.position.x = Math.floor( Math.random() * 100 - 50 ) * 10;
-		buffalo.position.z = ( Math.random() * 20 - 10 ) * 50;
-
-		GeometryUtils.merge( buffalos.geometry, buffalo );
-	}
-
-	buffalos.geometry.computeBoundingSphere();
-
-	this.scene.addObject( buffalos );
-
-	//
-
-	this.update = function ( i ) {
-
-		train.position.z = camera.position.z;
-		buffalos.position.z = - i * 2500 + 1250;
-
-	}
+	} } );
 
 }
