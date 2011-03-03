@@ -1,12 +1,15 @@
 var Part2World = function () {
 
-	this.objects = [];
+	var that = this;
+
+	this.scene = new THREE.Scene();
+	this.scene.fog = new THREE.Fog( 0x9ca69d, 0, 2000 );
 
 	// Ground
 
 	var mesh = new THREE.Mesh( new Plane( 2000, 4000, 50, 100 ), new THREE.MeshBasicMaterial( { color: 0x93735d, wireframe: true } ) );
 	mesh.rotation.x = - 90 * Math.PI / 180;
-	this.objects.push( mesh );
+	this.scene.addObject( mesh );
 
 	// Train
 
@@ -24,7 +27,7 @@ var Part2World = function () {
 
 	train.geometry.computeBoundingSphere();
 
-	this.objects.push( train );
+	this.scene.addObject( train );
 
 	// Buffalos
 
@@ -43,14 +46,14 @@ var Part2World = function () {
 
 	buffalos.geometry.computeBoundingSphere();
 
-	this.objects.push( buffalos );
+	this.scene.addObject( buffalos );
+
+	//
 
 	this.update = function ( i ) {
 
-		/*
 		train.position.z = camera.position.z;
 		buffalos.position.z = - i * 2500 + 1250;
-		*/
 
 	}
 

@@ -21,9 +21,6 @@ function init() {
 	screenWidthHalf = screenWidth / 2;
 	screenHeightHalf = screenHeight / 2;
 
-	camera = new THREE.Camera( 60, screenWidth / screenHeight, 1, 10000 );
-	camera.position.z = 500;
-
 	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer();
@@ -47,9 +44,9 @@ function init() {
 
 	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 
-	sequencer.add( new Part1( camera, scene, renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new Part2( camera, scene, renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
-	sequencer.add( new Part3( camera, scene, renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new Part1( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
+	sequencer.add( new Part2( renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
+	sequencer.add( new Part3( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
 
 	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 2 );
 	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 2 );
@@ -80,7 +77,6 @@ function start( pattern ) {
 	document.body.appendChild( gui.domElement );
 
 	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
-	gui.add( camera.position, 'y', - 1000, 1000, 10 ).name( 'Camera Y' );
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;

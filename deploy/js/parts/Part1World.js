@@ -1,12 +1,15 @@
 var Part1World = function () {
 
-	this.objects = [];
+	var that = this;
+
+	this.scene = new THREE.Scene();
+	this.scene.fog = new THREE.Fog( 0x7d7e76, 0, 5000 );
 
 	// Ground
 
 	var mesh = new THREE.Mesh( new Plane( 8000, 8000 ), new THREE.MeshBasicMaterial( { color: 0x2c2b30 } ) );
 	mesh.rotation.x = - 90 * Math.PI / 180;
-	this.objects.push( mesh );
+	this.scene.addObject( mesh );
 
 	// Buildings
 
@@ -26,7 +29,7 @@ var Part1World = function () {
 		mesh.autoUpdateMatrix = false;
 		mesh.updateMatrix();
 
-		this.objects.push( mesh );
+		this.scene.addObject( mesh );
 
 	}
 

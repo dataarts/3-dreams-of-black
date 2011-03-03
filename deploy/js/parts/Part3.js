@@ -1,8 +1,8 @@
-var Part3 = function ( camera, scene, renderer, events ) {
+var Part3 = function ( renderer, events ) {
 
 	Effect.call( this );
 
-	var world, mouse = { x: 0, y: 0 };
+	var camera, world, mouse = { x: 0, y: 0 };
 
 	function onMouseMove( x, y ) {
 
@@ -13,6 +13,12 @@ var Part3 = function ( camera, scene, renderer, events ) {
 
 	this.init = function ( callback ) {
 
+		camera = new THREE.QuakeCamera( {
+			fov: 60, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+			movementSpeed: 2, lookSpeed: 0.0035, noFly: false, lookVertical: true, 
+			autoForward: true, heightSpeed: true, heightMin: 250, heightMax: 1500, heightCoef: 0.025
+		} );
+
 		world = new Part3World();
 
 	};
@@ -21,16 +27,7 @@ var Part3 = function ( camera, scene, renderer, events ) {
 
 		events.mousemove.add( onMouseMove );
 
-		camera.position.y = 50;
-
-		scene.fog = new THREE.Fog( 0x9ca69d, 0, 2000 );
-		renderer.setClearColorHex( 0x9ca69d, 1 );
-
-		for ( var i = 0; i < world.objects.length; i ++ ) {
-
-			scene.addObject( world.objects[ i ] );
-
-		}
+		camera.position.y = 250;
 
 	};
 
@@ -38,23 +35,11 @@ var Part3 = function ( camera, scene, renderer, events ) {
 
 		events.mousemove.remove( onMouseMove );
 
-		for ( var i = 0; i < world.objects.length; i ++ ) {
-
-			scene.removeObject( world.objects[ i ] );
-
-		}
-
 	};
 
 	this.update = function ( i ) {
 
-		camera.position.z = - i * 2000 + 1000;
-
-		camera.target.position.x += ( mouse.x - camera.target.position.x ) * 0.1;
-		camera.target.position.y += ( ( camera.position.y - mouse.y ) - camera.target.position.y ) * 0.1;
-		camera.target.position.z = camera.position.z - 1000;
-
-		renderer.render( scene, camera );
+		renderer.render( world.scene, camera );
 
 	};
 

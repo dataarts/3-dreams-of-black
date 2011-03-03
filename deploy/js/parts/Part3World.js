@@ -1,43 +1,31 @@
 var Part3World = function () {
 
-	this.objects = [];
+	var that = this;
 
-	// Dunes
+	this.scene = new THREE.Scene();
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0000125 );
 
-	var geometry = new Plane( 2000, 2000, 100, 100 );
+	// Lights
 
-	for ( var x = 0; x < 100; x ++ ) {
+	var ambient = new THREE.AmbientLight( 0x221100 );
+	this.scene.addLight( ambient );
 
-		for ( var y = 0; y < 102; y ++ ) {
+	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight.position.y = 1;
+	directionalLight.position.z = 1;
+	directionalLight.position.normalize();
+	this.scene.addLight( directionalLight );
 
-			geometry.vertices[ x + y * 100 ].position.z = Math.sin( x / 5 ) * 20 + Math.cos( y / 5 ) * 20;
+	// Mesh
 
-		}
+	var loader = new THREE.Loader();
+	loader.loadAscii( { model: "files/models/dune.js", callback: function( geometry ) {
 
-	}
+		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
 
-	var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x93735d } ) );
-	mesh.rotation.x = - 90 * Math.PI / 180;
-	this.objects.push( mesh );
+		that.scene.addObject( mesh );
 
-	// Objects
-
-	var geometry = new Cube( 50, 100, 50 );
-	var material = new THREE.MeshBasicMaterial( { color: 0x261209 } );
-
-	for ( var i = 0; i < 100; i ++ ) {
-
-		mesh = new THREE.Mesh( geometry, material );
-
-		mesh.position.x = Math.random() * 4000 - 2000;
-		mesh.position.z = Math.random() * 4000 - 2000;
-		mesh.scale.y = Math.random() * 5;
-
-		mesh.autoUpdateMatrix = false;
-		mesh.updateMatrix();
-
-		this.objects.push( mesh );
-
-	}
+	} } );
 
 }

@@ -1,8 +1,8 @@
-var Part1 = function ( camera, scene, renderer, events ) {
+var Part1 = function ( renderer, events ) {
 
 	Effect.call( this );
 
-	var world, mouse = { x: 0, y: 0 };
+	var camera, world, mouse = { x: 0, y: 0 };
 
 	function onMouseMove( x, y ) {
 
@@ -13,6 +13,9 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 	this.init = function ( callback ) {
 
+		camera = new THREE.Camera( 60, screenWidth / screenHeight, 1, 100000 );
+		camera.position.y = 50;
+
 		world = new Part1World();
 
 	};
@@ -21,28 +24,13 @@ var Part1 = function ( camera, scene, renderer, events ) {
 
 		events.mousemove.add( onMouseMove );
 
-		camera.position.y = 50;
-
-		scene.fog = new THREE.Fog( 0x7d7e76, 0, 5000 );
 		renderer.setClearColorHex( 0x7d7e76, 1 );
-
-		for ( var i = 0; i < world.objects.length; i ++ ) {
-
-			scene.addObject( world.objects[ i ] );
-
-		}
 
 	};
 
 	this.hide = function () {
 
 		events.mousemove.remove( onMouseMove );
-
-		for ( var i = 0; i < world.objects.length; i ++ ) {
-
-			scene.removeObject( world.objects[ i ] );
-
-		}
 
 	};
 
@@ -54,7 +42,7 @@ var Part1 = function ( camera, scene, renderer, events ) {
 		camera.target.position.y += ( ( camera.position.y - mouse.y ) - camera.target.position.y ) * 0.1;
 		camera.target.position.z = camera.position.z - 1000;
 
-		renderer.render( scene, camera );
+		renderer.render( world.scene, camera );
 
 	};
 
