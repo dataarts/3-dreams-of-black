@@ -18,7 +18,7 @@ var Part2 = function ( renderer, events ) {
 
 	this.show = function () {
 
-		renderer.setClearColorHex( 0x83a5c1, 1 );
+		renderer.setClearColor( world.scene.fog.color );
 
 	};
 

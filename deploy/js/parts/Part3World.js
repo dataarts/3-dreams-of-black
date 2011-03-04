@@ -19,7 +19,7 @@ var Part3World = function () {
 	// Mesh
 
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: "files/models/dune.js", callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/dune.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
