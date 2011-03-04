@@ -9,17 +9,17 @@ var Part1World = function () {
 	// Lights
 
 	var ambient = new THREE.AmbientLight( 0x221100 );
-	scene.addLight( ambient );
+	this.scene.addLight( ambient );
 
 	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
 	directionalLight.position.x = 1;
 	directionalLight.position.y = 1;
 	directionalLight.position.z = 1;
 	directionalLight.position.normalize();
-	scene.addLight( directionalLight );
+	this.scene.addLight( directionalLight );
 
 	var pointLight = new THREE.PointLight( 0xffffff, 0.35 );
-	scene.addLight( pointLight );
+	this.scene.addLight( pointLight );
 
 	// Mesh
 
