@@ -3,7 +3,7 @@ var Part3World = function () {
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0000125 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000025 );
 
 	// Lights
 
@@ -16,7 +16,7 @@ var Part3World = function () {
 	directionalLight.position.normalize();
 	this.scene.addLight( directionalLight );
 
-	// Mesh
+	// Ground
 
 	var loader = new THREE.Loader();
 	loader.loadAscii( { model: 'files/models/dune.js', callback: function( geometry ) {
@@ -25,6 +25,34 @@ var Part3World = function () {
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
 
 		that.scene.addObject( mesh );
+
+	} } );
+
+	// Clouds
+
+	var loader = new THREE.Loader();
+	loader.loadAscii( { model: 'files/models/cloud.js', callback: function( geometry ) {
+
+		var material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.25 } );
+
+		for ( var i = 0; i < 100; i ++ ) {
+
+			var mesh = new THREE.Mesh( geometry, material );
+
+			mesh.position.x = Math.random() * 60000 - 30000;
+			mesh.position.y = Math.random() * 10000 + 5000;
+			mesh.position.z	 = Math.random() * 60000 - 30000;
+
+			mesh.rotation.y = Math.random() * 180 * Math.PI / 180;
+
+			mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 5 + 1;
+
+			mesh.updateMatrix();
+			mesh.matrixAutoUpdate = false;
+
+			that.scene.addObject( mesh );
+
+		}
 
 	} } );
 
