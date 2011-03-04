@@ -18,8 +18,8 @@ var Part1 = function ( renderer, events ) {
 
 	this.show = function () {
 
-		camera.position.x = -150;
-		camera.position.y = -580;
+		camera.position.x = - 150;
+		camera.position.y = - 580;
 		camera.position.z = 200;
 
 		renderer.setClearColor( world.scene.fog.color );

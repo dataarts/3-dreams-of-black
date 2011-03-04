@@ -18,6 +18,10 @@ var Part2 = function ( renderer, events ) {
 
 	this.show = function () {
 
+		camera.position.y = 0;
+		camera.position.z = -1000;
+		camera.position.x = 15000;
+
 		renderer.setClearColor( world.scene.fog.color );
 
 	};
