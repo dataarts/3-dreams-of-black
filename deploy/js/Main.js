@@ -25,7 +25,7 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( screenWidth, screenHeight );
-	renderer.sortObjects = false;
+	renderer.sortObjects = true;
 	renderer.autoClear = false;
 
 	tune = new Tune( audio );
