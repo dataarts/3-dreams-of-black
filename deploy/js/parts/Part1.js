@@ -2,19 +2,15 @@ var Part1 = function ( renderer, events ) {
 
 	Effect.call( this );
 
-	var camera, world, mouse = { x: 0, y: 0 };
-
-	function onMouseMove( x, y ) {
-
-		mouse.x = x;
-		mouse.y = y;
-
-	}
+	var camera, world;
 
 	this.init = function ( callback ) {
 
-		camera = new THREE.Camera( 60, screenWidth / screenHeight, 1, 100000 );
-		camera.position.y = 50;
+		camera = new THREE.QuakeCamera( {
+			fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+			movementSpeed: 3, lookSpeed: 0.0015, noFly: true, lookVertical: true,
+			autoForward: true
+		} );
 
 		world = new Part1World();
 
@@ -22,25 +18,21 @@ var Part1 = function ( renderer, events ) {
 
 	this.show = function () {
 
-		events.mousemove.add( onMouseMove );
+		camera.position.x = - 150;
+		camera.position.y = - 575;
+		camera.position.z = 200;
 
-		renderer.setClearColorHex( 0x7d7e76, 1 );
+		camera.lon = - 90;
+
+		renderer.setClearColor( world.scene.fog.color );
 
 	};
 
 	this.hide = function () {
 
-		events.mousemove.remove( onMouseMove );
-
 	};
 
 	this.update = function ( i ) {
-
-		camera.position.z = - i * 1500 + 1000;
-
-		camera.target.position.x += ( mouse.x - camera.target.position.x ) * 0.1;
-		camera.target.position.y += ( ( camera.position.y - mouse.y ) - camera.target.position.y ) * 0.1;
-		camera.target.position.z = camera.position.z - 1000;
 
 		renderer.render( world.scene, camera );
 

@@ -3,34 +3,33 @@ var Part1World = function () {
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.Fog( 0x7d7e76, 0, 5000 );
+	this.scene.fog = new THREE.FogExp2( 0x000000, 0.0006 );
+	this.scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
 
-	// Ground
+	// Lights
 
-	var mesh = new THREE.Mesh( new Plane( 8000, 8000 ), new THREE.MeshBasicMaterial( { color: 0x2c2b30 } ) );
-	mesh.rotation.x = - 90 * Math.PI / 180;
-	this.scene.addObject( mesh );
+	var ambient = new THREE.AmbientLight( 0x221100 );
+	scene.addLight( ambient );
 
-	// Buildings
+	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight.position.x = 1;
+	directionalLight.position.y = 1;
+	directionalLight.position.z = 1;
+	directionalLight.position.normalize();
+	scene.addLight( directionalLight );
 
-	var geometry = new Cube( 200, 100, 200 );
-	var material = new THREE.MeshBasicMaterial( { color: 0x2c2b30 } );
+	var pointLight = new THREE.PointLight( 0xffffff, 0.35 );
+	scene.addLight( pointLight );
 
-	for ( var i = 0; i < 300; i ++ ) {
+	// Mesh
 
-		mesh = new THREE.Mesh( geometry, material );
+	var loader = new THREE.Loader();
+	loader.loadAscii( { model: 'files/models/city.js', texture_path: 'files/textures/', callback: function( geometry ) {
 
-		mesh.position.x = Math.floor( Math.random() * 40 - 20 ) * 200;
-		if ( mesh.position.x == 0 ) mesh.position.x += 200;
-		mesh.position.z = Math.floor( Math.random() * 40 - 20 ) * 200;
-		mesh.scale.y = Math.random() * Math.random() * 10;
-		mesh.position.y = (mesh.scale.y * 100 ) / 2;
+		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
 
-		mesh.autoUpdateMatrix = false;
-		mesh.updateMatrix();
+		that.scene.addObject( mesh );
 
-		this.scene.addObject( mesh );
-
-	}
-
+	} } );
 }
