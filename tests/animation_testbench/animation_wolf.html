@@ -22,7 +22,6 @@
 
 		<script type="text/javascript" src="build/Three.js"></script>
 
-
 		<script type="text/javascript">
 
 			window.onload = init;
@@ -65,7 +64,7 @@
 				container.appendChild( renderer.domElement );
 
 				var loader = new THREE.Loader();
-				loader.loadAscii( { model: "assets/wolf/a_wolf.js", callback: createScene } );
+				loader.loadAscii( { model: "assets/wolf/a_wolf-1.js", callback: createScene } );
 
 				setInterval( loop, 1000 / 60 );
 
