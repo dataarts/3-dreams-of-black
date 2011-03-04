@@ -8,8 +8,8 @@ var Part2 = function ( renderer, events ) {
 
 		camera = new THREE.QuakeCamera( {
 			fov: 60, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-			movementSpeed: 3, lookSpeed: 0.0035, noFly: false, lookVertical: true, 
-			autoForward: true, heightSpeed: true, heightMin: -1500, heightMax: 1000, heightCoef: 0.0125
+			movementSpeed: 10, lookSpeed: 0.0025, noFly: false, lookVertical: true, 
+			autoForward: true
 		} );
 
 		world = new Part2World();
@@ -17,6 +17,11 @@ var Part2 = function ( renderer, events ) {
 	};
 
 	this.show = function () {
+
+		camera.position.y = 0;
+		camera.position.z = -1000;
+		camera.position.x = 15000;
+		camera.lon = 170;
 
 		renderer.setClearColor( world.scene.fog.color );
 

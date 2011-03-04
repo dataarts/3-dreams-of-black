@@ -18,6 +18,10 @@ var Part3 = function ( renderer, events ) {
 
 	this.show = function () {
 
+		camera.position.x = 0;
+		camera.position.y = 250;
+		camera.position.z = 0;
+
 	};
 
 	this.hide = function () {
