@@ -47,6 +47,9 @@ var Part3World = function () {
 
 			mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 5 + 1;
 
+			mesh.updateMatrix();
+			mesh.matrixAutoUpdate = false;
+
 			that.scene.addObject( mesh );
 
 		}
