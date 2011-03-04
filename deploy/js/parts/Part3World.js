@@ -33,9 +33,11 @@ var Part3World = function () {
 	var loader = new THREE.Loader();
 	loader.loadAscii( { model: 'files/models/cloud.js', callback: function( geometry ) {
 
+		var material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0.25 } );
+
 		for ( var i = 0; i < 100; i ++ ) {
 
-			var mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0xffffff, shading: THREE.FlatShadingh, opacity: 0.25 } ) );
+			var mesh = new THREE.Mesh( geometry, material );
 
 			mesh.position.x = Math.random() * 60000 - 30000;
 			mesh.position.y = Math.random() * 10000 + 5000;
