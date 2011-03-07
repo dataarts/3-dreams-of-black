@@ -270,7 +270,7 @@ THREE.WebGLBatch.prototype.doLoadUniform = function( type, location, data ) {
 
 	   case "vec3": 
 	   case "vec3Array": 
-			this.GL.uniformVec3( location, data );
+			this.GL.uniform3fv( location, data );
 	     	break; 
 	}
 }
