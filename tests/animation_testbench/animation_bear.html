@@ -55,7 +55,7 @@
 				scene = new THREE.Scene();
 				
 				light = new THREE.DirectionalLight( 0xffffff );
-				light.position.set( 0, 0, 1 );
+				light.position.set( 0, 1, 1 );
 				light.position.normalize();
 				scene.addLight( light );
 
@@ -77,7 +77,7 @@
 				var material = new THREE.MeshLambertMaterial( texture );				
 				var mesh     = new THREE.SkinnedMesh( geometry, material );
 			
-			//	visualizeBones( mesh );
+				visualizeBones( mesh );
 
 				THREE.AnimationHandler.add( geometry.animation );
 
@@ -116,42 +116,33 @@
 
 			function visualizeBones( skin ) {
 				
-				var cube = new Cube( 1, 1, 1 );
 				var up   = new THREE.Vector3( 0, 1, 0 );
 				var scale = new THREE.Vector3( 1, 1, 1 );
 				var zero = new THREE.Vector3( 0, 0, 0 );
-				var rotationMatrix = new THREE.Matrix4();
-				var inverse = new THREE.Matrix4()
 				
 				for ( var b = 0; b < skin.bones.length; b++ ) {
 					
 					var bone = skin.bones[ b ];
 					
-					if ( bone.parent !== undefined && ! ( bone.parent instanceof THREE.SkinnedMesh )) {
+					var nc = bone.children.length;
+					
+					for( var n = 0; n < nc; n++ ) {
 						
+						var child    = bone.children[ n ];
 						var material = new THREE.MeshLambertMaterial( { color: 0x888888 + Math.random() * 0x888888 } );
+						var cube     = new Cube( 2, 2, child.position.length() );
 						var mesh     = new THREE.Mesh( cube, material );
 						
-						scale.set( 2, 2, bone.position.length() );
-						
 						mesh.matrixAutoUpdate = false;
-						mesh.matrix.lookAt( zero, bone.position, up );
-						mesh.matrix.scale( scale );
+						mesh.matrix.lookAt( zero, child.position, up );
 						
-						mesh.matrix.n14 -= mesh.matrix.n13 * 0.5;
-						mesh.matrix.n24 -= mesh.matrix.n23 * 0.5;
-						mesh.matrix.n34 -= mesh.matrix.n33 * 0.5;
-						
-						rotationMatrix.copy( bone.parent.matrix );
-						rotationMatrix.setPosition( zero );
-						THREE.Matrix4.makeInvert( rotationMatrix, inverse );
-						mesh.matrix.multiplySelf( inverse );
+						mesh.matrix.n14 -= mesh.matrix.n13 * 0.5 * child.position.length();
+						mesh.matrix.n24 -= mesh.matrix.n23 * 0.5 * child.position.length();
+						mesh.matrix.n34 -= mesh.matrix.n33 * 0.5 * child.position.length();
 
-						mesh.belongsTo = bone;
-						mesh.matrix.belongsTo = mesh;
-
-						bone.parent.addChild( mesh );
+						bone.addChild( mesh );
 					}
+					
 				}
 			} 
 
