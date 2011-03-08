@@ -64,13 +64,6 @@ THREE.WebGLBatch = function( args )
 
 THREE.WebGLBatch.prototype.render = function() {
 	
-	if( this.attributesId !== THREE.WebGLRenderer.Cache.currentAttributesId ) {
-		
-		this.bindAttributeBuffers();
-		THREE.WebGLRenderer.Cache.currentAttributesId = this.attributesId;
-	}
-		
-
 	if( this.textures.length !== 0 ) {
 		
 		this.bindTextures();
@@ -79,6 +72,14 @@ THREE.WebGLBatch.prototype.render = function() {
 
 	this.loadUniformInputs();
 
+
+	if( this.attributesId !== THREE.WebGLRenderer.Cache.currentAttributesId ) {
+		
+		this.bindAttributeBuffers();
+		THREE.WebGLRenderer.Cache.currentAttributesId = this.attributesId;
+	}
+	else this.enableAttributeBuffers();
+		
 
 	if( this.elements !== THREE.WebGLRenderer.Cache.currentElementId ) {
 		
@@ -96,6 +97,8 @@ THREE.WebGLBatch.prototype.render = function() {
 	}
 	
     this.GL.drawElements( this.GL.TRIANGLES, this.elementsSize, this.GL.UNSIGNED_SHORT, 0 );
+
+	this.disableAttributesBuffers();
 }
 
 
@@ -105,8 +108,26 @@ THREE.WebGLBatch.prototype.bindAttributeBuffers = function() {
 		
 	    this.GL.bindBuffer( this.GL.ARRAY_BUFFER, this.attributes[ a ].buffer );
 	    this.GL.vertexAttribPointer( this.attributes[ a ].location, this.attributes[ a ].size, this.GL.FLOAT, false, 0, 0 );
+	    this.GL.enableVertexAttribArray( this.attributes[ a ].location );
 	}
 }
+
+THREE.WebGLBatch.prototype.enableAttributeBuffers = function() {
+	
+	for( var a = 0; a < this.attributes.length; a++ ) {
+		
+	    this.GL.enableVertexAttribArray( this.attributes[ a ].location );
+	}
+}	
+
+	
+THREE.WebGLBatch.prototype.disableAttributesBuffers = function() {
+	
+	for( var a = 0; a < this.attributes.length; a++ ) {
+		
+	    this.GL.disableVertexAttribArray( this.attributes[ a ].location );
+	}
+}	
 	
 
 THREE.WebGLBatch.prototype.bindTextures = function() {

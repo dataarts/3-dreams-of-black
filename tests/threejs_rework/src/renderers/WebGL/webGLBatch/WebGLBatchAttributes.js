@@ -49,7 +49,7 @@ THREE.WebGLBatchAttributes = (function() {
 	function addAttribute( info ) {
 		
 		var location = GL.getAttribLocation( program, info.name );
-		GL.enableVertexAttribArray( location );
+		//GL.enableVertexAttribArray( location );
 		
 		return {
 			

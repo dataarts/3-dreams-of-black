@@ -24,30 +24,17 @@ THREE.WebGLShaderDefinitions.shadowVolumeVertex = (function() {
 		"{",
 			"vDiscardFragment = 0.0;",
 			"vec4 modified = aVertex;",
-			"vColor = vec4( 1, 0, 1, 1 );",
-
-	/*		"if( aShadowVertexType == 0.0 ) {",
-				"modified = vec4( modified.xyz + uDirectionalLight * 200.0, 1 );",
-				"vColor = vec4( 0, 1, 1, 1 );",
-			"} else {",
-				"vColor = vec4( 0, 1, 0, 1 );",
-			"}",
-
-			"modified = vec4( modified.xyz + aShadowNormalA.xyz * 10.0, 1 );",
-			"modified = vec4( modified.xyz + aShadowNormalB.xyz * 10.0, 1 );",
-*/
 			
 			"if( aShadowVertexType == 0.0 && dot( uDirectionalLight, aShadowNormalA ) >= 0.0 ) {",
-				"modified = vec4( modified.xyz + uDirectionalLight * 200.0, 1 );",
-				"vColor = vec4( 0, 1, 1, 1 );",
-			"} else if( aShadowVertexType == 1.0 && dot( uDirectionalLight, aShadowNormalA ) < 0.0 && dot( uDirectionalLight, aShadowNormalB ) >= 0.0 ) {",
-				"modified = vec4( modified.xyz + uDirectionalLight * 200.0, 1 );",
-				"vColor = vec4( 0, 0, 1, 1 );",
-			"} else if( aShadowVertexType == 2.0 && dot( uDirectionalLight, aShadowNormalB ) < 0.0 && dot( uDirectionalLight, aShadowNormalA ) >= 0.0 ) {",
-				"modified = vec4( modified.xyz + uDirectionalLight * 200.0, 1 );",
-				"vColor = vec4( 0, 1, 0, 1 );",
+				"modified = vec4( modified.xyz + uDirectionalLight * 2000.0, 1 );",
 			"} else if( aShadowVertexType == 1.0 || aShadowVertexType == 2.0 ) {",
-				"vDiscardFragment = 1.0;",
+				"if( aShadowVertexType == 1.0 && dot( uDirectionalLight, aShadowNormalA ) < 0.0 && dot( uDirectionalLight, aShadowNormalB ) >= 0.0 ) {",
+					"modified = vec4( modified.xyz + uDirectionalLight * 2000.0, 1 );",
+				"} else if( aShadowVertexType == 2.0 && dot( uDirectionalLight, aShadowNormalB ) < 0.0 && dot( uDirectionalLight, aShadowNormalA ) >= 0.0 ) {",
+					"modified = vec4( modified.xyz + uDirectionalLight * 2000.0, 1 );",
+				"} else {",
+					"vDiscardFragment = 1.0;",
+				"}",
 			"}",
 			
 			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * modified;",
@@ -71,12 +58,11 @@ THREE.WebGLShaderDefinitions.shadowVolumeFragment = (function() {
 		"#endif",		
 
 		"varying	float	vDiscardFragment;",
-		"varying	vec4	vColor;",
 		
 		"void main( void )",
 		"{",
 			"if( vDiscardFragment == 1.0 ) { discard; }",
-			"gl_FragColor = vColor;",
+			"gl_FragColor = vec4( 0.5, 0.5, 0.5, 1 );",
 		"}"
 	].join( "\n" );
 

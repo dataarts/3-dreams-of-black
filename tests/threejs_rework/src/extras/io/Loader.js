@@ -759,7 +759,7 @@ THREE.Loader.prototype = {
 
 			init_vertices();
 			init_faces();
-			init_skin();
+			if( data.skinWeights ) init_skin();
 
 			this.computeCentroids();
 			this.computeFaceNormals();

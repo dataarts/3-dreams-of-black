@@ -321,12 +321,9 @@ THREE.WebGLBatchCompiler = (function() {
 							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
 							tempVertices.push( 1 );				// pad for faster vertex shader
 								
-							if( shadowVertexTypes.length == 0 ) {
-							
-								tempNormals.push( face.normal.x );
-								tempNormals.push( face.normal.y );
-								tempNormals.push( face.normal.z );
-							}
+							tempNormals.push( face.normal.x );
+							tempNormals.push( face.normal.y );
+							tempNormals.push( face.normal.z );
 						}
 						
 				

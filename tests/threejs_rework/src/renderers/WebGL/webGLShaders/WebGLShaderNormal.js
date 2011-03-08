@@ -38,11 +38,12 @@ THREE.WebGLShaderDefinitions.normalFragment = (function() {
 			"precision highp float;",
 		"#endif",		
 
+		"uniform	float	uAmbientLight;",
 		"varying	vec3	vNormal;",
 
 		"void main( void )",
 		"{",
-			"gl_FragColor = vec4(( vNormal + 1.0 ) * 0.5, 1.0 );",
+			"gl_FragColor = vec4(( vNormal + 1.0 ) * 0.5 * uAmbientLight, 1.0 );",
 		"}"
 	].join( "\n" );
 

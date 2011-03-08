@@ -37,8 +37,8 @@
 		<script type="text/javascript" src="src/objects/Mesh.js"></script>
 		<script type="text/javascript" src="src/objects/Skin.js"></script>
 		<script type="text/javascript" src="src/objects/Bone.js"></script>
-		<script type="text/javascript" src="src/objects/ShadowVolume.js"></script>
 		<script type="text/javascript" src="src/objects/LOD.js"></script>
+		<script type="text/javascript" src="src/objects/ShadowVolume.js"></script>
 
 		<script type="text/javascript" src="src/scenes/Scene.js"></script>
 		<script type="text/javascript" src="src/cameras/Camera.js"></script>
@@ -112,37 +112,63 @@
 
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
-			init();
-			// loop();
-			setInterval( loop, 1000 / 60 );
+			//var loader = new THREE.Loader();
+			//loader.loadAscii( { model: "assets/scene/models/buffalo_bone.js", callback: init } );
 
+			init( new THREE.Cube( 40, 40, 40 ));
 
-			function init() {
+			function init( geometry ) {
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = 400;
+				camera.position.z = 150;
 
 				scene = new THREE.Scene();
 				scene.addChild( camera );
 
-				var geometry = new THREE.Cube( 100, 100, 100 );
+
+
+
+
+				// world
+
+				var cube = new THREE.Cube( 300, 300, 10 );
 				var material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
+
+
+				var mesh1 = new THREE.Mesh( cube, material );
+				mesh1.position.z = -150;
+				scene.addChild( mesh1 );
+
+				var mesh2 = new THREE.Mesh( cube, material );
+				mesh2.position.x = -150;
+				mesh2.rotation.y = 90 * Math.PI / 180;
+				scene.addChild( mesh2 );
+
+				var mesh3 = new THREE.Mesh( cube, material );
+				mesh3.position.y = -150;
+				mesh3.rotation.x = 90 * Math.PI / 180;
+				scene.addChild( mesh3 );
 				
-				var mesh     = new THREE.Mesh( geometry, material );
+				var mesh4 = new THREE.Mesh( cube, material );
+				mesh4.position.x = -150;
+				mesh4.rotation.y = 90 * Math.PI / 180;
+				scene.addChild( mesh4 );
 
 
-			//	scene.addChild( mesh );
+
+				// shadow
+
+				cube = new THREE.Cube( 40, 40, 40 );
+				var mesh = new THREE.Mesh( cube, material );
 
 				var shadowMaterial = new THREE.MeshShaderMaterial( { vertex_shader: "shadowVolumeVertex", fragment_shader: "shadowVolumeFragment" } );
 				var shadowVolume   = new THREE.ShadowVolume( mesh, shadowMaterial );
 				
-				shadowVolume.position.x = 120;
-				
+				scene.addChild( mesh );
 				scene.addChild( shadowVolume );
-
 
 
 				renderer = new THREE.WebGLRenderer();
@@ -159,13 +185,14 @@
 
 				}
 
+				setInterval( loop, 1000 / 60 );
 			}
 
 
 			function onDocumentMouseMove(event) {
 
-				mouseX = ( event.clientX - windowHalfX ) * 5;
-				mouseY = ( event.clientY - windowHalfY ) * 5;
+				mouseX = ( event.clientX - windowHalfX ) * 2;
+				mouseY = ( event.clientY - windowHalfY ) * 2;
 
 			}
 
@@ -174,7 +201,7 @@
 			function loop() {
 
 				renderer.directionalLight.x = Math.sin( t );
-				renderer.directionalLight.y = -1;
+				renderer.directionalLight.y = -1 + Math.sin( t * 2 );
 				renderer.directionalLight.z = Math.cos( t );
 
 				t += 0.02;

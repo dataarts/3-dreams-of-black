@@ -11,7 +11,7 @@ THREE.WebGLRenderer = function( contextId ) {
 	this.cameraNeedsUpdate = true;
 
 	
-	this.GL = this.domElement.getContext( "experimental-webgl", { antialias: true } );
+	this.GL = this.domElement.getContext( "experimental-webgl", { antialias: true, stencil: true } );
 	
     this.GL.clearColor	( 1.0, 1.0, 1.0, 1.0 );
     this.GL.clearDepth	( 1.0 );
@@ -31,7 +31,7 @@ THREE.WebGLRenderer = function( contextId ) {
 	this.renderDictionaryTransparent.list = [];
 	this.renderDictionaryLights           = {};
 	this.renderDictionarySounds           = {};
-
+	this.renderListShadowVolumes          = [];
 
 	THREE.WebGLRenderer.Cache                     = {};
 	THREE.WebGLRenderer.Cache.currentGL           = this.GL;
@@ -78,12 +78,6 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	}
 	
 
-	// update animation
-	
-	if( THREE.AnimationHandler )
-		THREE.AnimationHandler.update();
-
-
 	// reset cache
 	
 	THREE.WebGLRenderer.Cache.currentGL           = this.GL;
@@ -95,45 +89,60 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
 	scene.update( undefined, false, camera, this );
 	
+
+
+	// update light
+
+	this.directionalLight.normalize();
+	this.directionalLightFlat32[ 0 ] = this.directionalLight.x;
+	this.directionalLightFlat32[ 1 ] = this.directionalLight.y;
+	this.directionalLightFlat32[ 2 ] = this.directionalLight.z;
+
+
+	// clear
+	
+   	this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT | this.GL.STENCIL_BUFFER_BIT );
+	
 	
 	// render opaque
 
-   	this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT );
-	
-	for( var programId in this.renderDictionaryOpaque ) {
-		
-		var batches = this.renderDictionaryOpaque[ programId ];
+   	
+    this.GL.disable		( this.GL.STENCIL_TEST );
+    this.GL.enable		( this.GL.DEPTH_TEST );
+    this.GL.depthFunc	( this.GL.LESS );
+    this.GL.depthMask   ( true );
+	this.GL.cullFace    ( this.GL.BACK );
 
-		
-		// load common (iterate over batches but break after first)
-		
-		this.directionalLight.normalize();
-		this.directionalLightFlat32[ 0 ] = this.directionalLight.x;
-		this.directionalLightFlat32[ 1 ] = this.directionalLight.y;
-		this.directionalLightFlat32[ 2 ] = this.directionalLight.z;
-		
-		for( var batchId in batches ) {
-			
-			var batch = batches[ batchId ];
-			
-			batch.loadProgram();
-			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32   ());
-			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32   ());
-			batch.loadUniform( "uCameraInverseMatrix3x3",  camera.inverseMatrix    .flatten323x3());
-			batch.loadUniform( "uSceneFogFar",             scene.fogFar   );
-			batch.loadUniform( "uSceneFogNear",            scene.fogNear  );
-			batch.loadUniform( "uSceneFogColor",           scene.fogColor );
-			batch.loadUniform( "uDirectionalLight",        this.directionalLightFlat32 );
+	this.renderDictionary( this.renderDictionaryOpaque, 1 );
+
 	
-			break;
-		}
-		
-		
-		// render batches
-		
-		for( var batchId in batches )
-			batches[ batchId ].render();
-	}
+	// render stencil passes
+	
+	this.GL.enable( this.GL.STENCIL_TEST );
+	this.GL.depthMask( false );
+	this.GL.colorMask( false, false, false, false );
+
+	this.GL.stencilFunc( this.GL.ALWAYS, 1, 0xFF );
+	this.GL.stencilOp( this.GL.KEEP, this.GL.KEEP, this.GL.INVERT );
+					
+	this.GL.cullFace( this.GL.FRONT );
+	this.renderDictionary( this.renderListShadowVolumes, 1 );
+					
+	this.GL.cullFace( this.GL.BACK );
+	this.renderDictionary( this.renderListShadowVolumes, 1 );
+
+
+	// color
+
+	this.GL.colorMask( true, true, true, true );
+    this.GL.depthFunc( this.GL.LEQUAL );
+	this.GL.stencilFunc( this.GL.NOTEQUAL, 0, 0xFF );
+	this.GL.stencilOp( this.GL.KEEP, this.GL.KEEP, this.GL.KEEP );
+					
+	this.renderDictionary( this.renderDictionaryOpaque, 0.5 );
+				
+	this.GL.depthMask( true );
+	this.GL.disable( this.GL.STENCIL_TEST );
 	
 	
 	// sort transparent
@@ -173,13 +182,41 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32   ());
 			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32   ());
 			batch.loadUniform( "uCameraInverseMatrix3x3",  camera.inverseMatrix    .flatten323x3());
-			batch.loadUniform( "uSceneFogFar",             scene.fogFar   );
-			batch.loadUniform( "uSceneFogNear",            scene.fogNear  );
-			batch.loadUniform( "uSceneFogColor",           scene.fogColor );
 			batch.render();
 		}
 	}
 }
+
+
+
+THREE.WebGLRenderer.prototype.renderDictionary = function( dictionary, ambient ) {
+
+	for( var programId in dictionary ) {
+		
+		var batches = dictionary[ programId ];
+
+		for( var batchId in batches ) {
+			
+			var batch = batches[ batchId ];
+			
+			batch.loadProgram();
+			batch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix",     camera.inverseMatrix    .flatten32   ());
+			batch.loadUniform( "uCameraInverseMatrix3x3",  camera.inverseMatrix    .flatten323x3());
+			batch.loadUniform( "uDirectionalLight",        this.directionalLightFlat32 );
+			batch.loadUniform( "uAmbientLight",            ambient );
+	
+			break;
+		}
+		
+		
+		// render batches
+		
+		for( var batchId in batches )
+			batches[ batchId ].render();
+	}
+}
+
 
 
 /*
@@ -203,9 +240,28 @@ THREE.WebGLRenderer.prototype.addToRenderList = function( renderable ) {
 	
 	
 		
+	// add to shadow volumes
+	
+	if( renderable instanceof THREE.ShadowVolume ) {
+		
+		var batch;
+		var programDictionary;
+		
+		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
+			
+			batch             = renderable.webGLBatches[ b ];
+			programDictionary = this.renderListShadowVolumes[ batch.programId ];
+			
+			if( programDictionary === undefined )
+				programDictionary = this.renderListShadowVolumes[ batch.programId ] = {};
+			 			
+			programDictionary[ batch.id ] = batch;
+		}
+	}
+	
 	// add opaque object's batches
 	
-	if( !renderable.webGLIsTransparent ) {
+	else if( !renderable.webGLIsTransparent ) {
 		
 		var batch;
 		var programDictionary;
@@ -221,7 +277,7 @@ THREE.WebGLRenderer.prototype.addToRenderList = function( renderable ) {
 			programDictionary[ batch.id ] = batch;
 		}
 	}
-	
+
 	// add transparent/partly transparent object's batches
 	
 	else {
@@ -243,10 +299,29 @@ THREE.WebGLRenderer.prototype.removeFromRenderList = function( renderable ) {
 		
 	renderable.webGLAddedToRenderList = false;
 
+
+	// remove shadow volumes
+	
+	if( renderable instanceof THREE.ShadowVolume ) {
 		
+		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
+			
+			var batch             = renderable.webGLBatches[ b ];
+			var programDictionary = this.renderListShadowVolumes[ batch.programId ];
+			
+			if( programDictionary === undefined )
+				return;
+				
+			if( programDictionary[ batch.id ] === undefined )
+				return;
+				
+			delete programDictionary[ batch.id ];
+		}
+	}
+	
 	// remove batches
 		
-	if( !renderable.webGLIsTransparent ) {
+	else if( !renderable.webGLIsTransparent ) {
 		
 		for( var b = 0; b < renderable.webGLBatches.length; b++ ) {
 			
@@ -262,6 +337,9 @@ THREE.WebGLRenderer.prototype.removeFromRenderList = function( renderable ) {
 			delete programDictionary[ batch.id ];
 		}
 	}
+
+	// remove transparent
+	
 	else {
 
 		var id = renderable.webGLBatches[ 0 ].id;		// use first batch id as key
