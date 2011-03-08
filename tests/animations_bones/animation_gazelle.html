@@ -56,7 +56,7 @@
 				container.appendChild( renderer.domElement );
 
 				var loader = new THREE.Loader();
-				loader.loadAscii( { model: "assets/bear/a_bear.js", callback: createScene } );
+				loader.loadAscii( { model: "assets/gazelle/a_gazelle.js", callback: createScene } );
 
 				setInterval( loop, 1000 / 60 );
 
@@ -69,11 +69,11 @@
 				
 				var mesh = new THREE.SkinnedMesh( geometry, material );
 				
-				mesh.scale.x = mesh.scale.y = mesh.scale.z = 100;
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = 10;
 				
-				mesh.position.x = 0; 
+				/*mesh.position.x = 0; 
 				mesh.position.y = 0;
-				mesh.position.z = 0;
+				mesh.position.z = 0;*/
 
 				THREE.AnimationHandler.add( geometry.animation );
 
