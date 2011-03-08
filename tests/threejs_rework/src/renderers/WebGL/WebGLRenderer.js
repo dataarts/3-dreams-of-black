@@ -37,6 +37,9 @@ THREE.WebGLRenderer = function( contextId ) {
 	THREE.WebGLRenderer.Cache.currentGL           = this.GL;
 	THREE.WebGLRenderer.Cache.currentElementId    = -1;
 	THREE.WebGLRenderer.Cache.currentAttributesId = -1;
+	
+	this.directionalLightFlat32 = new Float32Array( 3 );
+	this.directionalLight       = new THREE.Vector3( 0, -1, 0 );
 };
 
 
@@ -104,6 +107,11 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 		
 		// load common (iterate over batches but break after first)
 		
+		this.directionalLight.normalize();
+		this.directionalLightFlat32[ 0 ] = this.directionalLight.x;
+		this.directionalLightFlat32[ 1 ] = this.directionalLight.y;
+		this.directionalLightFlat32[ 2 ] = this.directionalLight.z;
+		
 		for( var batchId in batches ) {
 			
 			var batch = batches[ batchId ];
@@ -115,6 +123,7 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 			batch.loadUniform( "uSceneFogFar",             scene.fogFar   );
 			batch.loadUniform( "uSceneFogNear",            scene.fogNear  );
 			batch.loadUniform( "uSceneFogColor",           scene.fogColor );
+			batch.loadUniform( "uDirectionalLight",        this.directionalLightFlat32 );
 	
 			break;
 		}
@@ -190,7 +199,7 @@ THREE.WebGLRenderer.prototype.addToRenderList = function( renderable ) {
 	// needs to compile?
 	
 	if( renderable.webGLBatches === undefined )
-		THREE.WebGLBatchCompiler.compile( renderable );
+		THREE.WebGLBatchCompiler.compile( renderable, true );
 	
 	
 		

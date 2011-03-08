@@ -28,7 +28,9 @@ THREE.WebGLBatchCompiler = (function() {
 	var geoBuffers;
 	var GL;
 	var doLog;
-	
+	var shadowVertexTypes;
+	var shadowNormalsFaceA;
+	var shadowNormalsFaceB;
 	
 	//--- compile ---
 	
@@ -53,8 +55,11 @@ THREE.WebGLBatchCompiler = (function() {
 		skinVerticesC  = mesh.geometry.skinVerticesC;
 		skinVerticesD  = mesh.geometry.skinVerticesD;
 		uv0s           = mesh.geometry.uvs;
-		colors         = mesh.geometry.colors;
 		uv1s           = [];
+		colors         = mesh.geometry.colors;
+		shadowVertexTypes = mesh.geometry.vertexTypes !== undefined ? mesh.geometry.vertexTypes : [];
+		shadowNormalsFaceA = mesh.geometry.normalsFaceA !== undefined ? mesh.geometry.normalsFaceA : [];
+		shadowNormalsFaceB = mesh.geometry.normalsFaceB !== undefined ? mesh.geometry.normalsFaceB : [];
 
 		if( checkBatchCache()) {
 			
@@ -273,10 +278,13 @@ THREE.WebGLBatchCompiler = (function() {
 				var tempSkinIndices 	= [];
 				var tempSkinVerticesA 	= [];
 				var tempSkinVerticesB 	= [];
+				var tempShadowVertexTypes = [];
+				var tempShadowNormalsFaceA = [];
+				var tempShadowNormalsFaceB = [];
 				var tempFaces       	= [];
 				var vertexCounter   	= 0;
 				
-				
+
 				// loop through faces
 				
 				for( var f = 0; f < chunk.faces.length; f++ ) {
@@ -312,11 +320,29 @@ THREE.WebGLBatchCompiler = (function() {
 							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
 							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
 							tempVertices.push( 1 );				// pad for faster vertex shader
+								
+							if( shadowVertexTypes.length == 0 ) {
 							
-							tempNormals.push( face.normal.x );
-							tempNormals.push( face.normal.y );
-							tempNormals.push( face.normal.z );
+								tempNormals.push( face.normal.x );
+								tempNormals.push( face.normal.y );
+								tempNormals.push( face.normal.z );
+							}
 						}
+						
+				
+						if( shadowVertexTypes.length > 0 ) {
+							
+							tempShadowVertexTypes.push( shadowVertexTypes[ face[ faceIndices[ i ]]] );
+							
+							tempShadowNormalsFaceA.push( shadowNormalsFaceA[ face[ faceIndices[ i ]]].x );
+							tempShadowNormalsFaceA.push( shadowNormalsFaceA[ face[ faceIndices[ i ]]].y );
+							tempShadowNormalsFaceA.push( shadowNormalsFaceA[ face[ faceIndices[ i ]]].z );
+
+							tempShadowNormalsFaceB.push( shadowNormalsFaceB[ face[ faceIndices[ i ]]].x );
+							tempShadowNormalsFaceB.push( shadowNormalsFaceB[ face[ faceIndices[ i ]]].y );
+							tempShadowNormalsFaceB.push( shadowNormalsFaceB[ face[ faceIndices[ i ]]].z );
+						}						
+
 						
 						
 						if( uv0s.length > 0 ) {
@@ -373,7 +399,13 @@ THREE.WebGLBatchCompiler = (function() {
 				if( tempSkinIndices  .length > 0 ) attributeBuffers.push( bindBuffer( "aSkinIndices", "vec4", tempSkinIndices, 	 4 ));
 				if( tempSkinVerticesA.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinVertexA", "vec4", tempSkinVerticesA, 4 ));
 				if( tempSkinVerticesB.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinVertexB", "vec4", tempSkinVerticesB, 4 ));
-				if( tempFaces        .length > 0 ) elementBuffer = bindElement( tempFaces, tempFaces.length );
+
+				if( tempShadowVertexTypes.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowVertexType", "float", tempShadowVertexTypes, 1 ));
+				if( tempShadowNormalsFaceA.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowNormalA", "vec3", tempShadowNormalsFaceA, 3 ));
+				if( tempShadowNormalsFaceB.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowNormalB", "vec3", tempShadowNormalsFaceB, 3 ));
+
+				if( tempFaces.length > 0 ) elementBuffer = bindElement( tempFaces, tempFaces.length );
+				
 				
 				if( attributeBuffers.length > 0 && elementBuffer !== undefined ) {
 					
