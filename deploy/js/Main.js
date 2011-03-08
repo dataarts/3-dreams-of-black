@@ -151,8 +151,8 @@ function onWindowResize( event ) {
 	screenWidthHalf = screenWidth / 2;
 	screenHeightHalf = screenHeight / 2;
 
-	camera.aspect = screenWidth / screenHeight;
-	camera.updateProjectionMatrix();
+	// camera.aspect = screenWidth / screenHeight;
+	// camera.updateProjectionMatrix();
 
 	renderer.setSize( screenWidth, screenHeight );
 

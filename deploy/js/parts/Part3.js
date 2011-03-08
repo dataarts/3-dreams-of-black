@@ -8,8 +8,8 @@ var Part3 = function ( renderer, events ) {
 
 		camera = new THREE.QuakeCamera( {
 			fov: 60, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-			movementSpeed: 2, lookSpeed: 0.0035, noFly: false, lookVertical: true, 
-			autoForward: true, heightSpeed: true, heightMin: 250, heightMax: 1500, heightCoef: 0.025
+			movementSpeed: 10, lookSpeed: 0.0015, noFly: false, lookVertical: true, 
+			autoForward: true /*, heightSpeed: true, heightMin: 250, heightMax: 1500, heightCoef: 0.025*/
 		} );
 
 		world = new Part3World();
@@ -30,6 +30,7 @@ var Part3 = function ( renderer, events ) {
 
 	this.update = function ( i ) {
 
+		world.update( camera );
 		renderer.render( world.scene, camera );
 
 	};
