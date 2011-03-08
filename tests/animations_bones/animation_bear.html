@@ -20,7 +20,7 @@
 
 		<div id="container"></div> 
 
-		<script type="text/javascript" src="build_r34/Three.js"></script>
+		<script type="text/javascript" src="build_r35_empa/Three.js"></script>
 
 		<script type="text/javascript">
 
@@ -75,14 +75,18 @@
 				mesh.position.y = 0;
 				mesh.position.z = 0;
 
+				THREE.AnimationHandler.add( geometry.animation );
+
 				scene.addObject( mesh );
-				var anim = new THREE.Animation( mesh, geometry.animation );
+				var anim = new THREE.Animation( mesh, "take_001", undefined, false );
 				anim.play();
 				
 			}
 
 			function loop() {
 				r += 0.01;
+
+				THREE.AnimationHandler.update( 16 );
 
 				camera.position.x = 500*Math.cos(r);
 				camera.position.z = 500*Math.sin(r);

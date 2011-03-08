@@ -56,7 +56,7 @@
 				container.appendChild( renderer.domElement );
 
 				var loader = new THREE.Loader();
-				loader.loadAscii( { model: "assets/wolf/a_wolf-1.js", callback: createScene } );
+				loader.loadAscii( { model: "assets/lion/a_lion_male.js", callback: createScene } );
 
 				setInterval( loop, 1000 / 60 );
 
@@ -66,21 +66,19 @@
 
 				var texture = { color: 0xffffff, skinning: true, wireframe: true };
 				var material = new THREE.MeshLambertMaterial( texture );				
+				
 				var mesh = new THREE.SkinnedMesh( geometry, material );
 				
-				/*mesh.scale.x = mesh.scale.y = mesh.scale.z = 1;
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = 30;
 				
 				mesh.position.x = 0; 
 				mesh.position.y = 0;
-				mesh.position.z = 0;*/
+				mesh.position.z = 0;
 
 				THREE.AnimationHandler.add( geometry.animation );
 
 				scene.addObject( mesh );
-
-				//var anim = new THREE.Animation( mesh, geometry.animation );
 				var anim = new THREE.Animation( mesh, "take_001", undefined, false );
-				
 				anim.play();
 				
 			}
