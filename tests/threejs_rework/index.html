@@ -204,6 +204,10 @@
 				renderer.directionalLight.y = -1 + Math.sin( t * 2 );
 				renderer.directionalLight.z = Math.cos( t );
 
+				renderer.directionalLight.x = -1;
+				renderer.directionalLight.y = -1;
+				renderer.directionalLight.z = 1;
+
 				t += 0.02;
 
 				camera.position.x += ( mouseX - camera.position.x ) * .05;
