@@ -46,8 +46,13 @@
 			text-align: left;
 		}
 		
-		#file_list ul { padding:0; margin:0 }
-		#file_list ul li { list-style-type:none }
+		ul { padding:0; margin:0 }
+		ul li { list-style-type:none }
+		
+		.missing { color:red; font-weight:bold }
+		.loaded { color:black; font-weight:bold }
+		
+		.fsize { font-size:0.9em; color:#444 }
 		
 		#gui_wrapper {
 			position:absolute;
@@ -119,7 +124,15 @@
 
 		#overlayLensFlare { 
 			background: url(textures/layers/LensFlare_alpha.png) no-repeat;
-		}		
+		}
+		
+		#images {
+			border:solid 2px red;
+			position:absolute;
+			top:0px;
+			left:0px;
+			z-index:200;
+		}
 
 		</style>
 		
@@ -131,86 +144,6 @@
 
 		<script type="text/javascript" src="js/Three.js"></script>
 
-		<!--
-		<script type="text/javascript" src="../build/Three.js"></script>
-		
-		<script type="text/javascript" src="../src/Three.js"></script>
-		<script type="text/javascript" src="../src/core/Color.js"></script>
-		<script type="text/javascript" src="../src/core/Vector2.js"></script>
-		<script type="text/javascript" src="../src/core/Vector3.js"></script>
-		<script type="text/javascript" src="../src/core/Vector4.js"></script>
-		<script type="text/javascript" src="../src/core/Ray.js"></script>
-		<script type="text/javascript" src="../src/core/Rectangle.js"></script>
-		<script type="text/javascript" src="../src/core/Matrix3.js"></script>
-		<script type="text/javascript" src="../src/core/Matrix4.js"></script>
-		<script type="text/javascript" src="../src/core/Object3D.js"></script>
-		<script type="text/javascript" src="../src/core/Quaternion.js"></script>
-		<script type="text/javascript" src="../src/core/Vertex.js"></script>
-		<script type="text/javascript" src="../src/core/Face3.js"></script>
-		<script type="text/javascript" src="../src/core/Face4.js"></script>
-		<script type="text/javascript" src="../src/core/UV.js"></script>
-		<script type="text/javascript" src="../src/core/Geometry.js"></script>
-		<script type="text/javascript" src="../src/core/Spline.js"></script>
-		<script type="text/javascript" src="../src/animation/AnimationHandler.js"></script>
-		<script type="text/javascript" src="../src/animation/Animation.js"></script>
-		<script type="text/javascript" src="../src/cameras/Camera.js"></script>
-		<script type="text/javascript" src="../src/cameras/QuakeCamera.js"></script>
-		<script type="text/javascript" src="../src/lights/Light.js"></script>
-		<script type="text/javascript" src="../src/lights/AmbientLight.js"></script>
-		<script type="text/javascript" src="../src/lights/DirectionalLight.js"></script>
-		<script type="text/javascript" src="../src/lights/PointLight.js"></script>
-		<script type="text/javascript" src="../src/materials/Material.js"></script>
-		<script type="text/javascript" src="../src/materials/Mappings.js"></script>
-		<script type="text/javascript" src="../src/materials/LineBasicMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/MeshBasicMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/MeshLambertMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/MeshPhongMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/MeshDepthMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/MeshNormalMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/MeshFaceMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/MeshShaderMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/ParticleBasicMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/ParticleCircleMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/ParticleDOMMaterial.js"></script>
-		<script type="text/javascript" src="../src/materials/Texture.js"></script>
-		<script type="text/javascript" src="../src/materials/RenderTarget.js"></script>
-		<script type="text/javascript" src="../src/materials/Uniforms.js"></script>
-		<script type="text/javascript" src="../src/objects/Particle.js"></script>
-		<script type="text/javascript" src="../src/objects/ParticleSystem.js"></script>
-		<script type="text/javascript" src="../src/objects/Line.js"></script>
-		<script type="text/javascript" src="../src/objects/Mesh.js"></script>
-		<script type="text/javascript" src="../src/objects/Bone.js"></script>
-		<script type="text/javascript" src="../src/objects/SkinnedMesh.js"></script>
-		<script type="text/javascript" src="../src/objects/Ribbon.js"></script>
-		<script type="text/javascript" src="../src/objects/Sound.js"></script>
-		<script type="text/javascript" src="../src/objects/LOD.js"></script>
-		<script type="text/javascript" src="../src/scenes/Scene.js"></script>
-		<script type="text/javascript" src="../src/scenes/Fog.js"></script>
-		<script type="text/javascript" src="../src/scenes/FogExp2.js"></script>
-		<script type="text/javascript" src="../src/renderers/Projector.js"></script>
-		<script type="text/javascript" src="../src/renderers/DOMRenderer.js"></script>
-		<script type="text/javascript" src="../src/renderers/CanvasRenderer.js"></script>
-		<script type="text/javascript" src="../src/renderers/SVGRenderer.js"></script>
-		<script type="text/javascript" src="../src/renderers/WebGLRenderer.js"></script>
-		<script type="text/javascript" src="../src/renderers/SoundRenderer.js"></script>
-		<script type="text/javascript" src="../src/renderers/renderables/RenderableObject.js"></script>
-		<script type="text/javascript" src="../src/renderers/renderables/RenderableFace3.js"></script>
-		<script type="text/javascript" src="../src/renderers/renderables/RenderableParticle.js"></script>
-		<script type="text/javascript" src="../src/renderers/renderables/RenderableLine.js"></script>
-		<script type="text/javascript" src="../src/extras/GeometryUtils.js"></script>
-		<script type="text/javascript" src="../src/extras/ImageUtils.js"></script>
-		<script type="text/javascript" src="../src/extras/SceneUtils.js"></script>
-		<script type="text/javascript" src="../src/extras/ShaderUtils.js"></script>
-		<script type="text/javascript" src="../src/extras/primitives/Cube.js"></script>
-		<script type="text/javascript" src="../src/extras/primitives/Cylinder.js"></script>
-		<script type="text/javascript" src="../src/extras/primitives/Plane.js"></script>
-		<script type="text/javascript" src="../src/extras/primitives/Sphere.js"></script>
-		<script type="text/javascript" src="../src/extras/primitives/Torus.js"></script>
-		<script type="text/javascript" src="../src/extras/primitives/Icosahedron.js"></script>
-		<script type="text/javascript" src="../src/extras/primitives/LathedObject.js"></script>
-		<script type="text/javascript" src="../src/extras/objects/MarchingCubes.js"></script>
-		<script type="text/javascript" src="../src/extras/io/Loader.js"></script>
-		-->
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
 		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
@@ -220,11 +153,14 @@
 		<div class="overlay" id="overlayVignette"></div>
 		<div class="overlay" id="overlayLensFlare"></div>
 		
+		<div id="images"></div>
+		
 		<div class="hud" id="file_dialog"> 
 			<div id="drop_zone">
 				<div id="drop_label">Drop files here</div>
 				<div id="help">
-				Press SPACE to toggle user interface
+				Press SPACE to toggle user interface<br/>
+				Navigate with WASD / arrows / mouse
 				</div>
 			</div> 
 		</div>
@@ -263,6 +199,11 @@
 			
 			<span class="header">Files</span><br/>
 			<div id="file_list"></div> 
+			
+			<br/>
+			
+			<span class="header">Textures</span><br/>
+			<div id="texture_list"></div> 
 
 		</div>
 		
@@ -287,6 +228,9 @@
 			BASE_SCALE = 1,
 			SCALES = [ [ "b_s001", 0.01 ], [ "b_s01", 0.1 ], [ "b_s05", 0.5 ], [ "b_s1", 1 ], [ "b_s2", 2 ], [ "b_s10", 10 ], [ "b_s100", 100 ] ];
 
+		var TEXTURE_MAP = {},
+			IMAGE_MAP = {};
+		
 		var overlays = {
 			filmStrip: 	false,
 			dirt:		false,
@@ -450,6 +394,31 @@
 		function capitalize( s ) {
 		
 			return s[ 0 ].toUpperCase() + s.substring( 1, s.length );
+
+		};
+
+		function pretty_number( x ) {
+		
+			var delimiter = "'";
+			var strx = x.toString();
+			var pretty = "";
+			
+			for( var i = strx.length - 1; i >= 0; i-- ) {
+				
+				if ( ( strx.length - 1 - i ) % 3 == 0 && ( strx.length - 1 - i ) > 0 )
+					pretty = delimiter+pretty;
+				
+				pretty = strx[ i ] + pretty;
+			}
+			
+			return pretty;
+
+		};
+		
+		function pretty_size( x ) {
+		
+			var kb = x / 1024;
+			return pretty_number( kb.toFixed( 0 ) ) + " KB";
 
 		};
 
@@ -709,38 +678,64 @@
 				callbackObject = function( geometry ) { addObject( geometry, 0, 0, 0, 1 ) };
 
 			for ( i = 0; f = files[i]; i++ ) {
-			
+				/*
 				output.push('<li><strong>', f.name, '</strong> (', f.type || 'n/a', ') - ',
 						f.size, ' bytes, last modified: ',
 						f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
 						'</li>');
+				*/
+				
+				output.push('<li><strong>' + f.name + '</strong> <span class="fsize">' + pretty_size( f.size ) + '</span></li>');
 
 				var reader = new FileReader();
 
-				// Closure to capture the file information
+				if ( f.type.indexOf( "javascript" ) >= 0 ) {
 				
-				reader.onload = ( function( theFile ) {
+					reader.onload = ( function( theFile ) {
+						
+						return function( e ) {
+						
+							var content = e.target.result,
+								bb, blobURL = new BlobBuilder();
+
+							bb = new BlobBuilder();
+							bb.append( content );
+
+							if ( window.webkitURL )
+								blobURL = window.webkitURL.createObjectURL( bb.getBlob() );
+							else
+								blobURL = window.URL.createObjectURL( bb.getBlob() );
+
+							loader.loadAscii( { model: blobURL, callback: callbackObject } );					
+
+						};
+
+					  })(f);
+
+					reader.readAsText( f );
 					
-					return function( e ) {
+				} else if ( f.type.indexOf( "image" ) >= 0 ) {
+				
 					
-						var content = e.target.result,
-							bb, blobURL = new BlobBuilder();
+					reader.onload = ( function( theFile ) {
+					
+						return function( e ) {
+							
+							var span = document.createElement( 'span' );
+						  
+							span.innerHTML = [ '<img class="thumb" src="', e.target.result,
+												'" title="', theFile.name, '"/>' ].join( '' );
+						  
+							//$( 'images' ).insertBefore( span, null );
+						  
+							addImage( theFile.name, e.target.result );
 
-						bb = new BlobBuilder();
-						bb.append( content );
+						};
+					  })(f);
 
-						if ( window.webkitURL )
-							blobURL = window.webkitURL.createObjectURL( bb.getBlob() );
-						else
-							blobURL = window.URL.createObjectURL( bb.getBlob() );
+					reader.readAsDataURL(f);
 
-						loader.loadAscii( { model: blobURL, callback: callbackObject } );					
-
-					};
-
-				  })(f);
-
-				reader.readAsText( f );
+				}
 
 			}
 			
@@ -777,14 +772,118 @@
 			
 		};
 
+		function extractTexture( map, dst ) {
+			
+			var s;
+			
+			if ( map ) {
+			
+				s = map.sourceFile;
+				
+				if ( s ) {
+				
+					if ( dst[ s ] == undefined ) {
+					
+						dst[ s ] = [ map ];
+					
+					} else {
+					
+						dst[ s ].push( map );
+
+					}
+					
+				}
+				
+			}
+
+		};
+		
+		function collectTextures( geometry ) {
+		
+			var textureMap = {},
+				i, m, s, materials = geometry.materials;
+			
+			for ( i = 0; i < materials.length; i++ ) {
+			
+				m = materials[ i ][ 0 ];
+				
+				console.log( m.map );
+				
+				extractTexture( m.map, textureMap );
+				extractTexture( m.lightMap, textureMap );				 
+
+			}
+			
+			updateTextureList( "texture_list", textureMap );
+			
+			return textureMap;
+			
+		};
+		
+		function updateTextureList( id, map ) {
+			
+			var fname, item, zclass,
+				lst = [],
+				tmp = "";
+				el = $( id );
+			
+			for ( fname in map ) {
+				
+				if ( map[ fname ].__textureLoaded )
+					zclass = "loaded";
+				else
+					zclass = "missing";
+					
+				item = "<li><span class='" + zclass + "'>" + fname + "</span></li>";
+				lst.push( item );
+				
+			}
+			
+			tmp = "<ul>" + lst.join("") + "</ul>";
+			
+			el.innerHTML = tmp;
+			
+		};
+		
+		function checkTextureImages() {
+		
+			var i, tid, mid, maps, img;
+			
+			for ( tid in IMAGE_MAP ) {
+			
+				if ( TEXTURE_MAP[ tid ] != undefined ) {
+				
+					maps = TEXTURE_MAP[ tid ];
+					
+					for( i = 0; i < maps.length; i++ ) {
+					
+						img = document.createElement( 'img' );
+						img.src = IMAGE_MAP[ tid ];
+						
+						maps[ i ].image = img;
+						maps[ i ].needsUpdate = true;
+
+					}
+					
+					maps.__textureLoaded = true;
+					
+				}
+
+			}
+			
+			updateTextureList( "texture_list", TEXTURE_MAP );
+			
+		};
+		
 		function addObject( geometry, x, y, z, s ) {
 
 			resetScene();
 			
 			var material = new THREE.MeshFaceMaterial(),
 				mesh = new THREE.Mesh( geometry, material );
-				
-			console.log( geometry );
+
+			TEXTURE_MAP = collectTextures( geometry );
+			checkTextureImages();
 			
 			mesh.position.set( x, y, z );
 			mesh.scale.set( s, s, s );
@@ -793,7 +892,13 @@
 			scene.addObject( mesh );
 
 		};
-		 
+		
+		function addImage( name, uri ) {
+		
+			IMAGE_MAP[ name ] = uri;
+			checkTextureImages();
+			
+		};
 
 		function initPostprocessingNoise( effect ) {
 			
