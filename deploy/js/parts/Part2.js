@@ -2,7 +2,7 @@ var Part2 = function ( renderer, events ) {
 
 	Effect.call( this );
 
-	var camera, world;
+	var camera, world, soup;
 
 	this.init = function ( callback ) {
 
@@ -13,6 +13,7 @@ var Part2 = function ( renderer, events ) {
 		} );
 
 		world = new Part2World();
+		soup = new Part2Soup( camera, world.scene );
 
 	};
 
@@ -32,6 +33,8 @@ var Part2 = function ( renderer, events ) {
 	};
 
 	this.update = function ( i ) {
+
+		soup.update();
 
 		renderer.render( world.scene, camera );
 
