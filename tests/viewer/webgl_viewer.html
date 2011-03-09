@@ -143,7 +143,6 @@
 		<div id="viewport"></div> 
 
 		<script type="text/javascript" src="js/Three.js"></script>
-
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
 		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
@@ -176,6 +175,7 @@
 			<span class="header">Postprocessing</span><br/>
 			<span id="b_noise" class="chk">&nbsp;</span> <span id="l_noise" class="lbl">Noise</span> <br/>
 			<span id="b_bloom" class="chk">&nbsp;</span> <span id="l_bloom" class="lbl">Bloom</span> <br/>
+			<span id="b_bloomnoise" class="chk">&nbsp;</span> <span id="l_bloomnoise" class="lbl">Bloom + Noise</span> <br/>
 			<span id="b_none" class="chk">&nbsp;</span> <span id="l_none" class="lbl">None</span> <br/>
 			<br/>
 			
@@ -468,6 +468,15 @@
 
 		};
 
+		function setPostBloomNoise() {
+		
+			initPostprocessingBloomNoise( postprocessing );
+			postprocessing.enabled = true;
+			
+			refreshGUI();
+
+		};
+
 		function setPostNone() {
 		
 			postprocessing.enabled = false;
@@ -567,6 +576,7 @@
 			
 			$( "b_noise" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "noise" ) ? "&diams;" : "&nbsp;";
 			$( "b_bloom" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloom" ) ? "&diams;" : "&nbsp;";
+			$( "b_bloomnoise" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloomnoise" ) ? "&diams;" : "&nbsp;";
 			$( "b_none" ).innerHTML = ( ! postprocessing.enabled ) ? "&diams;" : "&nbsp;";
 			
 			var i, s;
@@ -642,6 +652,7 @@
 			
 			handleProperty( [ "b_noise", "l_noise" ], setPostNoise );
 			handleProperty( [ "b_bloom", "l_bloom" ], setPostBloom );
+			handleProperty( [ "b_bloomnoise", "l_bloomnoise" ], setPostBloomNoise );
 			handleProperty( [ "b_none", "l_none" ], setPostNone );
 
 			handleProperty( [ "b_film", "l_film" ], toggleFilm );
@@ -739,7 +750,7 @@
 
 			}
 			
-			$('file_list').innerHTML = '<ul>' + output.join('') + '</ul>';
+			$('file_list').innerHTML += '<ul>' + output.join('') + '</ul>';
 
 		};
 		 
@@ -862,6 +873,7 @@
 						
 						maps[ i ].image = img;
 						maps[ i ].needsUpdate = true;
+						maps[ i ].__wasSetOnce = false;
 
 					}
 					
@@ -974,10 +986,28 @@
 
 			} );
 
+			var film_shader = ShaderUtils.lib["film"];
+			var film_uniforms = Uniforms.clone( film_shader.uniforms );
+			
+			film_uniforms["tDiffuse"].texture = effect.rtTexture1;
+			
+			effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+			effect.materialFilm.uniforms.grayscale.value = 0;
+			effect.materialFilm.uniforms.nIntensity.value = 1;
+			//effect.materialFilm.uniforms.sIntensity.value = 0.25;
+			//effect.materialFilm.uniforms.sCount.value = 2048;
+
 			effect.quad = new THREE.Mesh( new Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialConvolution );
 			effect.quad.position.z = -500;
 			effect.scene.addObject( effect.quad );
 
+		}
+		
+		function initPostprocessingBloomNoise( effect ) {
+		
+			initPostprocessingBloom( effect );
+			effect.type = "bloomnoise";
+			
 		}
 		
 		
@@ -1003,7 +1033,7 @@
 					renderer.render( scene, camera, postprocessing.texture, true );
 					renderer.render( postprocessing.scene, postprocessing.camera );
 					
-				} else if ( postprocessing.type == "bloom" ) {
+				} else if ( postprocessing.type == "bloom" || postprocessing.type == "bloomnoise" ) {
 
 					// Render scene into texture
 
@@ -1036,6 +1066,16 @@
 
 					// Render to screen
 
+					if ( postprocessing.type == "bloomnoise" ) {
+						
+						postprocessing.quad.materials = [ postprocessing.materialFilm ];
+						
+					} else {
+					
+						postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+					}
+					
 					postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
 					renderer.render( postprocessing.scene, postprocessing.camera );
 				
