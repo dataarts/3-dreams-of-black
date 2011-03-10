@@ -68,7 +68,7 @@
 						bison = new THREE.Mesh( geometry, material );
 						bison.position.x = bison.boundRadius * 1.5 * x - bison.boundRadius * 1.5 * gridX * 0.5 + bison.boundRadius * 1.5 * 0.5; 
 						bison.position.z = bison.boundRadius * 1.5 * z - bison.boundRadius * 1.5 * gridZ * 0.5 + bison.boundRadius * 1.5 * 0.5; 
-						
+						bison.flipSided = true;
 						scene.addChild( bison );
 		
 					//	bison.play( Math.random() * 1000 );

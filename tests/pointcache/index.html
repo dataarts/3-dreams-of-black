@@ -71,7 +71,7 @@
 						
 						bison.position.x = bison.boundRadius * x - bison.boundRadius * gridX * 0.5; 
 						bison.position.z = bison.boundRadius * z - bison.boundRadius * gridZ * 0.5; 
-						
+						bison.flipSided = true;
 						scene.addChild( bison );
 		
 						bison.play( Math.random() * 1000 );
