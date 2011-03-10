@@ -16,9 +16,11 @@
 
 	<body>
 		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
 
 
 		<script type="text/javascript">
+			var statsEnabled = true;
 			var container, stats;
 
 			var camera, scene, renderer;
@@ -91,6 +93,16 @@
 				container.appendChild( renderer.domElement );
 
 				setInterval( loop, 1000 / 60 );
+				
+				if ( statsEnabled ) {
+
+					stats = new Stats();
+					stats.domElement.style.position = 'absolute';
+					stats.domElement.style.top = '0px';
+					stats.domElement.style.zIndex = 100;
+					container.appendChild( stats.domElement );
+
+				}
 			}
 
 			function onDocumentMouseClick( event ) {
@@ -110,6 +122,8 @@
 
 				THREE.AnimationHandler.update( 10 + 23 * Math.abs( mouseX / windowHalfX ));
 				renderer.render( scene, camera );
+
+				if ( statsEnabled ) stats.update();
 			}
 
 			function log( text ) {
