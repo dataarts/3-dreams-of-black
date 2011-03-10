@@ -2,17 +2,18 @@ var Part1 = function ( renderer, events ) {
 
 	Effect.call( this );
 
-	var camera, world;
+	var camera, world, soup;
 
 	this.init = function ( callback ) {
 
 		camera = new THREE.QuakeCamera( {
 			fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-			movementSpeed: 3, lookSpeed: 0.0015, noFly: true, lookVertical: true,
+			movementSpeed: 2.75, lookSpeed: 0.0020, noFly: true, lookVertical: true,
 			autoForward: true
 		} );
 
 		world = new Part1World();
+		soup = new Part1Soup( camera, world.scene );
 
 	};
 
@@ -33,6 +34,8 @@ var Part1 = function ( renderer, events ) {
 	};
 
 	this.update = function ( i ) {
+
+		soup.update();
 
 		renderer.render( world.scene, camera );
 

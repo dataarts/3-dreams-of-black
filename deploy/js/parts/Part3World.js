@@ -1,7 +1,7 @@
 var Part3World = function () {
 
 	var that = this,
-	TILE_SIZE = 10000;
+	TILE_SIZE = 20000;
 
 	this.scene = new THREE.Scene();
 	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000025 );
@@ -22,6 +22,7 @@ var Part3World = function () {
 	var tiles = [];
 
 	var image = document.createElement( 'img' );
+
 	image.onload = function () {
 
 		var canvas = document.createElement( 'canvas' );
@@ -37,8 +38,8 @@ var Part3World = function () {
 
 		for ( var i = 0, j = 0; i < data.length; i += 4, j ++ ) {
 
-			geometry.vertices[ j ].position.x += Math.random() * 0.5; // + data[ i ] * 0.01;
-			geometry.vertices[ j ].position.y += Math.random() * 0.5;
+			geometry.vertices[ j ].position.x += Math.random() * data[ i ];
+			geometry.vertices[ j ].position.y += Math.random() * data[ i ];
 			geometry.vertices[ j ].position.z = data[ i ];
 
 		}
@@ -59,19 +60,8 @@ var Part3World = function () {
 		}
 
 	};
+
 	image.src = 'files/textures/DunesHeightmap.png';
-
-	/*
-	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/dune.js', callback: function( geometry ) {
-
-		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
-
-		that.scene.addObject( mesh );
-
-	} } );
-	*/
 
 	// Rocks
 
