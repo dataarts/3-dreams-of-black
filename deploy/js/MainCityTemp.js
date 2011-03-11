@@ -15,6 +15,11 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
+	gui = new GUI();
+	document.body.appendChild( gui.domElement );
+
+	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
+
 	screenWidth = window.innerWidth;
 	screenHeight = window.innerHeight;
 
@@ -43,8 +48,8 @@ function init() {
 
 	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 
-	sequencer.add( new Part1( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new Part2( renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
+	sequencer.add( new Part1( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 1 );
+/*	sequencer.add( new Part2( renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new Part3( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
 
 	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 2 );
@@ -55,7 +60,7 @@ function init() {
 
 	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 2 );
 	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 2 );
-
+*/
 }
 
 function start( pattern ) {
@@ -72,19 +77,18 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
-	gui = new GUI();
-	document.body.appendChild( gui.domElement );
 
-	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+	//gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 
-	gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
-	gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
-	gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
+	//gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
+	//gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
+	//gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0;	
+	audio.volume = 0.2;	
+
+	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 
 	window.addEventListener( 'resize', onWindowResize, false );
 

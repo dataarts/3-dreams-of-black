@@ -35,9 +35,20 @@ var Part1Soup = function ( camera, scene ) {
 		ribbonPulseMultiplier_1 : 7,
 		ribbonPulseMultiplier_2 : 10,
 		butterflyPulseMultiplier_1 : 15,
-		
+		animalSpeed : 48,
+		ribbonMin : 0.25,
+		ribbonMax : 2,
 	}
 
+	gui.add( settings, 'vectorDivider', 1, 8).name( 'vectorDivider' );
+	gui.add( settings, 'emitterDivider', 1, 8).name( 'emitterDivider' );
+	gui.add( settings, 'butterflyDivider', 1, 8).name( 'butterflyDivider' );
+	gui.add( settings, 'ribbonPulseMultiplier_1', 3, 15).name( 'ribbonPulse_1' );
+	gui.add( settings, 'ribbonPulseMultiplier_2', 5, 15).name( 'ribbonPulse_2' );
+	gui.add( settings, 'butterflyPulseMultiplier_1', 10, 20).name( 'butterflyPulse_1' );
+	gui.add( settings, 'animalSpeed', 8, 96).name( 'animalSpeed' );
+	gui.add( settings, 'ribbonMin', 0.05, 8).name( 'ribbonMin' );
+	gui.add( settings, 'ribbonMax', 1, 16).name( 'ribbonMax' );
 
 	// init
 	var mouseX = screenWidthHalf
@@ -164,13 +175,14 @@ var Part1Soup = function ( camera, scene ) {
 		updateEmitter();
 		runAll();
 
-		THREE.AnimationHandler.update( 48 );
+		THREE.AnimationHandler.update( settings.animalSpeed );
 
-		butterfly_0.animate(r*8);
-		butterfly_1.animate((r*8)+0.2);
-		butterfly_2.animate((r*8)+0.4);
-		butterfly_3.animate((r*8)+0.6);
-		butterfly_4.animate((r*8)+0.8);
+		var bspeed = (settings.animalSpeed/6);
+		butterfly_0.animate(r*bspeed);
+		butterfly_1.animate((r*bspeed)+0.2);
+		butterfly_2.animate((r*bspeed)+0.4);
+		butterfly_3.animate((r*bspeed)+0.6);
+		butterfly_4.animate((r*bspeed)+0.8);
 
 		for (var k=0; k<ribbonArray.length; ++k ) {
 			var ribbon = ribbonArray[k].r;
@@ -307,8 +319,8 @@ var Part1Soup = function ( camera, scene ) {
 
 					// for twister
 					var adder = i-(r*2);
-					var w = Math.max(0.25, i/(10+pulse2));
-					w = Math.min(w, 2)
+					var w = Math.max(settings.ribbonMin, i/(10+pulse2));
+					w = Math.min(w, settings.ribbonMax);
 					var extrax = Math.cos(adder/3)*w;
 					var extray = Math.sin(adder/3)*w;
 
