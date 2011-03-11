@@ -15,6 +15,9 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
+	gui = new GUI();
+
+
 	screenWidth = window.innerWidth;
 	screenHeight = window.innerHeight;
 
@@ -72,7 +75,6 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
-	gui = new GUI();
 	document.body.appendChild( gui.domElement );
 
 	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
@@ -84,7 +86,7 @@ function start( pattern ) {
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0;	
+	//audio.volume = 0;	
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
