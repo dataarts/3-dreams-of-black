@@ -9,6 +9,8 @@
 			margin:0;
 			overflow: hidden;
 			background: #000;
+			
+			line-height:1.25em
 		}
 
 		#file_dialog {
@@ -61,11 +63,16 @@
 			width:200px;
 			height:100%;
 			background:hsla(10,30%,80%, 0.75);
-			padding:10px 20px;
+			padding:10px 15px;
 			z-index:200;
+			overflow:auto;
+			font-size:0.9em;
 		}
 		
-		.lbl { font-weight:bold }
+		.lbl { 
+			font-weight:bold; 
+			cursor:pointer; 
+		}
 		
 		.chk { 
 			background:hsla(10,80%,50%, 0.4); 
@@ -80,6 +87,9 @@
 			line-height:10px;
 			cursor:pointer;
 		}
+		
+		#l_fog { margin-right:1em }
+		#l_bgDark { margin-right:0.25em }
 		
 		.hud { display:block }
 		
@@ -100,7 +110,7 @@
 		.header {
 			color: hsl(10, 80%, 30%);
 			font-weight:bold; 
-			text-transform:uppercase;			
+			text-transform:uppercase;
 		}
 		
 		.overlay {
@@ -133,6 +143,20 @@
 			left:0px;
 			z-index:200;
 		}
+		
+		.button {
+			color:white;
+			background:darkred;
+			font-size:0.9em;
+			font-weight:bold;
+			font-variant:small-caps;
+			text-transform:uppercase;
+			padding:0.2em 0.5em;
+			cursor:pointer;
+		}
+
+		#files_div { display:none }
+		#textures_div { display:none }
 
 		</style>
 		
@@ -142,13 +166,14 @@
 	
 		<div id="viewport"></div> 
 
+
 		<script type="text/javascript" src="js/Three.js"></script>
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
 		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
-		<script type="text/javascript" src="js/Stats.js"></script>	
+		<script type="text/javascript" src="js/Stats.js"></script>
 
-		<div class="overlay" id="overlayDirt"></div>	
+		<div class="overlay" id="overlayDirt"></div>
 		<div class="overlay" id="overlayVignette"></div>
 		<div class="overlay" id="overlayLensFlare"></div>
 		
@@ -165,14 +190,17 @@
 		</div>
 		
 		<div class="hud" id="gui_wrapper">
+		
 			<span class="header">Background</span><br/>
-			<span id="b_fog" class="chk">&nbsp;</span> <span id="l_fog" class="lbl">Fog</span> <br/>
-			<br/>
-			<span id="b_bgDark" class="chk">&nbsp;</span> <span id="l_bgDark" class="lbl">Dark</span> <br/>
+			
+			<span id="b_fog" class="chk">&nbsp;</span> <span id="l_fog" class="lbl">Fog</span>
+			
+			<span id="b_bgDark" class="chk">&nbsp;</span> <span id="l_bgDark" class="lbl">Dark</span>
 			<span id="b_bgLight" class="chk">&nbsp;</span> <span id="l_bgLight" class="lbl">Light</span> <br/>
 			<br/>
 			
 			<span class="header">Postprocessing</span><br/>
+			
 			<span id="b_noise" class="chk">&nbsp;</span> <span id="l_noise" class="lbl">Noise</span> <br/>
 			<span id="b_bloom" class="chk">&nbsp;</span> <span id="l_bloom" class="lbl">Bloom</span> <br/>
 			<span id="b_bloomnoise" class="chk">&nbsp;</span> <span id="l_bloomnoise" class="lbl">Bloom + Noise</span> <br/>
@@ -180,14 +208,23 @@
 			<br/>
 			
 			<span class="header">Overlays</span><br/>
+			
 			<span id="b_film" class="chk">&nbsp;</span> <span id="l_film" class="lbl">Film strips</span> <br/>
 			<span id="b_vignette" class="chk">&nbsp;</span> <span id="l_vignette" class="lbl">Vignette</span> <br/>
 			<span id="b_dirt" class="chk">&nbsp;</span> <span id="l_dirt" class="lbl">Dirt</span> <br/>
 			<span id="b_lensFlare" class="chk">&nbsp;</span> <span id="l_lensFlare" class="lbl">Lens flare</span> <br/>
 			<br/>
 			
-			<span class="header">Scale</span><br/>
+			<span class="header">Light</span><br/>
 			
+			<span id="b_lightWhite" class="chk">&nbsp;</span> <span id="l_lightWhite" class="lbl">White</span> <br/>
+			<span id="b_lightCold" class="chk">&nbsp;</span> <span id="l_lightCold" class="lbl">Cold</span> <br/>
+			<span id="b_lightWarm" class="chk">&nbsp;</span> <span id="l_lightWarm" class="lbl">Warm</span> <br/>
+			<span id="b_lightSunset" class="chk">&nbsp;</span> <span id="l_lightSunset" class="lbl">Sunset</span> <br/>
+			<br/>
+			
+			<span class="header">Scale</span><br/>
+			<!--
 			<span id="b_s001" class="chk">&nbsp;</span> <span id="l_s001" class="lbl">0.01</span> <br/>
 			<span id="b_s01" class="chk">&nbsp;</span> <span id="l_s01" class="lbl">0.1</span> <br/>
 			<span id="b_s05" class="chk">&nbsp;</span> <span id="l_s05" class="lbl">0.5</span> <br/>
@@ -195,15 +232,31 @@
 			<span id="b_s2" class="chk">&diams;</span> <span id="l_s2" class="lbl">2</span> <br/>
 			<span id="b_s10" class="chk">&nbsp;</span> <span id="l_s10" class="lbl">10</span> <br/>
 			<span id="b_s100" class="chk">&nbsp;</span> <span id="l_s100" class="lbl">100</span> <br/>
-			<br/>
+			-->
+			<span id="b_s0001" class="chk">&nbsp;</span> <span id="l_s0001" class="lbl">0.001</span>
+			<span id="b_s001" class="chk">&nbsp;</span> <span id="l_s001" class="lbl">0.01</span>
+			<span id="b_s01" class="chk">&nbsp;</span> <span id="l_s01" class="lbl">0.1</span>
+			<span id="b_s05" class="chk">&nbsp;</span> <span id="l_s05" class="lbl">0.5</span><br/>
+			<span id="b_s1" class="chk">&diams;</span> <span id="l_s1" class="lbl">1</span>
+			<span id="b_s2" class="chk">&diams;</span> <span id="l_s2" class="lbl">2</span>
+			<span id="b_s5" class="chk">&diams;</span> <span id="l_s5" class="lbl">5</span>
+			<span id="b_s10" class="chk">&nbsp;</span> <span id="l_s10" class="lbl">10</span>
+			<span id="b_s100" class="chk">&nbsp;</span> <span id="l_s100" class="lbl">100</span>
 			
-			<span class="header">Files</span><br/>
-			<div id="file_list"></div> 
+			<br/><br/>
 			
-			<br/>
+			<div id="files_div">
+				<span class="header">Files</span><br/>
+				<div id="file_list"></div> 
+				<br/>
+			</div>
 			
-			<span class="header">Textures</span><br/>
-			<div id="texture_list"></div> 
+			
+			<div id="textures_div">
+				<span class="header">Textures</span><br/>
+				<div id="texture_list"></div> 
+				<br/>
+			</div>			
 
 		</div>
 		
@@ -213,23 +266,23 @@
 	
 		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 	
-		if ( ! Detector.fileapi ) alert( 'The File APIs are not fully supported in this browser.' );
-
-	
-		function $( id ) { return document.getElementById( id ); }
-		function rr( a, b ) { return a + ( b - a ) * Math.random(); }
+		if ( ! Detector.fileapi ) alert( 'The File APIs are not fully supported in this browser.' );			
 		
-		var DragAndDrop = {};
-		
-		var SCREEN_WIDTH = window.innerWidth;
-		var SCREEN_HEIGHT = window.innerHeight;
+		// scales
 		
 		var GLOBAL_SCALE = 1, 
 			BASE_SCALE = 1,
-			SCALES = [ [ "b_s001", 0.01 ], [ "b_s01", 0.1 ], [ "b_s05", 0.5 ], [ "b_s1", 1 ], [ "b_s2", 2 ], [ "b_s10", 10 ], [ "b_s100", 100 ] ];
-
-		var TEXTURE_MAP = {},
-			IMAGE_MAP = {};
+			SCALES = [ [ "b_s0001",  0.001 ],
+					   [ "b_s001",   0.01 ], 			
+					   [ "b_s01",    0.1 ], 
+					   [ "b_s05",    0.5 ], 
+					   [ "b_s1",     1 ], 
+					   [ "b_s2",     2 ], 
+					   [ "b_s5",     5 ], 
+					   [ "b_s10",   10 ], 
+					   [ "b_s100", 100 ] ];
+		
+		// overlays
 		
 		var overlays = {
 			filmStrip: 	false,
@@ -238,14 +291,40 @@
 			lensFlare:	false
 		};
 		
+		// fog
+		
+		var fogdensity = 0.000125;
+
+		// lights
+		
+		var ambientLight, directionalLight;
+		
+		var lightColors = {
+		"white":  [ 0x111111, 0xffffff ],
+		"cold":   [ 0x001122, 0xddeeff ],
+		"warm":   [ 0x221100, 0xffeedd ],
+		"sunset": [ 0x221100, 0xff8866 ]
+		};
+		var lightType = "white";
+		
+		// postprocessing
+		
+		var postprocessing = { enabled : false };
+
+		// globals
+		
+		var SCREEN_WIDTH = window.innerWidth;
+		var SCREEN_HEIGHT = window.innerHeight;
+		
+		var TEXTURE_MAP = {},
+			IMAGE_MAP = {};
+
+		var DragAndDrop = {};	
+
 		var viewport, stats;
 
 		var camera, scene, sceneTemp, renderer;
-		
-		var fogdensity;
 
-		var postprocessing = { enabled : false };
-		
 		init();
 		animate();
 		
@@ -253,10 +332,8 @@
 
 			viewport = $( "viewport" );
 			
-			fogdensity = 0.000125;
-			
 			scene = new THREE.Scene();
-			scene.fog = new THREE.FogExp2( 0x000000, fogdensity );
+			scene.fog = new THREE.FogExp2( 0x000000, 0 );
 			
 			renderer = new THREE.WebGLRenderer();
 			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
@@ -275,25 +352,25 @@
 			
 			
 			camera = new THREE.QuakeCamera( { fov: 60, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
-											  movementSpeed: 3, lookSpeed: 0.0025, noFly: false, lookVertical: true
+											  movementSpeed: 8, lookSpeed: 0.0025, noFly: false, lookVertical: true,
+											  dragToLook: true
 											  } );
 
+			camera.position.y = 0;
 			camera.position.z = 500;
-			
 
 			
 			// LIGHTS
 
-			var ambient = new THREE.AmbientLight( 0x221100 );
-			scene.addLight( ambient );
+			ambientLight = new THREE.AmbientLight( lightColors[ lightType ][ 0 ] );
+			scene.addLight( ambientLight );
 
-			var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+			directionalLight = new THREE.DirectionalLight( lightColors[ lightType ][ 1 ] );
 			directionalLight.position.set( 1, 1, 1 );
 			directionalLight.position.normalize();
 			scene.addLight( directionalLight );
 
-			initPostprocessingBloom( postprocessing );
-			//initPostprocessingNoise( postprocessing );
+			// STATS
 			
 			stats = new Stats();
 			stats.domElement.style.position = 'absolute';
@@ -310,6 +387,8 @@
 
 		};
 
+		// event handlers
+		
 		function onKeyDown ( event ) {
 			
 			switch( event.keyCode ) {
@@ -327,6 +406,8 @@
  
 		};
 			
+		// temp scene
+		
 		function createTempScene( parent ) {
 		
 			var i, x, y, z, 
@@ -334,7 +415,7 @@
 				s = BASE_SCALE,
 				mesh,
 				geo = new Cube( 400, 400, 400 ),
-				mat = new THREE.MeshLambertMaterial();
+				mat = new THREE.MeshLambertMaterial( {color:0xffffff} );
 				
 			for ( i = 0; i < 1000; i++ ) {
 				
@@ -391,6 +472,9 @@
 
 		// Utils
 		
+		function $( id ) { return document.getElementById( id ); }
+		function rr( a, b ) { return a + ( b - a ) * Math.random(); }
+		
 		function capitalize( s ) {
 		
 			return s[ 0 ].toUpperCase() + s.substring( 1, s.length );
@@ -421,6 +505,15 @@
 			return pretty_number( kb.toFixed( 0 ) ) + " KB";
 
 		};
+		
+		function cap_string( s, n ) {
+			
+			if ( n < s.length - 2 )
+				return s.substring( 0, n ) + " ...";
+			else
+				return s;
+
+		};
 
 		// GUI
 		
@@ -431,6 +524,8 @@
 			
 			toggle( "file_dialog" );
 			toggle( "gui_wrapper" );
+			
+			camera.dragToLook = !camera.dragToLook;
 			
 		};
 		
@@ -538,7 +633,18 @@
 			
 			refreshGUI();
 		
-		};		
+		};
+
+		function setLight( ltype ) {
+
+			lightType = ltype;
+
+			ambientLight.color.setHex( lightColors[ lightType ][ 0 ] );
+			directionalLight.color.setHex( lightColors[ lightType ][ 1 ] );
+
+			refreshGUI();
+
+		};
 
 		function toggleOverlay( label ) {
 		
@@ -559,7 +665,7 @@
 			
 			// checkboxes
 			
-			$( "b_fog" ).innerHTML = scene.fog.density != 0 ? "x" : "&nbsp;";			
+			$( "b_fog" ).innerHTML = scene.fog.density > 0 ? "x" : "&nbsp;";
 			
 			$( "b_film" ).innerHTML = overlays.filmStrip ? "x" : "&nbsp;";
 			$( "b_dirt" ).innerHTML = overlays.dirt ? "x" : "&nbsp;";
@@ -578,7 +684,12 @@
 			$( "b_bloom" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloom" ) ? "&diams;" : "&nbsp;";
 			$( "b_bloomnoise" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloomnoise" ) ? "&diams;" : "&nbsp;";
 			$( "b_none" ).innerHTML = ( ! postprocessing.enabled ) ? "&diams;" : "&nbsp;";
-			
+
+			$( "b_lightWhite" ).innerHTML = ( lightType == "white" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightCold" ).innerHTML = ( lightType == "cold" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightWarm" ).innerHTML = ( lightType == "warm" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightSunset" ).innerHTML = ( lightType == "sunset" ) ? "&diams;" : "&nbsp;";
+
 			var i, s;
 			
 			for ( i = 0; i < SCALES.length; i++ ) {
@@ -631,7 +742,7 @@
 				id = values[ i ][ 0 ];
 				s  = values[ i ][ 1 ];
 				
-				$( id ).addEventListener( "click", generateHandler( s ), false );
+				$( id ).addEventListener( "click", generateHandler( s ), true );
 				
 			}
 			
@@ -640,13 +751,13 @@
 		function handleProperty( ids, handler ) {
 			
 			for ( var i = 0; i < ids.length; i++ )
-				$( ids[ i ] ).addEventListener( "click", handler, false );
+				$( ids[ i ] ).addEventListener( "click", handler, true );
 			
 		};
 
 		function iniGui() {
 		
-			$( "hud_button" ).addEventListener( "click", toggleHUD, false );
+			$( "hud_button" ).addEventListener( "click", toggleHUD, true );
 			
 			handleProperty( [ "b_fog", "l_fog" ], toggleFog );
 			
@@ -665,7 +776,12 @@
 			
 			handleProperty( [ "b_bgDark", "l_bgDark" ], function() { setBackground( 0x000000 ) } );
 			handleProperty( [ "b_bgLight", "l_bgLight" ], function() { setBackground( 0xffffff ) } );
-			
+
+			handleProperty( [ "b_lightWhite", "l_lightWhite" ], function() { setLight( "white" ) } );
+			handleProperty( [ "b_lightCold", "l_lightCold" ], function() { setLight( "cold" ) } );
+			handleProperty( [ "b_lightWarm", "l_lightWarm" ], function() { setLight( "warm" ) } );
+			handleProperty( [ "b_lightSunset", "l_lightSunset" ], function() { setLight( "sunset" ) } );
+
 			refreshGUI();
 		
 		};
@@ -681,22 +797,17 @@
 		
 			evt.stopPropagation();
 			evt.preventDefault();
-		 
+			
 			var i, f, 
 				files = evt.dataTransfer.files,
 				output = [],
 				loader = new THREE.Loader(),
 				callbackObject = function( geometry ) { addObject( geometry, 0, 0, 0, 1 ) };
 
+			
 			for ( i = 0; f = files[i]; i++ ) {
-				/*
-				output.push('<li><strong>', f.name, '</strong> (', f.type || 'n/a', ') - ',
-						f.size, ' bytes, last modified: ',
-						f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-						'</li>');
-				*/
 				
-				output.push('<li><strong>' + f.name + '</strong> <span class="fsize">' + pretty_size( f.size ) + '</span></li>');
+				output.push('<li><strong>' + cap_string( f.name, 17 ) + '</strong> <span class="fsize">' + pretty_size( f.size ) + '</span></li>');
 
 				var reader = new FileReader();
 
@@ -725,6 +836,8 @@
 
 					reader.readAsText( f );
 					
+					$('file_list').innerHTML = "";
+
 				} else if ( f.type.indexOf( "image" ) >= 0 ) {
 				
 					
@@ -751,6 +864,8 @@
 			}
 			
 			$('file_list').innerHTML += '<ul>' + output.join('') + '</ul>';
+			
+			show( "files_div" );
 
 		};
 		 
@@ -850,9 +965,18 @@
 				
 			}
 			
-			tmp = "<ul>" + lst.join("") + "</ul>";
+			if ( lst.length ) {
 			
-			el.innerHTML = tmp;
+				tmp = "<ul>" + lst.join("") + "</ul>";
+				el.innerHTML = tmp;
+				
+				show( "textures_div" );
+				
+			} else {
+			
+				hide( "textures_div" );
+				
+			}
 			
 		};
 		
@@ -1093,8 +1217,11 @@
 
 		// setup drag-and-drop listeners
 		
-		$( 'drop_zone' ).addEventListener( 'dragover', DragAndDrop.onDragOver, false );
-		$( 'drop_zone' ).addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
+		//$( 'drop_zone' ).addEventListener( 'dragover', DragAndDrop.onDragOver, false );
+		//$( 'drop_zone' ).addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
+
+		window.addEventListener( 'dragover', DragAndDrop.onDragOver, false );
+		window.addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
 
 		</script>
 

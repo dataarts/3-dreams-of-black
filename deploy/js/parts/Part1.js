@@ -12,8 +12,11 @@ var Part1 = function ( renderer, events ) {
 			autoForward: true
 		} );
 
+		gui.add( camera, 'movementSpeed', 0, 4).name( 'CameraSpeed' );
+
 		world = new Part1World();
 		soup = new Part1Soup( camera, world.scene );
+
 
 	};
 
