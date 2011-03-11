@@ -9,6 +9,8 @@
 			margin:0;
 			overflow: hidden;
 			background: #000;
+			
+			line-height:1.25em
 		}
 
 		#file_dialog {
@@ -61,9 +63,10 @@
 			width:200px;
 			height:100%;
 			background:hsla(10,30%,80%, 0.75);
-			padding:10px 20px;
+			padding:10px 15px;
 			z-index:200;
 			overflow:auto;
+			font-size:0.9em;
 		}
 		
 		.lbl { 
@@ -84,6 +87,9 @@
 			line-height:10px;
 			cursor:pointer;
 		}
+		
+		#l_fog { margin-right:1em }
+		#l_bgDark { margin-right:0.25em }
 		
 		.hud { display:block }
 		
@@ -160,7 +166,7 @@
 	
 		<div id="viewport"></div> 
 
-		
+
 		<script type="text/javascript" src="js/Three.js"></script>
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
@@ -187,9 +193,9 @@
 		
 			<span class="header">Background</span><br/>
 			
-			<span id="b_fog" class="chk">&nbsp;</span> <span id="l_fog" class="lbl">Fog</span> <br/>
-			<br/>
-			<span id="b_bgDark" class="chk">&nbsp;</span> <span id="l_bgDark" class="lbl">Dark</span> <br/>
+			<span id="b_fog" class="chk">&nbsp;</span> <span id="l_fog" class="lbl">Fog</span>
+			
+			<span id="b_bgDark" class="chk">&nbsp;</span> <span id="l_bgDark" class="lbl">Dark</span>
 			<span id="b_bgLight" class="chk">&nbsp;</span> <span id="l_bgLight" class="lbl">Light</span> <br/>
 			<br/>
 			
@@ -218,7 +224,7 @@
 			<br/>
 			
 			<span class="header">Scale</span><br/>
-			
+			<!--
 			<span id="b_s001" class="chk">&nbsp;</span> <span id="l_s001" class="lbl">0.01</span> <br/>
 			<span id="b_s01" class="chk">&nbsp;</span> <span id="l_s01" class="lbl">0.1</span> <br/>
 			<span id="b_s05" class="chk">&nbsp;</span> <span id="l_s05" class="lbl">0.5</span> <br/>
@@ -226,7 +232,18 @@
 			<span id="b_s2" class="chk">&diams;</span> <span id="l_s2" class="lbl">2</span> <br/>
 			<span id="b_s10" class="chk">&nbsp;</span> <span id="l_s10" class="lbl">10</span> <br/>
 			<span id="b_s100" class="chk">&nbsp;</span> <span id="l_s100" class="lbl">100</span> <br/>
-			<br/>			
+			-->
+			<span id="b_s0001" class="chk">&nbsp;</span> <span id="l_s0001" class="lbl">0.001</span>
+			<span id="b_s001" class="chk">&nbsp;</span> <span id="l_s001" class="lbl">0.01</span>
+			<span id="b_s01" class="chk">&nbsp;</span> <span id="l_s01" class="lbl">0.1</span>
+			<span id="b_s05" class="chk">&nbsp;</span> <span id="l_s05" class="lbl">0.5</span><br/>
+			<span id="b_s1" class="chk">&diams;</span> <span id="l_s1" class="lbl">1</span>
+			<span id="b_s2" class="chk">&diams;</span> <span id="l_s2" class="lbl">2</span>
+			<span id="b_s5" class="chk">&diams;</span> <span id="l_s5" class="lbl">5</span>
+			<span id="b_s10" class="chk">&nbsp;</span> <span id="l_s10" class="lbl">10</span>
+			<span id="b_s100" class="chk">&nbsp;</span> <span id="l_s100" class="lbl">100</span>
+			
+			<br/><br/>
 			
 			<div id="files_div">
 				<span class="header">Files</span><br/>
@@ -255,11 +272,13 @@
 		
 		var GLOBAL_SCALE = 1, 
 			BASE_SCALE = 1,
-			SCALES = [ [ "b_s001",   0.01 ], 
+			SCALES = [ [ "b_s0001",  0.001 ],
+					   [ "b_s001",   0.01 ], 			
 					   [ "b_s01",    0.1 ], 
 					   [ "b_s05",    0.5 ], 
 					   [ "b_s1",     1 ], 
 					   [ "b_s2",     2 ], 
+					   [ "b_s5",     5 ], 
 					   [ "b_s10",   10 ], 
 					   [ "b_s100", 100 ] ];
 		
@@ -484,6 +503,15 @@
 		
 			var kb = x / 1024;
 			return pretty_number( kb.toFixed( 0 ) ) + " KB";
+
+		};
+		
+		function cap_string( s, n ) {
+			
+			if ( n < s.length - 2 )
+				return s.substring( 0, n ) + " ...";
+			else
+				return s;
 
 		};
 
@@ -769,8 +797,6 @@
 		
 			evt.stopPropagation();
 			evt.preventDefault();
-		 
-			
 			
 			var i, f, 
 				files = evt.dataTransfer.files,
@@ -781,7 +807,7 @@
 			
 			for ( i = 0; f = files[i]; i++ ) {
 				
-				output.push('<li><strong>' + f.name + '</strong> <span class="fsize">' + pretty_size( f.size ) + '</span></li>');
+				output.push('<li><strong>' + cap_string( f.name, 17 ) + '</strong> <span class="fsize">' + pretty_size( f.size ) + '</span></li>');
 
 				var reader = new FileReader();
 
