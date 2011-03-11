@@ -63,6 +63,7 @@
 			background:hsla(10,30%,80%, 0.75);
 			padding:10px 20px;
 			z-index:200;
+			overflow:auto;
 		}
 		
 		.lbl { 
@@ -103,7 +104,7 @@
 		.header {
 			color: hsl(10, 80%, 30%);
 			font-weight:bold; 
-			text-transform:uppercase;			
+			text-transform:uppercase;
 		}
 		
 		.overlay {
@@ -159,13 +160,14 @@
 	
 		<div id="viewport"></div> 
 
+		
 		<script type="text/javascript" src="js/Three.js"></script>
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
 		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
-		<script type="text/javascript" src="js/Stats.js"></script>	
+		<script type="text/javascript" src="js/Stats.js"></script>
 
-		<div class="overlay" id="overlayDirt"></div>	
+		<div class="overlay" id="overlayDirt"></div>
 		<div class="overlay" id="overlayVignette"></div>
 		<div class="overlay" id="overlayLensFlare"></div>
 		
@@ -331,7 +333,8 @@
 			
 			
 			camera = new THREE.QuakeCamera( { fov: 60, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
-											  movementSpeed: 3, lookSpeed: 0.0025, noFly: false, lookVertical: true
+											  movementSpeed: 8, lookSpeed: 0.0025, noFly: false, lookVertical: true,
+											  dragToLook: true
 											  } );
 
 			camera.position.y = 0;
@@ -494,6 +497,8 @@
 			toggle( "file_dialog" );
 			toggle( "gui_wrapper" );
 			
+			camera.dragToLook = !camera.dragToLook;
+			
 		};
 		
 		function toggleFog() {
@@ -632,7 +637,7 @@
 			
 			// checkboxes
 			
-			$( "b_fog" ).innerHTML = scene.fog.density > 0 ? "x" : "&nbsp;";			
+			$( "b_fog" ).innerHTML = scene.fog.density > 0 ? "x" : "&nbsp;";
 			
 			$( "b_film" ).innerHTML = overlays.filmStrip ? "x" : "&nbsp;";
 			$( "b_dirt" ).innerHTML = overlays.dirt ? "x" : "&nbsp;";
@@ -709,7 +714,7 @@
 				id = values[ i ][ 0 ];
 				s  = values[ i ][ 1 ];
 				
-				$( id ).addEventListener( "click", generateHandler( s ), false );
+				$( id ).addEventListener( "click", generateHandler( s ), true );
 				
 			}
 			
@@ -718,13 +723,13 @@
 		function handleProperty( ids, handler ) {
 			
 			for ( var i = 0; i < ids.length; i++ )
-				$( ids[ i ] ).addEventListener( "click", handler, false );
+				$( ids[ i ] ).addEventListener( "click", handler, true );
 			
 		};
 
 		function iniGui() {
 		
-			$( "hud_button" ).addEventListener( "click", toggleHUD, false );
+			$( "hud_button" ).addEventListener( "click", toggleHUD, true );
 			
 			handleProperty( [ "b_fog", "l_fog" ], toggleFog );
 			
