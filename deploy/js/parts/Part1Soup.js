@@ -29,15 +29,16 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	var settings = {
-		vectorDivider : 2,
+		vectorDivider : 5,
 		emitterDivider : 3,
-		butterflyDivider : 3,
-		ribbonPulseMultiplier_1 : 7,
-		ribbonPulseMultiplier_2 : 10,
-		butterflyPulseMultiplier_1 : 15,
-		animalSpeed : 48,
-		ribbonMin : 0.25,
-		ribbonMax : 2,
+		butterflyDivider : 5,
+		ribbonPulseMultiplier_1 : 3.7,
+		ribbonPulseMultiplier_2 : 5.5,
+		butterflyPulseMultiplier_1 : 10,
+		animalSpeed : 14,
+		ribbonMin : 0.65,
+		ribbonMax : 3,
+		collisionDistance : 300,
 	}
 
 	gui.add( settings, 'vectorDivider', 1, 8).name( 'vectorDivider' );
@@ -49,6 +50,7 @@ var Part1Soup = function ( camera, scene ) {
 	gui.add( settings, 'animalSpeed', 8, 96).name( 'animalSpeed' );
 	gui.add( settings, 'ribbonMin', 0.05, 8).name( 'ribbonMin' );
 	gui.add( settings, 'ribbonMax', 1, 16).name( 'ribbonMax' );
+	gui.add( settings, 'collisionDistance', 100, 600).name( 'collisionDistance' );
 
 	// init
 	var mouseX = screenWidthHalf
@@ -139,7 +141,6 @@ var Part1Soup = function ( camera, scene ) {
 
 
 	// collisionScene stuff should probably not be here (TEMP)
-	var collisionDistance = 350;
 	var FLOOR = -595;
 	var collisionScene = new THREE.Scene();
 
@@ -147,11 +148,11 @@ var Part1Soup = function ( camera, scene ) {
 	var invMaterial = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
 
 	var downPlane = addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
-	var rightPlane = addMesh( plane, 50,  camera.position.x+collisionDistance, camera.position.y, camera.position.z, 0,-1.57,0, invMaterial, false );
-	var leftPlane = addMesh( plane, 50,  camera.position.x-collisionDistance, camera.position.y, camera.position.z, 0,1.57,0, invMaterial, false );
-	var frontPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z-collisionDistance, 0,0,-1.57, invMaterial, false );
-	var backPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z+collisionDistance, 0,3.14,1.57, invMaterial, false );
-	var upPlane = addMesh( plane, 100,  0, FLOOR+(collisionDistance/2), 0, 1.57,0,0, invMaterial, false );
+	var rightPlane = addMesh( plane, 50,  camera.position.x+settings.collisionDistance, camera.position.y, camera.position.z, 0,-1.57,0, invMaterial, false );
+	var leftPlane = addMesh( plane, 50,  camera.position.x-settings.collisionDistance, camera.position.y, camera.position.z, 0,1.57,0, invMaterial, false );
+	var frontPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
+	var backPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
+	var upPlane = addMesh( plane, 100,  0, FLOOR+(settings.collisionDistance/2), 0, 1.57,0,0, invMaterial, false );
 	// ---
 
 	// emitter
@@ -164,10 +165,10 @@ var Part1Soup = function ( camera, scene ) {
 	this.update = function () {
 
 		// collisionScene stuff should probably not be here (TEMP)
-		rightPlane.position.x = camera.position.x+collisionDistance;
-		leftPlane.position.x = camera.position.x-collisionDistance;
-		frontPlane.position.z = camera.position.z-collisionDistance;
-		backPlane.position.z = camera.position.z+collisionDistance;
+		rightPlane.position.x = camera.position.x+settings.collisionDistance;
+		leftPlane.position.x = camera.position.x-settings.collisionDistance;
+		frontPlane.position.z = camera.position.z-settings.collisionDistance;
+		backPlane.position.z = camera.position.z+settings.collisionDistance;
 		// ---
 
 		r += 0.1;
@@ -361,15 +362,16 @@ var Part1Soup = function ( camera, scene ) {
 			var f = obj.f;
 			var scale = obj.scale;
 
-			var pulse = Math.cos((i-r*10)/15)*12;
+			var pulse = Math.cos((i-r*10)/35)*(35-(i*1.5));
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
-			var offsetz = Math.cos(thisinc+((i-r*5)/8))*pulse;
-			var offsety = Math.sin(thisinc+((i-r*5)/8))*pulse;
+			var offsetx = Math.cos(thisinc+((i-r*2)/8))*pulse;
+			var offsetz = Math.sin(thisinc+((i-r*2)/8))*pulse;
+			//var offsety = Math.sin(thisinc+((i-r*5)/8))*pulse;
 
 
-			var tox = vectorArray[f].x+offsetz;
+			var tox = vectorArray[f].x+offsetx;
 			var toy = vectorArray[f].y//+offsety;
 			var toz = vectorArray[f].z+offsetz;
 
@@ -390,7 +392,7 @@ var Part1Soup = function ( camera, scene ) {
 			}
 
 
-			var divider = 2;
+			var divider = 2.5;
 
 			var moveX = (tox-x)/divider;
 			var moveY = (toy-y)/divider;
