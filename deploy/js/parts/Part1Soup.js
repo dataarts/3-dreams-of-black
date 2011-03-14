@@ -38,7 +38,7 @@ var Part1Soup = function ( camera, scene ) {
 		animalSpeed : 14,
 		ribbonMin : 0.65,
 		ribbonMax : 3,
-		collisionDistance : 300,
+		collisionDistance : 350,
 	}
 
 	gui.add( settings, 'vectorDivider', 1, 8).name( 'vectorDivider' );
@@ -64,8 +64,9 @@ var Part1Soup = function ( camera, scene ) {
 	var animalArray = [];
 	var particleArray = [];
 	var butterflyArray = [];
+	var cubeArray = [];
 
-	var currentNormal;
+	var currentNormal = new THREE.Vector3(0,1,0);
 	var r = 0;
 
 	var pointLight = new THREE.PointLight( 0xccffcc );
@@ -138,28 +139,63 @@ var Part1Soup = function ( camera, scene ) {
 	var loader = new THREE.Loader();
 	loader.loadAscii( { model: "files/models/soup/a_wolf.js", callback: animalLoaded } );
 
+	// cubes
+	var mesh = new Icosahedron();
+	var material = new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } );
 
+	for (var i=0; i<150; ++i ) {
+		
+		var x = 0;
+		var y = FLOOR+100;
+		var z = 0;
+
+		var c = new THREE.Mesh( mesh, material );
+		c.updateMatrix();
+		scene.addObject(c);
+
+		var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3()};
+		cubeArray.push(obj);
+	}
 
 	// collisionScene stuff should probably not be here (TEMP)
 	var FLOOR = -595;
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 1.0 } );
+	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
 
-	var downPlane = addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
-	var rightPlane = addMesh( plane, 50,  camera.position.x+settings.collisionDistance, camera.position.y, camera.position.z, 0,-1.57,0, invMaterial, false );
-	var leftPlane = addMesh( plane, 50,  camera.position.x-settings.collisionDistance, camera.position.y, camera.position.z, 0,1.57,0, invMaterial, false );
-	var frontPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
-	var backPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
-	var upPlane = addMesh( plane, 100,  0, FLOOR+(settings.collisionDistance/2), 0, 1.57,0,0, invMaterial, false );
+	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial2, true );
+	var rightPlane = addMesh( plane, 200,  camera.position.x+settings.collisionDistance, camera.position.y, camera.position.z, 0,-1.57,0, invMaterial, false );
+	var leftPlane = addMesh( plane, 200,  camera.position.x-settings.collisionDistance, camera.position.y, camera.position.z, 0,1.57,0, invMaterial, false );
+	var frontPlane = addMesh( plane, 200,  camera.position.x, camera.position.y, camera.position.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
+	var backPlane = addMesh( plane, 200,  camera.position.x, camera.position.y, camera.position.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
+	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance/1.5), 0, 1.57,0,0, invMaterial2, false );
+	
+	// temp boxes
+	var cube = new Cube( 200, 200, 200, 1, 1, 1 );
+	var cubea = addMesh( cube, 1,  70, FLOOR+100, -40, 0,0,0, invMaterial2, false );
+	cubea.scale.z = 1.8;
+	var cubeb = addMesh( cube, 1,  73, FLOOR+100, -820, 0,0,0, invMaterial2, false );
+	cubeb.scale.z = 4;
+	cubeb.scale.x = 0.9;
+
+	var cubec = addMesh( cube, 1,  -350, FLOOR+100, 40, 0,0,0, invMaterial2, false );
+	var cubed = addMesh( cube, 1,  -480, FLOOR+100, -110, 0,0,0, invMaterial2, false );
+	var cubef = addMesh( cube, 1,  -328, FLOOR+100, -810, 0,0,0, invMaterial2, false );
+	cubef.scale.z = 3.7;
+	cubef.scale.x = 0.9;
+
+	var cubeg = addMesh( cube, 1,  -320, FLOOR+100, -1660, 0,0,0, invMaterial2, false );
+	var cubeh = addMesh( cube, 1,  30, FLOOR+100, -1660, 0,0,0, invMaterial2, false );
+
 	// ---
 
 	// emitter
 	var projector = new THREE.Projector();
 	var emitter = new Cube( 10, 10, 10, 1, 1 );
-	var emitterMesh = addMesh( emitter, 1, camera.position.x, camera.position.y, camera.position.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
-	var emitterFollow = addMesh( emitter, 1, camera.position.x, camera.position.y, camera.position.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
+	var emitterMesh = addMesh( emitter, 1, -150, -575, 200, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
+	var emitterFollow = addMesh( emitter, 1, -150, -575, 200, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
 
 	this.update = function () {
@@ -173,8 +209,12 @@ var Part1Soup = function ( camera, scene ) {
 
 		r += 0.1;
 
+		camera.updateMatrix();
+		camera.update();
+
 		updateEmitter();
 		runAll();
+
 
 		THREE.AnimationHandler.update( settings.animalSpeed );
 
@@ -377,13 +417,18 @@ var Part1Soup = function ( camera, scene ) {
 
 			var cNormal = new THREE.Vector3(vectorArray[f].normalx, vectorArray[f].normaly, vectorArray[f].normalz);
 
+			if (cNormal.x < -0.8 && offsetx > 0) {
+				tox = vectorArray[f].x;
+			}
+			if (cNormal.x > 0.8 && offsetx < 0 ) {
+				tox = vectorArray[f].x;
+			}
 			if (cNormal.y < -0.8 && offsety > 0) {
 				toy = vectorArray[f].y;
 			}
 			if (cNormal.y > 0.8 && offsety < 0 ) {
 				toy = vectorArray[f].y;
 			}
-
 			if (cNormal.z < -0.8 && offsetz > 0) {
 				toz = vectorArray[f].z;
 			}
@@ -403,8 +448,8 @@ var Part1Soup = function ( camera, scene ) {
 			zvec.subSelf( animal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
-			//var yvec = new THREE.Vector3(vectorArray[f].normalx*-1, vectorArray[f].normaly*-1, vectorArray[f].normalz*-1);
-			var yvec = new THREE.Vector3(0, -1, 0);
+			var yvec = new THREE.Vector3(vectorArray[f].normalx*-1, vectorArray[f].normaly*-1, vectorArray[f].normalz*-1);
+			//var yvec = new THREE.Vector3(0, -1, 0);
 
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);
@@ -495,6 +540,79 @@ var Part1Soup = function ( camera, scene ) {
 			butterflyArray[i].z = z;
 		}
 
+		// cubes
+		for (var i=0; i<cubeArray.length; ++i ) {
+			var obj = cubeArray[i];
+			var c = obj.c;
+
+			var scale = obj.scale;
+			var alivetime = obj.alivetime;
+			var normal = obj.normal;
+			
+			alivetime += 0.65;
+			
+			// respawn
+			if (alivetime > 150) {
+				c.position.x = emitterMesh.position.x;
+				c.position.y = emitterMesh.position.y;
+				c.position.z = emitterMesh.position.z;
+
+				
+				//c.rotation.x = Math.random()*Math.PI;
+				//c.rotation.z = Math.random()*Math.PI;
+				c.rotation.y = Math.random()*Math.PI;
+
+				var amount = 12;
+
+				cubeArray[i].normal = currentNormal.clone();
+
+				if (currentNormal.x < -0.8) {
+					c.position.x = emitterMesh.position.x + amount;
+				}
+				if (currentNormal.x > 0.8) {
+					c.position.x = emitterMesh.position.x - amount;
+				}
+				if (currentNormal.y < -0.8) {
+					c.position.y = emitterMesh.position.y + amount;
+				}
+				if (currentNormal.y > 0.8) {
+					c.position.y = emitterMesh.position.y - amount;
+				}
+				if (currentNormal.z < -0.8) {
+					c.position.z = emitterMesh.position.z + amount;
+				}
+				if (currentNormal.z > 0.8) {
+					c.position.z = emitterMesh.position.z - amount;
+				}
+
+				alivetime = 0;
+			}
+
+			scale = Math.max( (alivetime)/12, 0.25);
+			scale = Math.min(scale,1.5);
+			scale *= 9;
+			c.scale.x = c.scale.y = c.scale.z = scale;
+			
+			var extrascale = alivetime/5;
+
+			if (Math.abs(normal.x) > 0.8) {
+				c.scale.y = c.scale.z += extrascale;
+			}
+			if (Math.abs(normal.y) > 0.8) {
+				c.scale.x = c.scale.z += extrascale;
+			}
+			if (Math.abs(normal.z) > 0.8) {
+				c.scale.y = c.scale.x += extrascale;
+			}
+
+			//c.rotation.x += scale/200;
+			//c.rotation.z += scale/200;
+
+			cubeArray[i].scale = scale;
+			cubeArray[i].alivetime = alivetime;
+
+		}
+
 		pointLight.position.x = vectorArray[0].x;
 		pointLight.position.y = vectorArray[0].y+5;
 		pointLight.position.z = vectorArray[0].z;
@@ -502,7 +620,7 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	function updateEmitter() {
-		emitterMesh.position.y = FLOOR;
+		//emitterMesh.position.y = FLOOR;
 
 		var vector = new THREE.Vector3( ( mouseX / window.innerWidth ) * 2 - 1, - ( mouseY / window.innerHeight ) * 2 + 1, 0.5 );
 		projector.unprojectVector( vector, camera );
@@ -520,7 +638,7 @@ var Part1Soup = function ( camera, scene ) {
 					check = intersects[i].point.z > camera.position.z;
 				}
 
-				if (intersects[i].object != emitterMesh && intersects[i].object != emitterFollow) {
+				if (check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow) {
 					emitterMesh.position = intersects[i].point;
 
 					var face = intersects[i].face;
@@ -529,8 +647,18 @@ var Part1Soup = function ( camera, scene ) {
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
 					
 					currentNormal = normal;
+					
+					// walls
+					if (intersects[i].object == rightPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == frontPlane || intersects[i].object == upPlane) {
 
-					var amount = 7;
+						currentNormal.x = 0;
+						currentNormal.y = 1;
+						currentNormal.z = 0;
+						// not to be airbourne
+						emitterMesh.position.y = FLOOR;
+					}
+
+					var amount = 3;
 
 					if (currentNormal.x < -0.8) {
 						emitterMesh.position.x = intersects[i].point.x - amount;
@@ -545,7 +673,6 @@ var Part1Soup = function ( camera, scene ) {
 					if (currentNormal.y > 0.8) {
 						emitterMesh.position.y = intersects[i].point.y + amount*1.3;
 					}
-
 					if (currentNormal.z < -0.8) {
 						emitterMesh.position.z = intersects[i].point.z - amount;
 					}

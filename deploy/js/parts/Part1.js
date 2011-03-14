@@ -8,7 +8,7 @@ var Part1 = function ( renderer, events ) {
 
 		camera = new THREE.QuakeCamera( {
 			fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-			movementSpeed: 0.8, lookSpeed: 0.0020, noFly: true, lookVertical: true,
+			movementSpeed: 0.6, lookSpeed: 0.0020, noFly: true, lookVertical: true,
 			autoForward: true
 		} );
 
@@ -22,10 +22,14 @@ var Part1 = function ( renderer, events ) {
 
 	this.show = function () {
 
-		camera.position.x = - 150;
-		camera.position.y = - 575;
+		camera.position.x = -150;
+		camera.position.y = -575;
 		camera.position.z = 200;
 
+/*		camera.position.x = - 150;
+		camera.position.y = 500;
+		camera.position.z = 200;
+*/
 		camera.lon = - 90;
 
 		renderer.setClearColor( world.scene.fog.color );
@@ -37,6 +41,18 @@ var Part1 = function ( renderer, events ) {
 	};
 
 	this.update = function ( i ) {
+
+		camera.position.x = -150;
+		if (camera.position.z < -1700) {
+			camera.position.z = 200;
+		}
+
+		/*if (camera.position.x < -200) {
+			camera.position.x = -200;
+		}
+		if (camera.position.x > -100) {
+			camera.position.x = -100;
+		}*/
 
 		soup.update();
 
