@@ -89,7 +89,7 @@
 			var numOfRibbons = 6;
 			var numOfAnimals = 18;
 
-			var currentNormal;
+			var currentNormal = new THREE.Vector3(0,1,0);
 
 			var r = 0;
 
@@ -851,6 +851,9 @@
 				backPlane.position.x = camera.position.x-180;
 				frontPlane.updateMatrix();
 				backPlane.updateMatrix();
+
+				camera.updateMatrix();
+				camera.update();
 
 				updateEmitter();
 				

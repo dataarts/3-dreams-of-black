@@ -85,7 +85,7 @@
 			var numOfRibbons = 6;
 			var numOfAnimals = 18;
 
-			var currentNormal;
+			var currentNormal = new THREE.Vector3(0,1,0);
 
 			var animTriggered = false;
 			var animRunning = false;
@@ -881,6 +881,9 @@
 					cubeRefMesh.position.x += moveX;
 					cubeRefMesh.position.y += moveY;
 					cubeRefMesh.position.z += moveZ;
+
+					camera.updateMatrix();
+					camera.update();
 
 					updateEmitter();
 
