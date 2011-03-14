@@ -75,7 +75,7 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
-	document.body.appendChild( gui.domElement );
+	//document.body.appendChild( gui.domElement );
 
 	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
