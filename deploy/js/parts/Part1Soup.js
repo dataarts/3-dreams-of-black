@@ -9,23 +9,22 @@ var Part1Soup = function ( camera, scene ) {
 		numOfRibbons : 6,
 		numOfAnimals : 18,
 		numOfButterflys : 150,
-		ribbonMaterials : [	
-							[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0x98f800 } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0x5189bb } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0xe850e8 } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0x08a620 } ) ]
-							  ],
-		butterflyMaterials : [	
-							[ new THREE.MeshLambertMaterial( { color:0xd5a19d } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0xeadc9a } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0xc5e79e } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0x9ec5e7 } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0xc487e3 } ) ],
-							[ new THREE.MeshLambertMaterial( { color:0xdce6cc } ) ]
-							  ],
-		
+		ribbonMaterials : [
+			[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0x98f800 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0x5189bb } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xe850e8 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0x08a620 } ) ]
+			  ],
+		butterflyMaterials : [
+			[ new THREE.MeshLambertMaterial( { color:0xd5a19d } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xeadc9a } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xc5e79e } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0x9ec5e7 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xc487e3 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xdce6cc } ) ]
+			  ],
 	}
 
 	var settings = {
@@ -86,7 +85,7 @@ var Part1Soup = function ( camera, scene ) {
 
 	// ribbons
 	for (var k=0; k<initSettings.numOfRibbons; ++k ) {
-	
+
 		var ribbon = new Ribbon(15,6,initSettings.numOfVectors-2);
 		var ribbonMesh = new THREE.Mesh( ribbon, initSettings.ribbonMaterials[k%6] );
 		ribbonMesh.doubleSided = true;
@@ -126,7 +125,7 @@ var Part1Soup = function ( camera, scene ) {
 		butterflyMesh.doubleSided = true;
 		butterflyMesh.matrixAutoUpdate = false;
 		scene.addObject( butterflyMesh );
-		
+
 		var scale = 0.1+(Math.random()/2);
 
 		var obj = {c:butterflyMesh, x:x, y:y, z:z, f:Math.floor(i/6), scale:scale};
@@ -197,7 +196,7 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	function animalLoaded( geometry ) {
-		var texture = { color: 0xffffff, skinning: true };
+		var texture = { color: 0xffffff, shading: THREE.FlatShading, skinning: true };
 		var material = new THREE.MeshLambertMaterial( texture );
 
 		for (var i=0; i<initSettings.numOfAnimals; ++i ) {
@@ -207,7 +206,7 @@ var Part1Soup = function ( camera, scene ) {
 			if (i<2) {
 				scale = 0.15;
 			}
-			
+
 			var x = camera.position.x-100;
 			var y = camera.position.y-100;
 			var z = camera.position.z;
@@ -228,7 +227,7 @@ var Part1Soup = function ( camera, scene ) {
 
 			var followIndex = (i*2)+2;
 			var obj = {c:animal, a:animation, x:x, y:y, z:z, f:followIndex, scale:scale*80};
-			
+
 			animalArray.push(obj);
 		}
 
@@ -255,7 +254,7 @@ var Part1Soup = function ( camera, scene ) {
 			var normalx = obj.normalx;
 			var normaly = obj.normaly;
 			var normalz = obj.normalz;
-			
+
 			if (i == 0) {
 				var tox = emitterFollow.position.x;
 				var toy = emitterFollow.position.y;
@@ -264,7 +263,7 @@ var Part1Soup = function ( camera, scene ) {
 				var tonormalx = currentNormal.x;
 				var tonormaly = currentNormal.y;
 				var tonormalz = currentNormal.z;
-				
+
 			} else {
 				var tox = vectorArray[i-1].lastx;
 				var toy = vectorArray[i-1].lasty;
@@ -273,7 +272,7 @@ var Part1Soup = function ( camera, scene ) {
 				var tonormalx = vectorArray[i-1].normalx;
 				var tonormaly = vectorArray[i-1].normaly;
 				var tonormalz = vectorArray[i-1].normalz;
-				
+
 			}
 
 			var moveX = (tox-x)/settings.vectorDivider;
@@ -331,7 +330,7 @@ var Part1Soup = function ( camera, scene ) {
 						ribbon.vertices[index].position.z = z+extrax+offsetz - emitterMesh.position.z;
 					} else {
 						ribbon.vertices[index].position.y = y-extray+offsety - emitterMesh.position.y;
-						ribbon.vertices[index].position.z = z-extrax+offsetz - emitterMesh.position.z;						
+						ribbon.vertices[index].position.z = z-extrax+offsetz - emitterMesh.position.z;
 					}
 				}
 
@@ -510,7 +509,7 @@ var Part1Soup = function ( camera, scene ) {
 		var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
 
 		var intersects = ray.intersectScene( collisionScene );
-		
+
 		if ( intersects.length > 0) {
 			for (var i=0; i<intersects.length; ++i ) {
 				var check;
@@ -527,7 +526,7 @@ var Part1Soup = function ( camera, scene ) {
 					var object = intersects[i].object;
 
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
-					
+
 					currentNormal = normal;
 
 					var amount = 7;
@@ -558,7 +557,7 @@ var Part1Soup = function ( camera, scene ) {
 			}
 
 		}
-		
+
 		var tox = emitterMesh.position.x;
 		var toy = emitterMesh.position.y;
 		var toz = emitterMesh.position.z;
@@ -576,9 +575,9 @@ var Part1Soup = function ( camera, scene ) {
 		mouseX = x+screenWidthHalf;
 		mouseY = y+screenHeightHalf;
 	}
-	
+
 	function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided ) {
-		
+
 		var inDouble = doubleSided || false;
 
 		mesh = new THREE.Mesh( geometry, material );
@@ -595,6 +594,6 @@ var Part1Soup = function ( camera, scene ) {
 		collisionScene.addObject(mesh);
 
 		return mesh;
-	}	
+	}
 
 }
