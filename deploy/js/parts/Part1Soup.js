@@ -135,33 +135,19 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	// animals
-	var loader = new THREE.Loader();
-	loader.loadAscii( { model: "files/models/soup/a_wolf.js", callback: animalLoaded } );
+	var animalLoader = new THREE.Loader();
+	animalLoader.loadAscii( { model: "files/models/soup/a_wolf.js", callback: animalLoaded } );
 
-	// cubes
-	var mesh = new Icosahedron();
-	var material = new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } );
-
-	for (var i=0; i<150; ++i ) {
-		
-		var x = 0;
-		var y = FLOOR+100;
-		var z = 0;
-
-		var c = new THREE.Mesh( mesh, material );
-		c.updateMatrix();
-		scene.addObject(c);
-
-		var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3()};
-		cubeArray.push(obj);
-	}
+	// dummy "grass"
+	var grassLoader = new THREE.Loader();
+	grassLoader.loadAscii( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
 
 	// collisionScene stuff should probably not be here (TEMP)
 	var FLOOR = -595;
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 1.0 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.000001 } );
 	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
 
 	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial2, true );
@@ -169,10 +155,10 @@ var Part1Soup = function ( camera, scene ) {
 	var leftPlane = addMesh( plane, 200,  camera.position.x-settings.collisionDistance, camera.position.y, camera.position.z, 0,1.57,0, invMaterial, false );
 	var frontPlane = addMesh( plane, 200,  camera.position.x, camera.position.y, camera.position.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
 	var backPlane = addMesh( plane, 200,  camera.position.x, camera.position.y, camera.position.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
-	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance/1.5), 0, 1.57,0,0, invMaterial2, false );
+	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance/1.4), 0, 1.57,0,0, invMaterial2, false );
 	
 	// temp boxes
-	var cube = new Cube( 200, 200, 200, 1, 1, 1 );
+	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
 	var cubea = addMesh( cube, 1,  70, FLOOR+100, -40, 0,0,0, invMaterial2, false );
 	cubea.scale.z = 1.8;
 	var cubeb = addMesh( cube, 1,  73, FLOOR+100, -820, 0,0,0, invMaterial2, false );
@@ -202,7 +188,7 @@ var Part1Soup = function ( camera, scene ) {
 		// collisionScene stuff should probably not be here (TEMP)
 		rightPlane.position.x = camera.position.x+settings.collisionDistance;
 		leftPlane.position.x = camera.position.x-settings.collisionDistance;
-		frontPlane.position.z = camera.position.z-settings.collisionDistance;
+		frontPlane.position.z = camera.position.z-settings.collisionDistance*1.4;
 		backPlane.position.z = camera.position.z+settings.collisionDistance;
 		// ---
 
@@ -273,6 +259,28 @@ var Part1Soup = function ( camera, scene ) {
 
 	}
 
+	function grassLoaded( geometry ) {
+		var materials = [new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } ),
+						 new THREE.MeshLambertMaterial( { color: 0x93c171, shading: THREE.FlatShading } ),
+						 new THREE.MeshLambertMaterial( { color: 0x7eaa5e, shading: THREE.FlatShading } ),
+						 new THREE.MeshLambertMaterial( { color: 0x77bb45, shading: THREE.FlatShading } ),
+						 new THREE.MeshLambertMaterial( { color: 0x7da75e, shading: THREE.FlatShading } )
+		];
+
+		for (var i=0; i<150; ++i ) {
+			
+			var x = 0;
+			var y = FLOOR+100;
+			var z = 0;
+
+			var c = new THREE.Mesh( geometry, materials[i%5] );
+			c.updateMatrix();
+			scene.addObject(c);
+
+			var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3()};
+			cubeArray.push(obj);
+		}
+	}
 
 	function runAll () {
 
@@ -548,7 +556,7 @@ var Part1Soup = function ( camera, scene ) {
 			var alivetime = obj.alivetime;
 			var normal = obj.normal;
 			
-			alivetime += 0.65;
+			alivetime += 0.55;
 			
 			// respawn
 			if (alivetime > 150) {
@@ -557,55 +565,51 @@ var Part1Soup = function ( camera, scene ) {
 				c.position.z = emitterMesh.position.z;
 
 				
-				//c.rotation.x = Math.random()*Math.PI;
-				//c.rotation.z = Math.random()*Math.PI;
-				c.rotation.y = Math.random()*Math.PI;
+				c.rotation.x = 0;
+				c.rotation.z = 0;
+				c.rotation.y = 0;
 
-				var amount = 12;
+				var amount = 8;
 
 				cubeArray[i].normal = currentNormal.clone();
 
 				if (currentNormal.x < -0.8) {
 					c.position.x = emitterMesh.position.x + amount;
+					c.rotation.z = 1.57;
+					c.rotation.x = Math.random()*Math.PI;
 				}
 				if (currentNormal.x > 0.8) {
 					c.position.x = emitterMesh.position.x - amount;
+					c.rotation.z = -1.57;
+					c.rotation.x = Math.random()*Math.PI;
 				}
 				if (currentNormal.y < -0.8) {
 					c.position.y = emitterMesh.position.y + amount;
+					c.rotation.y = Math.random()*Math.PI;
 				}
 				if (currentNormal.y > 0.8) {
 					c.position.y = emitterMesh.position.y - amount;
+					c.rotation.y = Math.random()*Math.PI;
 				}
 				if (currentNormal.z < -0.8) {
 					c.position.z = emitterMesh.position.z + amount;
+					c.rotation.x = -1.57;
+					c.rotation.y = Math.random()*Math.PI;
 				}
 				if (currentNormal.z > 0.8) {
 					c.position.z = emitterMesh.position.z - amount;
+					c.rotation.x = 1.57;
+					c.rotation.y = Math.random()*Math.PI;
 				}
 
 				alivetime = 0;
 			}
 
-			scale = Math.max( (alivetime)/12, 0.25);
-			scale = Math.min(scale,1.5);
-			scale *= 9;
-			c.scale.x = c.scale.y = c.scale.z = scale;
-			
-			var extrascale = alivetime/5;
-
-			if (Math.abs(normal.x) > 0.8) {
-				c.scale.y = c.scale.z += extrascale;
-			}
-			if (Math.abs(normal.y) > 0.8) {
-				c.scale.x = c.scale.z += extrascale;
-			}
-			if (Math.abs(normal.z) > 0.8) {
-				c.scale.y = c.scale.x += extrascale;
-			}
-
-			//c.rotation.x += scale/200;
-			//c.rotation.z += scale/200;
+			scale = Math.max( (alivetime)/50, 0.0000001);
+			scale = Math.min(scale,1);
+			scale *= 0.08;
+			c.scale.x = c.scale.z = Math.min(0.065, scale*2.5);
+			c.scale.y = scale;
 
 			cubeArray[i].scale = scale;
 			cubeArray[i].alivetime = alivetime;
