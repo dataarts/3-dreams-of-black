@@ -25,11 +25,11 @@ ROME.Animal = function( geometry ) {
 	
 	var animalAIndex  = 0;
 	var animalAOffset = 0;
-	var animalALength = 15;
+	var animalALength = 29;
 	
 	var animalBIndex  = 0;
-	var animalBOffset = 15;
-	var animalBLength = 17;
+	var animalBOffset = 30;
+	var animalBLength = 100;
 	
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 
