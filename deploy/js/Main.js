@@ -17,7 +17,6 @@ function init() {
 
 	gui = new GUI();
 
-
 	screenWidth = window.innerWidth;
 	screenHeight = window.innerHeight;
 
@@ -77,8 +76,11 @@ function start( pattern ) {
 
 	//document.body.appendChild( gui.domElement );
 
+	//gui.autoListenIntervalTime = 1000/10;
+	//gui.autoListen = false;
+
 	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+	var temp = gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 
 	gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
 	gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );

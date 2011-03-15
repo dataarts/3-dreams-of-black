@@ -435,8 +435,9 @@
 				
 				mesh.scale.set( s, s, s );
 
-				//mesh.matrixAutoUpdate = false;
+				mesh.matrixAutoUpdate = false;
 				mesh.updateMatrix();
+				mesh.update();
 				
 				parent.addObject( mesh );
 				
@@ -883,8 +884,6 @@
 
 		function rescaleScene( s ) {
 			
-			console.log(s);
-			
 			var i, o, l = scene.objects.length;
 			
 			for( i = 0; i < l; i++ ) {
@@ -893,6 +892,7 @@
 				
 				o.scale.set( s, s, s );
 				o.updateMatrix();
+				o.update( o.parent.matrixWorld, true );
 
 			}
 			
@@ -932,8 +932,6 @@
 			for ( i = 0; i < materials.length; i++ ) {
 			
 				m = materials[ i ][ 0 ];
-				
-				console.log( m.map );
 				
 				extractTexture( m.map, textureMap );
 				extractTexture( m.lightMap, textureMap );				 
@@ -1023,8 +1021,9 @@
 			
 			mesh.position.set( x, y, z );
 			mesh.scale.set( s, s, s );
-			//mesh.matrixAutoUpdate = false;
+			mesh.matrixAutoUpdate = false;
 			mesh.updateMatrix();
+			mesh.update();
 			scene.addObject( mesh );
 
 		};
