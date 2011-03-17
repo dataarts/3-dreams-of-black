@@ -62,7 +62,7 @@ THREE.WebGLShaderDefinitions.shadowVolumeFragment = (function() {
 		"void main( void )",
 		"{",
 			"if( vDiscardFragment == 1.0 ) { discard; }",
-			"gl_FragColor = vec4( 0.5, 0.5, 0.5, 1 );",
+			"gl_FragColor = vec4( 1, 1, 1, 1 );",
 		"}"
 	].join( "\n" );
 

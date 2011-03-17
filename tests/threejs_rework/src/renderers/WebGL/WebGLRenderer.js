@@ -56,7 +56,7 @@ THREE.WebGLRenderer.prototype.setSize = function( wantedWidth, wantedHeight ) {
 	this.GL.viewport( 0, 0, wantedWidth, wantedHeight );
 	
 	this.cameraNeedsUpdate = true;
-}
+};
 
 /*
  * Render
@@ -105,7 +105,6 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	
 	
 	// render opaque
-
    	
     this.GL.disable		( this.GL.STENCIL_TEST );
     this.GL.enable		( this.GL.DEPTH_TEST );
@@ -115,30 +114,17 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 
 	this.renderDictionary( this.renderDictionaryOpaque, 1 );
 
-/*
-	// DEPTH PASS METHOD (works)	
-	// render stencil passes
+	// render front shadows to offscreen buffer
 	
-	this.GL.enable( this.GL.STENCIL_TEST );
-	this.GL.depthMask( false );
-	this.GL.colorMask( false, true, false, false );
+	
 
-	this.GL.stencilFunc( this.GL.ALWAYS, 1, 0xFF );
-	this.GL.stencilOp( this.GL.KEEP, this.GL.KEEP, this.GL.INVERT );
-					
-	this.GL.cullFace( this.GL.FRONT );
-	this.renderDictionary( this.renderListShadowVolumes, 1 );
-					
-	this.GL.cullFace( this.GL.BACK );
-	this.renderDictionary( this.renderListShadowVolumes, 1 );
-*/
 
 	// DEPTH FAIL (works)	
 	// render stencil passes
 	
 	this.GL.enable( this.GL.STENCIL_TEST );
 	this.GL.depthMask( false );
-	this.GL.colorMask( false, false, false, false );
+	this.GL.colorMask( false, true, false, false );
 
 	this.GL.stencilFunc( this.GL.ALWAYS, 1, 0xFF );
 
