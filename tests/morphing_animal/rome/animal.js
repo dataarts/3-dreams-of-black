@@ -6,56 +6,9 @@
 ROME = {};
 
 
-// animation data
-
-ROME.AnimalAnimationData = {
-
-	// init offset, length and frame times
-
-	init: function( geometry ) {
-		
-		var animal, animalName, animalNames = [ "bison", "wolf" ];		// these are the names of all existing animals
-		var morphTargets = geometry.morphTargets;
-		var a, al, m, ml, currentTime;
-		
-		for( a = 0, al = animalNames.length; a < al; a++ ) {
-			
-			animalName  = animalNames[ a ];
-			animal      = this[ animalName ];
-			currentTime = 0;
-			
-			if( animal === undefined ) {
-				
-				animal = this[ animalName ] = [];
-				
-				for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
-	
-					if( morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
-
-						animal.push( { index: m, time: currentTime } );
-						currentTime += parseInt( 1000 / 24, 10 );		// 24 fps			
-						
-					}
-					
-				}
-
-			}
-			 
-		}
-
-	}
-	
-}
-
-
 // animal
 
-ROME.Animal = function( geometry ) {
-
-	// init data
-	
-	ROME.AnimalAnimationData.init( geometry );
-	
+ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	// construct
 
@@ -70,6 +23,7 @@ ROME.Animal = function( geometry ) {
 	that.morph = 0.0;
 	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
 	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
+	that.availableAnimals = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
 	
 	
 	var isPlaying = false;
@@ -329,6 +283,124 @@ ROME.AnimalShader = {
 		"}"
 
 	].join("\n")
+}
+
+
+// animation data
+
+ROME.AnimalAnimationData = {
+
+	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
+
+	animalNames: [ "bison", "wolf", "parrot", "vulture", "hbird" ],
+
+
+	// init frame times and indices
+	
+	init: function( geometry, parseMorphTargetNames ) {
+		
+		var availableAnimals = [];
+		var animal, animalName;
+		var charCode, morphTargetName, morphTargets = geometry.morphTargets;
+		var a, al, m, ml, currentTime;
+		
+		// add animal names to static list?
+		
+		if( parseMorphTargetNames ) {
+			
+			for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+								
+				// check so not already exists
+				
+				for( a = 0, al = this.animalNames.length; a < al; a++ ) {
+					
+					animalName = this.animalNames[ a ];
+					
+					if( morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
+						
+						break;
+					}
+					
+				}
+				
+				
+				// did not exist?
+				
+				if( a === al ) {
+					
+					morphTargetName = morphTargets[ m ].name;
+					
+					for( a = 0; al < morphTargetName.length; a++ ) {
+				
+						charCode = morphTargetName.charCodeAt( a );
+						
+						if(! (( charCode >= 65 && charCode <= 90  ) ||
+						      ( charCode >= 97 && charCode <= 122 ))) {
+						      	
+							break;      	
+
+						} 
+						
+					}
+					
+					this.animalNames.push( morphTargetName.slice( 0, a ));
+					
+				}
+				
+			}
+			
+		}
+				
+		// parse out the names
+		
+		for( a = 0, al = this.animalNames.length; a < al; a++ ) {
+			
+			animalName  = this.animalNames[ a ];
+			animal      = this[ animalName ];
+			currentTime = 0;
+			
+			if( animal === undefined ) {
+				
+				animal = this[ animalName ] = [];
+				
+				for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+	
+					if( morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
+
+						animal.push( { index: m, time: currentTime } );
+						currentTime += parseInt( 1000 / 24, 10 );		// 24 fps			
+						
+	
+						if( availableAnimals.indexOf( animalName ) === -1 ) {
+							
+							availableAnimals.push( animalName );
+							
+						}
+						
+					}
+					
+				}
+
+			} else {
+				
+				for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+					
+					if( availableAnimals.indexOf( animalName ) === -1 && morphTargets[ m ].name.index( animalName ) !== -1 ) {
+						
+						availableAnimals.push( animalName );
+						
+					}
+					
+				}
+				
+			}
+			 
+		}
+
+		return availableAnimals;
+
+	}
+	
 }
 
 
