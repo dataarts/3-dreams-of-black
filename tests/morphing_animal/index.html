@@ -21,77 +21,6 @@
 
 		<script type="text/javascript">
 
-		var bisonAnimation = {
-
-			name: "bison",			
-			fps: 0.033,
-			length: 429,
-			
-			hierarchy: [
-			
-				{ 
-					parent: -1,
-				  	keys: [
-				  
-				  		{
-				  			time: 0,
-				  			morphTargets: [ "bison014", "bison001" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		},
-				  		
-				  		{
-				  			time: 33,
-				  			morphTargets: [ "bison001", "bison003" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		},
-
-				  		{
-				  			time: 99,
-				  			morphTargets: [ "bison003", "bison005" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		},
-
-				  		{
-				  			time: 165,
-				  			morphTargets: [ "bison005", "bison007" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		},
-
-				  		{
-				  			time: 231,
-				  			morphTargets: [ "bison007", "bison009" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		},
-
-				  		{
-				  			time: 297,
-				  			morphTargets: [ "bison009", "bison012" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		},
-
-				  		{
-				  			time: 363,
-				  			morphTargets: [ "bison012", "bison014" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		},
-				  		
-				  		{
-				  			time: 429,
-				  			morphTargets: [ "bison014", "bison001" ],
-				  			morphTargetsInfluences: [ 0, 1 ]
-				  		}
-				  		
-					]
-				  	
-				}
-				
-			]
-			
-		};
-		
-
-
-
 			var container, stats;
 
 			var camera, scene, renderer;
@@ -104,14 +33,14 @@
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
 			var animation;
-			var bison;
+			var animal;
 
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 			document.addEventListener( 'click', onDocumentMouseClick, false );
 
 			
 			var loader = new THREE.Loader();
-			loader.loadAscii( { model: "assets/hbird.js", callback: init } );
+			loader.loadAscii( { model: "assets/bisonWolf.js", callback: init } );
 
 		//	init();
 
@@ -130,40 +59,14 @@
 				scene.addChild( light );
 
 				
-				bison = ROME.Animal( geometry );
-				scene.addChild( bison.mesh );
+				animal = ROME.Animal( geometry );
+				scene.addChild( animal.mesh );
+				animal.mesh.rotation.y = 90 * Math.PI / 180;
+				animal.mesh.position.z = -500;
+				animal.play( "bison", "wolf" );
 
-
-//				THREE.AnimationHandler.add( bisonAnimation );
-
-
-				var material = new THREE.MeshLambertMaterial( { color: 0xff0000, morphTargets: true } );
-				var gridX = 1;
-				var gridZ = 1;
-
-/*				for( var x = 0; x < gridX; x++ ) {
-
-					for( var z = 0; z < gridZ; z++ ) {
-						
-						bison = new THREE.Mesh( geometry, material );
-						bison.position.x = bison.boundRadius * 1.5 * x - bison.boundRadius * 1.5 * gridX * 0.5 + bison.boundRadius * 1.5 * 0.5; 
-						bison.position.z = bison.boundRadius * 1.5 * z - bison.boundRadius * 1.5 * gridZ * 0.5 + bison.boundRadius * 1.5 * 0.5; 
-						bison.morphTargetBase = 0;
-						bison.flipSided = true;
-	
-	
-		//				var anim = new THREE.AnimationMorphTarget( bison, "bison" );
-		//				anim.play();
-						
-						scene.addChild( bison );
-						
-					}
-					
-				}*/
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = bison.mesh.boundRadius * 1.5 * gridZ * 0.8;
-				camera.position.y = 100;
 
 
 				renderer = new THREE.WebGLRenderer();
@@ -188,12 +91,9 @@
 
 			function loop() {
 
-				camera.position.x += (  mouseX - camera.position.x ) * 0.05;
-				camera.position.y += ( -mouseY - camera.position.y ) * 0.05;
+				animal.morph = Math.abs( mouseX / windowHalfX );
 
-				bison.morph = Math.abs( mouseX / windowHalfX );
-
-				THREE.AnimationHandler.update( 10 + 23 * Math.abs( mouseX / windowHalfX ));
+				THREE.AnimationHandler.update( 1000 / 60 );
 				renderer.render( scene, camera );
 
 			}
