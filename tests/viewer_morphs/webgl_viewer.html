@@ -96,6 +96,33 @@
 		#l_fog { margin-right:1em }
 		#l_bgDark { margin-right:0.25em }
 		
+		#morphs { 
+			background: rgba(0, 0, 0, 0.9);
+			padding:0 1em;
+			z-index:250;
+			position:absolute;
+			top:1em;
+			left:100px;
+			color:#fff;
+			display:none;
+		}
+		
+		#camera {
+			background: rgba(0, 0, 0, 0.9);
+			padding:0 1em;
+			z-index:250;
+			position:absolute;
+			bottom:1em;
+			left:1em;
+			color:#fff;
+			display:block;
+		}
+		
+		.number { display:inline-block; width:4em }
+		
+		.morph_label { display:inline-block; width:4em; margin:0 0.5em }
+		.morph_pct { display:inline-block; width:3.5em; color:#555; text-align:right }
+		
 		.hud { display:block }
 		
 		#hud_button { 
@@ -174,7 +201,7 @@
 
 
 		<script type="text/javascript" src="js/Three.js"></script>
-
+		
 		<script type="text/javascript" src="js/animal.js"></script>
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
@@ -187,6 +214,17 @@
 		
 		<div id="images"></div>
 		
+		<div id="morphs">
+			<p><span class="hh">Morphing</span>
+			<p>A <span class="kw morph_label" id="morph_a">aaa</span> <span class="kw morph_pct" id="morph_a_pct">10%</span><br/>
+			   B <span class="kw morph_label" id="morph_b">bbb</span> <span class="kw morph_pct" id="morph_b_pct">90%</span>
+		</div>
+		
+		<div id="camera">
+			<p><span class="hh" id="cam_type">Orbit camera</span><br/>
+			<span id="cam_location"></span>
+		</div>
+		
 		<div class="hud" id="file_dialog"> 
 			<div id="drop_zone">
 				<div id="help">
@@ -195,8 +233,6 @@
 					<p>Press <span class="kw">SPACE</span> to toggle user interface<br/>
 					Press <span class="kw">R</span> to toggle axis + grid<br/>
 					Press <span class="kw">1</span>, <span class="kw">2</span> to change camera mode<br/>
-
-					<p>Move mouse left-right to control morphing
 					
 					<p><span class="hh">1: Camera orbit mode</span>
 					<p><span class="kw">SHIFT</span> + mouse to rotate<br/>
@@ -204,6 +240,11 @@
 					
 					<p><span class="hh">2: Camera fly mode</span>
 					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse
+
+					<p><span class="hh">Morphing</span>
+					<p>Move mouse left-right to control morph blending<br/>
+					Press <span class="kw">O</span> to cycle through morphs sources A<br/>
+					Press <span class="kw">P</span> to cycle through morphs sources B<br/>
 				</div>
 			</div> 
 		</div>
@@ -288,6 +329,10 @@
 	
 		if ( ! Detector.fileapi ) alert( 'The File APIs are not fully supported in this browser.' );			
 		
+		// GUI
+		
+		var guiVisible = true;
+		
 		// scales
 		
 		var GLOBAL_SCALE = 1, 
@@ -333,6 +378,9 @@
 		var cameraDistance = 20,
 			cameraHeight = 5;
 		
+		var elCamLocation = $( "cam_location" ),
+			elCamType = $( "cam_type" );
+			
 		// scene
 		
 		var axisVisible = true;
@@ -345,11 +393,20 @@
 		var windowHalfY = window.innerHeight / 2;
 
 		var isShiftDown = false,
-			theta = 0;
+			theta = 45;
 			
 		// postprocessing
 		
 		var postprocessing = { enabled : false };
+
+		// morphing
+		
+		var morphA, morphB, morphObject;
+		
+		var elMorphAPct = $( "morph_a_pct" ),
+			elMorphBPct = $( "morph_b_pct" ),
+			elMorphA = $( "morph_a" ),
+			elMorphB = $( "morph_b" );
 
 		// globals
 		
@@ -366,7 +423,7 @@
 
 		var camera, orbitCamera, flyCamera;
 		
-		var scene, sceneTemp, renderer, morphObject;
+		var scene, sceneTemp, renderer;
 		
 		var delta, time, oldTime;
 		
@@ -475,10 +532,16 @@
 				
 				/* r */
 				case 82: toggleAxis(); break;
-				
+
+				/* o */
+				case 79: cycleMorphA(); break;
+
+				/* p */
+				case 80: cycleMorphB(); break;
+
 			}
 			
-			//console.log( event.keyCode );
+			//console.log( "keyCode", event.keyCode );
 
 		};
 
@@ -554,20 +617,59 @@
 		function setOrbitCamera() {
 		
 			camera = orbitCamera;
+			elCamType.innerHTML = "Orbit camera";
 			
 		};
 
 		function setFlyCamera() {
 		
 			camera = flyCamera;
+			elCamType.innerHTML = "Fly camera";
 			
 		};
 
 		function zoomCamera( delta ) {
 		
-			cameraDistance = cap_bottom( cameraDistance - 0.5 * delta, 1 );
+			cameraDistance = cap_bottom( cameraDistance - 0.75 * delta, 1 );
 
 		};
+		
+		// morph controls		
+		
+		function updateMorphs() {
+		
+			var nameA = morphObject.availableAnimals[ morphA ],
+				nameB = morphObject.availableAnimals[ morphB ];
+
+			morphObject.play( nameA, nameB );
+			
+			elMorphA.innerHTML = nameA;
+			elMorphB.innerHTML = nameB;
+
+		};
+		
+		function cycleMorphA() {
+		
+			if( morphObject && morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
+			
+				morphA = ( morphA + 1 ) % morphObject.availableAnimals.length;
+				updateMorphs();			
+				
+			}
+
+		};
+
+		function cycleMorphB() {
+		
+			if( morphObject && morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
+			
+				morphB = ( morphB + 1 ) % morphObject.availableAnimals.length;
+				updateMorphs();			
+				
+			}
+
+		};
+
 		
 		// temp scene
 		
@@ -658,6 +760,33 @@
 		function $( id ) { return document.getElementById( id ); }
 		function rr( a, b ) { return a + ( b - a ) * Math.random(); }
 		
+		
+		function renderNumber( n, precision ) {
+		
+			return "<span class='number'>" + n.toFixed( precision ) + "</span>";
+			
+		};
+
+		function renderBigNumber( n ) {
+
+			return "<span class='number'>" + pretty_number( n.toFixed( 0 ) ) + "</span>";
+
+		};
+
+		function renderVec3( v, precision ) {
+		
+			if ( Math.abs( v.x ) > 10000 || Math.abs( v.y ) > 10000 || Math.abs( v.z ) > 10000 ) {
+				
+				return renderBigNumber( v.x ) + " " + renderBigNumber( v.y ) + " " + renderBigNumber( v.z );
+				
+			} else {
+			
+				return renderNumber( v.x, precision ) + " " + renderNumber( v.y, precision ) + " " + renderNumber( v.z, precision );
+
+			}
+			
+		};
+		
 		function capitalize( s ) {
 		
 			return s[ 0 ].toUpperCase() + s.substring( 1, s.length );
@@ -708,13 +837,16 @@
 		
 		function toggleHUD( e ) {
 			
+			guiVisible = !guiVisible;
+			
 			e.stopPropagation();
 			e.preventDefault();
 			
 			toggle( "file_dialog" );
 			toggle( "gui_wrapper" );
+			//toggle( "camera" );
 			
-			camera.dragToLook = !camera.dragToLook;
+			camera.dragToLook = guiVisible;
 			
 		};
 		
@@ -1168,12 +1300,11 @@
 			
 			updateTextureList( "texture_list", TEXTURE_MAP );
 			
-		};
+		};		
 		
 		function addObject( geometry, x, y, z, s ) {
 			
 			resetScene();
-			console.log(geometry)
 			
 			var material, mesh;
 			
@@ -1185,10 +1316,16 @@
 				cameraDistance = mesh.boundRadius * 10;
 				cameraHeight = mesh.boundRadius * 0.1;
 				
-				console.log( morphObject.availableAnimals );
+				if( morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
 				
-				if( morphObject.availableAnimals && morphObject.availableAnimals.length > 1 )
-					morphObject.play( morphObject.availableAnimals[ 0 ], morphObject.availableAnimals[ 1 ] );
+					morphA = 0;
+					morphB = 1;
+					
+					updateMorphs();					
+					
+				}
+				
+				$( "morphs" ).style.display = "block";
 			
 			} else {
 				
@@ -1197,8 +1334,21 @@
 				material = new THREE.MeshFaceMaterial(),
 				mesh = new THREE.Mesh( geometry, material );
 				
-				cameraDistance = mesh.boundRadius * 3;
-				cameraHeight = mesh.boundRadius * 0.1;
+				console.log( mesh.boundRadius );
+				
+				if ( mesh.boundRadius > 0.25 * camera.far ) {
+
+					cameraDistance = 0.25 * camera.far;
+					cameraHeight = 0.01 * camera.far;
+
+				} else {
+				
+					cameraDistance = mesh.boundRadius * 3;
+					cameraHeight = mesh.boundRadius * 0.1;
+					
+				}
+				
+				$( "morphs" ).style.display = "none";
 				
 			}
 			
@@ -1216,6 +1366,9 @@
 
 			camera.position.set( 0, cameraHeight, cameraDistance );
 			camera.target.position.set( 0, 0, 0 );
+			
+			axisVisible = false;
+			SceneUtils.showHierarchy( auxRoot, axisVisible );
 			
 			//console.log( mesh.boundRadius, camera );
 
@@ -1348,12 +1501,15 @@
 		
 			if ( morphObject ) {
 				
-				morphObject.morph = Math.abs( ( mouseX + windowHalfX )/ ( 2 * windowHalfX ) );
+				morphObject.morph = Math.abs( ( mouseX + windowHalfX ) / ( 2 * windowHalfX ) );
 				THREE.AnimationHandler.update( delta );
+				
+				elMorphAPct.innerHTML = ( 100 * morphObject.morph ).toFixed( 1 ) + " %";
+				elMorphBPct.innerHTML = ( 100 * ( 1 - morphObject.morph) ).toFixed( 1 ) + " %";
 				
 			}
 
-		};
+		};		
 		
 		function updateCamera( delta ) {
 		
@@ -1361,7 +1517,7 @@
 			
 				if ( isShiftDown ) {
 
-					theta += mouseX * delta * 0.00005;
+					theta += mouseX * delta * 0.0001;
 
 				}
 
@@ -1370,6 +1526,8 @@
 				camera.position.y = cameraHeight;
 				
 			}
+			
+			elCamLocation.innerHTML = renderVec3( camera.position, 2 );
 
 		};
 		
