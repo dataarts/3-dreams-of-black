@@ -67,18 +67,19 @@ var Part1Soup = function ( camera, scene ) {
 
 	var currentNormal = new THREE.Vector3(0,1,0);
 	var r = 0;
+	camPos = new THREE.Vector3(-170, -590, 50);
 
 	var pointLight = new THREE.PointLight( 0xccffcc );
-	pointLight.position.x = camera.position.x;
-	pointLight.position.y = camera.position.y;
-	pointLight.position.z = camera.position.z;
+	pointLight.position.x = camPos.x;
+	pointLight.position.y = camPos.y;
+	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
 
 	// vectors
 	for (var i=0; i<initSettings.numOfVectors+20; ++i ) {
-		var x = camera.position.x-20;
-		var y = camera.position.y-10;
-		var z = camera.position.z;
+		var x = camPos.x-20;
+		var y = camPos.y-10;
+		var z = camPos.z;
 
 		var obj = {x:x, y:y, z:z, lastx:x, lasty:y, lastz:z, normalx:0, normaly:0, normalz:0, scale:1};
 		vectorArray.push(obj);
@@ -115,9 +116,9 @@ var Part1Soup = function ( camera, scene ) {
 
 		var butterflyMesh = new THREE.Mesh( b, m );
 
-		var x = camera.position.x-100;
-		var y = camera.position.y-100;
-		var z = camera.position.z;
+		var x = camPos.x-100;
+		var y = camPos.y-100;
+		var z = camPos.z;
 
 		butterflyMesh.position.x = x;
 		butterflyMesh.position.y = y;
@@ -147,14 +148,14 @@ var Part1Soup = function ( camera, scene ) {
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.000001 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.5 } );
 	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
 
 	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial2, true );
-	var rightPlane = addMesh( plane, 200,  camera.position.x+settings.collisionDistance, camera.position.y, camera.position.z, 0,-1.57,0, invMaterial, false );
-	var leftPlane = addMesh( plane, 200,  camera.position.x-settings.collisionDistance, camera.position.y, camera.position.z, 0,1.57,0, invMaterial, false );
-	var frontPlane = addMesh( plane, 200,  camera.position.x, camera.position.y, camera.position.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
-	var backPlane = addMesh( plane, 200,  camera.position.x, camera.position.y, camera.position.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
+	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial, false );
+	var leftPlane = addMesh( plane, 200,  camPos.x-settings.collisionDistance, camPos.y, camPos.z, 0,1.57,0, invMaterial, false );
+	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
+	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
 	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance/1.4), 0, 1.57,0,0, invMaterial2, false );
 	
 	// temp boxes
@@ -185,23 +186,34 @@ var Part1Soup = function ( camera, scene ) {
 
 	this.update = function () {
 
+		// update to reflect _real_ camera position
+		camPos.x = camera.matrixWorld.n14;
+		camPos.y = camera.matrixWorld.n24;
+		camPos.z = camera.matrixWorld.n34;
+
 		// collisionScene stuff should probably not be here (TEMP)
-		rightPlane.position.x = camera.position.x+settings.collisionDistance;
-		leftPlane.position.x = camera.position.x-settings.collisionDistance;
-		frontPlane.position.z = camera.position.z-settings.collisionDistance*1.4;
-		backPlane.position.z = camera.position.z+settings.collisionDistance;
+		rightPlane.position.x = camPos.x+settings.collisionDistance;
+		leftPlane.position.x = camPos.x-settings.collisionDistance;
+		frontPlane.position.z = camPos.z-settings.collisionDistance*1.4;
+		backPlane.position.z = camPos.z+settings.collisionDistance;
+		rightPlane.updateMatrix();
+		leftPlane.updateMatrix();
+		frontPlane.updateMatrix();
+		backPlane.updateMatrix();
 		// ---
 
 		r += 0.1;
 
-		camera.updateMatrix();
-		camera.update();
+		//camera.updateMatrix();
+		//camera.update();
 
 		updateEmitter();
 		runAll();
 
+		// slight camera roll
+		camera.animationParent.rotation.z = (camera.target.position.x)/800;
 
-		THREE.AnimationHandler.update( settings.animalSpeed );
+		//THREE.AnimationHandler.update( settings.animalSpeed );
 
 		var bspeed = (settings.animalSpeed/6);
 		butterfly_0.animate(r*bspeed);
@@ -222,7 +234,7 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	function animalLoaded( geometry ) {
-		var texture = { color: 0xffffff, shading: THREE.FlatShading, skinning: true };
+		var texture = { color: 0xffffff, shading: THREE.FlatShading, skinning: false };
 		var material = new THREE.MeshLambertMaterial( texture );
 
 		for (var i=0; i<initSettings.numOfAnimals; ++i ) {
@@ -233,9 +245,9 @@ var Part1Soup = function ( camera, scene ) {
 				scale = 0.15;
 			}
 
-			var x = camera.position.x-100;
-			var y = camera.position.y-100;
-			var z = camera.position.z;
+			var x = camPos.x-100;
+			var y = camPos.y-100;
+			var z = camPos.z;
 
 			animal.position.x = x;
 			animal.position.y = y;
@@ -243,16 +255,17 @@ var Part1Soup = function ( camera, scene ) {
 
 			animal.matrixAutoUpdate = false;
 
-			THREE.AnimationHandler.add( geometry.animation );
+			//THREE.AnimationHandler.add( geometry.animation );
 
 			scene.addObject( animal );
-			var animation = new THREE.Animation( animal, "take_001", undefined, false );
+			//var animation = new THREE.Animation( animal, "take_001", undefined, false );
 
-			animation.offset = 0.1 * Math.random();
-			animation.play();
+			//animation.offset = 0.1 * Math.random();
+			//animation.play();
 
 			var followIndex = (i*2)+2;
-			var obj = {c:animal, a:animation, x:x, y:y, z:z, f:followIndex, scale:scale*80};
+			//var obj = {c:animal, a:animation, x:x, y:y, z:z, f:followIndex, scale:scale*80};
+			var obj = {c:animal, x:x, y:y, z:z, f:followIndex, scale:scale*80};
 
 			animalArray.push(obj);
 		}
@@ -556,7 +569,7 @@ var Part1Soup = function ( camera, scene ) {
 			var alivetime = obj.alivetime;
 			var normal = obj.normal;
 			
-			alivetime += 0.55;
+			alivetime += 0.5;
 			
 			// respawn
 			if (alivetime > 150) {
@@ -605,7 +618,7 @@ var Part1Soup = function ( camera, scene ) {
 				alivetime = 0;
 			}
 
-			scale = Math.max( (alivetime)/50, 0.0000001);
+			scale = Math.max( (alivetime)/50, 0.05);
 			scale = Math.min(scale,1);
 			scale *= 0.08;
 			c.scale.x = c.scale.z = Math.min(0.065, scale*2.5);
@@ -628,7 +641,7 @@ var Part1Soup = function ( camera, scene ) {
 		var vector = new THREE.Vector3( ( mouseX / window.innerWidth ) * 2 - 1, - ( mouseY / window.innerHeight ) * 2 + 1, 0.5 );
 		projector.unprojectVector( vector, camera );
 
-		var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+		var ray = new THREE.Ray( camPos, vector.subSelf( camPos ).normalize() );
 
 		var intersects = ray.intersectScene( collisionScene );
 
@@ -636,12 +649,12 @@ var Part1Soup = function ( camera, scene ) {
 			for (var i=0; i<intersects.length; ++i ) {
 				var check;
 				if (vector.z < 0) {
-					check = intersects[i].point.z < camera.position.z;
+					check = intersects[i].point.z < camPos.z;
 				} else {
-					check = intersects[i].point.z > camera.position.z;
+					check = intersects[i].point.z > camPos.z;
 				}
 
-				if (check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow) {
+				if (check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 20) {
 					emitterMesh.position = intersects[i].point;
 
 					var face = intersects[i].face;
@@ -725,6 +738,10 @@ var Part1Soup = function ( camera, scene ) {
 		collisionScene.addObject(mesh);
 
 		return mesh;
+	}
+
+	this.destruct = function () {
+
 	}
 
 }

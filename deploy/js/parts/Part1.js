@@ -3,56 +3,62 @@ var Part1 = function ( renderer, events ) {
 	Effect.call( this );
 
 	var camera, world, soup;
+	var cameraPath;
+	var waypoints = [];
+	var delta, time, oldTime;
 
 	this.init = function ( callback ) {
 
-		camera = new THREE.QuakeCamera( {
-			fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-			movementSpeed: 0.6, lookSpeed: 0.0020, noFly: true, lookVertical: true,
-			autoForward: true
-		} );
+		waypoints = [ [ -170, -590, 50 ],
+					  [ -165, -590, -200 ],
+					  [ -120, -590, -600 ], 
+					  [ -150, -590, -1150 ],
+					  [ -150, -590, -1600 ]
+					  ];
 
-		gui.add( camera, 'movementSpeed', 0, 4).name( 'CameraSpeed' );
+		cameraPath = new THREE.PathCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+										 waypoints: waypoints, duration: 25, 
+										 useConstantSpeed: true, resamplingCoef: 1,
+										 createDebugPath: false, createDebugDummy: false,
+										 lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
+										 verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+										 horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+									 } );
+				
+		
+		cameraPath.position.set( 0, 12, 0 );				
+		cameraPath.lon = 90;
+			
+		camera = cameraPath;
 
 		world = new Part1World();
 		soup = new Part1Soup( camera, world.scene );
 
+		//world.scene.addObject( cameraPath.debugPath );
+		world.scene.addObject( cameraPath.animationParent );				
 
 	};
 
 	this.show = function () {
 
-		camera.position.x = -150;
-		camera.position.y = -575;
-		camera.position.z = 200;
-
-/*		camera.position.x = - 150;
-		camera.position.y = 500;
-		camera.position.z = 200;
-*/
-		camera.lon = - 90;
+		oldTime = new Date().getTime();
+		cameraPath.animation.play( true, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
 
 	};
 
 	this.hide = function () {
-
+		
 	};
 
 	this.update = function ( i ) {
 
-		camera.position.x = -150;
-		if (camera.position.z < -1700) {
-			camera.position.z = 200;
-		}
-
-		/*if (camera.position.x < -200) {
-			camera.position.x = -200;
-		}
-		if (camera.position.x > -100) {
-			camera.position.x = -100;
-		}*/
+		time = new Date().getTime();
+		delta = time - oldTime;
+		oldTime = time;
+		
+		THREE.AnimationHandler.update( delta );
 
 		soup.update();
 
