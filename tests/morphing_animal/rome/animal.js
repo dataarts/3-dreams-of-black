@@ -36,21 +36,19 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		
 		if( !isPlaying ) {
 
-			setAnimalData( animalA, that.animalA );
-			setAnimalData( animalB, that.animalB );
-			
-			that.animalA.currentTime = startTimeAnimalA ? startTimeAnimalA : 0;
-			that.animalB.currentTime = startTimeAnimalB ? startTimeAnimalB : 0;
-			
 			isPlaying = true;
 			that.morph = 0;
 
 			THREE.AnimationHandler.addToUpdate( that );
-
 		}
 		
+		setAnimalData( animalA, that.animalA );
+		setAnimalData( animalB, that.animalB );
+		
+		that.animalA.currentTime = startTimeAnimalA ? startTimeAnimalA : 0;
+		that.animalB.currentTime = startTimeAnimalB ? startTimeAnimalB : 0;
+		
 		that.update( 0 );
-
 	} 
 
 
