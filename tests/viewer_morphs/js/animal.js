@@ -383,7 +383,7 @@ ROME.AnimalAnimationData = {
 				
 				for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
 					
-					if( availableAnimals.indexOf( animalName ) === -1 && morphTargets[ m ].name.index( animalName ) !== -1 ) {
+					if( availableAnimals.indexOf( animalName ) === -1 && morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
 						
 						availableAnimals.push( animalName );
 						
