@@ -357,7 +357,7 @@ ROME.AnimalAnimationData = {
 			animal      = this[ animalName ];
 			currentTime = 0;
 			
-			if( animal === undefined ) {
+			if( animal === undefined || animal.length === 0 ) {
 				
 				animal = this[ animalName ] = [];
 				
