@@ -1406,6 +1406,7 @@
 
 					postprocessing.quad.materials = [ postprocessing.materialScreen ];
 
+					postprocessing.materialScreen.blending = THREE.AdditiveBlending;
 					postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture3;
 					postprocessing.materialScreen.uniforms.opacity.value = 1.0;
 
@@ -1419,7 +1420,8 @@
 						postprocessing.quad.materials = [ postprocessing.materialFilm ];
 						
 					} else {
-					
+
+						postprocessing.materialScreen.blending = THREE.NormalBlending;
 						postprocessing.quad.materials = [ postprocessing.materialScreen ];
 
 					}
