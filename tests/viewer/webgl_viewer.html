@@ -26,23 +26,28 @@
 			position:absolute;
 			width:100%;
 			height:100%;
-			padding:20% 0;
+			padding:15% 0;
 			color: #eee;
-			background:rgba(0, 0, 0, 0.25);
-			text-shadow:#000 1px 1px 1px;
+			
 		}
 		  
 		#drop_label {
-			text-align: center;
+			text-align: left;
 			font: 20pt bold georgia;
 			font-variant:small-caps;
 			text-transform:uppercase;
 		}
 		
 		#help {
-			margin:1em 0 0 0;
-			text-align:center;
+			background: rgba(0, 0, 0, 0.9);
+			padding:2em;
+			width:400px;
+			margin:1em auto;
+			text-align:left;
 		}
+		
+		.hh { color:gold }
+		.kw { color:red }
 		
 		#file_list { 
 			text-align: left;
@@ -113,6 +118,7 @@
 			text-transform:uppercase;
 		}
 		
+		
 		.overlay {
 			position:absolute;
 			left:0px;
@@ -168,6 +174,7 @@
 
 
 		<script type="text/javascript" src="js/Three.js"></script>
+		<script type="text/javascript" src="js/Animal.js"></script>
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
 		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
@@ -181,10 +188,21 @@
 		
 		<div class="hud" id="file_dialog"> 
 			<div id="drop_zone">
-				<div id="drop_label">Drop files here</div>
 				<div id="help">
-				Press SPACE to toggle user interface<br/>
-				Navigate with WASD / arrows / mouse
+					<div id="drop_label">Drop files here</div>
+				
+					<p>Press <span class="kw">SPACE</span> to toggle user interface<br/>
+					Press <span class="kw">R</span> to toggle axis + grid<br/>
+					Press <span class="kw">1</span>, <span class="kw">2</span> to change camera mode<br/>
+
+					<p>Move mouse left-right to control morphing
+					
+					<p><span class="hh">1: Camera orbit mode</span>
+					<p><span class="kw">SHIFT</span> + mouse to rotate<br/>
+					Mouse wheel to zoom
+					
+					<p><span class="hh">2: Camera fly mode</span>
+					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse
 				</div>
 			</div> 
 		</div>
@@ -242,6 +260,7 @@
 			<span id="b_s5" class="chk">&diams;</span> <span id="l_s5" class="lbl">5</span>
 			<span id="b_s10" class="chk">&nbsp;</span> <span id="l_s10" class="lbl">10</span>
 			<span id="b_s100" class="chk">&nbsp;</span> <span id="l_s100" class="lbl">100</span>
+			
 			
 			<br/><br/>
 			
@@ -307,6 +326,26 @@
 		};
 		var lightType = "white";
 		
+		// camera
+		
+		var useOrbitCamera = true;
+		var cameraDistance = 20,
+			cameraHeight = 5;
+		
+		// scene
+		
+		var axisVisible = true;
+		
+		// controls
+
+		var mouseX, mouseY, mouseDelta;
+		
+		var windowHalfX = window.innerWidth / 2;
+		var windowHalfY = window.innerHeight / 2;
+
+		var isShiftDown = false,
+			theta = 0;
+			
 		// postprocessing
 		
 		var postprocessing = { enabled : false };
@@ -321,9 +360,16 @@
 
 		var DragAndDrop = {};	
 
+
 		var viewport, stats;
 
-		var camera, scene, sceneTemp, renderer;
+		var camera, orbitCamera, flyCamera;
+		
+		var scene, sceneTemp, renderer, morphObject;
+		
+		var delta, time, oldTime;
+		
+		var auxRoot, sceneRoot;
 
 		init();
 		animate();
@@ -348,17 +394,21 @@
 	
 			viewport.appendChild( renderer.domElement );
 			
-			//camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 100000 );
+			// CAMERAS
 			
-			
-			camera = new THREE.QuakeCamera( { fov: 60, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
+			orbitCamera = new THREE.Camera( 40, window.innerWidth / window.innerHeight, 1, 100000 );
+			orbitCamera.position.set( 0, cameraHeight, cameraDistance );
+			orbitCamera.target.position.set( 0, 0, 0 );
+						
+			flyCamera = new THREE.QuakeCamera( { fov: 40, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
 											  movementSpeed: 8, lookSpeed: 0.0025, noFly: false, lookVertical: true,
 											  dragToLook: true
 											  } );
 
-			camera.position.y = 0;
-			camera.position.z = 500;
+			flyCamera.position.set( 0, cameraHeight, cameraDistance );
+			flyCamera.lon = -90;
 
+			camera = orbitCamera;
 			
 			// LIGHTS
 
@@ -380,10 +430,27 @@
 			viewport.appendChild( stats.domElement );
 			
 			iniGui();
-			createTempScene( scene );
+			
+			auxRoot = new THREE.Object3D();
+			sceneRoot = new THREE.Object3D();
+			
+			var axis = createAxis();
+			var tempScene = createTempScene();
+			
+			auxRoot.addChild( axis );
+			sceneRoot.addChild( tempScene );
+			
+			scene.addChild( auxRoot );
+			scene.addChild( sceneRoot );			
 			
 			window.addEventListener( 'resize', onWindowResize, false );
+
 			window.addEventListener( 'keydown', onKeyDown, false );
+			window.addEventListener( 'keyup', onKeyUp, false );
+			window.addEventListener( 'mousemove', onMouseMove, false );
+			window.addEventListener( 'mousewheel', onMouseWheel, false );
+			
+			oldTime = new Date().getTime();
 
 		};
 
@@ -393,11 +460,52 @@
 			
 			switch( event.keyCode ) {
 
-				/*space*/
+				/* space */
 				case 32: toggleHUD( event ); break;
+				
+				/* shift */
+				case 16: isShiftDown = true; break;
+
+				/* 1 */
+				case 49: setOrbitCamera(); break;
+
+				/* 2 */
+				case 50: setFlyCamera(); break;
+				
+				/* r */
+				case 82: toggleAxis(); break;
+				
+			}
+			
+			//console.log( event.keyCode );
+
+		};
+
+		function onKeyUp( event ) {
+ 
+			switch( event.keyCode ) {
+
+				/* shift */
+				case 16: isShiftDown = false; break;
 
 			}
 
+		};
+		
+		function onMouseMove ( event ) {
+
+			mouseX = event.clientX - windowHalfX;
+			mouseY = event.clientY - windowHalfY;
+
+		};
+		
+		function onMouseWheel( event ) {
+		
+			if ( event.wheelDelta ) mouseDelta = event.wheelDelta / 120;
+			if ( event.detail     ) mouseDelta = - event.detail / 3;
+
+			zoomCamera( mouseDelta );
+			
 		};
 
 		function onWindowResize( event ) {
@@ -406,10 +514,66 @@
  
 		};
 			
+		// axis
+		
+		function createAxis() {
+		
+			var axis = new THREE.Object3D(),
+				d = 0.05;
+				
+			mesh = new THREE.Mesh( new Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+			mesh.position.set( 0.5, 0, 0 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new Cube( d, 1, d ), new THREE.MeshLambertMaterial( { color: 0x00ff00 } ) );
+			mesh.position.set( 0, 0.5, 0 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new Cube( d, d, 1 ), new THREE.MeshLambertMaterial( { color: 0x0000ff } ) );
+			mesh.position.set( 0, 0, 0.5 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new Plane( 100, 100, 100, 100 ), new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } ) );
+			mesh.rotation.set( -1.57, 0, 0 );
+			axis.addChild( mesh );
+
+			return axis
+		
+		};
+		
+		function toggleAxis() {
+		
+			axisVisible = !axisVisible;
+			SceneUtils.showHierarchy( auxRoot, axisVisible );
+		
+		};
+		
+		// camera controls
+		
+		function setOrbitCamera() {
+		
+			camera = orbitCamera;
+			
+		};
+
+		function setFlyCamera() {
+		
+			camera = flyCamera;
+			
+		};
+
+		function zoomCamera( delta ) {
+		
+			cameraDistance = cap_bottom( cameraDistance - 0.5 * delta, 1 );
+
+		};
+		
 		// temp scene
 		
-		function createTempScene( parent ) {
+		function createTempScene() {
 		
+			var tempScene = new THREE.Object3D();
+			
 			var i, x, y, z, 
 				d = 10000,
 				s = BASE_SCALE,
@@ -439,9 +603,26 @@
 				mesh.updateMatrix();
 				mesh.update();
 				
-				parent.addObject( mesh );
+				tempScene.addChild( mesh );
 				
 			}
+			
+			return tempScene;
+			
+		};
+		
+		function resetScene() {
+			
+			scene.removeChild( sceneRoot );
+			
+			sceneRoot = new THREE.Object3D();			
+			scene.addChild( sceneRoot );
+			
+		};
+
+		function rescaleScene( s ) {
+			
+			sceneRoot.scale.set( s, s, s );
 			
 		};
 		
@@ -516,6 +697,12 @@
 
 		};
 
+		function cap_bottom( n, b ) {
+			
+			return n > b ? n : b;
+			
+		};
+		
 		// GUI
 		
 		function toggleHUD( e ) {
@@ -870,32 +1057,6 @@
 
 		};
 		 
-		function resetScene() {
-			
-			var i, l = scene.objects.length;
-			
-			for( i = l - 1; i >= 0; i-- ) {
-				
-				scene.removeObject( scene.objects[ i ] );
-
-			}
-			
-		};
-
-		function rescaleScene( s ) {
-			
-			var i, o, l = scene.objects.length;
-			
-			for( i = 0; i < l; i++ ) {
-				
-				o = scene.objects[ i ];
-				
-				o.scale.set( s, s, s );
-				o.updateMatrix();
-
-			}
-			
-		};
 
 		function extractTexture( map, dst ) {
 			
@@ -1009,11 +1170,32 @@
 		};
 		
 		function addObject( geometry, x, y, z, s ) {
-
-			resetScene();
 			
-			var material = new THREE.MeshFaceMaterial(),
+			resetScene();
+			console.log(geometry)
+			
+			var material, mesh;
+			
+			if ( geometry.morphTargets !== undefined && geometry.morphTargets.length > 0 ) {
+			
+				morphObject = ROME.Animal( geometry );
+				mesh = morphObject.mesh;
+			
+				cameraDistance = mesh.boundRadius * 10;
+				cameraHeight = mesh.boundRadius * 0.1;
+			
+			} else {
+				
+				morphObject = null;
+				
+				material = new THREE.MeshFaceMaterial(),
 				mesh = new THREE.Mesh( geometry, material );
+				
+				cameraDistance = mesh.boundRadius * 3;
+				cameraHeight = mesh.boundRadius * 0.1;
+				
+			}
+			
 
 			TEXTURE_MAP = collectTextures( geometry );
 			checkTextureImages();
@@ -1023,7 +1205,13 @@
 			mesh.matrixAutoUpdate = false;
 			mesh.updateMatrix();
 			mesh.update();
-			scene.addObject( mesh );
+			
+			sceneRoot.addChild( mesh );			
+
+			camera.position.set( 0, cameraHeight, cameraDistance );
+			camera.target.position.set( 0, 0, 0 );
+			
+			//console.log( mesh.boundRadius, camera );
 
 		};
 		
@@ -1130,27 +1318,64 @@
 			initPostprocessingBloom( effect );
 			effect.type = "bloomnoise";
 			
-		}
+		};
 		
-		
+		// updates		
+
 		function animate() {
 
 			requestAnimationFrame( animate );
 
-			render();
+			time = new Date().getTime();
+			delta = time - oldTime;
+			oldTime = time;
+
+			updateCamera( delta );
+			updateMorph( delta );
+			render( delta );
+			
 			stats.update();
 
-		}
+		};
 
-		function render() {
+		function updateMorph( delta ) {
+		
+			if ( morphObject ) {
+				
+				morphObject.morph = Math.abs( ( mouseX + windowHalfX )/ ( 2 * windowHalfX ) );
+				THREE.AnimationHandler.update( delta );
+				
+			}
+
+		};
+		
+		function updateCamera( delta ) {
+		
+			if ( camera == orbitCamera ) {
 			
+				if ( isShiftDown ) {
+
+					theta += mouseX * delta * 0.00005;
+
+				}
+
+				camera.position.x = cameraDistance * Math.sin( theta * Math.PI / 360 );
+				camera.position.z = cameraDistance * Math.cos( theta * Math.PI / 360 );
+				camera.position.y = cameraHeight;
+				
+			}
+
+		};
+		
+		function render( delta ) {
+
 			renderer.clear();
 			
 			if ( postprocessing.enabled ) {
 			
 				if ( postprocessing.type == "noise" ) {
 				
-					postprocessing.material.uniforms.time.value += 0.01;
+					postprocessing.material.uniforms.time.value += 0.01 * delta;
 					
 					renderer.render( scene, camera, postprocessing.texture, true );
 					renderer.render( postprocessing.scene, postprocessing.camera );
@@ -1190,6 +1415,7 @@
 
 					if ( postprocessing.type == "bloomnoise" ) {
 						
+						postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
 						postprocessing.quad.materials = [ postprocessing.materialFilm ];
 						
 					} else {
@@ -1210,10 +1436,9 @@
 			}
 			
 
-		}
-		
+		};
 
-		// setup drag-and-drop listeners
+		// it's nicer to be able to drop anywhere in the window
 		
 		//$( 'drop_zone' ).addEventListener( 'dragover', DragAndDrop.onDragOver, false );
 		//$( 'drop_zone' ).addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
