@@ -28,7 +28,7 @@ var Part2 = function ( renderer, events ) {
 										 waypoints: waypoints, duration: 25, 
 										 useConstantSpeed: true, resamplingCoef: 1,
 										 createDebugPath: false, createDebugDummy: false,
-										 lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+										 lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
 										 verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
 										 horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
 									 } );
@@ -71,6 +71,18 @@ var Part2 = function ( renderer, events ) {
 		oldTime = time;
 		
 		THREE.AnimationHandler.update( delta );
+
+		// slight camera roll
+		if (camera.animationParent) {
+			camera.animationParent.rotation.z = (camera.target.position.x)/600;
+		}
+
+		// slightly bumpy camera, since we're on a train
+		camera.animationParent.position.y += Math.sin(time/100)*2;
+
+		// make it darker towards the end
+		var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
+		world.scene.lights[1].color.setRGB(a,a,a);
 
 		soup.update();
 
