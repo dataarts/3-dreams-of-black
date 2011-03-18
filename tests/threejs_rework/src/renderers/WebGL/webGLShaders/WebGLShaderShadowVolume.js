@@ -14,15 +14,26 @@ THREE.WebGLShaderDefinitions.shadowVolumeVertex = (function() {
 		
 		"attribute 	vec4 	aVertex;",
 		"attribute 	vec3 	aShadowNormalA;",
-		"attribute 	vec3 	aShadowNormalB;",
-		"attribute 	float 	aShadowVertexType;",
+//		"attribute 	vec3 	aShadowNormalB;",
+//		"attribute 	float 	aShadowVertexType;",
 
-		"varying	float	vDiscardFragment;",
-		"varying	vec4	vColor;",
+//		"varying	float	vDiscardFragment;",
+//		"varying	vec4	vColor;",
 
 		"void main(void)",
 		"{",
-			"vDiscardFragment = 0.0;",
+/*			"vec4 modified = aVertex;",
+
+			"if( dot( uDirectionalLight, aShadowNormalA ) >= 0.0 ) {",
+				"modified = vec4( modified.xyz + uDirectionalLight * 2000.0, 1 );",
+			"}",
+*/
+		
+			"vec4 modified = vec4( aVertex.xyz + uDirectionalLight * 2000.0 * step( 0.0, dot( uDirectionalLight, aShadowNormalA )), 1.0 );",
+			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * modified;",
+
+		
+/*			"vDiscardFragment = 0.0;",
 			"vec4 modified = aVertex;",
 			
 			"if( aShadowVertexType == 0.0 && dot( uDirectionalLight, aShadowNormalA ) >= 0.0 ) {",
@@ -37,7 +48,7 @@ THREE.WebGLShaderDefinitions.shadowVolumeVertex = (function() {
 				"}",
 			"}",
 			
-			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * modified;",
+			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * modified;",*/
 		"}"
 	].join( "\n" );
 
@@ -57,11 +68,11 @@ THREE.WebGLShaderDefinitions.shadowVolumeFragment = (function() {
 			"precision highp float;",
 		"#endif",		
 
-		"varying	float	vDiscardFragment;",
+//		"varying	float	vDiscardFragment;",
 		
 		"void main( void )",
 		"{",
-			"if( vDiscardFragment == 1.0 ) { discard; }",
+//			"if( vDiscardFragment == 1.0 ) { discard; }",
 			"gl_FragColor = vec4( 1, 1, 1, 1 );",
 		"}"
 	].join( "\n" );
