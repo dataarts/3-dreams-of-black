@@ -114,9 +114,6 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 
 	this.renderDictionary( this.renderDictionaryOpaque, 1 );
 
-	// render front shadows to offscreen buffer
-	
-	
 
 
 	// DEPTH FAIL (works)	

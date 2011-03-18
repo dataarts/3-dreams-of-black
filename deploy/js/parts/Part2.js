@@ -3,26 +3,58 @@ var Part2 = function ( renderer, events ) {
 	Effect.call( this );
 
 	var camera, world, soup;
+	var cameraPath;
+	var waypoints = [];
+	var delta, time, oldTime;
 
 	this.init = function ( callback ) {
 
-		camera = new THREE.QuakeCamera( {
-			fov: 60, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-			movementSpeed: 10, lookSpeed: 0.0025, noFly: false, lookVertical: true, 
-			autoForward: true
-		} );
+		waypoints = [ [ -22, 980, -3950 ],
+					  [ 617, 906, -4186 ],
+					  [ 1807, 827, -4555 ],
+					  [ 3471, 756, -4861 ],
+					  [ 5015, 733, -4963 ],
+					  [ 6497, 733, -4766 ],
+					  [ 8004, 731, -4196 ],
+					  [ 8997, 737, -3630 ],
+					  [ 10106, 720, -2742 ],
+					  [ 11522, 726, -1587 ],
+					  [ 12200, 739, -1090 ],
+					  [ 12936, 751, -632 ],
+					  [ 13236, 680, -332 ],
+					  [ 13707, 281, 304 ] ];
+
+		cameraPath = new THREE.PathCamera( { fov: 60, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+										 waypoints: waypoints, duration: 25, 
+										 useConstantSpeed: true, resamplingCoef: 1,
+										 createDebugPath: false, createDebugDummy: false,
+										 lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+										 verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+										 horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+									 } );
+				
+		
+		cameraPath.position.set( 0, 10, 0 );				
+		cameraPath.lon = 160;
+			
+		camera = cameraPath;
 
 		world = new Part2World();
 		soup = new Part2Soup( camera, world.scene );
+
+		//world.scene.addObject( cameraPath.debugPath );
+		world.scene.addObject( cameraPath.animationParent );				
 
 	};
 
 	this.show = function () {
 
-		camera.position.y = 0;
-		camera.position.z = -1000;
-		camera.position.x = 15000;
-		camera.lon = 170;
+		/*gui.add( camera.position, 'x' ).name( 'Camera x' ).listen();
+		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
+		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
+		*/
+		oldTime = new Date().getTime();
+		cameraPath.animation.play( true, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
 
@@ -33,6 +65,12 @@ var Part2 = function ( renderer, events ) {
 	};
 
 	this.update = function ( i ) {
+
+		time = new Date().getTime();
+		delta = time - oldTime;
+		oldTime = time;
+		
+		THREE.AnimationHandler.update( delta );
 
 		soup.update();
 

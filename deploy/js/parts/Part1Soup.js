@@ -479,11 +479,12 @@ var Part1Soup = function ( camera, scene ) {
 				toz = vectorArray[f].z;
 			}
 
-			animalArray[i].count += 0.01;
+			// morph - removed for now
+			/*animalArray[i].count += 0.01;
 			var morph = Math.max(Math.cos(animalArray[i].count),0);
 			morph = Math.min(morph, 1)
 			animalArray[i].a.morph = morph;
-
+			*/
 			var divider = 2.5;
 
 			var moveX = (tox-x)/divider;
@@ -500,7 +501,7 @@ var Part1Soup = function ( camera, scene ) {
 
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);
-			scale -= morph/12;
+			//scale -= morph/12;
 
 			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = x;
 			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = y;
