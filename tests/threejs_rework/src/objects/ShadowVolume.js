@@ -29,16 +29,13 @@ THREE.ShadowVolume.prototype.calculateShadowVolumeGeometry = function() {
 	var originalGeometry = this.geometry;
 	
 	this.geometry = new THREE.Geometry();
-	this.geometry.vertexTypes = [];
-	this.geometry.normalsFaceA = [];
-	this.geometry.normalsFaceB = [];
+	this.geometry.normalsFace = [];
 	
 	
 	// copy vertices / faces from original mesh
 	
 	var vertexTypes = this.geometry.vertexTypes;
-	var normalFaceA = this.geometry.normalsFaceA;
-	var normalFaceB = this.geometry.normalsFaceB;
+	var normalFaceA = this.geometry.normalsFace;
 	var vertices    = this.geometry.vertices;
 	var	faces       = this.geometry.faces;
 
@@ -74,9 +71,7 @@ THREE.ShadowVolume.prototype.calculateShadowVolumeGeometry = function() {
 			
 			vertex = originalVertices[ originalFace[ indices[ i ]]];
 			vertices.push( new THREE.Vertex( vertex.position.clone(), vertex.normal.clone() ) );
-			//vertexTypes.push( 0 );
 			normalFaceA.push( face.normal.clone());
-			//normalFaceB.push( face.normal.clone());
 		
 		}
 
@@ -99,20 +94,9 @@ THREE.ShadowVolume.prototype.calculateShadowVolumeGeometry = function() {
 			if( result !== undefined ) {
 
 				numVertices = vertices.length;
-//				face = new THREE.Face4( numVertices, numVertices + 1, numVertices + 2, numVertices + 3 );
 				face = new THREE.Face4( result.indices[ 0 ], result.indices[ 3 ], result.indices[ 2 ], result.indices[ 1 ] );
 				face.normal.set( 1, 0, 0 );
 				faces.push( face );
-				
-				
-/*				for( v = 0, vl = result.vertices.length; v < vl; v++ ) {
-					
-					vertices.push( new THREE.Vertex( result.vertices[ v ].position.clone() ));
-					vertexTypes.push( result.vertexTypes[ v ] );
-					normalFaceA.push( faceA.normal.clone());
-					normalFaceB.push( faceB.normal.clone());
-
-				}*/
 
 			}
 

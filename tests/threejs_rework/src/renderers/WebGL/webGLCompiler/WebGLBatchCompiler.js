@@ -57,9 +57,7 @@ THREE.WebGLBatchCompiler = (function() {
 		uv0s           = mesh.geometry.uvs;
 		uv1s           = [];
 		colors         = mesh.geometry.colors;
-		shadowVertexTypes = mesh.geometry.vertexTypes !== undefined ? mesh.geometry.vertexTypes : [];
-		shadowNormalsFaceA = mesh.geometry.normalsFaceA !== undefined ? mesh.geometry.normalsFaceA : [];
-		shadowNormalsFaceB = mesh.geometry.normalsFaceB !== undefined ? mesh.geometry.normalsFaceB : [];
+		shadowNormalsFaceA = mesh.geometry.normalsFace !== undefined ? mesh.geometry.normalsFace : [];
 
 		if( checkBatchCache()) {
 			

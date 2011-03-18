@@ -128,13 +128,13 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	this.GL.stencilOpSeparate( this.GL.BACK,  this.GL.KEEP, this.GL.INCR, this.GL.KEEP );
 	this.GL.stencilOpSeparate( this.GL.FRONT, this.GL.KEEP, this.GL.DECR, this.GL.KEEP );
 
+
 	this.GL.cullFace( this.GL.FRONT );
+//	this.GL.cullFace( this.GL.FRONT_AND_BACK );
 	this.renderDictionary( this.renderListShadowVolumes, 1 );
 					
 	this.GL.cullFace( this.GL.BACK );
 	this.renderDictionary( this.renderListShadowVolumes, 1 );
-
-					
 
 
 	// color
