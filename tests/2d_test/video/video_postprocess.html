@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>video test - postprocessing + particles</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+
+		<script type="text/javascript" src="build_r36/ThreeVideoTest.js"></script>
+
+		<video id="video" autoplay loop style="display:none">
+			<source src="s02-1.webm" type='video/webm;'>
+			<source src="s02-1.m4v" type='video/mp4;'>
+			<source src="s02-1.ogv" type='video/ogg;'>
+		</video>
+
+		<script type="text/javascript">
+
+			var MARGIN = 0;
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
+			var FLOOR = -180;
+
+			var container;
+
+			var camera;
+			var scene;
+			var renderer;
+			
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+			
+			var cubeRefMesh;
+			var bentplaneMesh;
+
+			var video, texture;
+
+			var particleSystems = [], particles, geometry, materials = [], parameters, i, h, color, sprite, size;
+			
+			var postprocessing = { enabled : true };
+			
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
+				
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = false;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+				
+				return mesh;
+			}
+			
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+				console.log(aspect);
+				
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+				camera.position.z = -100;
+				camera.position.x = 0;
+				camera.position.y = 0;
+
+				camera.updateMatrix();
+
+				scene = new THREE.Scene();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x000000 );
+				scene.addLight( ambient );
+
+				var cubeRef = new Cube( 0, 0, 0, 0, 0 );
+				cubeRefMesh = addMesh( cubeRef, 1,  0, 0, -800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x333333 } ) );
+				camera.target = cubeRefMesh;
+
+				var bentplane = new Plane( 960, 544, 19, 9 );
+
+				for ( var i=0; i < bentplane.vertices.length; ++i ) {
+					var col = i%20;
+
+					var sin = 50*Math.sin(col/6.25);
+
+					bentplane.vertices[i].position.z = -sin
+				}
+
+				video = document.getElementById( 'video' );
+				video.addEventListener('ended', onVideoEnd, false);
+
+				texture = new THREE.Texture( video );
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+
+				var material = new THREE.MeshLambertMaterial( { color: 0xffffff, map: texture } )
+
+				bentplaneMesh = addMesh( bentplane, 2.4,  0, FLOOR+544, -800, 0,0,0, material );
+				
+				// bg
+				var bgplane = new Plane( 100, 100, 1, 1 );
+				var mat = new THREE.MeshBasicMaterial( { color: 0x000000} )
+				var bgplaneMesh = addMesh( bgplane, 100,  0, 0, -1200, 0,0,0, mat );
+
+
+				// particles
+				
+				geometry = new THREE.Geometry();
+				
+				sprite1 = ImageUtils.loadTexture( "textures/sprites/snowflake1.png" );
+				sprite2 = ImageUtils.loadTexture( "textures/sprites/snowflake2.png" );
+				sprite3 = ImageUtils.loadTexture( "textures/sprites/snowflake3.png" );
+				sprite4 = ImageUtils.loadTexture( "textures/sprites/snowflake4.png" );
+				sprite5 = ImageUtils.loadTexture( "textures/sprites/snowflake5.png" );
+
+				for ( i = 0; i < 15000; i++ ) {
+
+					vector = new THREE.Vector3( Math.random() * 4000 - 2000, Math.random() * 1500 - 750, Math.random() * 300 - 500 );
+					geometry.vertices.push( new THREE.Vertex( vector ) );
+
+				}
+
+				var value = 0.07;
+				
+				parameters = [ [ [0.1, 0.5, value], sprite4, 10 ], 
+							   [ [0.125, 0.4, value], sprite4, 9 ], 
+							   [ [0.125, 0.4, value], sprite4, 8 ], 
+							   [ [0.125, 0.4, value], sprite4, 7 ], 
+							   [ [0.125, 0.4, value], sprite3, 6 ], 
+							   [ [0.15, 0.45, value], sprite1, 5 ], 
+							   [ [0.175, 0.5, value], sprite5, 4 ], 
+							   [ [0.20, 0, 0.1], sprite4, 3 ],
+							   ];
+
+				for ( i = 0; i < parameters.length; i++ ) {
+
+					color  = parameters[i][0];
+					sprite = parameters[i][1];
+					size   = parameters[i][2];
+
+					materials[i] = new THREE.ParticleBasicMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, sizeAttenuation:true } );
+					materials[i].color.setHSV( color[0], color[1], color[2] );
+
+					particles = new THREE.ParticleSystem( geometry, materials[i] );
+					scene.addObject( particles );
+					
+					particleSystems.push( particles );
+
+				}
+
+				renderer = new THREE.WebGLRenderer(  { antialias: false, clearAlpha: 1 } );
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				renderer.domElement.style.position = "absolute";
+				renderer.domElement.style.top = MARGIN + "px";
+				
+				renderer.autoClear = false;
+				renderer.sortObjects = false;
+				
+				container.appendChild( renderer.domElement );
+
+				initPostprocessingNoise( postprocessing );
+				//initPostprocessingBloom( postprocessing );
+				//initPostprocessingBloomNoise( postprocessing );
+				
+				oldTime = new Date().getTime();
+				
+			}
+			
+			function getTextureMaterial (tex) {
+				var textureMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: new THREE.Texture(), blending: THREE.BillboardBlending } );
+				var img = new Image();
+				textureMaterial.map.image = img;
+				img.onload = function () {
+					textureMaterial.map.image.loaded = 1;
+				};
+				img.src = tex;
+				
+				return textureMaterial;
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = ( event.clientX - windowHalfX );
+				mouseY = ( event.clientY - windowHalfY );
+			}
+
+			// firefox loop fix
+			function onVideoEnd() {
+				video.play();
+			}
+
+			function initPostprocessingNoise( effect ) {
+				
+				effect.type = "noise";
+				
+				effect.scene = new THREE.Scene();		
+				
+				effect.camera = new THREE.Camera();
+				effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+				effect.camera.position.z = 100;
+				
+				effect.texture = new THREE.RenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+
+				var film_shader = ShaderUtils.lib["film"];
+				var film_uniforms = Uniforms.clone( film_shader.uniforms );
+				
+				film_uniforms["tDiffuse"].texture = effect.texture;
+				
+				effect.material = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+				effect.material.uniforms.grayscale.value = 0;
+				effect.material.uniforms.nIntensity.value = 1;
+				effect.material.uniforms.sIntensity.value = 0.15;
+				effect.material.uniforms.sCount.value = 2048;
+				
+				var quad = new THREE.Mesh( new Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.material );
+				quad.position.z = -500;
+				effect.scene.addObject( quad );
+
+			}
+			
+			function initPostprocessingBloom( effect ) {
+
+				effect.type = "bloom";
+				
+				effect.scene = new THREE.Scene();
+
+				effect.camera = new THREE.Camera();
+				effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+				effect.camera.position.z = 100;
+
+				var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+				effect.rtTexture1 = new THREE.RenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars );
+				effect.rtTexture2 = new THREE.RenderTarget( 512, 512, pars );
+				effect.rtTexture3 = new THREE.RenderTarget( 512, 512, pars );
+
+				var screen_shader = ShaderUtils.lib["screen"];
+				var screen_uniforms = Uniforms.clone( screen_shader.uniforms );
+
+				screen_uniforms["tDiffuse"].texture = effect.rtTexture1;
+				screen_uniforms["opacity"].value = 1.0;
+
+				effect.materialScreen = new THREE.MeshShaderMaterial( {
+
+					uniforms: screen_uniforms,
+					vertexShader: screen_shader.vertexShader,
+					fragmentShader: screen_shader.fragmentShader,
+					blending: THREE.AdditiveBlending
+
+				} );
+
+				var convolution_shader = ShaderUtils.lib["convolution"];
+				var convolution_uniforms = Uniforms.clone( convolution_shader.uniforms );
+
+				effect.blurx = new THREE.Vector2( 0.001953125, 0.0 ),
+				effect.blury = new THREE.Vector2( 0.0, 0.001953125 );
+
+				convolution_uniforms["tDiffuse"].texture = effect.rtTexture1;
+				convolution_uniforms["uImageIncrement"].value = effect.blurx;
+				convolution_uniforms["cKernel"].value = ShaderUtils.buildKernel( 4.0 );
+
+				effect.materialConvolution = new THREE.MeshShaderMaterial( {
+
+					uniforms: convolution_uniforms,
+					vertexShader:   "#define KERNEL_SIZE 25.0\n" + convolution_shader.vertexShader,
+					fragmentShader: "#define KERNEL_SIZE 25\n"   + convolution_shader.fragmentShader
+
+				} );
+
+				var film_shader = ShaderUtils.lib["film"];
+				var film_uniforms = Uniforms.clone( film_shader.uniforms );
+				
+				film_uniforms["tDiffuse"].texture = effect.rtTexture1;
+				
+				effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+				effect.materialFilm.uniforms.grayscale.value = 0;
+				effect.materialFilm.uniforms.nIntensity.value = 1;
+				effect.materialFilm.uniforms.sIntensity.value = 0.05;
+				effect.materialFilm.uniforms.sCount.value = 2048;
+
+				effect.quad = new THREE.Mesh( new Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialConvolution );
+				effect.quad.position.z = -500;
+				effect.scene.addObject( effect.quad );
+
+			}
+			
+			function initPostprocessingBloomNoise( effect ) {
+			
+				initPostprocessingBloom( effect );
+				effect.type = "bloomnoise";
+				
+			};
+			
+			var px, ry, delta, time, oldTime;
+
+			function loop() {
+
+				time = new Date().getTime();
+				delta = time - oldTime;
+				oldTime = time;
+
+
+				for( i = 0; i < particleSystems.length; i++ ) {
+			
+					
+					px = particleSystems[ i ].position.x + delta * 0.05 * ( i + 1 );
+					particleSystems[ i ].position.set( px, 0, 0 );
+					if ( particleSystems[ i ].position.x > ( i * 150 + 500 )) particleSystems[ i ].position.x = -2000;
+					
+				}
+				
+				if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+					if (texture) texture.needsUpdate = true;
+				}
+
+				var moveX = (mouseX-followX)/20;
+				var moveY = (mouseY-followY)/20;
+
+				followX += moveX;
+				followY += moveY;
+
+				cubeRefMesh.position.y = (544*0.7)+(followY/10)*-1;
+				cubeRefMesh.position.x = (followX/20);
+
+				bentplaneMesh.position.x = (followX/10)*-1;
+				camera.position.y = FLOOR+544+25 + (followY/4)*-1;
+				
+				renderer.clear();
+				
+				if ( postprocessing.enabled ) {
+				
+					if ( postprocessing.type == "noise" ) {
+					
+						postprocessing.material.uniforms.time.value += 0.01 * delta;
+						
+						renderer.render( scene, camera, postprocessing.texture, true );
+						renderer.render( postprocessing.scene, postprocessing.camera );
+						
+					} else if ( postprocessing.type == "bloom" || postprocessing.type == "bloomnoise" ) {
+
+						// Render scene into texture
+
+						renderer.render( scene, camera, postprocessing.rtTexture1, true );
+
+						// Render quad with blured scene into texture (convolution pass 1)
+
+						postprocessing.quad.materials = [ postprocessing.materialConvolution ];
+
+						postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+						postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blurx;
+
+						renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture2, true );
+
+						// Render quad with blured scene into texture (convolution pass 2)
+
+						postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture2;
+						postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blury;
+
+						renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture3, true );
+
+						// Render original scene with superimposed blur to texture
+
+						postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+						//postprocessing.materialScreen.blending = THREE.AdditiveBlending;
+						postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture3;
+						postprocessing.materialScreen.uniforms.opacity.value = 1;
+
+						renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture1, false );
+
+						// Render to screen
+
+						if ( postprocessing.type == "bloomnoise" ) {
+							
+							postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
+							postprocessing.quad.materials = [ postprocessing.materialFilm ];
+							
+						} else {
+
+							//postprocessing.materialScreen.blending = THREE.NormalBlending;
+							postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+						}
+						
+						postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+						renderer.render( postprocessing.scene, postprocessing.camera );
+					
+					}
+					
+				} else {
+					
+					renderer.render( scene, camera );
+					
+				}
+
+			}
+
+
+		</script>
+
+	</body>
+</html>
