@@ -24,7 +24,8 @@ var Part1World = function () {
 
 	// Mesh
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/street_v3/street.js', texture_path: 'files/models/street_v3/', callback: function( geometry ) {
+	//loader.loadAscii( { model: 'files/models/street_v3/street.js', texture_path: 'files/models/street_v3/', callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/street_v3/CITY_EXPORT_CHUNK_AO.js', texture_path: 'files/models/street_v3/', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;

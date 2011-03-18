@@ -67,7 +67,8 @@ var Part1Soup = function ( camera, scene ) {
 
 	var currentNormal = new THREE.Vector3(0,1,0);
 	var r = 0;
-	camPos = new THREE.Vector3(0, -465, 1800);
+	//camPos = new THREE.Vector3(0, -465, 1800);
+	camPos = new THREE.Vector3(0, 20, 0);
 
 	var pointLight = new THREE.PointLight( 0xccffcc );
 	pointLight.position.x = camPos.x;
@@ -114,7 +115,8 @@ var Part1Soup = function ( camera, scene ) {
 	grassLoader.loadAscii( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
 
 	// collisionScene stuff should probably not be here (TEMP)
-	var FLOOR = -487;
+	//var FLOOR = -487;
+	var FLOOR = 0;
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
@@ -130,39 +132,39 @@ var Part1Soup = function ( camera, scene ) {
 	
 	// temp boxes
 	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
-	var cubea = addMesh( cube, 1,  280, -337, 1480, 0,0,0, invMaterial2, false );
+	var cubea = addMesh( cube, 1,  250, -337+487, 1480-1800, 0,0,0, invMaterial2, false );
 	cubea.scale.y = 3.5;
 	cubea.scale.z = 5;
-	var cubeb = addMesh( cube, 1,  -230, -240, -360, 0,0,0, invMaterial2, false );
+	var cubeb = addMesh( cube, 1,  -230, -240+487, -360-1800, 0,0,0, invMaterial2, false );
 	cubeb.scale.x = 0.8;
 	cubeb.scale.y = 3.4;
 	cubeb.scale.z = 25;
-	var cubec = addMesh( cube, 1,  240, -200, 660, 0,0,0, invMaterial2, false );
+	var cubec = addMesh( cube, 1,  230, -200+487, 590-1800, 0,0,0, invMaterial2, false );
 	cubec.scale.x = 0.8;
 	cubec.scale.y = 2;
-	cubec.scale.z = 2.3;
-	var cubed = addMesh( cube, 1,  360, -120, -260, 0,0,0, invMaterial2, false );
+	cubec.scale.z = 2.4;
+	var cubed = addMesh( cube, 1,  360, -120+487, -360-1800, 0,0,0, invMaterial2, false );
 	cubed.scale.x = 2;
 	cubed.scale.y = 3.8;
-	cubed.scale.z = 4.2;
-	var cubef = addMesh( cube, 1,  230, -200, -1040, 0,0,0.1257, invMaterial2, false );
+	cubed.scale.z = 4.4;
+	var cubef = addMesh( cube, 1,  230, -200+487, -1040-1800, 0,0,0.0957, invMaterial2, false );
 	cubef.scale.x = 1;
 	cubef.scale.y = 3.2;
 	cubef.scale.z = 2;
-	var cubeg = addMesh( cube, 1,  40, 160, -1240, 0,0,0.8796, invMaterial2, false );
+	var cubeg = addMesh( cube, 1,  40, 160+487, -1240-1800, 0,0,0.8796, invMaterial2, false );
 	cubeg.scale.x = 1.2;
 	cubeg.scale.y = 1.6;
 	cubeg.scale.z = 3.6;
-	var cubeh = addMesh( cube, 1,  240, -320, 1720, 0,0,0, invMaterial2, false );
+	var cubeh = addMesh( cube, 1,  240, -320+487, 1720-1800, 0,0,0, invMaterial2, false );
 	cubeh.scale.x = 0.8;
 	cubeh.scale.y = 3.2;
 	cubeh.scale.z = 2.4;
-	var cubei = addMesh( cube, 1,  -220, -320, -920, 0,0,0, invMaterial2, false );
+	var cubei = addMesh( cube, 1,  -220, -320+487, -920-1800, 0,0,0, invMaterial2, false );
 	cubei.scale.x = 1;
 	cubei.scale.y = 4.6;
 	cubei.scale.z = 3.4;
 
-/*	var ref = cubei;
+/*	var ref = cubed;
 	gui.add( ref.position, 'x', -2000, 2000).name( 'xpos' );
 	gui.add( ref.position, 'y', -2000, 2000).name( 'ypos' );
 	gui.add( ref.position, 'z', -2000, 2000).name( 'zpos' );

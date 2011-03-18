@@ -9,8 +9,12 @@ var Part1 = function ( renderer, events ) {
 
 	this.init = function ( callback ) {
 
-		waypoints = [ [ 0, -465, 1800 ],
+		/*waypoints = [ [ 0, -465, 1800 ],
 					  [ 0, -465, -1200 ]
+					  ];*/
+
+		waypoints = [ [ 0, 20, 0 ],
+					  [ 0, 20, -3000 ]
 					  ];
 
 		cameraPath = new THREE.PathCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
