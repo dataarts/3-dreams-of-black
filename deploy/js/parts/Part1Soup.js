@@ -132,7 +132,7 @@ var Part1Soup = function ( camera, scene ) {
 	
 	// temp boxes
 	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
-	var cubea = addMesh( cube, 1,  250, -337+487, 1480-1800, 0,0,0, invMaterial2, false );
+	var cubea = addMesh( cube, 1,  250, -300+487, 1400-1800, 0,0,0, invMaterial2, false );
 	cubea.scale.y = 3.5;
 	cubea.scale.z = 5;
 	var cubeb = addMesh( cube, 1,  -230, -240+487, -360-1800, 0,0,0, invMaterial2, false );
@@ -143,11 +143,11 @@ var Part1Soup = function ( camera, scene ) {
 	cubec.scale.x = 0.8;
 	cubec.scale.y = 2;
 	cubec.scale.z = 2.4;
-	var cubed = addMesh( cube, 1,  360, -120+487, -360-1800, 0,0,0, invMaterial2, false );
+	var cubed = addMesh( cube, 1,  355, -120+487, -370-1800, 0,0,0, invMaterial2, false );
 	cubed.scale.x = 2;
 	cubed.scale.y = 3.8;
-	cubed.scale.z = 4.4;
-	var cubef = addMesh( cube, 1,  230, -200+487, -1040-1800, 0,0,0.0957, invMaterial2, false );
+	cubed.scale.z = 4.5;
+	var cubef = addMesh( cube, 1,  230, -200+487, -1115-1800, 0,0,0.0957, invMaterial, false );
 	cubef.scale.x = 1;
 	cubef.scale.y = 3.2;
 	cubef.scale.z = 2;
@@ -234,12 +234,12 @@ var Part1Soup = function ( camera, scene ) {
 
 			var followIndex = (i*2)+2;
 
-			var scale = 0.02+(Math.random()/14);
+			var scale = 0.02+(Math.random()/8);
 			if (i<2) {
 				scale = 0.15;
 				followIndex = i;
 			}
-			scale = Math.max(scale, 0.08);
+			scale = Math.max(scale, 0.1);
 
 			var x = camPos.x-100;
 			var y = camPos.y-100;
@@ -466,12 +466,12 @@ var Part1Soup = function ( camera, scene ) {
 			if (cNormal.x > 0.8 && offsetx < 0 ) {
 				tox = vectorArray[f].x;
 			}
-			if (cNormal.y < -0.8 && offsety > 0) {
+			/*if (cNormal.y < -0.8 && offsety > 0) {
 				toy = vectorArray[f].y;
 			}
 			if (cNormal.y > 0.8 && offsety < 0 ) {
 				toy = vectorArray[f].y;
-			}
+			}*/
 			if (cNormal.z < -0.8 && offsetz > 0) {
 				toz = vectorArray[f].z;
 			}
@@ -500,7 +500,7 @@ var Part1Soup = function ( camera, scene ) {
 
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);
-			scale -= morph/10;
+			scale -= morph/12;
 
 			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = x;
 			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = y;
