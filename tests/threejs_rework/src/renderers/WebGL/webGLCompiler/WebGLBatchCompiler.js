@@ -57,9 +57,7 @@ THREE.WebGLBatchCompiler = (function() {
 		uv0s           = mesh.geometry.uvs;
 		uv1s           = [];
 		colors         = mesh.geometry.colors;
-		shadowVertexTypes = mesh.geometry.vertexTypes !== undefined ? mesh.geometry.vertexTypes : [];
-		shadowNormalsFaceA = mesh.geometry.normalsFaceA !== undefined ? mesh.geometry.normalsFaceA : [];
-		shadowNormalsFaceB = mesh.geometry.normalsFaceB !== undefined ? mesh.geometry.normalsFaceB : [];
+		shadowNormalsFaceA = mesh.geometry.normalsFace !== undefined ? mesh.geometry.normalsFace : [];
 
 		if( checkBatchCache()) {
 			
@@ -284,103 +282,134 @@ THREE.WebGLBatchCompiler = (function() {
 				var tempFaces       	= [];
 				var vertexCounter   	= 0;
 				
-
-				// loop through faces
 				
-				for( var f = 0; f < chunk.faces.length; f++ ) {
+				if( mesh instanceof THREE.ShadowVolume ) {
 					
-					var face          = faces[ chunk.faces[ f ]];
-					var faceIndices   = face instanceof THREE.Face3 ? [ "a", "b", "c" ] : [ "a", "b", "c", "d" ];
-					var uvIndices     = face instanceof THREE.Face3 ? [ 0, 1, 2 ]       : [ 0, 1, 2, 3 ];
-
-					if( face instanceof THREE.Face3 ) {
+					for( var f = 0; f < chunk.faces.length; f++ ) {
 						
-						tempFaces.push( vertexCounter + 0 );
-						tempFaces.push( vertexCounter + 1 );
-						tempFaces.push( vertexCounter + 2 );
-					}
-					else {
-						
-						tempFaces.push( vertexCounter + 0 );
-						tempFaces.push( vertexCounter + 1 );
-						tempFaces.push( vertexCounter + 2 );
-
-						tempFaces.push( vertexCounter + 0 );
-						tempFaces.push( vertexCounter + 2 );
-						tempFaces.push( vertexCounter + 3 );
-					}
- 					
-					for( var i = 0; i < faceIndices.length; i++ ) {
-						
-						vertexCounter++;
-						
-						if( skinWeights.length == 0 ) {
-							
-							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.x );  
-							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
-							tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
-							tempVertices.push( 1 );				// pad for faster vertex shader
-								
-							tempNormals.push( face.normal.x );
-							tempNormals.push( face.normal.y );
-							tempNormals.push( face.normal.z );
-						}
-						
-				
-						if( shadowVertexTypes.length > 0 ) {
-							
-							tempShadowVertexTypes.push( shadowVertexTypes[ face[ faceIndices[ i ]]] );
-							
-							tempShadowNormalsFaceA.push( shadowNormalsFaceA[ face[ faceIndices[ i ]]].x );
-							tempShadowNormalsFaceA.push( shadowNormalsFaceA[ face[ faceIndices[ i ]]].y );
-							tempShadowNormalsFaceA.push( shadowNormalsFaceA[ face[ faceIndices[ i ]]].z );
-
-							tempShadowNormalsFaceB.push( shadowNormalsFaceB[ face[ faceIndices[ i ]]].x );
-							tempShadowNormalsFaceB.push( shadowNormalsFaceB[ face[ faceIndices[ i ]]].y );
-							tempShadowNormalsFaceB.push( shadowNormalsFaceB[ face[ faceIndices[ i ]]].z );
-						}						
-
-						
-						
-						if( uv0s.length > 0 ) {
-							
-							tempUV0s.push( uv0s[ chunk.faces[ f ] ][ uvIndices[ i ]].u );
-							tempUV0s.push( uv0s[ chunk.faces[ f ] ][ uvIndices[ i ]].v );
-						}
-						
-						if( colors.length > 0 ) {
-
-							tempColors.push( colors[ face[ faceIndices[ i ]]].r );
-							tempColors.push( colors[ face[ faceIndices[ i ]]].g );
-							tempColors.push( colors[ face[ faceIndices[ i ]]].b );
-						}
-						
-						if( skinWeights.length > 0 ) {
-							
-							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].x );
-							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].y );
-							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].z );
-							tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].w );
+						var face          = faces[ chunk.faces[ f ]];
+						var faceIndices   = face instanceof THREE.Face3 ? [ "a", "b", "c" ] : [ "a", "b", "c", "d" ];
+						var uvIndices     = face instanceof THREE.Face3 ? [ 0, 1, 2 ]       : [ 0, 1, 2, 3 ];
 	
-							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].x );
-							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].y );
-							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].z );
-							tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].w );
-
-							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].x );  
-							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].y );  
-							tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].z );  
-							tempSkinVerticesA.push( 1 );			// pad for faster vertex shader
-
-							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].x );  
-							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].y );  
-							tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].z );  
-							tempSkinVerticesB.push( 1 );			// pad for faster vertex shader
+						if( face instanceof THREE.Face3 ) {
 							
-							// todo: insert more influences
+							tempFaces.push( face.a );
+							tempFaces.push( face.b );
+							tempFaces.push( face.c );
+						}
+						else {
+							
+							tempFaces.push( face.a );
+							tempFaces.push( face.b );
+							tempFaces.push( face.c );
+	
+							tempFaces.push( face.a );
+							tempFaces.push( face.c );
+							tempFaces.push( face.d );
+						}
+					}
+	
+					for( var i = 0; i < vertices.length; i++ ) {
+					
+						tempVertices.push( vertices[ i ].position.x );  
+						tempVertices.push( vertices[ i ].position.y );  
+						tempVertices.push( vertices[ i ].position.z );  
+						tempVertices.push( 1 );	
+
+						tempShadowNormalsFaceA.push( shadowNormalsFaceA[ i ].x );
+						tempShadowNormalsFaceA.push( shadowNormalsFaceA[ i ].y );
+						tempShadowNormalsFaceA.push( shadowNormalsFaceA[ i ].z );
+					}
+	
+					
+				} else {
+					
+					
+					// loop through faces
+					
+					for( var f = 0; f < chunk.faces.length; f++ ) {
+						
+						var face          = faces[ chunk.faces[ f ]];
+						var faceIndices   = face instanceof THREE.Face3 ? [ "a", "b", "c" ] : [ "a", "b", "c", "d" ];
+						var uvIndices     = face instanceof THREE.Face3 ? [ 0, 1, 2 ]       : [ 0, 1, 2, 3 ];
+	
+						if( face instanceof THREE.Face3 ) {
+							
+							tempFaces.push( vertexCounter + 0 );
+							tempFaces.push( vertexCounter + 1 );
+							tempFaces.push( vertexCounter + 2 );
+						}
+						else {
+							
+							tempFaces.push( vertexCounter + 0 );
+							tempFaces.push( vertexCounter + 1 );
+							tempFaces.push( vertexCounter + 2 );
+	
+							tempFaces.push( vertexCounter + 0 );
+							tempFaces.push( vertexCounter + 2 );
+							tempFaces.push( vertexCounter + 3 );
+						}
+	 					
+						for( var i = 0; i < faceIndices.length; i++ ) {
+							
+							vertexCounter++;
+							
+							if( skinWeights.length == 0 ) {
+								
+								tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.x );  
+								tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.y );  
+								tempVertices.push( vertices[ face[ faceIndices[ i ]]].position.z );  
+								tempVertices.push( 1 );				// pad for faster vertex shader
+									
+								tempNormals.push( face.normal.x );
+								tempNormals.push( face.normal.y );
+								tempNormals.push( face.normal.z );
+							}
+							
+					
+						
+							
+							if( uv0s.length > 0 ) {
+								
+								tempUV0s.push( uv0s[ chunk.faces[ f ] ][ uvIndices[ i ]].u );
+								tempUV0s.push( uv0s[ chunk.faces[ f ] ][ uvIndices[ i ]].v );
+							}
+							
+							if( colors.length > 0 ) {
+	
+								tempColors.push( colors[ face[ faceIndices[ i ]]].r );
+								tempColors.push( colors[ face[ faceIndices[ i ]]].g );
+								tempColors.push( colors[ face[ faceIndices[ i ]]].b );
+							}
+							
+							if( skinWeights.length > 0 ) {
+								
+								tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].x );
+								tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].y );
+								tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].z );
+								tempSkinWeights.push( skinWeights[ face[ faceIndices[ i ]]].w );
+		
+								tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].x );
+								tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].y );
+								tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].z );
+								tempSkinIndices.push( skinIndices[ face[ faceIndices[ i ]]].w );
+	
+								tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].x );  
+								tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].y );  
+								tempSkinVerticesA.push( skinVerticesA[ face[ faceIndices[ i ]]].z );  
+								tempSkinVerticesA.push( 1 );			// pad for faster vertex shader
+	
+								tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].x );  
+								tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].y );  
+								tempSkinVerticesB.push( skinVerticesB[ face[ faceIndices[ i ]]].z );  
+								tempSkinVerticesB.push( 1 );			// pad for faster vertex shader
+								
+								// todo: insert more influences
+							}
 						}
 					}
 				}
+
 
 
 				// bind to GL
@@ -397,9 +426,9 @@ THREE.WebGLBatchCompiler = (function() {
 				if( tempSkinVerticesA.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinVertexA", "vec4", tempSkinVerticesA, 4 ));
 				if( tempSkinVerticesB.length > 0 ) attributeBuffers.push( bindBuffer( "aSkinVertexB", "vec4", tempSkinVerticesB, 4 ));
 
-				if( tempShadowVertexTypes.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowVertexType", "float", tempShadowVertexTypes, 1 ));
+			//	if( tempShadowVertexTypes.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowVertexType", "float", tempShadowVertexTypes, 1 ));
 				if( tempShadowNormalsFaceA.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowNormalA", "vec3", tempShadowNormalsFaceA, 3 ));
-				if( tempShadowNormalsFaceB.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowNormalB", "vec3", tempShadowNormalsFaceB, 3 ));
+			//	if( tempShadowNormalsFaceB.length > 0 ) attributeBuffers.push( bindBuffer( "aShadowNormalB", "vec3", tempShadowNormalsFaceB, 3 ));
 
 				if( tempFaces.length > 0 ) elementBuffer = bindElement( tempFaces, tempFaces.length );
 				

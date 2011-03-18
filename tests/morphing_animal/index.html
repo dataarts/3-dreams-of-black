@@ -65,11 +65,6 @@
 				animal.mesh.position.z = -500;
 				animal.play( "bison", "wolf" );
 
-				morph = 1;
-				
-				animal.setNewTargetAnimal( "horse" );
-				animal.play( "wolf", "horse" );
-
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
 
@@ -84,6 +79,7 @@
 
 			function onDocumentMouseClick( event ) {
 				
+				animal.play( "wolf", "bison" );
 			}
 
 			function onDocumentMouseMove(event) {
