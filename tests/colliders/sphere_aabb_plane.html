@@ -42,6 +42,7 @@ body {
 <script type="text/javascript" src="lib/Three.js"></script>
 <script type="text/javascript" src="lib/RequestAnimationFrame.js"></script>
 <script type="text/javascript" src="src/Physics.js"></script> 
+<script type="text/javascript" src="src/PhysicsUtils.js"></script> 
 
 <script type="text/javascript"> 
 
@@ -111,20 +112,7 @@ function createCube(s, p) {
 	cube.position = p;
 	scene.addObject( cube );
 	geoms.push(cube);
-	
-	var min = new THREE.Vector3();
-	min.x = -s/2 + p.x;
-	min.y = -s/2 + p.y;
-	min.z = -s/2 + p.z;
-	
-	var max = new THREE.Vector3();
-	max.x = s/2 + p.x;
-	max.y = s/2 + p.y;
-	max.z = s/2 + p.z;
-
-	var aabb = new CAABB(min, max);
-	aabb.mesh = cube;
-	Physics.colliders.push(aabb);
+	Physics.colliders.push( PhysicsUtils.MeshAABB(cube, p) );
 }
 
 function createSphere(rad, p) {
