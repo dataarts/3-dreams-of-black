@@ -22,13 +22,13 @@ function CSphere(cen, rad){
 	this.radiusSq = rad * rad;
 }
 
-// Box
-function CAABB(min, max){
+// Box (AABB or OOBB)
+function CBox(min, max){
 	this.min = min;
 	this.max = max;
+	this.dynamic = true;
 }
 
-// Collision equations
 PhysicsSystem = function(){
 	this.colliders = [];
 	this.hits = [];
@@ -37,7 +37,7 @@ PhysicsSystem = function(){
 var Physics = new PhysicsSystem();
 
 // @params r Ray
-// @returns Array of colliders with a field "distance" set (@see Collisions.rayCast for details)
+// @returns Array of colliders with a field "distance" set (@see Collisions.rayCast for details), empty if not intersection
 PhysicsSystem.prototype.rayCastAll = function(r) {
 	r.direction.normalize();
 	
@@ -53,7 +53,7 @@ PhysicsSystem.prototype.rayCastAll = function(r) {
 }
 
 // @params r Ray
-// @returns nearest collider with "distance" field set, or null if no hit
+// @returns nearest collider found, with "distance" field set, or null if no intersection
 PhysicsSystem.prototype.rayCastNearest = function(r) {
 	r.direction.normalize();
 	
@@ -79,13 +79,26 @@ PhysicsSystem.prototype.rayCast = function(r, c) {
 		return this.rayPlane(r, c);
 	else if(c instanceof CSphere)
 		return this.raySphere(r, c);
-	else if (c instanceof CAABB)
-		return this.rayAABB(r, c);
+	else if (c instanceof CBox)
+		return this.rayBox(r, c);
 }
 
 // @params r Ray, s CSphere
-// @returns Number, parametric distance, -1 if inside or MAX_VALUE if not intersection
-PhysicsSystem.prototype.rayAABB = function(r, ab){
+// @returns Number, distance to intersection, -1 if inside or MAX_VALUE if no intersection
+PhysicsSystem.prototype.rayBox = function(r, ab){
+	
+	// If Collider.dynamic = true (default) it will act as an OOBB, getting the transformation from a mesh it is attached to
+	// In this case it needs to have a 'mesh' field, which has a 'matrixWorld' field in turn (like in THREE.Mesh)
+	if(ab.dynamic && ab.mesh && ab.mesh.matrixWorld) {
+		r = new Ray(r.origin.clone(), r.direction.clone());
+		var m = THREE.Matrix4.makeInvert( ab.mesh.matrixWorld );
+		m.multiplyVector3(r.origin);
+		m.rotateAxis(r.direction);
+	}
+	
+	// If box is not marked as dynamic or mesh is not found, it works like a simple AABB
+	// and uses the originaly calculated bounding box (faster if object is static)
+	
 	var xt = 0, yt = 0, zt = 0;
 	//var xn = 0, yn = 0, zn = 0;
 	var ins = true;
@@ -181,7 +194,7 @@ PhysicsSystem.prototype.rayAABB = function(r, ab){
 }
 
 // @params r Ray, s CSphere
-// @returns Number, parametric distance or MAX_VALUE if not intersection
+// @returns Number, parametric distance or MAX_VALUE if no intersection
 // #TBT
 PhysicsSystem.prototype.rayPlane = function(r, p){
 	var t = r.direction.dot(p.normal);
@@ -197,7 +210,7 @@ PhysicsSystem.prototype.rayPlane = function(r, p){
 }
 
 // @params r Ray, s CSphere
-// @returns Number, parametric distance or MAX_VALUE if not intersection
+// @returns Number, parametric distance or MAX_VALUE if no intersection
 PhysicsSystem.prototype.raySphere = function(r, s){
 	var e = s.center.clone().subSelf(r.origin);
 	if(e.lengthSq < s.radiusSq) return -1;
