@@ -239,7 +239,8 @@
 					Mouse wheel to zoom
 					
 					<p><span class="hh">2: Camera fly mode</span>
-					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse
+					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse<br/>
+					Press <span class="kw">0</span> to reset fly camera
 
 					<p><span class="hh">Morphing</span>
 					<p>Move mouse left-right to control morph blending<br/>
@@ -376,7 +377,9 @@
 		
 		var useOrbitCamera = true;
 		var cameraDistance = 20,
-			cameraHeight = 5;
+			cameraHeight = 5,
+			cameraHeightOriginal = cameraHeight, 
+			cameraDistanceOriginal = cameraDistance;
 		
 		var elCamLocation = $( "cam_location" ),
 			elCamType = $( "cam_type" );
@@ -529,7 +532,10 @@
 
 				/* 2 */
 				case 50: setFlyCamera(); break;
-				
+
+				/* 0 */
+				case 48: resetFlyCamera(); break;
+
 				/* r */
 				case 82: toggleAxis(); break;
 
@@ -628,6 +634,14 @@
 			
 		};
 
+		function resetFlyCamera() {		
+		
+			flyCamera.position.set( 0, cameraHeightOriginal, cameraDistanceOriginal );
+			flyCamera.target.position.set( 0, 0, 0 );	
+			flyCamera.lon = -90;			
+
+		};
+		
 		function zoomCamera( delta ) {
 		
 			cameraDistance = cap_bottom( cameraDistance - 0.75 * delta, 1 );
@@ -1313,13 +1327,13 @@
 				morphObject = ROME.Animal( geometry, true );
 				mesh = morphObject.mesh;
 			
-				cameraDistance = mesh.boundRadius * 10;
-				cameraHeight = mesh.boundRadius * 0.1;
+				cameraDistanceOriginal = mesh.boundRadius * 10;
+				cameraHeightOriginal = mesh.boundRadius * 0.1;
 				
-				if( morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
+				if( morphObject.availableAnimals && morphObject.availableAnimals.length > 0 ) {
 				
 					morphA = 0;
-					morphB = 1;
+					morphB = ( morphA + 1 ) % morphObject.availableAnimals.length;
 					
 					updateMorphs();					
 					
@@ -1334,19 +1348,17 @@
 				material = new THREE.MeshFaceMaterial(),
 				mesh = new THREE.Mesh( geometry, material );
 				
-				console.log( mesh.boundRadius );
-				
 				if ( mesh.boundRadius > 0.25 * camera.far ) {
 
-					cameraDistance = 0.25 * camera.far;
-					cameraHeight = 0.01 * camera.far;
+					cameraDistanceOriginal = 0.25 * camera.far;
+					cameraHeightOriginal = 0.01 * camera.far;
 
 				} else {
 				
-					cameraDistance = mesh.boundRadius * 3;
-					cameraHeight = mesh.boundRadius * 0.1;
+					cameraDistanceOriginal = mesh.boundRadius * 3;
+					cameraHeightOriginal = mesh.boundRadius * 0.1;
 					
-				}
+				}				
 				
 				$( "morphs" ).style.display = "none";
 				
@@ -1363,6 +1375,9 @@
 			mesh.update();
 			
 			sceneRoot.addChild( mesh );			
+
+			cameraDistance = cameraDistanceOriginal;
+			cameraHeight = cameraHeightOriginal;				
 
 			camera.position.set( 0, cameraHeight, cameraDistance );
 			camera.target.position.set( 0, 0, 0 );
