@@ -20,7 +20,8 @@ var Part2World = function () {
 	// Mesh
 
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/prairie.js', callback: function( geometry ) {
+	//loader.loadAscii( { model: 'files/models/prairie.js', callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/prairie_v3/prairie.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
