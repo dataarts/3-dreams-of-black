@@ -17,6 +17,8 @@ var Part3World = function () {
 	directionalLight.position.normalize();
 	this.scene.addLight( directionalLight );
 
+	/*
+
 	// Ground
 
 	var tiles = [];
@@ -63,10 +65,12 @@ var Part3World = function () {
 
 	image.src = 'files/textures/DunesHeightmap.png';
 
-	// Rocks
+	*/
+
+	// Ground
 
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/part3/rock.js', callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundPlane.js', callback: function( geometry ) {
 
 		var material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
 
@@ -87,6 +91,33 @@ var Part3World = function () {
 		}
 
 	} } );
+
+	// Rocks
+
+	var loader = new THREE.Loader();
+	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundRocks.js', callback: function( geometry ) {
+
+		var material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
+
+		for ( var i = 0; i < 10; i ++ ) {
+
+			var mesh = new THREE.Mesh( geometry, material );
+
+			mesh.position.x = Math.random() * 100000 - 50000;
+			mesh.position.z	 = Math.random() * 100000 - 50000;
+
+			mesh.rotation.y = Math.random() * 180 * Math.PI / 180;
+
+			mesh.updateMatrix();
+			mesh.matrixAutoUpdate = false;
+
+			that.scene.addObject( mesh );
+
+		}
+
+	} } );
+
+	/*
 
 	// Clouds
 
@@ -118,10 +149,14 @@ var Part3World = function () {
 
 	} } );
 
+	*/
+
 	this.update = function ( camera ) {
 
 		var x = Math.round( camera.position.x / TILE_SIZE );
 		var z = Math.round( camera.position.z / TILE_SIZE );
+
+		/*
 
 		tiles[ 0 ].position.x = ( x - 1 ) * TILE_SIZE;
 		tiles[ 0 ].position.z = ( z - 1 ) * TILE_SIZE;
@@ -149,6 +184,8 @@ var Part3World = function () {
 
 		tiles[ 8 ].position.x = ( x + 1 ) * TILE_SIZE;
 		tiles[ 8 ].position.z = ( z + 1 ) * TILE_SIZE;
+
+		*/
 
 	}
 
