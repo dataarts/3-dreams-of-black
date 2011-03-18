@@ -165,7 +165,7 @@ THREE.Object3D.prototype.addChild = function( child ) {
  * RemoveChild
  */
 
-THREE.Object3D.prototype.removeChild = function() {
+THREE.Object3D.prototype.removeChild = function( child ) {
 	
 	var childIndex = this.children.indexOf( child ); 
 	

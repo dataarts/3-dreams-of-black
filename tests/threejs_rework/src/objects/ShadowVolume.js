@@ -6,9 +6,11 @@ THREE.ShadowVolume = function( originalMesh, material ) {
 	
 	THREE.Mesh.call( this, originalMesh.geometry, material );
 	
-	this.position.copy( originalMesh.position );
-	this.rotation.copy( originalMesh.rotation );
-	this.scale   .copy( originalMesh.scale    );
+	//this.position.copy( originalMesh.position );
+	//this.rotation.copy( originalMesh.rotation );
+	//this.scale   .copy( originalMesh.scale    );
+
+	originalMesh.addChild( this );
 
 	this.calculateShadowVolumeGeometry();
 

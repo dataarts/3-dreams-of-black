@@ -18,8 +18,10 @@ THREE.WebGLShaderDefinitions.shadowVolumeVertex = (function() {
 		"void main(void)",
 		"{",
 			// todo: add rotation
-			"vec4 modified = vec4( aVertex.xyz + uDirectionalLight * 2000.0 * step( 0.0, dot( uDirectionalLight, aShadowNormalA )), 1.0 );",
-			"gl_Position = uCameraPerspectiveMatrix * uCameraInverseMatrix * uMeshGlobalMatrix * modified;",
+			"vec3 modified = vec3( uMeshGlobalMatrix * aVertex ).xyz;",
+			"vec3 normal   = vec3(( uMeshGlobalMatrix * vec4( aShadowNormalA, 1.0 )).xyz );",
+			"vec4 final    = vec4( modified + uDirectionalLight * 2000.0 * step( 0.0, dot( uDirectionalLight, normal )), 1.0 );",
+			"gl_Position   = uCameraPerspectiveMatrix * uCameraInverseMatrix * final;",
 		"}"
 	].join( "\n" );
 

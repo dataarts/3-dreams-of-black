@@ -108,29 +108,28 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
    	
     this.GL.disable		( this.GL.STENCIL_TEST );
     this.GL.enable		( this.GL.DEPTH_TEST );
-    this.GL.depthFunc	( this.GL.LESS );
     this.GL.depthMask   ( true );
 	this.GL.cullFace    ( this.GL.BACK );
 
 	this.renderDictionary( this.renderDictionaryOpaque, 1 );
 
 
-
-	// DEPTH FAIL (works)	
 	// render stencil passes
 	
+	this.GL.enable( this.GL.POLYGON_OFFSET_FILL );
+	this.GL.polygonOffset( 0.1, 1.0 );
 	this.GL.enable( this.GL.STENCIL_TEST );
 	this.GL.depthMask( false );
 	this.GL.colorMask( false, true, false, false );
 
 	this.GL.stencilFunc( this.GL.ALWAYS, 1, 0xFF );
-
 	this.GL.stencilOpSeparate( this.GL.BACK,  this.GL.KEEP, this.GL.INCR, this.GL.KEEP );
 	this.GL.stencilOpSeparate( this.GL.FRONT, this.GL.KEEP, this.GL.DECR, this.GL.KEEP );
 
 
+	// front then back
+
 	this.GL.cullFace( this.GL.FRONT );
-//	this.GL.cullFace( this.GL.FRONT_AND_BACK );
 	this.renderDictionary( this.renderListShadowVolumes, 1 );
 					
 	this.GL.cullFace( this.GL.BACK );
@@ -139,8 +138,9 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 
 	// color
 
+
+	this.GL.disable( this.GL.POLYGON_OFFSET_FILL );
 	this.GL.colorMask( true, true, true, true );
-    this.GL.depthFunc( this.GL.LEQUAL );
 	this.GL.stencilFunc( this.GL.NOTEQUAL, 0, 0xFF );
 	this.GL.stencilOp( this.GL.KEEP, this.GL.KEEP, this.GL.KEEP );
 					
