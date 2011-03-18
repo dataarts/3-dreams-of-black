@@ -4,7 +4,8 @@ var Part1World = function () {
 
 	this.scene = new THREE.Scene();
 	this.scene.fog = new THREE.FogExp2( 0x000000, 0.0006 );
-	this.scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
+//	this.scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
+	this.scene.fog.color.setHSV( 0.25, 0.25, 0.25 );
 
 	// Lights
 
@@ -22,9 +23,8 @@ var Part1World = function () {
 	this.scene.addLight( pointLight );
 
 	// Mesh
-
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/city.js', texture_path: 'files/textures/', callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/street_v3/street.js', texture_path: 'files/models/street_v3/', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
@@ -32,4 +32,5 @@ var Part1World = function () {
 		that.scene.addObject( mesh );
 
 	} } );
+
 }

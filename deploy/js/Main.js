@@ -15,7 +15,7 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	gui = new GUI();
+	//gui = new GUI();
 
 	screenWidth = window.innerWidth;
 	screenHeight = window.innerHeight;
@@ -79,13 +79,13 @@ function start( pattern ) {
 	//gui.autoListenIntervalTime = 1000/10;
 	//gui.autoListen = false;
 
-	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
+/*	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 	var temp = gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 
 	gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
 	gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
 	gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
-
+*/
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	//audio.volume = 0;	

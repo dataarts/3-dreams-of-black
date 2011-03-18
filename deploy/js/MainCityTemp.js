@@ -15,9 +15,9 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	gui = new GUI();
+	//gui = new GUI();
 
-	gui.add(GUI, "saveURL").name("Save to URL");
+	//gui.add(GUI, "saveURL").name("Save to URL");
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 
 	screenWidth = window.innerWidth;

@@ -7,8 +7,8 @@ var Part1Soup = function ( camera, scene ) {
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
-		numOfAnimals : 18,
-		numOfButterflys : 150,
+		numOfAnimals : 12,
+		numOfButterflys : 20,
 		ribbonMaterials : [
 			[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
 			[ new THREE.MeshLambertMaterial( { color:0x98f800 } ) ],
@@ -30,7 +30,7 @@ var Part1Soup = function ( camera, scene ) {
 	var settings = {
 		vectorDivider : 5,
 		emitterDivider : 3,
-		butterflyDivider : 5,
+		butterflyDivider : 8,
 		ribbonPulseMultiplier_1 : 3.7,
 		ribbonPulseMultiplier_2 : 5.5,
 		butterflyPulseMultiplier_1 : 10,
@@ -40,7 +40,7 @@ var Part1Soup = function ( camera, scene ) {
 		collisionDistance : 350,
 	}
 
-	gui.add( settings, 'vectorDivider', 1, 8).name( 'vectorDivider' );
+/*	gui.add( settings, 'vectorDivider', 1, 8).name( 'vectorDivider' );
 	gui.add( settings, 'emitterDivider', 1, 8).name( 'emitterDivider' );
 	gui.add( settings, 'butterflyDivider', 1, 8).name( 'butterflyDivider' );
 	gui.add( settings, 'ribbonPulseMultiplier_1', 3, 15).name( 'ribbonPulse_1' );
@@ -50,7 +50,7 @@ var Part1Soup = function ( camera, scene ) {
 	gui.add( settings, 'ribbonMin', 0.05, 8).name( 'ribbonMin' );
 	gui.add( settings, 'ribbonMax', 1, 16).name( 'ribbonMax' );
 	gui.add( settings, 'collisionDistance', 100, 600).name( 'collisionDistance' );
-
+*/
 	// init
 	var mouseX = screenWidthHalf
 	var mouseY = screenHeightHalf;
@@ -62,12 +62,12 @@ var Part1Soup = function ( camera, scene ) {
 
 	var animalArray = [];
 	var particleArray = [];
-	var butterflyArray = [];
+	var flyingArray = [];
 	var cubeArray = [];
 
 	var currentNormal = new THREE.Vector3(0,1,0);
 	var r = 0;
-	camPos = new THREE.Vector3(-170, -590, 50);
+	camPos = new THREE.Vector3(0, -465, 1800);
 
 	var pointLight = new THREE.PointLight( 0xccffcc );
 	pointLight.position.x = camPos.x;
@@ -101,50 +101,20 @@ var Part1Soup = function ( camera, scene ) {
 		ribbonMeshArray.push(ribbonMesh);
 	}
 
-	// butterflys
-	var butterfly_0 = new Butterfly2();
-	var butterfly_1 = new Butterfly2();
-	var butterfly_2 = new Butterfly2();
-	var butterfly_3 = new Butterfly2();
-	var butterfly_4 = new Butterfly2();
-
-	var ba = [butterfly_0,butterfly_1,butterfly_2,butterfly_3,butterfly_4];
-
-	for (var i=0; i<initSettings.numOfButterflys; ++i ) {
-		var b = ba[Math.floor(Math.random()*3)];
-		var m = initSettings.butterflyMaterials[Math.floor(Math.random()*6)];
-
-		var butterflyMesh = new THREE.Mesh( b, m );
-
-		var x = camPos.x-100;
-		var y = camPos.y-100;
-		var z = camPos.z;
-
-		butterflyMesh.position.x = x;
-		butterflyMesh.position.y = y;
-		butterflyMesh.position.z = z;
-
-		butterflyMesh.doubleSided = true;
-		butterflyMesh.matrixAutoUpdate = false;
-		scene.addObject( butterflyMesh );
-
-		var scale = 0.1+(Math.random()/2);
-
-		var obj = {c:butterflyMesh, x:x, y:y, z:z, f:Math.floor(i/6), scale:scale};
-
-		butterflyArray.push(obj);
-	}
-
-	// animals
+	// running animals
 	var animalLoader = new THREE.Loader();
-	animalLoader.loadAscii( { model: "files/models/soup/a_wolf.js", callback: animalLoaded } );
+	animalLoader.loadAscii( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
+
+	// flying animals
+	var flyingLoader = new THREE.Loader();
+	flyingLoader.loadAscii( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
 
 	// dummy "grass"
 	var grassLoader = new THREE.Loader();
 	grassLoader.loadAscii( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
 
 	// collisionScene stuff should probably not be here (TEMP)
-	var FLOOR = -595;
+	var FLOOR = -487;
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
@@ -156,32 +126,61 @@ var Part1Soup = function ( camera, scene ) {
 	var leftPlane = addMesh( plane, 200,  camPos.x-settings.collisionDistance, camPos.y, camPos.z, 0,1.57,0, invMaterial, false );
 	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
 	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
-	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance/1.4), 0, 1.57,0,0, invMaterial2, false );
+	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial2, false );
 	
 	// temp boxes
 	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
-	var cubea = addMesh( cube, 1,  70, FLOOR+100, -40, 0,0,0, invMaterial2, false );
-	cubea.scale.z = 1.8;
-	var cubeb = addMesh( cube, 1,  73, FLOOR+100, -820, 0,0,0, invMaterial2, false );
-	cubeb.scale.z = 4;
-	cubeb.scale.x = 0.9;
+	var cubea = addMesh( cube, 1,  280, -337, 1480, 0,0,0, invMaterial2, false );
+	cubea.scale.y = 3.5;
+	cubea.scale.z = 5;
+	var cubeb = addMesh( cube, 1,  -230, -240, -360, 0,0,0, invMaterial2, false );
+	cubeb.scale.x = 0.8;
+	cubeb.scale.y = 3.4;
+	cubeb.scale.z = 25;
+	var cubec = addMesh( cube, 1,  240, -200, 660, 0,0,0, invMaterial2, false );
+	cubec.scale.x = 0.8;
+	cubec.scale.y = 2;
+	cubec.scale.z = 2.3;
+	var cubed = addMesh( cube, 1,  360, -120, -260, 0,0,0, invMaterial2, false );
+	cubed.scale.x = 2;
+	cubed.scale.y = 3.8;
+	cubed.scale.z = 4.2;
+	var cubef = addMesh( cube, 1,  230, -200, -1040, 0,0,0.1257, invMaterial2, false );
+	cubef.scale.x = 1;
+	cubef.scale.y = 3.2;
+	cubef.scale.z = 2;
+	var cubeg = addMesh( cube, 1,  40, 160, -1240, 0,0,0.8796, invMaterial2, false );
+	cubeg.scale.x = 1.2;
+	cubeg.scale.y = 1.6;
+	cubeg.scale.z = 3.6;
+	var cubeh = addMesh( cube, 1,  240, -320, 1720, 0,0,0, invMaterial2, false );
+	cubeh.scale.x = 0.8;
+	cubeh.scale.y = 3.2;
+	cubeh.scale.z = 2.4;
+	var cubei = addMesh( cube, 1,  -220, -320, -920, 0,0,0, invMaterial2, false );
+	cubei.scale.x = 1;
+	cubei.scale.y = 4.6;
+	cubei.scale.z = 3.4;
 
-	var cubec = addMesh( cube, 1,  -350, FLOOR+100, 40, 0,0,0, invMaterial2, false );
-	var cubed = addMesh( cube, 1,  -480, FLOOR+100, -110, 0,0,0, invMaterial2, false );
-	var cubef = addMesh( cube, 1,  -328, FLOOR+100, -810, 0,0,0, invMaterial2, false );
-	cubef.scale.z = 3.7;
-	cubef.scale.x = 0.9;
-
-	var cubeg = addMesh( cube, 1,  -320, FLOOR+100, -1660, 0,0,0, invMaterial2, false );
-	var cubeh = addMesh( cube, 1,  30, FLOOR+100, -1660, 0,0,0, invMaterial2, false );
-
+/*	var ref = cubei;
+	gui.add( ref.position, 'x', -2000, 2000).name( 'xpos' );
+	gui.add( ref.position, 'y', -2000, 2000).name( 'ypos' );
+	gui.add( ref.position, 'z', -2000, 2000).name( 'zpos' );
+	gui.add( ref.scale, 'x', 0, 20).name( 'xscale' );
+	gui.add( ref.scale, 'y', 0, 20).name( 'yscale' );
+	gui.add( ref.scale, 'z', 0, 20).name( 'zscale' );
+	gui.add( ref.rotation, 'x', 0, Math.PI*2).name( 'xrotation' );
+	gui.add( ref.rotation, 'y', 0, Math.PI*2).name( 'yrotation' );
+	gui.add( ref.rotation, 'z', 0, Math.PI*2).name( 'zrotation' );
+*/
+	
 	// ---
 
 	// emitter
 	var projector = new THREE.Projector();
 	var emitter = new Cube( 10, 10, 10, 1, 1 );
-	var emitterMesh = addMesh( emitter, 1, -150, -575, 200, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
-	var emitterFollow = addMesh( emitter, 1, -150, -575, 200, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
+	var emitterMesh = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
+	var emitterFollow = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
 
 	this.update = function () {
@@ -204,23 +203,14 @@ var Part1Soup = function ( camera, scene ) {
 
 		r += 0.1;
 
-		//camera.updateMatrix();
-		//camera.update();
-
 		updateEmitter();
 		runAll();
 
 		// slight camera roll
-		camera.animationParent.rotation.z = (camera.target.position.x)/800;
+		if (camera.animationParent) {
+			camera.animationParent.rotation.z = (camera.target.position.x)/800;
+		}
 
-		//THREE.AnimationHandler.update( settings.animalSpeed );
-
-		var bspeed = (settings.animalSpeed/6);
-		butterfly_0.animate(r*bspeed);
-		butterfly_1.animate((r*bspeed)+0.2);
-		butterfly_2.animate((r*bspeed)+0.4);
-		butterfly_3.animate((r*bspeed)+0.6);
-		butterfly_4.animate((r*bspeed)+0.8);
 
 		for (var k=0; k<ribbonArray.length; ++k ) {
 			var ribbon = ribbonArray[k].r;
@@ -234,40 +224,70 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	function animalLoaded( geometry ) {
-		var texture = { color: 0xffffff, shading: THREE.FlatShading, skinning: false };
-		var material = new THREE.MeshLambertMaterial( texture );
+
 
 		for (var i=0; i<initSettings.numOfAnimals; ++i ) {
-			var animal = new THREE.SkinnedMesh( geometry, material );
+			var animal = ROME.Animal( geometry );
+			var mesh = animal.mesh;
+
+			var followIndex = (i*2)+2;
 
 			var scale = 0.02+(Math.random()/14);
 			if (i<2) {
 				scale = 0.15;
+				followIndex = i;
 			}
+			scale = Math.max(scale, 0.08);
 
 			var x = camPos.x-100;
 			var y = camPos.y-100;
 			var z = camPos.z;
 
-			animal.position.x = x;
-			animal.position.y = y;
-			animal.position.z = z;
+			mesh.position.x = x;
+			mesh.position.y = y;
+			mesh.position.z = z;
 
-			animal.matrixAutoUpdate = false;
+			mesh.matrixAutoUpdate = false;
 
-			//THREE.AnimationHandler.add( geometry.animation );
+			scene.addChild( mesh );
+			animal.play( "wolf", "bison" );
 
-			scene.addObject( animal );
-			//var animation = new THREE.Animation( animal, "take_001", undefined, false );
+			var count = Math.random();
+			if (i<2) {
+				count = 0;
+			}
 
-			//animation.offset = 0.1 * Math.random();
-			//animation.play();
-
-			var followIndex = (i*2)+2;
-			//var obj = {c:animal, a:animation, x:x, y:y, z:z, f:followIndex, scale:scale*80};
-			var obj = {c:animal, x:x, y:y, z:z, f:followIndex, scale:scale*80};
+			var obj = {c:mesh, a:animal, x:x, y:y, z:z, f:followIndex, count:count, scale:scale*1.3};
 
 			animalArray.push(obj);
+		}
+
+	}
+
+	function flyingLoaded( geometry ) {
+
+		for (var i=0; i<initSettings.numOfButterflys; ++i ) {
+			var animal = ROME.Animal( geometry );
+			var mesh = animal.mesh;
+
+			var scale = 0.02+(Math.random()/14);
+
+			var x = camPos.x-100;
+			var y = camPos.y-100;
+			var z = camPos.z;
+
+			mesh.position.x = x;
+			mesh.position.y = y;
+			mesh.position.z = z;
+
+			mesh.matrixAutoUpdate = false;
+
+			scene.addChild( mesh );
+			animal.play( "parrot", "hbird" );
+
+			var obj = {c:mesh, a:animal, x:x, y:y, z:z, f:Math.floor(i*2), scale:scale*1.5};
+
+			flyingArray.push(obj);
 		}
 
 	}
@@ -414,12 +434,13 @@ var Part1Soup = function ( camera, scene ) {
 
 		// animals
 		for (var i=0; i<animalArray.length; ++i ) {
-			var obj =  animalArray[i]
+			var obj =  animalArray[i];
 			var animal = obj.c;
 			var x = obj.x;
 			var y = obj.y;
 			var z = obj.z;
 			var f = obj.f;
+			var anim = obj.a;
 			var scale = obj.scale;
 
 			var pulse = Math.cos((i-r*10)/35)*(35-(i*1.5));
@@ -456,6 +477,10 @@ var Part1Soup = function ( camera, scene ) {
 				toz = vectorArray[f].z;
 			}
 
+			animalArray[i].count += 0.01;
+			var morph = Math.max(Math.cos(animalArray[i].count),0);
+			morph = Math.min(morph, 1)
+			animalArray[i].a.morph = morph;
 
 			var divider = 2.5;
 
@@ -473,6 +498,7 @@ var Part1Soup = function ( camera, scene ) {
 
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);
+			scale -= morph/10;
 
 			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = x;
 			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = y;
@@ -481,7 +507,7 @@ var Part1Soup = function ( camera, scene ) {
 			x += moveX;
 			y += moveY;
 			z += moveZ;
-
+			
 			animal.position.x = x;
 			animal.position.y = y;
 			animal.position.z = z;
@@ -492,8 +518,8 @@ var Part1Soup = function ( camera, scene ) {
 		}
 
 		// butterflys
-		for (var i=0; i<butterflyArray.length; ++i ) {
-			var obj =  butterflyArray[i]
+		for (var i=0; i<flyingArray.length; ++i ) {
+			var obj =  flyingArray[i]
 			var butterfly = obj.c;
 			var x = obj.x;
 			var y = obj.y;
@@ -505,8 +531,8 @@ var Part1Soup = function ( camera, scene ) {
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
-			var offsetz = Math.cos(thisinc+((i-r*5)/8))*pulse;
-			var offsety = Math.sin(thisinc+((i-r*5)/8))*pulse;
+			var offsetz = Math.cos(thisinc+((i-r*2)/8))*pulse;
+			var offsety = Math.sin(thisinc+((i-r*2)/8))*pulse;
 
 
 			var tox = vectorArray[f].x+offsetz;
@@ -515,20 +541,23 @@ var Part1Soup = function ( camera, scene ) {
 
 			var cNormal = new THREE.Vector3(vectorArray[f].normalx, vectorArray[f].normaly, vectorArray[f].normalz);
 
-			if (cNormal.y < -0.8 && offsety > 0) {
-				toy = vectorArray[f].y;
-			}
-			if (cNormal.y > 0.8 && offsety < 0 ) {
-				toy = vectorArray[f].y;
-			}
+			var amount = 10+Math.abs(Math.sin((thisinc+pulse)/20)*10);
 
-			if (cNormal.z < -0.8 && offsetz > 0) {
-				toz = vectorArray[f].z;
+			if (cNormal.x < -0.8) {
+				tox -= amount;
 			}
-			if (cNormal.z > 0.8 && offsetz < 0) {
-				toz = vectorArray[f].z;
+			if (cNormal.x > 0.8) {
+				tox += amount;
 			}
-
+			if (cNormal.y < -0.8 || cNormal.y > 0.8) {
+				toy += amount;
+			}
+			if (cNormal.z < -0.8) {
+				toz -= amount;
+			}
+			if (cNormal.z > 0.8) {
+				toz += amount;
+			}
 			var moveX = (tox-x)/settings.butterflyDivider;
 			var moveY = (toy-y)/settings.butterflyDivider;
 			var moveZ = (toz-z)/settings.butterflyDivider;
@@ -555,9 +584,9 @@ var Part1Soup = function ( camera, scene ) {
 			butterfly.position.y = y;
 			butterfly.position.z = z;
 
-			butterflyArray[i].x = x;
-			butterflyArray[i].y = y;
-			butterflyArray[i].z = z;
+			flyingArray[i].x = x;
+			flyingArray[i].y = y;
+			flyingArray[i].z = z;
 		}
 
 		// cubes
@@ -582,7 +611,7 @@ var Part1Soup = function ( camera, scene ) {
 				c.rotation.z = 0;
 				c.rotation.y = 0;
 
-				var amount = 8;
+				var amount = 11;
 
 				cubeArray[i].normal = currentNormal.clone();
 
@@ -674,7 +703,7 @@ var Part1Soup = function ( camera, scene ) {
 						emitterMesh.position.y = FLOOR;
 					}
 
-					var amount = 3;
+					var amount = 6;
 
 					if (currentNormal.x < -0.8) {
 						emitterMesh.position.x = intersects[i].point.x - amount;

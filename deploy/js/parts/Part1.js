@@ -9,15 +9,12 @@ var Part1 = function ( renderer, events ) {
 
 	this.init = function ( callback ) {
 
-		waypoints = [ [ -170, -590, 50 ],
-					  [ -165, -590, -200 ],
-					  [ -120, -590, -600 ], 
-					  [ -150, -590, -1150 ],
-					  [ -150, -590, -1600 ]
+		waypoints = [ [ 0, -465, 1800 ],
+					  [ 0, -465, -1200 ]
 					  ];
 
 		cameraPath = new THREE.PathCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-										 waypoints: waypoints, duration: 25, 
+										 waypoints: waypoints, duration: 35, 
 										 useConstantSpeed: true, resamplingCoef: 1,
 										 createDebugPath: false, createDebugDummy: false,
 										 lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
@@ -26,7 +23,7 @@ var Part1 = function ( renderer, events ) {
 									 } );
 				
 		
-		cameraPath.position.set( 0, 12, 0 );				
+		cameraPath.position.set( 0, 0, 0 );				
 		cameraPath.lon = 90;
 			
 		camera = cameraPath;
