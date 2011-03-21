@@ -668,6 +668,11 @@ THREE.WebGLBatchCompiler = (function() {
 	}
 	
 	
+	var setGL = function( incomingGL ) {
+		
+		GL = incomingGL;
+	}
+	
 	
 			
 	
@@ -675,7 +680,10 @@ THREE.WebGLBatchCompiler = (function() {
 	
 	return {
 		
-		compile: compile
+		compile: compile,
+		bindBuffer: bindBuffer,
+		bindElement: bindElement, 
+		setGL: setGL
 	}
 }());
 

@@ -22,8 +22,7 @@ THREE.WebGLRenderer = function( contextId ) {
 	this.GL.enable      ( this.GL.CULL_FACE );
     this.GL.pixelStorei ( this.GL.UNPACK_FLIP_Y_WEBGL, true );
 
-	this.GL.enable   ( this.GL.BLEND );
-	this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA );
+	this.GL.disable( this.GL.BLEND );
 
 
 	this.renderDictionaryOpaque           = {};
@@ -40,6 +39,33 @@ THREE.WebGLRenderer = function( contextId ) {
 	
 	this.directionalLightFlat32 = new Float32Array( 3 );
 	this.directionalLight       = new THREE.Vector3( 0, -1, 0 );
+	
+	
+	
+	// create shadow polygons
+
+	var vertices = [];
+	var faces    = [];
+	
+	var s = 2;
+	
+	vertices[ 0 * 4 + 0 ] = -1*s; vertices[ 0 * 4 + 1 ] = -1*s; vertices[ 0 * 4 + 2 ] = -1; vertices[ 0 * 4 + 3 ] = 1;
+	vertices[ 1 * 4 + 0 ] =  1*s; vertices[ 1 * 4 + 1 ] = -1*s; vertices[ 1 * 4 + 2 ] = -1; vertices[ 1 * 4 + 3 ] = 1;
+	vertices[ 2 * 4 + 0 ] =  1*s; vertices[ 2 * 4 + 1 ] =  1*s; vertices[ 2 * 4 + 2 ] = -1; vertices[ 2 * 4 + 3 ] = 1;
+	vertices[ 3 * 4 + 0 ] = -1*s; vertices[ 3 * 4 + 1 ] =  1*s; vertices[ 3 * 4 + 2 ] = -1; vertices[ 3 * 4 + 3 ] = 1;
+	
+	faces[ 0 ] = 0; faces[ 1 ] = 1; faces[ 2 ] = 2;
+	faces[ 3 ] = 0; faces[ 4 ] = 2; faces[ 5 ] = 3;
+	
+	THREE.WebGLBatchCompiler.setGL( this.GL );
+	
+	var vertexBuffer  = THREE.WebGLBatchCompiler.bindBuffer( "aVertex", "vec4", vertices, 4 );
+	var elementBuffer = THREE.WebGLBatchCompiler.bindElement( faces, faces.length );
+
+	this.shadowBatch = new THREE.WebGLBatch( { vertexShaderId: "shadowPostVertex", fragmentShaderId: "shadowPostFragment", blendMode: THREE.WebGLRendererBlendModes.subtract } );
+
+	this.shadowBatch.addAttributeBuffer( vertexBuffer.name, vertexBuffer.type, vertexBuffer.buffer, vertexBuffer.size );
+	this.shadowBatch.addElementBuffer  ( elementBuffer.buffer, elementBuffer.size );
 };
 
 
@@ -99,17 +125,15 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	this.directionalLightFlat32[ 2 ] = this.directionalLight.z;
 
 
-	// clear
-	
-   	this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT | this.GL.STENCIL_BUFFER_BIT );
-	
-	
 	// render opaque
    	
-    this.GL.disable		( this.GL.STENCIL_TEST );
-    this.GL.enable		( this.GL.DEPTH_TEST );
-    this.GL.depthMask   ( true );
-	this.GL.cullFace    ( this.GL.BACK );
+    this.GL.disable	 ( this.GL.STENCIL_TEST );
+    this.GL.enable	 ( this.GL.DEPTH_TEST );
+    this.GL.depthMask( true );
+	this.GL.cullFace ( this.GL.BACK );
+	this.GL.disable  ( this.GL.BLEND );
+
+  	this.GL.clear( this.GL.COLOR_BUFFER_BIT | this.GL.DEPTH_BUFFER_BIT | this.GL.STENCIL_BUFFER_BIT );
 
 	this.renderDictionary( this.renderDictionaryOpaque, 1 );
 
@@ -120,7 +144,7 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	this.GL.polygonOffset( 0.1, 1.0 );
 	this.GL.enable( this.GL.STENCIL_TEST );
 	this.GL.depthMask( false );
-	this.GL.colorMask( false, true, false, false );
+	this.GL.colorMask( false, false, false, false );
 
 	this.GL.stencilFunc( this.GL.ALWAYS, 1, 0xFF );
 	this.GL.stencilOpSeparate( this.GL.BACK,  this.GL.KEEP, this.GL.INCR, this.GL.KEEP );
@@ -143,11 +167,13 @@ THREE.WebGLRenderer.prototype.render = function( scene, camera ) {
 	this.GL.colorMask( true, true, true, true );
 	this.GL.stencilFunc( this.GL.NOTEQUAL, 0, 0xFF );
 	this.GL.stencilOp( this.GL.KEEP, this.GL.KEEP, this.GL.KEEP );
-					
-	this.renderDictionary( this.renderDictionaryOpaque, 0.5 );
-				
-	this.GL.depthMask( true );
-	this.GL.disable( this.GL.STENCIL_TEST );
+    this.GL.disable( this.GL.DEPTH_TEST );
+
+	this.shadowBatch.loadProgram();
+	this.shadowBatch.loadUniform( "uCameraPerspectiveMatrix", camera.perspectiveMatrix.flatten32());
+	this.shadowBatch.render();	
+	
+	return;
 	
 	
 	// sort transparent
