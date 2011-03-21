@@ -11,11 +11,15 @@ ROME = {};
 ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	// construct
-	var material = new THREE.MeshShaderMaterial( { uniforms:       ROME.AnimalShader.uniforms, 
-												   vertexShader:   ROME.AnimalShader.vertex, 
-												   fragmentShader: ROME.AnimalShader.fragment,
-												   morphTargets:   true,
-												   lights:         true } );
+	var material = new THREE.MeshShaderMaterial( {
+
+		uniforms: ROME.AnimalShader.uniforms, 
+		vertexShader: ROME.AnimalShader.vertex, 
+		fragmentShader: ROME.AnimalShader.fragment,
+		morphTargets: true,
+		lights: true
+
+	} );
 
 	var that = {};
 	that.mesh = new THREE.Mesh( geometry, material );

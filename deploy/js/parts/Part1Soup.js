@@ -65,10 +65,10 @@ var Part1Soup = function ( camera, scene ) {
 	var flyingArray = [];
 	var cubeArray = [];
 
-	var currentNormal = new THREE.Vector3(0,1,0);
+	var currentNormal = new THREE.Vector3( 0, 1, 0 );
 	var r = 0;
-	//camPos = new THREE.Vector3(0, -465, 1800);
-	camPos = new THREE.Vector3(0, 20, 0);
+	//camPos = new THREE.Vector3( 0, -465, 1800 );
+	camPos = new THREE.Vector3( 0, 20, 0 );
 
 	var pointLight = new THREE.PointLight( 0xccffcc );
 	pointLight.position.x = camPos.x;
@@ -77,17 +77,19 @@ var Part1Soup = function ( camera, scene ) {
 	scene.addLight( pointLight, 1.0 );
 
 	// vectors
-	for (var i=0; i<initSettings.numOfVectors+20; ++i ) {
+	for ( var i = 0; i < initSettings.numOfVectors + 20; ++i ) {
+
 		var x = camPos.x-20;
 		var y = camPos.y-10;
 		var z = camPos.z;
 
-		var obj = {x:x, y:y, z:z, lastx:x, lasty:y, lastz:z, normalx:0, normaly:0, normalz:0, scale:1};
+		var obj = { x: x, y: y, z: z, lastx: x, lasty: y, lastz: z, normalx: 0, normaly: 0, normalz: 0, scale: 1 };
 		vectorArray.push(obj);
+
 	}
 
 	// ribbons
-	for (var k=0; k<initSettings.numOfRibbons; ++k ) {
+	for ( var k = 0; k < initSettings.numOfRibbons; ++k ) {
 
 		var ribbon = new Ribbon(15,6,initSettings.numOfVectors-2);
 		var ribbonMesh = new THREE.Mesh( ribbon, initSettings.ribbonMaterials[k%6] );
@@ -175,7 +177,7 @@ var Part1Soup = function ( camera, scene ) {
 	gui.add( ref.rotation, 'y', 0, Math.PI*2).name( 'yrotation' );
 	gui.add( ref.rotation, 'z', 0, Math.PI*2).name( 'zrotation' );
 */
-	
+
 	// ---
 
 	// emitter
@@ -650,10 +652,10 @@ var Part1Soup = function ( camera, scene ) {
 				alivetime = 0;
 			}
 
-			scale = Math.max( (alivetime)/50, 0.05);
-			scale = Math.min(scale,1);
+			scale = Math.max( alivetime / 50, 0.05 );
+			scale = Math.min( scale, 1 );
 			scale *= 0.08;
-			c.scale.x = c.scale.z = Math.min(0.065, scale*2.5);
+			c.scale.x = c.scale.z = Math.min( 0.065, scale * 2.5 );
 			c.scale.y = scale;
 
 			cubeArray[i].scale = scale;
@@ -661,13 +663,14 @@ var Part1Soup = function ( camera, scene ) {
 
 		}
 
-		pointLight.position.x = vectorArray[0].x;
-		pointLight.position.y = vectorArray[0].y+5;
-		pointLight.position.z = vectorArray[0].z;
+		pointLight.position.x = vectorArray[ 0 ].x;
+		pointLight.position.y = vectorArray[ 0 ].y + 5;
+		pointLight.position.z = vectorArray[ 0 ].z;
 
 	}
 
 	function updateEmitter() {
+
 		//emitterMesh.position.y = FLOOR;
 
 		var vector = new THREE.Vector3( ( mouseX / window.innerWidth ) * 2 - 1, - ( mouseY / window.innerHeight ) * 2 + 1, 0.5 );
@@ -677,16 +680,14 @@ var Part1Soup = function ( camera, scene ) {
 
 		var intersects = ray.intersectScene( collisionScene );
 
-		if ( intersects.length > 0) {
-			for (var i=0; i<intersects.length; ++i ) {
-				var check;
-				if (vector.z < 0) {
-					check = intersects[i].point.z < camPos.z;
-				} else {
-					check = intersects[i].point.z > camPos.z;
-				}
+		if ( intersects.length > 0 ) {
 
-				if (check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 20) {
+			for ( var i = 0; i < intersects.length; ++i ) {
+
+				var check = vector.z < 0 ? intersects[i].point.z < camPos.z : intersects[i].point.z > camPos.z;
+
+				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 20 ) {
+
 					emitterMesh.position = intersects[i].point;
 
 					var face = intersects[i].face;
@@ -695,7 +696,7 @@ var Part1Soup = function ( camera, scene ) {
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
 
 					currentNormal = normal;
-					
+
 					// walls
 					if (intersects[i].object == rightPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == frontPlane || intersects[i].object == upPlane) {
 
@@ -764,7 +765,6 @@ var Part1Soup = function ( camera, scene ) {
 		mesh.rotation.x = rx;
 		mesh.rotation.y = ry;
 		mesh.rotation.z = rz;
-		mesh.overdraw = true;
 		mesh.doubleSided = inDouble;
 		mesh.updateMatrix();
 		collisionScene.addObject(mesh);

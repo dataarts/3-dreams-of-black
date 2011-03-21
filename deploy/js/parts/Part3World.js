@@ -70,7 +70,7 @@ var Part3World = function () {
 	// Ground
 
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundPlane.js', callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundPlane.js', texture_path: 'files/models/prairie_v3/', callback: function( geometry ) {
 
 		var material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
 
@@ -95,7 +95,7 @@ var Part3World = function () {
 	// Rocks
 
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundRocks.js', callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundRocks.js', texture_path: 'files/models/prairie_v3/', callback: function( geometry ) {
 
 		var material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
 
