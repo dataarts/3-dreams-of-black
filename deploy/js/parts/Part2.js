@@ -84,11 +84,15 @@ var Part2 = function ( renderer, events ) {
 
 		// slight camera roll
 		if (camera.animationParent) {
+
 			camera.animationParent.rotation.z = (camera.target.position.x)/600;
+
 		}
 
+		/*
 		// slightly bumpy camera, since we're on a train
 		camera.animationParent.position.y += Math.sin(time/100)*2;
+		*/
 
 		// make it darker towards the end
 		var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
