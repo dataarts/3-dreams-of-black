@@ -7,7 +7,7 @@ container, events;
 var screenWidth, screenHeight,
 screenWidthHalf, screenHeightHalf;
 
-var tune, time, stats, gui;
+var loadProgress, tune, time, stats, gui;
 
 init();
 
@@ -29,15 +29,21 @@ function init() {
 	renderer.setSize( screenWidth, screenHeight );
 	renderer.autoClear = false;
 
+	events = {
+
+		mousemove : new Signal(),
+		loadItemAdd : new Signal(),
+		loadItemComplete : new Signal()
+
+	};
+
 	tune = new Tune( audio );
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	events = {
-
-		mousemove : new Signal()
-
-	};
+	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
+	events.loadItemAdd.add( loadProgress.addItem );
+	events.loadItemComplete.add( loadProgress.completeItem );
 
 	sequencer = new Sequencer();
 
@@ -74,21 +80,23 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
-	//document.body.appendChild( gui.domElement );
+	/*
+	document.body.appendChild( gui.domElement );
 
-	//gui.autoListenIntervalTime = 1000/10;
+	gui.autoListenIntervalTime = 1000/10;
 	//gui.autoListen = false;
 
-/*	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-	var temp = gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
+	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 
 	gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
 	gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
 	gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
-*/
+	*/
+
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	//audio.volume = 0;	
+	//audio.volume = 0;
 
 	window.addEventListener( 'resize', onWindowResize, false );
 

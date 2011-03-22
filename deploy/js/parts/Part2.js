@@ -32,18 +32,18 @@ var Part2 = function ( renderer, events ) {
 										 verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
 										 horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
 									 } );
-				
-		
-		cameraPath.position.set( 0, 10, 0 );				
+
+
+		cameraPath.position.set( 0, 10, 0 );
 		cameraPath.lon = 160;
-			
+
 		camera = cameraPath;
 
-		world = new Part2World();
+		world = new Part2World( events );
 		soup = new Part2Soup( camera, world.scene );
 
 		//world.scene.addObject( cameraPath.debugPath );
-		world.scene.addObject( cameraPath.animationParent );				
+		world.scene.addObject( cameraPath.animationParent );
 
 	};
 
@@ -69,7 +69,7 @@ var Part2 = function ( renderer, events ) {
 		time = new Date().getTime();
 		delta = time - oldTime;
 		oldTime = time;
-		
+
 		THREE.AnimationHandler.update( delta );
 
 		// slight camera roll

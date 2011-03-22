@@ -1,4 +1,4 @@
-var Part3World = function () {
+var Part3World = function ( events ) {
 
 	var that = this,
 	TILE_SIZE = 20000;
@@ -69,6 +69,8 @@ var Part3World = function () {
 
 	// Ground
 
+	events.loadItemAdd.dispatch();
+
 	var loader = new THREE.Loader();
 	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundPlane.js', texture_path: 'files/models/prairie_v3/', callback: function( geometry ) {
 
@@ -90,9 +92,13 @@ var Part3World = function () {
 
 		}
 
+		events.loadItemComplete.dispatch();
+
 	} } );
 
 	// Rocks
+
+	events.loadItemAdd.dispatch();
 
 	var loader = new THREE.Loader();
 	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundRocks.js', texture_path: 'files/models/prairie_v3/', callback: function( geometry ) {
@@ -114,6 +120,8 @@ var Part3World = function () {
 			that.scene.addObject( mesh );
 
 		}
+
+		events.loadItemComplete.dispatch();
 
 	} } );
 

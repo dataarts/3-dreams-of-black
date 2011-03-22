@@ -12,7 +12,7 @@ var Part3 = function ( renderer, events ) {
 			autoForward: true /*, heightSpeed: true, heightMin: 250, heightMax: 1500, heightCoef: 0.025*/
 		} );
 
-		world = new Part3World();
+		world = new Part3World( events );
 		soup = new Part3Soup( camera, world.scene );
 
 	};

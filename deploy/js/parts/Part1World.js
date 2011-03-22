@@ -1,4 +1,4 @@
-var Part1World = function () {
+var Part1World = function ( events ) {
 
 	var that = this;
 
@@ -20,6 +20,7 @@ var Part1World = function () {
 	directionalLight.position.z = - 1000;
 	this.scene.addLight( directionalLight );
 
+	events.loadItemAdd.dispatch();
 
 	// Mesh
 	var loader = new THREE.Loader();
@@ -29,6 +30,8 @@ var Part1World = function () {
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
+
+		events.loadItemComplete.dispatch();
 
 	} } );
 
