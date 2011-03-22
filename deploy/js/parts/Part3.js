@@ -17,6 +17,13 @@ var Part3 = function ( renderer, events ) {
 		world = new Part3World( events );
 		soup = new Part3Soup( camera, world.scene );
 
+		events.cameraFov.add( function ( value ) {
+
+			camera.fov = value;
+			camera.updateProjectionMatrix();
+
+		} );
+
 	};
 
 	this.show = function () {

@@ -36,6 +36,14 @@ var Part1 = function ( renderer, events ) {
 		//world.scene.addObject( camera.debugPath );
 		world.scene.addObject( camera.animationParent );
 
+
+		events.cameraFov.add( function ( value ) {
+
+			camera.fov = value;
+			camera.updateProjectionMatrix();
+
+		} );
+
 	};
 
 	this.show = function () {

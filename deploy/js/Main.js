@@ -27,7 +27,9 @@ function init() {
 
 		mousemove : new Signal(),
 		loadItemAdd : new Signal(),
-		loadItemComplete : new Signal()
+		loadItemComplete : new Signal(),
+
+		cameraFov : new Signal()
 
 	};
 
@@ -74,6 +76,21 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
+	var camera = { fov: 50 }
+
+	gui = new GUI();
+	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+	gui.add( audio, 'volume', 0, 1 ).name( 'Volume' );
+	gui.add( camera, 'fov', 0, 100 ).name( 'Camera.fov' ).onChange( function ( value ) {
+
+		events.cameraFov.dispatch( value );
+
+	});
+
+	gui.add( this, 'jumpToPart1' ).name( 'Part 1: City' );
+	gui.add( this, 'jumpToPart2' ).name( 'Part 2: Prairie' );
+	gui.add( this, 'jumpToPart3' ).name( 'Part 3: Dunes' );
+
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	//audio.volume = 0;
@@ -82,6 +99,26 @@ function start( pattern ) {
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 	animate();
+
+}
+
+// Hack for gui-dat :/
+
+this.jumpToPart1 = function () {
+
+	audio.currentTime = tune.getPatternMS( 16 ) / 1000;
+
+}
+
+this.jumpToPart2 = function () {
+
+	audio.currentTime = tune.getPatternMS( 32 ) / 1000;
+
+}
+
+this.jumpToPart3 = function () {
+
+	audio.currentTime = tune.getPatternMS( 48 ) / 1000;
 
 }
 
