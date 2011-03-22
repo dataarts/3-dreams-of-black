@@ -27,7 +27,9 @@ function init() {
 
 		mousemove : new Signal(),
 		loadItemAdd : new Signal(),
-		loadItemComplete : new Signal()
+		loadItemComplete : new Signal(),
+
+		cameraFov : new Signal()
 
 	};
 
