@@ -15,13 +15,15 @@ var Part1 = function ( renderer, events ) {
 		waypoints = [ [ 0, 20, 0 ], [ 0, 20, -3000 ] ];
 
 		camera = new THREE.PathCamera( {
-			fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+
+			fov: 50, aspect: 1280 / 720, near: 1, far: 100000,
 			waypoints: waypoints, duration: 35, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+
 		 } );
 
 

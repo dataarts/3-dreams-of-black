@@ -24,15 +24,17 @@ var Part2 = function ( renderer, events ) {
 					  [ 13236, 680, -332 ],
 					  [ 13707, 281, 304 ] ];
 
-		cameraPath = new THREE.PathCamera( { fov: 60, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
-										 waypoints: waypoints, duration: 25, 
-										 useConstantSpeed: true, resamplingCoef: 1,
-										 createDebugPath: false, createDebugDummy: false,
-										 lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
-										 verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-										 horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
-									 } );
+		cameraPath = new THREE.PathCamera( {
 
+			fov: 60, aspect: 1280 / 720, near: 1, far: 100000,
+			waypoints: waypoints, duration: 25, 
+			useConstantSpeed: true, resamplingCoef: 1,
+			createDebugPath: false, createDebugDummy: false,
+			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
+			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+
+		 } );
 
 		cameraPath.position.set( 0, 10, 0 );
 		cameraPath.lon = 160;

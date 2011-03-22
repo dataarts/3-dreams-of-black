@@ -15,19 +15,13 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	//gui = new GUI();
-
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
-
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
 	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( screenWidth, screenHeight );
 	renderer.autoClear = false;
+
+	window.addEventListener( 'resize', onWindowResize, false );
+	onWindowResize();
 
 	events = {
 
@@ -80,50 +74,14 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
-	/*
-	document.body.appendChild( gui.domElement );
-
-	gui.autoListenIntervalTime = 1000/10;
-	//gui.autoListen = false;
-
-	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
-
-	gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
-	gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
-	gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
-	*/
-
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	//audio.volume = 0;
-
-	window.addEventListener( 'resize', onWindowResize, false );
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 	animate();
-
-}
-
-// Hack for gui-dat :/
-
-this.jumpToPart1 = function () {
-
-	audio.currentTime = tune.getPatternMS( 16 ) / 1000;
-
-}
-
-this.jumpToPart2 = function () {
-
-	audio.currentTime = tune.getPatternMS( 32 ) / 1000;
-
-}
-
-this.jumpToPart3 = function () {
-
-	audio.currentTime = tune.getPatternMS( 48 ) / 1000;
 
 }
 
@@ -158,16 +116,16 @@ function onDocumentMouseMove( event ) {
 
 function onWindowResize( event ) {
 
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
+	var width = 1280, height = 720,
+	scale = window.innerWidth / width;
 
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
-	// camera.aspect = screenWidth / screenHeight;
-	// camera.updateProjectionMatrix();
+	screenWidth = width * scale;
+	screenHeight = height * scale;
 
 	renderer.setSize( screenWidth, screenHeight );
+
+	renderer.domElement.style.position = 'absolute';
+	renderer.domElement.style.top = ( ( window.innerHeight - screenHeight  ) / 2 ) + 'px';
 
 }
 
