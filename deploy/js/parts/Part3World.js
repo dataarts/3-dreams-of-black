@@ -4,7 +4,7 @@ var Part3World = function ( events ) {
 	TILE_SIZE = 20000;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000025 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00005 );
 
 	// Lights
 

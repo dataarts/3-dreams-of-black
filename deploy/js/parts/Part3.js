@@ -25,6 +25,8 @@ var Part3 = function ( renderer, events ) {
 		camera.position.y = 250;
 		camera.position.z = 0;
 
+		renderer.setClearColor( world.scene.fog.color );
+
 	};
 
 	this.hide = function () {

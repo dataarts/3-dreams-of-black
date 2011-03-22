@@ -9,7 +9,7 @@
 
 				font-family: Helvetica, Arial;
 				font-size: 14px;
-				background-color: #f0f0f0;
+				background-color: #000000;
 				color: #808080;
 				margin: 0px;
 				overflow: hidden;
@@ -18,7 +18,7 @@
 
 			a {
 
-				color: #404040;
+				color: #A0A0A0;
 				text-decoration: none;
 
 			}
@@ -40,6 +40,8 @@
 
 			<strong>"ROME"</strong><br /><br />
 
+			<progress id="loadProgress" value="0"></progress><br /><br />
+
 			<a href="#" onClick="start( 32 );">PART 2 3D (sandbox)</a><br />
 
 		</div>
@@ -52,6 +54,7 @@
 
 		<script src="js/lib/Three.js"></script>
 
+		<script src="js/lib/LoadProgress.js"></script>
 		<script src="js/lib/RequestAnimationFrame.js"></script>
 		<script src="js/lib/Sequencer.js"></script>
 		<script src="js/lib/Tune.js"></script>

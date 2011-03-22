@@ -15,32 +15,29 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	//gui = new GUI();
-
-	//gui.add(GUI, "saveURL").name("Save to URL");
-	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
-
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
 	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( screenWidth, screenHeight );
 	renderer.autoClear = false;
+
+	window.addEventListener( 'resize', onWindowResize, false );
+	onWindowResize();
+
+	events = {
+
+		mousemove : new Signal(),
+		loadItemAdd : new Signal(),
+		loadItemComplete : new Signal()
+
+	};
 
 	tune = new Tune( audio );
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	events = {
-
-		mousemove : new Signal()
-
-	};
+	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
+	events.loadItemAdd.add( loadProgress.addItem );
+	events.loadItemComplete.add( loadProgress.completeItem );
 
 	sequencer = new Sequencer();
 
@@ -76,11 +73,9 @@ function start( pattern ) {
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0.2;	
+	audio.volume = 0.2;
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-
-	window.addEventListener( 'resize', onWindowResize, false );
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -140,16 +135,16 @@ function onDocumentMouseMove( event ) {
 
 function onWindowResize( event ) {
 
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
+	var width = 1280, height = 720,
+	scale = window.innerWidth / width;
 
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
-	// camera.aspect = screenWidth / screenHeight;
-	// camera.updateProjectionMatrix();
+	screenWidth = width * scale;
+	screenHeight = height * scale;
 
 	renderer.setSize( screenWidth, screenHeight );
+
+	renderer.domElement.style.position = 'absolute';
+	renderer.domElement.style.top = ( ( window.innerHeight - screenHeight  ) / 2 ) + 'px';
 
 }
 

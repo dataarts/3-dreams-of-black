@@ -15,52 +15,37 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	//gui = new GUI();
-
-	//gui.add(GUI, "saveURL").name("Save to URL");
-	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
-
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
 	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( screenWidth, screenHeight );
 	renderer.autoClear = false;
+
+	window.addEventListener( 'resize', onWindowResize, false );
+	onWindowResize();
+
+	events = {
+
+		mousemove : new Signal(),
+		loadItemAdd : new Signal(),
+		loadItemComplete : new Signal()
+
+	};
 
 	tune = new Tune( audio );
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	events = {
-
-		mousemove : new Signal()
-
-	};
+	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
+	events.loadItemAdd.add( loadProgress.addItem );
+	events.loadItemComplete.add( loadProgress.completeItem );
 
 	sequencer = new Sequencer();
 
 	// Parts
 
 	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
-
-	//sequencer.add( new Part1( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 1 );
 	sequencer.add( new Part2( renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 75 ), 1 );
-/*	sequencer.add( new Part3( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 2 );
-
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 2 );
-
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 2 );
-*/
 }
 
 function start( pattern ) {
@@ -91,8 +76,6 @@ function start( pattern ) {
 	audio.volume = 0.2;	
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-
-	window.addEventListener( 'resize', onWindowResize, false );
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -152,16 +135,16 @@ function onDocumentMouseMove( event ) {
 
 function onWindowResize( event ) {
 
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
+	var width = 1280, height = 720,
+	scale = window.innerWidth / width;
 
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
-	// camera.aspect = screenWidth / screenHeight;
-	// camera.updateProjectionMatrix();
+	screenWidth = width * scale;
+	screenHeight = height * scale;
 
 	renderer.setSize( screenWidth, screenHeight );
+
+	renderer.domElement.style.position = 'absolute';
+	renderer.domElement.style.top = ( ( window.innerHeight - screenHeight  ) / 2 ) + 'px';
 
 }
 
