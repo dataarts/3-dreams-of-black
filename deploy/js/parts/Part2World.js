@@ -1,4 +1,4 @@
-var Part2World = function () {
+var Part2World = function ( events ) {
 
 	var that = this;
 
@@ -19,14 +19,18 @@ var Part2World = function () {
 
 	// Mesh
 
-	var loader = new THREE.Loader();
-	//loader.loadAscii( { model: 'files/models/prairie.js', callback: function( geometry ) {
-	loader.loadAscii( { model: 'files/models/prairie_v3/prairie.js', callback: function( geometry ) {
+	events.loadItemAdd.dispatch();
+
+	var loader = new THREE.JSONLoader();
+	loader.load( { model: 'files/models/prairie/prairie.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 10.0;
+		mesh.position.set(92970, -350, -273160.216127517);
 
 		that.scene.addObject( mesh );
+
+		events.loadItemComplete.dispatch();
 
 	} } );
 

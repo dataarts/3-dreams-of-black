@@ -1,10 +1,10 @@
-var Part3World = function () {
+var Part3World = function ( events ) {
 
 	var that = this,
 	TILE_SIZE = 20000;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000025 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0001 );
 
 	// Lights
 
@@ -16,6 +16,23 @@ var Part3World = function () {
 	directionalLight.position.z = 1;
 	directionalLight.position.normalize();
 	this.scene.addLight( directionalLight );
+
+
+	events.loadItemAdd.dispatch();
+
+	var loader = new THREE.JSONLoader();
+	loader.load( { model: 'files/models/dunes/dunes.js', callback: function( geometry ) {
+
+		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
+
+		that.scene.addObject( mesh );
+
+		events.loadItemComplete.dispatch();
+
+	} } );
+
+	/*
 
 	// Ground
 
@@ -63,10 +80,16 @@ var Part3World = function () {
 
 	image.src = 'files/textures/DunesHeightmap.png';
 
-	// Rocks
+	*/
+
+	/*
+
+	// Ground
+
+	events.loadItemAdd.dispatch();
 
 	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/part3/rock.js', callback: function( geometry ) {
+	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundPlane.js', texture_path: 'files/models/prairie_v3/', callback: function( geometry ) {
 
 		var material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
 
@@ -86,7 +109,42 @@ var Part3World = function () {
 
 		}
 
+		events.loadItemComplete.dispatch();
+
 	} } );
+
+	// Rocks
+
+	events.loadItemAdd.dispatch();
+
+	var loader = new THREE.Loader();
+	loader.loadAscii( { model: 'files/models/dunes/Desert_GroundRocks.js', texture_path: 'files/models/prairie_v3/', callback: function( geometry ) {
+
+		var material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
+
+		for ( var i = 0; i < 10; i ++ ) {
+
+			var mesh = new THREE.Mesh( geometry, material );
+
+			mesh.position.x = Math.random() * 100000 - 50000;
+			mesh.position.z	 = Math.random() * 100000 - 50000;
+
+			mesh.rotation.y = Math.random() * 180 * Math.PI / 180;
+
+			mesh.updateMatrix();
+			mesh.matrixAutoUpdate = false;
+
+			that.scene.addObject( mesh );
+
+		}
+
+		events.loadItemComplete.dispatch();
+
+	} } );
+
+	*/
+
+	/*
 
 	// Clouds
 
@@ -118,10 +176,14 @@ var Part3World = function () {
 
 	} } );
 
+	*/
+
 	this.update = function ( camera ) {
 
 		var x = Math.round( camera.position.x / TILE_SIZE );
 		var z = Math.round( camera.position.z / TILE_SIZE );
+
+		/*
 
 		tiles[ 0 ].position.x = ( x - 1 ) * TILE_SIZE;
 		tiles[ 0 ].position.z = ( z - 1 ) * TILE_SIZE;
@@ -149,6 +211,8 @@ var Part3World = function () {
 
 		tiles[ 8 ].position.x = ( x + 1 ) * TILE_SIZE;
 		tiles[ 8 ].position.z = ( z + 1 ) * TILE_SIZE;
+
+		*/
 
 	}
 

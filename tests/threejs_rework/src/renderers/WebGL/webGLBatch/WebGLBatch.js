@@ -92,8 +92,9 @@ THREE.WebGLBatch.prototype.render = function() {
 		this.GL.disable( this.GL.BLEND );
 	else {
 		
-		this.GL.enable   ( this.GL.BLEND );
-		this.GL.blendFunc( this.GL.ONE, this.GL.ONE_MINUS_SRC_ALPHA ); // should be set to blend mode, some
+		this.GL.enable( this.GL.BLEND );
+		this.GL.blendFunc( this.GL.SRC_ALPHA, this.GL.ONE );
+		this.GL.blendEquation( this.GL.FUNC_REVERSE_SUBTRACT );
 	}
 	
     this.GL.drawElements( this.GL.TRIANGLES, this.elementsSize, this.GL.UNSIGNED_SHORT, 0 );

@@ -7,7 +7,7 @@ container, events;
 var screenWidth, screenHeight,
 screenWidthHalf, screenHeightHalf;
 
-var tune, time, stats, gui;
+var loadProgress, tune, time, stats, gui;
 
 init();
 
@@ -15,29 +15,31 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	//gui = new GUI();
-
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
-
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
 	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( screenWidth, screenHeight );
 	renderer.autoClear = false;
+
+	window.addEventListener( 'resize', onWindowResize, false );
+	onWindowResize();
+
+	events = {
+
+		mousemove : new Signal(),
+		loadItemAdd : new Signal(),
+		loadItemComplete : new Signal(),
+
+		cameraFov : new Signal()
+
+	};
 
 	tune = new Tune( audio );
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	events = {
-
-		mousemove : new Signal()
-
-	};
+	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
+	events.loadItemAdd.add( loadProgress.addItem );
+	events.loadItemComplete.add( loadProgress.completeItem );
 
 	sequencer = new Sequencer();
 
@@ -74,23 +76,24 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
-	//document.body.appendChild( gui.domElement );
+	var camera = { fov: 50 }
 
-	//gui.autoListenIntervalTime = 1000/10;
-	//gui.autoListen = false;
+	gui = new GUI();
+	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+	gui.add( audio, 'volume', 0, 1 ).name( 'Volume' );
+	gui.add( camera, 'fov', 0, 100 ).name( 'Camera.fov' ).onChange( function ( value ) {
 
-/*	gui.add( audio, 'volume', 0, 1).name( 'Volume' );
-	var temp = gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
+		events.cameraFov.dispatch( value );
 
-	gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
-	gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
-	gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
-*/
+	});
+
+	gui.add( this, 'jumpToPart1' ).name( 'Part 1: City' );
+	gui.add( this, 'jumpToPart2' ).name( 'Part 2: Prairie' );
+	gui.add( this, 'jumpToPart3' ).name( 'Part 3: Dunes' );
+
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	//audio.volume = 0;	
-
-	window.addEventListener( 'resize', onWindowResize, false );
+	//audio.volume = 0;
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -150,16 +153,16 @@ function onDocumentMouseMove( event ) {
 
 function onWindowResize( event ) {
 
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
+	var width = 1280, height = 720,
+	scale = window.innerWidth / width;
 
-	screenWidthHalf = screenWidth / 2;
-	screenHeightHalf = screenHeight / 2;
-
-	// camera.aspect = screenWidth / screenHeight;
-	// camera.updateProjectionMatrix();
+	screenWidth = width * scale;
+	screenHeight = height * scale;
 
 	renderer.setSize( screenWidth, screenHeight );
+
+	renderer.domElement.style.position = 'absolute';
+	renderer.domElement.style.top = ( ( window.innerHeight - screenHeight  ) / 2 ) + 'px';
 
 }
 

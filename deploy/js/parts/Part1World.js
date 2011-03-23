@@ -1,36 +1,37 @@
-var Part1World = function () {
+var Part1World = function ( events ) {
 
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0x000000, 0.0006 );
-//	this.scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
-	this.scene.fog.color.setHSV( 0.25, 0.25, 0.25 );
+	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0006 );
 
 	// Lights
 
-	var ambient = new THREE.AmbientLight( 0x221100 );
-	this.scene.addLight( ambient );
-
-	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight.position.x = 1;
-	directionalLight.position.y = 1;
-	directionalLight.position.z = 1;
-	directionalLight.position.normalize();
+	var directionalLight = new THREE.PointLight( 0xbbbbff, 0.5 );
+	directionalLight.position.x = 1000;
+	directionalLight.position.y = 500;
+	directionalLight.position.z = - 1000;
 	this.scene.addLight( directionalLight );
 
-	var pointLight = new THREE.PointLight( 0xffffff, 0.35 );
-	this.scene.addLight( pointLight );
+
+	var directionalLight = new THREE.PointLight( 0xffeeee, 0.2 );
+	directionalLight.position.x = - 1000;
+	directionalLight.position.y = - 500;
+	directionalLight.position.z = - 1000;
+	this.scene.addLight( directionalLight );
+
+	events.loadItemAdd.dispatch();
 
 	// Mesh
-	var loader = new THREE.Loader();
-	//loader.loadAscii( { model: 'files/models/street_v3/street.js', texture_path: 'files/models/street_v3/', callback: function( geometry ) {
-	loader.loadAscii( { model: 'files/models/street_v3/CITY_EXPORT_CHUNK_AO.js', texture_path: 'files/models/street_v3/', callback: function( geometry ) {
+	var loader = new THREE.JSONLoader();
+	loader.load( { model: 'files/models/city/street.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
+
+		events.loadItemComplete.dispatch();
 
 	} } );
 

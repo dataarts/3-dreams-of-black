@@ -91,6 +91,7 @@
 		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderLambert.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderNormal.js"></script>
 		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderShadowVolume.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderShadowPost.js"></script>
 	
 		<script type="text/javascript" src="src/animation/Animation.js"></script>
 		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
@@ -164,13 +165,14 @@
 				var torus = new Torus( 40, 10 );
 				var sphere = new Sphere( 40 );
 				var cylinder = new Cylinder( 10, 10, 20, 40, 0, 0 );
-				var mesh = new THREE.Mesh( torus, material );
+				mesh = new THREE.Mesh( torus, material );
 
 				var shadowMaterial = new THREE.MeshShaderMaterial( { vertex_shader: "shadowVolumeVertex", fragment_shader: "shadowVolumeFragment" } );
 				var shadowVolume   = new THREE.ShadowVolume( mesh, shadowMaterial );
 				
 				scene.addChild( mesh );
-				scene.addChild( shadowVolume );
+				//scene.addChild( shadowVolume );
+
 
 
 	/*			cube = new THREE.Cube( 100, 100, 100 );
@@ -214,6 +216,11 @@
 			var t = 0;
 
 			function loop() {
+
+				mesh.rotation.x += 0.5 * Math.PI / 180;
+				mesh.rotation.y += 1.0 * Math.PI / 180;
+				mesh.rotation.z += 1.5 * Math.PI / 180;
+
 
 				renderer.directionalLight.x = Math.sin( t );
 				renderer.directionalLight.y = -1 + Math.sin( t * 2 );
