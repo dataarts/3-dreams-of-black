@@ -14,6 +14,8 @@ var Part3 = function ( renderer, events ) {
 
 		} );
 
+		camera.lon = 90;
+
 		world = new Part3World( events );
 		soup = new Part3Soup( camera, world.scene );
 

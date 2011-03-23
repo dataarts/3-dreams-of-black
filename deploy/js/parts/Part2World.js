@@ -21,12 +21,11 @@ var Part2World = function ( events ) {
 
 	events.loadItemAdd.dispatch();
 
-	var loader = new THREE.Loader();
-	//loader.loadAscii( { model: 'files/models/prairie.js', callback: function( geometry ) {
-	loader.loadAscii( { model: 'files/models/prairie_v3/prairie.js', callback: function( geometry ) {
+	var loader = new THREE.JSONLoader();
+	loader.load( { model: 'files/models/prairie/prairie.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 1.0;
 
 		that.scene.addObject( mesh );
 

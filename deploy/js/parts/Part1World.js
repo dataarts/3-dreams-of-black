@@ -23,8 +23,8 @@ var Part1World = function ( events ) {
 	events.loadItemAdd.dispatch();
 
 	// Mesh
-	var loader = new THREE.Loader();
-	loader.loadAscii( { model: 'files/models/street_v3/CITY_EXPORT_CHUNK_AO.js', texture_path: 'files/models/street_v3/', callback: function( geometry ) {
+	var loader = new THREE.JSONLoader();
+	loader.load( { model: 'files/models/city/street.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;

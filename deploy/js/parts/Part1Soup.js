@@ -107,16 +107,16 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	// running animals
-	var animalLoader = new THREE.Loader();
-	animalLoader.loadAscii( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
+	var animalLoader = new THREE.JSONLoader();
+	animalLoader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
 
 	// flying animals
-	var flyingLoader = new THREE.Loader();
-	flyingLoader.loadAscii( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
+	var flyingLoader = new THREE.JSONLoader();
+	flyingLoader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
 
 	// dummy "grass"
-	var grassLoader = new THREE.Loader();
-	grassLoader.loadAscii( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
+	var grassLoader = new THREE.JSONLoader();
+	grassLoader.load( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
 
 	// collisionScene stuff should probably not be here (TEMP)
 	//var FLOOR = -487;

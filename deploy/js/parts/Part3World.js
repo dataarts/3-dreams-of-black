@@ -4,7 +4,7 @@ var Part3World = function ( events ) {
 	TILE_SIZE = 20000;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00005 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0001 );
 
 	// Lights
 
@@ -16,6 +16,21 @@ var Part3World = function ( events ) {
 	directionalLight.position.z = 1;
 	directionalLight.position.normalize();
 	this.scene.addLight( directionalLight );
+
+
+	events.loadItemAdd.dispatch();
+
+	var loader = new THREE.JSONLoader();
+	loader.load( { model: 'files/models/dunes/dunes.js', callback: function( geometry ) {
+
+		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
+
+		that.scene.addObject( mesh );
+
+		events.loadItemComplete.dispatch();
+
+	} } );
 
 	/*
 
@@ -66,6 +81,8 @@ var Part3World = function ( events ) {
 	image.src = 'files/textures/DunesHeightmap.png';
 
 	*/
+
+	/*
 
 	// Ground
 
@@ -124,6 +141,8 @@ var Part3World = function ( events ) {
 		events.loadItemComplete.dispatch();
 
 	} } );
+
+	*/
 
 	/*
 
