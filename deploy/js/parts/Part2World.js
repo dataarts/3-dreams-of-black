@@ -26,7 +26,7 @@ var Part2World = function ( events ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 10.0;
-		mesh.position.set(92970, -300, -273060.216127517);
+		mesh.position.set(92970, -350, -273160.216127517);
 
 		that.scene.addObject( mesh );
 
