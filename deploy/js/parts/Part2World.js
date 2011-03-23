@@ -25,7 +25,8 @@ var Part2World = function ( events ) {
 	loader.load( { model: 'files/models/prairie/prairie.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = 1.0;
+		mesh.scale.x = mesh.scale.y = mesh.scale.z = 10.0;
+		mesh.position.set(92970, -300, -273060.216127517);
 
 		that.scene.addObject( mesh );
 
