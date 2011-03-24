@@ -17,7 +17,7 @@ function init() {
 
 	scene = new THREE.Scene();
 
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
 
 	window.addEventListener( 'resize', onWindowResize, false );

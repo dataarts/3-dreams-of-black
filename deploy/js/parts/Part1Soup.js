@@ -1,4 +1,4 @@
-var Part1Soup = function ( camera, scene ) {
+var Part1Soup = function ( camera, scene, events ) {
 
 	var that = this;
 
@@ -110,11 +110,13 @@ var Part1Soup = function ( camera, scene ) {
 	var animalLoader = new THREE.JSONLoader();
 	// animalLoader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
 	animalLoader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
+	events.loadItemAdd.dispatch();
 
 	// flying animals
 	var flyingLoader = new THREE.JSONLoader();
 	// flyingLoader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
 	flyingLoader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
+	events.loadItemAdd.dispatch();
 
 	// dummy "grass"
 	var grassLoader = new THREE.JSONLoader();
@@ -271,7 +273,10 @@ var Part1Soup = function ( camera, scene ) {
 			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.3 };
 
 			animalArray.push( obj );
+
 		}
+
+		events.loadItemComplete.dispatch();
 
 	}
 
@@ -304,6 +309,8 @@ var Part1Soup = function ( camera, scene ) {
 			flyingArray.push(obj);
 
 		}
+
+		events.loadItemComplete.dispatch();
 
 	}
 

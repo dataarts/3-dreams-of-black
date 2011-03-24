@@ -31,7 +31,7 @@ var Part1 = function ( renderer, events ) {
 		camera.lon = 90;
 
 		world = new Part1World( events );
-		soup = new Part1Soup( camera, world.scene );
+		soup = new Part1Soup( camera, world.scene, events );
 
 		//world.scene.addObject( camera.debugPath );
 		world.scene.addObject( camera.animationParent );
