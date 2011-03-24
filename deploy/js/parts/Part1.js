@@ -1,6 +1,6 @@
 var Part1 = function ( renderer, events ) {
 
-	Effect.call( this );
+	SequencerItem.call( this );
 
 	var camera, world, soup;
 	var waypoints = [];
@@ -77,5 +77,5 @@ var Part1 = function ( renderer, events ) {
 
 };
 
-Part1.prototype = new Effect();
+Part1.prototype = new SequencerItem();
 Part1.prototype.constructor = Part1;

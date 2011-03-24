@@ -1,6 +1,6 @@
 var ClearEffect = function ( renderer ) {
 
-	Effect.call( this );
+	SequencerItem.call( this );
 
 	this.update = function ( i ) {
 
@@ -10,5 +10,5 @@ var ClearEffect = function ( renderer ) {
 
 };
 
-ClearEffect.prototype = new Effect();
+ClearEffect.prototype = new SequencerItem();
 ClearEffect.prototype.constructor = ClearEffect;

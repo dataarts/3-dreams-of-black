@@ -1,6 +1,6 @@
 var TweenEffect = function ( object, properties_start, properties_end, easingFunction ) {
 
-	Effect.call( this );
+	SequencerItem.call( this );
 
 	var _value,
 	_object = object,
@@ -34,5 +34,5 @@ var TweenEffect = function ( object, properties_start, properties_end, easingFun
 };
 
 
-TweenEffect.prototype = new Effect();
+TweenEffect.prototype = new SequencerItem();
 TweenEffect.prototype.constructor = TweenEffect;

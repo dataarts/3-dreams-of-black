@@ -1,6 +1,6 @@
 var Part2 = function ( renderer, events ) {
 
-	Effect.call( this );
+	SequencerItem.call( this );
 
 	var camera, world, soup;
 	var cameraPath;
@@ -108,5 +108,5 @@ var Part2 = function ( renderer, events ) {
 
 };
 
-Part2.prototype = new Effect();
+Part2.prototype = new SequencerItem();
 Part2.prototype.constructor = Part2;
