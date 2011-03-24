@@ -16,7 +16,7 @@ var Part1 = function ( renderer, events ) {
 
 		camera = new THREE.PathCamera( {
 
-			fov: 50, aspect: 1280 / 720, near: 1, far: 100000,
+			fov: 50, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
 			waypoints: waypoints, duration: 35, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,

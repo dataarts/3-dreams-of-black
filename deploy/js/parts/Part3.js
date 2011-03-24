@@ -8,7 +8,7 @@ var Part3 = function ( renderer, events ) {
 
 		camera = new THREE.QuakeCamera( {
 
-			fov: 60, aspect: 1280 / 720, near: 1, far: 100000,
+			fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
 			movementSpeed: 10, lookSpeed: 0.0015, noFly: false, lookVertical: true, 
 			autoForward: true /*, heightSpeed: true, heightMin: 250, heightMax: 1500, heightCoef: 0.025*/
 

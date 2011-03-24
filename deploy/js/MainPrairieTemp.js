@@ -1,3 +1,5 @@
+var WIDTH = 1024, HEIGHT = 440;
+
 var Signal = signals.Signal;
 
 var audio, sequencer,
@@ -137,11 +139,10 @@ function onDocumentMouseMove( event ) {
 
 function onWindowResize( event ) {
 
-	var width = 1280, height = 720,
-	scale = window.innerWidth / width;
+	var scale = window.innerWidth / WIDTH;
 
-	screenWidth = width * scale;
-	screenHeight = height * scale;
+	screenWidth = WIDTH * scale;
+	screenHeight = HEIGHT * scale;
 
 	renderer.setSize( screenWidth, screenHeight );
 
