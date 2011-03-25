@@ -107,20 +107,17 @@ var Part1Soup = function ( camera, scene, events ) {
 	}
 
 	// running animals
-	var animalLoader = new THREE.JSONLoader();
-	// animalLoader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
-	animalLoader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
-	events.loadItemAdd.dispatch();
+	var loader = new THREE.JSONLoader();
 
-	// flying animals
-	var flyingLoader = new THREE.JSONLoader();
-	// flyingLoader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
-	flyingLoader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
-	events.loadItemAdd.dispatch();
+	loader.onLoadStart = function () { events.loadItemAdd.dispatch() };
+	loader.onLoadComplete = function () { events.loadItemComplete.dispatch() };
+
+	loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
+	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
 
 	// dummy "grass"
-	var grassLoader = new THREE.JSONLoader();
-	// grassLoader.load( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
+
+	// loader.load( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
 
 	// collisionScene stuff should probably not be here (TEMP)
 	//var FLOOR = -487;
@@ -137,7 +134,7 @@ var Part1Soup = function ( camera, scene, events ) {
 	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
 	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
 	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial2, false );
-	
+
 	// temp boxes
 	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
 	var cubea = addMesh( cube, 1,  250, -300+487, 1400-1800, 0,0,0, invMaterial2, false );
@@ -276,8 +273,6 @@ var Part1Soup = function ( camera, scene, events ) {
 
 		}
 
-		events.loadItemComplete.dispatch();
-
 	}
 
 	function flyingLoaded( geometry ) {
@@ -309,8 +304,6 @@ var Part1Soup = function ( camera, scene, events ) {
 			flyingArray.push(obj);
 
 		}
-
-		events.loadItemComplete.dispatch();
 
 	}
 

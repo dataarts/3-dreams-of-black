@@ -17,18 +17,19 @@ var Part3World = function ( events ) {
 	directionalLight.position.normalize();
 	this.scene.addLight( directionalLight );
 
-
-	events.loadItemAdd.dispatch();
+	// Mesh
 
 	var loader = new THREE.JSONLoader();
+
+	loader.onLoadStart = function () { events.loadItemAdd.dispatch() };
+	loader.onLoadComplete = function () { events.loadItemComplete.dispatch() };
+
 	loader.load( { model: 'files/models/dunes/dunes.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
-
-		events.loadItemComplete.dispatch();
 
 	} } );
 
