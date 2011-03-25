@@ -19,7 +19,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -32,7 +32,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -1.584242 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -45,7 +45,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.220000, 0.220000, 0.220000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : true
     },
@@ -58,7 +58,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.500000, 0.500000, 0.050000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -71,7 +71,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : true
     },
@@ -84,7 +84,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : true
     },
@@ -97,7 +97,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.220000, 0.220000, 0.220000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : true
     },
@@ -110,7 +110,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 6.000000, 1.000000, 5.999999 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : true
     },
@@ -123,7 +123,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : true
     },
@@ -136,7 +136,7 @@ var scene = {
         "rotation"  : [ 1.570796, 0.000000, -4.712389 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.200000, 1.200000, 1.200000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : true
     },
@@ -149,7 +149,7 @@ var scene = {
         "rotation"  : [ 1.570796, 0.000000, -4.712389 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.200000, 1.200000, 1.200000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -162,7 +162,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -175,7 +175,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -188,7 +188,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -201,7 +201,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -214,7 +214,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     },
@@ -227,7 +227,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true
+        "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false
     }
