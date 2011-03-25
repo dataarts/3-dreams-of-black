@@ -13,172 +13,223 @@ var scene = {
 {
     "BuildingShadow" : {
         "geometry"  : "geo_Cube.000",
+        "groups"    : [ "Shadows" ],
         "materials" : [  ],
         "position"  : [ -1.400000, 0.000000, 1.800000 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "Rubble2Placeholder" : {
         "geometry"  : "geo_Rubble.001",
+        "groups"    : [ "NoExport" ],
         "materials" : [  ],
         "position"  : [ 1.285082, 0.047950, -0.400845 ],
         "rotation"  : [ 0.000000, 0.000000, -1.584242 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "Sphere2Col" : {
         "geometry"  : "geo_Sphere.001",
+        "groups"    : [ "Physics" ],
         "materials" : [  ],
         "position"  : [ 1.293203, -0.035329, -0.387091 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.220000, 0.220000, 0.220000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : true
     },
 
     "Trigger" : {
         "geometry"  : "geo_Cube.005",
+        "groups"    : [ "Physics" ],
         "materials" : [  ],
         "position"  : [ 0.000000, 0.500000, -0.839710 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.500000, 0.500000, 0.050000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "BuildingCol" : {
         "geometry"  : "geo_Cube.003",
+        "groups"    : [ "Physics", "Shadows" ],
         "materials" : [  ],
         "position"  : [ 1.400000, 0.000000, 1.799684 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : true
     },
 
     "Building1Col" : {
         "geometry"  : "geo_Cube.002",
+        "groups"    : [ "Physics", "Shadows" ],
         "materials" : [  ],
         "position"  : [ 1.400000, 0.000000, -1.800000 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : true
     },
 
     "SphereCol" : {
         "geometry"  : "geo_Sphere",
+        "groups"    : [ "Physics" ],
         "materials" : [  ],
         "position"  : [ 0.246069, -0.035329, 0.407018 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.220000, 0.220000, 0.220000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : true
     },
 
     "PlaneCol" : {
         "geometry"  : "geo_Plane",
+        "groups"    : [ "Physics" ],
         "materials" : [  ],
         "position"  : [ -0.001918, 0.000000, -0.005755 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 6.000000, 1.000000, 5.999999 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : true
     },
 
     "Building2Col" : {
         "geometry"  : "geo_Cube.001",
+        "groups"    : [ "Physics", "Shadows" ],
         "materials" : [  ],
         "position"  : [ -1.400000, 0.000000, -1.800000 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 2.100000, 1.000000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : true
     },
 
     "MonkeyCol" : {
         "geometry"  : "geo_Monkey.001",
+        "groups"    : [ "Physics" ],
         "materials" : [  ],
         "position"  : [ 3.238746, 0.621558, 0.008645 ],
         "rotation"  : [ 1.570796, 0.000000, -4.712389 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.200000, 1.200000, 1.200000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : true
     },
 
     "Monkey" : {
         "geometry"  : "geo_Monkey",
+        "groups"    : [ "Geometries" ],
         "materials" : [  ],
         "position"  : [ 3.238746, 0.621558, 0.008645 ],
         "rotation"  : [ 1.570796, 0.000000, -4.712389 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.200000, 1.200000, 1.200000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "Rubble" : {
         "geometry"  : "geo_Rubble",
+        "groups"    : [ "Geometries" ],
         "materials" : [  ],
         "position"  : [ 0.248164, 0.045542, 0.398716 ],
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "Building3" : {
         "geometry"  : "geo_Building",
+        "groups"    : [ "Geometries" ],
         "materials" : [ "Material" ],
         "position"  : [ -1.400001, 0.000000, 1.800001 ],
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "Building2" : {
         "geometry"  : "geo_Building",
+        "groups"    : [ "Geometries" ],
         "materials" : [ "Material" ],
         "position"  : [ -1.400001, 0.000000, -1.800001 ],
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "Building1" : {
         "geometry"  : "geo_Building",
+        "groups"    : [ "Geometries" ],
         "materials" : [ "Material" ],
         "position"  : [ 1.400001, 0.000000, -1.800001 ],
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : true,
+        "meshCollider"  : false
     },
 
     "Building" : {
         "geometry"  : "geo_Building",
+        "groups"    : [ "Geometries" ],
         "materials" : [ "Material" ],
         "position"  : [ 1.400001, 0.000000, 1.800001 ],
         "rotation"  : [ 0.000000, 0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 0.010000, 0.010000, 0.010000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     },
 
     "Ground" : {
         "geometry"  : "geo_Ground",
+        "groups"    : [ "Geometries" ],
         "materials" : [ "Material.001" ],
         "position"  : [ 0.000000, 0.000000, -0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, -0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"	    : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"   : true
+        "visible"       : true
+        "castsShadow"   : false,
+        "meshCollider"  : false
     }
 },
 
