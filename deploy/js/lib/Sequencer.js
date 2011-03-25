@@ -1,37 +1,41 @@
+/**
+ * @author mr.doob / http://mrdoob.com/
+ */
+
 var Sequencer = function () {
 
-	var _effect,
-	_effects = [],
-	_effectsActive = [],
-	_effectsToRemove = [],
+	var _item,
+	_items = [],
+	_itemsActive = [],
+	_itemsToRemove = [],
 
-	_nextEffect = 0,
-	_nextEffectToRemove = 0,
+	_nextItem = 0,
+	_nextItemToRemove = 0,
 	_time = 0,
 
 	_layersNeedSorting = false;
 
-	this.add = function ( effect, start_time, end_time, layer ) {
+	this.add = function ( item, start_time, end_time, layer ) {
 
-		effect.__active = false;
-		effect.__start_time = start_time;
-		effect.__duration = end_time - start_time;
-		effect.__end_time = end_time;
-		effect.__layer = layer;
+		item.__active = false;
+		item.__start_time = start_time;
+		item.__duration = end_time - start_time;
+		item.__end_time = end_time;
+		item.__layer = layer;
 
-		effect.init();
+		item.init();
 
-		_effects.push( effect );
-		_effects.sort( function ( a, b ) { return a.__start_time - b.__start_time; } );
+		_items.push( item );
+		_items.sort( function ( a, b ) { return a.__start_time - b.__start_time; } );
 
-		_effectsToRemove.push( effect );
-		_effectsToRemove.sort( function ( a, b ) { return a.__end_time - b.__end_time; } );
+		_itemsToRemove.push( item );
+		_itemsToRemove.sort( function ( a, b ) { return a.__end_time - b.__end_time; } );
 
 	};
 
 	this.update = function ( time ) {
 
-		var effect;
+		var item;
 
 		if ( time < _time ) {
 
@@ -39,71 +43,71 @@ var Sequencer = function () {
 
 		}
 
-		while ( _effects[ _nextEffect ] ) {
+		while ( _items[ _nextItem ] ) {
 
-			effect = _effects[ _nextEffect ];
+			item = _items[ _nextItem ];
 
-			if ( effect.__start_time > time ) {
+			if ( item.__start_time > time ) {
 
 				break;
 
 			}
 
-			if ( !effect.__active && effect.__end_time > time ) {
+			if ( !item.__active && item.__end_time > time ) {
 
-				effect.show();
-				effect.__active = true;
+				item.show();
+				item.__active = true;
 
-				_effectsActive.push( effect );
+				_itemsActive.push( item );
 
 				_layersNeedSorting = true;
 
 			}
 
-			_nextEffect ++;
+			_nextItem ++;
 
 		}
 
-		while ( _effectsToRemove[ _nextEffectToRemove ] ) {
+		while ( _itemsToRemove[ _nextItemToRemove ] ) {
 
-			effect = _effectsToRemove[ _nextEffectToRemove ];
+			item = _itemsToRemove[ _nextItemToRemove ];
 
-			if ( effect.__end_time > time ) {
+			if ( item.__end_time > time ) {
 
 				break;
 
 			}
 
-			if ( effect.__active ) {
+			if ( item.__active ) {
 
-				effect.hide();
-				effect.__active = false;
+				item.hide();
+				item.__active = false;
 
-				var i = _effectsActive.indexOf( effect );
+				var i = _itemsActive.indexOf( item );
 
 				if ( i !== -1 ) {
 
-					_effectsActive.splice( i, 1 );
+					_itemsActive.splice( i, 1 );
 
 				}
 
 			}
 
-			_nextEffectToRemove ++;
+			_nextItemToRemove ++;
 
 		}
 
 		if ( _layersNeedSorting ) {
 
-			_effectsActive.sort( function ( a, b ) { return a.__layer - b.__layer; } );
+			_itemsActive.sort( function ( a, b ) { return a.__layer - b.__layer; } );
 			_layersNeedSorting = false;
 
 		}
 
-		for ( var i = 0, l = _effectsActive.length; i < l; i ++ ) {
+		for ( var i = 0, l = _itemsActive.length; i < l; i ++ ) {
 
-			_effect = _effectsActive[ i ];
-			_effect.update( ( time - _effect.__start_time ) / _effect.__duration );
+			_item = _itemsActive[ i ];
+			_item.update( ( time - _item.__start_time ) / _item.__duration );
 
 		}
 
@@ -113,18 +117,30 @@ var Sequencer = function () {
 
 	this.clear = function () {
 
-		_nextEffect = 0;
-		_nextEffectToRemove = 0;
+		_nextItem = 0;
+		_nextItemToRemove = 0;
 
-		while ( _effectsActive.length ) {
+		while ( _itemsActive.length ) {
 
-			_effect = _effectsActive[ 0 ];
-			_effect.__active = false;
-			_effect.hide();
-			_effectsActive.splice( 0, 1 );
+			_item = _itemsActive[ 0 ];
+			_item.__active = false;
+			_item.hide();
+			_itemsActive.splice( 0, 1 );
 
 		}
 
 	};
 
 };
+
+var SequencerItem = function () {};
+
+SequencerItem.prototype = {
+
+	init: function () {},
+	load: function () {},
+	show: function () {},
+	hide: function () {},
+	update: function ( f ) {}
+
+}

@@ -1,6 +1,6 @@
 var FadeInEffect = function ( hex, renderer ) {
 
-	Effect.call( this );
+	SequencerItem.call( this );
 
 	var camera, scene, material, object;
 
@@ -27,5 +27,5 @@ var FadeInEffect = function ( hex, renderer ) {
 
 };
 
-FadeInEffect.prototype = new Effect();
+FadeInEffect.prototype = new SequencerItem();
 FadeInEffect.prototype.constructor = FadeInEffect;

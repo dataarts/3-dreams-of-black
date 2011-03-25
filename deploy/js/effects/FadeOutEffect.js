@@ -1,6 +1,6 @@
 var FadeOutEffect = function ( hex, renderer ) {
 
-	Effect.call( this );
+	SequencerItem.call( this );
 
 	var camera, scene, material, object;
 
@@ -27,5 +27,5 @@ var FadeOutEffect = function ( hex, renderer ) {
 
 };
 
-FadeOutEffect.prototype = new Effect();
+FadeOutEffect.prototype = new SequencerItem();
 FadeOutEffect.prototype.constructor = FadeOutEffect;

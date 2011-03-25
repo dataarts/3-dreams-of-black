@@ -19,9 +19,11 @@ var Part2World = function ( events ) {
 
 	// Mesh
 
-	events.loadItemAdd.dispatch();
-
 	var loader = new THREE.JSONLoader();
+
+	loader.onLoadStart = function () { events.loadItemAdd.dispatch() };
+	loader.onLoadComplete = function () { events.loadItemComplete.dispatch() };
+
 	loader.load( { model: 'files/models/prairie/prairie.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
@@ -29,8 +31,6 @@ var Part2World = function ( events ) {
 		mesh.position.set(92970, -350, -273160.216127517);
 
 		that.scene.addObject( mesh );
-
-		events.loadItemComplete.dispatch();
 
 	} } );
 

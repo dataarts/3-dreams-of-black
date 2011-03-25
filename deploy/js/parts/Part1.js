@@ -1,6 +1,6 @@
 var Part1 = function ( renderer, events ) {
 
-	Effect.call( this );
+	SequencerItem.call( this );
 
 	var camera, world, soup;
 	var waypoints = [];
@@ -16,7 +16,7 @@ var Part1 = function ( renderer, events ) {
 
 		camera = new THREE.PathCamera( {
 
-			fov: 50, aspect: 1280 / 720, near: 1, far: 100000,
+			fov: 50, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
 			waypoints: waypoints, duration: 35, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
@@ -31,7 +31,7 @@ var Part1 = function ( renderer, events ) {
 		camera.lon = 90;
 
 		world = new Part1World( events );
-		soup = new Part1Soup( camera, world.scene );
+		soup = new Part1Soup( camera, world.scene, events );
 
 		//world.scene.addObject( camera.debugPath );
 		world.scene.addObject( camera.animationParent );
@@ -77,5 +77,5 @@ var Part1 = function ( renderer, events ) {
 
 };
 
-Part1.prototype = new Effect();
+Part1.prototype = new SequencerItem();
 Part1.prototype.constructor = Part1;

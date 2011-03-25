@@ -152,6 +152,12 @@ function addCube(p, g){
 	totalColliders++;
 	var mesh = new THREE.Mesh( g, new THREE.MeshLambertMaterial( { color: 0x003300 } ) );
 	mesh.position = p;
+	mesh.rotation.x = Math.random() * Math.PI;
+	mesh.rotation.y = Math.random() * Math.PI;
+	mesh.rotation.z = Math.random() * Math.PI;
+	mesh.scale.x = Math.random() + 0.5;
+	mesh.scale.y = Math.random() + 0.5;
+	mesh.scale.z = Math.random() + 0.5;
 	scene.addObject( mesh );
 	Physics.colliders.push( PhysicsUtils.MeshColliderWBox(mesh) );
 	meshes.push(mesh);

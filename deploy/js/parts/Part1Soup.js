@@ -1,4 +1,4 @@
-var Part1Soup = function ( camera, scene ) {
+var Part1Soup = function ( camera, scene, events ) {
 
 	var that = this;
 
@@ -7,7 +7,7 @@ var Part1Soup = function ( camera, scene ) {
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
-		numOfAnimals : 12,
+		numOfAnimals : 24,
 		numOfButterflys : 20,
 		ribbonMaterials : [
 			[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
@@ -107,16 +107,17 @@ var Part1Soup = function ( camera, scene ) {
 	}
 
 	// running animals
-	var animalLoader = new THREE.JSONLoader();
-	animalLoader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
+	var loader = new THREE.JSONLoader();
 
-	// flying animals
-	var flyingLoader = new THREE.JSONLoader();
-	flyingLoader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
+	loader.onLoadStart = function () { events.loadItemAdd.dispatch() };
+	loader.onLoadComplete = function () { events.loadItemComplete.dispatch() };
+
+	loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
+	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
 
 	// dummy "grass"
-	var grassLoader = new THREE.JSONLoader();
-	grassLoader.load( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
+
+	// loader.load( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
 
 	// collisionScene stuff should probably not be here (TEMP)
 	//var FLOOR = -487;
@@ -133,7 +134,7 @@ var Part1Soup = function ( camera, scene ) {
 	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
 	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
 	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial2, false );
-	
+
 	// temp boxes
 	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
 	var cubea = addMesh( cube, 1,  250, -300+487, 1400-1800, 0,0,0, invMaterial2, false );
@@ -232,8 +233,9 @@ var Part1Soup = function ( camera, scene ) {
 	function animalLoaded( geometry ) {
 
 
-		for (var i=0; i<initSettings.numOfAnimals; ++i ) {
-			var animal = ROME.Animal( geometry );
+		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
+
+			var animal = ROME.Animal( geometry, true );
 			var mesh = animal.mesh;
 
 			var followIndex = (i*2)+2;
@@ -256,24 +258,28 @@ var Part1Soup = function ( camera, scene ) {
 			mesh.matrixAutoUpdate = false;
 
 			scene.addChild( mesh );
-			animal.play( "wolf", "bison" );
+
+			// animal.play( "wolf", "bison" );
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ] );
 
 			var count = Math.random();
 			if (i<2) {
 				count = 0;
 			}
 
-			var obj = {c:mesh, a:animal, x:x, y:y, z:z, f:followIndex, count:count, scale:scale*1.3};
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.3 };
 
-			animalArray.push(obj);
+			animalArray.push( obj );
+
 		}
 
 	}
 
 	function flyingLoaded( geometry ) {
 
-		for (var i=0; i<initSettings.numOfButterflys; ++i ) {
-			var animal = ROME.Animal( geometry );
+		for ( var i = 0; i < initSettings.numOfButterflys; ++i ) {
+
+			var animal = ROME.Animal( geometry, true );
 			var mesh = animal.mesh;
 
 			var scale = 0.02+(Math.random()/14);
@@ -289,11 +295,14 @@ var Part1Soup = function ( camera, scene ) {
 			mesh.matrixAutoUpdate = false;
 
 			scene.addChild( mesh );
-			animal.play( "parrot", "hbird" );
 
-			var obj = {c:mesh, a:animal, x:x, y:y, z:z, f:Math.floor(i*2), scale:scale*1.5};
+			// animal.play( "parrot", "hbird" );
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ] );
+
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: Math.floor( i * 2 ), scale:scale * 1.5 };
 
 			flyingArray.push(obj);
+
 		}
 
 	}
