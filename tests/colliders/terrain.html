@@ -1,8 +1,7 @@
-
 <html> 
  
 <head> 
-<title>Intersection: ray with box (OOBB)</title> 
+<title>Intersection: ray with mesh (through box)</title> 
 <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
 <style type="text/css"> 
 
@@ -46,9 +45,13 @@ body {
 
 <script type="text/javascript"> 
 
-var scene, camera, renderer, info, mouse2d, sun, cube, ghostCube;
+var scene, camera, renderer, info, mouse2d, sun, loader, sphere, ray;
 
-var bounce = 0;
+var theta = 0;
+var radius = 250;
+var speed = 0.0015;
+var sphereSize = 4;
+
 
 function init() {
 	container = document.createElement( 'div' );
@@ -57,39 +60,48 @@ function init() {
 	info = document.getElementById("info");
 	
 	camera = new THREE.Camera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
-	camera.position.z = -500;
+	camera.position.y = 120;
 	mouse2d = new THREE.Vector3( 0, 0, 1 );
+	
+	loader = new THREE.Loader( true );
 
 	scene = new THREE.Scene();
+	
+	ray = new Ray();
+	ray.origin.y = 10000;
+	ray.direction = new THREE.Vector3(0, -1, 0);
+	
+	sphere = new THREE.Mesh( new Sphere( sphereSize, 10, 10 ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+	scene.addObject(sphere);
+	camera.target = sphere;
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	container.appendChild(renderer.domElement);
 	
-	var ambientLight = new THREE.AmbientLight( 0x606060 );
+	var ambientLight = new THREE.AmbientLight( 0x444444 );
 	scene.addLight( ambientLight );
 
-	sun = new THREE.DirectionalLight( 0xffffff );
-	sun.position = camera.position.clone();
+	sun = new THREE.DirectionalLight( 0xaaaaaa );
+	sun.position = new THREE.Vector3(-1,1, -1).normalize();
 	scene.addLight( sun );
 	
-	createCube(200, new THREE.Vector3(0,0,0) );
+	loadCube();
+	
+	
 
 	container.onmousemove = onDocumentMouseMove;
 	animate();
 }
 
-function createCube(s, p) {
-	cube = new THREE.Mesh( new Cube(s,s,s,1,1,1), new THREE.MeshLambertMaterial( { color: 0x003300 } ) );
-	cube.position = p;
-	scene.addObject( cube );
-	Physics.colliders.push( PhysicsUtils.MeshOBB(cube) );
-	
-	ghostCube = new THREE.Mesh( new Cube(s,s,s,1,1,1), new THREE.MeshLambertMaterial( { color: 0x000000, wireframe: true, opacity: 0.2 } ) );
-	ghostCube.position = p.clone();
-	//scene.addObject( ghostCube );
-	
-	
+function loadCube(p) {
+	var onGeometry = function( geometry ) {		
+		var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xf3e4b8 } ) );
+		scene.addObject( mesh );
+		Physics.colliders.push( PhysicsUtils.MeshColliderWBox(mesh) );
+	};
+
+	loader.loadAscii( { model: "models/terrain.js", callback: onGeometry } );
 }
 
 function onDocumentMouseMove( event ) {
@@ -101,31 +113,23 @@ function onDocumentMouseMove( event ) {
 
 function animate() {
 	requestAnimationFrame( animate );
+		
+	ray.origin.x = radius * Math.cos(theta);
+	ray.origin.z = radius * Math.sin(theta);
 	
-	var r = new Ray();
-	r.origin = mouse2d.clone();
-	var matrix = camera.matrixWorld.clone();
-	matrix.multiplySelf( THREE.Matrix4.makeInvert( camera.projectionMatrix ) );
-	matrix.multiplyVector3( r.origin );
-	r.direction = r.origin.clone().subSelf(camera.position);
-
-	info.innerHTML = "";
-
-	var c = Physics.rayCastNearest(r);
+	var c = Physics.rayCastNearest(ray);
 	if(c) {
-		info.innerHTML += "Found @ distance " + c.distance;
-		c.mesh.materials[0].color = new THREE.Color(0xaa0000);
+		//info.innerHTML = "Found @ distance " + c.distance;
+		sphere.position = ray.origin.clone().subSelf( new THREE.Vector3(0, c.distance - sphereSize/2, 0) );
 	} else {
-		info.innerHTML += "No intersection";
-		cube.materials[0].color = new THREE.Color(0x003300);
+		//info.innerHTML = "No intersection";
 	}
-	
-	
-	cube.rotation.x += 0.01;
-	cube.rotation.y += 0.02;
-	cube.position.x = Math.sin(bounce) * 100;
-	bounce += 0.01;
 
+	
+	
+	
+	theta += speed;
+	
 	renderer.render( scene, camera );
 }
 

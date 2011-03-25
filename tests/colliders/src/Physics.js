@@ -107,15 +107,15 @@ PhysicsSystem.prototype.rayMesh = function(r, me){
 		var p0 = me.vertices[ me.faces[t+0] ];
 		var p1 = me.vertices[ me.faces[t+1] ];
 		var p2 = me.vertices[ me.faces[t+2] ];	
-		//var n = me.normals[ me.faces[i] ];
+		var n = me.normals[ me.faces[i] ];
 		
-		d = Math.min(d, this.rayTriangle(r, p0, p1, p2, d));
+		d = Math.min(d, this.rayTriangle(r, p0, p1, p2, n, d));
 	}
 	
 	return d;
 }
 
-PhysicsSystem.prototype.rayTriangle = function(r, p0, p1, p2, mind){
+PhysicsSystem.prototype.rayTriangle = function(r, p0, p1, p2, n, mind){
 	//if (!n) {
 		var e1 = new THREE.Vector3().sub(p1, p0);
 		var e2 = new THREE.Vector3().sub(p2, p1);
