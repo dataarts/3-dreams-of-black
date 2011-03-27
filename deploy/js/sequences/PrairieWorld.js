@@ -1,4 +1,4 @@
-var Part2World = function ( events ) {
+var PrairieWorld = function ( events ) {
 
 	var that = this;
 

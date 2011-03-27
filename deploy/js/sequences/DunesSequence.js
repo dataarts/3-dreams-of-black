@@ -1,4 +1,4 @@
-var Part3 = function ( renderer, events ) {
+var DunesSequence = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
@@ -16,8 +16,8 @@ var Part3 = function ( renderer, events ) {
 
 		camera.lon = 90;
 
-		world = new Part3World( events );
-		soup = new Part3Soup( camera, world.scene );
+		world = new DunesWorld( events );
+		soup = new DunesSoup( camera, world.scene );
 
 		events.cameraFov.add( function ( value ) {
 
@@ -53,5 +53,5 @@ var Part3 = function ( renderer, events ) {
 
 };
 
-Part3.prototype = new SequencerItem();
-Part3.prototype.constructor = Part3;
+DunesSequence.prototype = new SequencerItem();
+DunesSequence.prototype.constructor = DunesSequence;

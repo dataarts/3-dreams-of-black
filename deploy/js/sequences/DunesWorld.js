@@ -1,4 +1,4 @@
-var Part3World = function ( events ) {
+var DunesWorld = function ( events ) {
 
 	var that = this,
 	TILE_SIZE = 20000;

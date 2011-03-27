@@ -1,4 +1,4 @@
-var Part1Soup = function ( camera, scene, events ) {
+var CitySoup = function ( camera, scene, events ) {
 
 	var that = this;
 

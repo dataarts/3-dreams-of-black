@@ -1,4 +1,4 @@
-var Part1 = function ( renderer, events ) {
+var CitySequence = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
@@ -30,8 +30,8 @@ var Part1 = function ( renderer, events ) {
 		camera.position.set( 0, 0, 0 );
 		camera.lon = 90;
 
-		world = new Part1World( events );
-		soup = new Part1Soup( camera, world.scene, events );
+		world = new CityWorld( events );
+		soup = new CitySoup( camera, world.scene, events );
 
 		//world.scene.addObject( camera.debugPath );
 		world.scene.addObject( camera.animationParent );
@@ -77,5 +77,5 @@ var Part1 = function ( renderer, events ) {
 
 };
 
-Part1.prototype = new SequencerItem();
-Part1.prototype.constructor = Part1;
+CitySequence.prototype = new SequencerItem();
+CitySequence.prototype.constructor = CitySequence;

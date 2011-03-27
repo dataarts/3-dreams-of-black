@@ -1,4 +1,4 @@
-var Part2 = function ( renderer, events ) {
+var PrairieSequence = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
@@ -43,8 +43,8 @@ var Part2 = function ( renderer, events ) {
 
 		camera = cameraPath;
 
-		world = new Part2World( events );
-		soup = new Part2Soup( camera, world.scene );
+		world = new PrairieWorld( events );
+		soup = new PrairieSoup( camera, world.scene );
 
 		//world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
@@ -108,5 +108,5 @@ var Part2 = function ( renderer, events ) {
 
 };
 
-Part2.prototype = new SequencerItem();
-Part2.prototype.constructor = Part2;
+PrairieSequence.prototype = new SequencerItem();
+PrairieSequence.prototype.constructor = PrairieSequence;

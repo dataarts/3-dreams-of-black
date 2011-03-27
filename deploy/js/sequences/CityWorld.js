@@ -1,4 +1,4 @@
-var Part1World = function ( events ) {
+var CityWorld = function ( events ) {
 
 	var that = this;
 

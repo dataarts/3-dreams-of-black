@@ -1,4 +1,4 @@
-var Part3Soup = function ( camera, scene ) {
+var PrairieSoup = function ( camera, scene ) {
 
 	var that = this;
 
