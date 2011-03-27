@@ -1,4 +1,4 @@
-var WIDTH = 1024, HEIGHT = 440;
+var WIDTH = 1024, HEIGHT = 436;
 
 var Signal = signals.Signal;
 
