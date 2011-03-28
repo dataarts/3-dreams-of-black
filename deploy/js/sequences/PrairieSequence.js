@@ -31,10 +31,12 @@ var PrairieSequence = function ( renderer, events ) {
 			fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
 			waypoints: waypoints, duration: 25, 
 			useConstantSpeed: true, resamplingCoef: 1,
-			createDebugPath: false, createDebugDummy: false,
+			createDebugPath: true, createDebugDummy: true,
 			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+			//verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+			//horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ Math.PI/2, Math.PI/2 ] },
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ Math.PI/2, Math.PI/2 ] }
 
 		 } );
 
@@ -46,7 +48,7 @@ var PrairieSequence = function ( renderer, events ) {
 		world = new PrairieWorld( events );
 		soup = new PrairieSoup( camera, world.scene );
 
-		//world.scene.addObject( cameraPath.debugPath );
+		world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
 
 
@@ -97,8 +99,8 @@ var PrairieSequence = function ( renderer, events ) {
 		*/
 
 		// make it darker towards the end
-		var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
-		world.scene.lights[1].color.setRGB(a,a,a);
+		//var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
+		//world.scene.lights[1].color.setRGB(a,a,a);
 
 		soup.update();
 

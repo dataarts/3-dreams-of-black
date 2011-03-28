@@ -159,6 +159,9 @@ function onWindowResize( event ) {
 	screenWidth = WIDTH * scale;
 	screenHeight = HEIGHT * scale;
 
+	screenWidthHalf = screenWidth/2;
+	screenHeightHalf = screenHeight/2;
+
 	renderer.setSize( screenWidth, screenHeight );
 
 	renderer.domElement.style.position = 'absolute';

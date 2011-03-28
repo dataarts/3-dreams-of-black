@@ -7,15 +7,15 @@ var CitySoup = function ( camera, scene, events ) {
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
-		numOfAnimals : 24,
+		numOfAnimals : 16,
 		numOfButterflys : 20,
 		ribbonMaterials : [
-			[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0x98f800 } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0x5189bb } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0xe850e8 } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0x08a620 } ) ]
+			[ new THREE.MeshBasicMaterial( { color:0xc97e22 } ) ],
+			[ new THREE.MeshBasicMaterial( { color:0x84ca16 } ) ],
+			[ new THREE.MeshBasicMaterial( { color:0x386e9e } ) ],
+			[ new THREE.MeshBasicMaterial( { color:0xb74bb7 } ) ],
+			[ new THREE.MeshBasicMaterial( { color:0xbfb8b8 } ) ],
+			[ new THREE.MeshBasicMaterial( { color:0x50905a } ) ]
 			  ],
 		butterflyMaterials : [
 			[ new THREE.MeshLambertMaterial( { color:0xd5a19d } ) ],
@@ -29,13 +29,13 @@ var CitySoup = function ( camera, scene, events ) {
 
 	var settings = {
 		vectorDivider : 5,
-		emitterDivider : 3,
-		butterflyDivider : 8,
-		ribbonPulseMultiplier_1 : 3.7,
+		emitterDivider : 5,
+		butterflyDivider : 3,
+		ribbonPulseMultiplier_1 : 5.5,
 		ribbonPulseMultiplier_2 : 5.5,
 		butterflyPulseMultiplier_1 : 10,
 		animalSpeed : 14,
-		ribbonMin : 0.65,
+		ribbonMin : 1.5,
 		ribbonMax : 3,
 		collisionDistance : 350,
 	}
@@ -70,8 +70,8 @@ var CitySoup = function ( camera, scene, events ) {
 	//camPos = new THREE.Vector3( 0, -465, 1800 );
 	camPos = new THREE.Vector3( 0, 20, 0 );
 
-	/*
-	var pointLight = new THREE.PointLight( 0xccffcc );
+	
+	/*var pointLight = new THREE.PointLight( 0xccffcc );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -116,8 +116,7 @@ var CitySoup = function ( camera, scene, events ) {
 	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
 
 	// dummy "grass"
-
-	// loader.load( { model: "files/models/soup/Grass_Dummy.js", callback: grassLoaded } );
+	loader.load( { model: "files/models/soup/grass.js", callback: grassLoaded } );
 
 	// collisionScene stuff should probably not be here (TEMP)
 	//var FLOOR = -487;
@@ -125,11 +124,11 @@ var CitySoup = function ( camera, scene, events ) {
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.5 } );
-	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.1 } );
+	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 1.0 } );
 
 	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial2, true );
-	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial, false );
+	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial2, false );
 	var leftPlane = addMesh( plane, 200,  camPos.x-settings.collisionDistance, camPos.y, camPos.z, 0,1.57,0, invMaterial, false );
 	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
 	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
@@ -185,7 +184,7 @@ var CitySoup = function ( camera, scene, events ) {
 
 	// emitter
 	var projector = new THREE.Projector();
-	var emitter = new Cube( 10, 10, 10, 1, 1 );
+	var emitter = new Cube( 10, 10, 10 );
 	var emitterMesh = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
 	var emitterFollow = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
@@ -202,10 +201,6 @@ var CitySoup = function ( camera, scene, events ) {
 		leftPlane.position.x = camPos.x-settings.collisionDistance;
 		frontPlane.position.z = camPos.z-settings.collisionDistance*1.4;
 		backPlane.position.z = camPos.z+settings.collisionDistance;
-		rightPlane.updateMatrix();
-		leftPlane.updateMatrix();
-		frontPlane.updateMatrix();
-		backPlane.updateMatrix();
 		// ---
 
 		r += 0.1;
@@ -238,12 +233,13 @@ var CitySoup = function ( camera, scene, events ) {
 			var animal = ROME.Animal( geometry, true );
 			var mesh = animal.mesh;
 
-			var followIndex = (i*2)+2;
+			//var followIndex = i//(i*2)+2;
+			var followIndex = Math.floor(i/2);
 
 			var scale = 0.02+(Math.random()/8);
 			if (i<2) {
 				scale = 0.15;
-				followIndex = i;
+				//followIndex = i;
 			}
 			scale = Math.max(scale, 0.1);
 
@@ -259,15 +255,14 @@ var CitySoup = function ( camera, scene, events ) {
 
 			scene.addChild( mesh );
 
-			// animal.play( "wolf", "bison" );
-			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ] );
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
 
 			var count = Math.random();
 			if (i<2) {
 				count = 0;
 			}
 
-			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.3 };
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1 };
 
 			animalArray.push( obj );
 
@@ -282,7 +277,7 @@ var CitySoup = function ( camera, scene, events ) {
 			var animal = ROME.Animal( geometry, true );
 			var mesh = animal.mesh;
 
-			var scale = 0.02+(Math.random()/14);
+			var scale = 0.02+(Math.random()/10);
 
 			var x = camPos.x-100;
 			var y = camPos.y-100;
@@ -296,10 +291,9 @@ var CitySoup = function ( camera, scene, events ) {
 
 			scene.addChild( mesh );
 
-			// animal.play( "parrot", "hbird" );
-			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ] );
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
 
-			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: Math.floor( i * 2 ), scale:scale * 1.5 };
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: Math.floor(i/4), scale:scale * 1.5 };
 
 			flyingArray.push(obj);
 
@@ -420,7 +414,7 @@ var CitySoup = function ( camera, scene, events ) {
 					var extrax = Math.cos(adder/3)*w;
 					var extray = Math.sin(adder/3)*w;
 
-					ribbon.vertices[index].position.x = x - emitterMesh.position.x;
+					ribbon.vertices[index].position.x = x - emitterMesh.position.x+extrax+offsetz;
 					if (j==0) {
 						ribbon.vertices[index].position.y = y+extray+offsety - emitterMesh.position.y;
 						ribbon.vertices[index].position.z = z+extrax+offsetz - emitterMesh.position.z;
@@ -557,7 +551,7 @@ var CitySoup = function ( camera, scene, events ) {
 
 			var cNormal = new THREE.Vector3(vectorArray[f].normalx, vectorArray[f].normaly, vectorArray[f].normalz);
 
-			var amount = 10+Math.abs(Math.sin((thisinc+pulse)/20)*10);
+			var amount = 16+Math.abs(Math.sin((thisinc+pulse)/20)*10);
 
 			if (cNormal.x < -0.8) {
 				tox -= amount;
@@ -627,7 +621,7 @@ var CitySoup = function ( camera, scene, events ) {
 				c.rotation.z = 0;
 				c.rotation.y = 0;
 
-				var amount = 11;
+				var amount = 8;
 
 				cubeArray[i].normal = currentNormal.clone();
 
@@ -635,38 +629,56 @@ var CitySoup = function ( camera, scene, events ) {
 					c.position.x = emitterMesh.position.x + amount;
 					c.rotation.z = 1.57;
 					c.rotation.x = Math.random()*Math.PI;
+
+					c.position.y += (Math.random()*50)-25;
+					c.position.z += (Math.random()*50)-25;
 				}
 				if (currentNormal.x > 0.8) {
 					c.position.x = emitterMesh.position.x - amount;
 					c.rotation.z = -1.57;
 					c.rotation.x = Math.random()*Math.PI;
+
+					c.position.y += (Math.random()*50)-25;
+					c.position.z += (Math.random()*50)-25;
 				}
 				if (currentNormal.y < -0.8) {
 					c.position.y = emitterMesh.position.y + amount;
 					c.rotation.y = Math.random()*Math.PI;
+				
+					c.position.x += (Math.random()*50)-25;
+					c.position.z += (Math.random()*50)-25;
 				}
 				if (currentNormal.y > 0.8) {
 					c.position.y = emitterMesh.position.y - amount;
 					c.rotation.y = Math.random()*Math.PI;
+					
+					c.position.x += (Math.random()*40)-20;
+					c.position.z += (Math.random()*40)-20;
 				}
 				if (currentNormal.z < -0.8) {
 					c.position.z = emitterMesh.position.z + amount;
 					c.rotation.x = -1.57;
 					c.rotation.y = Math.random()*Math.PI;
+
+					c.position.y += (Math.random()*50)-25;
+					c.position.x += (Math.random()*50)-25;
 				}
 				if (currentNormal.z > 0.8) {
 					c.position.z = emitterMesh.position.z - amount;
 					c.rotation.x = 1.57;
 					c.rotation.y = Math.random()*Math.PI;
+
+					c.position.y += (Math.random()*50)-25;
+					c.position.x += (Math.random()*50)-25;
 				}
 
 				alivetime = 0;
 			}
 
-			scale = Math.max( alivetime / 50, 0.05 );
+			scale = Math.max( alivetime / 75, 0.0001 );
 			scale = Math.min( scale, 1 );
-			scale *= 0.08;
-			c.scale.x = c.scale.z = Math.min( 0.065, scale * 2.5 );
+			scale *= 0.1;
+			c.scale.x = c.scale.z = Math.min( 0.15, scale * 2.5 );
 			c.scale.y = scale;
 
 			cubeArray[i].scale = scale;
@@ -674,8 +686,8 @@ var CitySoup = function ( camera, scene, events ) {
 
 		}
 
-		/*
-		pointLight.position.x = vectorArray[ 0 ].x;
+		
+		/*pointLight.position.x = vectorArray[ 0 ].x;
 		pointLight.position.y = vectorArray[ 0 ].y + 5;
 		pointLight.position.z = vectorArray[ 0 ].z;
 		*/
@@ -699,7 +711,7 @@ var CitySoup = function ( camera, scene, events ) {
 
 				var check = vector.z < 0 ? intersects[i].point.z < camPos.z : intersects[i].point.z > camPos.z;
 
-				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 20 ) {
+				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 10 ) {
 
 					emitterMesh.position = intersects[i].point;
 
@@ -762,6 +774,8 @@ var CitySoup = function ( camera, scene, events ) {
 	}
 
 	function getMouse(x, y){
+		mouseX = x+screenWidthHalf;
+		mouseY = y+screenHeightHalf;
 		mouseX = x+screenWidthHalf;
 		mouseY = y+screenHeightHalf;
 	}

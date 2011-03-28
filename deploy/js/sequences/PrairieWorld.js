@@ -1,6 +1,7 @@
 var PrairieWorld = function ( events ) {
 
 	var that = this;
+	var mesh;
 
 	this.scene = new THREE.Scene();
 	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000035 );
@@ -26,11 +27,19 @@ var PrairieWorld = function ( events ) {
 
 	loader.load( { model: 'files/models/prairie/prairie.js', callback: function( geometry ) {
 
-		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+		mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 10.0;
-		mesh.position.set(92970, -350, -273160.216127517);
+		mesh.position.set(95290, -360, -271680);
+
+		mesh.rotation.y -= 0.012
 
 		that.scene.addObject( mesh );
+
+		gui.add( mesh.position, 'x', 91500, 108000, 10 ).name( 'x' );
+		gui.add( mesh.position, 'y', -500, 0, 10 ).name( 'y' );
+		gui.add( mesh.position, 'z', -278000, -270000, 10 ).name( 'z' );
+
+		gui.add( mesh.rotation, 'y', -0.1, 0.1 ).name( 'rot y' );
 
 	} } );
 

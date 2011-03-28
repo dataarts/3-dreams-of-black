@@ -17,6 +17,8 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
+	gui = new GUI();
+
 	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
@@ -75,7 +77,7 @@ function start( pattern ) {
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0.2;	
+	audio.volume = 0//.2;	
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 
@@ -141,6 +143,9 @@ function onWindowResize( event ) {
 
 	screenWidth = WIDTH * scale;
 	screenHeight = HEIGHT * scale;
+
+	screenWidthHalf = screenWidth/2;
+	screenHeightHalf = screenHeight/2;
 
 	renderer.setSize( screenWidth, screenHeight );
 
