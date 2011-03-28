@@ -1,4 +1,4 @@
-var CitySequence = function ( renderer, events ) {
+var City = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
@@ -6,7 +6,7 @@ var CitySequence = function ( renderer, events ) {
 	var waypoints = [];
 	var delta, time, oldTime;
 
-	this.init = function ( callback ) {
+	this.init = function () {
 
 		/*waypoints = [ [ 0, -465, 1800 ],
 					  [ 0, -465, -1200 ]
@@ -77,5 +77,5 @@ var CitySequence = function ( renderer, events ) {
 
 };
 
-CitySequence.prototype = new SequencerItem();
-CitySequence.prototype.constructor = CitySequence;
+City.prototype = new SequencerItem();
+City.prototype.constructor = City;

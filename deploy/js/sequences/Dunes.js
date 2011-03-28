@@ -1,10 +1,10 @@
-var DunesSequence = function ( renderer, events ) {
+var Dunes = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
 	var camera, world, soup;
 
-	this.init = function ( callback ) {
+	this.init = function () {
 
 		camera = new THREE.QuakeCamera( {
 
@@ -53,5 +53,5 @@ var DunesSequence = function ( renderer, events ) {
 
 };
 
-DunesSequence.prototype = new SequencerItem();
-DunesSequence.prototype.constructor = DunesSequence;
+Dunes.prototype = new SequencerItem();
+Dunes.prototype.constructor = Dunes;

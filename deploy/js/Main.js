@@ -47,9 +47,16 @@ function init() {
 
 	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 
-	sequencer.add( new CitySequence( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new PrairieSequence( renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
-	sequencer.add( new DunesSequence( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new Intro(), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+
+	sequencer.add( new TransitionToCity(), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
+	sequencer.add( new City( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
+
+	sequencer.add( new TransitionToPrairie(), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
+	sequencer.add( new Prairie( renderer, events ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
+
+	sequencer.add( new TransitionToDunes(), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
+	sequencer.add( new Dunes( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
 
 	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 2 );
 	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 2 );

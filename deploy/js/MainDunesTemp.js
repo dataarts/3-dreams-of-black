@@ -46,7 +46,7 @@ function init() {
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
-	sequencer.add( new DunesSequence( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new Dunes( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
 
 }
 

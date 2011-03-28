@@ -1,4 +1,4 @@
-var PrairieSequence = function ( renderer, events ) {
+var Prairie = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
@@ -7,7 +7,7 @@ var PrairieSequence = function ( renderer, events ) {
 	var waypoints = [];
 	var delta, time, oldTime;
 
-	this.init = function ( callback ) {
+	this.init = function () {
 
 		waypoints = [
 			[ -22, 980, -3950 ],
@@ -108,5 +108,5 @@ var PrairieSequence = function ( renderer, events ) {
 
 };
 
-PrairieSequence.prototype = new SequencerItem();
-PrairieSequence.prototype.constructor = PrairieSequence;
+Prairie.prototype = new SequencerItem();
+Prairie.prototype.constructor = Prairie;

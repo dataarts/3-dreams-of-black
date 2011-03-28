@@ -46,7 +46,7 @@ function init() {
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
-	sequencer.add( new CitySequence( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new City( renderer, events ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 1 );
 
 }
 
