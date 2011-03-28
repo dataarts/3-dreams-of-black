@@ -6,7 +6,7 @@ var TransitionToPrairie = function ( renderer, events ) {
 
 	};
 
-	this.show = function () {
+	this.show = function ( f ) {
 
 	};
 
@@ -14,7 +14,7 @@ var TransitionToPrairie = function ( renderer, events ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( f ) {
 
 	};
 

@@ -1,4 +1,4 @@
-var Prairie = function ( renderer, events ) {
+var Prairie = function ( shared ) {
 
 	SequencerItem.call( this );
 
@@ -43,14 +43,14 @@ var Prairie = function ( renderer, events ) {
 
 		camera = cameraPath;
 
-		world = new PrairieWorld( events );
+		world = new PrairieWorld( shared );
 		soup = new PrairieSoup( camera, world.scene );
 
 		//world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
 
 
-		events.cameraFov.add( function ( value ) {
+		shared.signals.cameraFov.add( function ( value ) {
 
 			camera.fov = value;
 			camera.updateProjectionMatrix();
@@ -59,7 +59,7 @@ var Prairie = function ( renderer, events ) {
 
 	};
 
-	this.show = function () {
+	this.show = function ( f ) {
 
 		/*gui.add( camera.position, 'x' ).name( 'Camera x' ).listen();
 		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
@@ -76,7 +76,7 @@ var Prairie = function ( renderer, events ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( f ) {
 
 		time = new Date().getTime();
 		delta = time - oldTime;

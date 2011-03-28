@@ -1,10 +1,12 @@
-var City = function ( renderer, events ) {
+var City = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, world, soup;
-	var waypoints = [];
-	var delta, time, oldTime;
+	var camera, world, soup,
+	renderer = shared.renderer,
+
+	waypoints = [],
+	delta, time, oldTime;
 
 	this.init = function () {
 
@@ -30,14 +32,14 @@ var City = function ( renderer, events ) {
 		camera.position.set( 0, 0, 0 );
 		camera.lon = 90;
 
-		world = new CityWorld( events );
-		soup = new CitySoup( camera, world.scene, events );
+		world = new CityWorld( shared );
+		soup = new CitySoup( camera, world.scene, shared );
 
 		//world.scene.addObject( camera.debugPath );
 		world.scene.addObject( camera.animationParent );
 
 
-		events.cameraFov.add( function ( value ) {
+		shared.signals.cameraFov.add( function ( value ) {
 
 			camera.fov = value;
 			camera.updateProjectionMatrix();
@@ -46,7 +48,7 @@ var City = function ( renderer, events ) {
 
 	};
 
-	this.show = function () {
+	this.show = function ( f ) {
 
 		oldTime = new Date().getTime();
 		camera.animation.play( true, 0 );
@@ -61,7 +63,7 @@ var City = function ( renderer, events ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( f ) {
 
 		time = new Date().getTime();
 		delta = time - oldTime;

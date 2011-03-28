@@ -139,7 +139,7 @@ SequencerItem.prototype = {
 
 	init: function () {},
 	load: function () {},
-	show: function () {},
+	show: function ( f ) {},
 	hide: function () {},
 	update: function ( f ) {}
 

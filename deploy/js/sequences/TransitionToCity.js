@@ -14,7 +14,7 @@ var TransitionToCity = function ( renderer, events ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( f ) {
 
 	};
 

@@ -1,4 +1,4 @@
-var CitySoup = function ( camera, scene, events ) {
+var CitySoup = function ( camera, scene, shared ) {
 
 	var that = this;
 
@@ -52,9 +52,11 @@ var CitySoup = function ( camera, scene, events ) {
 	gui.add( settings, 'collisionDistance', 100, 600).name( 'collisionDistance' );
 */
 	// init
-	var mouseX = screenWidthHalf
-	var mouseY = screenHeightHalf;
-	events.mousemove.add(getMouse);
+
+	var mouseX, mouseY;
+
+	onMouseMoved();
+	shared.signals.mousemoved.add( onMouseMoved );
 
 	var vectorArray = [];
 	var ribbonArray = [];
@@ -109,8 +111,8 @@ var CitySoup = function ( camera, scene, events ) {
 	// running animals
 	var loader = new THREE.JSONLoader();
 
-	loader.onLoadStart = function () { events.loadItemAdd.dispatch() };
-	loader.onLoadComplete = function () { events.loadItemComplete.dispatch() };
+	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
 	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
@@ -686,7 +688,7 @@ var CitySoup = function ( camera, scene, events ) {
 
 		//emitterMesh.position.y = FLOOR;
 
-		var vector = new THREE.Vector3( ( mouseX / window.innerWidth ) * 2 - 1, - ( mouseY / window.innerHeight ) * 2 + 1, 0.5 );
+		var vector = new THREE.Vector3( mouseX * 2 - 1, - mouseY * 2 + 1, 0.5 );
 		projector.unprojectVector( vector, camera );
 
 		var ray = new THREE.Ray( camPos, vector.subSelf( camPos ).normalize() );
@@ -761,9 +763,11 @@ var CitySoup = function ( camera, scene, events ) {
 		emitterFollow.position.y += moveY;
 	}
 
-	function getMouse(x, y){
-		mouseX = x+screenWidthHalf;
-		mouseY = y+screenHeightHalf;
+	function onMouseMoved(){
+
+		mouseX = shared.mouseX / shared.screenWidth;
+		mouseY = shared.mouseY / shared.screenHeight;
+
 	}
 
 	function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided ) {
