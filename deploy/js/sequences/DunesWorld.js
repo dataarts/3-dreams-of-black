@@ -21,8 +21,6 @@ var DunesWorld = function ( shared ) {
 
 	var loader = new THREE.JSONLoader();
 
-	console.log( shared );
-
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 

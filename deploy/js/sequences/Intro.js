@@ -20,27 +20,18 @@ var Intro = function ( shared ) {
 
 		// 3d
 
-		camera = new THREE.Camera( 75, WIDTH / HEIGHT, 1, 1000 );
-		camera.position.z = -100;
-		camera.position.x = 0;
-		camera.position.y = 0;
+		camera = new THREE.Camera( 50, WIDTH / HEIGHT, 1, 1000 );
+		camera.position.z = 220;
 
 		scene = new THREE.Scene();
 
-		geometry = new Plane( 960, 544, 19, 9 );
-
-		for ( var i = 0; i < geometry.vertices.length; i ++ ) {
-
-			var col = i % 20;
-			geometry.vertices[i].position.z = - 50 * Math.sin( col / 6.25 );
-
-		}
+		geometry = new Plane( 480, 272, 19, 9 );
 
 		texture = new THREE.Texture( video );
 		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
 
-		mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, map: texture } ) );
+		mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
 		scene.addChild( mesh );
 
 	};
@@ -60,7 +51,7 @@ var Intro = function ( shared ) {
 	this.update = function ( f ) {
 
 		texture.needsUpdate = true;
-		// renderer.render( scene, camera );
+		renderer.render( scene, camera );
 
 	};
 
