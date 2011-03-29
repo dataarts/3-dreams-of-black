@@ -11,7 +11,7 @@ var TransitionToDunes = function ( renderer, events ) {
 		// video
 
 		video = document.createElement( 'video' );
-		video.src = 'files/videos/s02-1.webm';
+		video.src = 'files/videos/transition_dunes.webm';
 		video.addEventListener( 'ended', function onVideoEnd() {
 
 			this.play(); // firefox loop fix

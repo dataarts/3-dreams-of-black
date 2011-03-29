@@ -82,6 +82,8 @@ function init() {
 	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 2 );
 	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 2 );
 
+	console.log( tune.getPatternMS( 40 ), tune.getPatternMS( 16 ) );
+
 }
 
 function start( pattern ) {
