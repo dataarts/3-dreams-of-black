@@ -1,4 +1,4 @@
-var Intro = function ( shared ) {
+var TransitionToPrairie = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
@@ -38,7 +38,6 @@ var Intro = function ( shared ) {
 
 	this.show = function ( f ) {
 
-		video.currentTime = f * video.duration;
 		video.play();
 
 	};
@@ -51,17 +50,12 @@ var Intro = function ( shared ) {
 
 	this.update = function ( f ) {
 
-		if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
-
-			texture.needsUpdate = true;
-
-		}
-
+		texture.needsUpdate = true;
 		renderer.render( scene, camera );
 
 	};
 
 };
 
-Intro.prototype = new SequencerItem();
-Intro.prototype.constructor = Intro;
+TransitionToPrairie.prototype = new SequencerItem();
+TransitionToPrairie.prototype.constructor = TransitionToPrairie;

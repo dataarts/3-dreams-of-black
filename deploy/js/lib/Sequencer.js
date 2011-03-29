@@ -35,8 +35,6 @@ var Sequencer = function () {
 
 	this.update = function ( time ) {
 
-		var item;
-
 		if ( time < _time ) {
 
 			this.clear();
@@ -45,20 +43,20 @@ var Sequencer = function () {
 
 		while ( _items[ _nextItem ] ) {
 
-			item = _items[ _nextItem ];
+			_item = _items[ _nextItem ];
 
-			if ( item.__start_time > time ) {
+			if ( _item.__start_time > time ) {
 
 				break;
 
 			}
 
-			if ( !item.__active && item.__end_time > time ) {
+			if ( !_item.__active && _item.__end_time > time ) {
 
-				item.show();
-				item.__active = true;
+				_item.show( ( time - _item.__start_time ) / _item.__duration );
+				_item.__active = true;
 
-				_itemsActive.push( item );
+				_itemsActive.push( _item );
 
 				_layersNeedSorting = true;
 
@@ -70,20 +68,20 @@ var Sequencer = function () {
 
 		while ( _itemsToRemove[ _nextItemToRemove ] ) {
 
-			item = _itemsToRemove[ _nextItemToRemove ];
+			_item = _itemsToRemove[ _nextItemToRemove ];
 
-			if ( item.__end_time > time ) {
+			if ( _item.__end_time > time ) {
 
 				break;
 
 			}
 
-			if ( item.__active ) {
+			if ( _item.__active ) {
 
-				item.hide();
-				item.__active = false;
+				_item.hide();
+				_item.__active = false;
 
-				var i = _itemsActive.indexOf( item );
+				var i = _itemsActive.indexOf( _item );
 
 				if ( i !== -1 ) {
 

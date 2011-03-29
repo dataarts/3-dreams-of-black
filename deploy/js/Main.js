@@ -113,9 +113,8 @@ function start( pattern ) {
 	gui.add( this, 'jumpToPrairie' ).name( 'Prairie' );
 	gui.add( this, 'jumpToDunes' ).name( 'Dunes' );
 
-	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	//audio.volume = 0;
+	audio.play();
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -156,11 +155,13 @@ function onDocumentKeyDown( event ) {
 		case 37:
 
 			audio.currentTime -= 1;
+			sequencer.clear();
 			break;
 
 		case 39:
 
 			audio.currentTime += 1;
+			sequencer.clear();
 			break;
 
 	}
