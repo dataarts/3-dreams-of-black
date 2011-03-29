@@ -10,47 +10,53 @@ var Prairie = function ( shared ) {
 	this.init = function () {
 
 		waypoints = [
-			[ -22, 980, -3950 ],
-			[ 617, 906, -4186 ],
-			[ 1807, 827, -4555 ],
-			[ 3471, 756, -4861 ],
-			[ 5015, 733, -4963 ],
-			[ 6497, 733, -4766 ],
-			[ 8004, 731, -4196 ],
-			[ 8997, 737, -3630 ],
-			[ 10106, 720, -2742 ],
-			[ 11522, 726, -1587 ],
-			[ 12200, 739, -1090 ],
-			[ 12936, 751, -632 ],
-			[ 13236, 680, -332 ],
-			[ 13707, 281, 304 ]
+			[ 3223, 930, -2510 ],
+			[ 4400, 885, -2990 ],
+			[ 5711, 820, -3352 ],
+			[ 6988, 775, -3550 ],
+			[ 8364, 730, -3455 ],
+			[ 9875, 736, -2857 ],
+			[ 10855, 736, -2162 ],
+			[ 12145, 736, -1080 ],
+			[ 13022, 740, -524 ],
+			[ 13365, 596, -208 ],
+			[ 13800, -276, 312 ]
 		];
+
+		/*camera = new THREE.QuakeCamera( {
+		fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
+		movementSpeed: 1.5, lookSpeed: 0.0025, noFly: false, lookVertical: true,
+		autoForward: false, heightSpeed: true, heightMin: -1500, heightMax: 1000, heightCoef: 0.0125
+		} );*/
 
 		cameraPath = new THREE.PathCamera( {
 
 			fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
-			waypoints: waypoints, duration: 25, 
+			waypoints: waypoints, duration: 28, 
 			useConstantSpeed: true, resamplingCoef: 1,
-			createDebugPath: true, createDebugDummy: true,
+			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
-			//verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			//horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ Math.PI/2, Math.PI/2 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ Math.PI/2, Math.PI/2 ] }
-
+			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+			//verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ Math.PI/2, Math.PI/2 ] },
+			//horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ Math.PI/2, Math.PI/2 ] }
 		 } );
 
 		cameraPath.position.set( 0, 10, 0 );
 		cameraPath.lon = 160;
 
 		camera = cameraPath;
-
+		
 		world = new PrairieWorld( shared );
 		soup = new PrairieSoup( camera, world.scene );
 
-		world.scene.addObject( cameraPath.debugPath );
+		//world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
 
+		/*gui.add( camera.position, 'x' ).name( 'Camera x' ).listen();
+		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
+		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
+		*/
 
 		shared.signals.cameraFov.add( function ( value ) {
 
@@ -62,11 +68,7 @@ var Prairie = function ( shared ) {
 	};
 
 	this.show = function ( f ) {
-
-		/*gui.add( camera.position, 'x' ).name( 'Camera x' ).listen();
-		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
-		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
-		*/
+	
 		oldTime = new Date().getTime();
 		cameraPath.animation.play( true, 0 );
 
@@ -99,8 +101,8 @@ var Prairie = function ( shared ) {
 		*/
 
 		// make it darker towards the end
-		//var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
-		//world.scene.lights[1].color.setRGB(a,a,a);
+		var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
+		world.scene.lights[1].color.setRGB(a,a,a);
 
 		soup.update();
 

@@ -6,9 +6,6 @@ var audio, sequencer,
 camera, camera2, scene, renderer,
 container, events;
 
-var screenWidth, screenHeight,
-screenWidthHalf, screenHeightHalf;
-
 var tune, time, stats, gui;
 
 init();
@@ -16,6 +13,8 @@ init();
 function init() {
 
 	audio = document.getElementById( 'audio' );
+
+	//gui = new GUI();
 
 	scene = new THREE.Scene();
 

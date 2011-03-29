@@ -6,9 +6,6 @@ var audio, sequencer,
 camera, camera2, scene, renderer,
 container, shared;
 
-var screenWidth, screenHeight,
-screenWidthHalf, screenHeightHalf;
-
 var tune, time, stats, gui;
 
 init();
