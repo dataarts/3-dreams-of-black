@@ -10,12 +10,12 @@ var CitySoup = function ( camera, scene, shared ) {
 		numOfAnimals : 16,
 		numOfButterflys : 20,
 		ribbonMaterials : [
-			[ new THREE.MeshBasicMaterial( { color:0xc97e22 } ) ],
-			[ new THREE.MeshBasicMaterial( { color:0x84ca16 } ) ],
-			[ new THREE.MeshBasicMaterial( { color:0x386e9e } ) ],
-			[ new THREE.MeshBasicMaterial( { color:0xb74bb7 } ) ],
-			[ new THREE.MeshBasicMaterial( { color:0xbfb8b8 } ) ],
-			[ new THREE.MeshBasicMaterial( { color:0x50905a } ) ]
+			[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0x98f800 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0x5189bb } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xe850e8 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ) ],
+			[ new THREE.MeshLambertMaterial( { color:0x08a620 } ) ]
 			  ],
 		butterflyMaterials : [
 			[ new THREE.MeshLambertMaterial( { color:0xd5a19d } ) ],
@@ -69,17 +69,14 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var currentNormal = new THREE.Vector3( 0, 1, 0 );
 	var r = 0;
-	//camPos = new THREE.Vector3( 0, -465, 1800 );
 	camPos = new THREE.Vector3( 0, 20, 0 );
 
-	
-	/*var pointLight = new THREE.PointLight( 0xccffcc );
+	var pointLight = new THREE.PointLight( 0xccffcc, 1, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
-	*/
-
+	
 	// vectors
 	for ( var i = 0; i < initSettings.numOfVectors + 20; ++i ) {
 
@@ -112,8 +109,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	var loader = new THREE.JSONLoader();
 
 
-	//loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
-	//loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
+	loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
+	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
 
 	// dummy "grass"
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoaded } );
@@ -122,7 +119,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	// collisionScene stuff should probably not be here (TEMP)
-	//var FLOOR = -487;
 	var FLOOR = 0;
 	var collisionScene = new THREE.Scene();
 
@@ -300,7 +296,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
 
-			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: Math.floor(i/4), scale:scale * 1.5 };
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: Math.floor(i/3), scale:scale * 1.5 };
 			// animal.play( "parrot", "hbird" );
 			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ] );
 
@@ -695,19 +691,15 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
-		/*
-		pointLight.position.x = vectorArray[ 0 ].x;
 		
-		/*pointLight.position.x = vectorArray[ 0 ].x;
-		pointLight.position.y = vectorArray[ 0 ].y + 5;
-		pointLight.position.z = vectorArray[ 0 ].z;
-		*/
+		pointLight.position.x = emitterFollow.position.x;
+		pointLight.position.y = emitterFollow.position.y + 5;
+		pointLight.position.z = emitterFollow.position.z;
+		
 
 	}
 
 	function updateEmitter() {
-
-		//emitterMesh.position.y = FLOOR;
 
 		//var vector = new THREE.Vector3( mouseX * 2 - 1, - mouseY * 2 + 1, 0.5 );
 		var vector = new THREE.Vector3( ( mouseX / window.innerWidth ) * 2 - 1, - ( mouseY / window.innerHeight ) * 2 + 1, 0.5 );
