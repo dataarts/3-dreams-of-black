@@ -115,8 +115,6 @@ var Sequencer = function () {
 
 	this.clear = function () {
 
-		console.log("called");
-
 		_nextItem = 0;
 		_nextItemToRemove = 0;
 

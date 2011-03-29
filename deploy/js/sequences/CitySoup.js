@@ -72,13 +72,11 @@ var CitySoup = function ( camera, scene, shared ) {
 	//camPos = new THREE.Vector3( 0, -465, 1800 );
 	camPos = new THREE.Vector3( 0, 20, 0 );
 
-	/*
-	var pointLight = new THREE.PointLight( 0xccffcc );
+	var pointLight = new THREE.PointLight( 0xccffcc, 1, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
-	*/
 
 	// vectors
 	for ( var i = 0; i < initSettings.numOfVectors + 20; ++i ) {
@@ -677,11 +675,9 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
-		/*
 		pointLight.position.x = vectorArray[ 0 ].x;
 		pointLight.position.y = vectorArray[ 0 ].y + 5;
 		pointLight.position.z = vectorArray[ 0 ].z;
-		*/
 
 	}
 
