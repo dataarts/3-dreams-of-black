@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>video test</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000000;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+
+		<script type="text/javascript" src="build_r36/Three.js"></script>
+
+		<video id="video" autoplay loop style="display:none">
+			<source src="s02-1.webm" type='video/webm;'>
+			<source src="s02-1.m4v" type='video/mp4;'>
+			<source src="s02-1.ogv" type='video/ogg;'>
+		</video>
+
+		<script type="text/javascript">			
+			var aspect = window.innerWidth / window.innerHeight;
+			var fov = 45;
+
+			var container, camera, scene, webglRenderer;			
+			var video, texture, vplane;
+
+			init();			
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				camera = new THREE.Camera( fov, aspect, 1, 100000 );
+				camera.target.position = new THREE.Vector3(0,0,-1);
+				camera.updateMatrix();
+
+				scene = new THREE.Scene();
+				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+
+				video = document.getElementById( 'video' );
+				video.addEventListener('ended', onVideoEnd, false);
+
+				texture = new THREE.Texture( video );
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+
+				var vidAspect = 960/544;
+				
+				vplane = new THREE.Mesh( new Plane(1, 1, 100, 50), new THREE.MeshLambertMaterial( 
+					{ color: 0xffffff, map: texture/*, wireframe: true*/ } 
+				));
+				
+				vplane.position.z = -1000;
+			
+				var adj = Math.tan( fov * Math.PI / 360 ) * Math.abs(vplane.position.z) * 2;
+
+				if(aspect < vidAspect) {
+					vplane.scale.x = adj * aspect;
+					vplane.scale.y = adj * aspect * 1 / vidAspect;
+				} else {
+					vplane.scale.y = adj;
+					vplane.scale.x = adj * vidAspect;
+				}
+							
+				vplane.overdraw = true;
+				vplane.doubleSided = false;
+				vplane.updateMatrix();
+				scene.addObject(vplane);
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize( window.innerWidth, window.innerHeight );
+					container.appendChild( webglRenderer.domElement );
+				} catch (e) {
+				}
+			}
+
+			function onVideoEnd() {
+				video.play();
+			}
+
+			function loop() {				
+				var vt = vplane.geometry.vertices.length;
+
+				if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+					if (texture) texture.needsUpdate = true;
+				}
+
+				webglRenderer.render( scene, camera );
+			}
+
+
+		</script>
+
+	</body>
+</html>
