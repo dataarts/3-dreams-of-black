@@ -106,6 +106,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		ribbonArray.push(obj);
 		ribbonMeshArray.push(ribbonMesh);
+
 	}
 
 	// running animals

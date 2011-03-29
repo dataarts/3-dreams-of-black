@@ -38,6 +38,7 @@ var Intro = function ( shared ) {
 
 	this.show = function ( f ) {
 
+		video.currentTime = f * video.duration;
 		video.play();
 
 	};
@@ -50,7 +51,12 @@ var Intro = function ( shared ) {
 
 	this.update = function ( f ) {
 
-		texture.needsUpdate = true;
+		if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+
+			texture.needsUpdate = true;
+
+		}
+
 		renderer.render( scene, camera );
 
 	};
