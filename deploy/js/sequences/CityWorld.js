@@ -1,4 +1,4 @@
-var CityWorld = function ( events ) {
+var CityWorld = function ( shared ) {
 
 	var that = this;
 
@@ -24,8 +24,8 @@ var CityWorld = function ( events ) {
 
 	var loader = new THREE.JSONLoader();
 
-	loader.onLoadStart = function () { events.loadItemAdd.dispatch() };
-	loader.onLoadComplete = function () { events.loadItemComplete.dispatch() };
+	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	loader.load( { model: 'files/models/city/street.js', callback: function( geometry ) {
 

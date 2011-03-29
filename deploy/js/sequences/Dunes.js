@@ -1,10 +1,11 @@
-var DunesSequence = function ( renderer, events ) {
+var Dunes = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, world, soup;
+	var camera, world, soup
+	renderer = shared.renderer;
 
-	this.init = function ( callback ) {
+	this.init = function () {
 
 		camera = new THREE.QuakeCamera( {
 
@@ -16,10 +17,10 @@ var DunesSequence = function ( renderer, events ) {
 
 		camera.lon = 90;
 
-		world = new DunesWorld( events );
+		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene );
 
-		events.cameraFov.add( function ( value ) {
+		shared.signals.cameraFov.add( function ( value ) {
 
 			camera.fov = value;
 			camera.updateProjectionMatrix();
@@ -28,7 +29,7 @@ var DunesSequence = function ( renderer, events ) {
 
 	};
 
-	this.show = function () {
+	this.show = function ( f ) {
 
 		camera.position.x = 0;
 		camera.position.y = 250;
@@ -42,7 +43,7 @@ var DunesSequence = function ( renderer, events ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( f ) {
 
 		world.update( camera );
 		soup.update();
@@ -53,5 +54,5 @@ var DunesSequence = function ( renderer, events ) {
 
 };
 
-DunesSequence.prototype = new SequencerItem();
-DunesSequence.prototype.constructor = DunesSequence;
+Dunes.prototype = new SequencerItem();
+Dunes.prototype.constructor = Dunes;
