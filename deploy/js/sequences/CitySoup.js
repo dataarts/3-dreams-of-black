@@ -2,13 +2,13 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var that = this;
 
-
 	// soup settings
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
 		numOfAnimals : 16,
-		numOfButterflys : 20,
+		numOfFlyingAnimals : 20,
+		numOfParticleSystems : 25,
 		ribbonMaterials : [
 			[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
 			[ new THREE.MeshLambertMaterial( { color:0x98f800 } ) ],
@@ -17,23 +17,15 @@ var CitySoup = function ( camera, scene, shared ) {
 			[ new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ) ],
 			[ new THREE.MeshLambertMaterial( { color:0x08a620 } ) ]
 			  ],
-		butterflyMaterials : [
-			[ new THREE.MeshLambertMaterial( { color:0xd5a19d } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0xeadc9a } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0xc5e79e } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0x9ec5e7 } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0xc487e3 } ) ],
-			[ new THREE.MeshLambertMaterial( { color:0xdce6cc } ) ]
-			  ],
 	}
 
 	var settings = {
 		vectorDivider : 5,
 		emitterDivider : 5,
-		butterflyDivider : 3,
+		flyingAnimalDivider : 3,
 		ribbonPulseMultiplier_1 : 5.5,
 		ribbonPulseMultiplier_2 : 5.5,
-		butterflyPulseMultiplier_1 : 10,
+		flyingAnimalPulseMultiplier_1 : 10,
 		animalSpeed : 14,
 		ribbonMin : 1.5,
 		ribbonMax : 3,
@@ -42,10 +34,10 @@ var CitySoup = function ( camera, scene, shared ) {
 
 /*	gui.add( settings, 'vectorDivider', 1, 8).name( 'vectorDivider' );
 	gui.add( settings, 'emitterDivider', 1, 8).name( 'emitterDivider' );
-	gui.add( settings, 'butterflyDivider', 1, 8).name( 'butterflyDivider' );
+	gui.add( settings, 'flyingAnimalDivider', 1, 8).name( 'flyingAnimalDivider' );
 	gui.add( settings, 'ribbonPulseMultiplier_1', 3, 15).name( 'ribbonPulse_1' );
 	gui.add( settings, 'ribbonPulseMultiplier_2', 5, 15).name( 'ribbonPulse_2' );
-	gui.add( settings, 'butterflyPulseMultiplier_1', 10, 20).name( 'butterflyPulse_1' );
+	gui.add( settings, 'flyingAnimalPulseMultiplier_1', 10, 20).name( 'butterflyPulse_1' );
 	gui.add( settings, 'animalSpeed', 8, 96).name( 'animalSpeed' );
 	gui.add( settings, 'ribbonMin', 0.05, 8).name( 'ribbonMin' );
 	gui.add( settings, 'ribbonMax', 1, 16).name( 'ribbonMax' );
@@ -65,13 +57,14 @@ var CitySoup = function ( camera, scene, shared ) {
 	var animalArray = [];
 	var particleArray = [];
 	var flyingArray = [];
-	var cubeArray = [];
+	var grassArray = [];
+	var particleArray = [];
 
 	var currentNormal = new THREE.Vector3( 0, 1, 0 );
 	var r = 0;
 	camPos = new THREE.Vector3( 0, 20, 0 );
 
-	var pointLight = new THREE.PointLight( 0xccffcc, 1, 200 );
+	var pointLight = new THREE.PointLight( 0xeeffee, 1, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -105,9 +98,48 @@ var CitySoup = function ( camera, scene, shared ) {
 		ribbonMeshArray.push(ribbonMesh);
 	}
 
-	// running animals
-	var loader = new THREE.JSONLoader();
+	// particles
+	var geometry = new THREE.Geometry();
 
+	for (var i = 0; i < 100; i++) {
+		var vector = new THREE.Vector3( Math.random() * 50 - 25, Math.random() * 50 - 25, Math.random() * 50 - 25 );
+		geometry.vertices.push( new THREE.Vertex( vector ) );					
+	}
+
+	var sprite0 = ImageUtils.loadTexture( "files/textures/particle_0.png" );
+	var sprite1 = ImageUtils.loadTexture( "files/textures/particle_1.png" );
+	var sprite2 = ImageUtils.loadTexture( "files/textures/particle_2.png" );
+	var sprite3 = ImageUtils.loadTexture( "files/textures/particle_3.png" );
+	var sprite4 = ImageUtils.loadTexture( "files/textures/particle_4.png" );
+
+	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
+
+	for (var i = 0; i < initSettings.numOfParticleSystems; i++) {
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], blending: THREE.BillboardBlending, depth_test: false } );
+
+		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
+		particles.rotation.x = Math.random() * Math.PI;
+		particles.rotation.y = Math.random() * Math.PI;
+		particles.rotation.z = Math.random() * Math.PI;
+		
+		var x = camPos.x-100;
+		var y = camPos.y-100;
+		var z = camPos.z;
+		
+		particles.position.x = x;
+		particles.position.y = y;
+		particles.position.z = z;
+
+		var obj = {c:particles, alivetime:i, x:x, y:y, z:z};
+		particleArray.push(obj);
+
+		//particles.updateMatrix();
+		scene.addObject( particles );
+
+	}
+
+	// animals
+	var loader = new THREE.JSONLoader();
 
 	loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
 	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
@@ -229,13 +261,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function animalLoaded( geometry ) {
 
-
 		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
 
 			var animal = ROME.Animal( geometry, true );
 			var mesh = animal.mesh;
 
-			//var followIndex = i//(i*2)+2;
 			var followIndex = Math.floor(i/2);
 
 			var scale = 0.02+(Math.random()/8);
@@ -256,7 +286,6 @@ var CitySoup = function ( camera, scene, shared ) {
 			mesh.matrixAutoUpdate = false;
 
 			scene.addChild( mesh );
-
 			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
 
 			var count = Math.random();
@@ -274,10 +303,12 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function flyingLoaded( geometry ) {
 
-		for ( var i = 0; i < initSettings.numOfButterflys; ++i ) {
+		for ( var i = 0; i < initSettings.numOfFlyingAnimals; ++i ) {
 
 			var animal = ROME.Animal( geometry, true );
 			var mesh = animal.mesh;
+
+			var followIndex = Math.floor(i/3);
 
 			var scale = 0.02+(Math.random()/10);
 			var scale = 0.02+(Math.random()/14);
@@ -296,8 +327,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
 
-			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: Math.floor(i/3), scale:scale * 1.5 };
-			// animal.play( "parrot", "hbird" );
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, scale:scale * 1.5 };
 			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ] );
 
 			flyingArray.push(obj);
@@ -325,7 +355,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			scene.addObject(c);
 
 			var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3()};
-			cubeArray.push(obj);
+			grassArray.push(obj);
 		}
 	}
 
@@ -532,7 +562,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			animalArray[i].z = z;
 		}
 
-		// butterflys
+		// flying animals
 		for (var i=0; i<flyingArray.length; ++i ) {
 			var obj =  flyingArray[i]
 			var butterfly = obj.c;
@@ -542,7 +572,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			var f = obj.f;
 			var scale = obj.scale;
 
-			var pulse = Math.cos((i-r*10)/15)*settings.butterflyPulseMultiplier_1;
+			var pulse = Math.cos((i-r*10)/15)*settings.flyingAnimalPulseMultiplier_1;
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
@@ -573,9 +603,9 @@ var CitySoup = function ( camera, scene, shared ) {
 			if (cNormal.z > 0.8) {
 				toz += amount;
 			}
-			var moveX = (tox-x)/settings.butterflyDivider;
-			var moveY = (toy-y)/settings.butterflyDivider;
-			var moveZ = (toz-z)/settings.butterflyDivider;
+			var moveX = (tox-x)/settings.flyingAnimalDivider;
+			var moveY = (toy-y)/settings.flyingAnimalDivider;
+			var moveZ = (toz-z)/settings.flyingAnimalDivider;
 
 
 			var zvec = new THREE.Vector3(tox,toy,toz);
@@ -604,9 +634,9 @@ var CitySoup = function ( camera, scene, shared ) {
 			flyingArray[i].z = z;
 		}
 
-		// cubes
-		for (var i=0; i<cubeArray.length; ++i ) {
-			var obj = cubeArray[i];
+		// grass
+		for (var i=0; i<grassArray.length; ++i ) {
+			var obj = grassArray[i];
 			var c = obj.c;
 
 			var scale = obj.scale;
@@ -628,7 +658,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 				var amount = 8;
 
-				cubeArray[i].normal = currentNormal.clone();
+				grassArray[i].normal = currentNormal.clone();
 
 				if (currentNormal.x < -0.8) {
 					c.position.x = emitterMesh.position.x + amount;
@@ -686,14 +716,49 @@ var CitySoup = function ( camera, scene, shared ) {
 			c.scale.x = c.scale.z = Math.min( 0.065, scale * 2.5 );
 			c.scale.y = scale;
 
-			cubeArray[i].scale = scale;
-			cubeArray[i].alivetime = alivetime;
+			grassArray[i].scale = scale;
+			grassArray[i].alivetime = alivetime;
 
 		}
 
-		
+		// particles
+		for (var i=0; i<particleArray.length; ++i ) {
+			var particles = particleArray[i].c;
+
+			particleArray[i].alivetime += 0.2;
+			if (particleArray[i].alivetime >= particleArray.length) {
+				particleArray[i].alivetime = 0;
+				particles.scale.x = particles.scale.y = particles.scale.z = 1;
+				particles.position.x = vectorArray[0].x;
+				particles.position.y = vectorArray[0].y;
+				particles.position.z = vectorArray[0].z;
+
+				particleArray[i].x = particles.position.x;
+				particleArray[i].y = particles.position.y;
+				particleArray[i].z = particles.position.z;
+
+				particles.materials[0].opacity = 0;
+				continue;
+			}
+
+			var alivetime = particleArray[i].alivetime;
+
+			particles.position.y += 0.15;
+
+			particles.rotation.y += 0.015;
+			particles.rotation.z += 0.005;
+
+			var scale = Math.max(alivetime/9, 1);
+			//scale = Math.max(scale,0.05);
+			particles.scale.x = particles.scale.y = particles.scale.z = 0.1+scale;
+
+			var alpha = (alivetime/10);
+			alpha = Math.min(alpha,0.75);
+			particles.materials[0].opacity = alpha;
+		}
+
 		pointLight.position.x = emitterFollow.position.x;
-		pointLight.position.y = emitterFollow.position.y + 5;
+		pointLight.position.y = emitterFollow.position.y + 10;
 		pointLight.position.z = emitterFollow.position.z;
 		
 

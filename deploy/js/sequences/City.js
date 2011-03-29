@@ -19,7 +19,7 @@ var City = function ( shared ) {
 		camera = new THREE.PathCamera( {
 
 			fov: 50, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
-			waypoints: waypoints, duration: 35, 
+			waypoints: waypoints, duration: 30, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
