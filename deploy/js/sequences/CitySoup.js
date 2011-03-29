@@ -141,7 +141,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// animals
 	var loader = new THREE.JSONLoader();
 
-	loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
+	//loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
+	loader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
 	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
 
 	// dummy "grass"
@@ -260,6 +261,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	function animalLoaded( geometry ) {
+		
+		var numArray = [0,0,4,3,2,1,0,1,2,4,3,4,1,0,0,1];
 
 		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
 
@@ -286,14 +289,15 @@ var CitySoup = function ( camera, scene, shared ) {
 			mesh.matrixAutoUpdate = false;
 
 			scene.addChild( mesh );
-			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
+			var num = numArray[i%numArray.length];
+			animal.play( animal.availableAnimals[ num ], animal.availableAnimals[ num ], 0, Math.random() );
 
 			var count = Math.random();
 			if (i<2) {
 				count = 0;
 			}
 
-			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1 };
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.1 };
 
 			animalArray.push( obj );
 
@@ -815,7 +819,7 @@ var CitySoup = function ( camera, scene, shared ) {
 						emitterMesh.position.y = intersects[i].point.y - amount;
 					}
 					if (currentNormal.y > 0.8) {
-						emitterMesh.position.y = intersects[i].point.y + amount*1.3;
+						emitterMesh.position.y = intersects[i].point.y + amount*1.75;
 					}
 					if (currentNormal.z < -0.8) {
 						emitterMesh.position.z = intersects[i].point.z - amount;

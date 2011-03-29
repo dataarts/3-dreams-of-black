@@ -294,7 +294,7 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "mountainlion", "parrot", "vulture", "hbird" ],
+	animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "parrot", "vulture", "hbird" ],
 
 
 	// init frame times and indices
