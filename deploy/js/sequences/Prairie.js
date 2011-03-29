@@ -2,10 +2,11 @@ var Prairie = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, world, soup;
-	var cameraPath;
-	var waypoints = [];
-	var delta, time, oldTime;
+	var camera, world, soup,
+	renderer = shared.renderer,
+	cameraPath,
+	waypoints = [],
+	delta, time, oldTime;
 
 	this.init = function () {
 
@@ -20,7 +21,7 @@ var Prairie = function ( shared ) {
 			[ 12145, 736, -1080 ],
 			[ 13022, 740, -524 ],
 			[ 13365, 596, -208 ],
-			[ 13800, -276, 312 ]
+			[ 13950, -276, 412 ]
 		];
 
 		/*camera = new THREE.QuakeCamera( {
@@ -32,14 +33,12 @@ var Prairie = function ( shared ) {
 		cameraPath = new THREE.PathCamera( {
 
 			fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
-			waypoints: waypoints, duration: 28, 
+			waypoints: waypoints, duration: 29, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+			lookSpeed: 0.004, lookVertical: true, lookHorizontal: true,
+			verticalAngleMap:   { srcRange: [ -0.5, 2.80 ], dstRange: [ 1.0, 1.9 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
-			//verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ Math.PI/2, Math.PI/2 ] },
-			//horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ Math.PI/2, Math.PI/2 ] }
 		 } );
 
 		cameraPath.position.set( 0, 10, 0 );
@@ -48,7 +47,7 @@ var Prairie = function ( shared ) {
 		camera = cameraPath;
 		
 		world = new PrairieWorld( shared );
-		soup = new PrairieSoup( camera, world.scene );
+		soup = new PrairieSoup( camera, world.scene, shared );
 
 		//world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
