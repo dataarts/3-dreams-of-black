@@ -1,13 +1,10 @@
-var WIDTH = 1024, HEIGHT = 440;
+var WIDTH = 1024, HEIGHT = 436;
 
 var Signal = signals.Signal;
 
 var audio, sequencer,
 camera, camera2, scene, renderer,
 container, events;
-
-var screenWidth, screenHeight,
-screenWidthHalf, screenHeightHalf;
 
 var tune, time, stats, gui;
 
@@ -22,33 +19,48 @@ function init() {
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
 
-	window.addEventListener( 'resize', onWindowResize, false );
-	onWindowResize();
+	shared = {
 
-	events = {
+		renderer: renderer,
 
-		mousemove : new Signal(),
-		loadItemAdd : new Signal(),
-		loadItemComplete : new Signal(),
+		screenWidth: WIDTH,
+		screenHeight: HEIGHT,
 
-		cameraFov : new Signal()
+		screenWidthHalf: WIDTH / 2,
+		screenHeightHalf: HEIGHT / 2,
+
+		mouseX: 0,
+		mouseY: 0,
+
+		signals: {
+
+			cameraFov : new Signal(),
+
+			loadItemAdded : new Signal(),
+			loadItemCompleted : new Signal(),
+
+			mousemoved : new Signal(),
+			windowresized : new Signal()
+
+		}
 
 	};
+
+	window.addEventListener( 'resize', onWindowResize, false );
+	onWindowResize();
 
 	tune = new Tune( audio );
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
 	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
-	events.loadItemAdd.add( loadProgress.addItem );
-	events.loadItemComplete.add( loadProgress.completeItem );
+	shared.signals.loadItemAdded.add( loadProgress.addItem );
+	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
 
 	sequencer = new Sequencer();
 
-	// Parts
-
 	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
-	sequencer.add( new Part3( renderer, events ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
 
 }
 
@@ -71,9 +83,9 @@ function start( pattern ) {
 	//gui.add(GUI, "showSaveString");
 	//gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
 
-	//gui.add( this, 'jumpToPart1').name( 'Part 1: City' );
-	//gui.add( this, 'jumpToPart2').name( 'Part 2: Prairie' );
-	//gui.add( this, 'jumpToPart3').name( 'Part 3: Dunes' );
+	//gui.add( this, 'jumpToCity').name( 'City' );
+	//gui.add( this, 'jumpToPrairie').name( 'Prairie' );
+	//gui.add( this, 'jumpToDunes').name( 'Dunes' );
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
@@ -90,19 +102,19 @@ function start( pattern ) {
 
 // Hack for gui-dat :/
 
-this.jumpToPart1 = function () {
+this.jumpToCity = function () {
 
 	audio.currentTime = tune.getPatternMS( 16 ) / 1000;
 
 }
 
-this.jumpToPart2 = function () {
+this.jumpToPrairie = function () {
 
 	audio.currentTime = tune.getPatternMS( 32 ) / 1000;
 
 }
 
-this.jumpToPart3 = function () {
+this.jumpToDunes = function () {
 
 	audio.currentTime = tune.getPatternMS( 48 ) / 1000;
 
@@ -133,7 +145,10 @@ function onDocumentKeyDown( event ) {
 
 function onDocumentMouseMove( event ) {
 
-	events.mousemove.dispatch( event.clientX - screenWidthHalf, event.clientY - screenHeightHalf );
+	shared.mouseX = event.clientX;
+	shared.mouseY = event.clientY;
+
+	shared.signals.mousemoved.dispatch();
 
 }
 
@@ -141,13 +156,15 @@ function onWindowResize( event ) {
 
 	var scale = window.innerWidth / WIDTH;
 
-	screenWidth = WIDTH * scale;
-	screenHeight = HEIGHT * scale;
+	shared.screenWidth = WIDTH * scale;
+	shared.screenHeight = HEIGHT * scale;
 
-	renderer.setSize( screenWidth, screenHeight );
+	renderer.setSize( shared.screenWidth, shared.screenHeight );
 
 	renderer.domElement.style.position = 'absolute';
-	renderer.domElement.style.top = ( ( window.innerHeight - screenHeight  ) / 2 ) + 'px';
+	renderer.domElement.style.top = ( ( window.innerHeight - shared.screenHeight  ) / 2 ) + 'px';
+
+	shared.signals.windowresized.dispatch();
 
 }
 

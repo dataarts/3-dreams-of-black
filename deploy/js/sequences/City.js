@@ -1,12 +1,14 @@
-var Part1 = function ( renderer, events ) {
+var City = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, world, soup;
-	var waypoints = [];
-	var delta, time, oldTime;
+	var camera, world, soup,
+	renderer = shared.renderer,
 
-	this.init = function ( callback ) {
+	waypoints = [],
+	delta, time, oldTime;
+
+	this.init = function () {
 
 		/*waypoints = [ [ 0, -465, 1800 ],
 					  [ 0, -465, -1200 ]
@@ -17,7 +19,7 @@ var Part1 = function ( renderer, events ) {
 		camera = new THREE.PathCamera( {
 
 			fov: 50, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
-			waypoints: waypoints, duration: 35, 
+			waypoints: waypoints, duration: 30, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
@@ -30,14 +32,14 @@ var Part1 = function ( renderer, events ) {
 		camera.position.set( 0, 0, 0 );
 		camera.lon = 90;
 
-		world = new Part1World( events );
-		soup = new Part1Soup( camera, world.scene, events );
+		world = new CityWorld( shared );
+		soup = new CitySoup( camera, world.scene, shared );
 
 		//world.scene.addObject( camera.debugPath );
 		world.scene.addObject( camera.animationParent );
 
 
-		events.cameraFov.add( function ( value ) {
+		shared.signals.cameraFov.add( function ( value ) {
 
 			camera.fov = value;
 			camera.updateProjectionMatrix();
@@ -46,7 +48,7 @@ var Part1 = function ( renderer, events ) {
 
 	};
 
-	this.show = function () {
+	this.show = function ( f ) {
 
 		oldTime = new Date().getTime();
 		camera.animation.play( true, 0 );
@@ -61,7 +63,7 @@ var Part1 = function ( renderer, events ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( f ) {
 
 		time = new Date().getTime();
 		delta = time - oldTime;
@@ -77,5 +79,5 @@ var Part1 = function ( renderer, events ) {
 
 };
 
-Part1.prototype = new SequencerItem();
-Part1.prototype.constructor = Part1;
+City.prototype = new SequencerItem();
+City.prototype.constructor = City;

@@ -42,9 +42,16 @@
 
 			<progress id="loadProgress" value="0"></progress><br /><br />
 
-			PART 1 &#x2014; <a href="#0" onClick="start( 0 );">2D</a>, <a href="#16" onClick="start( 16 );">3D</a><br />
-			PART 2 &#x2014; <a href="#24" onClick="start( 24 );">2D</a>, <a href="#32" onClick="start( 32 );">3D</a><br />
-			PART 3 &#x2014; <a href="#40" onClick="start( 40 );">2D</a>, <a href="#48" onClick="start( 48 );">3D</a>
+			<a href="#0" onClick="start( 0 );">Intro</a><br /><br />
+
+			<a href="#0" onClick="start( 8 );">Transition to City</a><br />
+			<a href="#16" onClick="start( 16 );">City</a><br /><br />
+
+			<a href="#24" onClick="start( 24 );">Transition to Prairie</a><br />
+			<a href="#32" onClick="start( 32 );">Prairie</a><br /><br />
+
+			<a href="#40" onClick="start( 40 );">Transition to Dunes</a><br />
+			<a href="#48" onClick="start( 48 );">Dunes</a>
 
 		</div>
 
@@ -65,21 +72,23 @@
 		<script src="js/effects/FadeInEffect.js"></script>
 		<script src="js/effects/FadeOutEffect.js"></script>
 
-		<script src="js/parts/Part1.js"></script>
-		<script src="js/parts/Part1Soup.js"></script>
-		<script src="js/parts/Part1World.js"></script>
+		<script src="js/sequences/Intro.js"></script>
+		<script src="js/sequences/TransitionToCity.js"></script>
+		<script src="js/sequences/City.js"></script>
+		<script src="js/sequences/CityWorld.js"></script>
+		<script src="js/sequences/CitySoup.js"></script>
+		<script src="js/sequences/TransitionToPrairie.js"></script>
+		<script src="js/sequences/Prairie.js"></script>
+		<script src="js/sequences/PrairieWorld.js"></script>
+		<script src="js/sequences/PrairieSoup.js"></script>
+		<script src="js/sequences/TransitionToDunes.js"></script>
+		<script src="js/sequences/Dunes.js"></script>
+		<script src="js/sequences/DunesWorld.js"></script>
+		<script src="js/sequences/DunesSoup.js"></script>
 
-		<script src="js/parts/soup/Ribbon.js"></script>
-		<script src="js/parts/soup/Butterfly2.js"></script>
-		<script src="js/parts/soup/animal.js"></script>
-
-		<script src="js/parts/Part2.js"></script>
-		<script src="js/parts/Part2Soup.js"></script>
-		<script src="js/parts/Part2World.js"></script>
-
-		<script src="js/parts/Part3.js"></script>
-		<script src="js/parts/Part3Soup.js"></script>
-		<script src="js/parts/Part3World.js"></script>
+		<script src="js/sequences/soup/Ribbon.js"></script>
+		<script src="js/sequences/soup/Butterfly2.js"></script>
+		<script src="js/sequences/soup/animal.js"></script>
 
 		<script src="js/Main.js"></script>
 
