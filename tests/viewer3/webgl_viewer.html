@@ -418,11 +418,11 @@
 				<div class="sheader">Lens Flare</div>
 				
 				<div class="sinner" id="grp_lensflare">					
-					<div class="sval"><span class="slabel">Y:</span> <span id="lf_y">0.00</span></div>
-					<div id="slider_wrap_lf_y"> </div> 
-					
-					<div class="sval"><span class="slabel">X:</span> <span id="lf_x">0.00</span></div>
+					<div class="sval"><span class="slabel">Vertical angle:</span> <span id="lf_x">0.00</span></div>
 					<div id="slider_wrap_lf_x"> </div> 
+
+					<div class="sval"><span class="slabel">Horizontal angle:</span> <span id="lf_y">0.00</span></div>
+					<div id="slider_wrap_lf_y"> </div> 
 				</div>
 			</div>
 			
@@ -2093,6 +2093,8 @@
 				elCamLocation.innerHTML += " speed: " + camera.movementSpeed.toFixed(3);
 
 			}
+			
+			lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
 
 		};
 		
