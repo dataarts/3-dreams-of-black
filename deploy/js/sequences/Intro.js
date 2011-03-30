@@ -19,7 +19,7 @@ var Intro = function ( shared ) {
 		// video
 
 		video = document.createElement( 'video' );
-		video.src = 'files/videos/s02-1.webm';
+		video.src = 'files/videos/intro.webm';
 		video.addEventListener( 'ended', function onVideoEnd() {
 
 			this.play();
