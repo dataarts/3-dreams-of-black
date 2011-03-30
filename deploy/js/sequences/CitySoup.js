@@ -140,6 +140,9 @@ var CitySoup = function ( camera, scene, shared ) {
 	// animals
 	var loader = new THREE.JSONLoader();
 
+	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
+
 	loader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
 	loader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
 
@@ -154,9 +157,6 @@ var CitySoup = function ( camera, scene, shared ) {
 					 new THREE.MeshLambertMaterial( { color: 0x77bb45, shading: THREE.FlatShading } ),
 					 new THREE.MeshLambertMaterial( { color: 0x7da75e, shading: THREE.FlatShading } )
 	];
-
-	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
-	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	// collisionScene stuff should probably not be here (TEMP)
 	var FLOOR = 0;
