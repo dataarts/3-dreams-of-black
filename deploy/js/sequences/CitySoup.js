@@ -6,7 +6,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
-		numOfAnimals : 16,
+		numOfAnimals : 20,
 		numOfFlyingAnimals : 20,
 		numOfParticleSystems : 25,
 		ribbonMaterials : [
@@ -133,7 +133,6 @@ var CitySoup = function ( camera, scene, shared ) {
 		var obj = {c:particles, alivetime:i, x:x, y:y, z:z};
 		particleArray.push(obj);
 
-		//particles.updateMatrix();
 		scene.addObject( particles );
 
 	}
@@ -141,12 +140,20 @@ var CitySoup = function ( camera, scene, shared ) {
 	// animals
 	var loader = new THREE.JSONLoader();
 
-	//loader.load( { model: "files/models/soup/mountainlion.js", callback: animalLoaded } );
 	loader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
-	loader.load( { model: "files/models/soup/parrot.js", callback: flyingLoaded } );
+	loader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
 
-	// dummy "grass"
+	// grass
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoaded } );
+	// tree
+	loader.load( { model: "files/models/soup/evergreen_low.js", callback: treeLoaded } );
+
+	var grassMaterials = [new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x93c171, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x7eaa5e, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x77bb45, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x7da75e, shading: THREE.FlatShading } )
+	];
 
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -262,11 +269,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function animalLoaded( geometry ) {
 		
-		var numArray = [0,0,4,3,2,1,0,1,2,4,3,4,1,0,0,1];
+		var numArray = [0,0,4,3,2,1,0,1,2,4,3,4,1,0,0,1,1,2,4,3];
 
 		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
 
-			var animal = ROME.Animal( geometry, true );
+			var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
 
 			var followIndex = Math.floor(i/2);
@@ -278,8 +285,8 @@ var CitySoup = function ( camera, scene, shared ) {
 			}
 			scale = Math.max(scale, 0.1);
 
-			var x = camPos.x-100;
-			var y = camPos.y-100;
+			var x = camPos.x;
+			var y = camPos.y;
 			var z = camPos.z;
 
 			mesh.position.x = x;
@@ -307,9 +314,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function flyingLoaded( geometry ) {
 
+		var numArray = [1,1,0,2,1,3,3,1,0,0,3,2,1,2,0,3,0,1,1,0];
+
 		for ( var i = 0; i < initSettings.numOfFlyingAnimals; ++i ) {
 
-			var animal = ROME.Animal( geometry, true );
+			var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
 
 			var followIndex = Math.floor(i/3);
@@ -317,8 +326,8 @@ var CitySoup = function ( camera, scene, shared ) {
 			var scale = 0.02+(Math.random()/10);
 			var scale = 0.02+(Math.random()/14);
 
-			var x = camPos.x-100;
-			var y = camPos.y-100;
+			var x = camPos.x;
+			var y = camPos.y;
 			var z = camPos.z;
 
 			mesh.position.x = x;
@@ -328,11 +337,10 @@ var CitySoup = function ( camera, scene, shared ) {
 			mesh.matrixAutoUpdate = false;
 
 			scene.addChild( mesh );
-
-			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
+			var num = numArray[i%numArray.length];
+			animal.play( animal.availableAnimals[ num ], animal.availableAnimals[ num ], 0, Math.random() );
 
 			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, scale:scale * 1.5 };
-			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ] );
 
 			flyingArray.push(obj);
 
@@ -341,27 +349,44 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	function grassLoaded( geometry ) {
-		var materials = [new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } ),
-						 new THREE.MeshLambertMaterial( { color: 0x93c171, shading: THREE.FlatShading } ),
-						 new THREE.MeshLambertMaterial( { color: 0x7eaa5e, shading: THREE.FlatShading } ),
-						 new THREE.MeshLambertMaterial( { color: 0x77bb45, shading: THREE.FlatShading } ),
-						 new THREE.MeshLambertMaterial( { color: 0x7da75e, shading: THREE.FlatShading } )
-		];
 
 		for (var i=0; i<150; ++i ) {
 			
 			var x = 0;
-			var y = FLOOR+100;
+			var y = FLOOR;
 			var z = 0;
 
-			var c = new THREE.Mesh( geometry, materials[i%5] );
-			c.updateMatrix();
+			var c = new THREE.Mesh( geometry, grassMaterials[i%5] );
+
+			var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3(), tree:false, maxHeight:0};
+			if (grassArray[i] == undefined) {
+				scene.addObject(c);
+				c.scale.x = c.scale.y = c.scale.z = 0.00000001;
+				grassArray[i] = obj;
+			}
+		}
+
+	}
+
+	function treeLoaded( geometry ) {
+
+		for (var i=0; i<10; ++i ) {
+			
+			var x = 0;
+			var y = FLOOR;
+			var z = 0;
+
+			var c = new THREE.Mesh( geometry, grassMaterials[i%5] );
 			scene.addObject(c);
 
-			var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3()};
-			grassArray.push(obj);
+			var realindex = i*15;
+
+			var obj = {c:c, scale:0, alivetime:realindex, normal:new THREE.Vector3(), tree:true, maxHeight:Math.min(Math.random()+0.6,1.2)};
+			grassArray[realindex] = obj;
 		}
+
 	}
+
 
 	function runAll () {
 
@@ -491,12 +516,12 @@ var CitySoup = function ( camera, scene, shared ) {
 			var anim = obj.a;
 			var scale = obj.scale;
 
-			var pulse = Math.cos((i-r*10)/35)*(35-(i*1.5));
+			//var pulse = Math.cos((i-r*10)/35)*(35-(i*1.5));
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
-			var offsetx = Math.cos(thisinc+((i-r*2)/8))*pulse;
-			var offsetz = Math.sin(thisinc+((i-r*2)/8))*pulse;
+			var offsetx = Math.cos(thisinc+((i-r*2)/8))*30;
+			var offsetz = Math.sin(thisinc+((i-r*2)/8))*30;
 			//var offsety = Math.sin(thisinc+((i-r*5)/8))*pulse;
 
 
@@ -569,7 +594,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		// flying animals
 		for (var i=0; i<flyingArray.length; ++i ) {
 			var obj =  flyingArray[i]
-			var butterfly = obj.c;
+			var flyingAnimal = obj.c;
 			var x = obj.x;
 			var y = obj.y;
 			var z = obj.z;
@@ -577,10 +602,10 @@ var CitySoup = function ( camera, scene, shared ) {
 			var scale = obj.scale;
 
 			var pulse = Math.cos((i-r*10)/15)*settings.flyingAnimalPulseMultiplier_1;
-
+			
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
-			var offsetz = Math.cos(thisinc+((i-r*2)/8))*pulse;
+			var offsetz = Math.cos(thisinc+((i-r*2)/8))*35;
 			var offsety = Math.sin(thisinc+((i-r*2)/8))*pulse;
 
 
@@ -590,7 +615,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			var cNormal = new THREE.Vector3(vectorArray[f].normalx, vectorArray[f].normaly, vectorArray[f].normalz);
 
-			var amount = 16+Math.abs(Math.sin((thisinc+pulse)/20)*10);
+			var amount = 16+Math.abs(Math.sin((thisinc+pulse)/30)*40);
 
 			if (cNormal.x < -0.8) {
 				tox -= amount;
@@ -613,7 +638,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 			var zvec = new THREE.Vector3(tox,toy,toz);
-			zvec.subSelf( butterfly.position ).normalize();
+			zvec.subSelf( flyingAnimal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
 			var yvec = new THREE.Vector3(vectorArray[f].normalx*-1, vectorArray[f].normaly*-1, vectorArray[f].normalz*-1);
@@ -621,17 +646,17 @@ var CitySoup = function ( camera, scene, shared ) {
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);
 
-			butterfly.matrixWorld.n11 = xvec.x*scale; butterfly.matrixWorld.n12 = yvec.x*scale; butterfly.matrixWorld.n13 = zvec.x*scale; butterfly.matrixWorld.n14 = x;
-			butterfly.matrixWorld.n21 = xvec.y*scale; butterfly.matrixWorld.n22 = yvec.y*scale; butterfly.matrixWorld.n23 = zvec.y*scale; butterfly.matrixWorld.n24 = y;
-			butterfly.matrixWorld.n31 = xvec.z*scale; butterfly.matrixWorld.n32 = yvec.z*scale; butterfly.matrixWorld.n33 = zvec.z*scale; butterfly.matrixWorld.n34 = z;
+			flyingAnimal.matrixWorld.n11 = xvec.x*scale; flyingAnimal.matrixWorld.n12 = yvec.x*scale; flyingAnimal.matrixWorld.n13 = zvec.x*scale; flyingAnimal.matrixWorld.n14 = x;
+			flyingAnimal.matrixWorld.n21 = xvec.y*scale; flyingAnimal.matrixWorld.n22 = yvec.y*scale; flyingAnimal.matrixWorld.n23 = zvec.y*scale; flyingAnimal.matrixWorld.n24 = y;
+			flyingAnimal.matrixWorld.n31 = xvec.z*scale; flyingAnimal.matrixWorld.n32 = yvec.z*scale; flyingAnimal.matrixWorld.n33 = zvec.z*scale; flyingAnimal.matrixWorld.n34 = z;
 
 			x += moveX;
 			y += moveY;
 			z += moveZ;
 
-			butterfly.position.x = x;
-			butterfly.position.y = y;
-			butterfly.position.z = z;
+			flyingAnimal.position.x = x;
+			flyingAnimal.position.y = y;
+			flyingAnimal.position.z = z;
 
 			flyingArray[i].x = x;
 			flyingArray[i].y = y;
@@ -646,7 +671,9 @@ var CitySoup = function ( camera, scene, shared ) {
 			var scale = obj.scale;
 			var alivetime = obj.alivetime;
 			var normal = obj.normal;
-			
+			var tree = obj.tree;
+			var maxHeight = obj.maxHeight;
+
 			alivetime += 0.5;
 			
 			// respawn
@@ -668,13 +695,18 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.x = emitterMesh.position.x + amount;
 					c.rotation.z = 1.57;
 					c.rotation.x = Math.random()*Math.PI;
-
+					if (tree) {
+						c.rotation.z += (Math.random()-0.5)/3;
+					}
 					c.position.y += (Math.random()*50)-25;
 					c.position.z += (Math.random()*50)-25;
 				}
 				if (currentNormal.x > 0.8) {
 					c.position.x = emitterMesh.position.x - amount;
 					c.rotation.z = -1.57;
+					if (tree) {
+						c.rotation.z += (Math.random()-0.5)/3;
+					}
 					c.rotation.x = Math.random()*Math.PI;
 
 					c.position.y += (Math.random()*50)-25;
@@ -683,13 +715,18 @@ var CitySoup = function ( camera, scene, shared ) {
 				if (currentNormal.y < -0.8) {
 					c.position.y = emitterMesh.position.y + amount;
 					c.rotation.y = Math.random()*Math.PI;
-				
+					if (tree) {
+						c.rotation.z += (Math.random()-0.5)/3;
+					}
 					c.position.x += (Math.random()*50)-25;
 					c.position.z += (Math.random()*50)-25;
 				}
 				if (currentNormal.y > 0.8) {
 					c.position.y = emitterMesh.position.y - amount;
 					c.rotation.y = Math.random()*Math.PI;
+					if (tree) {
+						c.rotation.z += (Math.random()-0.5)/3;
+					}
 					
 					c.position.x += (Math.random()*40)-20;
 					c.position.z += (Math.random()*40)-20;
@@ -698,7 +735,9 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.z = emitterMesh.position.z + amount;
 					c.rotation.x = -1.57;
 					c.rotation.y = Math.random()*Math.PI;
-
+					if (tree) {
+						c.rotation.x += (Math.random()-0.5)/3;
+					}
 					c.position.y += (Math.random()*50)-25;
 					c.position.x += (Math.random()*50)-25;
 				}
@@ -706,20 +745,47 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.z = emitterMesh.position.z - amount;
 					c.rotation.x = 1.57;
 					c.rotation.y = Math.random()*Math.PI;
+					if (tree) {
+						c.rotation.x += (Math.random()-0.5)/3;
+					}
 
 					c.position.y += (Math.random()*50)-25;
 					c.position.x += (Math.random()*50)-25;
 				}
 
+				// keep away from camera path - hack
+				if (tree && c.position.x < camPos.x+30 && c.position.x > camPos.x-30) {
+					c.position.x = camPos.x+30;
+					if (c.position.x < camPos.x) {
+						c.position.x = camPos.x-30;
+					}
+				}
+
 				alivetime = 0;
 			}
 
-			scale = Math.max( alivetime / 75, 0.0001 );
+			if (tree) {
+				scale = Math.max( alivetime / 25, 0.0001 );
+			} else {
+				scale = Math.max( alivetime / 75, 0.0001 );				
+			}
+		
 			scale = Math.min( scale, 1 );
 			scale *= 0.1;
-			c.scale.x = c.scale.z = Math.min( 0.065, scale * 2.5 );
-			c.scale.y = scale;
 
+			if (tree) {
+				maxHeight *= 0.1;
+				c.scale.x = c.scale.z = 0.15;
+				c.scale.y = scale*1.7;
+				maxHeight *= 1.7;
+				if (c.scale.y > maxHeight) {
+					c.scale.y = maxHeight;
+				}
+			} else {
+				c.scale.x = c.scale.z = Math.min( 0.065, scale * 2.5 );
+				c.scale.y = scale;
+			}
+			
 			grassArray[i].scale = scale;
 			grassArray[i].alivetime = alivetime;
 

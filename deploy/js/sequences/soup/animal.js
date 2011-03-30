@@ -12,14 +12,15 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	// construct
 	var material = new THREE.MeshShaderMaterial( {
-
-		uniforms: ROME.AnimalShader.uniforms, 
-		vertexShader: ROME.AnimalShader.vertex, 
-		fragmentShader: ROME.AnimalShader.fragment,
+		uniforms: ROME.AnimalShader.uniforms(), 
+		vertexShader: ROME.AnimalShader.vertex(), 
+		fragmentShader: ROME.AnimalShader.fragment(),
 		morphTargets: true,
 		lights: true
-
 	} );
+
+	// random color to see the difference
+	material.uniforms.diffuse.value = new THREE.Color( Math.random() * 0xffffff );
 
 	var that = {};
 	that.mesh = new THREE.Mesh( geometry, material );
@@ -214,15 +215,17 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 ROME.AnimalShader = {
 	
-	uniforms: Uniforms.merge( [ THREE.UniformsLib[ "common" ],
+	uniforms: function () {
+		return Uniforms.merge( [ THREE.UniformsLib[ "common" ],
 								THREE.UniformsLib[ "lights" ], 
 								{
 									"animalAInterpolation": { type: "f", value: 0.0 },
 									"animalBInterpolation": { type: "f", value: 0.0 },
 									"animalMorphValue" :    { type: "f", value: 0.0 }
-								} ] ),
+								} ] );
+	},
 
-	vertex: [
+	vertex: function () { return[
 
 		"uniform float	animalAInterpolation;",
 		"uniform float	animalBInterpolation;",
@@ -256,9 +259,9 @@ ROME.AnimalShader = {
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 		"}"
 
-	].join("\n"),
+	].join("\n")},
 
-	fragment: [
+	fragment: function () { return[
 
 		"uniform vec3 diffuse;",
 		"uniform float opacity;",
@@ -284,7 +287,7 @@ ROME.AnimalShader = {
 
 		"}"
 
-	].join("\n")
+	].join("\n")}
 }
 
 
@@ -294,7 +297,7 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "parrot", "vulture", "hbird" ],
+	animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "parrot", "eagle", "vulture", "raven" ],
 
 
 	// init frame times and indices
