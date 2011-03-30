@@ -23,11 +23,11 @@ function init() {
 
 		renderer: renderer,
 
-		screenWidth: WIDTH,
-		screenHeight: HEIGHT,
+		screenWidth: window.innerWidth,
+		screenHeight: window.innerHeight,
 
-		screenWidthHalf: WIDTH / 2,
-		screenHeightHalf: HEIGHT / 2,
+		viewportWidth: WIDTH,
+		viewportHeight: HEIGHT,
 
 		mouseX: 0,
 		mouseY: 0,
@@ -183,13 +183,16 @@ function onWindowResize( event ) {
 
 	var scale = window.innerWidth / WIDTH;
 
-	shared.screenWidth = WIDTH * scale;
-	shared.screenHeight = HEIGHT * scale;
+	shared.screenWidth = window.innerWidth;
+	shared.screenHeight = window.innerHeight;
 
-	renderer.setSize( shared.screenWidth, shared.screenHeight );
+	shared.viewportWidth = WIDTH * scale;
+	shared.viewportHeight = HEIGHT * scale
+
+	renderer.setSize( shared.viewportWidth, shared.viewportHeight );
 
 	renderer.domElement.style.position = 'absolute';
-	renderer.domElement.style.top = ( ( window.innerHeight - shared.screenHeight  ) / 2 ) + 'px';
+	renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
 
 	shared.signals.windowresized.dispatch();
 

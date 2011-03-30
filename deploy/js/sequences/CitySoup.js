@@ -830,14 +830,14 @@ var CitySoup = function ( camera, scene, shared ) {
 		pointLight.position.x = emitterFollow.position.x;
 		pointLight.position.y = emitterFollow.position.y + 10;
 		pointLight.position.z = emitterFollow.position.z;
-		
+
 
 	}
 
 	function updateEmitter() {
 
 		//var vector = new THREE.Vector3( mouseX * 2 - 1, - mouseY * 2 + 1, 0.5 );
-		var vector = new THREE.Vector3( ( mouseX / window.innerWidth ) * 2 - 1, - ( mouseY / window.innerHeight ) * 2 + 1, 0.5 );
+		var vector = new THREE.Vector3( ( mouseX / shared.screenWidth ) * 2 - 1, - ( mouseY / shared.screenHeight ) * 2 + 1, 0.5 );
 
 		projector.unprojectVector( vector, camera );
 

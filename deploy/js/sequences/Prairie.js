@@ -32,7 +32,7 @@ var Prairie = function ( shared ) {
 
 		cameraPath = new THREE.PathCamera( {
 
-			fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
+			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			waypoints: waypoints, duration: 29, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
@@ -45,7 +45,7 @@ var Prairie = function ( shared ) {
 		cameraPath.lon = 160;
 
 		camera = cameraPath;
-		
+
 		world = new PrairieWorld( shared );
 		soup = new PrairieSoup( camera, world.scene, shared );
 
@@ -67,7 +67,7 @@ var Prairie = function ( shared ) {
 	};
 
 	this.show = function ( f ) {
-	
+
 		oldTime = new Date().getTime();
 		cameraPath.animation.play( true, 0 );
 
