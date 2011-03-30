@@ -402,14 +402,12 @@
 					<div class="sval"><span class="slabel">Value:</span> <span id="dl_val">0.00</span></div>
 					<div id="slider_wrap_dl_v"> </div>
 					
-					<div class="sval"><span class="slabel">X:</span> <span id="dl_x">0.00</span></div>
-					<div id="slider_wrap_dl_x"> </div>
+					<div class="sval"><span class="slabel">Phi:</span> <span id="dl_phi">0.00</span></div>
+					<div id="slider_wrap_dl_phi"> </div>
 					
-					<div class="sval"><span class="slabel">Y:</span> <span id="dl_y">0.00</span></div>
-					<div id="slider_wrap_dl_y"> </div>
+					<div class="sval"><span class="slabel">Theta:</span> <span id="dl_theta">0.00</span></div>
+					<div id="slider_wrap_dl_theta"> </div>
 					
-					<div class="sval"><span class="slabel">Z:</span> <span id="dl_z">0.00</span></div>
-					<div id="slider_wrap_dl_z"> </div>
 				</div>
 			</div>
 			
@@ -513,7 +511,10 @@
 		
 		"x": 1.0,
 		"y": 1.0,
-		"z": 1.0
+		"z": 1.0,
+		
+		"phi": 2.2,
+		"theta": 0.33
 		};
 
 		ALIGHT.h = lightColors[lightType][0].h;
@@ -523,6 +524,10 @@
 		DLIGHT.h = lightColors[lightType][1].h;
 		DLIGHT.s = lightColors[lightType][1].s;
 		DLIGHT.v = lightColors[lightType][1].v;
+
+		DLIGHT.x = Math.sin( DLIGHT.phi ) * Math.cos( DLIGHT.theta );
+		DLIGHT.y = Math.cos( DLIGHT.phi );
+		DLIGHT.z = Math.sin( DLIGHT.phi ) * Math.sin( DLIGHT.theta );
 
 		var dlSliderH, dlSliderS, dlSliderV;
 		var alSliderH, alSliderS, alSliderV;
@@ -544,6 +549,7 @@
 		// scene
 		
 		var axisVisible = true;
+		var arrow;
 		
 		// controls
 
@@ -647,6 +653,7 @@
 
 			directionalLight = new THREE.DirectionalLight( );
 			directionalLight.color.setHSV( dcolor.h, dcolor.s, dcolor.v );
+			
 			directionalLight.position.set( DLIGHT.x, DLIGHT.y, DLIGHT.z );
 			directionalLight.position.normalize();
 			scene.addLight( directionalLight );
@@ -731,17 +738,22 @@
 
 			// sliders - directional light
 			
+			function angleDegrees( rad ) {
+				
+				var deg = rad * ( 180 / Math.PI );
+				return deg.toFixed(0);
+				
+			};
+			
 			dlSliderH = new Slider( $( "slider_wrap_dl_h" ), swidth, sd, 0.0, 1.0, dcolor.h, function(val) { DLIGHT.h = val; updateDLight(); $("dl_hue").innerHTML = val.toFixed(2); } );
 			dlSliderS = new Slider( $( "slider_wrap_dl_s" ), swidth, sd, 0.0, 1.0, dcolor.s, function(val) { DLIGHT.s = val; updateDLight(); $("dl_sat").innerHTML = val.toFixed(2); } );
 			dlSliderV = new Slider( $( "slider_wrap_dl_v" ), swidth, sd, 0.0, 1.0, dcolor.v, function(val) { DLIGHT.v = val; updateDLight(); $("dl_val").innerHTML = val.toFixed(2); } );
 
-			var dlSliderX = new Slider( $( "slider_wrap_dl_x" ), swidth, sd, -1.0, 1.0, DLIGHT.x, function(val) { DLIGHT.x = val; updateDLight(); $("dl_x").innerHTML = val.toFixed(2); } );
-			var dlSliderY = new Slider( $( "slider_wrap_dl_y" ), swidth, sd, -1.0, 1.0, DLIGHT.y, function(val) { DLIGHT.y = val; updateDLight(); $("dl_y").innerHTML = val.toFixed(2); } );
-			var dlSliderZ = new Slider( $( "slider_wrap_dl_z" ), swidth, sd, -1.0, 1.0, DLIGHT.z, function(val) { DLIGHT.z = val; updateDLight(); $("dl_z").innerHTML = val.toFixed(2); } );
+			var dlSliderX = new Slider( $( "slider_wrap_dl_phi" ), swidth, sd, -3.14, 3.14, DLIGHT.phi, function(val) { DLIGHT.phi = val; updateDLight(); $("dl_phi").innerHTML = angleDegrees( val ); } );
+			var dlSliderY = new Slider( $( "slider_wrap_dl_theta" ), swidth, sd, -3.14, 3.14, DLIGHT.theta, function(val) { DLIGHT.theta = val; updateDLight(); $("dl_theta").innerHTML = angleDegrees( val ); } );
 			
-			$("dl_x").innerHTML = DLIGHT.x.toFixed(2);
-			$("dl_y").innerHTML = DLIGHT.y.toFixed(2);
-			$("dl_z").innerHTML = DLIGHT.z.toFixed(2);
+			$("dl_phi").innerHTML = angleDegrees( DLIGHT.phi );
+			$("dl_theta").innerHTML = angleDegrees( DLIGHT.theta );
 
 			addGroupToggle( "btn_dlight", "grp_dlight" );
 			hide( "grp_dlight" );
@@ -798,9 +810,11 @@
 			sceneRoot = new THREE.Object3D();
 			
 			var axis = createAxis();
+			arrow = createArrow();
 			var tempScene = createTempScene();
 			
 			auxRoot.addChild( axis );
+			auxRoot.addChild( arrow );
 			sceneRoot.addChild( tempScene );
 			
 			scene.addChild( auxRoot );
@@ -821,6 +835,8 @@
 			
 			setLight( lightType );
 
+			updateDLight();
+			
 		};
 
 		// export
@@ -950,12 +966,20 @@
 		};
 		
 		// lights
+		var tmpVec = new THREE.Vector3(), unitVector = new THREE.Vector3();
 		
-		function updateDLight() {
+		function updateDLight() {					
+			
+			DLIGHT.x = Math.sin( DLIGHT.phi ) * Math.cos( DLIGHT.theta );
+			DLIGHT.y = Math.cos( DLIGHT.phi );
+			DLIGHT.z = Math.sin( DLIGHT.phi ) * Math.sin( DLIGHT.theta );
 					
-			directionalLight.color.setHSV( DLIGHT.h, DLIGHT.s, DLIGHT.v );
 			directionalLight.position.set( DLIGHT.x, DLIGHT.y, DLIGHT.z );
-			directionalLight.position.normalize();
+			directionalLight.color.setHSV( DLIGHT.h, DLIGHT.s, DLIGHT.v );
+			
+			tmpVec.copy( directionalLight.position );
+			tmpVec.multiplyScalar( -1 );
+			arrow.lookAt( tmpVec );
 			
 		};
 
@@ -988,7 +1012,7 @@
 			var axis = new THREE.Object3D(),
 				d = 0.05;
 				
-			mesh = new THREE.Mesh( new Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+			var mesh = new THREE.Mesh( new Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
 			mesh.position.set( 0.5, 0, 0 );
 			axis.addChild( mesh );
 
@@ -1004,8 +1028,29 @@
 			mesh.rotation.set( -1.57, 0, 0 );
 			axis.addChild( mesh );
 
-			return axis
+			return axis;
 		
+		};
+		
+		function createArrow() {
+			
+			var arrow = new THREE.Object3D(),
+				d = 0.05;
+			
+			var material = new THREE.MeshBasicMaterial( { color: 0xffaa00 } );
+			
+			var mesh = new THREE.Mesh( new Cube( d, d, 1 ), material );
+			mesh.position.set( 0, 0, -0.5 );
+			arrow.addChild( mesh );
+			
+			mesh = new THREE.Mesh( new Cylinder( 4, 0.001, 0.25, 0.5 ), material );
+			mesh.position.set( 0, 0, -1 );
+			arrow.addChild( mesh );
+			
+			arrow.rotation.set( 0, 0, 0 );
+			
+			return arrow;
+			
 		};
 		
 		function toggleAxis() {
