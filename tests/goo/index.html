@@ -25,10 +25,6 @@
 			a { color:red }
 
 			.bar { width:100%; position:absolute; z-index:200; display:none }
-			#topbar1 { height:75px; background:#000; top:0px;  }
-			#topbar2 { height:200px; background:url(textures/gradient-top.png); top:75px; }
-			#bottombar1 { height:200px; background:url(textures/gradient-bottom2.png); bottom:75px }
-			#bottombar2 { height:75px; background:#000; bottom:0px }
 
 			#oldie { z-index:500!important; margin-top:15em!important }
 
@@ -201,15 +197,15 @@
 					var shader = Shaders[ 'soup' ];
 					var uniforms = Uniforms.clone( shader.uniforms );
 
-					uniforms[ 'noise_image' ].texture = ImageUtils.loadTexture( 'shaders/Texture_BlackSoup.jpg' );
+					uniforms[ 'noise_image' ].texture = ImageUtils.loadTexture( 'opengl/Texture_BlackSoup.jpg' );
 					uniforms[ 'noise_image' ].texture.wrapS = THREE.RepeatWrapping;
 					uniforms[ 'noise_image' ].texture.wrapT = THREE.RepeatWrapping;
 
-					uniforms[ 'grass_image' ].texture = ImageUtils.loadTexture( 'shaders/Texture_Grass.jpg' );
+					uniforms[ 'grass_image' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Grass.jpg' );
 					uniforms[ 'grass_image' ].texture.wrapS = THREE.RepeatWrapping;
 					uniforms[ 'grass_image' ].texture.wrapT = THREE.RepeatWrapping;
 
-					uniforms[ 'surface_image' ].texture = ImageUtils.loadTexture( 'shaders/Texture_Pavement.jpg' );
+					uniforms[ 'surface_image' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Pavement.jpg' );
 					uniforms[ 'surface_image' ].texture.wrapS = THREE.RepeatWrapping;
 					uniforms[ 'surface_image' ].texture.wrapT = THREE.RepeatWrapping;
 
