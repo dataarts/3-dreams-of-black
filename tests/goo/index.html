@@ -1,0 +1,262 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - city</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #808080;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				display:none;
+			}
+
+			a { color:red }
+
+			.bar { width:100%; position:absolute; z-index:200; display:none }
+			#topbar1 { height:75px; background:#000; top:0px;  }
+			#topbar2 { height:200px; background:url(textures/gradient-top.png); top:75px; }
+			#bottombar1 { height:200px; background:url(textures/gradient-bottom2.png); bottom:75px }
+			#bottombar2 { height:75px; background:#000; bottom:0px }
+
+			#oldie { z-index:500!important; margin-top:15em!important }
+
+		</style>
+	</head>
+
+	<body>
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - OBJ converter example
+		</div>
+
+		<div id="hud">
+		</div>
+
+		<div class="bar" id="topbar1"></div>
+		<div class="bar" id="topbar2"></div>
+		<div class="bar" id="bottombar1"></div>
+		<div class="bar" id="bottombar2"></div>
+
+		<script type="text/javascript" src="js/Three.js"></script>
+
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var Shaders = {
+
+				'soup' : {
+
+					uniforms: {
+
+						"noise_image": { type: "t", value: 0, texture: null },
+						"grass_image": { type: "t", value: 0, texture: null },
+						"surface_image": { type: "t", value: 0, texture: null },
+
+						"target": { type: "v3", value: new THREE.Vector3() }
+
+					},
+
+					vertexShader: [
+
+						"uniform vec3 target;",
+
+						"varying vec3 vPosition;",
+						"varying vec3 vNormal;",
+						"varying vec2 vUv;",
+
+						"void main() {",
+
+							"float f = max( 0.0, 1.0 - length( position - target ) );",
+
+							"vPosition = ( objectMatrix * vec4( position, 1.0 ) ).xyz;", //  + f;",
+							"vNormal = normalize( normalMatrix * normal );",
+
+							// "vUv = uv;",
+
+							"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+						"}"
+
+					].join("\n"),
+
+					fragmentShader: [
+
+						"uniform sampler2D noise_image;",
+						"uniform sampler2D grass_image;",
+						"uniform sampler2D surface_image;",
+
+						"varying vec3 vPosition;",
+						"varying vec3 vNormal;",
+						"varying vec2 vUv;",
+
+						"uniform vec3 target;",
+
+						"void main() {",
+
+							"float f;",
+							"vec3 normal;",
+							"vec4 c;",
+
+							"f = 1.0 - length( vPosition - target ) * 0.01;",
+							"f += texture2D( noise_image, vPosition.xz * vec2( 0.005 ) ).x - 0.5;",
+
+							"normal = vNormal * vNormal;",
+
+							"if ( f > 0.0 ) {",
+
+								"c = ( texture2D( grass_image, vPosition.yz * vec2( 0.005 ) ) * vec4( normal.x ) + ",
+								"texture2D( grass_image, vPosition.xz * vec2( 0.005 ) ) * vec4( normal.y ) + ",
+								"texture2D( grass_image, vPosition.xy * vec2( 0.005 ) ) * vec4( normal.z ) );",
+
+								"gl_FragColor = vec4( c.rgb, 1.0 );",
+
+							"} else {",
+
+								"c = ( texture2D( surface_image, vPosition.yz * vec2( 0.005 ) ) * vec4( normal.x ) + ",
+								"texture2D( surface_image, vPosition.xz * vec2( 0.005 ) ) * vec4( normal.y ) + ",
+								"texture2D( surface_image, vPosition.xy * vec2( 0.005 ) ) * vec4( normal.z ) ) - vec4( 0.5 );",
+								"gl_FragColor = vec4( c.rgb, 1.0 );",
+							"}",
+
+						"}"
+
+					].join("\n")
+
+				}
+
+			};
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+
+			var height = window.innerHeight;
+
+			var container,stats;
+
+			var camera, scene, renderer;
+
+			var mesh, zmesh, geometry;
+
+			var target;
+
+			init();
+			animate();
+
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.x = -400;
+				camera.position.y = -480;
+				camera.position.z = 0;
+				camera.target.position.y = -580;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x000000, 0.0006 );
+				scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
+
+				var sphere = new Sphere( 50, 10, 10 );
+
+				target = new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
+				target.position.y = - 580;
+				target.scale.x = target.scale.y = target.scale.z = 0.10;
+
+				// target.position.x = - 150;
+
+				scene.addObject( target );
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				container.appendChild( renderer.domElement );
+
+				renderer.setClearColor( scene.fog.color );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				//container.appendChild( stats.domElement );
+
+				var loader = new THREE.Loader(), callbackScene = function( geometry ) {
+
+					var shader = Shaders[ 'soup' ];
+					var uniforms = Uniforms.clone( shader.uniforms );
+
+					uniforms[ 'noise_image' ].texture = ImageUtils.loadTexture( 'shaders/Texture_BlackSoup.jpg' );
+					uniforms[ 'noise_image' ].texture.wrapS = THREE.RepeatWrapping;
+					uniforms[ 'noise_image' ].texture.wrapT = THREE.RepeatWrapping;
+
+					uniforms[ 'grass_image' ].texture = ImageUtils.loadTexture( 'shaders/Texture_Grass.jpg' );
+					uniforms[ 'grass_image' ].texture.wrapS = THREE.RepeatWrapping;
+					uniforms[ 'grass_image' ].texture.wrapT = THREE.RepeatWrapping;
+
+					uniforms[ 'surface_image' ].texture = ImageUtils.loadTexture( 'shaders/Texture_Pavement.jpg' );
+					uniforms[ 'surface_image' ].texture.wrapS = THREE.RepeatWrapping;
+					uniforms[ 'surface_image' ].texture.wrapT = THREE.RepeatWrapping;
+
+					uniforms[ 'target' ].value = target.position;
+
+					var material = new THREE.MeshShaderMaterial( {
+
+						uniforms: uniforms,
+						vertexShader: shader.vertexShader,
+						fragmentShader: shader.fragmentShader
+
+					} );
+
+					var mesh = new THREE.Mesh( geometry, material );
+					// mesh.position.y = 580;
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
+					scene.addObject( mesh );
+
+				};
+
+				loader.loadAscii( { model: "obj/max/city.js", callback: callbackScene } );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				render();
+				stats.update();
+
+			}
+
+			function render() {
+
+				var time = new Date().getTime();
+
+				target.position.x = Math.cos( time * 0.0011 ) * 200;
+				target.position.y = Math.sin( time * 0.001 ) * 200 - 580;
+				target.position.z = Math.cos( time * 0.00121 ) * 200;
+
+				renderer.render( scene, camera );
+
+			}
+
+
+		</script>
+
+	</body>
+</html>
