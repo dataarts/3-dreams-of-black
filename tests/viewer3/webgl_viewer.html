@@ -791,12 +791,20 @@
 			
 			// lensflare
 						
-			lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 128, 0.0, THREE.AdditiveAlphaBlending );
-			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare1.png" ), 256, 0.33, THREE.AdditiveAlphaBlending );
-			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 300, 0.66, THREE.AdditiveAlphaBlending );
-			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 400, 1.0, THREE.AdditiveAlphaBlending );
+			lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveAlphaBlending );
 			
+			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveAlphaBlending );
+			
+			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveAlphaBlending );
+			
+			lensFlare.customUpdateCallback = lensFlareUpdateCallback;
 			lensFlare.position.set( 0, 0, -99000 );
+			
 			
 			lensFlareRotate = new THREE.Object3D();
 			lensFlareRotate.addChild( lensFlare );
@@ -1003,6 +1011,48 @@
 				
 			}
 			
+		}
+		
+		function lensFlareUpdateCallback( visibility, object ) {
+			
+			var f, fl = object.lensFlares.length;
+			var flare;
+			var vecX = -object.positionScreen.x * 2;
+			var vecY = -object.positionScreen.y * 2; 
+			
+			
+			for( f = 0; f < fl; f++ ) {
+				
+				flare = object.lensFlares[ f ];
+				
+				flare.x = object.positionScreen.x + vecX * flare.distance;
+				flare.y = object.positionScreen.y + vecY * flare.distance;
+
+				flare.wantedScale = visibility * 0.1 + 0.9;
+				flare.wantedOpacity = visibility;
+				
+				flare.scale += ( flare.wantedScale - flare.scale ) * 0.15;
+				flare.opacity += ( flare.wantedOpacity - flare.opacity ) * 0.5;
+				flare.rotation = 0;
+
+			}
+			
+			// hard coded stuff
+			
+			object.lensFlares[ 1 ].scale = visibility * 0.3 + 0.9;
+			
+			object.lensFlares[ 2 ].y += 0.025;
+			object.lensFlares[ 2 ].scale = visibility * 0.3 + 0.6;
+			object.lensFlares[ 2 ].opacity = Math.max( 0, object.lensFlares[ 2 ].opacity - 0.20 * visibility );
+			
+			object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + 45 * Math.PI / 180;
+			object.lensFlares[ 3 ].scale += 0.1;
+			object.lensFlares[ 3 ].opacity = Math.max( 0, object.lensFlares[ 3 ].opacity - 0.10 * visibility );
+			
+			object.lensFlares[ 4 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.20 );
+			object.lensFlares[ 5 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.10 * visibility );
+			object.lensFlares[ 6 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.15 );
+			object.lensFlares[ 7 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.25 * visibility );
 		}
 
 		// axis
