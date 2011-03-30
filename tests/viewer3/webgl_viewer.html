@@ -26,7 +26,7 @@
 			position:absolute;
 			width:100%;
 			height:100%;
-			padding:15% 0;
+			padding:11% 0;
 			color: #eee;
 			
 		}
@@ -267,6 +267,7 @@
 					
 					<p><span class="hh">2: Camera fly mode</span>
 					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse<br/>
+					<span class="kw">PgUp</span> / <span class="kw">PgDn</span> change speed<br/>
 					Press <span class="kw">0</span> to reset fly camera
 
 					<p><span class="hh">Morphing</span>
@@ -918,6 +919,12 @@
 				/* p */
 				case 80: cycleMorphB(); break;
 
+				/* pgup */
+				case 33: cameraFaster(); break;
+
+				/* pgdn */
+				case 34: cameraSlower(); break;
+
 			}
 			
 			//console.log( "keyCode", event.keyCode );
@@ -974,6 +981,7 @@
 		};
 		
 		// lights
+
 		var tmpVec = new THREE.Vector3(), unitVector = new THREE.Vector3();
 		
 		function updateDLight() {					
@@ -1111,6 +1119,19 @@
 		};
 		
 		// camera controls
+		
+		function cameraFaster() {
+		
+			flyCamera.movementSpeed += 0.125;
+
+		};
+
+		function cameraSlower() {
+			
+			flyCamera.movementSpeed = cap_bottom( flyCamera.movementSpeed - 0.125, 0 );
+
+		};
+
 		
 		function setOrbitCamera() {
 		
@@ -2066,6 +2087,12 @@
 			}
 			
 			elCamLocation.innerHTML = renderVec3( camera.position, 2 );
+			
+			if ( camera == flyCamera ) {
+			
+				elCamLocation.innerHTML += " speed: " + camera.movementSpeed.toFixed(3);
+
+			}
 
 		};
 		
