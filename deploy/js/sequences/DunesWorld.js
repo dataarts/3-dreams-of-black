@@ -4,7 +4,8 @@ var DunesWorld = function ( shared ) {
 	TILE_SIZE = 20000;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0001 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00005 );
+	this.scene.fog.color.setHSV(0.15, 0.3, 0.9);
 
 	// Lights
 
