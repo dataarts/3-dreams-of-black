@@ -13,10 +13,10 @@ var NoiseEffect = function ( shared ) {
 
 		scene = new THREE.Scene();
 
-		shader = ShaderUtils.lib["film"];
+		shader = ShaderUtils.lib[ "film" ];
 
 		uniforms = Uniforms.clone( shader.uniforms );
-		uniforms["tDiffuse"].texture = renderTarget;
+		uniforms[ "tDiffuse" ].texture = renderTarget;
 
 		material = new THREE.MeshShaderMaterial( {
 			uniforms: uniforms,
