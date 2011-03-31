@@ -164,8 +164,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.1 } );
-	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 1.0 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 1.0 } );
+	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.3 } );
 
 	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
 	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial, false );
@@ -208,6 +208,10 @@ var CitySoup = function ( camera, scene, shared ) {
 	cubei.scale.y = 4.6;
 	cubei.scale.z = 3.4;
 
+	// ramp test
+	//var rampa = addMesh( cube, 1,  -240, -20, -400, 0,0,0.5, invMaterial, false );
+	//rampa.scale.z = 20;
+
 /*	var ref = cubed;
 	gui.add( ref.position, 'x', -2000, 2000).name( 'xpos' );
 	gui.add( ref.position, 'y', -2000, 2000).name( 'ypos' );
@@ -228,15 +232,15 @@ var CitySoup = function ( camera, scene, shared ) {
 	var emitterMesh = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
 	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
-	// new follow with turn constraints
+	// follow test with turn constraints
 	var pi = Math.PI;
 	var pi2 = pi*2;
 	var degToRad = pi/180;
 
 	var maxSpeed = 5;
-	var rotationLimit = 6;
-	var innerRadius = 1;
-	var outerRadius = 2;
+	var rotationLimit = 8;
+	var innerRadius = 0;
+	var outerRadius = 1;
 
 	emitterFollow.rotationy = 0;
 	emitterFollow.rotationx = 0;
@@ -250,10 +254,11 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.y = camera.matrixWorld.n24;
 		camPos.z = camera.matrixWorld.n34;
 
+		// temp reset
 		if (camPos.z <= -2960) {
 			reset();
 		}
-
+		
 		// collisionScene stuff should probably not be here (TEMP)
 		rightPlane.position.x = camPos.x+settings.collisionDistance;
 		leftPlane.position.x = camPos.x-settings.collisionDistance;
@@ -278,7 +283,8 @@ var CitySoup = function ( camera, scene, shared ) {
 		}
 
 		// collisionScene stuff should probably not be here (TEMP)
-		renderer.render( collisionScene, camera );
+		//renderer.render( collisionScene, camera );
+		renderer.render( collisionScene, camera, renderTarget );
 		renderer.clear();
 		// ---
 
@@ -539,32 +545,20 @@ var CitySoup = function ( camera, scene, shared ) {
 			var thisinc = i*inc;
 			var offsetx = Math.cos(thisinc+((i-r*2)/8))*30;
 			var offsetz = Math.sin(thisinc+((i-r*2)/8))*30;
-			//var offsety = offsetz;//Math.sin(thisinc+((i-r*5)/8))*30;
-
-
-			var tox = vectorArray[f].x+offsetx;
-			var toy = vectorArray[f].y//+offsety;
-			var toz = vectorArray[f].z+offsetz;
+			var offsety = offsetz;
 
 			var cNormal = new THREE.Vector3(vectorArray[f].normalx, vectorArray[f].normaly, vectorArray[f].normalz);
 
-			if (cNormal.x < -0.8 && offsetx > 0) {
-				tox = vectorArray[f].x;
-			}
-			if (cNormal.x > 0.8 && offsetx < 0 ) {
-				tox = vectorArray[f].x;
-			}
-			/*if (cNormal.y < -0.8 && offsety > 0 ) {
-				toy = vectorArray[f].y;
-			}
-			if (cNormal.y > 0.8 && offsety < 0 ) {
-				toy = vectorArray[f].y;
-			}*/
-			if (cNormal.z < -0.8 && offsetz > 0) {
-				toz = vectorArray[f].z;
-			}
-			if (cNormal.z > 0.8 && offsetz < 0) {
-				toz = vectorArray[f].z;
+			var amountx = 1-Math.abs(cNormal.x);
+			var amountz = 1-Math.abs(cNormal.z);
+			var amounty = 1-Math.abs(cNormal.y);
+
+			var tox = vectorArray[f].x+(offsetx*amountx);
+			var toy = vectorArray[f].y+(offsety*amounty);
+			var toz = vectorArray[f].z+(offsetz*amountz);
+
+			if (toy < FLOOR+8) {
+				toy = FLOOR+8;
 			}
 
 			// morph - removed for now
@@ -573,12 +567,11 @@ var CitySoup = function ( camera, scene, shared ) {
 			morph = Math.min(morph, 1)
 			animalArray[i].a.morph = morph;
 			*/
-			var divider = 2;//2.5;
+			var divider = 2;
 
 			var moveX = (tox-x)/divider;
 			var moveY = (toy-y)/divider;
 			var moveZ = (toz-z)/divider;
-
 
 			var zvec = new THREE.Vector3(tox,toy,toz);
 			zvec.subSelf( animal.position ).normalize();
@@ -625,12 +618,15 @@ var CitySoup = function ( camera, scene, shared ) {
 			var offsetz = Math.cos(thisinc+((i-r*2)/8))*35;
 			var offsety = Math.sin(thisinc+((i-r*2)/8))*pulse;
 
-
-			var tox = vectorArray[f].x+offsetz;
-			var toy = vectorArray[f].y+offsety;
-			var toz = vectorArray[f].z+offsetz;
-
 			var cNormal = new THREE.Vector3(vectorArray[f].normalx, vectorArray[f].normaly, vectorArray[f].normalz);
+
+			var amountx = 1-Math.abs(cNormal.x);
+			var amountz = 1-Math.abs(cNormal.z);
+			var amounty = 1-Math.abs(cNormal.y);
+
+			var tox = vectorArray[f].x+(offsetz*amountx);
+			var toy = vectorArray[f].y+(offsety*amounty);
+			var toz = vectorArray[f].z+(offsetz*amountz);
 
 			var amount = 16+Math.abs(Math.sin((thisinc+pulse)/30)*40);
 
@@ -864,7 +860,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 				var check = vector.z < 0 ? intersects[i].point.z < camPos.z : intersects[i].point.z > camPos.z;
 
-				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 50 ) {
+				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 10 ) {
 
 					emitterMesh.position = intersects[i].point;
 
@@ -876,7 +872,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					currentNormal = normal;
 
 					// walls
-					if (intersects[i].object == rightPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == frontPlane || intersects[i].object == upPlane) {
+					if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
 
 						currentNormal.x = 0;
 						currentNormal.y = 1;
@@ -934,15 +930,14 @@ var CitySoup = function ( camera, scene, shared ) {
 					var object = intersects[i].object;
 
 					followNormal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
-					
-					if (intersects[i].object == rightPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == frontPlane || intersects[i].object == upPlane) {
+
+					if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
 						followNormal.x = 0;
 						followNormal.y = 1;
 						followNormal.z = 0;
 					}
 
 					//console.log(currentNormal.y+" | "+followNormal.y);
-
 
 					if (followNormal.x < -0.5 && emitterFollow.position.x > intersects[i].point.x) {
 						emitterFollow.position.x = intersects[i].point.x;
@@ -956,6 +951,10 @@ var CitySoup = function ( camera, scene, shared ) {
 					}
 					if (followNormal.z > 0.5 && emitterFollow.position.z < intersects[i].point.z) {
 						emitterFollow.position.z = intersects[i].point.z;
+					}
+
+					if (emitterFollow.position.z > camPos.z) {
+						emitterFollow.position.z = camPos.z;
 					}
 
 					break;
@@ -1148,6 +1147,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			obj.y = camPos.y;
 			obj.z = camPos.z;
 		}
+
 	}
 
 	function getShortRotation(rot) {
