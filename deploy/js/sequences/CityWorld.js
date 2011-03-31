@@ -3,7 +3,7 @@ var CityWorld = function ( shared ) {
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0x535758, 0.00006176 );
+	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0006176 );
 	this.scene.fog.color.setHSV( 0, 0, 0.34705882352941175 );
 
 	// Lights
@@ -24,8 +24,8 @@ var CityWorld = function ( shared ) {
 	directionalLight.position.set( -0.733106965726893,  0.6320595441744891,  -0.2511073663209529 );
 	this.scene.addLight( directionalLight );
 
-	var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
-	directionalLight.position.set( 0.733106965726893,  -0.6320595441744891,  0.2511073663209529 );
+	var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.1 );
+	directionalLight.position.set( 0.7,  -0.5,  0.25 );
 	this.scene.addLight( directionalLight );
 
 	// Mesh

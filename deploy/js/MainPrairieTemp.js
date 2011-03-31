@@ -72,6 +72,7 @@ function init() {
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new BloomEffect( shared, 1 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 
 }
