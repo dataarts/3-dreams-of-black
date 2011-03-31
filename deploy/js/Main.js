@@ -3,7 +3,7 @@ var WIDTH = 1024, HEIGHT = 436;
 var Signal = signals.Signal;
 
 var audio, sequencer,
-camera, camera2, scene, renderer,
+camera, camera2, scene, renderer, renderTarget,
 container, shared;
 
 var loadProgress, tune, time, stats, gui;
@@ -18,10 +18,16 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
+	renderer.sortObjects = false;
+
+	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+	renderTarget.minFilter = THREE.LinearFilter;
+	renderTarget.magFilter = THREE.LinearFilter;
 
 	shared = {
 
-		renderer: renderer,
+		baseWidth: WIDTH,
+		baseHeight: HEIGHT,
 
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
@@ -42,7 +48,10 @@ function init() {
 			mousemoved : new Signal(),
 			windowresized : new Signal()
 
-		}
+		},
+
+		renderer: renderer,
+		renderTarget: renderTarget
 
 	};
 
@@ -60,29 +69,36 @@ function init() {
 
 	sequencer = new Sequencer();
 
-	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
+	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 
 	sequencer.add( new Intro( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 
 	sequencer.add( new TransitionToCity( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
+
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
+	sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
 
 	sequencer.add( new TransitionToPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
+
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
+	sequencer.add( new BloomEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 
 	sequencer.add( new TransitionToDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
+
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 2 );
+	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 3 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 3 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 2 );
+	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 3 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 3 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 2 );
-	sequencer.add( new FadeOutEffect( 0x000000, renderer ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 2 );
+	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 3 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 3 );
 
-	sequencer.add( new FadeInEffect( 0x000000, renderer ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 2 );
+	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 3 );
+
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 4 );
 
 }
 
@@ -190,6 +206,12 @@ function onWindowResize( event ) {
 	shared.viewportHeight = HEIGHT * scale
 
 	renderer.setSize( shared.viewportWidth, shared.viewportHeight );
+
+	// TODO: Hacky...
+
+	renderTarget.width = shared.viewportWidth;
+	renderTarget.height = shared.viewportHeight;
+	delete renderTarget.__webglFramebuffer;
 
 	renderer.domElement.style.position = 'absolute';
 	renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';

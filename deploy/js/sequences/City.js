@@ -3,16 +3,11 @@ var City = function ( shared ) {
 	SequencerItem.call( this );
 
 	var camera, world, soup,
-	renderer = shared.renderer,
+	renderer = shared.renderer, renderTarget = shared.renderTarget,
 
-	waypoints = [],
-	delta, time, oldTime;
+	waypoints = [], delta, time, oldTime;
 
 	this.init = function () {
-
-		/*waypoints = [ [ 0, -465, 1800 ],
-					  [ 0, -465, -1200 ]
-					  ];*/
 
 		waypoints = [ [ 0, 20, 0 ], [ 0, 20, -3000 ] ];
 
@@ -73,7 +68,8 @@ var City = function ( shared ) {
 
 		soup.update();
 
-		renderer.render( world.scene, camera );
+		renderer.render( world.scene, camera, renderTarget );
+
 
 	};
 

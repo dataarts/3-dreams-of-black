@@ -3,7 +3,7 @@ var Dunes = function ( shared ) {
 	SequencerItem.call( this );
 
 	var camera, world, soup
-	renderer = shared.renderer;
+	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	this.init = function () {
 
@@ -18,7 +18,7 @@ var Dunes = function ( shared ) {
 		camera.lon = 90;
 
 		world = new DunesWorld( shared );
-		soup = new DunesSoup( camera, world.scene );
+		soup = new DunesSoup( camera, world.scene, shared );
 
 		shared.signals.cameraFov.add( function ( value ) {
 
@@ -44,11 +44,16 @@ var Dunes = function ( shared ) {
 	};
 
 	this.update = function ( f ) {
+		
+		// not to low
+		if (camera.position.y < -400) {
+			camera.position.y = -400;
+		}
 
 		world.update( camera );
 		soup.update();
 
-		renderer.render( world.scene, camera );
+		renderer.render( world.scene, camera, renderTarget );
 
 	};
 

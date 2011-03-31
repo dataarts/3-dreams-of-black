@@ -96,7 +96,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
 	for (var i = 0; i < initSettings.numOfParticleSystems; i++) {
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 12, map: particleSprites[i%5], blending: THREE.BillboardBlending, depth_test: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 12, map: particleSprites[i%5], transparent: true, depthTest: false } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 		particles.rotation.x = Math.random() * Math.PI;
@@ -122,7 +122,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var FLOOR = 0;
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.5 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.5, transparent: true } );
 	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 1.0 } );
 
 	var downPlane = addMesh( plane, 500,  camPos.x, FLOOR, camPos.z, -1.57,0,0, invMaterial2, true );

@@ -221,7 +221,7 @@
 		<div id="viewport"></div> 
 
 		<script type="text/javascript" src="js/Three.js"></script>
-
+		
 		<script type="text/javascript" src="js/animal.js"></script>
 		<script type="text/javascript" src="js/Slider.js"></script>
 		
@@ -1961,7 +1961,7 @@
 			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
 			effect.camera.position.z = 100;
 			
-			effect.texture = new THREE.RenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+			effect.texture = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
 
 			var film_shader = ShaderUtils.lib["film"];
 			var film_uniforms = Uniforms.clone( film_shader.uniforms );
@@ -1988,9 +1988,9 @@
 			effect.camera.position.z = 100;
 
 			var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
-			effect.rtTexture1 = new THREE.RenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars );
-			effect.rtTexture2 = new THREE.RenderTarget( 512, 512, pars );
-			effect.rtTexture3 = new THREE.RenderTarget( 512, 512, pars );
+			effect.rtTexture1 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars );
+			effect.rtTexture2 = new THREE.WebGLRenderTarget( 512, 512, pars );
+			effect.rtTexture3 = new THREE.WebGLRenderTarget( 512, 512, pars );
 
 			var screen_shader = ShaderUtils.lib["screen"];
 			var screen_uniforms = Uniforms.clone( screen_shader.uniforms );
@@ -2003,7 +2003,8 @@
 				uniforms: screen_uniforms,
 				vertexShader: screen_shader.vertexShader,
 				fragmentShader: screen_shader.fragmentShader,
-				blending: THREE.AdditiveBlending
+				blending: THREE.AdditiveBlending,
+				transparent: true
 
 			} );
 

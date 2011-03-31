@@ -2,8 +2,8 @@ var TransitionToPrairie = function ( renderer, events ) {
 
 	SequencerItem.call( this );
 
-	var video, renderer = shared.renderer,
-	camera, scene, geometry, texture, mesh;
+	var video, camera, scene, geometry, texture, mesh,
+	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	var mouseX = 0, mouseY = 0;
 
@@ -23,7 +23,7 @@ var TransitionToPrairie = function ( renderer, events ) {
 
 		// 3d
 
-		camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 1000 );
+		camera = new THREE.Camera( 50, shared.baseWidth / shared.baseHeight, 1, 1000 );
 		camera.position.z = 200;
 
 		scene = new THREE.Scene();
@@ -34,7 +34,7 @@ var TransitionToPrairie = function ( renderer, events ) {
 		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
 
-		mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
+		mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture, depthTest: false } ) );
 		scene.addChild( mesh );
 
 	};
@@ -61,7 +61,7 @@ var TransitionToPrairie = function ( renderer, events ) {
 		camera.target.position.x = camera.position.x;
 		camera.target.position.y = camera.position.y;
 
-		renderer.render( scene, camera );
+		renderer.render( scene, camera, renderTarget );
 
 	};
 
