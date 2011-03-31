@@ -15,21 +15,21 @@ var Sequencer = function () {
 
 	_layersNeedSorting = false;
 
-	this.add = function ( item, start_time, end_time, layer ) {
+	this.add = function ( item, start, end, layer ) {
 
 		item.__active = false;
-		item.__start_time = start_time;
-		item.__duration = end_time - start_time;
-		item.__end_time = end_time;
+		item.__start = start;
+		item.__duration = end - start;
+		item.__end = end;
 		item.__layer = layer;
 
 		item.init();
 
 		_items.push( item );
-		_items.sort( function ( a, b ) { return a.__start_time - b.__start_time; } );
+		_items.sort( function ( a, b ) { return a.__start - b.__start; } );
 
 		_itemsToRemove.push( item );
-		_itemsToRemove.sort( function ( a, b ) { return a.__end_time - b.__end_time; } );
+		_itemsToRemove.sort( function ( a, b ) { return a.__end - b.__end; } );
 
 	};
 
@@ -45,15 +45,15 @@ var Sequencer = function () {
 
 			_item = _items[ _nextItem ];
 
-			if ( _item.__start_time > time ) {
+			if ( _item.__start > time ) {
 
 				break;
 
 			}
 
-			if ( !_item.__active && _item.__end_time > time ) {
+			if ( !_item.__active && _item.__end > time ) {
 
-				_item.show( ( time - _item.__start_time ) / _item.__duration );
+				_item.show( ( time - _item.__start ) / _item.__duration );
 				_item.__active = true;
 
 				_itemsActive.push( _item );
@@ -70,7 +70,7 @@ var Sequencer = function () {
 
 			_item = _itemsToRemove[ _nextItemToRemove ];
 
-			if ( _item.__end_time > time ) {
+			if ( _item.__end > time ) {
 
 				break;
 
@@ -105,7 +105,7 @@ var Sequencer = function () {
 		for ( var i = 0, l = _itemsActive.length; i < l; i ++ ) {
 
 			_item = _itemsActive[ i ];
-			_item.update( ( time - _item.__start_time ) / _item.__duration );
+			_item.update( ( time - _item.__start ) / _item.__duration, time, _item.__start, _item.__end );
 
 		}
 
@@ -137,8 +137,8 @@ SequencerItem.prototype = {
 
 	init: function () {},
 	load: function () {},
-	show: function () {},
+	show: function ( progress ) {},
 	hide: function () {},
-	update: function ( f ) {}
+	update: function ( progress, time, start, end ) {}
 
 }
