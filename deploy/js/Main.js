@@ -72,7 +72,7 @@ function init() {
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 	// sequencer.add( new NoiseEffect( shared, 0.79, 0.19, 2385 ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 3 );
 
-	sequencer.add( new Intro( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new Intro( shared ), tune.getPatternMS( 0 ) - 1500, tune.getPatternMS( 8 ), 1 );
 
 	sequencer.add( new TransitionToCity( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
