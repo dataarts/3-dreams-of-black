@@ -18,7 +18,7 @@ var Dunes = function ( shared ) {
 		camera.lon = 90;
 
 		world = new DunesWorld( shared );
-		soup = new DunesSoup( camera, world.scene );
+		soup = new DunesSoup( camera, world.scene, shared );
 
 		shared.signals.cameraFov.add( function ( value ) {
 
@@ -44,6 +44,11 @@ var Dunes = function ( shared ) {
 	};
 
 	this.update = function ( f ) {
+		
+		// not to low
+		if (camera.position.y < -400) {
+			camera.position.y = -400;
+		}
 
 		world.update( camera );
 		soup.update();
