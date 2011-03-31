@@ -21,7 +21,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var settings = {
 		vectorDivider : 5,
-		emitterDivider : 5,
+		emitterDivider : 10,
 		flyingAnimalDivider : 3,
 		ribbonPulseMultiplier_1 : 5.5,
 		ribbonPulseMultiplier_2 : 5.5,
@@ -61,6 +61,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particleArray = [];
 
 	var currentNormal = new THREE.Vector3( 0, 1, 0 );
+	var followNormal = new THREE.Vector3( 0, 1, 0 );
 	var r = 0;
 	camPos = new THREE.Vector3( 0, 20, 0 );
 
@@ -73,8 +74,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// vectors
 	for ( var i = 0; i < initSettings.numOfVectors + 20; ++i ) {
 
-		var x = camPos.x-20;
-		var y = camPos.y-10;
+		var x = camPos.x;
+		var y = camPos.y;
 		var z = camPos.z;
 
 		var obj = { x: x, y: y, z: z, lastx: x, lasty: y, lastz: z, normalx: 0, normaly: 0, normalz: 0, scale: 1 };
@@ -227,22 +228,20 @@ var CitySoup = function ( camera, scene, shared ) {
 	var emitterMesh = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
 	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
-	// new follow
+	// new follow with turn constraints
 	var pi = Math.PI;
 	var pi2 = pi*2;
 	var degToRad = pi/180;
 
-	var oldRotationy;
-	var oldRotationx;
-	var oldRotationz;
-	var speed = 6;
-	var rotationLimit = 10;
-	var innerRadius = 10;
-	var outerRadius = 40;
+	var maxSpeed = 5;
+	var rotationLimit = 6;
+	var innerRadius = 1;
+	var outerRadius = 2;
 
 	emitterFollow.rotationy = 0;
 	emitterFollow.rotationx = 0;
 	emitterFollow.rotationz = 0;
+
 
 	this.update = function () {
 
@@ -250,6 +249,10 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.x = camera.matrixWorld.n14;
 		camPos.y = camera.matrixWorld.n24;
 		camPos.z = camera.matrixWorld.n34;
+
+		if (camPos.z <= -2960) {
+			reset();
+		}
 
 		// collisionScene stuff should probably not be here (TEMP)
 		rightPlane.position.x = camPos.x+settings.collisionDistance;
@@ -278,6 +281,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		renderer.render( collisionScene, camera );
 		renderer.clear();
 		// ---
+
 	}
 
 	function animalLoaded( geometry ) {
@@ -450,9 +454,9 @@ var CitySoup = function ( camera, scene, shared ) {
 			y += moveY;
 			z += moveZ;
 
-			var moveNormalX = (tonormalx-normalx)/settings.vectorDivider;
-			var moveNormalY = (tonormaly-normaly)/settings.vectorDivider;
-			var moveNormalZ = (tonormalz-normalz)/settings.vectorDivider;
+			var moveNormalX = (tonormalx-normalx)/15;
+			var moveNormalY = (tonormaly-normaly)/15;
+			var moveNormalZ = (tonormalz-normalz)/15;
 
 			normalx += moveNormalX;
 			normaly += moveNormalY;
@@ -535,7 +539,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			var thisinc = i*inc;
 			var offsetx = Math.cos(thisinc+((i-r*2)/8))*30;
 			var offsetz = Math.sin(thisinc+((i-r*2)/8))*30;
-			//var offsety = Math.sin(thisinc+((i-r*5)/8))*pulse;
+			//var offsety = offsetz;//Math.sin(thisinc+((i-r*5)/8))*30;
 
 
 			var tox = vectorArray[f].x+offsetx;
@@ -550,7 +554,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			if (cNormal.x > 0.8 && offsetx < 0 ) {
 				tox = vectorArray[f].x;
 			}
-			/*if (cNormal.y < -0.8 && offsety > 0) {
+			/*if (cNormal.y < -0.8 && offsety > 0 ) {
 				toy = vectorArray[f].y;
 			}
 			if (cNormal.y > 0.8 && offsety < 0 ) {
@@ -569,7 +573,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			morph = Math.min(morph, 1)
 			animalArray[i].a.morph = morph;
 			*/
-			var divider = 2.5;
+			var divider = 2;//2.5;
 
 			var moveX = (tox-x)/divider;
 			var moveY = (toy-y)/divider;
@@ -683,7 +687,6 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			var scale = obj.scale;
 			var alivetime = obj.alivetime;
-			var normal = obj.normal;
 			var tree = obj.tree;
 			var maxHeight = obj.maxHeight;
 
@@ -695,14 +698,12 @@ var CitySoup = function ( camera, scene, shared ) {
 				c.position.y = emitterMesh.position.y;
 				c.position.z = emitterMesh.position.z;
 
-				
 				c.rotation.x = 0;
 				c.rotation.z = 0;
 				c.rotation.y = 0;
 
 				var amount = 8;
-
-				grassArray[i].normal = currentNormal.clone();
+		
 
 				if (currentNormal.x < -0.8) {
 					c.position.x = emitterMesh.position.x + amount;
@@ -778,9 +779,9 @@ var CitySoup = function ( camera, scene, shared ) {
 			}
 
 			if (tree) {
-				scale = Math.max( alivetime / 25, 0.0001 );
+				scale = Math.max( alivetime / 50, 0.0001 );
 			} else {
-				scale = Math.max( alivetime / 75, 0.0001 );				
+				scale = Math.max( alivetime / 150, 0.0001 );				
 			}
 		
 			scale = Math.min( scale, 1 );
@@ -788,7 +789,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			if (tree) {
 				maxHeight *= 0.1;
-				c.scale.x = c.scale.z = 0.15;
+				c.scale.x = c.scale.z = 0.15*Math.min((alivetime+1)/50,1);
 				c.scale.y = scale*1.7;
 				maxHeight *= 1.7;
 				if (c.scale.y > maxHeight) {
@@ -849,7 +850,6 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function updateEmitter() {
 
-		//var vector = new THREE.Vector3( mouseX * 2 - 1, - mouseY * 2 + 1, 0.5 );
 		var vector = new THREE.Vector3( ( mouseX / shared.screenWidth ) * 2 - 1, - ( mouseY / shared.screenHeight ) * 2 + 1, 0.5 );
 
 		projector.unprojectVector( vector, camera );
@@ -864,7 +864,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 				var check = vector.z < 0 ? intersects[i].point.z < camPos.z : intersects[i].point.z > camPos.z;
 
-				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 10 ) {
+				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 50 ) {
 
 					emitterMesh.position = intersects[i].point;
 
@@ -887,23 +887,23 @@ var CitySoup = function ( camera, scene, shared ) {
 
 					var amount = 6;
 
-					if (currentNormal.x < -0.8) {
+					if (currentNormal.x < -0.5) {
 						emitterMesh.position.x = intersects[i].point.x - amount;
 					}
-					if (currentNormal.x > 0.8) {
+					if (currentNormal.x > 0.5) {
 						emitterMesh.position.x = intersects[i].point.x + amount;
 					}
 
-					if (currentNormal.y < -0.8) {
+					if (currentNormal.y < -0.5) {
 						emitterMesh.position.y = intersects[i].point.y - amount;
 					}
-					if (currentNormal.y > 0.8) {
+					if (currentNormal.y > 0.5) {
 						emitterMesh.position.y = intersects[i].point.y + amount*1.75;
 					}
-					if (currentNormal.z < -0.8) {
+					if (currentNormal.z < -0.5) {
 						emitterMesh.position.z = intersects[i].point.z - amount;
 					}
-					if (currentNormal.z > 0.8) {
+					if (currentNormal.z > 0.5) {
 						emitterMesh.position.z = intersects[i].point.z + amount;
 					}
 
@@ -913,60 +913,241 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
-		/*var tox = emitterMesh.position.x;
-		var toy = emitterMesh.position.y;
-		var toz = emitterMesh.position.z;
+		// followNormal test
+		var vector = emitterFollow.position.clone().normalize();
 
-		var moveX = (tox-emitterFollow.position.x)/settings.emitterDivider;
-		var moveY = (toy-emitterFollow.position.y)/settings.emitterDivider;
-		var moveZ = (toz-emitterFollow.position.z)/settings.emitterDivider;
+		projector.unprojectVector( vector, camera );
 
-		emitterFollow.position.x += moveX;
-		emitterFollow.position.z += moveZ;
-		emitterFollow.position.y += moveY;*/
+		var ray = new THREE.Ray( camPos, vector.subSelf( camPos ).normalize() );
 
-		oldRotationy = emitterFollow.rotationy;
-		oldRotationx = emitterFollow.rotationx;
-		oldRotationz = emitterFollow.rotationz;
-		
-		var rotationy = emitterFollow.rotationy/180*pi;
-		var oldRy = rotationy;
-		rotationy += pi*0*0.5-pi*0*Math.random();
-		
-		var tx = emitterMesh.position.x;
-		var ty = emitterMesh.position.y;
-		var tz = emitterMesh.position.z;
-		var dx = tx-emitterFollow.position.x;
-		var dy = ty-emitterFollow.position.y;
-		var dz = tz-emitterFollow.position.z;
-		var d = Math.sqrt(dx*dx+dz*dz);
-		var a = Math.atan2(dz,dx);
-		var pstr = 0;
-		
-		if (outerRadius > 0) {
-			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
-			if (dstr > 1) { dstr = 1; }
-			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+		var intersects = ray.intersectScene( collisionScene );
+
+		if ( intersects.length > 0 ) {
+
+			for ( var i = 0; i < intersects.length; ++i ) {
+
+				var check = vector.z < 0 ? intersects[i].point.z < camPos.z : intersects[i].point.z > camPos.z;
+
+				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 10 ) {
+
+					var face = intersects[i].face;
+					var object = intersects[i].object;
+
+					followNormal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
+					
+					if (intersects[i].object == rightPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == frontPlane || intersects[i].object == upPlane) {
+						followNormal.x = 0;
+						followNormal.y = 1;
+						followNormal.z = 0;
+					}
+
+					//console.log(currentNormal.y+" | "+followNormal.y);
+
+
+					if (followNormal.x < -0.5 && emitterFollow.position.x > intersects[i].point.x) {
+						emitterFollow.position.x = intersects[i].point.x;
+					}
+					if (followNormal.x > 0.5 && emitterFollow.position.x < intersects[i].point.x) {
+						emitterFollow.position.x = intersects[i].point.x;
+					}
+
+					if (followNormal.z < -0.5 && emitterFollow.position.z > intersects[i].point.z) {
+						emitterFollow.position.z = intersects[i].point.z;
+					}
+					if (followNormal.z > 0.5 && emitterFollow.position.z < intersects[i].point.z) {
+						emitterFollow.position.z = intersects[i].point.z;
+					}
+
+					break;
+				}
+			}
+
 		}
-		rotationy += getShortRotation(a-rotationy)*pstr;
 
-		var rotationD = rotationy-oldRy;
-		if (Math.abs(rotationD) > rotationLimit*degToRad) { 
-			rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
+		// test turn constraints...
+		// Y
+		if (currentNormal.y > 0.5 || currentNormal.y < -0.5) {
+		
+			var rotationy = emitterFollow.rotationy/180*pi;
+			var oldRy = rotationy;
+			rotationy += pi*0*0.5-pi*0*Math.random();
+			
+			var tx = emitterMesh.position.x;
+			var tz = emitterMesh.position.z;
+			var dx = tx-emitterFollow.position.x;
+			var dz = tz-emitterFollow.position.z;
+			var d = Math.sqrt(dx*dx+dz*dz);
+			var a = Math.atan2(dz,dx);
+			var pstr = 0;
+			
+			if (outerRadius > 0) {
+				var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+				if (dstr > 1) { dstr = 1; }
+				if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationy += getShortRotation(a-rotationy)*pstr;
+
+			var rotationD = rotationy-oldRy;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) { 
+				rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
+
+			var speed = d/20;
+			if (speed > maxSpeed) {
+				speed = maxSpeed;
+			}
+			emitterFollow.position.x += Math.cos(rotationy)*speed;
+			emitterFollow.position.z += Math.sin(rotationy)*speed;
+			emitterFollow.rotationy = rotationy/degToRad;
+
+			var toy = emitterMesh.position.y;
+			
+			var moveY = (toy-emitterFollow.position.y)/settings.emitterDivider;
+			if (moveY > maxSpeed) {
+				moveY = maxSpeed;
+			}
+			if (moveY < -maxSpeed) {
+				moveY = -maxSpeed;
+			}
+			emitterFollow.position.y += moveY;
+
 		}
 
-		speed = d/20;
+		// X
+		if (currentNormal.x > 0.5 || currentNormal.x < -0.5) {
+		
+			var rotationx = emitterFollow.rotationx/180*pi;
+			var oldRx = rotationx;
+			rotationx += pi*0*0.5-pi*0*Math.random();
+			
+			var ty = emitterMesh.position.y;
+			var tz = emitterMesh.position.z;
+			var dy = ty-emitterFollow.position.y;
+			var dz = tz-emitterFollow.position.z;
+			var d = Math.sqrt(dz*dz+dy*dy);
+			var a = Math.atan2(dz,dy);
+			var pstr = 0;
+			
+			if (outerRadius > 0) {
+				var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+				if (dstr > 1) { dstr = 1; }
+				if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationx += getShortRotation(a-rotationx)*pstr;
 
-		emitterFollow.position.x += Math.cos(rotationy)*speed;
-		emitterFollow.position.z += Math.sin(rotationy)*speed;
-		emitterFollow.rotationy = rotationy/degToRad;
+			var rotationD = rotationx-oldRy;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) { 
+				rotationx = oldRx+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
 
-		emitterFollow.position.y = emitterMesh.position.y;
+			var speed = d/20;
+			if (speed > maxSpeed) {
+				speed = maxSpeed;
+			}
+
+			emitterFollow.position.y += Math.cos(rotationx)*speed;
+			emitterFollow.position.z += Math.sin(rotationx)*speed;
+			emitterFollow.rotationx = rotationx/degToRad;
+
+			var tox = emitterMesh.position.x;
+			
+			var moveX = (tox-emitterFollow.position.x)/settings.emitterDivider;
+			if (moveX > maxSpeed) {
+				moveX = maxSpeed;
+			}
+			if (moveX < -maxSpeed) {
+				moveX = -maxSpeed;
+			}
+
+			emitterFollow.position.x += moveX;
+
+		}
+
+		// Z
+		if (currentNormal.z > 0.5 || currentNormal.z < -0.5) {
+		
+			var rotationz = emitterFollow.rotationz/180*pi;
+			var oldRz = rotationz;
+			rotationz += pi*0*0.5-pi*0*Math.random();
+			
+			var tx = emitterMesh.position.x;
+			var ty = emitterMesh.position.y;
+			var dx = tx-emitterFollow.position.x;
+			var dy = ty-emitterFollow.position.y;
+			var d = Math.sqrt(dx*dx+dy*dy);
+			var a = Math.atan2(dx,dy);
+			var pstr = 0;
+			
+			if (outerRadius > 0) {
+				var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+				if (dstr > 1) { dstr = 1; }
+				if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationz += getShortRotation(a-rotationz)*pstr;
+
+			var rotationD = rotationz-oldRy;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) { 
+				rotationz = oldRz+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
+
+			var speed = d/20;
+			if (speed > maxSpeed) {
+				speed = maxSpeed;
+			}
+
+			emitterFollow.position.y += Math.cos(rotationz)*speed;
+			emitterFollow.position.x += Math.sin(rotationz)*speed;
+			emitterFollow.rotationz = rotationz/degToRad;
+
+			var toz = emitterMesh.position.z;
+			
+			var moveZ = (toz-emitterFollow.position.z)/settings.emitterDivider;
+			if (moveZ > maxSpeed) {
+				moveZ = maxSpeed;
+			}
+			if (moveZ < -maxSpeed) {
+				moveZ = -maxSpeed;
+			}
+
+			emitterFollow.position.z += moveZ;
+
+		}
+
 	}
 
 	function onMouseMoved() {
 		mouseX = shared.mouseX;
 		mouseY = shared.mouseY;
+	}
+
+	function reset () {
+		camPos = new THREE.Vector3( 0, 20, 50 );
+
+		emitterMesh.position.x = camPos.x;
+		emitterMesh.position.y = camPos.y;
+		emitterMesh.position.z = camPos.z;
+
+		emitterFollow.position.x = camPos.x;
+		emitterFollow.position.y = camPos.y;
+		emitterFollow.position.z = camPos.z;
+
+		for (var k=0; k<ribbonArray.length; ++k ) {
+			ribbonMesh.position = emitterMesh.position;
+		}
+
+		for (var i=0; i<vectorArray.length; ++i ) {
+			var obj = vectorArray[i];
+			obj.x = camPos.x;
+			obj.y = camPos.y;
+			obj.z = camPos.z;
+		}
+
+		for (var i=0; i<animalArray.length; ++i ) {
+			var obj =  animalArray[i];
+			obj.x = camPos.x;
+			obj.y = camPos.y;
+			obj.z = camPos.z;
+		}
 	}
 
 	function getShortRotation(rot) {
