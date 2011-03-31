@@ -166,10 +166,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 0.1 } );
 	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 1.0 } );
 
-	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial2, true );
-	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial2, false );
-
-	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial2, true );
+	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
 	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial, false );
 	var leftPlane = addMesh( plane, 200,  camPos.x-settings.collisionDistance, camPos.y, camPos.z, 0,1.57,0, invMaterial, false );
 	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
@@ -227,9 +224,25 @@ var CitySoup = function ( camera, scene, shared ) {
 	// emitter
 	var projector = new THREE.Projector();
 	var emitter = new Cube( 10, 10, 10 );
-	var emitterMesh = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
-	var emitterFollow = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
+	var emitterMesh = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
+	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
+	// new follow
+	var pi = Math.PI;
+	var pi2 = pi*2;
+	var degToRad = pi/180;
+
+	var oldRotationy;
+	var oldRotationx;
+	var oldRotationz;
+	var speed = 6;
+	var rotationLimit = 10;
+	var innerRadius = 10;
+	var outerRadius = 40;
+
+	emitterFollow.rotationy = 0;
+	emitterFollow.rotationx = 0;
+	emitterFollow.rotationz = 0;
 
 	this.update = function () {
 
@@ -900,7 +913,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
-		var tox = emitterMesh.position.x;
+		/*var tox = emitterMesh.position.x;
 		var toy = emitterMesh.position.y;
 		var toz = emitterMesh.position.z;
 
@@ -910,12 +923,57 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		emitterFollow.position.x += moveX;
 		emitterFollow.position.z += moveZ;
-		emitterFollow.position.y += moveY;
+		emitterFollow.position.y += moveY;*/
+
+		oldRotationy = emitterFollow.rotationy;
+		oldRotationx = emitterFollow.rotationx;
+		oldRotationz = emitterFollow.rotationz;
+		
+		var rotationy = emitterFollow.rotationy/180*pi;
+		var oldRy = rotationy;
+		rotationy += pi*0*0.5-pi*0*Math.random();
+		
+		var tx = emitterMesh.position.x;
+		var ty = emitterMesh.position.y;
+		var tz = emitterMesh.position.z;
+		var dx = tx-emitterFollow.position.x;
+		var dy = ty-emitterFollow.position.y;
+		var dz = tz-emitterFollow.position.z;
+		var d = Math.sqrt(dx*dx+dz*dz);
+		var a = Math.atan2(dz,dx);
+		var pstr = 0;
+		
+		if (outerRadius > 0) {
+			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+			if (dstr > 1) { dstr = 1; }
+			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+		}
+		rotationy += getShortRotation(a-rotationy)*pstr;
+
+		var rotationD = rotationy-oldRy;
+		if (Math.abs(rotationD) > rotationLimit*degToRad) { 
+			rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
+		}
+
+		speed = d/20;
+
+		emitterFollow.position.x += Math.cos(rotationy)*speed;
+		emitterFollow.position.z += Math.sin(rotationy)*speed;
+		emitterFollow.rotationy = rotationy/degToRad;
+
+		emitterFollow.position.y = emitterMesh.position.y;
 	}
 
 	function onMouseMoved() {
 		mouseX = shared.mouseX;
 		mouseY = shared.mouseY;
+	}
+
+	function getShortRotation(rot) {
+		rot %= pi2;
+		if (rot > pi) { rot -= pi2; }
+		else if (rot < -pi) { rot += pi2; }
+		return rot;
 	}
 
 	function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided ) {
