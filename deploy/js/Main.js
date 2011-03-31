@@ -70,27 +70,27 @@ function init() {
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
-	sequencer.add( new NoiseEffect( shared, 0.79, 0.19, 2385 ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 3 );
-	
+	// sequencer.add( new NoiseEffect( shared, 0.79, 0.19, 2385 ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 3 );
+
 	sequencer.add( new Intro( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 
 	sequencer.add( new TransitionToCity( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	sequencer.add( new BloomEffect( shared, 0.3 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
-	//sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
-	
+	// sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
+
 	sequencer.add( new TransitionToPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new BloomEffect( shared, 0.3 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
-	//sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
+	// sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 
 	sequencer.add( new TransitionToDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
 
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
 	sequencer.add( new BloomEffect( shared, 0.3 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
-	//sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
+	// sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
 
 	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 3 );
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 3 );
