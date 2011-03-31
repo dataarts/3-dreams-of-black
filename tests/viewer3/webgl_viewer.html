@@ -221,7 +221,7 @@
 		<div id="viewport"></div> 
 
 		<script type="text/javascript" src="js/Three.js"></script>
-		
+
 		<script type="text/javascript" src="js/animal.js"></script>
 		<script type="text/javascript" src="js/Slider.js"></script>
 		
@@ -1730,8 +1730,15 @@
 												'" title="', theFile.name, '"/>' ].join( '' );
 						  
 							//$( 'images' ).insertBefore( span, null );
-						  
-							addImage( theFile.name, e.target.result );
+						 
+							//alert("handling [" + theFile.name + "]");
+							//addImage( theFile.name, e.target.result );
+							
+							// hack to work around Chrome crash bug
+							// when dropping first model and then textures
+							
+							setTimeout( function() { addImage( theFile.name, e.target.result ); }, 500 );
+							
 
 						};
 					  })(f);
