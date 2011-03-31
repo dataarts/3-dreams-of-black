@@ -84,7 +84,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	for (var i = 0; i < 100; i++) {
 		var vector = new THREE.Vector3( Math.random() * 80 - 40, Math.random() * 80 - 40, Math.random() * 80 - 40 );
-		geometry.vertices.push( new THREE.Vertex( vector ) );					
+		geometry.vertices.push( new THREE.Vertex( vector ) );
 	}
 
 	var sprite0 = ImageUtils.loadTexture( "files/textures/dark_0.png" );
@@ -102,11 +102,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		particles.rotation.x = Math.random() * Math.PI;
 		particles.rotation.y = Math.random() * Math.PI;
 		particles.rotation.z = Math.random() * Math.PI;
-		
+
 		var x = camPos.x-100;
 		var y = camPos.y-100;
 		var z = camPos.z;
-		
+
 		particles.position.x = x;
 		particles.position.y = y;
 		particles.position.z = z;
@@ -333,7 +333,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		emitterMesh.position.y = FLOOR;
 
-		var vector = new THREE.Vector3( ( mouseX / window.innerWidth ) * 2 - 1, - ( mouseY / window.innerHeight ) * 2 + 1, 0.5 );
+		var vector = new THREE.Vector3( ( mouseX / shared.screenWidth ) * 2 - 1, - ( mouseY / shared.screenHeight ) * 2 + 1, 0.5 );
 
 		projector.unprojectVector( vector, camera );
 

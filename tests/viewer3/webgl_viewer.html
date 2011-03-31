@@ -26,7 +26,7 @@
 			position:absolute;
 			width:100%;
 			height:100%;
-			padding:15% 0;
+			padding:11% 0;
 			color: #eee;
 			
 		}
@@ -221,7 +221,7 @@
 		<div id="viewport"></div> 
 
 		<script type="text/javascript" src="js/Three.js"></script>
-		
+
 		<script type="text/javascript" src="js/animal.js"></script>
 		<script type="text/javascript" src="js/Slider.js"></script>
 		
@@ -267,6 +267,7 @@
 					
 					<p><span class="hh">2: Camera fly mode</span>
 					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse<br/>
+					<span class="kw">PgUp</span> / <span class="kw">PgDn</span> change speed<br/>
 					Press <span class="kw">0</span> to reset fly camera
 
 					<p><span class="hh">Morphing</span>
@@ -402,17 +403,28 @@
 					<div class="sval"><span class="slabel">Value:</span> <span id="dl_val">0.00</span></div>
 					<div id="slider_wrap_dl_v"> </div>
 					
-					<div class="sval"><span class="slabel">X:</span> <span id="dl_x">0.00</span></div>
-					<div id="slider_wrap_dl_x"> </div>
+					<div class="sval"><span class="slabel">Phi:</span> <span id="dl_phi">0.00</span></div>
+					<div id="slider_wrap_dl_phi"> </div>
 					
-					<div class="sval"><span class="slabel">Y:</span> <span id="dl_y">0.00</span></div>
-					<div id="slider_wrap_dl_y"> </div>
+					<div class="sval"><span class="slabel">Theta:</span> <span id="dl_theta">0.00</span></div>
+					<div id="slider_wrap_dl_theta"> </div>
 					
-					<div class="sval"><span class="slabel">Z:</span> <span id="dl_z">0.00</span></div>
-					<div id="slider_wrap_dl_z"> </div>
 				</div>
 			</div>
 			
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_lensflare">+</div>
+
+				<div class="sheader">Lens Flare</div>
+				
+				<div class="sinner" id="grp_lensflare">					
+					<div class="sval"><span class="slabel">Vertical angle:</span> <span id="lf_x">0.00</span></div>
+					<div id="slider_wrap_lf_x"> </div> 
+
+					<div class="sval"><span class="slabel">Horizontal angle:</span> <span id="lf_y">0.00</span></div>
+					<div id="slider_wrap_lf_y"> </div> 
+				</div>
+			</div>
 			
 			<div id="files_div">
 				<span class="header">Files</span><br/>
@@ -500,7 +512,10 @@
 		
 		"x": 1.0,
 		"y": 1.0,
-		"z": 1.0
+		"z": 1.0,
+		
+		"phi": 2.2,
+		"theta": 0.33
 		};
 
 		ALIGHT.h = lightColors[lightType][0].h;
@@ -511,8 +526,15 @@
 		DLIGHT.s = lightColors[lightType][1].s;
 		DLIGHT.v = lightColors[lightType][1].v;
 
+		DLIGHT.x = Math.sin( DLIGHT.phi ) * Math.cos( DLIGHT.theta );
+		DLIGHT.y = Math.cos( DLIGHT.phi );
+		DLIGHT.z = Math.sin( DLIGHT.phi ) * Math.sin( DLIGHT.theta );
+
 		var dlSliderH, dlSliderS, dlSliderV;
 		var alSliderH, alSliderS, alSliderV;
+		
+		var lensFlare;
+		var lensFlareRotate;
 		
 		// camera
 		
@@ -528,6 +550,7 @@
 		// scene
 		
 		var axisVisible = true;
+		var arrow;
 		
 		// controls
 
@@ -631,6 +654,7 @@
 
 			directionalLight = new THREE.DirectionalLight( );
 			directionalLight.color.setHSV( dcolor.h, dcolor.s, dcolor.v );
+			
 			directionalLight.position.set( DLIGHT.x, DLIGHT.y, DLIGHT.z );
 			directionalLight.position.normalize();
 			scene.addLight( directionalLight );
@@ -715,20 +739,35 @@
 
 			// sliders - directional light
 			
+			function angleDegrees( rad ) {
+				
+				var deg = rad * ( 180 / Math.PI );
+				return deg.toFixed(0);
+				
+			};
+			
 			dlSliderH = new Slider( $( "slider_wrap_dl_h" ), swidth, sd, 0.0, 1.0, dcolor.h, function(val) { DLIGHT.h = val; updateDLight(); $("dl_hue").innerHTML = val.toFixed(2); } );
 			dlSliderS = new Slider( $( "slider_wrap_dl_s" ), swidth, sd, 0.0, 1.0, dcolor.s, function(val) { DLIGHT.s = val; updateDLight(); $("dl_sat").innerHTML = val.toFixed(2); } );
 			dlSliderV = new Slider( $( "slider_wrap_dl_v" ), swidth, sd, 0.0, 1.0, dcolor.v, function(val) { DLIGHT.v = val; updateDLight(); $("dl_val").innerHTML = val.toFixed(2); } );
 
-			var dlSliderX = new Slider( $( "slider_wrap_dl_x" ), swidth, sd, -1.0, 1.0, DLIGHT.x, function(val) { DLIGHT.x = val; updateDLight(); $("dl_x").innerHTML = val.toFixed(2); } );
-			var dlSliderY = new Slider( $( "slider_wrap_dl_y" ), swidth, sd, -1.0, 1.0, DLIGHT.y, function(val) { DLIGHT.y = val; updateDLight(); $("dl_y").innerHTML = val.toFixed(2); } );
-			var dlSliderZ = new Slider( $( "slider_wrap_dl_z" ), swidth, sd, -1.0, 1.0, DLIGHT.z, function(val) { DLIGHT.z = val; updateDLight(); $("dl_z").innerHTML = val.toFixed(2); } );
+			var dlSliderX = new Slider( $( "slider_wrap_dl_phi" ), swidth, sd, -3.14, 3.14, DLIGHT.phi, function(val) { DLIGHT.phi = val; updateDLight(); $("dl_phi").innerHTML = angleDegrees( val ); } );
+			var dlSliderY = new Slider( $( "slider_wrap_dl_theta" ), swidth, sd, -3.14, 3.14, DLIGHT.theta, function(val) { DLIGHT.theta = val; updateDLight(); $("dl_theta").innerHTML = angleDegrees( val ); } );
 			
-			$("dl_x").innerHTML = DLIGHT.x.toFixed(2);
-			$("dl_y").innerHTML = DLIGHT.y.toFixed(2);
-			$("dl_z").innerHTML = DLIGHT.z.toFixed(2);
+			$("dl_phi").innerHTML = angleDegrees( DLIGHT.phi );
+			$("dl_theta").innerHTML = angleDegrees( DLIGHT.theta );
 
 			addGroupToggle( "btn_dlight", "grp_dlight" );
 			hide( "grp_dlight" );
+
+			// sliders - lens flare
+			
+			var flSliderX = new Slider( $( "slider_wrap_lf_x" ), swidth, sd, 0.0, 45.0, 0, function(val) { updateLensflare( val, -1 ); $("lf_x").innerHTML = val.toFixed(0); } );
+			var flSliderY = new Slider( $( "slider_wrap_lf_y" ), swidth, sd, 0.0, 360.0, 0, function(val) { updateLensflare( -1, val ); $("lf_y").innerHTML = val.toFixed(0); } );
+
+			addGroupToggle( "btn_lensflare", "grp_lensflare" );
+			hide( "grp_lensflare" );
+			
+
 
 			// sliders - ambientLight light
 			
@@ -750,15 +789,41 @@
 			
 			$( "btn_set" ).addEventListener( "click", function() { window.open( generateSettingsURL(), "_blank" ) }, false )
 			
+			
+			// lensflare
+						
+			lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveAlphaBlending );
+			
+			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveAlphaBlending );
+			
+			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveAlphaBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveAlphaBlending );
+			
+			lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+			lensFlare.position.set( 0, 0, -99000 );
+			
+			
+			lensFlareRotate = new THREE.Object3D();
+			lensFlareRotate.addChild( lensFlare );
+			
+			scene.addChild( lensFlareRotate );
+			
+			
 			// axis
 			
 			auxRoot = new THREE.Object3D();
 			sceneRoot = new THREE.Object3D();
 			
 			var axis = createAxis();
+			arrow = createArrow();
 			var tempScene = createTempScene();
 			
 			auxRoot.addChild( axis );
+			auxRoot.addChild( arrow );
 			sceneRoot.addChild( tempScene );
 			
 			scene.addChild( auxRoot );
@@ -779,6 +844,8 @@
 			
 			setLight( lightType );
 
+			updateDLight();
+			
 		};
 
 		// export
@@ -852,6 +919,12 @@
 				/* p */
 				case 80: cycleMorphB(); break;
 
+				/* pgup */
+				case 33: cameraFaster(); break;
+
+				/* pgdn */
+				case 34: cameraSlower(); break;
+
 			}
 			
 			//console.log( "keyCode", event.keyCode );
@@ -908,12 +981,21 @@
 		};
 		
 		// lights
+
+		var tmpVec = new THREE.Vector3(), unitVector = new THREE.Vector3();
 		
-		function updateDLight() {
+		function updateDLight() {					
+			
+			DLIGHT.x = Math.sin( DLIGHT.phi ) * Math.cos( DLIGHT.theta );
+			DLIGHT.y = Math.cos( DLIGHT.phi );
+			DLIGHT.z = Math.sin( DLIGHT.phi ) * Math.sin( DLIGHT.theta );
 					
-			directionalLight.color.setHSV( DLIGHT.h, DLIGHT.s, DLIGHT.v );
 			directionalLight.position.set( DLIGHT.x, DLIGHT.y, DLIGHT.z );
-			directionalLight.position.normalize();
+			directionalLight.color.setHSV( DLIGHT.h, DLIGHT.s, DLIGHT.v );
+			
+			tmpVec.copy( directionalLight.position );
+			tmpVec.multiplyScalar( -1 );
+			arrow.lookAt( tmpVec );
 			
 		};
 
@@ -922,6 +1004,64 @@
 			ambientLight.color.setHSV( ALIGHT.h, ALIGHT.s, ALIGHT.v );
 			
 		};
+		
+		function updateLensflare( newX, newY ) {
+			
+			// update X?
+			
+			if( newX !== -1 ) {
+				
+				lensFlareRotate.rotation.x = newX * Math.PI / 180;
+			
+			} else {
+				
+				lensFlareRotate.rotation.y = newY * Math.PI / 180;
+				
+			}
+			
+		}
+		
+		function lensFlareUpdateCallback( visibility, object ) {
+			
+			var f, fl = object.lensFlares.length;
+			var flare;
+			var vecX = -object.positionScreen.x * 2;
+			var vecY = -object.positionScreen.y * 2; 
+			
+			
+			for( f = 0; f < fl; f++ ) {
+				
+				flare = object.lensFlares[ f ];
+				
+				flare.x = object.positionScreen.x + vecX * flare.distance;
+				flare.y = object.positionScreen.y + vecY * flare.distance;
+
+				flare.wantedScale = visibility * 0.1 + 0.9;
+				flare.wantedOpacity = visibility;
+				
+				flare.scale += ( flare.wantedScale - flare.scale ) * 0.15;
+				flare.opacity += ( flare.wantedOpacity - flare.opacity ) * 0.5;
+				flare.rotation = 0;
+
+			}
+			
+			// hard coded stuff
+			
+			object.lensFlares[ 1 ].scale = visibility * 0.3 + 0.9;
+			
+			object.lensFlares[ 2 ].y += 0.025;
+			object.lensFlares[ 2 ].scale = visibility * 0.3 + 0.6;
+			object.lensFlares[ 2 ].opacity = Math.max( 0, object.lensFlares[ 2 ].opacity - 0.20 * visibility );
+			
+			object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + 45 * Math.PI / 180;
+			object.lensFlares[ 3 ].scale += 0.1;
+			object.lensFlares[ 3 ].opacity = Math.max( 0, object.lensFlares[ 3 ].opacity - 0.10 * visibility );
+			
+			object.lensFlares[ 4 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.20 );
+			object.lensFlares[ 5 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.10 * visibility );
+			object.lensFlares[ 6 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.15 );
+			object.lensFlares[ 7 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.25 * visibility );
+		}
 
 		// axis
 		
@@ -930,7 +1070,7 @@
 			var axis = new THREE.Object3D(),
 				d = 0.05;
 				
-			mesh = new THREE.Mesh( new Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+			var mesh = new THREE.Mesh( new Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
 			mesh.position.set( 0.5, 0, 0 );
 			axis.addChild( mesh );
 
@@ -946,8 +1086,29 @@
 			mesh.rotation.set( -1.57, 0, 0 );
 			axis.addChild( mesh );
 
-			return axis
+			return axis;
 		
+		};
+		
+		function createArrow() {
+			
+			var arrow = new THREE.Object3D(),
+				d = 0.05;
+			
+			var material = new THREE.MeshBasicMaterial( { color: 0xffaa00 } );
+			
+			var mesh = new THREE.Mesh( new Cube( d, d, 1 ), material );
+			mesh.position.set( 0, 0, -0.5 );
+			arrow.addChild( mesh );
+			
+			mesh = new THREE.Mesh( new Cylinder( 4, 0.001, 0.25, 0.5 ), material );
+			mesh.position.set( 0, 0, -1 );
+			arrow.addChild( mesh );
+			
+			arrow.rotation.set( 0, 0, 0 );
+			
+			return arrow;
+			
 		};
 		
 		function toggleAxis() {
@@ -958,6 +1119,19 @@
 		};
 		
 		// camera controls
+		
+		function cameraFaster() {
+		
+			flyCamera.movementSpeed += 0.125;
+
+		};
+
+		function cameraSlower() {
+			
+			flyCamera.movementSpeed = cap_bottom( flyCamera.movementSpeed - 0.125, 0 );
+
+		};
+
 		
 		function setOrbitCamera() {
 		
@@ -1556,8 +1730,15 @@
 												'" title="', theFile.name, '"/>' ].join( '' );
 						  
 							//$( 'images' ).insertBefore( span, null );
-						  
-							addImage( theFile.name, e.target.result );
+						 
+							//alert("handling [" + theFile.name + "]");
+							//addImage( theFile.name, e.target.result );
+							
+							// hack to work around Chrome crash bug
+							// when dropping first model and then textures
+							
+							setTimeout( function() { addImage( theFile.name, e.target.result ); }, 500 );
+							
 
 						};
 					  })(f);
@@ -1913,6 +2094,14 @@
 			}
 			
 			elCamLocation.innerHTML = renderVec3( camera.position, 2 );
+			
+			if ( camera == flyCamera ) {
+			
+				elCamLocation.innerHTML += " speed: " + camera.movementSpeed.toFixed(3);
+
+			}
+			
+			lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
 
 		};
 		
