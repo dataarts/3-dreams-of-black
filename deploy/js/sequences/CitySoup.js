@@ -151,6 +151,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoaded } );
 	// tree
 	loader.load( { model: "files/models/soup/evergreen_low.js", callback: treeLoaded } );
+	// lighthouse
+	loader.load( { model: "files/models/soup/lighthouse.js", callback: ligthhouseLoaded } );
 
 	var grassMaterials = [new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } ),
 					 new THREE.MeshLambertMaterial( { color: 0x93c171, shading: THREE.FlatShading } ),
@@ -404,11 +406,29 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			var realindex = i*15;
 
-			var obj = {c:c, scale:0, alivetime:realindex, normal:new THREE.Vector3(), tree:true, maxHeight:Math.min(Math.random()+0.6,1.2)};
+			var obj = {c:c, scale:0, alivetime:realindex, normal:new THREE.Vector3(), tree:true, maxHeight:Math.min(Math.random()+0.5,1.0)};
 			grassArray[realindex] = obj;
 		}
 
 	}
+
+	function ligthhouseLoaded( geometry ) {
+
+			var x = 0;
+			var y = FLOOR;
+			var z = 0;
+
+			var c = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } ) );
+			scene.addObject(c);
+
+			var realindex = 8;
+
+			var obj = {c:c, scale:0, alivetime:realindex, normal:new THREE.Vector3(), tree:true, lighthouse:true, maxHeight:3};
+			grassArray[realindex] = obj;
+
+	}
+
+
 
 
 	function runAll () {
@@ -699,14 +719,13 @@ var CitySoup = function ( camera, scene, shared ) {
 				c.rotation.y = 0;
 
 				var amount = 8;
-		
 
 				if (currentNormal.x < -0.8) {
 					c.position.x = emitterMesh.position.x + amount;
 					c.rotation.z = 1.57;
 					c.rotation.x = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5)/3;
+						c.rotation.z += (Math.random()-0.5);
 					}
 					c.position.y += (Math.random()*50)-25;
 					c.position.z += (Math.random()*50)-25;
@@ -715,7 +734,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.x = emitterMesh.position.x - amount;
 					c.rotation.z = -1.57;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5)/3;
+						c.rotation.z += (Math.random()-0.5);
 					}
 					c.rotation.x = Math.random()*Math.PI;
 
@@ -726,7 +745,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.y = emitterMesh.position.y + amount;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5)/3;
+						c.rotation.z += (Math.random()-0.5);
 					}
 					c.position.x += (Math.random()*50)-25;
 					c.position.z += (Math.random()*50)-25;
@@ -735,7 +754,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.y = emitterMesh.position.y - amount;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5)/3;
+						c.rotation.z += (Math.random()-0.5);
 					}
 					
 					c.position.x += (Math.random()*40)-20;
@@ -746,7 +765,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.rotation.x = -1.57;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.x += (Math.random()-0.5)/3;
+						c.rotation.x += (Math.random()-0.5);
 					}
 					c.position.y += (Math.random()*50)-25;
 					c.position.x += (Math.random()*50)-25;
@@ -756,7 +775,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.rotation.x = 1.57;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.x += (Math.random()-0.5)/3;
+						c.rotation.x += (Math.random()-0.5);
 					}
 
 					c.position.y += (Math.random()*50)-25;
@@ -785,9 +804,13 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			if (tree) {
 				maxHeight *= 0.1;
-				c.scale.x = c.scale.z = 0.15*Math.min((alivetime+1)/50,1);
-				c.scale.y = scale*1.7;
-				maxHeight *= 1.7;
+				var divider = 130;
+				if (obj.lighthouse) {
+					scale *= 1.6;
+					divider = 70;
+				}
+				c.scale.x = c.scale.z = 0.15*Math.min((alivetime+1)/divider,1);
+				c.scale.y = scale;
 				if (c.scale.y > maxHeight) {
 					c.scale.y = maxHeight;
 				}
