@@ -104,7 +104,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	for (var i = 0; i < 100; i++) {
 		var vector = new THREE.Vector3( Math.random() * 50 - 25, Math.random() * 50 - 25, Math.random() * 50 - 25 );
-		geometry.vertices.push( new THREE.Vertex( vector ) );					
+		geometry.vertices.push( new THREE.Vertex( vector ) );
 	}
 
 	var sprite0 = ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -116,17 +116,17 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
 	for (var i = 0; i < initSettings.numOfParticleSystems; i++) {
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], blending: THREE.BillboardBlending, depth_test: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], transparent: true, depthTest: false } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 		particles.rotation.x = Math.random() * Math.PI;
 		particles.rotation.y = Math.random() * Math.PI;
 		particles.rotation.z = Math.random() * Math.PI;
-		
+
 		var x = camPos.x-100;
 		var y = camPos.y-100;
 		var z = camPos.z;
-		
+
 		particles.position.x = x;
 		particles.position.y = y;
 		particles.position.z = z;

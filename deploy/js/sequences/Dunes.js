@@ -3,7 +3,7 @@ var Dunes = function ( shared ) {
 	SequencerItem.call( this );
 
 	var camera, world, soup
-	renderer = shared.renderer;
+	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	this.init = function () {
 
@@ -48,7 +48,7 @@ var Dunes = function ( shared ) {
 		world.update( camera );
 		soup.update();
 
-		renderer.render( world.scene, camera );
+		renderer.render( world.scene, camera, renderTarget );
 
 	};
 
