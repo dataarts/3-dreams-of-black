@@ -14,7 +14,7 @@ var CityWorld = function ( shared ) {
 	this.scene.addLight( directionalLight );
 
 
-	var directionalLight = new THREE.PointLight( 0xffeeee, 0.2 );
+	var directionalLight = new THREE.DirectionalLight( 0xffeeee, 0.2 );
 	directionalLight.position.x = - 1000;
 	directionalLight.position.y = - 500;
 	directionalLight.position.z = - 1000;
