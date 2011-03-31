@@ -59,31 +59,45 @@
 					uniforms: {
 
 						"noise_image": { type: "t", value: 0, texture: null },
-						"grass_image": { type: "t", value: 0, texture: null },
-						"surface_image": { type: "t", value: 0, texture: null },
+						"grass_image": { type: "t", value: 1, texture: null },
+						"surface_image": { type: "t", value: 2, texture: null },
+						"map": { type: "t", value:3, texture:null },
 
+						"time": { type: "v2", value: new THREE.Vector2() },
 						"target": { type: "v3", value: new THREE.Vector3() }
 
+					},
+
+					attributes: {
+						
+						"randomA": { type: "v3", value: [] },
+						"randomB": { type: "v3", value: [] },
+						
 					},
 
 					vertexShader: [
 
 						"uniform vec3 target;",
+						"uniform vec2 time;",
+						
+						"attribute vec3 randomA;",
+						"attribute vec3 randomB;",
 
-						"varying vec3 vPosition;",
+						"varying vec3 vWorldPosition;",
 						"varying vec3 vNormal;",
 						"varying vec2 vUv;",
 
 						"void main() {",
 
-							"float f = max( 0.0, 1.0 - length( position - target ) );",
-
-							"vPosition = ( objectMatrix * vec4( position, 1.0 ) ).xyz;", //  + f;",
 							"vNormal = normalize( normalMatrix * normal );",
+							"vUv = uv;",
 
-							// "vUv = uv;",
-
-							"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+							"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
+							"float distance = max( 0.0, 1.0 - length( vWorldPosition - target ) * 0.0075 );",
+							
+//							"vec3 modifiedPosition = position + randomA * ( distance * time.x ) + randomB * ( distance * time.y );",
+							"vec3 modifiedPosition = position + normalize( vWorldPosition - target ) * distance * 100.0;",
+							"gl_Position = projectionMatrix * modelViewMatrix * vec4( modifiedPosition, 1.0 );",
 
 						"}"
 
@@ -94,40 +108,41 @@
 						"uniform sampler2D noise_image;",
 						"uniform sampler2D grass_image;",
 						"uniform sampler2D surface_image;",
+						"uniform sampler2D map;",
+						"uniform vec3 target;",
 
-						"varying vec3 vPosition;",
+						"varying vec3 vWorldPosition;",
 						"varying vec3 vNormal;",
 						"varying vec2 vUv;",
-
-						"uniform vec3 target;",
 
 						"void main() {",
 
 							"float f;",
 							"vec3 normal;",
-							"vec4 c;",
-
-							"f = 1.0 - length( vPosition - target ) * 0.01;",
-							"f += texture2D( noise_image, vPosition.xz * vec2( 0.005 ) ).x - 0.5;",
+							"vec4 surface;",
+							"vec4 grass;",
 
 							"normal = vNormal * vNormal;",
+							"vec3 worldPosition = vWorldPosition * 0.005;",
+							
+							"f  = 1.0 - length( vWorldPosition - target ) * 0.0025;",
+							"f += texture2D( noise_image, worldPosition.xz ).x - 0.5;",
 
-							"if ( f > 0.0 ) {",
+							"surface = texture2D( surface_image, worldPosition.yz ) * normal.x + ",
+							          "texture2D( surface_image, worldPosition.xz ) * normal.y + ",
+							          "texture2D( surface_image, worldPosition.xy ) * normal.z;",
 
-								"c = ( texture2D( grass_image, vPosition.yz * vec2( 0.005 ) ) * vec4( normal.x ) + ",
-								"texture2D( grass_image, vPosition.xz * vec2( 0.005 ) ) * vec4( normal.y ) + ",
-								"texture2D( grass_image, vPosition.xy * vec2( 0.005 ) ) * vec4( normal.z ) );",
+							"if( f >= 0.0 ) {",
 
-								"gl_FragColor = vec4( c.rgb, 1.0 );",
-
-							"} else {",
-
-								"c = ( texture2D( surface_image, vPosition.yz * vec2( 0.005 ) ) * vec4( normal.x ) + ",
-								"texture2D( surface_image, vPosition.xz * vec2( 0.005 ) ) * vec4( normal.y ) + ",
-								"texture2D( surface_image, vPosition.xy * vec2( 0.005 ) ) * vec4( normal.z ) ) - vec4( 0.5 );",
-								"gl_FragColor = vec4( c.rgb, 1.0 );",
+								"grass = texture2D( grass_image, worldPosition.yz ) * normal.x + ",
+								        "texture2D( grass_image, worldPosition.xz ) * normal.y + ",
+								        "texture2D( grass_image, worldPosition.xy ) * normal.z;",
+	
+								"surface = mix( surface, grass, smoothstep( 0.0, 0.1, f ));",
+	
 							"}",
-
+	
+							"gl_FragColor = surface * texture2D( map, vUv );",
 						"}"
 
 					].join("\n")
@@ -145,11 +160,14 @@
 
 			var container,stats;
 
-			var camera, scene, renderer;
+			var camera, target, scene, renderer;
 
-			var mesh, zmesh, geometry;
+			var mesh, zmesh, geometry, materials, timer = new THREE.Vector2();
 
-			var target;
+			var mouseX = 0, mouseY = 0, r = 0;
+			
+			
+			
 
 			init();
 			animate();
@@ -159,43 +177,40 @@
 
 				container = document.createElement('div');
 				document.body.appendChild(container);
-
-				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.x = -400;
-				camera.position.y = -480;
-				camera.position.z = 0;
-				camera.target.position.y = -580;
+				document.addEventListener( 'mousemove', onMouseMove, false );
 
 				scene = new THREE.Scene();
-				scene.fog = new THREE.FogExp2( 0x000000, 0.0006 );
-				scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
+				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
 
-				var sphere = new Sphere( 50, 10, 10 );
 
-				target = new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
-				target.position.y = - 580;
-				target.scale.x = target.scale.y = target.scale.z = 0.10;
+				target = new THREE.Mesh( new Sphere( 5, 5, 5 ), new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
+				scene.addChild( target );
 
-				// target.position.x = - 150;
+	
+				var light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 1, 1, 1 );
+				scene.addChild( light ); 
 
-				scene.addObject( target );
 
 				renderer = new THREE.WebGLRenderer( { antialias: false } );
 				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 				container.appendChild( renderer.domElement );
+				renderer.setClearColor( 0xffffff );
 
-				renderer.setClearColor( scene.fog.color );
 
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
 				stats.domElement.style.zIndex = 100;
-				//container.appendChild( stats.domElement );
+				container.appendChild( stats.domElement );
 
-				var loader = new THREE.Loader(), callbackScene = function( geometry ) {
 
+				var loader = new THREE.JSONLoader(), callbackScene = function( geometry ) {
+
+					// setup base material
+ 
 					var shader = Shaders[ 'soup' ];
-					var uniforms = Uniforms.clone( shader.uniforms );
+					var uniforms = shader.uniforms;
 
 					uniforms[ 'noise_image' ].texture = ImageUtils.loadTexture( 'opengl/Texture_BlackSoup.jpg' );
 					uniforms[ 'noise_image' ].texture.wrapS = THREE.RepeatWrapping;
@@ -209,30 +224,79 @@
 					uniforms[ 'surface_image' ].texture.wrapS = THREE.RepeatWrapping;
 					uniforms[ 'surface_image' ].texture.wrapT = THREE.RepeatWrapping;
 
-					uniforms[ 'target' ].value = target.position;
+					
+					var attributes = shader.attributes;
+					
+					for( var i = 0; i < geometry.vertices.length; i++ ) {
+						
+						var pos = geometry.vertices[ i ].position;
+						
+						attributes.randomA.value.push( new THREE.Vector3( 100,100,100 ));
+						attributes.randomB.value.push( new THREE.Vector3( -100,-100,-100 ));
+					}
 
-					var material = new THREE.MeshShaderMaterial( {
 
+					var baseMaterialParams = {
+
+						attributes: attributes,
 						uniforms: uniforms,
 						vertexShader: shader.vertexShader,
 						fragmentShader: shader.fragmentShader
 
-					} );
+					};
+					var baseMaterial = new THREE.MeshShaderMaterial( baseMaterialParams );
+					renderer.initMaterial( baseMaterial, scene.lights, scene.fog );
 
-					var mesh = new THREE.Mesh( geometry, material );
-					// mesh.position.y = 580;
+
+					// copy materials to all geo chunks and add AO-texture
+
+					materials = [];
+
+					for( var i = 0; i < geometry.materials.length; i++ ) {
+						
+						materials[ i ] = new THREE.MeshShaderMaterial( baseMaterialParams );
+						
+						materials[ i ].program = baseMaterial.program;
+						materials[ i ].uniforms = Uniforms.clone( uniforms );
+						
+						materials[ i ].uniforms[ 'target'        ].value   = target.position;
+						materials[ i ].uniforms[ 'time'          ].value   = timer;
+						materials[ i ].uniforms[ 'map'           ].texture = geometry.materials[ i ][ 0 ].map;  
+						materials[ i ].uniforms[ 'noise_image'   ].texture = uniforms[ 'noise_image' ].texture;
+						materials[ i ].uniforms[ 'grass_image'   ].texture = uniforms[ 'grass_image' ].texture;
+						materials[ i ].uniforms[ 'surface_image' ].texture = uniforms[ 'surface_image' ].texture;
+						
+						materials[ i ].attributes = {
+							
+							"randomA": { type: "v3", value: attributes.randomA.value, dirty: true },
+							"randomB": { type: "v3", value: attributes.randomB.value, dirty: true },
+							
+						};
+						
+						geometry.materials[ i ][ 0 ] = materials[ i ];
+						
+					}
+
+
+					// add mesh
+
+					var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial());
 					mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.10;
+					mesh.position.z = 1000;
+					
 					scene.addObject( mesh );
 
 				};
 
-				loader.loadAscii( { model: "obj/max/city.js", callback: callbackScene } );
+
+				loader.load( { model: "obj/max/street.js", callback: callbackScene } );
 
 			}
 
 			function animate() {
 
 				requestAnimationFrame( animate );
+
 
 				render();
 				stats.update();
@@ -243,12 +307,31 @@
 
 				var time = new Date().getTime();
 
-				target.position.x = Math.cos( time * 0.0011 ) * 200;
-				target.position.y = Math.sin( time * 0.001 ) * 200 - 580;
-				target.position.z = Math.cos( time * 0.00121 ) * 200;
+				target.position.x = Math.cos( time * 0.0011  ) * 100 - 50;
+				target.position.y = Math.sin( time * 0.001   ) * 50;
+				target.position.z = Math.cos( time * 0.00121 ) * 200 - 300;
+
+				timer.x = Math.cos( time * 0.001 );
+				timer.y = Math.sin( time * 0.001 );
+
+
+				r -= mouseX * 2 * Math.PI / 180;
+
+				camera.position.x = 300*Math.sin(r);
+				camera.position.z = 300*Math.cos(r);
+				camera.position.y = 200 * mouseY + 100;
+
+		//		camera.target.position.set( target.position.x, target.position.y, target.position.z );
+
 
 				renderer.render( scene, camera );
 
+			}
+			
+			function onMouseMove(event) {
+
+				mouseX = ( event.clientX - SCREEN_WIDTH * 0.5 ) / SCREEN_HEIGHT;
+				mouseY = ( event.clientY - SCREEN_HEIGHT * 0.5 ) / SCREEN_WIDTH;
 			}
 
 
