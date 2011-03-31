@@ -96,7 +96,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
 	for (var i = 0; i < initSettings.numOfParticleSystems; i++) {
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 12, map: particleSprites[i%5], transparent: true } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 12, map: particleSprites[i%5], transparent: true, depthTest: false } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 		particles.rotation.x = Math.random() * Math.PI;
