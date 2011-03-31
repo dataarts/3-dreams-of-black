@@ -26,7 +26,7 @@
 			position:absolute;
 			width:100%;
 			height:100%;
-			padding:11% 0;
+			padding:9% 0;
 			color: #eee;
 			
 		}
@@ -257,6 +257,9 @@
 					<div id="drop_label">Drop files here</div>
 					<small>JSON format version 2</small>
 				
+					<p>Drop to <span class="hh">left</span> half of window to <span class="hh">reset</span> scene<br/>
+					drop to <span class="hh">right</span> half window to <span class="hh">append</span> to existing scene
+					
 					<p>Press <span class="kw">SPACE</span> to toggle user interface<br/>
 					Press <span class="kw">R</span> to toggle axis + grid<br/>
 					Press <span class="kw">1</span>, <span class="kw">2</span> to change camera mode<br/>
@@ -1677,11 +1680,15 @@
 			evt.stopPropagation();
 			evt.preventDefault();
 			
+			//console.log( evt );
+			var sceneResetFlag = true;
+			if( evt.offsetX > windowHalfX ) sceneResetFlag = false;
+			
 			var i, f, 
 				files = evt.dataTransfer.files,
 				output = [],
 				loader = new THREE.JSONLoader(),
-				callbackObject = function( geometry ) { addObject( geometry, 0, 0, 0, 1 ) };
+				callbackObject = function( geometry ) { addObject( geometry, 0, 0, 0, 1, sceneResetFlag ) };
 
 			
 			for ( i = 0; f = files[i]; i++ ) {
@@ -1867,13 +1874,13 @@
 			
 		};		
 		
-		function addObject( geometry, x, y, z, s ) {
+		function addObject( geometry, x, y, z, s, sceneResetFlag ) {
 			
-			resetScene();
+			if ( sceneResetFlag ) resetScene();
 			
 			var material, mesh;
 			
-			console.log(geometry);
+			//console.log(geometry);
 			
 			if ( geometry.morphTargets !== undefined && geometry.morphTargets.length > 0 ) {
 			
