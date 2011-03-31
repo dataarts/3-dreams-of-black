@@ -3,7 +3,7 @@ var WIDTH = 1024, HEIGHT = 436;
 var Signal = signals.Signal;
 
 var audio, sequencer,
-camera, camera2, scene, renderer,
+camera, camera2, scene, renderer, renderTarget,
 container, events;
 
 var tune, time, stats, gui;
@@ -20,10 +20,16 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
+	renderer.sortObjects = false;
+
+	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+	renderTarget.minFilter = THREE.LinearFilter;
+	renderTarget.magFilter = THREE.NearestFilter;
 
 	shared = {
 
-		renderer: renderer,
+		baseWidth: WIDTH,
+		baseHeight: HEIGHT,
 
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
@@ -44,7 +50,10 @@ function init() {
 			mousemoved : new Signal(),
 			windowresized : new Signal()
 
-		}
+		},
+
+		renderer: renderer,
+		renderTarget: renderTarget
 
 	};
 
@@ -61,8 +70,9 @@ function init() {
 
 	sequencer = new Sequencer();
 
-	sequencer.add( new ClearEffect( renderer ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
+	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 
 }
 
@@ -165,6 +175,12 @@ function onWindowResize( event ) {
 	shared.viewportHeight = HEIGHT * scale
 
 	renderer.setSize( shared.viewportWidth, shared.viewportHeight );
+
+	// TODO: Hacky...
+
+	renderTarget.width = shared.viewportWidth;
+	renderTarget.height = shared.viewportHeight;
+	delete renderTarget.__webglFramebuffer;
 
 	renderer.domElement.style.position = 'absolute';
 	renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';

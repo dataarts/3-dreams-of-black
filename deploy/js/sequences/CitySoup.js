@@ -115,7 +115,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
 	for (var i = 0; i < initSettings.numOfParticleSystems; i++) {
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], blending: THREE.BillboardBlending, depth_test: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], transparent: true } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 		particles.rotation.x = Math.random() * Math.PI;

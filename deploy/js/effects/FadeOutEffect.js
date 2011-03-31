@@ -1,8 +1,9 @@
-var FadeOutEffect = function ( hex, renderer ) {
+var FadeOutEffect = function ( hex, shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, scene, material, object;
+	var camera, scene, material, object,
+	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	this.init = function( callback ) {
 
@@ -11,17 +12,17 @@ var FadeOutEffect = function ( hex, renderer ) {
 
 		scene = new THREE.Scene();
 
-		material = new THREE.MeshBasicMaterial( { color: hex, opacity: 1 } );
-		object = new THREE.Mesh( new Plane( 3, 3 ), material );
+		material = new THREE.MeshBasicMaterial( { color: hex, opacity: 1, depthTest: false } );
 
+		object = new THREE.Mesh( new Plane( 3, 3 ), material );
 		scene.addObject( object );
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( f ) {
 
-		material.opacity = 1 - i;
-		renderer.render( scene, camera );
+		material.opacity = 1 - f;
+		renderer.render( scene, camera, renderTarget );
 
 	};
 

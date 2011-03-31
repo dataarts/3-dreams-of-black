@@ -3,9 +3,8 @@ var Prairie = function ( shared ) {
 	SequencerItem.call( this );
 
 	var camera, world, soup,
-	renderer = shared.renderer,
-	cameraPath,
-	waypoints = [],
+	renderer = shared.renderer, renderTarget = shared.renderTarget,
+	cameraPath, waypoints = [],
 	delta, time, oldTime;
 
 	this.init = function () {
@@ -105,7 +104,7 @@ var Prairie = function ( shared ) {
 
 		soup.update();
 
-		renderer.render( world.scene, camera );
+		renderer.render( world.scene, camera, renderTarget );
 
 	};
 
