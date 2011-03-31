@@ -32,7 +32,7 @@ var NoiseEffect = function ( shared ) {
 
 	};
 
-	this.update = function () {
+	this.update = function ( f ) {
 
 		renderer.render( scene, camera, renderTarget, false );
 
