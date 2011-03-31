@@ -9,10 +9,6 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		/*waypoints = [ [ 0, -465, 1800 ],
-					  [ 0, -465, -1200 ]
-					  ];*/
-
 		waypoints = [ [ 0, 20, 0 ], [ 0, 20, -3000 ] ];
 
 		camera = new THREE.PathCamera( {
