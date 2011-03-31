@@ -1,4 +1,4 @@
-var BloomEffect = function ( shared ) {
+var BloomEffect = function ( shared, strength ) {
 
 	SequencerItem.call( this );
 
@@ -27,7 +27,7 @@ var BloomEffect = function ( shared ) {
 		screenUniforms = Uniforms.clone( screenShader.uniforms );
 
 		screenUniforms[ "tDiffuse" ].texture = renderTarget;
-		screenUniforms[ "opacity" ].value = 1.0;
+		screenUniforms[ "opacity" ].value = ( strength !== undefined ) ? strength : 1;
 
 		materialScreen = new THREE.MeshShaderMaterial( {
 
@@ -60,6 +60,9 @@ var BloomEffect = function ( shared ) {
 		quad = new THREE.Mesh( new Plane( shared.baseWidth, shared.baseHeight ), materialConvolution );
 		quad.position.z = -500;
 		scene.addObject( quad );
+		
+		renderer.initMaterial( materialScreen, scene.lights, scene.fog, quad );
+		renderer.initMaterial( materialConvolution, scene.lights, scene.fog, quad );
 
 	};
 
@@ -87,7 +90,6 @@ var BloomEffect = function ( shared ) {
 
 		materialScreen.blending = THREE.AdditiveBlending;
 		screenUniforms.tDiffuse.texture = renderTarget3;
-		//screenUniforms.opacity.value = 1.0;
 
 		renderer.render( scene, camera, renderTarget, false );
 

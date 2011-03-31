@@ -16,6 +16,8 @@ var FadeOutEffect = function ( hex, shared ) {
 
 		object = new THREE.Mesh( new Plane( 3, 3 ), material );
 		scene.addObject( object );
+		
+		renderer.initMaterial( material, scene.lights, scene.fog, object );
 
 	};
 

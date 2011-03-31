@@ -32,6 +32,8 @@ var PrairieWorld = function ( shared ) {
 
 		that.scene.addObject( mesh );
 
+		preInitModel( geometry, shared.renderer, that.scene, mesh );		
+		
 	} } );
 
 }

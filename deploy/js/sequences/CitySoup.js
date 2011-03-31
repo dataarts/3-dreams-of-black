@@ -85,8 +85,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// ribbons
 	for ( var k = 0; k < initSettings.numOfRibbons; ++k ) {
 
-		var ribbon = new Ribbon(15,6,initSettings.numOfVectors-2);
-		var ribbonMesh = new THREE.Mesh( ribbon, initSettings.ribbonMaterials[k%6] );
+		var ribbon = new Ribbon( 15, 6, initSettings.numOfVectors - 2 );
+		var ribbonMesh = new THREE.Mesh( ribbon, initSettings.ribbonMaterials[ k % 6 ] );
 		ribbonMesh.doubleSided = true;
 		scene.addObject( ribbonMesh );
 
@@ -96,6 +96,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		ribbonArray.push(obj);
 		ribbonMeshArray.push(ribbonMesh);
+
 	}
 
 	// particles

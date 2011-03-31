@@ -3,21 +3,29 @@ var CityWorld = function ( shared ) {
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0006 );
+	this.scene.fog = new THREE.FogExp2( 0x535758, 0.00006176 );
+	this.scene.fog.color.setHSV( 0, 0, 0.34705882352941175 );
 
 	// Lights
+/*
+	var pointLight = new THREE.PointLight( 0xbbbbff, 0.5 );
+	pointLight.position.x = 1000;
+	pointLight.position.y = 500;
+	pointLight.position.z = - 1000;
+	this.scene.addLight( pointLight );
 
-	var directionalLight = new THREE.PointLight( 0xbbbbff, 0.5 );
-	directionalLight.position.x = 1000;
-	directionalLight.position.y = 500;
-	directionalLight.position.z = - 1000;
+	var pointLight = new THREE.PointLight( 0xffeeee, 0.2 );
+	pointLight.position.set( -1000, -500, -1000 );
+	this.scene.addLight( pointLight );
+	
+*/	
+
+	var directionalLight = new THREE.DirectionalLight( 0xffffff );
+	directionalLight.position.set( -0.733106965726893,  0.6320595441744891,  -0.2511073663209529 );
 	this.scene.addLight( directionalLight );
 
-
-	var directionalLight = new THREE.PointLight( 0xffeeee, 0.2 );
-	directionalLight.position.x = - 1000;
-	directionalLight.position.y = - 500;
-	directionalLight.position.z = - 1000;
+	var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+	directionalLight.position.set( 0.733106965726893,  -0.6320595441744891,  0.2511073663209529 );
 	this.scene.addLight( directionalLight );
 
 	// Mesh
@@ -33,6 +41,8 @@ var CityWorld = function ( shared ) {
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
+		
+		preInitModel( geometry, shared.renderer, that.scene, mesh );
 
 	} } );
 

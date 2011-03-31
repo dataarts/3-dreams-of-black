@@ -30,6 +30,8 @@ var DunesWorld = function ( shared ) {
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
+		
+		preInitModel( geometry, shared.renderer, that.scene, mesh );
 
 	} } );
 
