@@ -18,11 +18,11 @@ var BloomEffect = function ( shared, strength ) {
 		camera.position.z = 100;
 
 		scene = new THREE.Scene();
-		
+
 		var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
 		renderTarget2 = new THREE.WebGLRenderTarget( 512, 512, pars );
 		renderTarget3 = new THREE.WebGLRenderTarget( 512, 512, pars );
-		
+
 		var screenShader = ShaderUtils.lib[ "screen" ];
 		screenUniforms = Uniforms.clone( screenShader.uniforms );
 
@@ -60,16 +60,16 @@ var BloomEffect = function ( shared, strength ) {
 		quad = new THREE.Mesh( new Plane( shared.baseWidth, shared.baseHeight ), materialConvolution );
 		quad.position.z = -500;
 		scene.addObject( quad );
-		
-		renderer.initMaterial( materialScreen, scene.lights, scene.fog, quad );
-		renderer.initMaterial( materialConvolution, scene.lights, scene.fog, quad );
+
+		// renderer.initMaterial( materialScreen, scene.lights, scene.fog, quad );
+		// renderer.initMaterial( materialConvolution, scene.lights, scene.fog, quad );
 
 	};
 
 	this.update = function ( progress, time ) {
 
 		// Render quad with blured scene into texture (convolution pass 1)
-		
+
 		quad.materials[ 0 ] = materialConvolution;
 
 		convolutionUniforms.tDiffuse.texture = renderTarget;

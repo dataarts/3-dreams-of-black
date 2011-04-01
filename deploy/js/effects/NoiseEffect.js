@@ -32,8 +32,8 @@ var NoiseEffect = function ( shared, nIntensity, sIntensity, sCount ) {
 		var quad = new THREE.Mesh( new Plane( shared.baseWidth, shared.baseHeight ), material );
 		quad.position.z = -500;
 		scene.addObject( quad );
-		
-		renderer.initMaterial( material, scene.lights, scene.fog, quad );
+
+		// renderer.initMaterial( material, scene.lights, scene.fog, quad );
 
 	};
 

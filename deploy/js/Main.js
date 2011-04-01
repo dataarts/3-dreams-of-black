@@ -109,8 +109,6 @@ function init() {
 
 function start( pattern ) {
 
-	console.log( "total materials: ", THREE.MaterialCounter.value );
-	
 	document.body.removeChild( document.getElementById( 'launcher' ) );
 
 	container = document.createElement( 'div' );
