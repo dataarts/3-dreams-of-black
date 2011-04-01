@@ -145,8 +145,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
-	loader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
+	//loader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
+	//loader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
 
 	// grass
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoaded } );
@@ -167,22 +167,23 @@ var CitySoup = function ( camera, scene, shared ) {
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 1.0 } );
-	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.3 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x0000DE, opacity: 1.0 } );
+	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 1.0 } );
+	var invMaterial3 = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 1.0 } );
 
-	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
+/*	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
 	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial, false );
 	var leftPlane = addMesh( plane, 200,  camPos.x-settings.collisionDistance, camPos.y, camPos.z, 0,1.57,0, invMaterial, false );
 	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
 	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
-	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial2, false );
-
+	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial, false );
+*/
 	// temp boxes
 	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
-	var cubea = addMesh( cube, 1,  250, -300+487, 1400-1800, 0,0,0, invMaterial2, false );
+	var cubea = addMesh( cube, 1,  250, -240+487, -590, 0,0,0, invMaterial2, false );
 	cubea.scale.y = 3.5;
 	cubea.scale.z = 5;
-	var cubeb = addMesh( cube, 1,  -230, -240+487, -360-1800, 0,0,0, invMaterial2, false );
+	var cubeb = addMesh( cube, 1,  -230, -240+487, -360-1800, 0,0,0, invMaterial3, false );
 	cubeb.scale.x = 0.8;
 	cubeb.scale.y = 3.4;
 	cubeb.scale.z = 25;
@@ -194,7 +195,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	cubed.scale.x = 2;
 	cubed.scale.y = 3.8;
 	cubed.scale.z = 4.5;
-	var cubef = addMesh( cube, 1,  230, -200+487, -1115-1800, 0,0,0.0957, invMaterial, false );
+	var cubef = addMesh( cube, 1,  230, -200+487, -1115-1800, 0,0,0.0957, invMaterial2, false );
 	cubef.scale.x = 1;
 	cubef.scale.y = 3.2;
 	cubef.scale.z = 2;
@@ -202,7 +203,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	cubeg.scale.x = 1.2;
 	cubeg.scale.y = 1.6;
 	cubeg.scale.z = 3.6;
-	var cubeh = addMesh( cube, 1,  240, -320+487, 1720-1800, 0,0,0, invMaterial2, false );
+	var cubeh = addMesh( cube, 1,  240, -320+487, 590, 0,0,0, invMaterial3, false );
 	cubeh.scale.x = 0.8;
 	cubeh.scale.y = 3.2;
 	cubeh.scale.z = 2.4;
@@ -215,7 +216,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	//var rampa = addMesh( cube, 1,  -240, -20, -400, 0,0,0.5, invMaterial, false );
 	//rampa.scale.z = 20;
 
-/*	var ref = cubed;
+	var ref = cubeh;
 	gui.add( ref.position, 'x', -2000, 2000).name( 'xpos' );
 	gui.add( ref.position, 'y', -2000, 2000).name( 'ypos' );
 	gui.add( ref.position, 'z', -2000, 2000).name( 'zpos' );
@@ -225,7 +226,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	gui.add( ref.rotation, 'x', 0, Math.PI*2).name( 'xrotation' );
 	gui.add( ref.rotation, 'y', 0, Math.PI*2).name( 'yrotation' );
 	gui.add( ref.rotation, 'z', 0, Math.PI*2).name( 'zrotation' );
-*/
+
 
 	// ---
 
@@ -263,12 +264,12 @@ var CitySoup = function ( camera, scene, shared ) {
 		}
 		
 		// collisionScene stuff should probably not be here (TEMP)
-		rightPlane.position.x = camPos.x+settings.collisionDistance;
+		/*rightPlane.position.x = camPos.x+settings.collisionDistance;
 		leftPlane.position.x = camPos.x-settings.collisionDistance;
 		frontPlane.position.z = camPos.z-settings.collisionDistance*1.4;
 		backPlane.position.z = camPos.z+settings.collisionDistance;
 		// ---
-
+		*/
 		r += 0.1;
 
 		updateEmitter();
@@ -288,7 +289,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		// collisionScene stuff should probably not be here (TEMP)
 		//renderer.render( collisionScene, camera );
 		renderer.render( collisionScene, camera, renderTarget );
-		renderer.clear();
+		//renderer.clear();
 		// ---
 
 	}
@@ -896,14 +897,13 @@ var CitySoup = function ( camera, scene, shared ) {
 					currentNormal = normal;
 
 					// walls
-					if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
-
+					/*if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
 						currentNormal.x = 0;
 						currentNormal.y = 1;
 						currentNormal.z = 0;
 						// not to be airbourne
 						emitterMesh.position.y = FLOOR;
-					}
+					}*/
 
 					var amount = 6;
 
@@ -955,11 +955,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 					followNormal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
 
-					if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
+					/*if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
 						followNormal.x = 0;
 						followNormal.y = 1;
 						followNormal.z = 0;
-					}
+					}*/
 
 					//console.log(currentNormal.y+" | "+followNormal.y);
 

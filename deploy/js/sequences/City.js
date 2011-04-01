@@ -9,17 +9,19 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		waypoints = [ [ 0, 20, 0 ], [ 0, 20, -3000 ] ];
+		//waypoints = [ [ 0, 20, 0 ], [ 0, 20, -3000 ] ];
+		waypoints = [ [ 0, 20, -1500 ], [ 0, 20, -3000 ] ];
 
 		camera = new THREE.PathCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypoints, duration: 30, 
+			waypoints: waypoints, duration: 3000, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+			//horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ -0.5, Math.PI-0.5 ] }
 
 		 } );
 

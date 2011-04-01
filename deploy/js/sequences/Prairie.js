@@ -46,7 +46,7 @@ var Prairie = function ( shared ) {
 		camera = cameraPath;
 
 		world = new PrairieWorld( shared );
-		//soup = new PrairieSoup( camera, world.scene, shared );
+		soup = new PrairieSoup( camera, world.scene, shared );
 
 		//world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
@@ -102,7 +102,7 @@ var Prairie = function ( shared ) {
 		//var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
 		//world.scene.lights[1].color.setRGB(a,a,a);
 
-		//soup.update();
+		soup.update();
 
 		renderer.render( world.scene, camera, renderTarget );
 

@@ -3,11 +3,11 @@ var CityWorld = function ( shared ) {
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0006176 );
-	this.scene.fog.color.setHSV( 0, 0, 0.34705882352941175 );
+	this.scene.fog = new THREE.FogExp2( 0x535758, 0.00004705882352941177 );
+	this.scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
 
 	// Lights
-/*
+	/*
 	var pointLight = new THREE.PointLight( 0xbbbbff, 0.5 );
 	pointLight.position.x = 1000;
 	pointLight.position.y = 500;
@@ -17,11 +17,15 @@ var CityWorld = function ( shared ) {
 	var pointLight = new THREE.PointLight( 0xffeeee, 0.2 );
 	pointLight.position.set( -1000, -500, -1000 );
 	this.scene.addLight( pointLight );
-	
-*/	
+	*/	
+
+	var ambientLight = new THREE.AmbientLight( 0xffffff );
+	ambientLight.color.setHSV( 0, 0, 0.16470588235294117 );
+	this.scene.addLight( ambientLight );
 
 	var directionalLight = new THREE.DirectionalLight( 0xffffff );
-	directionalLight.position.set( -0.733106965726893,  0.6320595441744891,  -0.2511073663209529 );
+	directionalLight.position.set( -0.645442029122017,  0.34452945220032116,  -0.6816920445548706 );
+	directionalLight.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
 	this.scene.addLight( directionalLight );
 
 	var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.1 );
@@ -35,7 +39,7 @@ var CityWorld = function ( shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( { model: 'files/models/city/street.js', callback: function( geometry ) {
+	loader.load( { model: 'files/models/city/City_P2.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
