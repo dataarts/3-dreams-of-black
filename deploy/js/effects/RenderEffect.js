@@ -18,8 +18,8 @@ var RenderEffect = function ( shared ) {
 		object.scale.y = - 1; // TODO: HACK
 		object.doubleSided = true;
 		scene.addObject( object );
-		
-		renderer.initMaterial( material, scene.lights, scene.fog, object );
+
+		// renderer.initMaterial( material, scene.lights, scene.fog, object );
 
 	};
 

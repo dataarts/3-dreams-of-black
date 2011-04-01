@@ -109,8 +109,6 @@ function init() {
 
 function start( pattern ) {
 
-	console.log( "total materials: ", THREE.MaterialCounter.value );
-	
 	document.body.removeChild( document.getElementById( 'launcher' ) );
 
 	container = document.createElement( 'div' );
@@ -229,7 +227,7 @@ function onWindowResize( event ) {
 
 function animate() {
 
-	requestAnimationFrame( animate );
+	requestAnimationFrame( animate, renderer.domElement );
 	render();
 
 	stats.update();
