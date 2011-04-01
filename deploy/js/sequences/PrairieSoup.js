@@ -51,6 +51,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var r = 0;
 	camPos = new THREE.Vector3( 3223, 930, -2510 );
 
+	var pointLight = new THREE.PointLight( 0xeeffee, - 2, 500 );
+	pointLight.position.x = camPos.x;
+	pointLight.position.y = camPos.y;
+	pointLight.position.z = camPos.z;
+	scene.addLight( pointLight, 1.0 );
+
 	// vectors
 	for ( var i = 0; i < initSettings.numOfVectors + 20; ++i ) {
 
@@ -326,6 +332,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 			alpha = Math.min(alpha,1.0);
 			particles.materials[0].opacity = alpha;
 		}
+
+		pointLight.position.x = emitterFollow.position.x;
+		pointLight.position.y = emitterFollow.position.y + 10;
+		pointLight.position.z = emitterFollow.position.z;
 
 	}
 
