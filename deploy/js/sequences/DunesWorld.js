@@ -4,19 +4,24 @@ var DunesWorld = function ( shared ) {
 	TILE_SIZE = 20000;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00005 );
-	this.scene.fog.color.setHSV(0.15, 0.3, 0.9);
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0004 );
+	this.scene.fog.color.setHSV( 0.6, 0.1235, 1 );
 
 	// Lights
 
 	var ambient = new THREE.AmbientLight( 0x221100 );
+	ambient.color.setHSV( 0, 0, 0.1 );
 	this.scene.addLight( ambient );
 
-	var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight.position.y = 1;
-	directionalLight.position.z = 1;
-	directionalLight.position.normalize();
-	this.scene.addLight( directionalLight );
+	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight1.position.set( -0.7143659529263534, 0.5424784186070764, 0.4420389696001798 );
+	directionalLight1.color.setHSV( 0, 0, 1 );
+	this.scene.addLight( directionalLight1 );
+
+	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight2.position.set( -0.19979561807642718, -0.1646853205760528,  0.9658987815419486 );
+	directionalLight2.color.setHSV( 0, 0, 0.306 );
+	this.scene.addLight( directionalLight2 );
 
 	// Mesh
 
@@ -25,16 +30,22 @@ var DunesWorld = function ( shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( { model: 'files/models/dunes/dunes.js', callback: function( geometry ) {
-
-		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+	function addDunesPart( geo ) {
+		
+		var mesh = new THREE.Mesh( geo, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
 		
-		preInitModel( geometry, shared.renderer, that.scene, mesh );
+		preInitModel( geo, shared.renderer, that.scene, mesh );
 
-	} } );
+	};
+	
+	loader.load( { model: 'files/models/dunes/dunes_1.js', callback: addDunesPart } );
+	loader.load( { model: 'files/models/dunes/dunes_2.js', callback: addDunesPart } );
+	loader.load( { model: 'files/models/dunes/dunes_3.js', callback: addDunesPart } );
+	loader.load( { model: 'files/models/dunes/dunes_4.js', callback: addDunesPart } );
+	loader.load( { model: 'files/models/dunes/dunes_5.js', callback: addDunesPart } );
 
 	/*
 

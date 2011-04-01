@@ -78,7 +78,7 @@ function init() {
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
-	// sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.16, 0.0005, 2096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
 
 	sequencer.add( new TransitionToPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
 
@@ -89,8 +89,8 @@ function init() {
 	sequencer.add( new TransitionToDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
 
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
-	sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
-	// sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
+	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.094, 0.0005, 2096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
 
 	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 3 );
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 3 );

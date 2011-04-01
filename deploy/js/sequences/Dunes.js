@@ -9,13 +9,13 @@ var Dunes = function ( shared ) {
 
 		camera = new THREE.QuakeCamera( {
 
-			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			movementSpeed: 10, lookSpeed: 0.0015, noFly: false, lookVertical: true, 
+			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+			movementSpeed: 1.5, lookSpeed: 0.0015, noFly: false, lookVertical: true, 
 			autoForward: true /*, heightSpeed: true, heightMin: 250, heightMax: 1500, heightCoef: 0.025*/
 
 		} );
 
-		camera.lon = 90;
+		camera.lon = -60;
 
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
