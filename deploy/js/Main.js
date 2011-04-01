@@ -83,8 +83,8 @@ function init() {
 	sequencer.add( new TransitionToPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
-	sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
-	// sequencer.add( new NoiseEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
+	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.1647, 0.005, 2096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 
 	sequencer.add( new TransitionToDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
 
