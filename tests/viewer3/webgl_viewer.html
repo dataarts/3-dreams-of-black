@@ -438,7 +438,7 @@
 					
 				</div>
 			</div>
-
+<!--
 			<div class="sgroup zshadow">
 				<div class="tbutton" id="btn_lensflare">+</div>
 
@@ -452,7 +452,7 @@
 					<div id="slider_wrap_lf_y"> </div> 
 				</div>
 			</div>
-			
+-->			
 			<div id="files_div">
 				<span class="header">Files</span><br/>
 				<div id="file_list"></div> 
@@ -830,13 +830,13 @@
 			hide( "grp_dlight2" );
 
 			// sliders - lens flare
-			
+			/*
 			var flSliderX = new Slider( $( "slider_wrap_lf_x" ), swidth, sd, 0.0, 45.0, 0, function(val) { updateLensflare( val, -1 ); $("lf_x").innerHTML = val.toFixed(0); } );
 			var flSliderY = new Slider( $( "slider_wrap_lf_y" ), swidth, sd, 0.0, 360.0, 0, function(val) { updateLensflare( -1, val ); $("lf_y").innerHTML = val.toFixed(0); } );
 
 			addGroupToggle( "btn_lensflare", "grp_lensflare" );
 			hide( "grp_lensflare" );
-			
+			*/
 
 
 			// sliders - ambientLight light
@@ -861,7 +861,7 @@
 			
 			
 			// lensflare
-						
+			/*
 			lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
 			
 			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
@@ -881,7 +881,7 @@
 			lensFlareRotate.addChild( lensFlare );
 			
 			scene.addChild( lensFlareRotate );
-			
+			*/
 			
 			// axis
 			
@@ -2207,7 +2207,7 @@
 
 			}
 			
-			lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
+			//lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
 
 		};
 		
