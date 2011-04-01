@@ -16,7 +16,7 @@ function init() {
 
 	scene = new THREE.Scene();
 
-	//gui = new GUI();
+	gui = new GUI();
 
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
@@ -102,7 +102,7 @@ function start( pattern ) {
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0.2;	
+	audio.volume = 0//.2;	
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 

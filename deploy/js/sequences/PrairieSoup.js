@@ -19,13 +19,13 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	var settings = {
 		vectorDivider : 3,
-		emitterDivider : 4.5,
+		emitterDivider : 4,
 		ribbonPulseMultiplier_1 : 30,
 		ribbonPulseMultiplier_2 : 10,
 		flyingAnimalPulseMultiplier_1 : 10,
 		ribbonMin : 6,
 		ribbonMax : 10,
-		collisionDistance : 800,
+		collisionDistance : 1500,
 	}
 
 	// init
@@ -154,13 +154,35 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		camPos.z = camera.matrixWorld.n34;
 
 		// collisionScene stuff should probably not be here (TEMP)
-		rightPlane.position.x = camPos.x+settings.collisionDistance;
+		/*rightPlane.position.x = camPos.x+settings.collisionDistance;
 		leftPlane.position.x = camPos.x-settings.collisionDistance;
 		frontPlane.position.z = camPos.z-settings.collisionDistance;
 		backPlane.position.z = camPos.z+settings.collisionDistance;
 		downPlane.position.y = camPos.y-80;
-		upPlane.position.y = camPos.y+400;
+		upPlane.position.y = camPos.y+400;*/
 		// ---
+
+		// collisionScene stuff should probably not be here (TEMP)
+		rightPlane.position.x = camPos.x+settings.collisionDistance;
+		leftPlane.position.x = camPos.x-settings.collisionDistance;
+		rightPlane.position.z = camPos.z;
+		rightPlane.position.y = camPos.y;
+		leftPlane.position.z = camPos.z;
+		leftPlane.position.y = camPos.y;
+
+		frontPlane.position.z = camPos.z-settings.collisionDistance;
+		backPlane.position.z = camPos.z+settings.collisionDistance;
+		frontPlane.position.x = camPos.x;
+		frontPlane.position.y = camPos.y;
+		backPlane.position.x = camPos.x;
+		backPlane.position.y = camPos.y;
+
+		downPlane.position.y = camPos.y-80;
+		upPlane.position.y = camPos.y+400;
+		downPlane.position.x = camPos.x;
+		downPlane.position.z = camPos.z;
+		upPlane.position.x = camPos.x;
+		upPlane.position.z = camPos.z;
 
 		r += 0.1;
 
@@ -334,7 +356,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		}
 
 		pointLight.position.x = emitterFollow.position.x;
-		pointLight.position.y = emitterFollow.position.y + 10;
+		pointLight.position.y = emitterFollow.position.y + 50;
 		pointLight.position.z = emitterFollow.position.z;
 
 	}
