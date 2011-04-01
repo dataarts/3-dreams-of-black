@@ -69,8 +69,7 @@ var City = function ( shared ) {
 		soup.update();
 
 		renderer.render( world.scene, camera, renderTarget );
-
-
+		
 	};
 
 };
