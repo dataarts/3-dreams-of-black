@@ -43,7 +43,7 @@ var CityWorld = function ( shared ) {
 	// Parts
 
 	//loader.load( { model: "files/models/city/City_P1.js", callback: partLoaded } );
-	loader.load( { model: "files/models/city/City_P2.js", callback: partLoaded } );
+	//loader.load( { model: "files/models/city/City_P2.js", callback: partLoaded } );
 	//loader.load( { model: "files/models/city/City_P3.js", callback: partLoaded } );
 
 	function partLoaded ( geometry ) {
@@ -62,16 +62,22 @@ var CityWorld = function ( shared ) {
 
 	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
 
-		var shadowMesh = new THREE.Mesh( geometry );
+		var shadowMesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
 		
 		var shadow = new THREE.ShadowVolume( shadowMesh );
 		
-		that.scene.addChild( shadow );
+		that.scene.addObject( shadow, true );
 
-		//that.scene.addObject( shadowMesh );
+		that.scene.addObject( shadowMesh );
 
 		preInitModel( geometry, shared.renderer, that.scene, shadowMesh );
+
+
+		/*var plane = new Plane( 1000, 1000, 1, 1 );
+		var invMaterial = new THREE.MeshBasicMaterial( { color:0x0000DE, opacity: 1.0 } );
+
+		that.scene.addObject(plane, invMaterial);*/
 
 	} } );
 
