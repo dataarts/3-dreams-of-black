@@ -3,8 +3,8 @@ var PrairieWorld = function ( shared ) {
 	var that = this;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000035 );
-	this.scene.fog.color.setHSV( 0.5, 0.15, 1.0 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00001 );
+	this.scene.fog.color.setHSV( 0.5, 0.25, 1.0 );
 
 	// Lights
 
@@ -24,7 +24,8 @@ var PrairieWorld = function ( shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( { model: 'files/models/prairie/prairie.js', callback: function( geometry ) {
+	//loader.load( { model: 'files/models/prairie/prairie.js', callback: function( geometry ) {
+	loader.load( { model: 'files/models/prairie/prairie_blender.js', callback: function( geometry ) {
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 10.0;
