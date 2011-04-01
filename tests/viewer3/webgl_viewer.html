@@ -392,29 +392,53 @@
 			</div>
 
 			<div class="sgroup zshadow">
-				<div class="tbutton" id="btn_dlight">+</div>
+				<div class="tbutton" id="btn_dlight1">+</div>
 
-				<div class="sheader">Directional light</div>
+				<div class="sheader">Directional light 1</div>
 				
-				<div class="sinner" id="grp_dlight">					
-					<div class="sval"><span class="slabel">Hue:</span> <span id="dl_hue">0.00</span></div>
-					<div id="slider_wrap_dl_h"> </div> 
+				<div class="sinner" id="grp_dlight1">					
+					<div class="sval"><span class="slabel">Hue:</span> <span id="dl1_hue">0.00</span></div>
+					<div id="slider_wrap_dl1_h"> </div> 
 					
-					<div class="sval"><span class="slabel">Saturation:</span> <span id="dl_sat">0.00</span></div>
-					<div id="slider_wrap_dl_s"> </div> 
+					<div class="sval"><span class="slabel">Saturation:</span> <span id="dl1_sat">0.00</span></div>
+					<div id="slider_wrap_dl1_s"> </div> 
 					
-					<div class="sval"><span class="slabel">Value:</span> <span id="dl_val">0.00</span></div>
-					<div id="slider_wrap_dl_v"> </div>
+					<div class="sval"><span class="slabel">Value:</span> <span id="dl1_val">0.00</span></div>
+					<div id="slider_wrap_dl1_v"> </div>
 					
-					<div class="sval"><span class="slabel">Phi:</span> <span id="dl_phi">0.00</span></div>
-					<div id="slider_wrap_dl_phi"> </div>
+					<div class="sval"><span class="slabel">Phi:</span> <span id="dl1_phi">0.00</span></div>
+					<div id="slider_wrap_dl1_phi"> </div>
 					
-					<div class="sval"><span class="slabel">Theta:</span> <span id="dl_theta">0.00</span></div>
-					<div id="slider_wrap_dl_theta"> </div>
+					<div class="sval"><span class="slabel">Theta:</span> <span id="dl1_theta">0.00</span></div>
+					<div id="slider_wrap_dl1_theta"> </div>
 					
 				</div>
 			</div>
-			
+
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_dlight2">+</div>
+
+				<div class="sheader">Directional light 2</div>
+				
+				<div class="sinner" id="grp_dlight2">					
+					<div class="sval"><span class="slabel">Hue:</span> <span id="dl2_hue">0.00</span></div>
+					<div id="slider_wrap_dl2_h"> </div> 
+					
+					<div class="sval"><span class="slabel">Saturation:</span> <span id="dl2_sat">0.00</span></div>
+					<div id="slider_wrap_dl2_s"> </div> 
+					
+					<div class="sval"><span class="slabel">Value:</span> <span id="dl2_val">0.00</span></div>
+					<div id="slider_wrap_dl2_v"> </div>
+					
+					<div class="sval"><span class="slabel">Phi:</span> <span id="dl2_phi">0.00</span></div>
+					<div id="slider_wrap_dl2_phi"> </div>
+					
+					<div class="sval"><span class="slabel">Theta:</span> <span id="dl2_theta">0.00</span></div>
+					<div id="slider_wrap_dl2_theta"> </div>
+					
+				</div>
+			</div>
+
 			<div class="sgroup zshadow">
 				<div class="tbutton" id="btn_lensflare">+</div>
 
@@ -492,13 +516,13 @@
 
 		// lights
 		
-		var ambientLight, directionalLight;
+		var ambientLight, directionalLight1, directionalLight2;
 		
 		var lightColors = {
-		"white":  [ { h: 0.0, s: 0.0, v: 0.1 } , { h: 0.0, s: 0.0, v: 1.0 } ],
-		"cold":   [ { h: 0.6, s: 0.2, v: 0.1 } , { h: 0.6, s: 0.2, v: 1.0 } ],
-		"warm":   [ { h: 0.1, s: 0.2, v: 0.1 } , { h: 0.1, s: 0.2, v: 1.0 } ],
-		"sunset": [ { h: 0.1, s: 0.5, v: 0.1 } , { h: 0.1, s: 0.7, v: 1.0 } ]
+		"white":  [ { h: 0.0, s: 0.0, v: 0.1 }, { h: 0.0, s: 0.0, v: 1.0 }, { h: 0.0, s: 0.0, v: 0.2 } ],
+		"cold":   [ { h: 0.6, s: 0.2, v: 0.1 }, { h: 0.6, s: 0.2, v: 1.0 }, { h: 0.6, s: 0.4, v: 0.2 } ],
+		"warm":   [ { h: 0.1, s: 0.2, v: 0.1 }, { h: 0.1, s: 0.2, v: 1.0 }, { h: 0.1, s: 0.4, v: 0.2 } ],
+		"sunset": [ { h: 0.1, s: 0.5, v: 0.1 }, { h: 0.1, s: 0.7, v: 1.0 }, { h: 0.1, s: 0.9, v: 0.2 } ]
 		};
 		var lightType = "white";
 		
@@ -508,7 +532,7 @@
 		"v": 0.0
 		};
 
-		var DLIGHT = {
+		var DLIGHT1 = {
 		"h": 0.0,
 		"s": 0.0,
 		"v": 0.0,
@@ -521,19 +545,45 @@
 		"theta": 0.33
 		};
 
-		ALIGHT.h = lightColors[lightType][0].h;
-		ALIGHT.s = lightColors[lightType][0].s;
-		ALIGHT.v = lightColors[lightType][0].v;
+		var DLIGHT2 = {
+		"h": 0.0,
+		"s": 0.0,
+		"v": 0.0,
+		
+		"x": -1.0,
+		"y": -1.0,
+		"z": -1.0,
+		
+		"phi": -0.5,
+		"theta": 0.33
+		};
 
-		DLIGHT.h = lightColors[lightType][1].h;
-		DLIGHT.s = lightColors[lightType][1].s;
-		DLIGHT.v = lightColors[lightType][1].v;
+		function updateHSV( src, dst ) {
+			
+			dst.h = src.h;
+			dst.s = src.s;
+			dst.v = src.v;
 
-		DLIGHT.x = Math.sin( DLIGHT.phi ) * Math.cos( DLIGHT.theta );
-		DLIGHT.y = Math.cos( DLIGHT.phi );
-		DLIGHT.z = Math.sin( DLIGHT.phi ) * Math.sin( DLIGHT.theta );
+		};
+		
+		function updateUnitVector( src ) {
 
-		var dlSliderH, dlSliderS, dlSliderV;
+			src.x = Math.sin( src.phi ) * Math.cos( src.theta );
+			src.y = Math.cos( src.phi );
+			src.z = Math.sin( src.phi ) * Math.sin( src.theta );
+			
+		};
+		
+		updateHSV( lightColors[ lightType ][ 0 ], ALIGHT );
+		updateHSV( lightColors[ lightType ][ 1 ], DLIGHT1 );
+		updateHSV( lightColors[ lightType ][ 2 ], DLIGHT2 );
+
+		updateUnitVector( DLIGHT1 );
+		updateUnitVector( DLIGHT2 );		
+
+		var dl1SliderH, dl1SliderS, dl1SliderV,
+			dl2SliderH, dl2SliderS, dl2SliderV;
+
 		var alSliderH, alSliderS, alSliderV;
 		
 		var lensFlare;
@@ -553,7 +603,7 @@
 		// scene
 		
 		var axisVisible = true;
-		var arrow;
+		var arrow1, arrow2;
 		
 		// controls
 
@@ -646,21 +696,21 @@
 			
 			// LIGHTS
 
-			var acolor, dcolor;
+			var acolor;
 			
-			acolor = lightColors[ lightType ][ 0 ];
-			dcolor = lightColors[ lightType ][ 1 ];
+			acolor  = lightColors[ lightType ][ 0 ];
+			d1color = lightColors[ lightType ][ 1 ];
+			d2color = lightColors[ lightType ][ 2 ];
 			
 			ambientLight = new THREE.AmbientLight();
 			ambientLight.color.setHSV( acolor.h, acolor.s, acolor.v );
 			scene.addLight( ambientLight );
 
-			directionalLight = new THREE.DirectionalLight( );
-			directionalLight.color.setHSV( dcolor.h, dcolor.s, dcolor.v );
-			
-			directionalLight.position.set( DLIGHT.x, DLIGHT.y, DLIGHT.z );
-			directionalLight.position.normalize();
-			scene.addLight( directionalLight );
+			directionalLight1 = new THREE.DirectionalLight( );
+			scene.addLight( directionalLight1 );
+
+			directionalLight2 = new THREE.DirectionalLight( );
+			scene.addLight( directionalLight2 );
 
 			// STATS
 			
@@ -749,18 +799,35 @@
 				
 			};
 			
-			dlSliderH = new Slider( $( "slider_wrap_dl_h" ), swidth, sd, 0.0, 1.0, dcolor.h, function(val) { DLIGHT.h = val; updateDLight(); $("dl_hue").innerHTML = val.toFixed(2); } );
-			dlSliderS = new Slider( $( "slider_wrap_dl_s" ), swidth, sd, 0.0, 1.0, dcolor.s, function(val) { DLIGHT.s = val; updateDLight(); $("dl_sat").innerHTML = val.toFixed(2); } );
-			dlSliderV = new Slider( $( "slider_wrap_dl_v" ), swidth, sd, 0.0, 1.0, dcolor.v, function(val) { DLIGHT.v = val; updateDLight(); $("dl_val").innerHTML = val.toFixed(2); } );
-
-			var dlSliderX = new Slider( $( "slider_wrap_dl_phi" ), swidth, sd, -3.14, 3.14, DLIGHT.phi, function(val) { DLIGHT.phi = val; updateDLight(); $("dl_phi").innerHTML = angleDegrees( val ); } );
-			var dlSliderY = new Slider( $( "slider_wrap_dl_theta" ), swidth, sd, -3.14, 3.14, DLIGHT.theta, function(val) { DLIGHT.theta = val; updateDLight(); $("dl_theta").innerHTML = angleDegrees( val ); } );
+			// sliders - directional light 1
 			
-			$("dl_phi").innerHTML = angleDegrees( DLIGHT.phi );
-			$("dl_theta").innerHTML = angleDegrees( DLIGHT.theta );
+			dl1SliderH = new Slider( $( "slider_wrap_dl1_h" ), swidth, sd, 0.0, 1.0, d1color.h, function(val) { DLIGHT1.h = val; updateDLight1(); $("dl1_hue").innerHTML = val.toFixed(2); } );
+			dl1SliderS = new Slider( $( "slider_wrap_dl1_s" ), swidth, sd, 0.0, 1.0, d1color.s, function(val) { DLIGHT1.s = val; updateDLight1(); $("dl1_sat").innerHTML = val.toFixed(2); } );
+			dl1SliderV = new Slider( $( "slider_wrap_dl1_v" ), swidth, sd, 0.0, 1.0, d1color.v, function(val) { DLIGHT1.v = val; updateDLight1(); $("dl1_val").innerHTML = val.toFixed(2); } );
 
-			addGroupToggle( "btn_dlight", "grp_dlight" );
-			hide( "grp_dlight" );
+			var dl1SliderX = new Slider( $( "slider_wrap_dl1_phi" ),   swidth, sd, -3.14, 3.14, DLIGHT1.phi,   function(val) { DLIGHT1.phi = val; updateDLight1(); $("dl1_phi").innerHTML = angleDegrees( val ); } );
+			var dl1SliderY = new Slider( $( "slider_wrap_dl1_theta" ), swidth, sd, -3.14, 3.14, DLIGHT1.theta, function(val) { DLIGHT1.theta = val; updateDLight1(); $("dl1_theta").innerHTML = angleDegrees( val ); } );
+			
+			$( "dl1_phi" ).innerHTML = angleDegrees( DLIGHT1.phi );
+			$( "dl1_theta" ).innerHTML = angleDegrees( DLIGHT1.theta );
+
+			addGroupToggle( "btn_dlight1", "grp_dlight1" );
+			hide( "grp_dlight1" );
+
+			// sliders - directional light 2
+			
+			dl2SliderH = new Slider( $( "slider_wrap_dl2_h" ), swidth, sd, 0.0, 1.0, d2color.h, function(val) { DLIGHT2.h = val; updateDLight2(); $("dl2_hue").innerHTML = val.toFixed(2); } );
+			dl2SliderS = new Slider( $( "slider_wrap_dl2_s" ), swidth, sd, 0.0, 1.0, d2color.s, function(val) { DLIGHT2.s = val; updateDLight2(); $("dl2_sat").innerHTML = val.toFixed(2); } );
+			dl2SliderV = new Slider( $( "slider_wrap_dl2_v" ), swidth, sd, 0.0, 1.0, d2color.v, function(val) { DLIGHT2.v = val; updateDLight2(); $("dl2_val").innerHTML = val.toFixed(2); } );
+
+			var dl2SliderX = new Slider( $( "slider_wrap_dl2_phi" ),   swidth, sd, -3.14, 3.14, DLIGHT2.phi,   function(val) { DLIGHT2.phi = val; updateDLight2(); $("dl2_phi").innerHTML = angleDegrees( val ); } );
+			var dl2SliderY = new Slider( $( "slider_wrap_dl2_theta" ), swidth, sd, -3.14, 3.14, DLIGHT2.theta, function(val) { DLIGHT2.theta = val; updateDLight2(); $("dl2_theta").innerHTML = angleDegrees( val ); } );
+			
+			$( "dl2_phi" ).innerHTML = angleDegrees( DLIGHT2.phi );
+			$( "dl2_theta" ).innerHTML = angleDegrees( DLIGHT2.theta );
+
+			addGroupToggle( "btn_dlight2", "grp_dlight2" );
+			hide( "grp_dlight2" );
 
 			// sliders - lens flare
 			
@@ -795,16 +862,16 @@
 			
 			// lensflare
 						
-			lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveAlphaBlending );
+			lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
 			
-			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveAlphaBlending );
-			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveAlphaBlending );
-			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveAlphaBlending );
+			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
+			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
+			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
 			
-			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveAlphaBlending );
-			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveAlphaBlending );
-			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveAlphaBlending );
-			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveAlphaBlending );
+			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveBlending );
+			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
 			
 			lensFlare.customUpdateCallback = lensFlareUpdateCallback;
 			lensFlare.position.set( 0, 0, -99000 );
@@ -822,11 +889,15 @@
 			sceneRoot = new THREE.Object3D();
 			
 			var axis = createAxis();
-			arrow = createArrow();
+			
+			arrow1 = createArrow( 0xffaa00 );
+			arrow2 = createArrow( 0xff2200 );
+			
 			var tempScene = createTempScene();
 			
 			auxRoot.addChild( axis );
-			auxRoot.addChild( arrow );
+			auxRoot.addChild( arrow1 );
+			auxRoot.addChild( arrow2 );
 			sceneRoot.addChild( tempScene );
 			
 			scene.addChild( auxRoot );
@@ -847,7 +918,8 @@
 			
 			setLight( lightType );
 
-			updateDLight();
+			updateDLight1();
+			updateDLight2();
 			
 		};
 
@@ -855,13 +927,17 @@
 		function generateSettingsURL() {
 		
 			var pars = {},
-				tmp = "";
-			
-			pars.flyCamera = { position: flyCamera.position, target: flyCamera.target.position };
+				tmp = "";			
+						
 			pars.fogDensity = scene.fog.density;
 			pars.fogColor = FOG;
+			
 			pars.ambientLight = ALIGHT;
-			pars.directionalLight = DLIGHT;
+			pars.directionalLight1 = DLIGHT1;			
+			pars.directionalLight2 = DLIGHT2;
+			
+			pars.effectEnabled = postprocessing.enabled;
+			pars.effectType = postprocessing.type;			
 			
 			if( postprocessing.materialFilm ) {
 			
@@ -884,6 +960,9 @@
 				};
 				
 			}
+
+			pars.flyCamera = { position: flyCamera.position, target: flyCamera.target.position };
+			pars.sceneScale = GLOBAL_SCALE;
 
 			tmp += "data:text/plain;charset=utf-8,";
 			tmp += JSON.stringify(pars, null, " ");			
@@ -987,18 +1066,29 @@
 
 		var tmpVec = new THREE.Vector3(), unitVector = new THREE.Vector3();
 		
-		function updateDLight() {					
+		function updateDLight1() {					
 			
-			DLIGHT.x = Math.sin( DLIGHT.phi ) * Math.cos( DLIGHT.theta );
-			DLIGHT.y = Math.cos( DLIGHT.phi );
-			DLIGHT.z = Math.sin( DLIGHT.phi ) * Math.sin( DLIGHT.theta );
+			updateUnitVector( DLIGHT1 );			
 					
-			directionalLight.position.set( DLIGHT.x, DLIGHT.y, DLIGHT.z );
-			directionalLight.color.setHSV( DLIGHT.h, DLIGHT.s, DLIGHT.v );
+			directionalLight1.position.set( DLIGHT1.x, DLIGHT1.y, DLIGHT1.z );
+			directionalLight1.color.setHSV( DLIGHT1.h, DLIGHT1.s, DLIGHT1.v );
 			
-			tmpVec.copy( directionalLight.position );
+			tmpVec.copy( directionalLight1.position );
 			tmpVec.multiplyScalar( -1 );
-			arrow.lookAt( tmpVec );
+			arrow1.lookAt( tmpVec );
+			
+		};
+
+		function updateDLight2() {					
+			
+			updateUnitVector( DLIGHT2 );			
+					
+			directionalLight2.position.set( DLIGHT2.x, DLIGHT2.y, DLIGHT2.z );
+			directionalLight2.color.setHSV( DLIGHT2.h, DLIGHT2.s, DLIGHT2.v );
+			
+			tmpVec.copy( directionalLight2.position );
+			tmpVec.multiplyScalar( -1 );
+			arrow2.lookAt( tmpVec );
 			
 		};
 
@@ -1054,16 +1144,17 @@
 			
 			object.lensFlares[ 2 ].y += 0.025;
 			object.lensFlares[ 2 ].scale = visibility * 0.3 + 0.6;
-			object.lensFlares[ 2 ].opacity = Math.max( 0, object.lensFlares[ 2 ].opacity - 0.20 * visibility );
+			object.lensFlares[ 2 ].opacity = Math.max( 0, object.lensFlares[ 2 ].opacity - 0.20 * visibility );
 			
 			object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + 45 * Math.PI / 180;
 			object.lensFlares[ 3 ].scale += 0.1;
-			object.lensFlares[ 3 ].opacity = Math.max( 0, object.lensFlares[ 3 ].opacity - 0.10 * visibility );
+			object.lensFlares[ 3 ].opacity = Math.max( 0, object.lensFlares[ 3 ].opacity - 0.10 * visibility );
 			
-			object.lensFlares[ 4 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.20 );
-			object.lensFlares[ 5 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.10 * visibility );
-			object.lensFlares[ 6 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.15 );
-			object.lensFlares[ 7 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.25 * visibility );
+			object.lensFlares[ 4 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.20 );
+			object.lensFlares[ 5 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.10 * visibility );
+			object.lensFlares[ 6 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.15 );
+			object.lensFlares[ 7 ].opacity = Math.max( 0, object.lensFlares[ 4 ].opacity - 0.25 * visibility );
+
 		}
 
 		// axis
@@ -1093,12 +1184,12 @@
 		
 		};
 		
-		function createArrow() {
+		function createArrow( color ) {
 			
 			var arrow = new THREE.Object3D(),
 				d = 0.05;
 			
-			var material = new THREE.MeshBasicMaterial( { color: 0xffaa00 } );
+			var material = new THREE.MeshBasicMaterial( { color: color } );
 			
 			var mesh = new THREE.Mesh( new Cube( d, d, 1 ), material );
 			mesh.position.set( 0, 0, -0.5 );
@@ -1506,35 +1597,41 @@
 
 			lightType = ltype;
 
-			var acolor = lightColors[ lightType ][ 0 ];
-			var dcolor = lightColors[ lightType ][ 1 ];
+			var acolor  = lightColors[ lightType ][ 0 ];
+			var d1color = lightColors[ lightType ][ 1 ];
+			var d2color = lightColors[ lightType ][ 2 ];
 			
 			ambientLight.color.setHSV( acolor.h, acolor.s, acolor.v );
-			directionalLight.color.setHSV( dcolor.h, dcolor.s, dcolor.v );
+			directionalLight1.color.setHSV( d1color.h, d1color.s, d1color.v );
+			directionalLight2.color.setHSV( d2color.h, d2color.s, d2color.v );
 
-			ALIGHT.h = lightColors[lightType][0].h;
-			ALIGHT.s = lightColors[lightType][0].s;
-			ALIGHT.v = lightColors[lightType][0].v;
-
-			DLIGHT.h = lightColors[lightType][1].h;
-			DLIGHT.s = lightColors[lightType][1].s;
-			DLIGHT.v = lightColors[lightType][1].v;
+			updateHSV( lightColors[lightType][0], ALIGHT );
+			updateHSV( lightColors[lightType][1], DLIGHT1 );
+			updateHSV( lightColors[lightType][0], DLIGHT2 );
 
 			$("al_hue").innerHTML = acolor.h.toFixed(2);
 			$("al_sat").innerHTML = acolor.s.toFixed(2);
 			$("al_val").innerHTML = acolor.v.toFixed(2);
 
-			$("dl_hue").innerHTML = dcolor.h.toFixed(2);
-			$("dl_sat").innerHTML = dcolor.s.toFixed(2);
-			$("dl_val").innerHTML = dcolor.v.toFixed(2);
+			$("dl1_hue").innerHTML = d1color.h.toFixed(2);
+			$("dl1_sat").innerHTML = d1color.s.toFixed(2);
+			$("dl1_val").innerHTML = d1color.v.toFixed(2);
+
+			$("dl2_hue").innerHTML = d2color.h.toFixed(2);
+			$("dl2_sat").innerHTML = d2color.s.toFixed(2);
+			$("dl2_val").innerHTML = d2color.v.toFixed(2);
 
 			alSliderH.setValue( acolor.h );
 			alSliderS.setValue( acolor.s );
 			alSliderV.setValue( acolor.v );
 
-			dlSliderH.setValue( dcolor.h );
-			dlSliderS.setValue( dcolor.s );
-			dlSliderV.setValue( dcolor.v );
+			dl1SliderH.setValue( d1color.h );
+			dl1SliderS.setValue( d1color.s );
+			dl1SliderV.setValue( d1color.v );
+
+			dl2SliderH.setValue( d2color.h );
+			dl2SliderS.setValue( d2color.s );
+			dl2SliderV.setValue( d2color.v );
 
 			refreshGUI();
 
@@ -1590,6 +1687,7 @@
 				} else {
 				
 					$( s[0] ).innerHTML = "&nbsp;";
+
 				}
 			}
 			
@@ -1680,7 +1778,7 @@
 			evt.stopPropagation();
 			evt.preventDefault();
 			
-			//console.log( evt );
+			console.log( evt );
 			var sceneResetFlag = true;
 			if( evt.offsetX > windowHalfX ) sceneResetFlag = false;
 			
@@ -1880,7 +1978,7 @@
 			
 			var material, mesh;
 			
-			//console.log(geometry);
+			console.log(geometry);
 			
 			if ( geometry.morphTargets !== undefined && geometry.morphTargets.length > 0 ) {
 			
