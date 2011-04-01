@@ -32,7 +32,7 @@ var Prairie = function ( shared ) {
 		cameraPath = new THREE.PathCamera( {
 
 			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypoints, duration: 29, 
+			waypoints: waypoints, duration: 25, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.004, lookVertical: true, lookHorizontal: true,
@@ -99,8 +99,8 @@ var Prairie = function ( shared ) {
 		*/
 
 		// make it darker towards the end
-		//var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
-		//world.scene.lights[1].color.setRGB(a,a,a);
+		var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
+		world.scene.lights[1].color.setRGB(a,a,a);
 
 		soup.update();
 
