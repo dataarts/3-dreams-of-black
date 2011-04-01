@@ -58,30 +58,16 @@
 
 					uniforms: {
 
-						"noise_image": { type: "t", value: 0, texture: null },
-						"grass_image": { type: "t", value: 1, texture: null },
-						"surface_image": { type: "t", value: 2, texture: null },
-						"map": { type: "t", value:3, texture:null },
+						"grassImage": { type: "t", value: 0, texture: null },
+						"surfaceImage": { type: "t", value: 1, texture: null },
+						"map": { type: "t", value:2, texture:null },
 
-						"time": { type: "v2", value: new THREE.Vector2() },
-						"target": { type: "v3", value: new THREE.Vector3() }
+						"targetStart": { type: "v3", value: new THREE.Vector3() },
+						"targetEnd": { type: "v3", value: new THREE.Vector3() }
 
-					},
-
-					attributes: {
-						
-						"randomA": { type: "v3", value: [] },
-						"randomB": { type: "v3", value: [] },
-						
 					},
 
 					vertexShader: [
-
-						"uniform vec3 target;",
-						"uniform vec2 time;",
-						
-						"attribute vec3 randomA;",
-						"attribute vec3 randomB;",
 
 						"varying vec3 vWorldPosition;",
 						"varying vec3 vNormal;",
@@ -90,14 +76,12 @@
 						"void main() {",
 
 							"vNormal = normalize( normalMatrix * normal );",
+							"vNormal *= vNormal;",
+							
 							"vUv = uv;",
 
 							"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
-							"float distance = max( 0.0, 1.0 - length( vWorldPosition - target ) * 0.0075 );",
-							
-//							"vec3 modifiedPosition = position + randomA * ( distance * time.x ) + randomB * ( distance * time.y );",
-							"vec3 modifiedPosition = position + normalize( vWorldPosition - target ) * distance * 100.0;",
-							"gl_Position = projectionMatrix * modelViewMatrix * vec4( modifiedPosition, 1.0 );",
+							"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
 						"}"
 
@@ -105,40 +89,45 @@
 
 					fragmentShader: [
 
-						"uniform sampler2D noise_image;",
-						"uniform sampler2D grass_image;",
-						"uniform sampler2D surface_image;",
+						"uniform sampler2D grassImage;",
+						"uniform sampler2D surfaceImage;",
 						"uniform sampler2D map;",
-						"uniform vec3 target;",
+						"uniform vec3 targetStart;",
+						"uniform vec3 targetEnd;",
 
 						"varying vec3 vWorldPosition;",
 						"varying vec3 vNormal;",
 						"varying vec2 vUv;",
+						"varying float vPointOnLine;",
 
 						"void main() {",
 
-							"float f;",
+							"float distance;",
 							"vec3 normal;",
 							"vec4 surface;",
 							"vec4 grass;",
 
-							"normal = vNormal * vNormal;",
 							"vec3 worldPosition = vWorldPosition * 0.005;",
+
+							"vec3 pointStart = vWorldPosition - targetStart;",
+							"vec3 endStart = targetEnd - targetStart;",
+							"float endStartLength2 = pow( length( endStart ), 2.0 );",
+							"float pointOnLine = clamp( dot( endStart, pointStart ) / endStartLength2, 0.0, 1.0 );",
+
+							"distance  = 1.0 - length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * 0.01;",
+							"distance += texture2D( grassImage, worldPosition.xz ).g - 0.5;",
 							
-							"f  = 1.0 - length( vWorldPosition - target ) * 0.0025;",
-							"f += texture2D( noise_image, worldPosition.xz ).x - 0.5;",
+							"surface = texture2D( surfaceImage, worldPosition.yz ) * vNormal.x + ",
+							          "texture2D( surfaceImage, worldPosition.xz ) * vNormal.y + ",
+							          "texture2D( surfaceImage, worldPosition.xy ) * vNormal.z;",
 
-							"surface = texture2D( surface_image, worldPosition.yz ) * normal.x + ",
-							          "texture2D( surface_image, worldPosition.xz ) * normal.y + ",
-							          "texture2D( surface_image, worldPosition.xy ) * normal.z;",
+							"if( distance >= 0.0 ) {",
 
-							"if( f >= 0.0 ) {",
-
-								"grass = texture2D( grass_image, worldPosition.yz ) * normal.x + ",
-								        "texture2D( grass_image, worldPosition.xz ) * normal.y + ",
-								        "texture2D( grass_image, worldPosition.xy ) * normal.z;",
+								"grass = texture2D( grassImage, worldPosition.yz ) * vNormal.x + ",
+								        "texture2D( grassImage, worldPosition.xz ) * vNormal.y + ",
+								        "texture2D( grassImage, worldPosition.xy ) * vNormal.z;",
 	
-								"surface = mix( surface, grass, smoothstep( 0.0, 0.1, f ));",
+								"surface = mix( surface, grass, smoothstep( 0.0, 0.1, distance ));",
 	
 							"}",
 	
@@ -212,20 +201,16 @@
 					var shader = Shaders[ 'soup' ];
 					var uniforms = shader.uniforms;
 
-					uniforms[ 'noise_image' ].texture = ImageUtils.loadTexture( 'opengl/Texture_BlackSoup.jpg' );
-					uniforms[ 'noise_image' ].texture.wrapS = THREE.RepeatWrapping;
-					uniforms[ 'noise_image' ].texture.wrapT = THREE.RepeatWrapping;
+					uniforms[ 'grassImage' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Grass.jpg' );
+					uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
+					uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
 
-					uniforms[ 'grass_image' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Grass.jpg' );
-					uniforms[ 'grass_image' ].texture.wrapS = THREE.RepeatWrapping;
-					uniforms[ 'grass_image' ].texture.wrapT = THREE.RepeatWrapping;
-
-					uniforms[ 'surface_image' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Pavement.jpg' );
-					uniforms[ 'surface_image' ].texture.wrapS = THREE.RepeatWrapping;
-					uniforms[ 'surface_image' ].texture.wrapT = THREE.RepeatWrapping;
+					uniforms[ 'surfaceImage' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Pavement.jpg' );
+					uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
+					uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
 
 					
-					var attributes = shader.attributes;
+				/*	var attributes = shader.attributes;
 					
 					for( var i = 0; i < geometry.vertices.length; i++ ) {
 						
@@ -233,12 +218,12 @@
 						
 						attributes.randomA.value.push( new THREE.Vector3( 100,100,100 ));
 						attributes.randomB.value.push( new THREE.Vector3( -100,-100,-100 ));
-					}
+					} */
 
 
 					var baseMaterialParams = {
 
-						attributes: attributes,
+					//	attributes: attributes,
 						uniforms: uniforms,
 						vertexShader: shader.vertexShader,
 						fragmentShader: shader.fragmentShader
@@ -259,19 +244,18 @@
 						materials[ i ].program = baseMaterial.program;
 						materials[ i ].uniforms = Uniforms.clone( uniforms );
 						
-						materials[ i ].uniforms[ 'target'        ].value   = target.position;
-						materials[ i ].uniforms[ 'time'          ].value   = timer;
-						materials[ i ].uniforms[ 'map'           ].texture = geometry.materials[ i ][ 0 ].map;  
-						materials[ i ].uniforms[ 'noise_image'   ].texture = uniforms[ 'noise_image' ].texture;
-						materials[ i ].uniforms[ 'grass_image'   ].texture = uniforms[ 'grass_image' ].texture;
-						materials[ i ].uniforms[ 'surface_image' ].texture = uniforms[ 'surface_image' ].texture;
+						materials[ i ].uniforms[ 'targetStart'  ].value   = target.position;
+						materials[ i ].uniforms[ 'targetEnd'    ].value   = new THREE.Vector3();//target.position;
+						materials[ i ].uniforms[ 'map'          ].texture = geometry.materials[ i ][ 0 ].map;  
+						materials[ i ].uniforms[ 'grassImage'   ].texture = uniforms[ 'grassImage'   ].texture;
+						materials[ i ].uniforms[ 'surfaceImage' ].texture = uniforms[ 'surfaceImage' ].texture;
 						
-						materials[ i ].attributes = {
+					/*	materials[ i ].attributes = {
 							
 							"randomA": { type: "v3", value: attributes.randomA.value, dirty: true },
 							"randomB": { type: "v3", value: attributes.randomB.value, dirty: true },
 							
-						};
+						}; */
 						
 						geometry.materials[ i ][ 0 ] = materials[ i ];
 						
@@ -307,12 +291,9 @@
 
 				var time = new Date().getTime();
 
-				target.position.x = Math.cos( time * 0.0011  ) * 100 - 50;
-				target.position.y = Math.sin( time * 0.001   ) * 50;
-				target.position.z = Math.cos( time * 0.00121 ) * 200 - 300;
-
-				timer.x = Math.cos( time * 0.001 );
-				timer.y = Math.sin( time * 0.001 );
+				target.position.x = Math.cos( time * 0.001 ) * 150;
+				target.position.y = 0;//Math.sin( time * 0.001   ) * 50;
+				target.position.z = Math.cos( time * 0.001 ) * 200 - 600;
 
 
 				r -= mouseX * 2 * Math.PI / 180;
