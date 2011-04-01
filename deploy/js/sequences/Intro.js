@@ -20,11 +20,6 @@ var Intro = function ( shared ) {
 
 		video = document.createElement( 'video' );
 		video.src = 'files/videos/intro.webm';
-		video.addEventListener( 'ended', function onVideoEnd() {
-
-			this.play();
-
-		}, false );
 
 		// 3d
 

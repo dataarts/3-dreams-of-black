@@ -32,11 +32,11 @@ var Prairie = function ( shared ) {
 		cameraPath = new THREE.PathCamera( {
 
 			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypoints, duration: 29, 
+			waypoints: waypoints, duration: 25, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.004, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ -0.5, 2.80 ], dstRange: [ 1.0, 1.9 ] },
+			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.5, Math.PI-0.5 ] }
 		 } );
 

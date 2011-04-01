@@ -2,7 +2,7 @@ var ClearEffect = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, scene, material, object,
+	var camera, scene,
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	this.init = function( callback ) {
@@ -12,10 +12,7 @@ var ClearEffect = function ( shared ) {
 
 		scene = new THREE.Scene();
 
-		material = new THREE.MeshBasicMaterial( { color: 0x000000, depthTest: false } );
-
-		object = new THREE.Mesh( new Plane( 3, 3 ), material );
-		// scene.addObject( object );
+		// renderer.initMaterial( material, scene.lights, scene.fog, object );
 
 	};
 

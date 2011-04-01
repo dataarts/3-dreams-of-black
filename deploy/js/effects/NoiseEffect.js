@@ -1,4 +1,4 @@
-var NoiseEffect = function ( shared ) {
+var NoiseEffect = function ( shared, nIntensity, sIntensity, sCount ) {
 
 	SequencerItem.call( this );
 
@@ -24,11 +24,16 @@ var NoiseEffect = function ( shared ) {
 			fragmentShader: shader.fragmentShader
 		} );
 
-		material.uniforms.grayscale.value = 0;
+		uniforms.grayscale.value = 0;
+		if ( nIntensity !== undefined )	uniforms.nIntensity.value = nIntensity;
+		if ( sIntensity !== undefined )	uniforms.sIntensity.value = sIntensity;
+		if ( sCount !== undefined )		uniforms.sCount.value = sCount;
 
 		var quad = new THREE.Mesh( new Plane( shared.baseWidth, shared.baseHeight ), material );
 		quad.position.z = -500;
 		scene.addObject( quad );
+
+		// renderer.initMaterial( material, scene.lights, scene.fog, quad );
 
 	};
 

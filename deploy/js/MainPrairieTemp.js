@@ -72,6 +72,7 @@ function init() {
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 
 }
@@ -101,7 +102,7 @@ function start( pattern ) {
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0.2;	
+	audio.volume = 0//.2;	
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 
@@ -191,7 +192,7 @@ function onWindowResize( event ) {
 
 function animate() {
 
-	requestAnimationFrame( animate );
+	requestAnimationFrame( animate, renderer.domElement );
 	render();
 	stats.update();
 

@@ -86,8 +86,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// ribbons
 	for ( var k = 0; k < initSettings.numOfRibbons; ++k ) {
 
-		var ribbon = new Ribbon(15,6,initSettings.numOfVectors-2);
-		var ribbonMesh = new THREE.Mesh( ribbon, initSettings.ribbonMaterials[k%6] );
+		var ribbon = new Ribbon( 15, 6, initSettings.numOfVectors - 2 );
+		var ribbonMesh = new THREE.Mesh( ribbon, initSettings.ribbonMaterials[ k % 6 ] );
 		ribbonMesh.doubleSided = true;
 		scene.addObject( ribbonMesh );
 
@@ -97,6 +97,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		ribbonArray.push(obj);
 		ribbonMeshArray.push(ribbonMesh);
+
 	}
 
 	// particles
@@ -166,34 +167,38 @@ var CitySoup = function ( camera, scene, shared ) {
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x00DE00, opacity: 1.0 } );
-	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.3 } );
+	var invMaterial = new THREE.MeshLambertMaterial( { color:0x0000DE, opacity: 1.0 } );
+	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
 
 	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
 	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial, false );
 	var leftPlane = addMesh( plane, 200,  camPos.x-settings.collisionDistance, camPos.y, camPos.z, 0,1.57,0, invMaterial, false );
 	var frontPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z-settings.collisionDistance, 0,0,-1.57, invMaterial, false );
 	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
-	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial2, false );
+	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial, false );
 
 	// temp boxes
 	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
-	var cubea = addMesh( cube, 1,  250, -300+487, 1400-1800, 0,0,0, invMaterial2, false );
+	var cubea = addMesh( cube, 1,  250, -240+487, -400, 0,0,0, invMaterial2, false );
 	cubea.scale.y = 3.5;
 	cubea.scale.z = 5;
-	var cubeb = addMesh( cube, 1,  -230, -240+487, -360-1800, 0,0,0, invMaterial2, false );
+	var cubeb = addMesh( cube, 1,  -230, -240+487, 1100, 0,0,0, invMaterial2, false );
 	cubeb.scale.x = 0.8;
 	cubeb.scale.y = 3.4;
 	cubeb.scale.z = 25;
-	var cubec = addMesh( cube, 1,  230, -200+487, 590-1800, 0,0,0, invMaterial2, false );
+	var cubeb_b = addMesh( cube, 1,  -380, -240+487, -4240, 0,0,0, invMaterial2, false );
+	cubeb_b.scale.x = 2;
+	cubeb_b.scale.y = 3.4;
+	cubeb_b.scale.z = 25;
+	var cubec = addMesh( cube, 1,  232, -200+487, 590-1800, 0,0,0, invMaterial2, false );
 	cubec.scale.x = 0.8;
 	cubec.scale.y = 2;
 	cubec.scale.z = 2.4;
-	var cubed = addMesh( cube, 1,  355, -120+487, -370-1800, 0,0,0, invMaterial2, false );
+	var cubed = addMesh( cube, 1,  355, -120+487, -360-1800, 0,0,0, invMaterial2, false );
 	cubed.scale.x = 2;
 	cubed.scale.y = 3.8;
 	cubed.scale.z = 4.5;
-	var cubef = addMesh( cube, 1,  230, -200+487, -1115-1800, 0,0,0.0957, invMaterial, false );
+	var cubef = addMesh( cube, 1,  230, -200+487, -1115-1800, 0,0,0.0957, invMaterial2, false );
 	cubef.scale.x = 1;
 	cubef.scale.y = 3.2;
 	cubef.scale.z = 2;
@@ -201,7 +206,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	cubeg.scale.x = 1.2;
 	cubeg.scale.y = 1.6;
 	cubeg.scale.z = 3.6;
-	var cubeh = addMesh( cube, 1,  240, -320+487, 1720-1800, 0,0,0, invMaterial2, false );
+	var cubeh = addMesh( cube, 1,  240, -320+487, -80, 0,0,0, invMaterial2, false );
 	cubeh.scale.x = 0.8;
 	cubeh.scale.y = 3.2;
 	cubeh.scale.z = 2.4;
@@ -217,7 +222,7 @@ var CitySoup = function ( camera, scene, shared ) {
 /*	var ref = cubed;
 	gui.add( ref.position, 'x', -2000, 2000).name( 'xpos' );
 	gui.add( ref.position, 'y', -2000, 2000).name( 'ypos' );
-	gui.add( ref.position, 'z', -2000, 2000).name( 'zpos' );
+	gui.add( ref.position, 'z', -6000, 4000).name( 'zpos' );
 	gui.add( ref.scale, 'x', 0, 20).name( 'xscale' );
 	gui.add( ref.scale, 'y', 0, 20).name( 'yscale' );
 	gui.add( ref.scale, 'z', 0, 20).name( 'zscale' );
@@ -239,7 +244,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var pi2 = pi*2;
 	var degToRad = pi/180;
 
-	var maxSpeed = 5;
+	var maxSpeed = 7;
 	var rotationLimit = 8;
 	var innerRadius = 0;
 	var outerRadius = 1;
@@ -267,7 +272,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		frontPlane.position.z = camPos.z-settings.collisionDistance*1.4;
 		backPlane.position.z = camPos.z+settings.collisionDistance;
 		// ---
-
+		
 		r += 0.1;
 
 		updateEmitter();
@@ -285,8 +290,8 @@ var CitySoup = function ( camera, scene, shared ) {
 		}
 
 		// collisionScene stuff should probably not be here (TEMP)
-		//renderer.render( collisionScene, camera );
-		renderer.render( collisionScene, camera, renderTarget );
+		renderer.render( collisionScene, camera );
+		//renderer.render( collisionScene, camera, renderTarget );
 		renderer.clear();
 		// ---
 
@@ -896,7 +901,6 @@ var CitySoup = function ( camera, scene, shared ) {
 
 					// walls
 					if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
-
 						currentNormal.x = 0;
 						currentNormal.y = 1;
 						currentNormal.z = 0;
@@ -1195,6 +1199,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		mesh.doubleSided = inDouble;
 		mesh.updateMatrix();
 		collisionScene.addObject(mesh);
+		//scene.addObject(mesh);
 
 		return mesh;
 	}

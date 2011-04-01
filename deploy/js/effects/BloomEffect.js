@@ -1,4 +1,4 @@
-var BloomEffect = function ( shared ) {
+var BloomEffect = function ( shared, strength ) {
 
 	SequencerItem.call( this );
 
@@ -18,16 +18,16 @@ var BloomEffect = function ( shared ) {
 		camera.position.z = 100;
 
 		scene = new THREE.Scene();
-		
+
 		var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
 		renderTarget2 = new THREE.WebGLRenderTarget( 512, 512, pars );
 		renderTarget3 = new THREE.WebGLRenderTarget( 512, 512, pars );
-		
+
 		var screenShader = ShaderUtils.lib[ "screen" ];
 		screenUniforms = Uniforms.clone( screenShader.uniforms );
 
 		screenUniforms[ "tDiffuse" ].texture = renderTarget;
-		screenUniforms[ "opacity" ].value = 1.0;
+		screenUniforms[ "opacity" ].value = ( strength !== undefined ) ? strength : 1;
 
 		materialScreen = new THREE.MeshShaderMaterial( {
 
@@ -61,12 +61,15 @@ var BloomEffect = function ( shared ) {
 		quad.position.z = -500;
 		scene.addObject( quad );
 
+		// renderer.initMaterial( materialScreen, scene.lights, scene.fog, quad );
+		// renderer.initMaterial( materialConvolution, scene.lights, scene.fog, quad );
+
 	};
 
 	this.update = function ( progress, time ) {
 
 		// Render quad with blured scene into texture (convolution pass 1)
-		
+
 		quad.materials[ 0 ] = materialConvolution;
 
 		convolutionUniforms.tDiffuse.texture = renderTarget;
@@ -87,7 +90,6 @@ var BloomEffect = function ( shared ) {
 
 		materialScreen.blending = THREE.AdditiveBlending;
 		screenUniforms.tDiffuse.texture = renderTarget3;
-		//screenUniforms.opacity.value = 1.0;
 
 		renderer.render( scene, camera, renderTarget, false );
 

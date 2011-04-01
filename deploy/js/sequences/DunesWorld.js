@@ -4,7 +4,8 @@ var DunesWorld = function ( shared ) {
 	TILE_SIZE = 20000;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0001 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00005 );
+	this.scene.fog.color.setHSV(0.15, 0.3, 0.9);
 
 	// Lights
 
@@ -30,6 +31,8 @@ var DunesWorld = function ( shared ) {
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
+		
+		preInitModel( geometry, shared.renderer, that.scene, mesh );
 
 	} } );
 
