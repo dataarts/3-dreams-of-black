@@ -227,7 +227,7 @@ function onWindowResize( event ) {
 
 function animate() {
 
-	requestAnimationFrame( animate );
+	requestAnimationFrame( animate, renderer.domElement );
 	render();
 
 	stats.update();
