@@ -50,4 +50,19 @@ var CityWorld = function ( shared ) {
 
 	} } );
 
+	// Shadow
+
+	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
+
+		var shadowMesh = new THREE.Mesh( geometry );
+		shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
+		
+		var shadow = new THREE.ShadowVolume( shadowMesh );
+		
+		that.scene.addChild( shadow );
+
+		preInitModel( geometry, shared.renderer, that.scene, shadowMesh );
+
+	} } );
+
 }
