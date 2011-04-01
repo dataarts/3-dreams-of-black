@@ -51,7 +51,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var r = 0;
 	camPos = new THREE.Vector3( 3223, 930, -2510 );
 
-	var pointLight = new THREE.PointLight( 0xeeffee, - 2, 500 );
+	var pointLight = new THREE.PointLight( 0xeeffee, - 1.75, 1200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
