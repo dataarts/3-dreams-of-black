@@ -7,17 +7,6 @@ var CityWorld = function ( shared ) {
 	this.scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
 
 	// Lights
-	/*
-	var pointLight = new THREE.PointLight( 0xbbbbff, 0.5 );
-	pointLight.position.x = 1000;
-	pointLight.position.y = 500;
-	pointLight.position.z = - 1000;
-	this.scene.addLight( pointLight );
-
-	var pointLight = new THREE.PointLight( 0xffeeee, 0.2 );
-	pointLight.position.set( -1000, -500, -1000 );
-	this.scene.addLight( pointLight );
-	*/	
 
 	var ambientLight = new THREE.AmbientLight( 0xffffff );
 	ambientLight.color.setHSV( 0, 0, 0.16470588235294117 );
@@ -27,11 +16,7 @@ var CityWorld = function ( shared ) {
 	directionalLight.position.set( -0.645442029122017,  0.34452945220032116,  -0.6816920445548706 );
 	directionalLight.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
 	this.scene.addLight( directionalLight );
-/*
-	gui.add( directionalLight.position, 'x', -10, 10).name( 'x' );
-	gui.add( directionalLight.position, 'y', -10, 20).name( 'y' );
-	gui.add( directionalLight.position, 'z', -10, 10).name( 'z' );
-*/	
+	
 
 	// Mesh
 
@@ -43,7 +28,7 @@ var CityWorld = function ( shared ) {
 	// Parts
 
 	//loader.load( { model: "files/models/city/City_P1.js", callback: partLoaded } );
-	//loader.load( { model: "files/models/city/City_P2.js", callback: partLoaded } );
+	loader.load( { model: "files/models/city/City_P2.js", callback: partLoaded } );
 	//loader.load( { model: "files/models/city/City_P3.js", callback: partLoaded } );
 
 	function partLoaded ( geometry ) {
@@ -62,22 +47,17 @@ var CityWorld = function ( shared ) {
 
 	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
 
-		var shadowMesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
+		var shadowMesh = new THREE.Mesh( geometry );
+		//shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
 		
 		var shadow = new THREE.ShadowVolume( shadowMesh );
+		shadow.scale.x = shadow.scale.y = shadow.scale.z = 0.1;
 		
 		that.scene.addObject( shadow, true );
 
-		that.scene.addObject( shadowMesh );
+		//that.scene.addObject( shadowMesh );
 
 		preInitModel( geometry, shared.renderer, that.scene, shadowMesh );
-
-
-		/*var plane = new Plane( 1000, 1000, 1, 1 );
-		var invMaterial = new THREE.MeshBasicMaterial( { color:0x0000DE, opacity: 1.0 } );
-
-		that.scene.addObject(plane, invMaterial);*/
 
 	} } );
 
