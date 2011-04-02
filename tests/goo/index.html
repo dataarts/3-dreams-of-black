@@ -136,7 +136,79 @@
 
 					].join("\n")
 
+				},
+				
+
+				//////////////// POST SHADER //////////////////////
+
+				'post' : {
+
+					uniforms: {
+
+						"map": { type: "t", value:0, texture:null },
+
+					},
+
+					vertexShader: [
+
+						"varying vec2 vUv;",
+
+						"void main() {",
+
+							"vUv = uv;",
+							"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+						"}"
+
+					].join("\n"),
+
+					fragmentShader: [
+
+						"uniform sampler2D map;",
+						"varying vec2 vUv;",
+
+						"void main() {",
+
+							"vec4 color, tmp, add;",
+							
+							"vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
+							
+							"color = texture2D( map, uv );",
+
+							"add = tmp = texture2D( map, uv + vec2( 0.0008, 0.0008 ));", 
+							"if( tmp.r < color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( -0.0008, 0.0008 ));",
+							"if( tmp.r < color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( -0.0008, -0.0008 ));",
+							"if( tmp.r < color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( 0.0008, -0.0008 ));",
+							"if( tmp.r < color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( 0.001, 0.0 ));",
+							"if( tmp.r < color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( -0.001, 0.0 ));",
+							"if( tmp.r < color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( 0, 0.001 ));",
+							"if( tmp.r < color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( 0, -0.001 ));",
+							"if( tmp.r < color.r ) color = tmp;",
+
+
+							"gl_FragColor = color * color + add * ( 0.7 / 8.0 );",
+//							"gl_FragColor = texture2D( map, uv );",
+						"}"
+
+					].join("\n")
+
 				}
+
+				
 
 			};
 
@@ -149,7 +221,9 @@
 
 			var container,stats;
 
-			var camera, target, scene, renderer;
+			var camera, cameraOrtho, scene, sceneScreen, quadScreen, renderer, materialShader, renderTarget;
+
+			var targetStart, targetEnd;
 
 			var mesh, zmesh, geometry, materials, timer = new THREE.Vector2();
 
@@ -169,11 +243,49 @@
 				document.addEventListener( 'mousemove', onMouseMove, false );
 
 				scene = new THREE.Scene();
-				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera = new THREE.QuakeCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 10000, movementSpeed: 5 } );
+				camera.position.set( 0, 200, 0 );
 
 
-				target = new THREE.Mesh( new Sphere( 5, 5, 5 ), new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
-				scene.addChild( target );
+				cameraOrtho = new THREE.Camera();
+				cameraOrtho.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10000, 10000 );
+				cameraOrtho.position.z = 100;
+
+				renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { depthBuffer: true, stencilBuffer: true } );
+				renderTarget.minFilter = THREE.LinearFilter;
+				renderTarget.magFilter = THREE.LinearFilter;
+				
+				sceneScreen = new THREE.Scene();
+				
+				
+				Shaders[ 'post' ].uniforms.map.texture = renderTarget;
+				
+				var postMaterial = new THREE.MeshShaderMaterial( {
+					
+					uniforms: Shaders[ 'post' ].uniforms,
+					vertexShader: Shaders[ 'post' ].vertexShader,
+					fragmentShader: Shaders[ 'post' ].fragmentShader
+					
+				} );
+				
+				quadScreen = new THREE.Mesh( new Plane( window.innerWidth, window.innerHeight ), postMaterial );
+				quadScreen.position.z = -100;
+				quadScreen.rotation.z = Math.PI;
+				quadScreen.scale.x = -1;
+				quadScreen.doubleSided = true;
+				sceneScreen.addObject( quadScreen );
+
+
+
+
+
+				var geom = new Sphere( 5, 5, 5 );
+
+				targetStart = new THREE.Mesh( geom, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
+				targetEnd   = new THREE.Mesh( geom, new THREE.MeshBasicMaterial( { color: 0x00ff00 } ) );
+				
+				scene.addChild( targetStart );
+				scene.addChild( targetEnd );
 
 	
 				var light = new THREE.DirectionalLight( 0xffffff );
@@ -181,11 +293,11 @@
 				scene.addChild( light ); 
 
 
+
 				renderer = new THREE.WebGLRenderer( { antialias: false } );
 				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 				container.appendChild( renderer.domElement );
 				renderer.setClearColor( 0xffffff );
-
 
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
@@ -209,21 +321,8 @@
 					uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
 					uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
 
-					
-				/*	var attributes = shader.attributes;
-					
-					for( var i = 0; i < geometry.vertices.length; i++ ) {
-						
-						var pos = geometry.vertices[ i ].position;
-						
-						attributes.randomA.value.push( new THREE.Vector3( 100,100,100 ));
-						attributes.randomB.value.push( new THREE.Vector3( -100,-100,-100 ));
-					} */
-
-
 					var baseMaterialParams = {
 
-					//	attributes: attributes,
 						uniforms: uniforms,
 						vertexShader: shader.vertexShader,
 						fragmentShader: shader.fragmentShader
@@ -244,18 +343,11 @@
 						materials[ i ].program = baseMaterial.program;
 						materials[ i ].uniforms = Uniforms.clone( uniforms );
 						
-						materials[ i ].uniforms[ 'targetStart'  ].value   = target.position;
-						materials[ i ].uniforms[ 'targetEnd'    ].value   = new THREE.Vector3();//target.position;
+						materials[ i ].uniforms[ 'targetStart'  ].value   = targetStart.position;
+						materials[ i ].uniforms[ 'targetEnd'    ].value   = targetEnd.position;
 						materials[ i ].uniforms[ 'map'          ].texture = geometry.materials[ i ][ 0 ].map;  
 						materials[ i ].uniforms[ 'grassImage'   ].texture = uniforms[ 'grassImage'   ].texture;
 						materials[ i ].uniforms[ 'surfaceImage' ].texture = uniforms[ 'surfaceImage' ].texture;
-						
-					/*	materials[ i ].attributes = {
-							
-							"randomA": { type: "v3", value: attributes.randomA.value, dirty: true },
-							"randomB": { type: "v3", value: attributes.randomB.value, dirty: true },
-							
-						}; */
 						
 						geometry.materials[ i ][ 0 ] = materials[ i ];
 						
@@ -291,21 +383,18 @@
 
 				var time = new Date().getTime();
 
-				target.position.x = Math.cos( time * 0.001 ) * 150;
-				target.position.y = 0;//Math.sin( time * 0.001   ) * 50;
-				target.position.z = Math.cos( time * 0.001 ) * 200 - 600;
+				targetStart.position.x = Math.cos( time * 0.001 ) * 150;
+				targetStart.position.y = 0;
+				targetStart.position.z = Math.cos( time * 0.001 ) * 200 - 1000;
+
+				targetEnd.position.x = Math.cos( time * 0.002 ) * 150;
+				targetEnd.position.y = 0;
+				targetEnd.position.z = Math.cos( time * 0.002 ) * 200;
 
 
-				r -= mouseX * 2 * Math.PI / 180;
-
-				camera.position.x = 300*Math.sin(r);
-				camera.position.z = 300*Math.cos(r);
-				camera.position.y = 200 * mouseY + 100;
-
-		//		camera.target.position.set( target.position.x, target.position.y, target.position.z );
-
-
-				renderer.render( scene, camera );
+//				renderer.render( scene, camera );
+				renderer.render( scene, camera, renderTarget );
+				renderer.render( sceneScreen, cameraOrtho );
 
 			}
 			
