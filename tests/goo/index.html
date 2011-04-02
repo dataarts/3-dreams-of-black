@@ -200,7 +200,7 @@
 							"if( tmp.r < color.r ) color = tmp;",
 
 
-							"gl_FragColor = color * color + add * ( 0.7 / 8.0 );",
+							"gl_FragColor = color * color + add * 0.5 / 8.0;",
 //							"gl_FragColor = texture2D( map, uv );",
 						"}"
 
@@ -228,8 +228,17 @@
 			var mesh, zmesh, geometry, materials, timer = new THREE.Vector2();
 
 			var mouseX = 0, mouseY = 0, r = 0;
+			var renderPost = true;
 			
-			
+			function bind( scope, fn ) {
+		
+				return function () {
+		
+					fn.apply( scope, arguments );
+		
+				};
+		
+			};
 			
 
 			init();
@@ -241,6 +250,7 @@
 				container = document.createElement('div');
 				document.body.appendChild(container);
 				document.addEventListener( 'mousemove', onMouseMove, false );
+				document.addEventListener( 'keydown', bind( this, this.onKeyDown ), false );
 
 				scene = new THREE.Scene();
 				camera = new THREE.QuakeCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 10000, movementSpeed: 5 } );
@@ -392,10 +402,27 @@
 				targetEnd.position.z = Math.cos( time * 0.002 ) * 200;
 
 
-//				renderer.render( scene, camera );
-				renderer.render( scene, camera, renderTarget );
-				renderer.render( sceneScreen, cameraOrtho );
+				if( renderPost ) {
+					
+					renderer.render( scene, camera, renderTarget );
+					renderer.render( sceneScreen, cameraOrtho );
+					
+				} else {
+					
+					renderer.render( scene, camera );
+					
+				}
 
+			}
+
+			function onKeyDown( event ) {
+				
+				if( event.keyCode == 80 ) {
+		
+					renderPost = !renderPost;
+		
+				}
+				
 			}
 			
 			function onMouseMove(event) {
@@ -403,6 +430,8 @@
 				mouseX = ( event.clientX - SCREEN_WIDTH * 0.5 ) / SCREEN_HEIGHT;
 				mouseY = ( event.clientY - SCREEN_HEIGHT * 0.5 ) / SCREEN_WIDTH;
 			}
+
+
 
 
 		</script>
