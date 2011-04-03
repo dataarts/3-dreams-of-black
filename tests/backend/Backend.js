@@ -2,12 +2,16 @@
  * @author Mikael Emtinger
  */
 
+if( ROME === undefined ) ROME = {};
 
 ROME.Backend = ( function() {
 	
 	// private vars
 	
 	that = {};
+
+	var myPrivateVar = 10;
+	var baseURL;
 	
 	
 	// private functions
@@ -15,6 +19,20 @@ ROME.Backend = ( function() {
 	var myPrivateFunction = function() {
 		
 		// do something
+		
+	}
+
+	var onSaveUGO = function( response ) {
+		
+		if( response.success === "true" ) {
+			
+			lastCallbackSuccess( repsonse );
+		
+		} else {
+			
+			lastCallbackError( response );
+			
+		}
 		
 	}
 	
@@ -26,7 +44,14 @@ ROME.Backend = ( function() {
 	
 	that.saveUGO = function( parameters ) {
 		
-		myPrivateFunction();
+		var url = baseURL + ObjectToJSONString( parameters.data ); 
+		
+		lastCallbackSuccess = parameters.success;
+		lastCallbackError = parameters.error;
+		isRequestion = true;
+
+		request.send( POST, url, onSaveUGO );
+		
 	}
 	
 	
