@@ -244,7 +244,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var pi2 = pi*2;
 	var degToRad = pi/180;
 
-	var maxSpeed = 7;
+	var maxSpeed = 20;
 	var rotationLimit = 8;
 	var innerRadius = 0;
 	var outerRadius = 1;
