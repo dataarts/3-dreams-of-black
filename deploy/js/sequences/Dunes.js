@@ -5,7 +5,7 @@ var Dunes = function ( shared ) {
 	var camera, world, soup
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
-	var speedStart = 1.15,
+	var speedStart = 0.75,
 		speedEnd = 2.5;
 	
 	this.init = function () {
@@ -49,25 +49,32 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, time, start, end ) {
 		
+
 		// not too low
 		
-		camera.position.y = cap_bottom( camera.position.y, 100 );
+		camera.position.y = cap_bottom( camera.position.y, 50 );
 		
 		// not too high before lift-off
 		
-		if ( progress < 0.31 ) {
+		if ( progress < 0.30 ) {
 			
-			camera.position.y = cap_top( camera.position.y, 200 );
+			camera.position.y = cap_top( camera.position.y, 50 );
+			
+			// small bump
+			camera.position.y += Math.sin(time/150);
+			// small roll
+			camera.up.z = Math.sin(time/250)/200;
+			camera.up.x = Math.cos(time/250)/200;
 
-		}
+		}	
 		
 		// lift-off
 		
-		var localProgres = ( progress - 0.31 ) / ( 0.43 - 0.31 );
+		var localProgres = ( progress - 0.30 ) / ( 0.40 - 0.30 );
 		
-		if ( progress > 0.31 && progress < 0.43 ) {
+		if ( progress > 0.30 && progress < 0.40 ) {
 			
-			camera.position.y += 6;
+			camera.position.y += 2;
 			camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 			
 			world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );

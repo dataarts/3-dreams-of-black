@@ -18,7 +18,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	}
 
 	var settings = {
-		vectorDivider : 3,
+		vectorDivider : 4,
 		emitterDivider : 10,
 		ribbonPulseMultiplier_1 : 30,
 		ribbonPulseMultiplier_2 : 10,
@@ -168,11 +168,6 @@ var DunesSoup = function ( camera, scene, shared ) {
 		downPlane.position.z = camPos.z;
 		upPlane.position.x = camPos.x;
 		upPlane.position.z = camPos.z;
-
-
-		if (downPlane.position.y < -400) {
-			downPlane.position.y = -400;
-		}
 
 		// ---
 
@@ -377,7 +372,10 @@ var DunesSoup = function ( camera, scene, shared ) {
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
 
 					currentNormal = normal;*/
-
+					
+					if (emitterMesh.position.y < 70) {
+						emitterMesh.position.y = 70;
+					}
 					break;
 				}
 			}
