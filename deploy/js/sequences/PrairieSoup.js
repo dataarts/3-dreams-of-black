@@ -6,6 +6,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
+		numOfAnimals : 40,
 		numOfParticleSystems : 40,
 		ribbonMaterials : [
 			[ new THREE.MeshBasicMaterial( { color:0x000000 } ) ],
@@ -19,7 +20,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	var settings = {
 		vectorDivider : 3,
-		emitterDivider : 4,
+		emitterDivider : 6,
 		ribbonPulseMultiplier_1 : 30,
 		ribbonPulseMultiplier_2 : 10,
 		flyingAnimalPulseMultiplier_1 : 10,
@@ -44,6 +45,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var flyingArray = [];
 	var grassArray = [];
 	var particleArray = [];
+	var maxSpeed = 20;
 
 	var collisionScene = new THREE.Scene();
 
@@ -51,7 +53,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var r = 0;
 	camPos = new THREE.Vector3( 3223, 930, -2510 );
 
-	var pointLight = new THREE.PointLight( 0xeeffee, - 1.75, 1200 );
+	var pointLight = new THREE.PointLight( 0xeeffee, - 2.25, 1200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -60,8 +62,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// vectors
 	for ( var i = 0; i < initSettings.numOfVectors + 20; ++i ) {
 
-		var x = camPos.x-20;
-		var y = camPos.y-10;
+		var x = camPos.x;
+		var y = camPos.y;
 		var z = camPos.z;
 
 		var obj = { x: x, y: y, z: z, lastx: x, lasty: y, lastz: z, normalx: 0, normaly: 0, normalz: 0, scale: 1 };
@@ -70,7 +72,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	}
 
 	// ribbons
-	for ( var k = 0; k < initSettings.numOfRibbons; ++k ) {
+	/*for ( var k = 0; k < initSettings.numOfRibbons; ++k ) {
 
 		var ribbon = new Ribbon(15,6,initSettings.numOfVectors-2);
 		var ribbonMesh = new THREE.Mesh( ribbon, initSettings.ribbonMaterials[k%6] );
@@ -83,12 +85,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		ribbonArray.push(obj);
 		ribbonMeshArray.push(ribbonMesh);
-	}
+	}*/
 
 	// particles
 	var geometry = new THREE.Geometry();
 
-	for (var i = 0; i < 100; i++) {
+	for (var i = 0; i < 200; i++) {
 		var vector = new THREE.Vector3( Math.random() * 80 - 40, Math.random() * 80 - 40, Math.random() * 80 - 40 );
 		geometry.vertices.push( new THREE.Vertex( vector ) );
 	}
@@ -102,7 +104,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
 	for (var i = 0; i < initSettings.numOfParticleSystems; i++) {
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 12, map: particleSprites[i%5], transparent: true, depthTest: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], transparent: true, depthTest: false } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 		particles.rotation.x = Math.random() * Math.PI;
@@ -124,6 +126,15 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	}
 
+	// animals
+	var loader = new THREE.JSONLoader();
+
+	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
+
+	loader.load( { model: "files/models/soup/bison.js", callback: animalLoaded } );
+
+
 	// collisionScene stuff should probably not be here (TEMP)
 	var FLOOR = 0;
 
@@ -142,8 +153,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// emitter
 	var projector = new THREE.Projector();
 	var emitter = new Cube( 10, 10, 10 );
-	var emitterMesh = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
-	var emitterFollow = addMesh( emitter, 1, 0, -465, 1800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
+	var emitterMesh = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
+	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
 
 	this.update = function () {
@@ -153,14 +164,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		camPos.y = camera.matrixWorld.n24;
 		camPos.z = camera.matrixWorld.n34;
 
-		// collisionScene stuff should probably not be here (TEMP)
-		/*rightPlane.position.x = camPos.x+settings.collisionDistance;
-		leftPlane.position.x = camPos.x-settings.collisionDistance;
-		frontPlane.position.z = camPos.z-settings.collisionDistance;
-		backPlane.position.z = camPos.z+settings.collisionDistance;
-		downPlane.position.y = camPos.y-80;
-		upPlane.position.y = camPos.y+400;*/
-		// ---
+		// temp reset
+		if (camPos.x > 13930) {
+			reset();
+		}
 
 		// collisionScene stuff should probably not be here (TEMP)
 		rightPlane.position.x = camPos.x+settings.collisionDistance;
@@ -183,6 +190,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		downPlane.position.z = camPos.z;
 		upPlane.position.x = camPos.x;
 		upPlane.position.z = camPos.z;
+		// ---
 
 		r += 0.1;
 
@@ -199,6 +207,56 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		renderer.clear();
 		// ---
 	}
+
+	function animalLoaded( geometry ) {
+		
+		var colors = [new THREE.Color( 0x000000 ),
+					  new THREE.Color( 0x111111 ),
+					  new THREE.Color( 0x222222 ),
+					  new THREE.Color( 0x333333 )
+						]
+
+		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
+
+			var animal = ROME.Animal( geometry, false, colors[Math.floor(Math.random()*4)] );
+			var mesh = animal.mesh;
+
+			var followIndex = Math.floor(i/6);
+
+			var scale = 0.02+(Math.random()/8);
+			if (i<2) {
+				scale = 0.15;
+				followIndex = i;
+			}
+			scale = Math.max(scale, 0.1);
+
+			var x = camPos.x;
+			var y = camPos.y;
+			var z = camPos.z;
+
+			mesh.position.x = x;
+			mesh.position.y = y;
+			mesh.position.z = z;
+
+			mesh.matrixAutoUpdate = false;
+
+			scene.addChild( mesh );
+			animal.animalA.timeScale = 2.0;
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
+
+			var count = Math.random();
+			if (i<2) {
+				count = 0;
+			}
+			
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.8 };
+
+			animalArray.push( obj );
+
+		}
+
+	}
+
 
 	function runAll () {
 
@@ -258,7 +316,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 			normalz += moveNormalZ;
 
 			// ribbons
-			for (var k=0; k<ribbonArray.length; ++k ) {
+			/*for (var k=0; k<ribbonArray.length; ++k ) {
 				var ribbon = ribbonArray[k].r;
 				var offset = ribbonArray[k].offset;
 
@@ -300,7 +358,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 					}
 				}
 
-			}
+			}*/
 
 
 			vectorArray[i].x = x;
@@ -317,15 +375,88 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		}
 
+		// animals
+		for (var i=0; i<animalArray.length; ++i ) {
+			var obj =  animalArray[i];
+			var animal = obj.c;
+			var x = obj.x;
+			var y = obj.y;
+			var z = obj.z;
+			var f = obj.f;
+			var anim = obj.a;
+			var scale = obj.scale;
+
+			//var pulse = Math.cos((i-r*10)/35)*(35-(i*1.5));
+
+			var inc = (Math.PI*2)/6;
+			var thisinc = i*inc;
+			var offsetx = Math.cos(thisinc+((i-r*2)/8))*150;
+			var offsetz = Math.sin(thisinc+((i-r*2)/8))*100;
+			var offsety = offsetz;
+
+			var cNormal = new THREE.Vector3(vectorArray[f].normalx, vectorArray[f].normaly, vectorArray[f].normalz);
+
+			var amountx = 1-Math.abs(cNormal.x);
+			var amountz = 1-Math.abs(cNormal.z);
+			var amounty = 1-Math.abs(cNormal.y);
+
+			var tox = vectorArray[f].x+(offsetx*amountx);
+			var toy = vectorArray[f].y+(offsety*amounty);
+			var toz = vectorArray[f].z+(offsetz*amountz);
+
+			if (toy < FLOOR+8) {
+				toy = FLOOR+8;
+			}
+
+			// morph - removed for now
+			/*animalArray[i].count += 0.01;
+			var morph = Math.max(Math.cos(animalArray[i].count),0);
+			morph = Math.min(morph, 1)
+			animalArray[i].a.morph = morph;
+			*/
+			var divider = 2;
+
+			var moveX = (tox-x)/divider;
+			var moveY = (toy-y)/divider;
+			var moveZ = (toz-z)/divider;
+
+			var zvec = new THREE.Vector3(tox,toy,toz);
+			zvec.subSelf( animal.position ).normalize();
+
+			var xvec = new THREE.Vector3();
+			var yvec = new THREE.Vector3(vectorArray[f].normalx*-1, vectorArray[f].normaly*-1, vectorArray[f].normalz*-1);
+			//var yvec = new THREE.Vector3(0, -1, 0);
+
+			xvec.cross(zvec, yvec);
+			yvec.cross(zvec, xvec);
+			//scale -= morph/12;
+
+			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = x;
+			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = y;
+			animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = z;
+
+			x += moveX;
+			y += moveY;
+			z += moveZ;
+			
+			animal.position.x = x;
+			animal.position.y = y;
+			animal.position.z = z;
+
+			animalArray[i].x = x;
+			animalArray[i].y = y;
+			animalArray[i].z = z;
+		}
+
 
 		// particles
 		for (var i=0; i<particleArray.length; ++i ) {
 			var particles = particleArray[i].c;
 
-			particleArray[i].alivetime += 0.4;
+			particleArray[i].alivetime += 0.8;
 			if (particleArray[i].alivetime >= particleArray.length) {
 				particleArray[i].alivetime = 0;
-				particles.scale.x = particles.scale.y = particles.scale.z = 0.2;
+				particles.scale.x = particles.scale.y = particles.scale.z = 1;
 				particles.position.x = vectorArray[0].x;
 				particles.position.y = vectorArray[0].y;
 				particles.position.z = vectorArray[0].z;
@@ -341,12 +472,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 			var alivetime = particleArray[i].alivetime;
 
-			particles.position.y += 0.15;
+			particles.position.y += 0.25;
 
 			particles.rotation.y += 0.015;
 			particles.rotation.z += 0.005;
 
-			var scale = Math.max(alivetime/10, 0.2);
+			var scale = Math.max(alivetime/8, 1);
 			//scale = Math.max(scale,0.05);
 			particles.scale.x = particles.scale.y = particles.scale.z = 0.1+scale;
 
@@ -355,9 +486,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 			particles.materials[0].opacity = alpha;
 		}
 
-		pointLight.position.x = emitterFollow.position.x;
+		pointLight.position.x = vectorArray[3].x//emitterFollow.position.x;
 		pointLight.position.y = emitterFollow.position.y + 50;
-		pointLight.position.z = emitterFollow.position.z;
+		pointLight.position.z = vectorArray[3].z//emitterFollow.position.z;
 
 	}
 
@@ -388,7 +519,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
 
-					currentNormal = normal;*/
+					currentNormal = normal;
+					*/
+
+					emitterMesh.position.y = downPlane.position.y;
 
 					break;
 				}
@@ -403,6 +537,27 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		var moveX = (tox-emitterFollow.position.x)/settings.emitterDivider;
 		var moveY = (toy-emitterFollow.position.y)/settings.emitterDivider;
 		var moveZ = (toz-emitterFollow.position.z)/settings.emitterDivider;
+
+		if (moveX > maxSpeed) {
+			moveX = maxSpeed;
+		}
+		if (moveX < -maxSpeed) {
+			moveX = -maxSpeed;
+		}
+
+		if (moveY > maxSpeed) {
+			moveY = maxSpeed;
+		}
+		if (moveY < -maxSpeed) {
+			moveY = -maxSpeed;
+		}
+
+		if (moveZ > maxSpeed) {
+			moveZ = maxSpeed;
+		}
+		if (moveZ < -maxSpeed) {
+			moveZ = -maxSpeed;
+		}
 
 		emitterFollow.position.x += moveX;
 		emitterFollow.position.z += moveZ;
@@ -431,6 +586,37 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		collisionScene.addObject(mesh);
 
 		return mesh;
+	}
+
+	function reset () {
+		camPos = new THREE.Vector3( 3223, 930, -2510 );
+
+		emitterMesh.position.x = camPos.x;
+		emitterMesh.position.y = camPos.y;
+		emitterMesh.position.z = camPos.z;
+
+		emitterFollow.position.x = camPos.x;
+		emitterFollow.position.y = camPos.y;
+		emitterFollow.position.z = camPos.z;
+
+		for (var k=0; k<ribbonArray.length; ++k ) {
+			ribbonMesh.position = emitterMesh.position;
+		}
+
+		for (var i=0; i<vectorArray.length; ++i ) {
+			var obj = vectorArray[i];
+			obj.x = camPos.x;
+			obj.y = camPos.y;
+			obj.z = camPos.z;
+		}
+
+		for (var i=0; i<animalArray.length; ++i ) {
+			var obj =  animalArray[i];
+			obj.x = camPos.x;
+			obj.y = camPos.y;
+			obj.z = camPos.z;
+		}
+
 	}
 
 	this.destruct = function () {

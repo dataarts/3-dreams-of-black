@@ -35,7 +35,7 @@ var Prairie = function ( shared ) {
 			waypoints: waypoints, duration: 25, 
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.004, lookVertical: true, lookHorizontal: true,
+			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.3, Math.PI-0.3 ] }
 		 } );

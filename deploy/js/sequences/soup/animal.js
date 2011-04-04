@@ -8,7 +8,7 @@ ROME = {};
 
 // animal
 
-ROME.Animal = function( geometry, parseMorphTargetsNames ) {
+ROME.Animal = function( geometry, parseMorphTargetsNames, color ) {
 
 	// construct
 	var material = new THREE.MeshShaderMaterial( {
@@ -20,7 +20,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	} );
 
 	// random color to see the difference
-	material.uniforms.diffuse.value = new THREE.Color( Math.random() * 0xffffff );
+	material.uniforms.diffuse.value = color || new THREE.Color( Math.random() * 0xffffff );
 
 	var that = {};
 	that.mesh = new THREE.Mesh( geometry, material );
@@ -297,7 +297,7 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "parrot", "eagle", "vulture", "raven" ],
+	animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "bison", "parrot", "eagle", "vulture", "raven", "blackWidow" ],
 
 
 	// init frame times and indices
