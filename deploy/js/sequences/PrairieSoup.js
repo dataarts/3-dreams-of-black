@@ -45,7 +45,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var flyingArray = [];
 	var grassArray = [];
 	var particleArray = [];
-	var maxSpeed = 20;
+	//var maxSpeed = 20;
 
 	var collisionScene = new THREE.Scene();
 
@@ -203,7 +203,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		}
 
 		// collisionScene stuff should probably not be here (TEMP)
-		renderer.render( collisionScene, camera );
+		//renderer.render( collisionScene, camera );
+		renderer.render( collisionScene, camera, renderTarget );
 		renderer.clear();
 		// ---
 	}
@@ -538,7 +539,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		var moveY = (toy-emitterFollow.position.y)/settings.emitterDivider;
 		var moveZ = (toz-emitterFollow.position.z)/settings.emitterDivider;
 
-		if (moveX > maxSpeed) {
+		/*if (moveX > maxSpeed) {
 			moveX = maxSpeed;
 		}
 		if (moveX < -maxSpeed) {
@@ -557,7 +558,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		}
 		if (moveZ < -maxSpeed) {
 			moveZ = -maxSpeed;
-		}
+		}*/
 
 		emitterFollow.position.x += moveX;
 		emitterFollow.position.z += moveZ;
