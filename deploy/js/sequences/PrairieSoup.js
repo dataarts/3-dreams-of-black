@@ -6,7 +6,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
-		numOfAnimals : 40,
+		numOfAnimals : 35,
 		numOfParticleSystems : 40,
 		ribbonMaterials : [
 			[ new THREE.MeshBasicMaterial( { color:0x000000 } ) ],
@@ -45,7 +45,6 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var flyingArray = [];
 	var grassArray = [];
 	var particleArray = [];
-	//var maxSpeed = 20;
 
 	var collisionScene = new THREE.Scene();
 
@@ -132,8 +131,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( { model: "files/models/soup/bison.js", callback: animalLoaded } );
-	//loader.load( { model: "files/models/soup/blackWidow.js", callback: animalLoaded } );
+	//loader.load( { model: "files/models/soup/bison.js", callback: animalLoaded } );
+	loader.load( { model: "files/models/soup/tarbuffalo.js", callback: animalLoaded } );
 
 
 	// collisionScene stuff should probably not be here (TEMP)
@@ -158,7 +157,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
 
 
-	this.update = function () {
+	this.update = function ( delta ) {
 
 		// update to reflect _real_ camera position
 		camPos.x = camera.matrixWorld.n14;
@@ -195,7 +194,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		r += 0.1;
 
-		updateEmitter();
+		updateEmitter( delta );
 		runAll();
 
 		for (var k=0; k<ribbonArray.length; ++k ) {
@@ -244,12 +243,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 			scene.addChild( mesh );
 			animal.animalA.timeScale = 2.0;
-			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
+			animal.animalB.timeScale = 2.0;
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 1 ], 0, Math.random() );
 
 			var count = Math.random();
-			if (i<2) {
-				count = 0;
-			}
 			
 			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.8 };
 
@@ -410,12 +407,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 				toy = FLOOR+8;
 			}
 
-			// morph - removed for now
-			/*animalArray[i].count += 0.01;
+			// morph
+			animalArray[i].count += 0.01;
 			var morph = Math.max(Math.cos(animalArray[i].count),0);
 			morph = Math.min(morph, 1)
 			animalArray[i].a.morph = morph;
-			*/
+			
 			var divider = 2;
 
 			var moveX = (tox-x)/divider;
@@ -494,7 +491,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	}
 
-	function updateEmitter() {
+	function updateEmitter( delta ) {
 
 		emitterMesh.position.y = FLOOR;
 
@@ -540,7 +537,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		var moveY = (toy-emitterFollow.position.y)/settings.emitterDivider;
 		var moveZ = (toz-emitterFollow.position.z)/settings.emitterDivider;
 
-		/*if (moveX > maxSpeed) {
+		var maxSpeed = delta;
+
+		if (moveX > maxSpeed) {
 			moveX = maxSpeed;
 		}
 		if (moveX < -maxSpeed) {
@@ -559,7 +558,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		}
 		if (moveZ < -maxSpeed) {
 			moveZ = -maxSpeed;
-		}*/
+		}
 
 		emitterFollow.position.x += moveX;
 		emitterFollow.position.z += moveZ;

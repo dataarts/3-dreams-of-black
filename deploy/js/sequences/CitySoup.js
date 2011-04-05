@@ -6,7 +6,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var initSettings = {
 		numOfVectors : 30,
 		numOfRibbons : 6,
-		numOfAnimals : 20,
+		numOfAnimals : 30,
 		numOfFlyingAnimals : 20,
 		numOfParticleSystems : 25,
 		ribbonMaterials : [
@@ -20,8 +20,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	var settings = {
-		vectorDivider : 5,
-		emitterDivider : 10,
+		vectorDivider : 4,
+		emitterDivider : 5,
 		flyingAnimalDivider : 3,
 		ribbonPulseMultiplier_1 : 5.5,
 		ribbonPulseMultiplier_2 : 5.5,
@@ -61,7 +61,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particleArray = [];
 
 	var currentNormal = new THREE.Vector3( 0, 1, 0 );
-	var followNormal = new THREE.Vector3( 0, 1, 0 );
 	var r = 0;
 	camPos = new THREE.Vector3( 0, 20, 0 );
 
@@ -117,7 +116,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
 	for (var i = 0; i < initSettings.numOfParticleSystems; i++) {
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], transparent: true, depthTest: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: 4, map: particleSprites[i%5], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 		particles.rotation.x = Math.random() * Math.PI;
@@ -145,8 +144,19 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( { model: "files/models/soup/runningAnimal.js", callback: animalLoaded } );
-	loader.load( { model: "files/models/soup/flyingAnimal.js", callback: flyingLoaded } );
+	loader.load( { model: "files/models/soup/animals_A_life.js", callback: animalLoaded } );
+	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoaded } );
+	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoaded } );
+	loader.load( { model: "files/models/soup/birds_A_life.js", callback: flyingLoaded } );
+	loader.load( { model: "files/models/soup/birds_B_life.js", callback: flyingLoaded } );
+
+	// occupy for elks and mooses hack..
+	animalArray[0] = "elk";
+	animalArray[1] = "moose";
+	animalArray[4] = "moose";
+	animalArray[10] = "elk";
+	animalArray[14] = "moose";
+	animalArray[20] = "elk";
 
 	// grass
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoaded } );
@@ -167,8 +177,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var collisionScene = new THREE.Scene();
 
 	var plane = new Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshLambertMaterial( { color:0x0000DE, opacity: 1.0 } );
-	var invMaterial2 = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0.5 } );
+	var invMaterial = new THREE.MeshBasicMaterial( { color:0x0000DE, opacity: 1.0 } );
 
 	var downPlane = addMesh( plane, 200,  0, FLOOR, 0, -1.57,0,0, invMaterial, true );
 	var rightPlane = addMesh( plane, 200,  camPos.x+settings.collisionDistance, camPos.y, camPos.z, 0,-1.57,0, invMaterial, false );
@@ -177,60 +186,15 @@ var CitySoup = function ( camera, scene, shared ) {
 	var backPlane = addMesh( plane, 200,  camPos.x, camPos.y, camPos.z+settings.collisionDistance, 0,3.14,1.57, invMaterial, false );
 	var upPlane = addMesh( plane, 200,  0, FLOOR+(settings.collisionDistance*1.5), 0, 1.57,0,0, invMaterial, false );
 
-	// temp boxes
-	var cube = new Cube( 200, 300, 200, 1, 1, 1 );
-	var cubea = addMesh( cube, 1,  250, -240+487, -400, 0,0,0, invMaterial2, false );
-	cubea.scale.y = 3.5;
-	cubea.scale.z = 5;
-	var cubeb = addMesh( cube, 1,  -230, -240+487, 1100, 0,0,0, invMaterial2, false );
-	cubeb.scale.x = 0.8;
-	cubeb.scale.y = 3.4;
-	cubeb.scale.z = 25;
-	var cubeb_b = addMesh( cube, 1,  -380, -240+487, -4240, 0,0,0, invMaterial2, false );
-	cubeb_b.scale.x = 2;
-	cubeb_b.scale.y = 3.4;
-	cubeb_b.scale.z = 25;
-	var cubec = addMesh( cube, 1,  232, -200+487, 590-1800, 0,0,0, invMaterial2, false );
-	cubec.scale.x = 0.8;
-	cubec.scale.y = 2;
-	cubec.scale.z = 2.4;
-	var cubed = addMesh( cube, 1,  355, -120+487, -360-1800, 0,0,0, invMaterial2, false );
-	cubed.scale.x = 2;
-	cubed.scale.y = 3.8;
-	cubed.scale.z = 4.5;
-	var cubef = addMesh( cube, 1,  230, -200+487, -1115-1800, 0,0,0.0957, invMaterial2, false );
-	cubef.scale.x = 1;
-	cubef.scale.y = 3.2;
-	cubef.scale.z = 2;
-	var cubeg = addMesh( cube, 1,  40, 160+487, -1240-1800, 0,0,0.8796, invMaterial2, false );
-	cubeg.scale.x = 1.2;
-	cubeg.scale.y = 1.6;
-	cubeg.scale.z = 3.6;
-	var cubeh = addMesh( cube, 1,  240, -320+487, -80, 0,0,0, invMaterial2, false );
-	cubeh.scale.x = 0.8;
-	cubeh.scale.y = 3.2;
-	cubeh.scale.z = 2.4;
-	var cubei = addMesh( cube, 1,  -220, -320+487, -920-1800, 0,0,0, invMaterial2, false );
-	cubei.scale.x = 1;
-	cubei.scale.y = 4.6;
-	cubei.scale.z = 3.4;
+	// shadow as collsion for now
+	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
 
-	// ramp test
-	//var rampa = addMesh( cube, 1,  -240, -20, -400, 0,0,0.5, invMaterial, false );
-	//rampa.scale.z = 20;
+		var shadowMesh = new THREE.Mesh( geometry, invMaterial );
+		shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
+		
+		collisionScene.addObject( shadowMesh );
 
-/*	var ref = cubed;
-	gui.add( ref.position, 'x', -2000, 2000).name( 'xpos' );
-	gui.add( ref.position, 'y', -2000, 2000).name( 'ypos' );
-	gui.add( ref.position, 'z', -6000, 4000).name( 'zpos' );
-	gui.add( ref.scale, 'x', 0, 20).name( 'xscale' );
-	gui.add( ref.scale, 'y', 0, 20).name( 'yscale' );
-	gui.add( ref.scale, 'z', 0, 20).name( 'zscale' );
-	gui.add( ref.rotation, 'x', 0, Math.PI*2).name( 'xrotation' );
-	gui.add( ref.rotation, 'y', 0, Math.PI*2).name( 'yrotation' );
-	gui.add( ref.rotation, 'z', 0, Math.PI*2).name( 'zrotation' );
-*/
-
+	} } );
 	// ---
 
 	// emitter
@@ -244,7 +208,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	var pi2 = pi*2;
 	var degToRad = pi/180;
 
-	var maxSpeed = 20;
 	var rotationLimit = 8;
 	var innerRadius = 0;
 	var outerRadius = 1;
@@ -254,7 +217,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	emitterFollow.rotationz = 0;
 
 
-	this.update = function () {
+	this.update = function ( delta ) {
 
 		// update to reflect _real_ camera position
 		camPos.x = camera.matrixWorld.n14;
@@ -275,8 +238,8 @@ var CitySoup = function ( camera, scene, shared ) {
 		
 		r += 0.1;
 
-		updateEmitter();
-		runAll();
+		updateEmitter( delta );
+		runAll( delta );
 
 		// slight camera roll
 		if (camera.animationParent) {
@@ -299,14 +262,18 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function animalLoaded( geometry ) {
 		
-		var numArray = [0,0,4,3,2,1,0,1,2,4,3,4,1,0,0,1,1,2,4,3];
+		var numArray = [0,0,4,3,2,1,0,1,2,7,3,4,1,0,0,5,6,2,4,3];
 
 		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
+			
+			if (animalArray[i] != undefined) {
+				continue;
+			}
 
 			var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
 
-			var followIndex = Math.floor(i/2);
+			var followIndex = Math.floor(i/4);
 
 			var scale = 0.02+(Math.random()/8);
 			if (i<2) {
@@ -327,16 +294,94 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			scene.addChild( mesh );
 			var num = numArray[i%numArray.length];
-			animal.play( animal.availableAnimals[ num ], animal.availableAnimals[ num ], 0, Math.random() );
+			animal.play( animal.availableAnimals[ num ], animal.availableAnimals[ Math.round(Math.random()*7) ], 0, Math.random() );
 
 			var count = Math.random();
 			if (i<2) {
 				count = 0;
 			}
 
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.2 };
+
+			animalArray[i] = obj;
+
+		}
+
+	}
+
+	function elkLoaded( geometry ) {
+
+		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
+			
+			if (animalArray[i] != "elk") {
+				continue;
+			}
+
+			var animal = ROME.Animal( geometry, false );
+			var mesh = animal.mesh;
+
+			var followIndex = Math.floor(i/4);
+
+			var scale = 0.02+(Math.random()/8);
+			scale = Math.max(scale, 0.1);
+
+			var x = camPos.x;
+			var y = camPos.y;
+			var z = camPos.z;
+
+			mesh.position.x = x;
+			mesh.position.y = y;
+			mesh.position.z = z;
+
+			mesh.matrixAutoUpdate = false;
+
+			scene.addChild( mesh );
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
+
+			var count = 0;
+
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 2.2 };
+
+			animalArray[i] = obj;
+
+		}
+
+	}
+
+	function mooseLoaded( geometry ) {
+
+		for ( var i = 0; i < initSettings.numOfAnimals; ++i ) {
+			
+			if (animalArray[i] != "moose") {
+				continue;
+			}
+
+			var animal = ROME.Animal( geometry, false );
+			var mesh = animal.mesh;
+
+			var followIndex = Math.floor(i/4);
+
+			var scale = 0.02+(Math.random()/8);
+			scale = Math.max(scale, 0.1);
+
+			var x = camPos.x;
+			var y = camPos.y;
+			var z = camPos.z;
+
+			mesh.position.x = x;
+			mesh.position.y = y;
+			mesh.position.z = z;
+
+			mesh.matrixAutoUpdate = false;
+
+			scene.addChild( mesh );
+			animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
+
+			var count = 0;
+
 			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, count: count, scale: scale * 1.1 };
 
-			animalArray.push( obj );
+			animalArray[i] = obj;
 
 		}
 
@@ -344,14 +389,15 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function flyingLoaded( geometry ) {
 
-		var numArray = [1,1,0,2,1,3,3,1,0,0,3,2,1,2,0,3,0,1,1,0];
+		//var numArray = [1,1,0,2,1,3,3,1,0,0,3,2,1,2,0,3,0,1,1,0];
+		var numArray = [1,1,0,0,1,0,0,1,0,0,0,0,1,1,0,1,0,1,1,0];
 
-		for ( var i = 0; i < initSettings.numOfFlyingAnimals; ++i ) {
+		for ( var i = 0; i < Math.floor(initSettings.numOfFlyingAnimals/2); ++i ) {
 
 			var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
 
-			var followIndex = Math.floor(i/3);
+			var followIndex = Math.floor(flyingArray.length/3);
 
 			var scale = 0.02+(Math.random()/10);
 			var scale = 0.02+(Math.random()/14);
@@ -436,7 +482,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 
-	function runAll () {
+	function runAll ( delta ) {
 
 		for (var k=0; k<ribbonArray.length; ++k ) {
 			var ribbonMesh = ribbonArray[k].rm;
@@ -485,9 +531,9 @@ var CitySoup = function ( camera, scene, shared ) {
 			y += moveY;
 			z += moveZ;
 
-			var moveNormalX = (tonormalx-normalx)/15;
-			var moveNormalY = (tonormaly-normaly)/15;
-			var moveNormalZ = (tonormalz-normalz)/15;
+			var moveNormalX = (tonormalx-normalx)/10;
+			var moveNormalY = (tonormaly-normaly)/10;
+			var moveNormalZ = (tonormalz-normalz)/10;
 
 			normalx += moveNormalX;
 			normaly += moveNormalY;
@@ -553,6 +599,12 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
+		var dx = vectorArray[0].lastx - vectorArray[0].x, dy = vectorArray[0].lasty - vectorArray[0].y, dz = vectorArray[0].lastz - vectorArray[0].z;
+		var distance =  dx * dx + dy * dy + dz * dz;
+		
+		var speed = Math.max(distance/100, 1.0);
+		speed = Math.min(speed, 1.5);
+
 		// animals
 		for (var i=0; i<animalArray.length; ++i ) {
 			var obj =  animalArray[i];
@@ -582,16 +634,23 @@ var CitySoup = function ( camera, scene, shared ) {
 			var toy = vectorArray[f].y+(offsety*amounty);
 			var toz = vectorArray[f].z+(offsetz*amountz);
 
-			if (toy < FLOOR+8) {
-				toy = FLOOR+8;
+			if (cNormal.y > 0.5) {
+				toy = vectorArray[f].y - 6*1.75;
 			}
 
-			// morph - removed for now
-			/*animalArray[i].count += 0.01;
+			if (toy < FLOOR) {
+				toy = FLOOR;
+			}
+
+			// morph
+			animalArray[i].count += 0.01;
 			var morph = Math.max(Math.cos(animalArray[i].count),0);
 			morph = Math.min(morph, 1)
 			animalArray[i].a.morph = morph;
-			*/
+
+			animalArray[i].a.animalA.timeScale = speed;
+			animalArray[i].a.animalB.timeScale = speed;
+
 			var divider = 2;
 
 			var moveX = (tox-x)/divider;
@@ -701,6 +760,8 @@ var CitySoup = function ( camera, scene, shared ) {
 			flyingArray[i].z = z;
 		}
 
+		var multiplier = delta/60;
+		
 		// grass
 		for (var i=0; i<grassArray.length; ++i ) {
 			var obj = grassArray[i];
@@ -711,7 +772,8 @@ var CitySoup = function ( camera, scene, shared ) {
 			var tree = obj.tree;
 			var maxHeight = obj.maxHeight;
 
-			alivetime += 0.5;
+			
+			alivetime += multiplier;//0.5;
 			
 			// respawn
 			if (alivetime > 150) {
@@ -833,7 +895,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		for (var i=0; i<particleArray.length; ++i ) {
 			var particles = particleArray[i].c;
 
-			particleArray[i].alivetime += 0.2;
+			particleArray[i].alivetime += multiplier/5;//0.2;
 			if (particleArray[i].alivetime >= particleArray.length) {
 				particleArray[i].alivetime = 0;
 				particles.scale.x = particles.scale.y = particles.scale.z = 1;
@@ -872,7 +934,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	}
 
-	function updateEmitter() {
+	function updateEmitter( delta ) {
 
 		var vector = new THREE.Vector3( ( mouseX / shared.screenWidth ) * 2 - 1, - ( mouseY / shared.screenHeight ) * 2 + 1, 0.5 );
 
@@ -936,208 +998,46 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
-		// followNormal test
-		var vector = emitterFollow.position.clone().normalize();
+		var maxSpeed = delta;
 
-		projector.unprojectVector( vector, camera );
 
-		var ray = new THREE.Ray( camPos, vector.subSelf( camPos ).normalize() );
-
-		var intersects = ray.intersectScene( collisionScene );
-
-		if ( intersects.length > 0 ) {
-
-			for ( var i = 0; i < intersects.length; ++i ) {
-
-				var check = vector.z < 0 ? intersects[i].point.z < camPos.z : intersects[i].point.z > camPos.z;
-
-				if ( check && intersects[i].object != emitterMesh && intersects[i].object != emitterFollow && intersects[i].distance > 10 ) {
-
-					var face = intersects[i].face;
-					var object = intersects[i].object;
-
-					followNormal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
-
-					if (intersects[i].object == rightPlane || intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane || intersects[i].object == upPlane) {
-						followNormal.x = 0;
-						followNormal.y = 1;
-						followNormal.z = 0;
-					}
-
-					//console.log(currentNormal.y+" | "+followNormal.y);
-
-					if (followNormal.x < -0.5 && emitterFollow.position.x > intersects[i].point.x) {
-						emitterFollow.position.x = intersects[i].point.x;
-					}
-					if (followNormal.x > 0.5 && emitterFollow.position.x < intersects[i].point.x) {
-						emitterFollow.position.x = intersects[i].point.x;
-					}
-
-					if (followNormal.z < -0.5 && emitterFollow.position.z > intersects[i].point.z) {
-						emitterFollow.position.z = intersects[i].point.z;
-					}
-					if (followNormal.z > 0.5 && emitterFollow.position.z < intersects[i].point.z) {
-						emitterFollow.position.z = intersects[i].point.z;
-					}
-
-					if (emitterFollow.position.z > camPos.z) {
-						emitterFollow.position.z = camPos.z;
-					}
-
-					break;
-				}
-			}
-
-		}
-
-		// test turn constraints...
-		// Y
-		if (currentNormal.y > 0.5 || currentNormal.y < -0.5) {
+		var toy = emitterMesh.position.y;
 		
-			var rotationy = emitterFollow.rotationy/180*pi;
-			var oldRy = rotationy;
-			rotationy += pi*0*0.5-pi*0*Math.random();
-			
-			var tx = emitterMesh.position.x;
-			var tz = emitterMesh.position.z;
-			var dx = tx-emitterFollow.position.x;
-			var dz = tz-emitterFollow.position.z;
-			var d = Math.sqrt(dx*dx+dz*dz);
-			var a = Math.atan2(dz,dx);
-			var pstr = 0;
-			
-			if (outerRadius > 0) {
-				var dstr = (d-innerRadius)/(outerRadius-innerRadius);
-				if (dstr > 1) { dstr = 1; }
-				if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
-			}
-			rotationy += getShortRotation(a-rotationy)*pstr;
-
-			var rotationD = rotationy-oldRy;
-			if (Math.abs(rotationD) > rotationLimit*degToRad) { 
-				rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
-			}
-
-			var speed = d/20;
-			if (speed > maxSpeed) {
-				speed = maxSpeed;
-			}
-			emitterFollow.position.x += Math.cos(rotationy)*speed;
-			emitterFollow.position.z += Math.sin(rotationy)*speed;
-			emitterFollow.rotationy = rotationy/degToRad;
-
-			var toy = emitterMesh.position.y;
-			
-			var moveY = (toy-emitterFollow.position.y)/settings.emitterDivider;
-			if (moveY > maxSpeed) {
-				moveY = maxSpeed;
-			}
-			if (moveY < -maxSpeed) {
-				moveY = -maxSpeed;
-			}
-			emitterFollow.position.y += moveY;
-
+		var moveY = (toy-emitterFollow.position.y)/settings.emitterDivider;
+		if (moveY > maxSpeed) {
+			moveY = maxSpeed;
 		}
+		if (moveY < -maxSpeed) {
+			moveY = -maxSpeed;
+		}
+		emitterFollow.position.y += moveY;
 
-		// X
-		if (currentNormal.x > 0.5 || currentNormal.x < -0.5) {
+
+		var tox = emitterMesh.position.x;
 		
-			var rotationx = emitterFollow.rotationx/180*pi;
-			var oldRx = rotationx;
-			rotationx += pi*0*0.5-pi*0*Math.random();
-			
-			var ty = emitterMesh.position.y;
-			var tz = emitterMesh.position.z;
-			var dy = ty-emitterFollow.position.y;
-			var dz = tz-emitterFollow.position.z;
-			var d = Math.sqrt(dz*dz+dy*dy);
-			var a = Math.atan2(dz,dy);
-			var pstr = 0;
-			
-			if (outerRadius > 0) {
-				var dstr = (d-innerRadius)/(outerRadius-innerRadius);
-				if (dstr > 1) { dstr = 1; }
-				if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
-			}
-			rotationx += getShortRotation(a-rotationx)*pstr;
-
-			var rotationD = rotationx-oldRy;
-			if (Math.abs(rotationD) > rotationLimit*degToRad) { 
-				rotationx = oldRx+rotationLimit*degToRad*(rotationD<0?-1:1);
-			}
-
-			var speed = d/20;
-			if (speed > maxSpeed) {
-				speed = maxSpeed;
-			}
-
-			emitterFollow.position.y += Math.cos(rotationx)*speed;
-			emitterFollow.position.z += Math.sin(rotationx)*speed;
-			emitterFollow.rotationx = rotationx/degToRad;
-
-			var tox = emitterMesh.position.x;
-			
-			var moveX = (tox-emitterFollow.position.x)/settings.emitterDivider;
-			if (moveX > maxSpeed) {
-				moveX = maxSpeed;
-			}
-			if (moveX < -maxSpeed) {
-				moveX = -maxSpeed;
-			}
-
-			emitterFollow.position.x += moveX;
-
+		var moveX = (tox-emitterFollow.position.x)/settings.emitterDivider;
+		if (moveX > maxSpeed) {
+			moveX = maxSpeed;
+		}
+		if (moveX < -maxSpeed) {
+			moveX = -maxSpeed;
 		}
 
-		// Z
-		if (currentNormal.z > 0.5 || currentNormal.z < -0.5) {
+		emitterFollow.position.x += moveX;
+
+
+		var toz = emitterMesh.position.z;
 		
-			var rotationz = emitterFollow.rotationz/180*pi;
-			var oldRz = rotationz;
-			rotationz += pi*0*0.5-pi*0*Math.random();
-			
-			var tx = emitterMesh.position.x;
-			var ty = emitterMesh.position.y;
-			var dx = tx-emitterFollow.position.x;
-			var dy = ty-emitterFollow.position.y;
-			var d = Math.sqrt(dx*dx+dy*dy);
-			var a = Math.atan2(dx,dy);
-			var pstr = 0;
-			
-			if (outerRadius > 0) {
-				var dstr = (d-innerRadius)/(outerRadius-innerRadius);
-				if (dstr > 1) { dstr = 1; }
-				if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
-			}
-			rotationz += getShortRotation(a-rotationz)*pstr;
-
-			var rotationD = rotationz-oldRy;
-			if (Math.abs(rotationD) > rotationLimit*degToRad) { 
-				rotationz = oldRz+rotationLimit*degToRad*(rotationD<0?-1:1);
-			}
-
-			var speed = d/20;
-			if (speed > maxSpeed) {
-				speed = maxSpeed;
-			}
-
-			emitterFollow.position.y += Math.cos(rotationz)*speed;
-			emitterFollow.position.x += Math.sin(rotationz)*speed;
-			emitterFollow.rotationz = rotationz/degToRad;
-
-			var toz = emitterMesh.position.z;
-			
-			var moveZ = (toz-emitterFollow.position.z)/settings.emitterDivider;
-			if (moveZ > maxSpeed) {
-				moveZ = maxSpeed;
-			}
-			if (moveZ < -maxSpeed) {
-				moveZ = -maxSpeed;
-			}
-
-			emitterFollow.position.z += moveZ;
-
+		var moveZ = (toz-emitterFollow.position.z)/settings.emitterDivider;
+		if (moveZ > maxSpeed) {
+			moveZ = maxSpeed;
 		}
+		if (moveZ < -maxSpeed) {
+			moveZ = -maxSpeed;
+		}
+
+		emitterFollow.position.z += moveZ;
+
 
 	}
 

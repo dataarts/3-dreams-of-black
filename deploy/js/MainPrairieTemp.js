@@ -103,7 +103,7 @@ function start( pattern ) {
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0//.2;	
+	audio.volume = 0.2;	
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 
@@ -111,6 +111,8 @@ function start( pattern ) {
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 	animate();
+
+	//setInterval(animate, 1000/60);
 
 }
 
