@@ -66,7 +66,7 @@ var City = function ( shared ) {
 
 		THREE.AnimationHandler.update( delta );
 
-		soup.update();
+		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );
 		

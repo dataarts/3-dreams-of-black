@@ -79,7 +79,7 @@ var Prairie = function ( shared ) {
 	};
 
 	this.update = function ( f ) {
-
+	
 		time = new Date().getTime();
 		delta = time - oldTime;
 		oldTime = time;
@@ -103,7 +103,7 @@ var Prairie = function ( shared ) {
 		world.scene.lights[1].color.setRGB(a,a,a);
 		world.scene.lights[2].color.setRGB(a,a,a);*/
 
-		soup.update();
+		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );
 
