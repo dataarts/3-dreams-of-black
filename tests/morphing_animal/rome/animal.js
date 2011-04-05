@@ -18,6 +18,8 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		vertexShader: ROME.AnimalShader.vertex(), 
 		fragmentShader: ROME.AnimalShader.fragment(),
 		morphTargets: true,
+		fog: true,
+		lights: true
 		
 	} );
 
@@ -26,74 +28,50 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	
 	// hack: attributes
 
-
-	var collectFaces = function( vertexIndex, faces ) {
-		
-		var collection = [];
-		var f, fl, face;
-		
-		for( f = 0, fl = faces.length; f < fl; f++ ) {
-			
-			face = faces[ f ];
-			
-			if( face.a === vertexIndex ) { collection.push( face ); continue; }
-			if( face.b === vertexIndex ) { collection.push( face ); continue; }
-			if( face.c === vertexIndex ) { collection.push( face ); continue; }
-			if( face.d === vertexIndex ) { collection.push( face ); continue; }
-			
-		}
-		
-		return collection;
-		
-	}
-
-
-	var calcAO = function( vertices, faces ) {
+	var calcAO = function( vertices, faces, edges ) {
 		
 		var ao = [];
+		var numAo = [];
 		var centroid = new THREE.Vector3();
-		var a, b, c, f, faceA, faceB, collection;
-		var v, vl, fa, fb, fal, fbl, num;
-	
-		
-		for( v = 0, vl = vertices.length; v < vl; v++ ) {
+		var edge, faceA, faceB, vertexA, vertexB;
+		var e, el, len;
+
+		for( e = 0, el = edges.length; e < el; e++ ) {
 			
-			collection = collectFaces( v, faces );
-			fal = collection.length - 1;
-			fbl = collection.length;
-			ao[ v ] = 0;
-			num = 0;
+			edge = edges[ e ];
 			
-			for( fa = 0; fa < fal; fa++ ) {
-				
-				faceA = collection[ fa ];
-				
-				for( fb = fa + 1; fb < fbl; fb++ ) {
+			faceA = edge.faces[ 0 ];
+			faceB = edge.faces[ 1 ] || faceA;
 
-					faceB = collection[ fb ];					
-
-
-					// face b facing face a?
+			centroid.sub( faceA.centroid, faceB.centroid );
 					
-					centroid.sub( faceB.centroid, faceA.centroid );
-					
-					if( centroid.dot( centroid, faceA.normal ) > 0 ) {
+			if( centroid.dot( centroid, faceA.normal ) >= 0 ) {
+
+				vertexA = edge.vertexIndices[ 0 ];
+				vertexB = edge.vertexIndices[ 1 ];
 						
-						// add up
-						
-						centroid.add( faceA.normal, faceB.normal );
-						ao[ v ] += centroid.length() * 0.5;
-						num++;
-
-					}
-					
-				}
+				if( ao[ vertexA ] === undefined ) { ao[ vertexA ] = 0; numAo[ vertexA ] = 0; }		
+				if( ao[ vertexB ] === undefined ) { ao[ vertexB ] = 0; numAo[ vertexB ] = 0; }		
 				
+				centroid.add( faceA.normal, faceB.normal );
+				
+				len = centroid.length() * 0.5;
+
+				ao[ vertexA ] += len;
+				ao[ vertexB ] += len;
+
+				numAo[ vertexA ]++;
+				numAo[ vertexB ]++;
+
 			}
+					
+		}
+
+		for( e = 0, el = ao.length; e < el; e++ ) {
 			
-			ao[ v ] /= num;
-			ao[ v ] *= 0.5;
-			ao[ v ]  = Math.min( 0.5, Math.max( 0, ao[ v ] ));
+			ao[ e ] /= numAo[ e ];
+			ao[ e ] *= 0.5;
+			ao[ e ]  = Math.min( 0.5, Math.max( 0, ao[ e ] ));
 			
 		}
 		
@@ -102,20 +80,23 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	}
 
 
-	var aoA = calcAO( geometry.vertices, geometry.faces );	
-	var aoB = calcAO( geometry.morphTargets[ 10 ].vertices, geometry.faces );	
+	var aoA = calcAO( geometry.vertices, geometry.faces, geometry.edges );	
+	var aoB = calcAO( geometry.morphTargets[ 10 ].vertices, geometry.faces, geometry.edges );	
+
+//	var aoA = calcAO( geometry.vertices, geometry.faces );	
+//	var aoB = calcAO( geometry.morphTargets[ 10 ].vertices, geometry.faces );	
 
 	for( var i = 0; i < geometry.faces.length; i++ ) {
 		
 		if( geometry.faces[ i ] instanceof THREE.Face3 ) {
 			
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
 
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
 			
 			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
 			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
@@ -123,15 +104,15 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 		} else {
 			
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].d ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].d ] ));
 
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 1 ).multiplyScalar( aoB[ geometry.faces[ i ].d ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].d ] ));
 
 			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
 			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
@@ -345,7 +326,7 @@ ROME.AnimalShader = {
 	textures: {
 		
 		contour: ImageUtils.loadTexture( 'assets/faceContour.jpg' ),
-		faceLight: ImageUtils.loadTexture( 'assets/faceContour.jpg' )
+		faceLight: ImageUtils.loadTexture( 'assets/faceLight.jpg' )
 		
 	},
 	
@@ -360,7 +341,15 @@ ROME.AnimalShader = {
 					"fogDensity": 					{ type: "f", value: 0 },
 
 					"contour": 						{ type: "t", value: 0, texture: ROME.AnimalShader.textures.contour },
-					"faceLight":                    { type: "t", value: 1, texture: ROME.AnimalShader.textures.faceLight }
+					"faceLight":                    { type: "t", value: 1, texture: ROME.AnimalShader.textures.faceLight },
+
+					"enableLighting": 				{ type: "i", value: 1 },
+					"ambientLightColor": 			{ type: "fv", value: [] },
+					"directionalLightDirection": 	{ type: "fv", value: [] },
+					"directionalLightColor": 		{ type: "fv", value: [] },
+					"pointLightColor": 				{ type: "fv", value: [] },
+					"pointLightPosition": 			{ type: "fv", value: [] },
+					"pointLightDistance": 			{ type: "fv1", value: [] }
 
 			   }
 	},
@@ -419,6 +408,7 @@ ROME.AnimalShader = {
 
 		"uniform 	vec3 		fogColor;",
 		"uniform 	float 		fogDensity;",
+		"uniform 	vec3 		directionalLightColor[ 1 ];",
 
 		"varying	vec3		vColor;",
 		"varying 	vec2		vContourUV;",
@@ -432,8 +422,7 @@ ROME.AnimalShader = {
 			"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
 			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
 
-//			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( 1.0 ), 2.0 * ( texture2D( faceLight, vLightUV ).r - 0.5 )) * texture2D( contour, vContourUV );",
-			"gl_FragColor = vec4( vColor, 1.0 );",
+			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), texture2D( faceLight, vLightUV ).r ) * texture2D( contour, vContourUV );",
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
 
 		"}"

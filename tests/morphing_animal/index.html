@@ -40,7 +40,7 @@
 
 			
 			var loader = new THREE.JSONLoader();
-			loader.load( { model: "assets/WaltHead_slim.js", callback: init } );
+			loader.load( { model: "assets/wolfBison2.js", callback: init } );
 
 		//	init();
 
@@ -67,8 +67,7 @@
 				scene.addLight( light );
 
 	
-				//geometry = new Cube( 100, 100, 100, 2, 2, 2, undefined, true );
-	
+	/*			geometry = new Cube( 100, 100, 100, 2, 2, 2, undefined, true );
 				geometry.morphTargets = [
 				
 					{ "name": "bison_001", "vertices": geometry.vertices },				
@@ -86,17 +85,23 @@
 					{ "name": "wolf_001", "vertices": geometry.vertices },				
 					{ "name": "wolf_001", "vertices": geometry.vertices },				
 				];
+*/
+				for( var i = 0; i < geometry.faces.length; i++ ) {
+					
+					geometry.faces[ i ].normal.negate();
+										
+				}
 				
 				animal = ROME.Animal( geometry, true );
-			//	animal.mesh.doubleSided = true;
+				animal.mesh.doubleSided = true;
 				scene.addChild( animal.mesh );
 				animal.mesh.rotation.y = 90 * Math.PI / 180;
 				animal.play( "bison", "wolf" );
 
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 0, 50, 150 );
-				camera.target.position.y = 0;
+				camera.position.set( 0, 250, 350 );
+				camera.target.position.y = 100;
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
