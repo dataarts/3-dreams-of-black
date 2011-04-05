@@ -13,10 +13,14 @@ var CityWorld = function ( shared ) {
 	this.scene.addLight( ambientLight );
 
 	var directionalLight = new THREE.DirectionalLight( 0xffffff );
-	directionalLight.position.set( -0.645442029122017,  0.34452945220032116,  -0.6816920445548706 );
+	directionalLight.position.set( -0.6,  1.8,  -0.6 );
 	directionalLight.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
 	this.scene.addLight( directionalLight );
 	
+	/*gui.add( directionalLight.position, 'x', -10, 20 ).name( 'x' );
+	gui.add( directionalLight.position, 'y', -10, 20 ).name( 'y' );
+	gui.add( directionalLight.position, 'z', -10, 20 ).name( 'z' );
+	*/
 
 	// Mesh
 
