@@ -219,8 +219,8 @@
 	<body>
 	
 		<div id="viewport"></div> 
-		<script type="text/javascript" src="js/Three.js"></script>
 
+		<script type="text/javascript" src="js/Three.js"></script>
 		
 		<script type="text/javascript" src="js/animal.js"></script>
 		<script type="text/javascript" src="js/Slider.js"></script>
@@ -1897,7 +1897,7 @@
 				m = materials[ i ][ 0 ];
 				
 				extractTexture( m.map, textureMap );
-				extractTexture( m.lightMap, textureMap );				 
+				extractTexture( m.lightMap, textureMap );
 
 			}
 			
@@ -2022,7 +2022,7 @@
 					cameraDistanceOriginal = mesh.boundRadius * 3;
 					cameraHeightOriginal = mesh.boundRadius * 0.1;
 					
-				}				
+				}
 				
 				$( "morphs" ).style.display = "none";
 				
@@ -2038,10 +2038,10 @@
 			mesh.updateMatrix();
 			mesh.update();
 			
-			sceneRoot.addChild( mesh );			
+			sceneRoot.addChild( mesh );
 
 			cameraDistance = cameraDistanceOriginal;
-			cameraHeight = cameraHeightOriginal;				
+			cameraHeight = cameraHeightOriginal;
 
 			camera.position.set( 0, cameraHeight, cameraDistance );
 			camera.target.position.set( 0, 0, 0 );
@@ -2050,6 +2050,25 @@
 			SceneUtils.showHierarchy( auxRoot, axisVisible );
 			
 			//console.log( mesh.boundRadius, camera );
+			
+			if ( geometry.edges.length > 0 ) {
+			
+				var lineGeo = new THREE.Geometry();
+				var lineMat = new THREE.LineBasicMaterial( { color: 0xff0000, opacity: 1, linewidth: 2 } );
+				
+				for( var i = 0; i < geometry.edges.length; i ++ ) {
+				
+					lineGeo.vertices.push( geometry.edges[ i ].vertices[ 0 ] );
+					lineGeo.vertices.push( geometry.edges[ i ].vertices[ 1 ] );
+
+				}
+				
+				console.log( lineGeo );
+				
+				var edgeLines = new THREE.Line( lineGeo, lineMat, THREE.LinePieces );
+				sceneRoot.addChild( edgeLines );
+				
+			}
 
 		};
 		
@@ -2064,7 +2083,7 @@
 			
 			effect.type = "noise";
 			
-			effect.scene = new THREE.Scene();		
+			effect.scene = new THREE.Scene();
 			
 			effect.camera = new THREE.Camera();
 			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
@@ -2159,7 +2178,7 @@
 			
 		};
 		
-		// updates		
+		// updates
 
 		function animate() {
 
@@ -2181,7 +2200,7 @@
 		
 			if ( morphObject ) {
 				
-				THREE.AnimationHandler.update( delta );				
+				THREE.AnimationHandler.update( delta );
 				
 			}
 
