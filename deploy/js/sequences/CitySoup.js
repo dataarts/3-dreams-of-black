@@ -64,7 +64,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var r = 0;
 	camPos = new THREE.Vector3( 0, 20, 0 );
 
-	var pointLight = new THREE.PointLight( 0xeeffee, 1, 200 );
+	var pointLight = new THREE.PointLight( 0xeeffee, 4, 150 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -161,7 +161,10 @@ var CitySoup = function ( camera, scene, shared ) {
 	// grass
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoaded } );
 	// tree
+	var treeCount = 0;
 	loader.load( { model: "files/models/soup/evergreen_low.js", callback: treeLoaded } );
+	loader.load( { model: "files/models/soup/evergreen_high.js", callback: treeLoaded } );
+	loader.load( { model: "files/models/soup/tree_Generic.js", callback: treeLoaded } );
 	// lighthouse
 	loader.load( { model: "files/models/soup/lighthouse.js", callback: ligthhouseLoaded } );
 
@@ -225,7 +228,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.z = camera.matrixWorld.n34;
 
 		// temp reset
-		if (camPos.z <= -2960) {
+		if (camPos.z <= -3260) {
 			reset();
 		}
 		
@@ -240,6 +243,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		updateEmitter( delta );
 		runAll( delta );
+		TWEEN.update();
 
 		// slight camera roll
 		if (camera.animationParent) {
@@ -427,7 +431,14 @@ var CitySoup = function ( camera, scene, shared ) {
 	function grassLoaded( geometry ) {
 
 		for (var i=0; i<150; ++i ) {
+
+			var occupied = i%10;
 			
+			if (occupied == 0) {
+				//console.log("grass skipping "+i);
+				continue;
+			}
+
 			var x = 0;
 			var y = FLOOR;
 			var z = 0;
@@ -435,19 +446,19 @@ var CitySoup = function ( camera, scene, shared ) {
 			var c = new THREE.Mesh( geometry, grassMaterials[i%5] );
 
 			var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3(), tree:false, maxHeight:0};
-			if (grassArray[i] == undefined) {
-				scene.addObject(c);
-				c.scale.x = c.scale.y = c.scale.z = 0.00000001;
-				grassArray[i] = obj;
-			}
+			
+			scene.addObject(c);
+			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
+			grassArray[i] = obj;
+
 		}
 
 	}
 
 	function treeLoaded( geometry ) {
 
-		for (var i=0; i<10; ++i ) {
-			
+		for (var i=treeCount; i<15; i+=3 ) {
+
 			var x = 0;
 			var y = FLOOR;
 			var z = 0;
@@ -455,13 +466,17 @@ var CitySoup = function ( camera, scene, shared ) {
 			var c = new THREE.Mesh( geometry, grassMaterials[i%5] );
 			scene.addObject(c);
 
-			var realindex = i*15;
+			var realindex = i*10;
 
 			var obj = {c:c, scale:0, alivetime:realindex, normal:new THREE.Vector3(), tree:true, maxHeight:Math.min(Math.random()+0.5,1.0)};
 			grassArray[realindex] = obj;
+
 		}
+		
+		++treeCount;
 
 	}
+
 
 	function ligthhouseLoaded( geometry ) {
 
@@ -787,12 +802,19 @@ var CitySoup = function ( camera, scene, shared ) {
 
 				var amount = 8;
 
+				var torotx = 0;
+				var toroty = 0;
+				var torotz = 0;
+
 				if (currentNormal.x < -0.8) {
 					c.position.x = emitterMesh.position.x + amount;
 					c.rotation.z = 1.57;
 					c.rotation.x = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5);
+						torotz = c.rotation.z+(Math.random()-0.5);
+						c.rotation.z = 0;
+						torotx = c.rotation.x;
+						toroty = c.rotation.y;
 					}
 					c.position.y += (Math.random()*50)-25;
 					c.position.z += (Math.random()*50)-25;
@@ -801,7 +823,10 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.x = emitterMesh.position.x - amount;
 					c.rotation.z = -1.57;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5);
+						torotz = c.rotation.z +(Math.random()-0.5);
+						c.rotation.z = 0;
+						torotx = c.rotation.x;
+						toroty = c.rotation.y;
 					}
 					c.rotation.x = Math.random()*Math.PI;
 
@@ -812,7 +837,10 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.y = emitterMesh.position.y + amount;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5);
+						torotz = c.rotation.z+(Math.random()-0.5);
+						c.rotation.z = 1.57;
+						torotx = c.rotation.x;
+						toroty = c.rotation.y;
 					}
 					c.position.x += (Math.random()*50)-25;
 					c.position.z += (Math.random()*50)-25;
@@ -821,7 +849,10 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.y = emitterMesh.position.y - amount;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.z += (Math.random()-0.5);
+						torotz += c.rotation.z+(Math.random()-0.5);
+						c.rotation.z = 1.57;
+						torotx = c.rotation.x;
+						toroty = c.rotation.y;
 					}
 					
 					c.position.x += (Math.random()*40)-20;
@@ -832,7 +863,10 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.rotation.x = -1.57;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.x += (Math.random()-0.5);
+						torotx = c.rotation.x+(Math.random()-0.5);
+						c.rotation.x = 0;
+						torotz = c.rotation.z;
+						toroty = c.rotation.y;
 					}
 					c.position.y += (Math.random()*50)-25;
 					c.position.x += (Math.random()*50)-25;
@@ -842,11 +876,21 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.rotation.x = 1.57;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
-						c.rotation.x += (Math.random()-0.5);
+						torotx = c.rotation.x+(Math.random()-0.5);
+						c.rotation.x = 0;
+						torotz = c.rotation.z;
+						toroty = c.rotation.y;
 					}
 
 					c.position.y += (Math.random()*50)-25;
 					c.position.x += (Math.random()*50)-25;
+				}
+
+				if (tree) {
+					var treeTween = new TWEEN.Tween(c.rotation)
+								.to({x: torotx, y: toroty, z: torotz}, 4000)
+								.easing(TWEEN.Easing.Elastic.EaseOut);
+					treeTween.start();				
 				}
 
 				// keep away from camera path - hack
@@ -863,7 +907,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			if (tree) {
 				scale = Math.max( alivetime / 50, 0.0001 );
 			} else {
-				scale = Math.max( alivetime / 150, 0.0001 );				
+				scale = Math.max( alivetime / 75, 0.0001 );				
 			}
 		
 			scale = Math.min( scale, 1 );
@@ -871,13 +915,13 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			if (tree) {
 				maxHeight *= 0.1;
-				var divider = 130;
+				var divider = 20;
 				if (obj.lighthouse) {
 					scale *= 1.6;
-					divider = 70;
+					divider = 30;
 				}
-				c.scale.x = c.scale.z = 0.15*Math.min((alivetime+1)/divider,1);
-				c.scale.y = scale;
+				c.scale.x = c.scale.y= c.scale.z = 0.1*Math.min((alivetime+1)/divider,1);
+				//c.scale.y = scale;
 				if (c.scale.y > maxHeight) {
 					c.scale.y = maxHeight;
 				}
@@ -896,6 +940,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			var particles = particleArray[i].c;
 
 			particleArray[i].alivetime += multiplier/5;//0.2;
+
 			if (particleArray[i].alivetime >= particleArray.length) {
 				particleArray[i].alivetime = 0;
 				particles.scale.x = particles.scale.y = particles.scale.z = 1;
@@ -913,24 +958,29 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			var alivetime = particleArray[i].alivetime;
 
-			particles.position.y += 0.15;
+			particles.position.y += 0.20;
 
-			particles.rotation.y += 0.015;
-			particles.rotation.z += 0.005;
+			particles.rotation.y += 0.035;
+			particles.rotation.z += 0.020;
 
-			var scale = Math.max(alivetime/9, 1);
+			var scale = Math.max(alivetime/15, 1);
 			//scale = Math.max(scale,0.05);
-			particles.scale.x = particles.scale.y = particles.scale.z = 0.1+scale;
+			particles.scale.x = particles.scale.y = particles.scale.z = 0.5+scale;
 
-			var alpha = (alivetime/10);
-			alpha = Math.min(alpha,0.75);
+			var alpha = (alivetime/4);
+			alpha = Math.min(alpha,1.0);
 			particles.materials[0].opacity = alpha;
 		}
 
 		pointLight.position.x = emitterFollow.position.x;
-		pointLight.position.y = emitterFollow.position.y + 10;
+		pointLight.position.y = emitterFollow.position.y;
 		pointLight.position.z = emitterFollow.position.z;
 
+		var amount = 10;
+
+		pointLight.position.x = emitterFollow.position.x + currentNormal.x*amount;
+		pointLight.position.y = emitterFollow.position.y + currentNormal.y*amount;
+		pointLight.position.z = emitterFollow.position.z + currentNormal.z*amount;
 
 	}
 
@@ -978,7 +1028,6 @@ var CitySoup = function ( camera, scene, shared ) {
 					if (currentNormal.x > 0.5) {
 						emitterMesh.position.x = intersects[i].point.x + amount;
 					}
-
 					if (currentNormal.y < -0.5) {
 						emitterMesh.position.y = intersects[i].point.y - amount;
 					}
@@ -992,6 +1041,11 @@ var CitySoup = function ( camera, scene, shared ) {
 						emitterMesh.position.z = intersects[i].point.z + amount;
 					}
 
+
+					// hack..
+					if (emitterMesh.position.z > camPos.z-100) {
+						emitterMesh.position.z = camPos.z-100;
+					}
 					break;
 				}
 			}
