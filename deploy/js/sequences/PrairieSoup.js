@@ -133,6 +133,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	loader.load( { model: "files/models/soup/bison.js", callback: animalLoaded } );
+	//loader.load( { model: "files/models/soup/blackWidow.js", callback: animalLoaded } );
 
 
 	// collisionScene stuff should probably not be here (TEMP)
@@ -203,8 +204,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		}
 
 		// collisionScene stuff should probably not be here (TEMP)
-		//renderer.render( collisionScene, camera );
-		renderer.render( collisionScene, camera, renderTarget );
+		renderer.render( collisionScene, camera );
+		//renderer.render( collisionScene, camera, renderTarget );
 		renderer.clear();
 		// ---
 	}
