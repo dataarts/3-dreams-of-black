@@ -57,9 +57,11 @@ var CitySoup = function ( camera, scene, shared ) {
 	var animalArray = [];
 	var particleArray = [];
 	var flyingArray = [];
+	var butterflyArray = [];
 	var grassArray = [];
 	var particleArray = [];
 
+	var butterflyContainer;
 	var currentNormal = new THREE.Vector3( 0, 1, 0 );
 	var r = 0;
 	camPos = new THREE.Vector3( 0, 20, 0 );
@@ -149,6 +151,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoaded } );
 	loader.load( { model: "files/models/soup/birds_A_life.js", callback: flyingLoaded } );
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: flyingLoaded } );
+	// butterfly
+	loader.load( { model: "files/models/soup/butterfly_hiA.js", callback: butterflyLoaded } );
 
 	// occupy for elks and mooses hack..
 	animalArray[0] = "elk";
@@ -203,8 +207,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// emitter
 	var projector = new THREE.Projector();
 	var emitter = new Cube( 10, 10, 10 );
-	var emitterMesh = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
-	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x3333FF } ) );
+	var emitterMesh = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33 } ) );
+	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF } ) );
 
 	// follow test with turn constraints
 	var pi = Math.PI;
@@ -403,7 +407,6 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			var followIndex = Math.floor(flyingArray.length/3);
 
-			var scale = 0.02+(Math.random()/10);
 			var scale = 0.02+(Math.random()/14);
 
 			var x = camPos.x;
@@ -423,6 +426,43 @@ var CitySoup = function ( camera, scene, shared ) {
 			var obj = { c: mesh, a: animal, x: x, y: y, z: z, f: followIndex, scale:scale * 1.5 };
 
 			flyingArray.push(obj);
+
+		}
+
+	}
+
+	function butterflyLoaded( geometry ) {
+
+		var container = new Cube( 10, 10, 10 );
+		butterflyContainer = new THREE.Mesh( container );
+		scene.addChild( butterflyContainer );
+
+		for ( var i = 0; i < 30; ++i ) {
+
+			var animal = ROME.Animal( geometry, false );
+			var mesh = animal.mesh;
+
+			var scale = 0.02+(Math.random()/8);
+
+			var x = (Math.random()*80)-40;
+			var y = (Math.random()*100);
+			var z = (Math.random()*80)-40;
+
+			mesh.position.x = x;
+			mesh.position.y = y;
+			mesh.position.z = z;
+
+			butterflyContainer.addChild( mesh );
+			
+			animal.animalA.timeScale = 1.5;
+			animal.animalB.timeScale = 1.5;
+
+			var num = 0//Math.round(Math.random()*3);
+			animal.play( animal.availableAnimals[ num ], animal.availableAnimals[ num ], 0, Math.random() );
+
+			var obj = { c: mesh, a: animal, x: x, y: y, z: z, scale:scale * 1.5 };
+
+			butterflyArray.push(obj);
 
 		}
 
@@ -935,6 +975,44 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
+		// butterflys
+		butterflyContainer.position = camPos;
+
+		butterflyContainer.position.x += Math.cos( camera.theta )*-70;
+		butterflyContainer.position.z -= Math.sin( camera.theta )*70;
+
+		for (var i=0; i<butterflyArray.length; ++i ) {
+			var obj =  butterflyArray[i];
+			var butterfly = obj.c;
+			var x = obj.x;
+			var y = obj.y;
+			var z = obj.z;
+			var scale = obj.scale;
+		
+			var offsetx = Math.cos(i-r);
+			var offsetz = Math.sin(i-r);
+
+			x += offsetx;
+			y += 0.5*(delta/20);
+			z += offsetz;
+
+			if (y > 100 ) {
+				y = -10;
+			}
+
+			butterfly.lookAt( new THREE.Vector3(x,y,z) );
+
+			butterfly.rotation.y -= 3.14;
+
+			butterfly.position.x = x;
+			butterfly.position.y = y;
+			butterfly.position.z = z;
+
+			butterflyArray[i].x = x;
+			butterflyArray[i].y = y;
+			butterflyArray[i].z = z;
+		}
+
 		// particles
 		for (var i=0; i<particleArray.length; ++i ) {
 			var particles = particleArray[i].c;
@@ -1052,8 +1130,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		}
 
-		var maxSpeed = delta;
-
+		var maxSpeed = delta/2;
 
 		var toy = emitterMesh.position.y;
 		
@@ -1091,7 +1168,6 @@ var CitySoup = function ( camera, scene, shared ) {
 		}
 
 		emitterFollow.position.z += moveZ;
-
 
 	}
 
