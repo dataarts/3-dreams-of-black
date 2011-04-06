@@ -438,6 +438,7 @@
 				</div>
 			</div>
 
+<!--
 			<div class="sgroup zshadow">
 				<div class="tbutton" id="btn_lensflare">+</div>
 
@@ -451,7 +452,7 @@
 					<div id="slider_wrap_lf_y"> </div> 
 				</div>
 			</div>
-	
+-->	
 			<div id="files_div">
 				<span class="header">Files</span><br/>
 				<div id="file_list"></div> 
@@ -478,6 +479,8 @@
 		if ( ! Detector.fileapi ) alert( 'The File APIs are not fully supported in this browser.' );
 		
 		// GUI
+		
+		var ENABLE_LENSFLARES = false;
 		
 		var guiVisible = true;
 		
@@ -830,12 +833,15 @@
 
 			// sliders - lens flare
 			
-			var flSliderX = new Slider( $( "slider_wrap_lf_x" ), swidth, sd, 0.0, 45.0, 0, function(val) { updateLensflare( val, -1 ); $("lf_x").innerHTML = val.toFixed(0); } );
-			var flSliderY = new Slider( $( "slider_wrap_lf_y" ), swidth, sd, 0.0, 360.0, 0, function(val) { updateLensflare( -1, val ); $("lf_y").innerHTML = val.toFixed(0); } );
+			if ( ENABLE_LENSFLARES ) {
 
-			addGroupToggle( "btn_lensflare", "grp_lensflare" );
-			hide( "grp_lensflare" );
+				var flSliderX = new Slider( $( "slider_wrap_lf_x" ), swidth, sd, 0.0, 45.0, 0, function(val) { updateLensflare( val, -1 ); $("lf_x").innerHTML = val.toFixed(0); } );
+				var flSliderY = new Slider( $( "slider_wrap_lf_y" ), swidth, sd, 0.0, 360.0, 0, function(val) { updateLensflare( -1, val ); $("lf_y").innerHTML = val.toFixed(0); } );
 
+				addGroupToggle( "btn_lensflare", "grp_lensflare" );
+				hide( "grp_lensflare" );
+				
+			}
 
 			// sliders - ambientLight light
 			
@@ -859,27 +865,31 @@
 			
 			
 			// lensflare
+			
+			if ( ENABLE_LENSFLARES ) {
+			
+				lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
+				
+				lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
+				
+				lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
+				
+				lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+				lensFlare.position.set( 0, 0, -99000 );
+				
+				
+				lensFlareRotate = new THREE.Object3D();
+				lensFlareRotate.addChild( lensFlare );
+				
+				scene.addChild( lensFlareRotate );
+				
+			}
 
-			lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
-			
-			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
-			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
-			lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
-			
-			lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveBlending );
-			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveBlending );
-			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveBlending );
-			lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
-			
-			lensFlare.customUpdateCallback = lensFlareUpdateCallback;
-			lensFlare.position.set( 0, 0, -99000 );
-			
-			
-			lensFlareRotate = new THREE.Object3D();
-			lensFlareRotate.addChild( lensFlare );
-			
-			scene.addChild( lensFlareRotate );
-			
 			// axis
 			
 			auxRoot = new THREE.Object3D();
