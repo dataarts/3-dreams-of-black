@@ -150,6 +150,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	loader.load( { model: "files/models/soup/animals_A_life.js", callback: animalLoaded } );
+
 	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoaded } );
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoaded } );
 	loader.load( { model: "files/models/soup/birds_A_life.js", callback: flyingLoaded } );
@@ -213,19 +214,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	var emitterMesh = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33 } ) );
 	var emitterFollow = addMesh( emitter, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF } ) );
 
-	// follow test with turn constraints
-	var pi = Math.PI;
-	var pi2 = pi*2;
-	var degToRad = pi/180;
-
-	var rotationLimit = 8;
-	var innerRadius = 0;
-	var outerRadius = 1;
-
-	emitterFollow.rotationy = 0;
-	emitterFollow.rotationx = 0;
-	emitterFollow.rotationz = 0;
-
 
 	this.update = function ( delta ) {
 
@@ -251,11 +239,6 @@ var CitySoup = function ( camera, scene, shared ) {
 		updateEmitter( delta );
 		runAll( delta );
 		TWEEN.update();
-
-		// slight camera roll
-		if (camera.animationParent) {
-			camera.animationParent.rotation.z = (camera.target.position.x)/800;
-		}
 
 
 		for (var k=0; k<ribbonArray.length; ++k ) {
@@ -306,6 +289,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			scene.addChild( mesh );
 			var num = numArray[i%numArray.length];
 			animal.play( animal.availableAnimals[ num ], animal.availableAnimals[ Math.round(Math.random()*7) ], 0, Math.random() );
+			//animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
 
 			var count = Math.random();
 			if (i<2) {
@@ -448,7 +432,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			var scale = 0.02+(Math.random()/8);
 
 			var x = (Math.random()*80)-40;
-			var y = (Math.random()*100);
+			var y = (i*(110/30))-10;
 			var z = (Math.random()*80)-40;
 
 			mesh.position.x = x;
@@ -457,8 +441,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 			butterflyContainer.addChild( mesh );
 			
-			animal.animalA.timeScale = 1.5;
-			animal.animalB.timeScale = 1.5;
+			animal.animalA.timeScale = 0.8;
+			animal.animalB.timeScale = 0.8;
 
 			var num = 0//Math.round(Math.random()*3);
 			animal.play( animal.availableAnimals[ num ], animal.availableAnimals[ num ], 0, Math.random() );
@@ -850,7 +834,7 @@ var CitySoup = function ( camera, scene, shared ) {
 				var torotz = 0;
 
 				if (currentNormal.x < -0.8) {
-					c.position.x = emitterMesh.position.x + amount;
+					c.position.x = emitterMesh.position.x + amount/2;
 					c.rotation.z = 1.57;
 					c.rotation.x = Math.random()*Math.PI;
 					if (tree) {
@@ -863,7 +847,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.z += (Math.random()*50)-25;
 				}
 				if (currentNormal.x > 0.8) {
-					c.position.x = emitterMesh.position.x - amount;
+					c.position.x = emitterMesh.position.x - amount/2;
 					c.rotation.z = -1.57;
 					if (tree) {
 						torotz = c.rotation.z +(Math.random()-0.5);
@@ -902,7 +886,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.z += (Math.random()*40)-20;
 				}
 				if (currentNormal.z < -0.8) {
-					c.position.z = emitterMesh.position.z + amount;
+					c.position.z = emitterMesh.position.z + amount/2;
 					c.rotation.x = -1.57;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
@@ -915,7 +899,7 @@ var CitySoup = function ( camera, scene, shared ) {
 					c.position.x += (Math.random()*50)-25;
 				}
 				if (currentNormal.z > 0.8) {
-					c.position.z = emitterMesh.position.z - amount;
+					c.position.z = emitterMesh.position.z - amount/2;
 					c.rotation.x = 1.57;
 					c.rotation.y = Math.random()*Math.PI;
 					if (tree) {
