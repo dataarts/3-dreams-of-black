@@ -31,10 +31,11 @@ var CityWorld = function ( shared ) {
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 	
 	// Parts
-
+	if (!shared.debug) {
 	//loader.load( { model: "files/models/city/City_P1.js", callback: partLoaded } );
 	loader.load( { model: "files/models/city/City_P2.js", callback: partLoaded } );
 	//loader.load( { model: "files/models/city/City_P3.js", callback: partLoaded } );
+	}
 
 	function partLoaded ( geometry ) {
 
@@ -99,16 +100,19 @@ var CityWorld = function ( shared ) {
 	// Shadow
 
 	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
-
-		var shadowMesh = new THREE.Mesh( geometry );
-		//shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
 		
+		var shadowMesh = new THREE.Mesh( geometry );
+
+		if (shared.debug) {
+			shadowMesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color:0xCCCCCC } ) );
+			shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
+			that.scene.addObject( shadowMesh );
+		}
+
 		var shadow = new THREE.ShadowVolume( shadowMesh );
 		shadow.scale.x = shadow.scale.y = shadow.scale.z = 0.1;
 		
 		that.scene.addObject( shadow, true );
-
-		//that.scene.addObject( shadowMesh );
 
 		preInitModel( geometry, shared.renderer, that.scene, shadowMesh );
 

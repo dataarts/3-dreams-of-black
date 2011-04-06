@@ -11,16 +11,28 @@ ROME = {};
 ROME.Animal = function( geometry, parseMorphTargetsNames, color ) {
 
 	// construct
-	var material = new THREE.MeshShaderMaterial( {
+	/*var material = new THREE.MeshShaderMaterial( {
 		uniforms: ROME.AnimalShader.uniforms(),
 		vertexShader: ROME.AnimalShader.vertex(),
 		fragmentShader: ROME.AnimalShader.fragment(),
 		morphTargets: true,
 		lights: true
-	} );
+	} );*/
+
+	var vertexColors = geometry.materials[ 0 ][ 0 ].vertexColors;
+	
+	var material = new THREE.MeshShaderMaterial( { uniforms:       ROME.AnimalShader.uniforms(), 
+												   vertexShader:   ROME.AnimalShader.vertex(), 
+												   fragmentShader: ROME.AnimalShader.fragment(),
+												   morphTargets:   true,
+												   vertexColors:   vertexColors,
+												   lights:         true } ); 
+
 
 	// random color to see the difference
-	material.uniforms.diffuse.value = color || new THREE.Color( Math.random() * 0xffffff );
+	if (!vertexColors) {
+		material.uniforms.diffuse.value = color || new THREE.Color( Math.random() * 0xffffff );
+	}
 
 	var that = {};
 	that.mesh = new THREE.Mesh( geometry, material );
