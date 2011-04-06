@@ -40,7 +40,7 @@
 
 			
 			var loader = new THREE.JSONLoader();
-			loader.load( { model: "assets/wolfBison.js", callback: init } );
+			loader.load( { model: "assets/wolfBison2.js", callback: init } );
 
 		//	init();
 
@@ -55,17 +55,42 @@
 				scene.fog = new THREE.FogExp2( 0x535758, 0.0004705882352941177 );
 				scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
 
-				var light = new THREE.PointLight( 0xff2200 );
+/*				var light = new THREE.PointLight( 0xff2200 );
 				light.position.set( 100, 100, 0 );
 				scene.addChild( light );
-
+*/
 				var light = new THREE.DirectionalLight( 0xffffff );
-				light.position.set( 1, 1, 0 );
+				light.position.set( 0, 1, 0 );
 				scene.addChild( light );
 
 				var light = new THREE.AmbientLight( 0x888888 );
 				scene.addLight( light );
 
+	
+	/*			geometry = new Cube( 100, 100, 100, 2, 2, 2, undefined, true );
+				geometry.morphTargets = [
+				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+				];
+*/
+				for( var i = 0; i < geometry.faces.length; i++ ) {
+					
+					geometry.faces[ i ].normal.negate();
+										
+				}
 				
 				animal = ROME.Animal( geometry, true );
 				animal.mesh.doubleSided = true;
@@ -75,7 +100,8 @@
 
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 0, 100, 350 );
+				camera.position.set( 0, 250, 350 );
+				camera.target.position.y = 100;
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );

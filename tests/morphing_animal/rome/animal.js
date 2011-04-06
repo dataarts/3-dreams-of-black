@@ -12,70 +12,131 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	// construct
 	var material = new THREE.MeshShaderMaterial( {
+		
 		uniforms: ROME.AnimalShader.uniforms(), 
 		attributes: ROME.AnimalShader.attributes(),
 		vertexShader: ROME.AnimalShader.vertex(), 
 		fragmentShader: ROME.AnimalShader.fragment(),
 		morphTargets: true,
-		lights: true,
-		fog: true
+		fog: true,
+		lights: true
+		
 	} );
+
+
 
 	
 	// hack: attributes
-	
+
+	var calcAO = function( vertices, faces, edges ) {
+		
+		var ao = [];
+		var numAo = [];
+		var centroid = new THREE.Vector3();
+		var edge, faceA, faceB, vertexA, vertexB;
+		var e, el, len;
+
+		for( e = 0, el = edges.length; e < el; e++ ) {
+			
+			edge = edges[ e ];
+			
+			faceA = edge.faces[ 0 ];
+			faceB = edge.faces[ 1 ] || faceA;
+
+			centroid.sub( faceA.centroid, faceB.centroid );
+					
+			if( centroid.dot( centroid, faceA.normal ) >= 0 ) {
+
+				vertexA = edge.vertexIndices[ 0 ];
+				vertexB = edge.vertexIndices[ 1 ];
+						
+				if( ao[ vertexA ] === undefined ) { ao[ vertexA ] = 0; numAo[ vertexA ] = 0; }		
+				if( ao[ vertexB ] === undefined ) { ao[ vertexB ] = 0; numAo[ vertexB ] = 0; }		
+				
+				centroid.add( faceA.normal, faceB.normal );
+				
+				len = centroid.length() * 0.5;
+
+				ao[ vertexA ] += len;
+				ao[ vertexB ] += len;
+
+				numAo[ vertexA ]++;
+				numAo[ vertexB ]++;
+
+			}
+					
+		}
+
+		for( e = 0, el = ao.length; e < el; e++ ) {
+			
+			ao[ e ] /= numAo[ e ];
+			ao[ e ] *= 0.5;
+			ao[ e ]  = Math.min( 0.5, Math.max( 0, ao[ e ] ));
+			
+		}
+		
+		return ao;
+		
+	}
+
+
+	var aoA = calcAO( geometry.vertices, geometry.faces, geometry.edges );	
+	var aoB = calcAO( geometry.morphTargets[ 10 ].vertices, geometry.faces, geometry.edges );	
+
+//	var aoA = calcAO( geometry.vertices, geometry.faces );	
+//	var aoB = calcAO( geometry.morphTargets[ 10 ].vertices, geometry.faces );	
+
 	for( var i = 0; i < geometry.faces.length; i++ ) {
 		
-		material.attributes.colorAnimalA.value[ i ] = new THREE.Color( 0xff00ff );
-		material.attributes.colorAnimalA.value[ i ].setRGB( Math.random() * 0.3 + 0.7, 0, 0 );
-		
-		material.attributes.colorAnimalB.value[ i ] = new THREE.Color( 0xff00ff );
-		material.attributes.colorAnimalB.value[ i ].setRGB( Math.random() * 0.3 + 0.7, 0, Math.random() * 0.3 + 0.7 );
-
-
 		if( geometry.faces[ i ] instanceof THREE.Face3 ) {
+			
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
+
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
 			
 			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
 			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
 			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 1.0 ));
 
-			material.attributes.fakeAOUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
-			material.attributes.fakeAOUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
-			material.attributes.fakeAOUV.value.push( new THREE.Vector2( 1.0, 1.0 ));
-			
 		} else {
 			
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
+			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].d ] ));
+
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
+			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].d ] ));
+
 			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
 			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
 			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 1.0 ));
 			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 1.0 ));
 
-			material.attributes.fakeAOUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
-			material.attributes.fakeAOUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
-			material.attributes.fakeAOUV.value.push( new THREE.Vector2( 1.0, 1.0 ));
-			material.attributes.fakeAOUV.value.push( new THREE.Vector2( 0.0, 1.0 ));
-			
 		}	
 		
 	}
 	
-	material.uniforms.contour.texture = ImageUtils.loadTexture( 'assets/faceContour.jpg' )
-	material.uniforms.fakeAO.texture  = ImageUtils.loadTexture( 'assets/fakeAO.jpg' )
-	
-	
 	// end hack!
 	
-
-	// random color to see the difference
-	// material.uniforms.diffuse.value = new THREE.Color( Math.random() * 0xffffff );
-
+	
+	// these should be global
+	
+	//material.uniforms.contour.texture = 
+	//material.uniforms.faceLight.texture = ImageUtils.loadTexture( 'assets/faceLight.jpg' );
+	
 	var that = {};
 	that.mesh = new THREE.Mesh( geometry, material );
 	that.morph = 0.0;
 	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
 	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
 	that.availableAnimals = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
-
 
 	
 	var isPlaying = false;
@@ -262,6 +323,13 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 ROME.AnimalShader = {
 	
+	textures: {
+		
+		contour: ImageUtils.loadTexture( 'assets/faceContour.jpg' ),
+		faceLight: ImageUtils.loadTexture( 'assets/faceLight.jpg' )
+		
+	},
+	
 	uniforms: function () {
 
 		return {
@@ -272,16 +340,16 @@ ROME.AnimalShader = {
 					"fogColor": 					{ type: "c", value: new THREE.Color() },
 					"fogDensity": 					{ type: "f", value: 0 },
 
+					"contour": 						{ type: "t", value: 0, texture: ROME.AnimalShader.textures.contour },
+					"faceLight":                    { type: "t", value: 1, texture: ROME.AnimalShader.textures.faceLight },
+
 					"enableLighting": 				{ type: "i", value: 1 },
 					"ambientLightColor": 			{ type: "fv", value: [] },
 					"directionalLightDirection": 	{ type: "fv", value: [] },
 					"directionalLightColor": 		{ type: "fv", value: [] },
 					"pointLightColor": 				{ type: "fv", value: [] },
 					"pointLightPosition": 			{ type: "fv", value: [] },
-					"pointLightDistance": 			{ type: "fv1", value: [] },
-					
-					"contour": 						{ type: "t", value: 0, texture: undefined },
-					"fakeAO":                       { type: "t", value: 1, texture: undefined }
+					"pointLightDistance": 			{ type: "fv1", value: [] }
 
 			   }
 	},
@@ -290,10 +358,9 @@ ROME.AnimalShader = {
 		
 		return {
 			
-			"colorAnimalA": 	{ type: "c", boundTo:"faces", value:[] },
-			"colorAnimalB": 	{ type: "c", boundTo:"faces", value:[] },
+			"colorAnimalA": 	{ type: "v3", boundTo: "faceVertices", value:[] },
+			"colorAnimalB": 	{ type: "v3", boundTo: "faceVertices", value:[] },
 			"contourUV": 		{ type: "v2", boundTo: "faceVertices", value:[] },
-			"fakeAOUV": 		{ type: "v2", boundTo: "faceVertices", value:[] },
 			
 		}
 		
@@ -305,36 +372,21 @@ ROME.AnimalShader = {
 		"uniform 	float	animalBInterpolation;",
 		"uniform 	float	animalMorphValue;",
 
-		"uniform 	vec3 	ambientLightColor;",
-		"uniform 	vec3 	directionalLightColor[ MAX_DIR_LIGHTS ];",
-		"uniform 	vec3 	directionalLightDirection[ MAX_DIR_LIGHTS ];",
-
 		"attribute	vec3	colorAnimalA;",
 		"attribute	vec3	colorAnimalB;",
 		"attribute	vec2	contourUV;",
-		"attribute	vec2	fakeAOUV;",
 
-		"varying 	vec3 	vLightWeighting;",
 		"varying 	vec2	vContourUV;",
-		"varying 	vec2	vfakeAOUV;",
 		"varying	vec3	vColor;",
+		"varying    vec2    vLightUV;",
 
 		"void main() {",
-
-			// light
-
-			"vLightWeighting = ambientLightColor;",
-
-			"vec3 transformedNormal = normalize( normalMatrix * normal );",
-			"vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ 0 ], 0.0 );",
-			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
-			"vLightWeighting += directionalLightColor[ 0 ] * directionalLightWeighting;",
 
 			// uv
 			
 			"vContourUV = contourUV;",
-			"vfakeAOUV = fakeAOUV;",
-
+			"vLightUV = normalize( normalMatrix * normal ).xy * 0.5 + 0.5;",
+			
 
 			// morph
 			
@@ -352,15 +404,15 @@ ROME.AnimalShader = {
 	fragment: function () { return[
 
 		"uniform 	sampler2D 	contour;",
-		"uniform 	sampler2D 	fakeAO;",
+		"uniform 	sampler2D 	faceLight;",
 
 		"uniform 	vec3 		fogColor;",
 		"uniform 	float 		fogDensity;",
+		"uniform 	vec3 		directionalLightColor[ 1 ];",
 
-		"varying 	vec3 		vLightWeighting;",
 		"varying	vec3		vColor;",
 		"varying 	vec2		vContourUV;",
-		"varying 	vec2		vfakeAOUV;",
+		"varying    vec2    	vLightUV;",
 
 		"void main() {",
 
@@ -370,9 +422,8 @@ ROME.AnimalShader = {
 			"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
 			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
 
-			"gl_FragColor = vec4( vColor, 1.0 ) * texture2D( contour, vContourUV );",
+			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), texture2D( faceLight, vLightUV ).r ) * texture2D( contour, vContourUV );",
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
-			"gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
 
 		"}"
 
