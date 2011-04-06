@@ -45,6 +45,9 @@ var CitySoup = function ( camera, scene, shared ) {
 */
 	// init
 
+	shared.targetStart = new THREE.Vector3();
+	shared.targetEnd = new THREE.Vector3();
+
 	var mouseX, mouseY;
 
 	onMouseMoved();
@@ -470,7 +473,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function grassLoaded( geometry ) {
 
-		for (var i=0; i<150; ++i ) {
+		for (var i=0; i<90; ++i ) {
 
 			var occupied = i%10;
 			
@@ -497,7 +500,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function treeLoaded( geometry ) {
 
-		for (var i=treeCount; i<15; i+=3 ) {
+		for (var i=treeCount; i<9; i+=3 ) {
 
 			var x = 0;
 			var y = FLOOR;
@@ -527,7 +530,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			var c = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } ) );
 			scene.addObject(c);
 
-			var realindex = 8;
+			var realindex = 5;
 
 			var obj = {c:c, scale:0, alivetime:realindex, normal:new THREE.Vector3(), tree:true, lighthouse:true, maxHeight:3};
 			grassArray[realindex] = obj;
@@ -828,10 +831,10 @@ var CitySoup = function ( camera, scene, shared ) {
 			var maxHeight = obj.maxHeight;
 
 			
-			alivetime += multiplier;//0.5;
+			alivetime += multiplier;
 			
 			// respawn
-			if (alivetime > 150) {
+			if (alivetime > 90) {
 				c.position.x = emitterMesh.position.x;
 				c.position.y = emitterMesh.position.y;
 				c.position.z = emitterMesh.position.z;
@@ -1168,6 +1171,15 @@ var CitySoup = function ( camera, scene, shared ) {
 		}
 
 		emitterFollow.position.z += moveZ;
+
+
+		shared.targetStart.x = vectorArray[3].x;
+		shared.targetStart.y = vectorArray[3].y;
+		shared.targetStart.z = vectorArray[3].z;
+
+		shared.targetEnd.x = vectorArray[20].x;
+		shared.targetEnd.y = vectorArray[20].y;
+		shared.targetEnd.z = vectorArray[20].z;
 
 	}
 
