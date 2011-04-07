@@ -22,4 +22,4 @@
 "lambert7SG" : [ "replace_me" ]
 }
 
-}'
+}

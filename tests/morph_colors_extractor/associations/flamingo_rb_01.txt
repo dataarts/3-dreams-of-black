@@ -25,4 +25,4 @@
 "lambert15SG" : [ "replace_me" ]
 }
 
-}'
+}

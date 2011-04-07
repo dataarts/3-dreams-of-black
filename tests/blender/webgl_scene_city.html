@@ -438,7 +438,7 @@
 				</div>
 			</div>
 
-<!--
+
 			<div class="sgroup zshadow">
 				<div class="tbutton" id="btn_lensflare">+</div>
 
@@ -452,7 +452,7 @@
 					<div id="slider_wrap_lf_y"> </div> 
 				</div>
 			</div>
--->	
+
 			<div id="files_div">
 				<span class="header">Files</span><br/>
 				<div id="file_list"></div> 
@@ -482,7 +482,7 @@
 		
 		// GUI
 		
-		var ENABLE_LENSFLARES = false;
+		var ENABLE_LENSFLARES = true;
 		
 		var guiVisible = true;
 		
@@ -660,14 +660,42 @@
 		//init();
 		//animate();
 
+		function initParams() {
+		
+			// hardcoded "import"
+			
+			scene.fog.density = 0.0;
+			scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
+			
+			ambientLight.color.setHSV( 0, 0, 0.3 );
+			
+			directionalLight1.position.set( 0.7648718326037581, -0.5885011172553458,  0.2619876231400604 );
+			directionalLight1.color.setHSV( 0, 0, 0.7352941 );
+
+			directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
+			directionalLight2.color.setHSV( 0, 0, 0.1 );
+			
+			
+			postprocessing.materialFilm.uniforms.nIntensity.value = 0.064;
+			postprocessing.materialFilm.uniforms.sIntensity.value = 0.0;
+			postprocessing.materialFilm.uniforms.sCount.value = 2602.164705882353;
+			postprocessing.materialScreen.uniforms.opacity.value = 0.74;
+			
+			postprocessing.enabled = true;
+			
+			renderer.setClearColor( scene.fog.color, 1 );
+
+		};
+		
 		function init() {
 
 			viewport = $( "viewport" );
 
 			scene = new THREE.Scene();
-			scene.fog = new THREE.FogExp2( 0xffffff, 0 );
+			scene.fog = new THREE.FogExp2( 0x000000, 0 );
+			
 
-			renderer = new THREE.WebGLRenderer();
+			renderer = new THREE.WebGLRenderer( { antialias: !ENABLE_LENSFLARES } );
 			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 
 			renderer.autoClear = false;
@@ -693,7 +721,7 @@
 											  activeLook: false
 											  } );
 
-			flyCamera.position.set( 0, cameraHeight, cameraDistance );
+			flyCamera.position.set( -100, cameraHeight, cameraDistance );
 			flyCamera.lon = -90;
 
 			camera = flyCamera;
@@ -837,11 +865,17 @@
 			
 			if ( ENABLE_LENSFLARES ) {
 
-				var flSliderX = new Slider( $( "slider_wrap_lf_x" ), swidth, sd, 0.0, 45.0, 0, function(val) { updateLensflare( val, -1 ); $("lf_x").innerHTML = val.toFixed(0); } );
-				var flSliderY = new Slider( $( "slider_wrap_lf_y" ), swidth, sd, 0.0, 360.0, 0, function(val) { updateLensflare( -1, val ); $("lf_y").innerHTML = val.toFixed(0); } );
+				var flareStartX = 9,
+					flareStartY = 358;
+				
+				var flSliderX = new Slider( $( "slider_wrap_lf_x" ), swidth, sd, 0.0, 45.0,  flareStartX, function(val) { updateLensflare( val, -1 ); $("lf_x").innerHTML = val.toFixed(0); } );
+				var flSliderY = new Slider( $( "slider_wrap_lf_y" ), swidth, sd, 0.0, 360.0, flareStartY, function(val) { updateLensflare( -1, val ); $("lf_y").innerHTML = val.toFixed(0); } );
 
 				addGroupToggle( "btn_lensflare", "grp_lensflare" );
 				hide( "grp_lensflare" );
+								
+				$("lf_x").innerHTML = flareStartX.toFixed(0);
+				$("lf_y").innerHTML = flareStartY.toFixed(0);
 				
 			}
 
@@ -884,9 +918,11 @@
 				lensFlare.customUpdateCallback = lensFlareUpdateCallback;
 				lensFlare.position.set( 0, 0, -99000 );
 
-
 				lensFlareRotate = new THREE.Object3D();
 				lensFlareRotate.addChild( lensFlare );
+
+				updateLensflare( flareStartX, -1 );
+				updateLensflare( -1, flareStartY );
 
 				scene.addChild( lensFlareRotate );
 
@@ -932,6 +968,7 @@
 			
 			var loader = new THREE.SceneLoader();
 			loader.load( SCENE_FILE, callbackSync, callbackAsync, callbackProgress );
+			
 			
 		};
 
@@ -1006,6 +1043,8 @@
 			resetScene();
 
 			sceneRoot.addChild( loaded.scene );
+			
+			initParams();
 
 			console.log( loaded.scene );
 
@@ -2305,14 +2344,15 @@
 
 			}
 			
-			//lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
+			if ( ENABLE_LENSFLARES ) {
+			
+				lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
+				
+			}
 
 		};
 		
 		function render( delta ) {
-
-			//scene.rotation.x += 0.01;
-			//scene.updateMatrix();
 			
 			renderer.clear();
 			

@@ -23,4 +23,4 @@
 "low_res_frog:blinn1SG" : [ "replace_me" ]
 }
 
-}'
+}
