@@ -20,7 +20,7 @@
 	<body>
 
 		<script type="text/javascript" src="build_r36/Three.js"></script>
-		<script type="text/javascript" src="src/SpriteSheetShader.js"></script>
+		<script type="text/javascript" src="src/SpriteSheetShaderDeforming.js"></script>
 
 		<video id="video" autoplay loop style="display:none">
 			<source src="s02-1.webm" type='video/webm;'>
@@ -53,7 +53,7 @@
 			setTimeout( sequence, 1000/24 );		
 			loop();
 				
-			setInterval(loop, 1000/60);
+			setInterval(loop, 1000/24);
 			
 			document.addEventListener('mousemove', mouseMove, false);
 
@@ -62,7 +62,7 @@
 				container = document.createElement('div');
 				document.body.appendChild(container);
 				
-				camera = new THREE.Camera( fov, aspect, 1, 100000 );
+				camera = new THREE.Camera( fov, aspect, 0.1, 10000 );
 				
 				camera.updateMatrix();
 
@@ -78,7 +78,7 @@
 
 				var vidAspect = 544/960;
 				
-				vplane = new THREE.Mesh( new Plane(1.2, 1.2, 100, 50), new THREE.MeshBasicMaterial ( 
+				vplane = new THREE.Mesh( new Plane(1.2, 1.2, 100, 50), new THREE.MeshBasicMaterial (
 					{ map: texture } 
 				));
 				
@@ -101,22 +101,24 @@
 
 				uniforms[ 'sheet' ].texture = ImageUtils.loadTexture( "textures/buffalo/sbufseq.png" );
 				uniforms[ 'tileOffsetX' ].value = new THREE.Vector2(0.1, xof);
+                uniforms[ 'mouseXY' ].value = new THREE.Vector2(mouseX, mouseY);
 				
 				buffaloMat = new THREE.MeshShaderMaterial( {
 					uniforms: uniforms,
 					vertexShader: shader.vertexShader,
 					fragmentShader: shader.fragmentShader,
-					blending: THREE.BillboardBlending
+					blending: THREE.BillboardBlending,
+                    wireframe: false
 				} );
 
 
 				var bufAspect = 129/230;
 			
-				addBuffalo(.5, -750, bufAspect, -.5);
-				addBuffalo(.7, -125, bufAspect, .5);
+				//addBuffalo(.5, -750, bufAspect, -.5);
+				addBuffalo(0.9, -125, bufAspect, .24);
 				
 				addBuffalo(.5, -700, bufAspect, -.25);
-				addBuffalo(.7, -75, bufAspect, 0);
+				//addBuffalo(.7, -75, bufAspect, -.5);
 				
 				
 				
@@ -138,7 +140,7 @@
 			}
 			
 			function addBuffalo(relativeSize, zpos, asp, xp){
-				var buffalo = new THREE.Mesh( new Plane(relativeSize, relativeSize, 1, 1), buffaloMat ); 			
+				var buffalo = new THREE.Mesh( new Plane(relativeSize, relativeSize, 50, 50), buffaloMat );
 				buffalo.position.z = zpos;
 				
 				buffalo.scale.x = adj * Math.abs(zpos);
@@ -164,6 +166,8 @@
 			function mouseMove(e){
 				mouseX = (event.clientX - windowHalfX) / -windowHalfX;
 				mouseY = (event.clientY - windowHalfY) / windowHalfY;
+                buffaloMat.uniforms[ 'mouseXY' ].value.x = -mouseX;
+                buffaloMat.uniforms[ 'mouseXY' ].value.y = -mouseY;
 			}
 
 			function loop() {				
