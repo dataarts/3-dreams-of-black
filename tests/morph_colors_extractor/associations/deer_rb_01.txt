@@ -1,0 +1,27 @@
+{
+
+"mtl" : "colormaps\deer_rb_01.jpg",
+"img" : "mtls\deer_colorMap.mtl",
+
+"colorRanges" :
+
+{
+"shadow_range" : [[0.388, 0.251, 0.141], [0.263, 0.188, 0.122]],
+"midtone_range" : [[0.980, 0.592, 0.361], [0.976, 0.718, 0.427], [0.855, 0.553, 0.271]],
+"highlight_range" : [[0.961, 0.835, 0.753], [0.820, 0.784, 0.749], [0.976, 0.855, 0.671]],
+"eye_color" : [[0.114, 0.071, 0.047]],
+"lighter_body_patches" : [[0.988, 0.941, 0.886]]
+},
+
+"materials": 
+
+{
+"lambert2SG" : [ "replace_me" ],
+"lambert3SG" : [ "replace_me" ],
+"lambert4SG" : [ "replace_me" ],
+"lambert5SG" : [ "replace_me" ],
+"lambert6SG" : [ "replace_me" ],
+"lambert7SG" : [ "replace_me" ]
+}
+
+}'
