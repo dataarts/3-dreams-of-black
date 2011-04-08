@@ -621,7 +621,7 @@
 			
 		// postprocessing
 		
-		var postprocessing = { enabled : false };
+		var postprocessing = { enabled : true };
 		
 		var nSliderN, nSliderS, nSliderC;
 		var bSlider;
@@ -680,8 +680,6 @@
 			postprocessing.materialFilm.uniforms.sIntensity.value = 0.0;
 			postprocessing.materialFilm.uniforms.sCount.value = 2602.164705882353;
 			postprocessing.materialScreen.uniforms.opacity.value = 0.74;
-			
-			postprocessing.enabled = true;
 			
 			renderer.setClearColor( scene.fog.color, 1 );
 
