@@ -38,7 +38,7 @@
 			var shadowCamera, shadowPlane, shadowTexture, shadowMaterial;
 
 			var isCtrlDown = false, isShiftDown = false,
-			isMouseDown = false, radius = 1500, theta = 45;
+			isMouseDown = false, radius = 1500, theta = 0;
 
 			init();
 			animate();
@@ -57,7 +57,7 @@
 				container.appendChild( info );
 
 				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.y = 500;
+				// camera.position.y = 500;
 
 				sceneCollision = new THREE.Scene();
 				sceneVoxels = new THREE.Scene();
@@ -72,7 +72,7 @@
 				sceneBlob.addLight( light );
 				*/
 
-				var pointLight = new THREE.PointLight( 0xffffff );
+				var pointLight = new THREE.PointLight( 0xffffff, 0.9 );
 				pointLight.position.set( 0, 0, 1000 );
 				sceneBlob.addLight( pointLight );
 
@@ -84,7 +84,7 @@
 				//
 
 				var geometry = new Plane( 2000, 2000, 16, 16 ),
-				material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, wireframe: true } );
+				material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, depthTest: false, wireframe: true } );
 
 				plane = new THREE.Mesh( geometry, material );
 				// plane.rotation.x = - 90 * Math.PI / 180;
@@ -99,7 +99,7 @@
 				mouse2D = new THREE.Vector3( 0, 0, 0.5 );
 				ray = new THREE.Ray( camera.position, null );
 
-				blobMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.5, transparent: true, depthTest: false, shading: THREE.FlatShading } );
+				blobMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
 
 				marchingcubes = new THREE.MarchingCubes( resolution, blobMaterial );
 				marchingcubes.isolation = 40;
@@ -114,10 +114,10 @@
 
 				// Shadow
 
-				shadowCamera = new THREE.Camera( 100, 1, 1, 5000 );
-				shadowCamera.position.y = 1000;
+				shadowCamera = new THREE.Camera( 20, 1, 1, 8000 );
+				shadowCamera.position.y = 7500;
 
-				shadowTexture = new THREE.WebGLRenderTarget( 128, 128 );
+				shadowTexture = new THREE.WebGLRenderTarget( 64, 64 );
 
 				shadowPlane = new THREE.Mesh( new Plane( 3000, 3000 ), new THREE.MeshBasicMaterial( { map: shadowTexture } ) );
 				shadowPlane.position.y = - 500;
@@ -127,7 +127,7 @@
 				shadowPlane.flipSided = true;
 				sceneBlob.addObject( shadowPlane );
 
-				shadowMaterial = new THREE.MeshBasicMaterial( { color: 0xC0C0C0 } );
+				shadowMaterial = new THREE.MeshBasicMaterial( { color: 0xE0E0EA } );
 
 
 				//
@@ -315,8 +315,8 @@
 				shadowPlane.visible = true;
 
 				renderer.render( sceneBlob, camera );
-				renderer.render( sceneVoxels, camera );
-				renderer.render( sceneCollision, camera );
+				// renderer.render( sceneVoxels, camera );
+				// renderer.render( sceneCollision, camera );
 
 			}
 
@@ -350,7 +350,7 @@
 					y = ( voxel.position.y / voxel_size / grid ) + 0.5;
 					z = ( voxel.position.z / voxel_size / grid ) + 0.5;
 
-					marchingcubes.addBall( x, y, z, 0.02, 10 );
+					marchingcubes.addBall( x, y, z, 0.02, 20 );
 
 				}
 
