@@ -1,0 +1,28 @@
+{
+
+"mtl" : "colormaps\horse_rb_01.jpg",
+"img" : "mtls\horse.mtl",
+
+"colorRanges" :
+
+{
+"shadow_range" : [[0.208, 0.125, 0.161], [0.282, 0.137, 0.114], [0.196, 0.114, 0.133]],
+"midtone_range" : [[0.847, 0.404, 0.169], [0.788, 0.439, 0.267], [0.596, 0.298, 0.165]],
+"highlight_range" : [[0.890, 0.678, 0.494], [0.969, 0.722, 0.443]],
+"eye_color" : [[0.263, 0.133, 0.106]],
+"light_patches" : [[0.871, 0.776, 0.776], [0.953, 0.682, 0.451]]
+},
+
+"materials": 
+
+{
+"lambert2SG" : [ "replace_me" ],
+"lambert3SG" : [ "replace_me" ],
+"lambert4SG" : [ "replace_me" ],
+"lambert5SG" : [ "replace_me" ],
+"lambert6SG" : [ "replace_me" ],
+"lambert8SG" : [ "replace_me" ],
+"lambert9SG" : [ "replace_me" ]
+}
+
+}

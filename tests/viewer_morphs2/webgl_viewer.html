@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>three.js webgl - viewer 3</title>
+		<title>three.js webgl - viewer 4</title>
 		<meta charset="utf-8">
 		
 		<style type="text/css">
@@ -220,7 +220,7 @@
 	
 		<div id="viewport"></div> 
 		<script type="text/javascript" src="js/Three.js"></script>
-
+		
 		<script type="text/javascript" src="js/animal.js"></script>
 		<script type="text/javascript" src="js/Slider.js"></script>
 		
@@ -438,7 +438,7 @@
 				</div>
 			</div>
 
-<!--
+
 			<div class="sgroup zshadow">
 				<div class="tbutton" id="btn_lensflare">+</div>
 
@@ -452,7 +452,7 @@
 					<div id="slider_wrap_lf_y"> </div> 
 				</div>
 			</div>
--->	
+
 			<div id="files_div">
 				<span class="header">Files</span><br/>
 				<div id="file_list"></div> 
@@ -480,7 +480,7 @@
 		
 		// GUI
 		
-		var ENABLE_LENSFLARES = false;
+		var ENABLE_LENSFLARES = true;
 		
 		var guiVisible = true;
 		
@@ -665,7 +665,7 @@
 			scene = new THREE.Scene();
 			scene.fog = new THREE.FogExp2( 0x000000, 0 );
 			
-			renderer = new THREE.WebGLRenderer();
+			renderer = new THREE.WebGLRenderer( { antialias: !ENABLE_LENSFLARES } );
 			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 
 			renderer.autoClear = false;
@@ -2221,7 +2221,7 @@
 
 			}
 			
-			//lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
+			lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
 
 		};
 		
