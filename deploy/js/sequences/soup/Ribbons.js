@@ -4,19 +4,23 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 
 	var ribbonArray = [];
 	var ribbonMeshArray = [];
-	var numOfRibbons = numOfRibbons || 6;
-	var vectorArray = vectorArray;
 	var scene = scene;
 
-	that.ribbonPulseMultiplier_1 = 5.5;
-	that.ribbonPulseMultiplier_2 = 5.5;
-	that.ribbonMin = 1.5;
-	that.ribbonMax = 3;
-	var r = 0;
+	that.initSettings = {
+		numOfRibbons : numOfRibbons || 6,
+	}
 
+	that.settings = {
+		ribbonPulseMultiplier_1 : 5.5,
+		ribbonPulseMultiplier_2 : 5.5,
+		ribbonMin : 1.5,
+		ribbonMax : 3,
+	}
+	
+	var r = 0;
 	var i;
 
-	for ( i = 0; i < numOfRibbons; ++i ) {
+	for ( i = 0; i < that.initSettings.numOfRibbons; ++i ) {
 
 		var ribbon = new Ribbon( 15, 6, vectorArray.length - 20 );
 		var ribbonMesh = new THREE.Mesh( ribbon, ribbonMaterials[ i % ribbonMaterials.length ] );
@@ -51,9 +55,9 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 					continue;
 				}
 
-				var pulse = Math.cos((i-r*10)/10)*that.ribbonPulseMultiplier_1;
+				var pulse = Math.cos((i-r*10)/10)*that.settings.ribbonPulseMultiplier_1;
 
-				var pulse2 = Math.cos((i-r*10)/8)*that.ribbonPulseMultiplier_2;
+				var pulse2 = Math.cos((i-r*10)/8)*that.settings.ribbonPulseMultiplier_2;
 
 				var inc = (Math.PI*2)/ribbonArray.length;
 				var thisinc = k*inc;
@@ -70,8 +74,8 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 
 					// for twister
 					var adder = i-(r*2);
-					var w = Math.max(that.ribbonMin, i/(10+pulse2));
-					w = Math.min(w, that.ribbonMax);
+					var w = Math.max(that.settings.ribbonMin, i/(10+pulse2));
+					w = Math.min(w, that.settings.ribbonMax);
 					var extrax = Math.cos(adder/3)*w;
 					var extray = Math.sin(adder/3)*w;
 

@@ -1,12 +1,19 @@
-var CollisionScene = function ( camera, shared, collisionDistance, incapBottom, allowFlying ) {
+var CollisionScene = function ( camera, shared, collisionDistance ) {
 	
 	var that = this;
 	that.currentNormal = new THREE.Vector3( 0, 1, 0 );
-	that.maxSpeedDivider = 2;
-	that.emitterDivider = 5;
-	that.capBottom =  null || incapBottom;
-	var allowFlying = allowFlying || false;
-	var collisionDistance = collisionDistance || 400;
+
+	that.initSettings = {
+
+	}
+
+	that.settings = {
+		maxSpeedDivider : 2,
+		emitterDivider : 5,
+		capBottom : null,
+		allowFlying : false,
+		collisionDistance : collisionDistance || 400
+	}
 
 	var scene = new THREE.Scene();
 
@@ -38,30 +45,30 @@ var CollisionScene = function ( camera, shared, collisionDistance, incapBottom, 
 
 	this.update = function (camPos, delta) {
 
-		rightPlane.position.x = camPos.x+collisionDistance;
-		leftPlane.position.x = camPos.x-collisionDistance;
+		rightPlane.position.x = camPos.x+that.settings.collisionDistance;
+		leftPlane.position.x = camPos.x-that.settings.collisionDistance;
 		rightPlane.position.z = camPos.z;
 		rightPlane.position.y = camPos.y;
 		leftPlane.position.z = camPos.z;
 		leftPlane.position.y = camPos.y;
 
-		frontPlane.position.z = camPos.z-collisionDistance;
-		backPlane.position.z = camPos.z+collisionDistance;
+		frontPlane.position.z = camPos.z-that.settings.collisionDistance;
+		backPlane.position.z = camPos.z+that.settings.collisionDistance;
 		frontPlane.position.x = camPos.x;
 		frontPlane.position.y = camPos.y;
 		backPlane.position.x = camPos.x;
 		backPlane.position.y = camPos.y;
 
-		downPlane.position.y = camPos.y-collisionDistance;
-		upPlane.position.y = camPos.y+collisionDistance;
+		downPlane.position.y = camPos.y-that.settings.collisionDistance;
+		upPlane.position.y = camPos.y+that.settings.collisionDistance;
 		downPlane.position.x = camPos.x;
 		downPlane.position.z = camPos.z;
 		upPlane.position.x = camPos.x;
 		upPlane.position.z = camPos.z;
 
-		if (that.capBottom != null) {
-			if (downPlane.position.y < that.capBottom) {
-				downPlane.position.y = that.capBottom;
+		if (that.settings.capBottom != null) {
+			if (downPlane.position.y < that.settings.capBottom) {
+				downPlane.position.y = that.settings.capBottom;
 			}
 		}
 
@@ -94,7 +101,7 @@ var CollisionScene = function ( camera, shared, collisionDistance, incapBottom, 
 						that.currentNormal.y = 1;
 						that.currentNormal.z = 0;
 						// not to be airbourne
-						if (!allowFlying) {
+						if (!that.settings.allowFlying) {
 							that.emitter.position.y = downPlane.position.y;					
 						}
 					}
@@ -135,11 +142,11 @@ var CollisionScene = function ( camera, shared, collisionDistance, incapBottom, 
 			delta = 1000/60;
 		}
 
-		var maxSpeed = delta/that.maxSpeedDivider;
+		var maxSpeed = delta/that.settings.maxSpeedDivider;
 
 		var toy = that.emitter.position.y;
 		
-		var moveY = (toy-that.emitterFollow.position.y)/that.emitterDivider;
+		var moveY = (toy-that.emitterFollow.position.y)/that.settings.emitterDivider;
 		if (moveY > maxSpeed) {
 			moveY = maxSpeed;
 		}
@@ -151,7 +158,7 @@ var CollisionScene = function ( camera, shared, collisionDistance, incapBottom, 
 
 		var tox = that.emitter.position.x;
 		
-		var moveX = (tox-that.emitterFollow.position.x)/that.emitterDivider;
+		var moveX = (tox-that.emitterFollow.position.x)/that.settings.emitterDivider;
 		if (moveX > maxSpeed) {
 			moveX = maxSpeed;
 		}
@@ -164,7 +171,7 @@ var CollisionScene = function ( camera, shared, collisionDistance, incapBottom, 
 
 		var toz = that.emitter.position.z;
 		
-		var moveZ = (toz-that.emitterFollow.position.z)/that.emitterDivider;
+		var moveZ = (toz-that.emitterFollow.position.z)/that.settings.emitterDivider;
 		if (moveZ > maxSpeed) {
 			moveZ = maxSpeed;
 		}

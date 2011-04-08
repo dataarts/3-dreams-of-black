@@ -7,6 +7,7 @@ var Dunes = function ( shared ) {
 	var delta, time, oldTime;
 
 	var speedStart = 0.75,
+	//var speedStart = 50,
 		speedEnd = 2.5;
 	
 	this.init = function () {

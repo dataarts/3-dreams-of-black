@@ -8,8 +8,11 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// collision scene
 	var collisionScene = new CollisionScene( camera, shared, 1500, 30, true );
-	collisionScene.emitterDivider = 10;
-	collisionScene.maxSpeedDivider = 0.01;
+	collisionScene.settings.emitterDivider = 10;
+	collisionScene.settings.maxSpeedDivider = 0.01;
+	collisionScene.settings.capBottom = 30;
+	collisionScene.settings.allowFlying = true;
+
 	/*loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
 
 	function collisionLoadedProxy( geometry ) {
@@ -18,6 +21,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// vector trail
 	var vectors = new Vectors();
+	vectors.settings.divider = 6;
 
 	// ribbons
 	var ribbonMaterials = [
@@ -29,10 +33,10 @@ var DunesSoup = function ( camera, scene, shared ) {
 			new THREE.MeshBasicMaterial( { color:0x08a620 } )
 	];
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
-	ribbons.ribbonPulseMultiplier_1 = 30;
-	ribbons.ribbonPulseMultiplier_2 = 10;
-	ribbons.ribbonMin = 6;
-	ribbons.ribbonMax = 10;
+	ribbons.settings.ribbonPulseMultiplier_1 = 30;
+	ribbons.settings.ribbonPulseMultiplier_2 = 10;
+	ribbons.settings.ribbonMin = 6;
+	ribbons.settings.ribbonMax = 10;
 
 	// particles
 	var sprite0 = ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -45,7 +49,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	
 	var particles = new Particles(50, scene, 12, particleSprites, 80, 150);
 	//particles.zeroAlphaStart = false;
-	particles.aliveDivider = 1.2;
+	particles.settings.aliveDivider = 1.2;
 
 	this.update = function ( delta ) {
 

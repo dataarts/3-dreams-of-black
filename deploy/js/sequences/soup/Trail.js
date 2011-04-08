@@ -3,9 +3,15 @@ var Trail = function ( numOfInstances, scene ) {
 	var that = this;
 
 	that.array = [];
-	var vectorArray = vectorArray;
-	var numOfInstances = numOfInstances || 100;
 	var scene = scene;
+
+	that.initSettings = {
+		numOfInstances : numOfInstances || 100,
+	}
+
+	that.settings = {
+
+	}
 
 	var i;
 
@@ -15,7 +21,7 @@ var Trail = function ( numOfInstances, scene ) {
 		var tree = tree || false;
 		var materialArray = materialArray || [new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } )];
 
-		for ( i = 0; i < numOfInstances; ++i ) {
+		for ( i = 0; i < that.initSettings.numOfInstances; ++i ) {
 			
 			if ((predefined == null && that.array[i] != undefined) || (predefined != that.array[i]) ) {
 				continue;
@@ -39,7 +45,7 @@ var Trail = function ( numOfInstances, scene ) {
 			delta = 1000/60;
 		}
 
-		var multiplier = delta/numOfInstances;
+		var multiplier = delta/that.initSettings.numOfInstances;
 		
 		// grass
 		for (i=0; i<that.array.length; ++i ) {

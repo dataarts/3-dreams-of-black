@@ -3,11 +3,17 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 	var that = this;
 
 	var animalArray = [];
-	var numOfAnimals = numOfAnimals || 30;
 	var scene = scene;
 
-	var r = 0;
+	that.initSettings = {
+		numOfAnimals : numOfAnimals || 30,
+	}
 
+	that.settings = {
+
+	}
+
+	var r = 0;
 	var i;
 
 	var container = new Cube( 10, 10, 10 );
@@ -16,7 +22,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 	this.addAnimal = function ( geometry ) {
 
-		for ( var i = 0; i < numOfAnimals; ++i ) {
+		for ( var i = 0; i < that.initSettings.numOfAnimals; ++i ) {
 
 			var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
@@ -59,7 +65,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 			delta = 1000/60;
 		}
 
-		for (i=0; i<numOfAnimals; ++i ) {
+		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj =  animalArray[i];
 			var animal = obj.c;
 			var x = obj.x;

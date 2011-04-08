@@ -22,7 +22,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, shared, 450, 0 );
+	var collisionScene = new CollisionScene( camera, shared, 450 );
+	collisionScene.settings.capBottom = 0;
 	loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
 
 	function collisionLoadedProxy( geometry ) {
@@ -85,7 +86,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// flying animals
 	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
-	flyingAnimals.flying = true;
+	flyingAnimals.settings.flying = true;
 	for (var i=0; i<10; ++i ) {
 		var odd = i%2;
 		if (odd == 0) {
@@ -161,6 +162,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	
 	this.update = function ( delta ) {
+
+		//console.log(ribbons.settings.ribbonMin);
 
 		// update to reflect _real_ camera position
 		camPos.x = camera.matrixWorld.n14;

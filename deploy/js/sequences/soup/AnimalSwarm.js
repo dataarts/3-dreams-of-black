@@ -3,16 +3,21 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 	var that = this;
 
 	that.array = [];
-	var vectorArray = vectorArray;
-	var numOfAnimals = numOfAnimals || 30;
-	var divider = divider || 2;
 	var scene = scene;
-	that.flying = false;
-	that.xPositionMultiplier = 30;
-	that.zPositionMultiplier = 30;
-	that.constantSpeed = null;
-	var r = 0;
 
+	that.initSettings = {
+		numOfAnimals : numOfAnimals || 30,
+	}
+
+	that.settings = {
+		divider : 2,
+		flying : false,
+		xPositionMultiplier : 30,
+		zPositionMultiplier : 30,
+		constantSpeed : null
+	}
+	
+	var r = 0;
 	var i;
 
 	this.addAnimal = function( geometry, predefined, scale, morphArray, followDivider ) {
@@ -22,7 +27,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		var morphArray = morphArray || null;
 		var followDivider = followDivider || 4;
 
-		for ( i = 0; i < numOfAnimals; ++i ) {
+		for ( i = 0; i < that.initSettings.numOfAnimals; ++i ) {
 			
 			if ((predefined == null && that.array[i] != undefined) || (predefined != that.array[i]) ) {
 				continue;
@@ -75,7 +80,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		var speed = Math.max(distance/100, 1.0);
 		speed = Math.min(speed, 1.5);
 
-		for (i=0; i<numOfAnimals; ++i ) {
+		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj =  that.array[i];
 			var animal = obj.c;
 			var f = obj.f;
@@ -86,8 +91,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
-			var offsetx = Math.cos(thisinc+((i-r*2)/8))*that.xPositionMultiplier;
-			var offsetz = Math.sin(thisinc+((i-r*2)/8))*that.zPositionMultiplier;
+			var offsetx = Math.cos(thisinc+((i-r*2)/8))*that.settings.xPositionMultiplier;
+			var offsetz = Math.sin(thisinc+((i-r*2)/8))*that.settings.zPositionMultiplier;
 			var offsety = offsetz;
 
 			var cNormal = vectorArray[f].normal;
@@ -109,7 +114,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// flying
-			if (that.flying) {
+			if (that.settings.flying) {
 				var pulse = Math.cos((i-r*10)/15)*10
 				var flyAmount = 35+Math.abs(Math.sin((thisinc+pulse)/30)*40);			
 
@@ -136,14 +141,14 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			morph = Math.min(morph, 1)
 			that.array[i].a.morph = morph;
 
-			if (that.constantSpeed != null) {
-				that.array[i].a.animalA.timeScale = that.constantSpeed;
-				that.array[i].a.animalB.timeScale = that.constantSpeed;
+			if (that.settings.constantSpeed != null) {
+				that.array[i].a.animalA.timeScale = that.settings.constantSpeed;
+				that.array[i].a.animalB.timeScale = that.settings.constantSpeed;
 			}
 
-			var moveX = (tox-animal.position.x)/divider;
-			var moveY = (toy-animal.position.y)/divider;
-			var moveZ = (toz-animal.position.z)/divider;
+			var moveX = (tox-animal.position.x)/that.settings.divider;
+			var moveY = (toy-animal.position.y)/that.settings.divider;
+			var moveZ = (toz-animal.position.z)/that.settings.divider;
 
 			var zvec = new THREE.Vector3(tox,toy,toz);
 			zvec.subSelf( animal.position ).normalize();

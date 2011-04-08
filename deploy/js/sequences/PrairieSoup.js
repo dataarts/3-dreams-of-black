@@ -18,8 +18,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, shared, 1500, 750 );
-	collisionScene.maxSpeedDivider = 1;
+	var collisionScene = new CollisionScene( camera, shared, 1500 );
+	collisionScene.settings.maxSpeedDivider = 1;
 	/*loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
 
 	function collisionLoadedProxy( geometry ) {
@@ -46,9 +46,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 */
 	// running animals
 	var runningAnimals = new AnimalSwarm(35, scene, vectors.array);
-	runningAnimals.xPositionMultiplier = 150;
-	runningAnimals.zPositionMultiplier = 100;
-	runningAnimals.constantSpeed = 2.0
+	runningAnimals.settings.xPositionMultiplier = 150;
+	runningAnimals.settings.zPositionMultiplier = 100;
+	runningAnimals.settings.constantSpeed = 2.0
 	//loader.load( { model: "files/models/soup/tarbuffalo.js", callback: animalLoadedProxy } );
 	loader.load( { model: "files/models/soup/bison.js", callback: animalLoadedProxy } );
 
@@ -74,7 +74,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		}
 
 		// update the soup parts	
-		collisionScene.capBottom = camPos.y-80;
+		collisionScene.settings.capBottom = camPos.y-80;
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		//ribbons.update(collisionScene.emitterFollow.position);

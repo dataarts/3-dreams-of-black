@@ -3,13 +3,19 @@ var Vectors = function ( length, divider, normaldivider ) {
 	var that = this;
 
 	that.array = [];
-	var length = length || 50;
-	var divider = divider || 4;
-	var normaldivider = normaldivider || 10;
 	var i;
 
+	that.initSettings = {
+		length : length || 50,
+	}
+
+	that.settings = {
+		divider : divider || 4,
+		normaldivider : normaldivider || 10,
+	}	
+
 	// vectors
-	for ( i = 0; i < length; ++i ) {
+	for ( i = 0; i < that.initSettings.length; ++i ) {
 
 		var position = new THREE.Vector3(0,0,0);
 
@@ -20,7 +26,7 @@ var Vectors = function ( length, divider, normaldivider ) {
 
 	this.update = function (position, normal) {
 
-		for (i=0; i < length; ++i ) {
+		for (i=0; i < that.initSettings.length; ++i ) {
 			var obj = that.array[i];
 
 			if (i == 0) {
@@ -45,17 +51,17 @@ var Vectors = function ( length, divider, normaldivider ) {
 
 			}
 
-			var moveX = (tox-obj.position.x)/divider;
-			var moveY = (toy-obj.position.y)/divider;
-			var moveZ = (toz-obj.position.z)/divider;
+			var moveX = (tox-obj.position.x)/that.settings.divider;
+			var moveY = (toy-obj.position.y)/that.settings.divider;
+			var moveZ = (toz-obj.position.z)/that.settings.divider;
 
 			obj.position.x += moveX;
 			obj.position.y += moveY;
 			obj.position.z += moveZ;
 
-			var moveNormalX = (tonormalx-obj.normal.x)/normaldivider;
-			var moveNormalY = (tonormaly-obj.normal.y)/normaldivider;
-			var moveNormalZ = (tonormalz-obj.normal.z)/normaldivider;
+			var moveNormalX = (tonormalx-obj.normal.x)/that.settings.normaldivider;
+			var moveNormalY = (tonormaly-obj.normal.y)/that.settings.normaldivider;
+			var moveNormalZ = (tonormalz-obj.normal.z)/that.settings.normaldivider;
 
 			obj.normal.x += moveNormalX;
 			obj.normal.y += moveNormalY;

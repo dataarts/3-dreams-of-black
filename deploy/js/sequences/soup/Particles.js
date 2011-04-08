@@ -3,27 +3,34 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 	var that = this;
 
 	var particleArray = [];
-	var numOfParticleSystems = numOfParticleSystems || 25;
 	var scene = scene;
-	var numInSystem = numInSystem || 60;
-	var spread = spread || 50;
-	that.zeroAlphaStart = true;
-	that.aliveDivider = 3;
+
+	that.initSettings = {
+		numOfParticleSystems : numOfParticleSystems || 25,
+		numInSystem : numInSystem || 60,
+		spread : spread || 50,
+		particleSize : particleSize || 8,
+	}
+
+	that.settings = {
+		aliveDivider : 3,
+		zeroAlphaStart : true,
+	}
 
 	var i;
 
 	
 	var geometry = new THREE.Geometry();
 
-	for (i = 0; i < numInSystem; i++) {
-		var vector = new THREE.Vector3( Math.random() * spread - (spread/2), Math.random() * spread - (spread/2), Math.random() * spread - (spread/2) );
+	for (i = 0; i < that.initSettings.numInSystem; i++) {
+		var vector = new THREE.Vector3( Math.random() * that.initSettings.spread - (that.initSettings.spread/2), Math.random() * that.initSettings.spread - (that.initSettings.spread/2), Math.random() * that.initSettings.spread - (that.initSettings.spread/2) );
 		geometry.vertices.push( new THREE.Vertex( vector ) );
 	}
 
-	for (var i = 0; i < numOfParticleSystems; i++) {
+	for (var i = 0; i < that.initSettings.numOfParticleSystems; i++) {
 
 		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 
@@ -50,7 +57,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 			
 			var particles = particleArray[i].c;
 
-			particleArray[i].alivetime += (multiplier/that.aliveDivider);
+			particleArray[i].alivetime += (multiplier/that.settings.aliveDivider);
 
 			if (particleArray[i].alivetime >= numOfParticleSystems) {
 				particleArray[i].alivetime = 0;
@@ -59,7 +66,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 				particles.position.y = position.y;
 				particles.position.z = position.z;
 
-				if (that.zeroAlphaStart) {
+				if (that.settings.zeroAlphaStart) {
 					particles.materials[0].opacity = 0;
 				} else {
 					particles.materials[0].opacity = 1;
@@ -78,7 +85,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 			//scale = Math.max(scale,0.05);
 			particles.scale.x = particles.scale.y = particles.scale.z = 0.5+scale;
 
-			if (that.zeroAlphaStart) {
+			if (that.settings.zeroAlphaStart) {
 				var alpha = (alivetime/4);
 			} else {
 				var alpha = 1-(alivetime/(particleArray.length*2));
