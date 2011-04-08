@@ -4,6 +4,7 @@ var Dunes = function ( shared ) {
 
 	var camera, world, soup
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
+	var delta, time, oldTime;
 
 	var speedStart = 0.75,
 		speedEnd = 2.5;
@@ -49,6 +50,9 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, time, start, end ) {
 		
+		time = new Date().getTime();
+		delta = time - oldTime;
+		oldTime = time;
 
 		// not too low
 		
@@ -84,7 +88,7 @@ var Dunes = function ( shared ) {
 		}
 
 		world.update( camera );
-		soup.update();
+		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );
 

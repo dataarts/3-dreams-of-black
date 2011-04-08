@@ -210,7 +210,7 @@ var CityWorld = function ( shared ) {
 					"float pointOnLine = clamp( dot( endStart, pointStart ) / endStartLength2, 0.0, 1.0 );",
 
 					"distance  = 1.0 - length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * 0.0080;",
-					"distance += texture2D( grassImage, worldPosition.xz ).g - 0.7;",
+					"distance += texture2D( grassImage, worldPosition.xz ).g - 0.5;",
 					
 					"surface = texture2D( surfaceImage, worldPosition.yz ) * vNormal.x + ",
 							  "texture2D( surfaceImage, worldPosition.xz ) * vNormal.y + ",

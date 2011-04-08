@@ -1,9 +1,12 @@
-var CollisionScene = function ( camera, shared, collisionDistance, capBottom ) {
+var CollisionScene = function ( camera, shared, collisionDistance, incapBottom, allowFlying ) {
 	
 	var that = this;
 	that.currentNormal = new THREE.Vector3( 0, 1, 0 );
+	that.maxSpeedDivider = 2;
+	that.emitterDivider = 5;
+	that.capBottom =  null || incapBottom;
+	var allowFlying = allowFlying || false;
 	var collisionDistance = collisionDistance || 400;
-	var emitterDivider = 5;
 
 	var scene = new THREE.Scene();
 
@@ -56,9 +59,9 @@ var CollisionScene = function ( camera, shared, collisionDistance, capBottom ) {
 		upPlane.position.x = camPos.x;
 		upPlane.position.z = camPos.z;
 
-		if (capBottom != null) {
-			if (downPlane.position.y < capBottom) {
-				downPlane.position.y = capBottom;
+		if (that.capBottom != null) {
+			if (downPlane.position.y < that.capBottom) {
+				downPlane.position.y = that.capBottom;
 			}
 		}
 
@@ -91,7 +94,9 @@ var CollisionScene = function ( camera, shared, collisionDistance, capBottom ) {
 						that.currentNormal.y = 1;
 						that.currentNormal.z = 0;
 						// not to be airbourne
-						that.emitter.position.y = downPlane.position.y;//FLOOR;
+						if (!allowFlying) {
+							that.emitter.position.y = downPlane.position.y;					
+						}
 					}
 
 					var amount = 6;
@@ -117,20 +122,24 @@ var CollisionScene = function ( camera, shared, collisionDistance, capBottom ) {
 
 
 					// hack..
-					if (that.emitter.position.z > camPos.z-100) {
+					/*if (that.emitter.position.z > camPos.z-100) {
 						that.emitter.position.z = camPos.z-100;
-					}
+					}*/
 					break;
 				}
 			}
 
 		}
 
-		var maxSpeed = delta/2;
+		if (isNaN(delta) || delta > 1000 ) {
+			delta = 1000/60;
+		}
+
+		var maxSpeed = delta/that.maxSpeedDivider;
 
 		var toy = that.emitter.position.y;
 		
-		var moveY = (toy-that.emitterFollow.position.y)/emitterDivider;
+		var moveY = (toy-that.emitterFollow.position.y)/that.emitterDivider;
 		if (moveY > maxSpeed) {
 			moveY = maxSpeed;
 		}
@@ -142,7 +151,7 @@ var CollisionScene = function ( camera, shared, collisionDistance, capBottom ) {
 
 		var tox = that.emitter.position.x;
 		
-		var moveX = (tox-that.emitterFollow.position.x)/emitterDivider;
+		var moveX = (tox-that.emitterFollow.position.x)/that.emitterDivider;
 		if (moveX > maxSpeed) {
 			moveX = maxSpeed;
 		}
@@ -155,7 +164,7 @@ var CollisionScene = function ( camera, shared, collisionDistance, capBottom ) {
 
 		var toz = that.emitter.position.z;
 		
-		var moveZ = (toz-that.emitterFollow.position.z)/emitterDivider;
+		var moveZ = (toz-that.emitterFollow.position.z)/that.emitterDivider;
 		if (moveZ > maxSpeed) {
 			moveZ = maxSpeed;
 		}

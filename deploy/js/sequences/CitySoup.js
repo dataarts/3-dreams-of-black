@@ -8,11 +8,11 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	/*var pointLight = new THREE.PointLight( 0xeeffee, 4, 150 );
+	var pointLight = new THREE.PointLight( 0xeeffee, 4, 150 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
-	scene.addLight( pointLight, 1.0 );*/
+	scene.addLight( pointLight, 1.0 );
 
 	shared.targetStart = new THREE.Vector3();
 	shared.targetEnd = new THREE.Vector3();
@@ -33,7 +33,16 @@ var CitySoup = function ( camera, scene, shared ) {
 	var vectors = new Vectors();
 
 	// ribbons
-	var ribbons = new Ribbons(6, vectors.array, scene, collisionScene.emitterFollow.position);
+	var ribbonMaterials = [
+			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
+			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
+			new THREE.MeshLambertMaterial( { color:0x5189bb } ),
+			new THREE.MeshLambertMaterial( { color:0xe850e8 } ),
+			new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ),
+			new THREE.MeshLambertMaterial( { color:0x08a620 } )
+	];
+
+	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
 
 	// particles
 	var sprite0 = ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -75,9 +84,9 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	// flying animals
-	var flyingAnimals = new AnimalSwarm(20, scene, vectors.array);
+	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
 	flyingAnimals.flying = true;
-	for (var i=0; i<20; ++i ) {
+	for (var i=0; i<10; ++i ) {
 		var odd = i%2;
 		if (odd == 0) {
 			flyingAnimals.array[i] = "b";
@@ -88,13 +97,13 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0,0,0,1,1,0,1,0,1,1,0];
-		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, 2 );
+		var morphArray = [1,1,0,0,1,0,0,1,0,0];
+		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, 1 );
 	}
 
 	function birdsBLoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0,0,0,1,1,0,1,0,1,1,0];
-		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 2 );
+		var morphArray = [1,1,0,0,1,0,0,1,0,0];
+		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 1 );
 	}
 
 	// butterflys
@@ -183,6 +192,9 @@ var CitySoup = function ( camera, scene, shared ) {
 		shared.targetEnd.x = vectors.array[20].position.x;
 		shared.targetEnd.y = vectors.array[20].position.y;
 		shared.targetEnd.z = vectors.array[20].position.z;
+
+		// pointlight
+		pointLight.position = collisionScene.emitterFollow.position;
 
 	}
 

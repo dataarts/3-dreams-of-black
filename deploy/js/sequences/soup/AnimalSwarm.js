@@ -8,6 +8,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 	var divider = divider || 2;
 	var scene = scene;
 	that.flying = false;
+	that.xPositionMultiplier = 30;
+	that.zPositionMultiplier = 30;
+	that.constantSpeed = null;
 	var r = 0;
 
 	var i;
@@ -83,8 +86,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
-			var offsetx = Math.cos(thisinc+((i-r*2)/8))*30;
-			var offsetz = Math.sin(thisinc+((i-r*2)/8))*30;
+			var offsetx = Math.cos(thisinc+((i-r*2)/8))*that.xPositionMultiplier;
+			var offsetz = Math.sin(thisinc+((i-r*2)/8))*that.zPositionMultiplier;
 			var offsety = offsetz;
 
 			var cNormal = vectorArray[f].normal;
@@ -133,8 +136,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			morph = Math.min(morph, 1)
 			that.array[i].a.morph = morph;
 
-			that.array[i].a.animalA.timeScale = speed;
-			that.array[i].a.animalB.timeScale = speed;
+			if (that.constantSpeed != null) {
+				that.array[i].a.animalA.timeScale = that.constantSpeed;
+				that.array[i].a.animalB.timeScale = that.constantSpeed;
+			}
 
 			var moveX = (tox-animal.position.x)/divider;
 			var moveY = (toy-animal.position.y)/divider;

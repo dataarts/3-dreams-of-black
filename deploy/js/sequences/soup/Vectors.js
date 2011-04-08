@@ -1,4 +1,4 @@
-var Vectors = function ( length, startPosition, divider, normaldivider ) {
+var Vectors = function ( length, divider, normaldivider ) {
 	
 	var that = this;
 
@@ -11,7 +11,7 @@ var Vectors = function ( length, startPosition, divider, normaldivider ) {
 	// vectors
 	for ( i = 0; i < length; ++i ) {
 
-		var position = startPosition || new THREE.Vector3(0,0,0);
+		var position = new THREE.Vector3(0,0,0);
 
 		var obj = { position: position, lastposition: position, normal: new THREE.Vector3(0,1,0), scale: 1 };
 		that.array.push(obj);

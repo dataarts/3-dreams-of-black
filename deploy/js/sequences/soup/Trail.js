@@ -24,7 +24,7 @@ var Trail = function ( numOfInstances, scene ) {
 			var c = new THREE.Mesh( geometry, materialArray[i%materialArray.length] );
 			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
 			
-			var obj = {c:c, scale:0, alivetime:i, normal:new THREE.Vector3(), tree:tree, maxHeight:Math.min(Math.random()+0.5,1.0)};
+			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree};
 			
 			scene.addObject(c);
 			that.array[i] = obj;
@@ -35,14 +35,17 @@ var Trail = function ( numOfInstances, scene ) {
 
 	this.update = function (position, normal, camPos, delta) {
 
-		var multiplier = delta/60;
+		if (isNaN(delta) || delta > 1000 ) {
+			delta = 1000/60;
+		}
+
+		var multiplier = delta/numOfInstances;
 		
 		// grass
 		for (i=0; i<that.array.length; ++i ) {
 			var obj = that.array[i];
 			var c = obj.c;
 
-			var scale = obj.scale;
 			var alivetime = obj.alivetime;
 			var tree = obj.tree;
 			var maxHeight = obj.maxHeight;
@@ -146,46 +149,38 @@ var Trail = function ( numOfInstances, scene ) {
 				}
 
 				if (tree) {
-					var treeTween = new TWEEN.Tween(c.rotation)
+					var treeRotateTween = new TWEEN.Tween(c.rotation)
 								.to({x: torotx, y: toroty, z: torotz}, 4000)
-								.easing(TWEEN.Easing.Elastic.EaseOut);
-					treeTween.start();				
+								.easing(TWEEN.Easing.Elastic.EaseOut)
+								.delay(400);
+					treeRotateTween.start();				
 				}
 
 				// keep away from camera path - hack
-				if (tree && c.position.x < camPos.x+30 && c.position.x > camPos.x-30) {
-					c.position.x = camPos.x+30;
+				if (tree && c.position.x < camPos.x+40 && c.position.x > camPos.x-40) {
+					c.position.x = camPos.x+40;
 					if (c.position.x < camPos.x) {
-						c.position.x = camPos.x-30;
+						c.position.x = camPos.x-40;
 					}
 				}
+
+
+				c.scale.x = c.scale.y= c.scale.z = 0.001;
+				var xscale = zscale = yscale = 0.1;
+				if (!tree) {
+					yscale = 0.07;
+				}
+
+				var growTween = new TWEEN.Tween(c.scale)
+							.to({x: xscale, y: yscale, z: zscale}, 4000)
+							.easing(TWEEN.Easing.Elastic.EaseOut)
+							.delay(300);
+				growTween.start();				
+
 
 				alivetime = 0;
 			}
 
-			if (tree) {
-				scale = Math.max( alivetime / 50, 0.0001 );
-			} else {
-				scale = Math.max( alivetime / 75, 0.0001 );				
-			}
-		
-			scale = Math.min( scale, 1 );
-			scale *= 0.1;
-
-			if (tree) {
-				maxHeight *= 0.1;
-				var divider = 20;
-				c.scale.x = c.scale.y= c.scale.z = 0.1*Math.min((alivetime+1)/divider,1);
-				//c.scale.y = scale;
-				if (c.scale.y > maxHeight) {
-					c.scale.y = maxHeight;
-				}
-			} else {
-				c.scale.x = c.scale.z = Math.min( 0.065, scale * 2.5 );
-				c.scale.y = scale*1.25;
-			}
-			
-			that.array[i].scale = scale;
 			that.array[i].alivetime = alivetime;
 
 		}
