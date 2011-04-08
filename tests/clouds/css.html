@@ -29,26 +29,34 @@
 
 			function init() {
 
-				canvas = document.createElement( 'canvas' );
-				canvas.width = 800;
-				canvas.height = 400;
+				container = document.createElement( 'div' );
+				container.style.position = 'absolute';
+				container.style.left = ( window.innerWidth / 2 ) + 'px';
+				container.style.top = ( window.innerHeight / 2 ) + 'px';
+				document.body.appendChild( container );
 
-				context = canvas.getContext( '2d' );
-				context.setTransform( 1, 0, 0, 1, canvas.width / 2, canvas.height / 2 );
+				for ( var i = 0, il = 50; i < il; i ++ ) {
 
-				document.body.appendChild( canvas );
+					image = document.createElement( 'img' );
+					image.style.position = 'absolute';
+					image.style.left = - 64 + 'px';
+					image.style.top = - 64 + 'px';
+					image.src = 'cloud128.png';
 
-				sprite = document.createElement( 'img' );
-				sprite.src = 'cloud128.png';
+					domElement = document.createElement( 'div' );
+					domElement.style.position = 'absolute';
+					// domElement.style.WebkitTransform = 'rotate(' + ( Math.random() * 180 ) + 'deg)';
+					domElement.appendChild( image );
 
-				for ( var i = 0, il = 20; i < il; i ++ ) {
+					container.appendChild( domElement );
 
 					particles.push( {
-						x: Math.random() * 200 - 100,
-						y: Math.random() * 40 - 20,
+						x: Math.random() * 800 - 400,
+						y: Math.random() * 100 - 50,
 						z: Math.random() * 5,
 						rotation: Math.random() * Math.PI,
-						scale: Math.random() * 0.5 + 0.5
+						scale: Math.random() * 0.5 + 0.5,
+						domElement: domElement
 					} );
 
 				}
@@ -80,28 +88,18 @@
 
 			function render() {
 
-				context.clearRect( - canvas.width / 2, - canvas.height / 2, canvas.width, canvas.height );
-
-				particles.sort( function ( a, b ) { return b.z - a.z } );
-
 				for ( var i = 0, il = particles.length; i < il; i ++ ) {
 
 					var particle = particles[ i ];
+					particle.z = particle.z < 0.2 ? 2 : particle.z - 0.005;
 
-					context.save();
-					context.scale( 1 / particle.z, 1 / particle.z );
-					context.translate( particle.x, particle.y );
-					context.rotate( particle.rotation );
-					context.scale( particle.scale, particle.scale );
-					context.translate( - 64, - 64 );
+					var ow = 1 / particle.z;
 
-					context.drawImage( sprite, 0, 0 );
+					particle.domElement.style.left = ( particle.x * ow ) + 'px';
+					particle.domElement.style.top = ( particle.y * ow ) + 'px';
+					particle.domElement.style['-webkit-transform'] = 'scale( ' + ow + ' )';
 
-					context.restore();
-
-					// we move after drawing for sorting purposes
-
-					particle.z = particle.z < 0.1 ? 2 : particle.z - 0.01;
+					particle.domElement.style.zIndex = Math.floor( 1000 - particle.z * 100 );
 
 				}
 
