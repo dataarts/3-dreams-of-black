@@ -228,7 +228,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames, color ) {
 ROME.AnimalShader = {
 
 	uniforms: function () {
-		return Uniforms.merge( [ THREE.UniformsLib[ "common" ],
+		return THREE.UniformsUtils.merge( [ THREE.UniformsLib[ "common" ],
 								THREE.UniformsLib[ "lights" ],
 								{
 									"animalAInterpolation": { type: "f", value: 0.0 },

@@ -1,5 +1,5 @@
 var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
-	
+
 	var that = this;
 
 	var animalArray = [];
@@ -16,7 +16,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 	var r = 0;
 	var i;
 
-	var container = new Cube( 10, 10, 10 );
+	var container = new THREE.Cube( 10, 10, 10 );
 	var animalContainer = new THREE.Mesh( container );
 	scene.addChild( animalContainer );
 
@@ -38,7 +38,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 			mesh.position.z = z;
 
 			animalContainer.addChild( mesh );
-			
+
 			animal.animalA.timeScale = 0.8;
 			animal.animalB.timeScale = 0.8;
 

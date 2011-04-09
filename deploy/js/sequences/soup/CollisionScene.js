@@ -17,7 +17,7 @@ var CollisionScene = function ( camera, shared, collisionDistance ) {
 
 	var scene = new THREE.Scene();
 
-	var plane = new Plane( 100, 100, 1, 1 );
+	var plane = new THREE.Plane( 100, 100, 1, 1 );
 	var invMaterial = new THREE.MeshBasicMaterial( { color:0x0000DE, opacity: 0.3 } );
 	var invMaterial2 = new THREE.MeshBasicMaterial( { color:0x00DE00, opacity: 1.0 } );
 
@@ -29,7 +29,7 @@ var CollisionScene = function ( camera, shared, collisionDistance ) {
 	var upPlane = addMesh( plane, 100, 0, 0, 0, 1.57,0,0, invMaterial, false );
 
 	var projector = new THREE.Projector();
-	var cube = new Cube( 10, 10, 10 );
+	var cube = new THREE.Cube( 10, 10, 10 );
 	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33 } ) );
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF } ) );
 
@@ -38,7 +38,7 @@ var CollisionScene = function ( camera, shared, collisionDistance ) {
 
 		var mesh = new THREE.Mesh( geometry, invMaterial2 );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
-		
+
 		scene.addObject( mesh );
 
 	}

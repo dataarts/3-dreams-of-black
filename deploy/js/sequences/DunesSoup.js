@@ -39,14 +39,14 @@ var DunesSoup = function ( camera, scene, shared ) {
 	ribbons.settings.ribbonMax = 10;
 
 	// particles
-	var sprite0 = ImageUtils.loadTexture( "files/textures/particle_0.png" );
-	var sprite1 = ImageUtils.loadTexture( "files/textures/particle_1.png" );
-	var sprite2 = ImageUtils.loadTexture( "files/textures/particle_2.png" );
-	var sprite3 = ImageUtils.loadTexture( "files/textures/particle_3.png" );
-	var sprite4 = ImageUtils.loadTexture( "files/textures/particle_4.png" );
+	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
+	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
+	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
+	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/particle_3.png" );
+	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/particle_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
-	
+
 	var particles = new Particles(50, scene, 12, particleSprites, 80, 150);
 	//particles.zeroAlphaStart = false;
 	particles.settings.aliveDivider = 1.2;

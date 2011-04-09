@@ -17,7 +17,7 @@ var CityWorld = function ( shared ) {
 	directionalLight.position.set( -0.6,  2.1,  -0.6 );
 	directionalLight.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
 	this.scene.addLight( directionalLight );
-	
+
 	/*gui.add( directionalLight.position, 'x', -10, 20 ).name( 'x' );
 	gui.add( directionalLight.position, 'y', -10, 20 ).name( 'y' );
 	gui.add( directionalLight.position, 'z', -10, 20 ).name( 'z' );
@@ -29,7 +29,7 @@ var CityWorld = function ( shared ) {
 
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
-	
+
 	// Parts
 	if (!shared.debug) {
 	//loader.load( { model: "files/models/city/City_P1.js", callback: partLoaded } );
@@ -44,11 +44,11 @@ var CityWorld = function ( shared ) {
 		var shader = Shaders[ 'soup' ];
 		var uniforms = shader.uniforms;
 
-		uniforms[ 'grassImage' ].texture = ImageUtils.loadTexture( "files/textures/Texture_Grass3.jpg" );
+		uniforms[ 'grassImage' ].texture = THREE.ImageUtils.loadTexture( "files/textures/Texture_Grass3.jpg" );
 		uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
 		uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
 
-		uniforms[ 'surfaceImage' ].texture = ImageUtils.loadTexture( "files/textures/Texture_Pavement3.jpg" );
+		uniforms[ 'surfaceImage' ].texture = THREE.ImageUtils.loadTexture( "files/textures/Texture_Pavement3.jpg" );
 		uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
 		uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
 
@@ -67,12 +67,12 @@ var CityWorld = function ( shared ) {
 		var materials = [];
 
 		for( var i = 0; i < geometry.materials.length; i++ ) {
-			
+
 			materials[ i ] = new THREE.MeshShaderMaterial( baseMaterialParams );
-			
+
 			materials[ i ].program = baseMaterial.program;
-			materials[ i ].uniforms = Uniforms.clone( uniforms );
-			
+			materials[ i ].uniforms = THREE.UniformsUtils.clone( uniforms );
+
 			materials[ i ].uniforms[ 'targetStart'  ].value   = shared.targetStart;
 			materials[ i ].uniforms[ 'targetEnd'    ].value   = shared.targetEnd;
 			materials[ i ].uniforms[ 'map'          ].texture = geometry.materials[ i ][ 0 ].map;  
@@ -82,16 +82,15 @@ var CityWorld = function ( shared ) {
 			materials[ i ].fog = true;
 			materials[ i ].lights = true;
 
-			
 			geometry.materials[ i ][ 0 ] = materials[ i ];
-			
+
 		}
 
 		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
 
 		that.scene.addObject( mesh );
-		
+
 		preInitModel( geometry, shared.renderer, that.scene, mesh );
 
 	} 
@@ -100,7 +99,7 @@ var CityWorld = function ( shared ) {
 	// Shadow
 
 	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
-		
+
 		var shadowMesh = new THREE.Mesh( geometry );
 
 		if (shared.debug) {
