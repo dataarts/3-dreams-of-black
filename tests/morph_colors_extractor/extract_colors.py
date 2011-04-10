@@ -4,7 +4,9 @@ Requires Python Image Library: http://www.pythonware.com/products/pil/
 (use version 1.1.6, latest one 1.1.7 had broken handling of fonts)
 """
 
+import re
 import glob
+import json
 import math
 import os.path
 import Image, ImageDraw, ImageFont
@@ -13,26 +15,51 @@ import Image, ImageDraw, ImageFont
 # Config
 # ##################################################################
 
-SQUARE = 94
-MARGIN = 9
+# This table has to be filled in by human.
+#
+# Format is:
+#	"keyword" : [ "label_for_row_1", "label_for_row_1", ... ]
+#
+# Animals are recognized by keywords present if file names.
+#
+# For color range row labels, put the same label for color 
+# spanning multiple rows.
+#
+# All strings should be lowercase here.
+#
+# Matching to material ids is done by color range labels with removed underscores.
 
-LEFT = 1344
+LABELMAP = {
+"frog":     [ "green_range", "blue_range", "red_range", "eye_color" ],
+"retriever":[ "shadow_range", "midtone_range", "highlight_range", "eye_color" ],
+"horse":    [ "shadow_range", "midtone_range", "highlight_range", "eye_color", "light_patches" ],
+"lion":     [ "shadow_range", "midtone_range", "highlight_range", "eye_color", "light_facial_patches" ],
+"deer":     [ "shadow_range", "midtone_range", "highlight_range", "eye_color", "lighter_body_patches" ],
+"rabbit":   [ "shadow_range", "midtone_range", "highlight_range", "eye_color", "nose_and_inner_ear_color" ],
+"flamingo": [ "body", "body", "body", "beak_dark", "eyes", "face_light", "legs" ],
+}
+
+
+COLORMAPS = "colormaps/*.jpg"
+MATERIALS = "mtls/*.mtl"
+ASSOCIATIONS = "mtls"
+
+SQUARE = 94
+MARGINX = 9
+MARGINY1 = 9
+MARGINY2 = 30
+
+LEFT = 1200
 TOP1 = 70
 TOP2 = 420
 
-COLUMNS = 3
+COLUMNS = 4
 ROWS1 = 3
 ROWS2 = 4
 
-LABELMAP = {
-"frog":     ["green_range", "blue_range", "red_range", "eye_color"],
-"retriever":["shadow_range", "midtone_range", "highlight_range", "eye_color"],
-"horse":    ["shadow_range", "midtone_range", "highlight_range", "eye_color", "light_patches"],
-"lion":     ["shadow_range", "midtone_range", "highlight_range", "eye_color", "light_facial_patches"],
-"deer":     ["shadow_range", "midtone_range", "highlight_range", "eye_color", "lighter_body_patches"],
-"rabbit":   ["shadow_range", "midtone_range", "highlight_range", "eye_color", "nose_and_inner_ear_color"],
-"flamingo": ["shadow_range", "midtone_range", "highlight_range", "eye_color", "leg_highlight", "leg_midtone", "leg_shadow"],
-}
+# ##################################################################
+# Templates
+# ##################################################################
 
 ASSOCIATIONS_TEMPLATE = """\
 {
@@ -92,6 +119,13 @@ def get_mtl_name(basename, mtlfiles):
                     break
     return name
 
+def camel_to_underscore(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+def clean_name(name):
+    return name.replace("_","").lower()
+    
 # ##################################################################
 # MTL
 # ##################################################################
@@ -107,7 +141,7 @@ def get_materials(mtlfile):
                 materials.append(chunks[1])
                 
     return materials
-        
+
     
 # ##################################################################
 # Check
@@ -125,14 +159,14 @@ def generate_check_colors(img, colors, basename):
             
             for j, color in enumerate(color_row):
                 #rgb = (color[0]/255, color[1]/255, color[2]/255)
-                x1 = MARGIN + j * (SQUARE + MARGIN)
-                y1 = MARGIN + i * (SQUARE + MARGIN)
+                x1 = MARGINX  + j * (SQUARE + MARGINX)
+                y1 = MARGINY1 + i * (SQUARE + MARGINY1)
                 x2 = x1 + SQUARE
                 y2 = y1 + SQUARE
                 draw.rectangle([x1, y1, x2, y2], fill = color)
             
-            x = MARGIN + len(color_row) * (SQUARE + MARGIN) + MARGIN
-            y = MARGIN + i * (SQUARE + MARGIN) + SQUARE/2 - fsize/2
+            x = MARGINX  + len(color_row) * (SQUARE + MARGINX) + MARGINX
+            y = MARGINY1 + i * (SQUARE + MARGINY1) + SQUARE/2 - fsize/2
             
             range_name = get_range_name(basename, i)
             
@@ -141,11 +175,14 @@ def generate_check_colors(img, colors, basename):
             
     del draw
     
-    return len(colors) * (SQUARE + MARGIN) + MARGIN
+    return len(colors) * (SQUARE + MARGINY1) + MARGINY1
     
-def generate_check_materials(img, materials, bottom):
+def generate_check_materials(img, materials, bottom, associations_map):
     
+    startx = 350
+    margintop = 28
     fsize = 28
+    
     font = ImageFont.truetype("arial.ttf", fsize)
     draw = ImageDraw.Draw(img)
     
@@ -153,51 +190,95 @@ def generate_check_materials(img, materials, bottom):
 
         material_string = "%d: %s" % (i, material)
 
-        x = MARGIN
-        y = bottom + (fsize + MARGIN) * i
+        x = MARGINX
+        y = margintop + bottom + (fsize + MARGINY1) * i
         draw.text((x+1, y+1), material_string, font = font, fill = (0,0,0))
         draw.text((x, y), material_string, font = font)
+        
+        if material in associations_map:
+            colors = associations_map[material]
+            for i, color in enumerate(colors):
+                
+                x1 = startx + i * fsize
+                y1 = y
+                x2 = x1 + fsize
+                y2 = y1 + fsize
+                draw.rectangle([x1, y1, x2, y2], fill = color)
+                
 
 # ##################################################################
 # Color dumper
 # ##################################################################
-    
+
 def generate_colors(colors, basename):
 
-    chunkrows = []
+    color_map = {}
+    color_map_raw = {}
     for i, color_row in enumerate(colors):
-        chunks = []
+        
+        rgb_colors = []
         for color in color_row:
-            chunks.append(generate_rgb(color))
+            rgb_colors.append(generate_rgb(color))
 
-        if len(chunks) > 0:
+        if len(rgb_colors) > 0:
             range_name = get_range_name(basename, i)
-            color_array = ", ".join(chunks)
-            color_row = '"%s" : [%s]' % (range_name, color_array)
-            chunkrows.append(color_row)
-
+            if range_name in color_map:
+                color_map[range_name].extend(rgb_colors)
+                color_map_raw[range_name].extend(color_row)
+            else:
+                color_map[range_name] = rgb_colors
+                color_map_raw[range_name] = color_row
+     
+    chunkrows = []
+    for range_name in color_map:
+        color_array = ", ".join(color_map[range_name])
+        color_row = '"%s" : [%s]' % (clean_name(range_name), color_array)
+        chunkrows.append(color_row)
+        
     color_string = ",\n".join(chunkrows)
-    return '{\n%s\n}' % (color_string)
-
+    output = '{\n%s\n}' % (color_string)
+    return output, color_map, color_map_raw
+    
 # ##################################################################
 # Material dumper
 # ##################################################################
-def generate_material(m):
-    return '"%s" : [ "replace_me" ]' % m
+
+def generate_material(m, colors):
+    colors_string = ", ".join(colors)
+    return '"%s" : [ %s ]' % (m, colors_string)
     
+def generate_material_colors(materials, color_map, color_map_raw):
+
+    associations = {}
+    chunks = []
+    for material in materials:
+        colors = []
+        colors_raw = []
+        for color in color_map:
+            if material.lower().find(clean_name(color)) >= 0:
+                colors.extend(color_map[color])
+                colors_raw.extend(color_map_raw[color])
+
+        chunks.append(generate_material(material, colors))
+        associations[material] = colors_raw
+            
+    material_string = ",\n".join(chunks)
+    output = "{\n%s\n}" % material_string
+    return output, associations
+
 # ##################################################################
 # Color extractor
 # ##################################################################
 
-def extract_range(img, left, top, nrows, ncolumns, rows):
+def extract_range(img, left, top, marginx, marginy, nrows, ncolumns, rows):
 
     for r in range(nrows):
         
         row = []
         for c in range(ncolumns):
 
-            x = left + c * (SQUARE + MARGIN)
-            y = top + r * (SQUARE + MARGIN)
+            x = left + c * (SQUARE + marginx)
+            y = top + r * (SQUARE + marginy)
             
             pixel = img.getpixel((x,y))
             
@@ -215,8 +296,8 @@ def extract_range(img, left, top, nrows, ncolumns, rows):
 
 if __name__ == "__main__":
     
-    imgfiles = sorted(glob.glob("colormaps/*.jpg"))
-    mtlfiles = sorted(glob.glob("mtls/*.mtl"))
+    imgfiles = sorted(glob.glob(COLORMAPS))
+    mtlfiles = sorted(glob.glob(MATERIALS))
     
     for imgfile in imgfiles:
         
@@ -225,8 +306,8 @@ if __name__ == "__main__":
         
         colors = []
         
-        extract_range(img, LEFT, TOP1, ROWS1, COLUMNS, colors)
-        extract_range(img, LEFT, TOP2, ROWS2, COLUMNS, colors)
+        extract_range(img, LEFT, TOP1, MARGINX, MARGINY1, ROWS1, COLUMNS, colors)
+        extract_range(img, LEFT, TOP2, MARGINX, MARGINY2, ROWS2, COLUMNS, colors)
 
         fname = os.path.splitext(imgfile)[0]
         bname = os.path.basename(fname)        
@@ -239,13 +320,24 @@ if __name__ == "__main__":
         if mtlfile:
             print "Processing MTL [%s]" % mtlfile
             materials = get_materials(mtlfile)
-            generate_check_materials(img, materials, bottom)
 
-        img.save(check_file)
+            fname = os.path.splitext(mtlfile)[0]
+            bname = os.path.basename(fname)        
 
-        associations_file = "associations/%s.txt" % bname
-        colors_string = generate_colors(colors, bname)
-        materials_string = "{\n%s\n}" % ",\n".join(generate_material(m) for m in materials)
+            associations_file = os.path.join(ASSOCIATIONS, bname + ".txt")
+            print "Generating associations [%s]" % associations_file
+            
+            colors_string, color_map, color_map_raw = generate_colors(colors, bname)
+            materials_string, associations_map = generate_material_colors(materials, color_map, color_map_raw)
+            
+            associations_string = ASSOCIATIONS_TEMPLATE % (os.path.basename(mtlfile), os.path.basename(imgfile), colors_string, materials_string)
+            write_file(associations_file, associations_string)
 
-        associations_string = ASSOCIATIONS_TEMPLATE % (imgfile, mtlfile, colors_string, materials_string)
-        write_file(associations_file, associations_string)
+            print json.load(open(associations_file))
+
+            if associations_map:
+                print "Generating check image"
+
+                generate_check_materials(img, materials, bottom, associations_map)
+
+                img.save(check_file)
