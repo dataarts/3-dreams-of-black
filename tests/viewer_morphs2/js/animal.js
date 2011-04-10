@@ -118,6 +118,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		}
 
 		material.uniforms.animalMorphValue.value = that.morph;
+
 	}
 
 
@@ -213,7 +214,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 ROME.AnimalShader = {
 	
-	uniforms: Uniforms.merge( [ THREE.UniformsLib[ "common" ],
+	uniforms: THREE.UniformsUtils.merge( [ THREE.UniformsLib[ "common" ],
 								THREE.UniformsLib[ "lights" ], 
 								{
 									"animalAInterpolation": { type: "f", value: 0.0 },
