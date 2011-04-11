@@ -2,15 +2,15 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	var that = this;
 
-	camPos = new THREE.Vector3( 0, 250, 0 );
+	camPos = new THREE.Vector3( 0, 150, 0 );
 	
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, shared, 1500, 30, true );
-	collisionScene.settings.emitterDivider = 10;
+	var collisionScene = new CollisionScene( camera, shared, 1500 );
+	collisionScene.settings.emitterDivider = 2;
 	collisionScene.settings.maxSpeedDivider = 0.01;
-	collisionScene.settings.capBottom = 30;
+	collisionScene.settings.capBottom = 50;
 	collisionScene.settings.allowFlying = true;
 
 	/*loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
@@ -21,7 +21,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// vector trail
 	var vectors = new Vectors();
-	vectors.settings.divider = 6;
+	vectors.settings.divider = 3;
 
 	// ribbons
 	var ribbonMaterials = [
@@ -39,7 +39,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	ribbons.settings.ribbonMax = 10;
 
 	// particles
-	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
+/*	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
 	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
 	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
 	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/particle_3.png" );
@@ -49,8 +49,8 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	var particles = new Particles(50, scene, 12, particleSprites, 80, 150);
 	//particles.zeroAlphaStart = false;
-	particles.settings.aliveDivider = 1.2;
-
+	particles.settings.aliveDivider = 2.0;
+*/
 	this.update = function ( delta ) {
 
 		// update to reflect _real_ camera position
@@ -62,7 +62,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		ribbons.update(collisionScene.emitterFollow.position);
-		particles.update(delta, vectors.array[0].position);
+		//particles.update(delta, vectors.array[0].position);
 		
 	}
 

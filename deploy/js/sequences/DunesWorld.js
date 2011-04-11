@@ -1,10 +1,19 @@
 var DunesWorld = function ( shared ) {
 
 	var that = this,
-	TILE_SIZE = 20000;
+	scale = 0.15,
+	TILE_SIZE = 30000*scale;
+
+	var randomAdded = 0;
+	var tiles = [ [], [], [] ]; // 9x9 grid
+	var lastx, lastz;
+
+	// static tiles
+	var walkPosition, prairiePosition, cityPosition;
+	var sceneWalk, scenePrairie, sceneCity;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0004 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00030 );
 	this.scene.fog.color.setHSV( 0.6, 0.1235, 1 );
 
 	// Lights
@@ -23,9 +32,268 @@ var DunesWorld = function ( shared ) {
 	directionalLight2.color.setHSV( 0, 0, 0.306 );
 	this.scene.addLight( directionalLight2 );
 
+	// reference cube
+	var cube = new THREE.Cube(100,100,100);
+	var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+	that.refCube = new THREE.Mesh( cube, material );
+	that.refCube.visible = false;
+	that.scene.addObject( that.refCube );
+
 	// Mesh
 
-	var loader = new THREE.JSONLoader();
+	var loader = new THREE.SceneLoader();
+
+	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
+
+	function addDunesPart( scene, position ) {
+
+		scene.scale.x = scene.scale.y = scene.scale.z = scale;
+		scene.position = position;
+		scene.updateMatrix();
+
+		that.scene.addChild( scene );
+
+	};
+
+	function walkLoaded( result ) {
+
+		sceneWalk = result.scene;
+		walkPosition = new THREE.Vector3(0,0,0*TILE_SIZE);
+		sceneWalk.rotation.z = Math.PI;
+		addDunesPart( sceneWalk, walkPosition );
+	};
+
+	function prairieLoaded( result ) {
+
+		scenePrairie = result.scene;
+		prairiePosition = new THREE.Vector3(0,0,1*TILE_SIZE);
+		addDunesPart( scenePrairie, prairiePosition );
+
+	};
+
+	function cityLoaded( result ) {
+
+		sceneCity = result.scene;
+		cityPosition = new THREE.Vector3(0,-50000,2*TILE_SIZE);
+		addDunesPart( sceneCity, cityPosition );
+
+	};
+
+	function randomLoaded( result ) {
+
+		var x = (randomAdded%3);
+		var z = Math.floor(randomAdded/3);
+		//console.log(x+" - "+z);
+
+		result.scene.rotation.z = getRandomRotation();
+		var y = 0;
+		if (x == 1 && (z == 1 || z == 2)) {
+			y = -50000;
+		}
+		addDunesPart(result.scene, new THREE.Vector3((x-1)*TILE_SIZE, y, (z-1)*TILE_SIZE));
+
+		tiles[z][x] = result.scene;
+		++randomAdded;
+
+	};
+
+	// static parts
+	loader.load( "files/models/dunes/D_tile_walk/D_tile_walk.js", function(){}, walkLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_prairie/D_tile_prairie.js", function(){}, prairieLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, cityLoaded, function(){});
+
+	// random parts
+	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
+
+	function getRandomRotation () {
+		return Math.round(Math.random()*4)*(Math.PI/2);
+	}
+
+	function updateTiles (z,x) {
+	
+		var difz = lastz-z;
+		var difx = lastx-x;
+	
+		if (isNaN(difz) || isNaN(difx)) {
+			return;
+		}
+
+		var t0, t1, t2;
+
+		// z
+		if (difz < 0) {
+			//console.log("z0");
+			var row = tiles.shift(); 
+			t0 = row[0];
+			t1 = row[1];
+			t2 = row[2];
+
+			showHideStaticTiles(t0.position, true);
+			showHideStaticTiles(t1.position, true);
+			showHideStaticTiles(t2.position, true);
+
+			t0.position.z = (z+1)*TILE_SIZE;
+			t1.position.z = (z+1)*TILE_SIZE;
+			t2.position.z = (z+1)*TILE_SIZE;
+	
+			tiles.push(row);
+
+		} else if (difz > 0) {	
+			//console.log("z1");
+			var row = tiles.pop(); 
+			t0 = row[0];
+			t1 = row[1];
+			t2 = row[2];
+
+			showHideStaticTiles(t0.position, true);
+			showHideStaticTiles(t1.position, true);
+			showHideStaticTiles(t2.position, true);
+
+			t0.position.z = (z-1)*TILE_SIZE;
+			t1.position.z = (z-1)*TILE_SIZE;
+			t2.position.z = (z-1)*TILE_SIZE;
+
+			tiles.unshift(row);
+
+		}
+
+		// x
+		if (difx < 0) {
+			//console.log("x0");
+			t0 = tiles[0].shift();
+			t1 = tiles[1].shift();
+			t2 = tiles[2].shift();
+
+			showHideStaticTiles(t0.position, true);
+			showHideStaticTiles(t1.position, true);
+			showHideStaticTiles(t2.position, true);
+
+			t0.position.x = (x+1)*TILE_SIZE;
+			t1.position.x = (x+1)*TILE_SIZE;
+			t2.position.x = (x+1)*TILE_SIZE;
+
+			tiles[0].push(t0);
+			tiles[1].push(t1);
+			tiles[2].push(t2);
+		
+		} else if (difx > 0) {	
+			//console.log("x1");
+			t0 = tiles[0].pop();
+			t1 = tiles[1].pop();
+			t2 = tiles[2].pop();
+
+			showHideStaticTiles(t0.position, true);
+			showHideStaticTiles(t1.position, true);
+			showHideStaticTiles(t2.position, true);
+
+			t0.position.x = (x-1)*TILE_SIZE;
+			t1.position.x = (x-1)*TILE_SIZE;
+			t2.position.x = (x-1)*TILE_SIZE;
+
+			tiles[0].unshift(t0);
+			tiles[1].unshift(t1);
+			tiles[2].unshift(t2);
+		
+		}
+
+		t0.rotation.z = getRandomRotation();
+		t1.rotation.z = getRandomRotation();
+		t2.rotation.z = getRandomRotation();
+
+		t0.position.y = 0;
+		t1.position.y = 0;
+		t2.position.y = 0;
+
+		var visible0 = showHideStaticTiles(t0.position, false);
+		var visible1 = showHideStaticTiles(t1.position, false);
+		var visible2 = showHideStaticTiles(t2.position, false);
+
+		// temp, since visible don´t seem to effect scenes
+		if (visible0) {
+			t0.position.y = -50000;
+		}
+		if (visible1) {
+			t1.position.y = -50000;
+		}
+		if (visible2) {
+			t2.position.y = -50000;
+		}
+
+		t0.updateMatrix();
+		t1.updateMatrix();
+		t2.updateMatrix();
+
+	};
+
+	// for the static tiles
+	function showHideStaticTiles ( position, hide ) {
+		if (position.x == walkPosition.x && position.z == walkPosition.z) {
+			if (hide) {
+				sceneWalk.position.y = -50000;
+			} else {
+				sceneWalk.position.y = 0;
+			}
+			sceneWalk.updateMatrix();
+			return true;
+		}
+
+		if (position.x == prairiePosition.x && position.z == prairiePosition.z) {
+			if (hide) {
+				scenePrairie.position.y = -50000;
+			} else {
+				scenePrairie.position.y = 0;
+			}
+			scenePrairie.updateMatrix();
+			return true;
+		}
+
+		if (position.x == cityPosition.x && position.z == cityPosition.z) {
+			if (hide) {
+				sceneCity.position.y = -50000;
+			} else {
+				sceneCity.position.y = 0;
+			}
+			sceneCity.updateMatrix();
+			return true;
+		}
+
+	}
+
+	this.update = function ( camera ) {
+
+		that.refCube.position.x = camera.position.x + Math.cos( camera.theta )*2000;
+		that.refCube.position.z = camera.position.z + Math.sin( camera.theta )*2000;
+		//that.refCube.position.y = camera.position.y;
+
+		//var z = Math.round( camera.position.z / TILE_SIZE );
+		//var x = Math.round( camera.position.x / TILE_SIZE );
+		var z = Math.round( that.refCube.position.z / TILE_SIZE );
+		var x = Math.round( that.refCube.position.x / TILE_SIZE );
+
+		// did we change?
+		if (z != lastz || x != lastx) {
+			updateTiles(z,x);
+		}
+
+		lastz = z;
+		lastx = x;
+
+	}
+
+	//loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, addDunesPart, function(){});
+
+
+
+/*	var loader = new THREE.JSONLoader();
 
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -46,7 +314,7 @@ var DunesWorld = function ( shared ) {
 	loader.load( { model: 'files/models/dunes/dunes_3.js', callback: addDunesPart } );
 	loader.load( { model: 'files/models/dunes/dunes_4.js', callback: addDunesPart } );
 	loader.load( { model: 'files/models/dunes/dunes_5.js', callback: addDunesPart } );
-
+*/
 	/*
 
 	// Ground
@@ -193,12 +461,12 @@ var DunesWorld = function ( shared ) {
 
 	*/
 
-	this.update = function ( camera ) {
+/*	this.update = function ( camera ) {
 
-		var x = Math.round( camera.position.x / TILE_SIZE );
 		var z = Math.round( camera.position.z / TILE_SIZE );
+		var x = Math.round( camera.position.x / TILE_SIZE );
 
-		/*
+		
 
 		tiles[ 0 ].position.x = ( x - 1 ) * TILE_SIZE;
 		tiles[ 0 ].position.z = ( z - 1 ) * TILE_SIZE;
@@ -227,8 +495,8 @@ var DunesWorld = function ( shared ) {
 		tiles[ 8 ].position.x = ( x + 1 ) * TILE_SIZE;
 		tiles[ 8 ].position.z = ( z + 1 ) * TILE_SIZE;
 
-		*/
+		
 
-	}
+	}*/
 
 }
