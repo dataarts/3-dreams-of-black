@@ -19,9 +19,9 @@ var BloomEffect = function ( shared, strength ) {
 
 		scene = new THREE.Scene();
 
-		var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
-		renderTarget2 = new THREE.WebGLRenderTarget( 512, 512, pars );
-		renderTarget3 = new THREE.WebGLRenderTarget( 512, 512, pars );
+		var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
+		renderTarget2 = new THREE.WebGLRenderTarget( 256, 512, pars );
+		renderTarget3 = new THREE.WebGLRenderTarget( 512, 256, pars );
 
 		var screenShader = THREE.ShaderUtils.lib[ "screen" ];
 		screenUniforms = THREE.UniformsUtils.clone( screenShader.uniforms );
