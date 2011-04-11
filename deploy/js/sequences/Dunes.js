@@ -4,22 +4,34 @@ var Dunes = function ( shared ) {
 
 	var camera, world, soup
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
+	var delta, time, oldTime;
 
-	var speedStart = 0.75,
-		speedEnd = 2.5;
+	var speedStart = 4.0,
+	//var speedStart = 40,
+		speedEnd = 6.0;
 	
 	this.init = function () {
 
 		camera = new THREE.QuakeCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			movementSpeed: speedStart, lookSpeed: 0.0015, noFly: false, lookVertical: true,
-			constrainVertical: true, verticalMin: 1.2, verticalMax: 2,
-			autoForward: true /*, heightSpeed: true, heightMin: 250, heightMax: 1500, heightCoef: 0.025*/
+			movementSpeed: speedStart, lookSpeed: 0.0030, noFly: false, lookVertical: true,
+			constrainVertical: true, verticalMin: 1.0, verticalMax: 2.1,
+			autoForward: true , heightSpeed: true, heightMin: 150, heightMax: 5000, heightCoef: 0.012
 
 		} );
+		camera.lon = 90;
 
-		camera.lon = -60;
+		// test camera
+		/*camera = new THREE.QuakeCamera( {
+
+			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+			movementSpeed: speedStart, lookSpeed: 0.0035, noFly: false, lookVertical: true,
+			constrainVertical: true, verticalMin: 0, verticalMax: 3,
+			autoForward: false 
+
+		} );*/
+
 
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
@@ -36,8 +48,8 @@ var Dunes = function ( shared ) {
 	this.show = function ( f ) {
 
 		camera.position.x = 0;
-		camera.position.y = 250;
-		camera.position.z = 0;
+		camera.position.y = 150;
+		camera.position.z = -1600;
 
 		renderer.setClearColor( world.scene.fog.color );
 
@@ -49,22 +61,33 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, time, start, end ) {
 		
+		time = new Date().getTime();
+		delta = time - oldTime;
+		oldTime = time;
+
+		//THREE.AnimationHandler.update( delta );
 
 		// not too low
 		
-		camera.position.y = cap_bottom( camera.position.y, 50 );
+		camera.position.y = cap_bottom( camera.position.y, 150 );
+
+		// not too high
 		
+		camera.position.y = cap_top( camera.position.y, 5000 );
+
 		// not too high before lift-off
 		
 		if ( progress < 0.30 ) {
 			
-			camera.position.y = cap_top( camera.position.y, 50 );
+			camera.position.y = cap_top( camera.position.y, 150 );
 			
 			// small bump
 			camera.position.y += Math.sin(time/150);
 			// small roll
 			camera.up.z = Math.sin(time/250)/200;
 			camera.up.x = Math.cos(time/250)/200;
+
+			camera.position.x = 0;
 
 		}	
 		
@@ -77,14 +100,15 @@ var Dunes = function ( shared ) {
 			camera.position.y += 2;
 			camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 			
-			world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
-			world.scene.fog.density = 0.0004 - 0.0001 * localProgres;
-			renderer.setClearColor( world.scene.fog.color );
+			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
+			//world.scene.fog.density = 0.0004 - 0.0001 * localProgres;
+			//renderer.setClearColor( world.scene.fog.color );
 			
 		}
 
+
 		world.update( camera );
-		soup.update();
+		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );
 

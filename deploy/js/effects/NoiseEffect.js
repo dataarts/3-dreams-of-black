@@ -13,9 +13,9 @@ var NoiseEffect = function ( shared, nIntensity, sIntensity, sCount ) {
 
 		scene = new THREE.Scene();
 
-		shader = ShaderUtils.lib[ "film" ];
+		shader = THREE.ShaderUtils.lib[ "film" ];
 
-		uniforms = Uniforms.clone( shader.uniforms );
+		uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 		uniforms[ "tDiffuse" ].texture = renderTarget;
 
 		material = new THREE.MeshShaderMaterial( {
@@ -25,12 +25,12 @@ var NoiseEffect = function ( shared, nIntensity, sIntensity, sCount ) {
 		} );
 
 		uniforms.grayscale.value = 0;
-		if ( nIntensity !== undefined )	uniforms.nIntensity.value = nIntensity;
-		if ( sIntensity !== undefined )	uniforms.sIntensity.value = sIntensity;
-		if ( sCount !== undefined )		uniforms.sCount.value = sCount;
+		if ( nIntensity !== undefined ) uniforms.nIntensity.value = nIntensity;
+		if ( sIntensity !== undefined ) uniforms.sIntensity.value = sIntensity;
+		if ( sCount !== undefined ) uniforms.sCount.value = sCount;
 
-		var quad = new THREE.Mesh( new Plane( shared.baseWidth, shared.baseHeight ), material );
-		quad.position.z = -500;
+		var quad = new THREE.Mesh( new THREE.Plane( shared.baseWidth, shared.baseHeight ), material );
+		quad.position.z = - 500;
 		scene.addObject( quad );
 
 		// renderer.initMaterial( material, scene.lights, scene.fog, quad );

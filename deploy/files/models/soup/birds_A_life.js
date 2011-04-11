@@ -71,3 +71,4 @@ var model = {
 };
 
 postMessage( model );
+close();

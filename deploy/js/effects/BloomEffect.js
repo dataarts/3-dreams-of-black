@@ -19,12 +19,12 @@ var BloomEffect = function ( shared, strength ) {
 
 		scene = new THREE.Scene();
 
-		var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
-		renderTarget2 = new THREE.WebGLRenderTarget( 512, 512, pars );
-		renderTarget3 = new THREE.WebGLRenderTarget( 512, 512, pars );
+		var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
+		renderTarget2 = new THREE.WebGLRenderTarget( 256, 512, pars );
+		renderTarget3 = new THREE.WebGLRenderTarget( 512, 256, pars );
 
-		var screenShader = ShaderUtils.lib[ "screen" ];
-		screenUniforms = Uniforms.clone( screenShader.uniforms );
+		var screenShader = THREE.ShaderUtils.lib[ "screen" ];
+		screenUniforms = THREE.UniformsUtils.clone( screenShader.uniforms );
 
 		screenUniforms[ "tDiffuse" ].texture = renderTarget;
 		screenUniforms[ "opacity" ].value = ( strength !== undefined ) ? strength : 1;
@@ -39,15 +39,15 @@ var BloomEffect = function ( shared, strength ) {
 
 		} );
 
-		var convolutionShader = ShaderUtils.lib[ "convolution" ];
-		convolutionUniforms = Uniforms.clone( convolutionShader.uniforms );
+		var convolutionShader = THREE.ShaderUtils.lib[ "convolution" ];
+		convolutionUniforms = THREE.UniformsUtils.clone( convolutionShader.uniforms );
 
 		blurx = new THREE.Vector2( 0.001953125, 0.0 ),
 		blury = new THREE.Vector2( 0.0, 0.001953125 );
 
 		convolutionUniforms[ "tDiffuse" ].texture = renderTarget;
 		convolutionUniforms[ "uImageIncrement" ].value = blurx;
-		convolutionUniforms[ "cKernel" ].value = ShaderUtils.buildKernel( 4.0 );
+		convolutionUniforms[ "cKernel" ].value = THREE.ShaderUtils.buildKernel( 4.0 );
 
 		materialConvolution = new THREE.MeshShaderMaterial( {
 
@@ -57,7 +57,7 @@ var BloomEffect = function ( shared, strength ) {
 
 		} );
 
-		quad = new THREE.Mesh( new Plane( shared.baseWidth, shared.baseHeight ), materialConvolution );
+		quad = new THREE.Mesh( new THREE.Plane( shared.baseWidth, shared.baseHeight ), materialConvolution );
 		quad.position.z = -500;
 		scene.addObject( quad );
 

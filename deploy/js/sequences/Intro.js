@@ -28,7 +28,7 @@ var Intro = function ( shared ) {
 
 		scene = new THREE.Scene();
 
-		geometry = new Plane( 480, 272, 19, 9 );
+		geometry = new THREE.Plane( 480, 272, 19, 9 );
 
 		texture = new THREE.Texture( video );
 		texture.minFilter = THREE.LinearFilter;

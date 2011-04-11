@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Clouds</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+
+			body {
+				background-color: #326696;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var canvas, context,
+			sprite, particles = [], mouse = { x: 0, y: 0, z: 0 },
+			stats;
+
+			init();
+			animate();
+
+			function init() {
+
+				canvas = document.createElement( 'canvas' );
+				canvas.width = 800;
+				canvas.height = 400;
+
+				context = canvas.getContext( '2d' );
+				context.setTransform( 1, 0, 0, 1, canvas.width / 2, canvas.height / 2 );
+
+				document.body.appendChild( canvas );
+
+				sprite = document.createElement( 'img' );
+				sprite.src = 'cloud128.png';
+
+				for ( var i = 0, il = 50; i < il; i ++ ) {
+
+					particles.push( {
+						x: Math.random() * 200 - 100,
+						y: Math.random() * 40 - 20,
+						z: Math.random() * 5,
+						rotation: Math.random() * Math.PI,
+						scale: Math.random() * 0.5 + 0.5
+					} );
+
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				document.body.appendChild( stats.domElement );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouse.x = event.clientX;
+				mouse.y = event.clientY;
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+				stats.update();
+
+			}
+
+			function render() {
+
+				context.clearRect( - canvas.width / 2, - canvas.height / 2, canvas.width, canvas.height );
+
+				particles.sort( function ( a, b ) { return b.z - a.z } );
+
+				for ( var i = 0, il = particles.length; i < il; i ++ ) {
+
+					var particle = particles[ i ];
+
+					context.save();
+					context.scale( 1 / particle.z, 1 / particle.z );
+					context.translate( particle.x, particle.y );
+					context.rotate( particle.rotation );
+					context.scale( particle.scale, particle.scale );
+					context.translate( - 64, - 64 );
+
+					context.drawImage( sprite, 0, 0 );
+
+					context.restore();
+
+					// we move after drawing for sorting purposes
+
+					particle.z = particle.z < 0.1 ? 2 : particle.z - 0.01;
+
+				}
+
+			}
+
+		</script>
+	</body>
+</html>

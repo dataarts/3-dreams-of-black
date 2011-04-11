@@ -14,7 +14,7 @@ var FadeOutEffect = function ( hex, shared ) {
 
 		material = new THREE.MeshBasicMaterial( { color: hex, opacity: 1, depthTest: false } );
 
-		object = new THREE.Mesh( new Plane( 3, 3 ), material );
+		object = new THREE.Mesh( new THREE.Plane( 3, 3 ), material );
 		scene.addObject( object );
 
 		// renderer.initMaterial( material, scene.lights, scene.fog, object );

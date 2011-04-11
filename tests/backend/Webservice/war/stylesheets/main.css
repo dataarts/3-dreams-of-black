@@ -1,0 +1,37 @@
+body {
+    color: #000000;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 62.5%;
+    text-align: left;
+}
+
+div#forms {
+	float: left;
+	width: 500px;
+	margin-right: 40px;
+}
+
+div#forms div {	
+	margin-bottom: 10px;
+}
+
+div#forms div#get,
+div#forms div#disabled,
+div#forms div#add {
+	padding-bottom: 20px;
+	border-bottom: 1px dotted #000;
+	margin-bottom: 20px;
+}
+
+div#result {
+	border: 1px dotted #000;
+	min-height: 150px;
+	max-height: 400px;
+	width: 400px;
+	float: left;
+	right: 20px;	
+	top: 20px;
+	padding: 10px;
+	overflow: scroll;
+	font-size: 1.3em;
+}

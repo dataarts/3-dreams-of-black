@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Clouds</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+
+			body {
+				background-color: #326696;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var canvas, context,
+			sprite, particles = [], mouse = { x: 0, y: 0, z: 0 },
+			stats;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				container.style.position = 'absolute';
+				container.style.left = ( window.innerWidth / 2 ) + 'px';
+				container.style.top = ( window.innerHeight / 2 ) + 'px';
+				document.body.appendChild( container );
+
+				for ( var i = 0, il = 50; i < il; i ++ ) {
+
+					image = document.createElement( 'img' );
+					image.style.position = 'absolute';
+					image.style.left = - 64 + 'px';
+					image.style.top = - 64 + 'px';
+					image.src = 'cloud128.png';
+
+					domElement = document.createElement( 'div' );
+					domElement.style.position = 'absolute';
+					// domElement.style.WebkitTransform = 'rotate(' + ( Math.random() * 180 ) + 'deg)';
+					domElement.appendChild( image );
+
+					container.appendChild( domElement );
+
+					particles.push( {
+						x: Math.random() * 800 - 400,
+						y: Math.random() * 100 - 50,
+						z: Math.random() * 5,
+						rotation: Math.random() * Math.PI,
+						scale: Math.random() * 0.5 + 0.5,
+						domElement: domElement
+					} );
+
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				document.body.appendChild( stats.domElement );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouse.x = event.clientX;
+				mouse.y = event.clientY;
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+				stats.update();
+
+			}
+
+			function render() {
+
+				for ( var i = 0, il = particles.length; i < il; i ++ ) {
+
+					var particle = particles[ i ];
+					particle.z = particle.z < 0.2 ? 2 : particle.z - 0.005;
+
+					var ow = 1 / particle.z;
+
+					particle.domElement.style.left = ( particle.x * ow ) + 'px';
+					particle.domElement.style.top = ( particle.y * ow ) + 'px';
+					particle.domElement.style['-webkit-transform'] = 'scale( ' + ow + ' )';
+
+					particle.domElement.style.zIndex = Math.floor( 1000 - particle.z * 100 );
+
+				}
+
+			}
+
+		</script>
+	</body>
+</html>

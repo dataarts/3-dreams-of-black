@@ -1,0 +1,458 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - geometry - marching cubes - webgl</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #fff;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<script type="text/javascript" src="js/Three.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+
+		<script type="text/javascript">
+
+			var container, stats;
+			var camera, sceneCollider, sceneVoxels, sceneBlob, renderer;
+			var mesh, texture, geometry, material;
+
+			var ground;
+
+			var marchingcubes, resolution = 32, grid = 32, blob, blobMaterial;
+			var voxel_size = 50, voxel_geometry, voxel_material, voxels = [];
+
+			var collider, projector, mouse2D, mouse3D, ray;
+
+			var shadowCamera, shadowPlane, shadowTexture, shadowMaterial;
+
+			var intersects, intersectedFace, intersectedObject,
+			isDeleteMode = false, isRotateMode = false,
+			isMouseDown = false, radius = 1500, theta = 45, phi = 60;
+
+			var helper;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				var info = document.createElement( 'div' );
+				info.style.position = 'absolute';
+				info.style.top = '10px';
+				info.style.width = '100%';
+				info.style.textAlign = 'center';
+				info.innerHTML = '<strong>click + drag</strong>: draw, <strong>control + click & drag</strong>: erase, <strong>shift</strong>: rotate';
+				container.appendChild( info );
+
+				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+
+				sceneBlob = new THREE.Scene();
+				sceneVoxels = new THREE.Scene();
+				sceneCollider = new THREE.Scene();
+
+				sceneBlob.addLight( new THREE.AmbientLight( 0x404050 ) );
+
+				/*
+				var light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0.5, 0.5, 1 );
+				light.position.normalize();
+				sceneBlob.addLight( light );
+				*/
+
+				var pointLight = new THREE.PointLight( 0xffffff, 0.9 );
+				pointLight.position.set( 0, 0, 1000 );
+				sceneBlob.addLight( pointLight );
+
+				var pointLight = new THREE.PointLight( 0xffffff, 2 );
+				pointLight.color.setHSV( 0.05, 1.0, 0.5 );
+				pointLight.position.set( 0, 0, - 1000 );
+				sceneBlob.addLight( pointLight );
+
+				//
+
+				var plane,
+				geometry = new Plane( 2000, 2000, 16, 16 );
+
+				collider = new THREE.Object3D(); 
+				material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, depthTest: false, wireframe: true } );
+
+				plane = new THREE.Mesh( geometry, material );
+				plane.doubleSided = true;
+				collider.addChild( plane );
+
+				plane = new THREE.Mesh( geometry, material );
+				plane.rotation.x = - 90 * Math.PI / 180;
+				plane.doubleSided = true;
+				// collider.addChild( plane );
+
+				plane = new THREE.Mesh( geometry, material );
+				plane.rotation.y = - 90 * Math.PI / 180;
+				plane.doubleSided = true;
+				collider.addChild( plane );
+
+				collider.matrixAutoUpdate = false;
+				sceneCollider.addObject( collider );
+
+				//
+
+				projector = new THREE.Projector();
+
+				mouse2D = new THREE.Vector3( 0, 0, 0.5 );
+				ray = new THREE.Ray( camera.position, null );
+
+				blobMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
+
+				marchingcubes = new THREE.MarchingCubes( resolution, blobMaterial );
+				marchingcubes.isolation = 40;
+				marchingcubes.scale.x = marchingcubes.scale.y = marchingcubes.scale.z = 800;
+				// marchingcubes.visible = false;
+				sceneBlob.addObject( marchingcubes );
+
+				//
+
+				ground = new THREE.Mesh( new Plane( 2000, 2000, 41, 41 ), material );
+				ground.position.y = - 500;
+				ground.rotation.x = - 90 * Math.PI / 180;
+				sceneVoxels.addObject( ground );
+
+				voxel_geometry = new Cube( 50, 50, 50 );
+				voxel_material = material;
+
+				addVoxel( new THREE.Vector3() );
+
+				//
+
+				helper = new THREE.Mesh( new Sphere( 10 ), new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
+				sceneBlob.addObject( helper );
+
+
+				// Shadow
+
+				shadowCamera = new THREE.Camera( 20, 1, 1, 8000 );
+				shadowCamera.position.y = 7500;
+
+				shadowTexture = new THREE.WebGLRenderTarget( 64, 64 );
+
+				shadowPlane = new THREE.Mesh( new Plane( 3000, 3000 ), new THREE.MeshBasicMaterial( { map: shadowTexture } ) );
+				shadowPlane.position.y = - 500;
+				shadowPlane.rotation.x = - 90 * Math.PI / 180;
+				shadowPlane.rotation.z = - 90 * Math.PI / 180;
+				shadowPlane.scale.x = - 1;
+				shadowPlane.flipSided = true;
+				sceneBlob.addObject( shadowPlane );
+
+				shadowMaterial = new THREE.MeshBasicMaterial( { color: 0xE0E0EA } );
+
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: false } );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColorHex( 0xffffff );
+				renderer.autoClear = false;
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+
+				document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+
+				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+				document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
+
+				/*
+				document.addEventListener( 'keydown', onDocumentKeyDown, false );
+				document.addEventListener( 'keyup', onDocumentKeyUp, false );
+				*/
+
+			}
+
+			/*
+			function onDocumentKeyDown( event ) {
+
+				switch ( event.keyCode ) {
+
+					case 16: isRotateMode = true; break;
+					case 17: isDeleteMode = true; break;
+					// case 18: isDeleteMode = true; break;
+
+				}
+
+			}
+
+			function onDocumentKeyUp( event ) {
+
+				switch ( event.keyCode ) {
+
+					case 16: isRotateMode = false; break;
+					case 17: isDeleteMode = false; break;
+					// case 18: isDeleteMode = false; break;
+
+				}
+			}
+			*/
+
+			function onDocumentMouseMove(event) {
+
+				mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+				var mouse3D = projector.unprojectVector( mouse2D.clone(), camera );
+				ray.direction = mouse3D.subSelf( camera.position ).normalize();
+
+				if ( isMouseDown ) {
+
+					!isRotateMode && draw();
+
+				} else {
+
+					intersects = ray.intersectScene( sceneVoxels );
+
+					if ( intersects.length > 0 ) {
+
+						collider.position.copy( intersects[ 0 ].point );
+						collider.updateMatrix();
+						collider.update();
+
+						helper.position.copy( collider.position );
+
+					}
+
+				}
+
+			}
+
+			function onDocumentMouseDown( event ) {
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				intersects = ray.intersectScene( sceneVoxels );
+
+				if ( intersects.length > 0 ) {
+
+					intersectedObject = intersects[ 0 ].object;
+					intersectedFace = intersects[ 0 ].face;
+
+				} else {
+
+					intersectedObject = null;
+					intersectedFace = null;
+
+				}
+
+				switch ( event.button ) {
+
+					// case 0: this.moveForward = true; break;
+					case 1: isRotateMode = true; break;
+					case 2: isDeleteMode = true; break;
+
+				}
+
+				isMouseDown = true;
+
+			}
+
+			function onDocumentMouseUp( event ) {
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				switch ( event.button ) {
+
+					// case 0: this.moveForward = true; break;
+					case 1: isRotateMode = false; break;
+					case 2: isDeleteMode = false; break;
+
+				}
+
+				isMouseDown = false;
+
+			}
+
+			function onDocumentMouseWheel( event ) {
+ 
+				radius -= event.wheelDeltaY;
+ 
+			}
+
+			function draw() {
+
+				if ( !isDeleteMode ) {
+
+					intersects = ray.intersectScene( sceneCollider );
+
+					if ( intersectedFace && intersects.length > 0 ) {
+
+						helper.position.copy( intersects[ 0 ].point );
+
+						var face = intersectedFace,
+						point = intersects[ 0 ].point,
+						centroidWorld = face.centroid.clone().addSelf( intersectedObject.position ),
+						distance = centroidWorld.distanceTo( point ),
+						pointInNormal = centroidWorld.addSelf( intersectedObject.matrixRotationWorld.multiplyVector3( face.normal.clone() ).multiplyScalar( distance ) );
+
+						addVoxel( pointInNormal );
+
+					}
+
+				} else {
+
+					intersects = ray.intersectScene( sceneVoxels );
+
+					if ( intersects.length > 0 && intersects[ 0 ].object != ground ) {
+
+						sceneVoxels.removeObject( intersects[ 0 ].object );
+
+						for ( var i = 0, il = voxels.length; i < il; i ++ ) {
+
+							if ( voxels[ i ] == intersects[ 0 ].object ) {
+
+								voxels.splice( i, 1 );
+								updateBlob();
+								return;
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				loop();
+
+				stats.update();
+
+			}
+
+			function loop() {
+
+				if ( isRotateMode ) {
+
+					theta += mouse2D.x * 5;
+
+					phi += mouse2D.y * 5;
+					phi = phi > 180 ? 180 :
+					      phi < - 180 ? - 180 :
+					      phi;
+
+				}
+
+				camera.position.x = radius * Math.sin( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
+				camera.position.y = radius * Math.sin( phi * Math.PI / 360 );
+				camera.position.z = radius * Math.cos( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
+
+				// camera.position.x += ( mouse2D.x * 500 - camera.position.x ) * .01;
+				// camera.position.y += ( - mouse2D.y * 500 - camera.position.y ) * .01;
+
+				// testSetup();
+				// createBlob();
+
+				renderer.clear();
+
+				marchingcubes.materials[ 0 ] = shadowMaterial;
+				shadowPlane.visible = false;
+
+				renderer.render( sceneBlob, shadowCamera, shadowTexture, true );
+
+				marchingcubes.materials[ 0 ] = blobMaterial;
+				shadowPlane.visible = true;
+
+				renderer.render( sceneBlob, camera );
+				renderer.render( sceneVoxels, camera );
+				renderer.render( sceneCollider, camera );
+
+			}
+
+			function addVoxel( position ) {
+
+				voxel = new THREE.Mesh( voxel_geometry, voxel_material );
+				voxel.position.x = Math.round( position.x / voxel_size ) * voxel_size;
+				voxel.position.y = Math.round( position.y / voxel_size ) * voxel_size;
+				voxel.position.z = Math.round( position.z / voxel_size ) * voxel_size;
+				voxel.matrixAutoUpdate = false;
+				voxel.updateMatrix();
+				voxel.update();
+				sceneVoxels.addObject( voxel );
+
+				voxels.push( voxel );
+
+				updateBlob();
+
+			}
+
+			function updateBlob() {
+
+				marchingcubes.reset();
+
+				var voxel, x, y, z;
+
+				for ( var i = 0, il = voxels.length; i < il; i ++ ) {
+
+					voxel = voxels[ i ];
+					x = ( voxel.position.x / voxel_size / grid ) + 0.5;
+					y = ( voxel.position.y / voxel_size / grid ) + 0.5;
+					z = ( voxel.position.z / voxel_size / grid ) + 0.5;
+
+					marchingcubes.addBall( x, y, z, 0.03, 20 );
+
+				}
+
+			}
+
+			function testSetup() {
+
+				marchingcubes.reset();
+
+				var step = 4;
+
+				for ( var x = step; x < grid; x += step ) {
+
+					for ( var y = step; y < grid; y += step ) {
+
+						for ( var z = step; z < grid; z += step ) {
+
+							marchingcubes.addBall( x / grid, y / grid, z / grid, 0.2, 10 );
+
+						}
+
+					}
+
+				}
+
+			}
+
+		</script>
+
+	</body>
+</html>

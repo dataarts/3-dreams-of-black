@@ -14,7 +14,7 @@ var RenderEffect = function ( shared ) {
 		scene = new THREE.Scene();
 
 		var material = new THREE.MeshBasicMaterial( { map: renderTarget, depthTest: false } );
-		object = new THREE.Mesh( new Plane( shared.baseWidth, shared.baseHeight ), material );
+		object = new THREE.Mesh( new THREE.Plane( shared.baseWidth, shared.baseHeight ), material );
 		object.scale.y = - 1; // TODO: HACK
 		object.doubleSided = true;
 		scene.addObject( object );
