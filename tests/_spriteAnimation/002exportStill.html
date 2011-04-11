@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>001 - Still paralax</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000000;
+				color:#ffffff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align: left;
+			}
+			
+			#options {
+				padding: 10px;
+				text-aligh: left;
+				font-family: Georgia, serif;
+			}
+			
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+		
+	<div id="options">
+		Camera look depth: <input size="5" id="cpt" value="1500"> | 
+		Camera max x: <input size="3" id="cmx" value="30"> | 
+		Camera max y: <input size="3" id="cmy" value="10">
+	</div>
+
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="export/export001.js"></script>
+		
+		<script type="text/javascript">			
+			var viewWidth =  window.innerWidth;
+			var aspect = 2.35;
+			
+			var fov = 22.5;
+			var cpt = -30;
+
+			var container, camera, scene, webglRenderer, sky;			
+			
+			var mouseX = 0;
+			var mouseY = 0;
+			var targetPos = new THREE.Vector4();
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			init();	
+			loop();
+				
+			setInterval(loop, 1000/60);
+			
+			document.addEventListener('mousemove', mouseMove, false);
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				scene = new THREE.Scene();
+				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+
+				
+				
+				for(var p in animation) {
+					if(p == "camera") {
+						camera = new THREE.Camera( fov, aspect, 1, 100000 );
+						camera.position = new THREE.Vector3( animation[p].position.x, animation[p].position.y, animation[p].position.z );
+						camera.target.position = new THREE.Vector3( animation[p].target.x, animation[p].target.y, animation[p].target.z );
+						camera.updateMatrix();
+					} else {
+						addPlane(animation[p]);
+					}
+				}
+				
+				
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize(viewWidth, viewWidth * 1/aspect);
+					container.appendChild( webglRenderer.domElement );
+				} catch (e) {
+					console.log(e);
+				}
+			}
+			
+			function addPlane(d) {
+				var tex = ImageUtils.loadTexture(d.texture);
+				var mat = new THREE.MeshBasicMaterial ( {map: tex, blending: THREE.BillboardBlending } );
+				var p = new THREE.Mesh( new Plane(d.width, d.height, 1, 1), mat );
+				p.doubleSided = true;
+				p.position = new THREE.Vector3( d.position.x, d.position.y, d.position.z );
+				p.scale = new THREE.Vector3( d.scale.x, d.scale.y, d.scale.z );
+				p.rotation = new THREE.Vector3( d.rotation.x, d.rotation.y, d.rotation.z );
+				scene.addObject(p);
+				return p;
+			}
+
+			function mouseMove(e){
+				mouseX = (event.clientX - windowHalfX) / -windowHalfX;
+				mouseY = (event.clientY - windowHalfY) / windowHalfY;
+			}
+
+			function loop() {
+				/*var cpt = parseFloat(document.getElementById("cpt").value) * -1 || -100;
+				var cmx = parseFloat(document.getElementById("cmx").value) || 1;
+				var cmy = parseFloat(document.getElementById("cmy").value) || 1;
+					
+				targetPos.x = mouseX * cmx;
+				targetPos.y = mouseY * cmy;
+
+				camera.position.x += (targetPos.x - camera.position.x) / 10;
+				camera.position.y += (targetPos.y - camera.position.y) / 10;	
+				
+				camera.target.position = new THREE.Vector3(0,0, cpt );*/
+				
+				webglRenderer.render( scene, camera );
+			}
+
+
+		</script>
+
+	</body>
+</html>

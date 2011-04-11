@@ -1,38 +1,89 @@
-<!--
 
-var anim = {
+function parseAEJSON(aj, scene, camera) {
 	
-	start: 0,
-	end: 10,
+	var ls = [];
+	var cp = animation.cameras.camera.position;
+	var ct = animation.cameras.camera.target;
 	
-	assets: {
-		s01_clouds: { type:STILL, src:"path/to/image/clouds.jpg" },
-		s01_dust: { type:STILL, src:"path/to/image/dust.png" },
-		s01_buffalo: { type:ANIMATION, src:"path/to/image/buffaloSequence.png", fps: 24 },
-		// Interactive elements
-		s01_button: { type:BUTTON, src:"path/to/image/button.png", fps: 24, onClick: someFunction }
-	},
+	camera.position = new THREE.Vector3( cp.x, cp.y, cp.z );
+	camera.target.position = new THREE.Vector3( ct.x, ct.y, ct.z );
+	camera.updateMatrix();
+	camera.lastkey = 0;
+	camera.keyframes = animation.cameras.camera.keyframes;
+	ls.push(camera);
 	
-	clips: [
-		{
-			asset: s01_clouds,
-			key: { alpha: 1, position: [0, 0, 100], time: 0 },
-			key: { alpha: 0, time: 10 }
-		},
-		
-		{
-			asset: s01_dust,
-			key: { alpha: 0.2, position: [0.5, 0.5, 100], time: 0 },
-			key: { alpha: 1, position: [0.3, 0.8, 100], time: 0 },
-			key: { alpha: 0, position: [0, 0.7, 100], time: 2, interpolation: "easeOut" }
-		},
-		
-		{
-			asset: s01_buffalo,
-			key: { alpha: 1, position: [0, 0, 100], time: 0 },
-			key: { alpha: 0, time: 10 }
+	for(var p in animation.planes) {
+		ls.push( addPlane(animation.planes[p], scene) );
+	}
+	
+	return ls;
+}
+
+function addPlane(d, s) {
+	var tex = ImageUtils.loadTexture(d.texture);
+	var mat = new THREE.MeshBasicMaterial ( {map: tex, blending: THREE.BillboardBlending } );
+	var p = new THREE.Mesh( new Plane(d.width, d.height, 1, 1), mat );
+	p.doubleSided = true;
+	p.position = new THREE.Vector3( d.position.x, d.position.y, d.position.z );
+	p.scale = new THREE.Vector3( d.scale.x, d.scale.y, d.scale.z );
+	p.rotation = new THREE.Vector3( d.rotation.x, d.rotation.y, d.rotation.z );
+	
+	p.lastkey = 0;
+	p.keyframes = d.keyframes;
+	
+	s.addObject(p);
+	return p;
+}
+
+function animate(t, k, obj){
+	for (var i = obj.lastkey; i < k.length - 1; i++) {
+        var a = k[i].time;
+        var b = k[i + 1].time;
+
+        if (t == a) {
+			//obj.lastkey = i;
+			interpolate(0, k[i], k[i + 1], obj);
+			break;
 		}
-	]
-};
+        
+        if (t == b) {
+            //obj.lastkey = i;
+			interpolate(1, k[i], k[i + 1], obj);
+            break;
+        }
+		
+		if (a < t && b > t) {
+            //obj.lastkey = i;
+            interpolate( (t - a) / (b - a) , k[i], k[i + 1], obj);
+            break;
+        }
+    }
+}
 
--->
+function interpolate(t, ka, kb, target) {
+	for(var p in ka) {
+		switch(p) {
+			case "px": target.position.x = ka.px + (kb.px - ka.px) * t;
+			break;
+			case "py": target.position.y = ka.py + (kb.py - ka.py) * t;
+			break;
+			case "pz": target.position.z = ka.pz + (kb.pz - ka.pz) * t;
+			break;
+			
+			case "rx": target.rotation.x = ka.rx + (kb.rx - ka.rx) * t;
+			break;
+			case "ry": target.rotation.y = ka.ry + (kb.ry - ka.ry) * t;
+			break;
+			case "rz": target.rotation.z = ka.rz + (kb.rz - ka.rz) * t;
+			break;
+		}
+	}
+}
+
+
+
+
+
+
+
+
