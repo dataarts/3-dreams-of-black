@@ -75,7 +75,8 @@ var DunesWorld = function ( shared ) {
 	function cityLoaded( result ) {
 
 		sceneCity = result.scene;
-		cityPosition = new THREE.Vector3(0,-50000,2*TILE_SIZE);
+		cityPosition = new THREE.Vector3(0,0,2*TILE_SIZE);
+		THREE.SceneUtils.showHierarchy( sceneCity, false );
 		addDunesPart( sceneCity, cityPosition );
 
 	};
@@ -87,11 +88,10 @@ var DunesWorld = function ( shared ) {
 		//console.log(x+" - "+z);
 
 		result.scene.rotation.z = getRandomRotation();
-		var y = 0;
 		if (x == 1 && (z == 1 || z == 2)) {
-			y = -50000;
+			THREE.SceneUtils.showHierarchy( result.scene, false );
 		}
-		addDunesPart(result.scene, new THREE.Vector3((x-1)*TILE_SIZE, y, (z-1)*TILE_SIZE));
+		addDunesPart(result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE));
 
 		tiles[z][x] = result.scene;
 		++randomAdded;
@@ -137,9 +137,9 @@ var DunesWorld = function ( shared ) {
 			t1 = row[1];
 			t2 = row[2];
 
-			showHideStaticTiles(t0.position, true);
-			showHideStaticTiles(t1.position, true);
-			showHideStaticTiles(t2.position, true);
+			showHideStaticTiles(t0.position, false);
+			showHideStaticTiles(t1.position, false);
+			showHideStaticTiles(t2.position, false);
 
 			t0.position.z = (z+1)*TILE_SIZE;
 			t1.position.z = (z+1)*TILE_SIZE;
@@ -154,9 +154,9 @@ var DunesWorld = function ( shared ) {
 			t1 = row[1];
 			t2 = row[2];
 
-			showHideStaticTiles(t0.position, true);
-			showHideStaticTiles(t1.position, true);
-			showHideStaticTiles(t2.position, true);
+			showHideStaticTiles(t0.position, false);
+			showHideStaticTiles(t1.position, false);
+			showHideStaticTiles(t2.position, false);
 
 			t0.position.z = (z-1)*TILE_SIZE;
 			t1.position.z = (z-1)*TILE_SIZE;
@@ -173,9 +173,9 @@ var DunesWorld = function ( shared ) {
 			t1 = tiles[1].shift();
 			t2 = tiles[2].shift();
 
-			showHideStaticTiles(t0.position, true);
-			showHideStaticTiles(t1.position, true);
-			showHideStaticTiles(t2.position, true);
+			showHideStaticTiles(t0.position, false);
+			showHideStaticTiles(t1.position, false);
+			showHideStaticTiles(t2.position, false);
 
 			t0.position.x = (x+1)*TILE_SIZE;
 			t1.position.x = (x+1)*TILE_SIZE;
@@ -191,9 +191,9 @@ var DunesWorld = function ( shared ) {
 			t1 = tiles[1].pop();
 			t2 = tiles[2].pop();
 
-			showHideStaticTiles(t0.position, true);
-			showHideStaticTiles(t1.position, true);
-			showHideStaticTiles(t2.position, true);
+			showHideStaticTiles(t0.position, false);
+			showHideStaticTiles(t1.position, false);
+			showHideStaticTiles(t2.position, false);
 
 			t0.position.x = (x-1)*TILE_SIZE;
 			t1.position.x = (x-1)*TILE_SIZE;
@@ -209,23 +209,23 @@ var DunesWorld = function ( shared ) {
 		t1.rotation.z = getRandomRotation();
 		t2.rotation.z = getRandomRotation();
 
-		t0.position.y = 0;
-		t1.position.y = 0;
-		t2.position.y = 0;
+		THREE.SceneUtils.showHierarchy( t0, true );
+		THREE.SceneUtils.showHierarchy( t1, true );
+		THREE.SceneUtils.showHierarchy( t2, true );
 
-		var visible0 = showHideStaticTiles(t0.position, false);
-		var visible1 = showHideStaticTiles(t1.position, false);
-		var visible2 = showHideStaticTiles(t2.position, false);
+		var visible0 = showHideStaticTiles(t0.position, true);
+		var visible1 = showHideStaticTiles(t1.position, true);
+		var visible2 = showHideStaticTiles(t2.position, true);
 
 		// temp, since visible don´t seem to effect scenes
 		if (visible0) {
-			t0.position.y = -50000;
+			THREE.SceneUtils.showHierarchy( t0, false );
 		}
 		if (visible1) {
-			t1.position.y = -50000;
+			THREE.SceneUtils.showHierarchy( t1, false );
 		}
 		if (visible2) {
-			t2.position.y = -50000;
+			THREE.SceneUtils.showHierarchy( t2, false );
 		}
 
 		t0.updateMatrix();
@@ -235,33 +235,21 @@ var DunesWorld = function ( shared ) {
 	};
 
 	// for the static tiles
-	function showHideStaticTiles ( position, hide ) {
+	function showHideStaticTiles ( position, show ) {
 		if (position.x == walkPosition.x && position.z == walkPosition.z) {
-			if (hide) {
-				sceneWalk.position.y = -50000;
-			} else {
-				sceneWalk.position.y = 0;
-			}
+			THREE.SceneUtils.showHierarchy( sceneWalk, show );
 			sceneWalk.updateMatrix();
 			return true;
 		}
 
 		if (position.x == prairiePosition.x && position.z == prairiePosition.z) {
-			if (hide) {
-				scenePrairie.position.y = -50000;
-			} else {
-				scenePrairie.position.y = 0;
-			}
+			THREE.SceneUtils.showHierarchy( scenePrairie, show );
 			scenePrairie.updateMatrix();
 			return true;
 		}
 
 		if (position.x == cityPosition.x && position.z == cityPosition.z) {
-			if (hide) {
-				sceneCity.position.y = -50000;
-			} else {
-				sceneCity.position.y = 0;
-			}
+			THREE.SceneUtils.showHierarchy( sceneCity, show );
 			sceneCity.updateMatrix();
 			return true;
 		}

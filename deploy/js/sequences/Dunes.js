@@ -20,7 +20,6 @@ var Dunes = function ( shared ) {
 			autoForward: true , heightSpeed: true, heightMin: 150, heightMax: 5000, heightCoef: 0.012
 
 		} );
-		camera.lon = 90;
 
 		// test camera
 		/*camera = new THREE.QuakeCamera( {
@@ -32,6 +31,7 @@ var Dunes = function ( shared ) {
 
 		} );*/
 
+		camera.lon = 90;
 
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
