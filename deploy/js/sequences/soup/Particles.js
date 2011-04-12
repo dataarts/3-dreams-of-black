@@ -15,6 +15,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 	that.settings = {
 		aliveDivider : 3,
 		zeroAlphaStart : true,
+		visible : true,
 	}
 
 	var i;
@@ -93,6 +94,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 			alpha = Math.min(alpha,1.0);
 			particles.materials[0].opacity = alpha;
 
+			particles.visible = that.settings.visible;
 
 		}
 

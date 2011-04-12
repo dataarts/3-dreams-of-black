@@ -10,7 +10,7 @@ var Trail = function ( numOfInstances, scene ) {
 	}
 
 	that.settings = {
-
+		visible : true,
 	}
 
 	var i;
@@ -59,7 +59,7 @@ var Trail = function ( numOfInstances, scene ) {
 			alivetime += multiplier;
 			
 			// respawn
-			if (alivetime > 90) {
+			if (alivetime > that.initSettings.numOfInstances) {
 				c.position.x = position.x;
 				c.position.y = position.y;
 				c.position.z = position.z;
@@ -188,6 +188,8 @@ var Trail = function ( numOfInstances, scene ) {
 			}
 
 			that.array[i].alivetime = alivetime;
+
+			c.visible = that.settings.visible;
 
 		}
 

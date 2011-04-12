@@ -14,7 +14,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		flying : false,
 		xPositionMultiplier : 30,
 		zPositionMultiplier : 30,
-		constantSpeed : null
+		constantSpeed : null,
+		visible : true,
 	}
 	
 	var r = 0;
@@ -167,6 +168,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			animal.position.x += moveX;
 			animal.position.y += moveY;
 			animal.position.z += moveZ;
+
+			animal.visible = that.settings.visible;
 		}
 
 	}

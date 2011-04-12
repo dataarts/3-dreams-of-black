@@ -4,7 +4,7 @@ var Signal = signals.Signal;
 
 var audio, sequencer,
 camera, camera2, scene, renderer, renderTarget,
-container, events;
+container, shared;
 
 var tune, time, stats, gui;
 
@@ -14,7 +14,7 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	//gui = new GUI();
+	gui = new GUI();
 
 	scene = new THREE.Scene();
 
@@ -71,9 +71,9 @@ function init() {
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
-	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 75 ), 1 );
-	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.1647, 0.005, 2096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
+	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.16, 0.0005, 2096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 3 );
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 
 }
@@ -113,7 +113,6 @@ function start( pattern ) {
 	animate();
 
 	//setInterval(animate, 1000/60);
-
 }
 
 // Hack for gui-dat :/

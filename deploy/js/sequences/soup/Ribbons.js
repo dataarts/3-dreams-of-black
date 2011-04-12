@@ -15,6 +15,7 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 		ribbonPulseMultiplier_2 : 5.5,
 		ribbonMin : 1.5,
 		ribbonMax : 3,
+		visible : true,
 	}
 	
 	var r = 0;
@@ -97,6 +98,8 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 			ribbonMesh.position = position;
 			var ribbon = ribbonArray[i].r;
 			ribbon.__dirtyVertices = true;
+
+			ribbonMesh.visible = that.settings.visible;
 		}
 
 	}
