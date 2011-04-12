@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>three.js webgl - viewer 3</title>
+		<title>three.js webgl - city</title>
 		<meta charset="utf-8">
 		
 		<style type="text/css">
@@ -221,7 +221,7 @@
 		<div id="viewport"></div> 
 		<script type="text/javascript" src="js/Three.js"></script>
 		
-		<script type="text/javascript" src="js/animal.js"></script>
+		<script type="text/javascript" src="js/Animal.js"></script>
 		<script type="text/javascript" src="js/Slider.js"></script>
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
@@ -674,10 +674,15 @@
 
 			directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
 			directionalLight2.color.setHSV( 0, 0, 0.1 );
+
+			overlays.filmStrip = true;
+
+			updateViewport();
 			
+			initPostprocessingNoise( postprocessing );
 			
-			postprocessing.materialFilm.uniforms.nIntensity.value = 0.064;
-			postprocessing.materialFilm.uniforms.sIntensity.value = 0.0;
+			postprocessing.materialFilm.uniforms.nIntensity.value = 0.4;
+			postprocessing.materialFilm.uniforms.sIntensity.value = 0.4;
 			postprocessing.materialFilm.uniforms.sCount.value = 2602.164705882353;
 			postprocessing.materialScreen.uniforms.opacity.value = 0.74;
 			
@@ -902,13 +907,13 @@
 			
 			if ( ENABLE_LENSFLARES ) {
 
-				lensFlare = new THREE.LensFlare( ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
+				lensFlare = new THREE.LensFlare( THREE.ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
 
-				lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
+				lensFlare.add( THREE.ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
 				lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
 				lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
 
-				lensFlare.add( ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveBlending );
+				lensFlare.add( THREE.ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveBlending );
 				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveBlending );
 				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveBlending );
 				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
@@ -986,7 +991,7 @@
 
 					if( !material.program ) {
 
-						console.log(m);
+						//console.log(m);
 						renderer.initMaterial( material, scene.lights, scene.fog );
 
 						count += 1;
@@ -1021,7 +1026,7 @@
 
 			handleSceneUpdate( result, Math.floor( count/total ) );
 			
-			console.log( "progress", bar );
+			//console.log( "progress", bar );
 
 		};
 
@@ -1276,19 +1281,19 @@
 			var axis = new THREE.Object3D(),
 				d = 0.05;
 				
-			var mesh = new THREE.Mesh( new Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+			var mesh = new THREE.Mesh( new THREE.Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
 			mesh.position.set( 0.5, 0, 0 );
 			axis.addChild( mesh );
 
-			mesh = new THREE.Mesh( new Cube( d, 1, d ), new THREE.MeshLambertMaterial( { color: 0x00ff00 } ) );
+			mesh = new THREE.Mesh( new THREE.Cube( d, 1, d ), new THREE.MeshLambertMaterial( { color: 0x00ff00 } ) );
 			mesh.position.set( 0, 0.5, 0 );
 			axis.addChild( mesh );
 
-			mesh = new THREE.Mesh( new Cube( d, d, 1 ), new THREE.MeshLambertMaterial( { color: 0x0000ff } ) );
+			mesh = new THREE.Mesh( new THREE.Cube( d, d, 1 ), new THREE.MeshLambertMaterial( { color: 0x0000ff } ) );
 			mesh.position.set( 0, 0, 0.5 );
 			axis.addChild( mesh );
 
-			mesh = new THREE.Mesh( new Plane( 100, 100, 100, 100 ), new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } ) );
+			mesh = new THREE.Mesh( new THREE.Plane( 100, 100, 100, 100 ), new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } ) );
 			mesh.rotation.set( -1.57, 0, 0 );
 			axis.addChild( mesh );
 
@@ -1303,11 +1308,11 @@
 			
 			var material = new THREE.MeshBasicMaterial( { color: color } );
 			
-			var mesh = new THREE.Mesh( new Cube( d, d, 1 ), material );
+			var mesh = new THREE.Mesh( new THREE.Cube( d, d, 1 ), material );
 			mesh.position.set( 0, 0, -0.5 );
 			arrow.addChild( mesh );
 			
-			mesh = new THREE.Mesh( new Cylinder( 4, 0.001, 0.25, 0.5 ), material );
+			mesh = new THREE.Mesh( new THREE.Cylinder( 4, 0.001, 0.25, 0.5 ), material );
 			mesh.position.set( 0, 0, -1 );
 			arrow.addChild( mesh );
 			
@@ -1320,7 +1325,7 @@
 		function toggleAxis() {
 		
 			axisVisible = !axisVisible;
-			SceneUtils.showHierarchy( auxRoot, axisVisible );
+			THREE.SceneUtils.showHierarchy( auxRoot, axisVisible );
 		
 		};
 		
@@ -1438,7 +1443,7 @@
 				d = 10000,
 				s = BASE_SCALE,
 				mesh,
-				geo = new Cube( 400, 400, 400 ),
+				geo = new THREE.Cube( 400, 400, 400 ),
 				mat = new THREE.MeshLambertMaterial( {color:0xffffff} );
 				
 			for ( i = 0; i < 1000; i++ ) {
@@ -2159,7 +2164,7 @@
 			camera.target.position.set( 0, 0, 0 );
 			
 			axisVisible = false;
-			SceneUtils.showHierarchy( auxRoot, axisVisible );
+			THREE.SceneUtils.showHierarchy( auxRoot, axisVisible );
 			
 			//console.log( mesh.boundRadius, camera );
 			
@@ -2203,15 +2208,15 @@
 			
 			effect.texture = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
 
-			var film_shader = ShaderUtils.lib["film"];
-			var film_uniforms = Uniforms.clone( film_shader.uniforms );
+			var film_shader = THREE.ShaderUtils.lib["film"];
+			var film_uniforms = THREE.UniformsUtils.clone( film_shader.uniforms );
 			
 			film_uniforms["tDiffuse"].texture = effect.texture;
 			
 			effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
 			effect.materialFilm.uniforms.grayscale.value = 0;
 			
-			var quad = new THREE.Mesh( new Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialFilm );
+			var quad = new THREE.Mesh( new THREE.Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialFilm );
 			quad.position.z = -500;
 			effect.scene.addObject( quad );
 
@@ -2227,13 +2232,15 @@
 			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
 			effect.camera.position.z = 100;
 
-			var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
-			effect.rtTexture1 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars );
-			effect.rtTexture2 = new THREE.WebGLRenderTarget( 512, 512, pars );
-			effect.rtTexture3 = new THREE.WebGLRenderTarget( 512, 512, pars );
+			var pars1 = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+				pars2 = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
 
-			var screen_shader = ShaderUtils.lib["screen"];
-			var screen_uniforms = Uniforms.clone( screen_shader.uniforms );
+			effect.rtTexture1 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars1 );
+			effect.rtTexture2 = new THREE.WebGLRenderTarget( 512, 512, pars2 );
+			effect.rtTexture3 = new THREE.WebGLRenderTarget( 512, 512, pars2 );
+
+			var screen_shader = THREE.ShaderUtils.lib["screen"];
+			var screen_uniforms = THREE.UniformsUtils.clone( screen_shader.uniforms );
 
 			screen_uniforms["tDiffuse"].texture = effect.rtTexture1;
 			screen_uniforms["opacity"].value = 1.0;
@@ -2248,15 +2255,15 @@
 
 			} );
 
-			var convolution_shader = ShaderUtils.lib["convolution"];
-			var convolution_uniforms = Uniforms.clone( convolution_shader.uniforms );
+			var convolution_shader = THREE.ShaderUtils.lib["convolution"];
+			var convolution_uniforms = THREE.UniformsUtils.clone( convolution_shader.uniforms );
 
 			effect.blurx = new THREE.Vector2( 0.001953125, 0.0 ),
 			effect.blury = new THREE.Vector2( 0.0, 0.001953125 );
 
 			convolution_uniforms["tDiffuse"].texture = effect.rtTexture1;
 			convolution_uniforms["uImageIncrement"].value = effect.blurx;
-			convolution_uniforms["cKernel"].value = ShaderUtils.buildKernel( 4.0 );
+			convolution_uniforms["cKernel"].value = THREE.ShaderUtils.buildKernel( 4.0 );
 
 			effect.materialConvolution = new THREE.MeshShaderMaterial( {
 
@@ -2266,8 +2273,8 @@
 
 			} );
 
-			var film_shader = ShaderUtils.lib["film"];
-			var film_uniforms = Uniforms.clone( film_shader.uniforms );
+			var film_shader = THREE.ShaderUtils.lib["film"];
+			var film_uniforms = THREE.UniformsUtils.clone( film_shader.uniforms );
 			
 			film_uniforms["tDiffuse"].texture = effect.rtTexture1;
 			
@@ -2277,7 +2284,7 @@
 			//effect.materialFilm.uniforms.sIntensity.value = 0.25;
 			//effect.materialFilm.uniforms.sCount.value = 2048;
 
-			effect.quad = new THREE.Mesh( new Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialConvolution );
+			effect.quad = new THREE.Mesh( new THREE.Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialConvolution );
 			effect.quad.position.z = -500;
 			effect.scene.addObject( effect.quad );
 
