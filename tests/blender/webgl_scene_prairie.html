@@ -1050,6 +1050,13 @@
 
 			resetScene();
 
+			for ( var o in result.objects ) {
+			
+				result.objects[ o ].matrixAutoUpdate = false;
+				result.objects[ o ].updateMatrix();
+
+			}
+			
 			sceneRoot.addChild( loaded.scene );
 			
 			initParams();

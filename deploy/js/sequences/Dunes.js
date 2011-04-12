@@ -7,29 +7,31 @@ var Dunes = function ( shared ) {
 	var delta, time, oldTime;
 
 	var speedStart = 200.0,
-	//var speedStart = 40,
 		speedEnd = 400.0;
 
 	this.init = function () {
 
-		camera = new THREE.QuakeCamera( {
+		var autoCameraPars = {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			movementSpeed: speedStart, lookSpeed: 0.1, noFly: false, lookVertical: true,
 			constrainVertical: true, verticalMin: 1.0, verticalMax: 2.1,
-			autoForward: true , heightSpeed: true, heightMin: 150, heightMax: 5000, heightCoef: 0.1
+			autoForward: true, 
+			heightSpeed: true, heightMin: 150, heightMax: 5000, heightCoef: 0.1
 
-		} );
-
-		// test camera
-		/*camera = new THREE.QuakeCamera( {
+		};
+		
+		var testCameraPars = {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			movementSpeed: speedStart, lookSpeed: 0.0035, noFly: false, lookVertical: true,
+			movementSpeed: speedStart, lookSpeed: 0.1, noFly: false, lookVertical: true,
 			constrainVertical: true, verticalMin: 0, verticalMax: 3,
 			autoForward: false
 
-		} );*/
+		};
+		
+		camera = new THREE.QuakeCamera( autoCameraPars );
+		//camera = new THREE.QuakeCamera( testCameraPars );
 
 		camera.lon = 90;
 
@@ -78,17 +80,21 @@ var Dunes = function ( shared ) {
 		// not too high before lift-off
 
 		var startLift = 0.29,
-			endLift   = 0.4;
+			endLift   = 0.4,
+			liftSpeed = 250;
 		
 		if ( progress < startLift ) {
 
 			camera.position.y = cap_top( camera.position.y, 150 );
 
 			// small bump
-			camera.position.y += Math.sin(time/150);
+
+			camera.position.y += Math.sin( time / 150 );
+
 			// small roll
-			camera.up.z = Math.sin(time/250)/200;
-			camera.up.x = Math.cos(time/250)/200;
+
+			camera.up.z = Math.sin( time / 250 ) / 200;
+			camera.up.x = Math.cos( time / 250 ) / 200;
 
 			camera.position.x = 0;
 
@@ -100,7 +106,7 @@ var Dunes = function ( shared ) {
 
 		if ( progress > startLift && progress < endLift ) {
 
-			camera.position.y += 250 * ( delta / 1000 );
+			camera.position.y += liftSpeed * ( delta / 1000 );
 			camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 
 			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
