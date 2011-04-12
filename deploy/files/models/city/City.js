@@ -1,13 +1,13 @@
-/* Converted from: City_Export.blend
+/* Converted from: City_Export2.blend
  *
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
  * objects:    239
- * geometries: 43
- * materials:  30
+ * geometries: 46
+ * materials:  27
  * textures:   19
- */  
+ */
 
 var scene = {
 
@@ -15,8 +15,47 @@ var scene = {
 "urlBaseType" : "relativeToScene",
 
 
-"objects" : 
+"objects" :
 {
+    "Collision_Big.003" : {
+        "geometry"  : "geo_Collision_Big.003",
+        "groups"    : [  ],
+        "materials" : [ "Collision" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
+        "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : true
+    },
+
+    "Collision_Big.000" : {
+        "geometry"  : "geo_Collision_Big.002",
+        "groups"    : [  ],
+        "materials" : [ "Collision" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : true
+    },
+
+    "Collision_Big.004" : {
+        "geometry"  : "geo_Collision_Big.001",
+        "groups"    : [  ],
+        "materials" : [ "Collision" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : true
+    },
+
     "Shadow.020" : {
         "geometry"  : "geo_Cube.021",
         "groups"    : [  ],
@@ -25,7 +64,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -38,7 +77,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -51,7 +90,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -64,7 +103,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -77,7 +116,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -90,7 +129,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -103,7 +142,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -116,7 +155,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -129,7 +168,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -142,7 +181,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -155,7 +194,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -168,7 +207,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -181,7 +220,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -194,7 +233,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -207,7 +246,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -220,7 +259,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -233,7 +272,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -246,7 +285,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -259,7 +298,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -272,7 +311,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
     },
@@ -285,57 +324,18 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : true,
         "meshCollider"  : false
-    },
-
-    "Collision_Big.003" : {
-        "geometry"  : "geo_Collision_Big",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ 8654.482422, 26276.097656, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : true
-    },
-
-    "Collision_Big.002" : {
-        "geometry"  : "geo_Collision_Big",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ -8775.719727, 26154.330078, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
-        "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : true
     },
 
     "Collision_Big.001" : {
         "geometry"  : "geo_Collision_Big",
         "groups"    : [  ],
         "materials" : [ "Collision" ],
-        "position"  : [ -8654.209961, 8784.392578, 0.000000 ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : true
-    },
-
-    "Collision_Big" : {
-        "geometry"  : "geo_Collision_Big",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ 8654.229492, 8784.392578, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -3126,8 +3126,23 @@ var scene = {
 },
 
 
-"geometries" : 
+"geometries" :
 {
+    "geo_Collision_Big.003" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Collision_Big.003.js"
+    },
+
+    "geo_Collision_Big.002" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Collision_Big.002.js"
+    },
+
+    "geo_Collision_Big.001" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Collision_Big.001.js"
+    },
+
     "geo_Cube.021" : {
         "type" : "ascii_mesh",
         "url"  : "City.Cube.021.js"
@@ -3345,7 +3360,7 @@ var scene = {
 },
 
 
-"textures" : 
+"textures" :
 {
     "Console_02.jpg" : {
         "url": "Console_02.jpg"
@@ -3425,161 +3440,146 @@ var scene = {
 },
 
 
-"materials" : 
+"materials" :
 {
     "Collision" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16592639, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
-    },
-
-    "Collision.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16592639, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16592639, opacity: 1.00 }
     },
 
     "Console_10" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_10.jpg" } 
-    },
-
-    "Console_11" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_11.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_10.jpg" }
     },
 
     "Console_11.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_11.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_11.jpg" }
     },
 
     "Console_12.002" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_12.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_12.jpg" }
     },
 
     "Console_13.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_13.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_13.jpg" }
     },
 
     "Console_14" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16645629, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_14.jpg" } 
-    },
-
-    "Console_15" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_15.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16645629, opacity: 1.00, map: "Console_14.jpg" }
     },
 
     "Console_2" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_02.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_02.jpg" }
     },
 
     "Console_3.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_03.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_03.jpg" }
     },
 
     "Console_4.002" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_4.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_4.jpg" }
     },
 
     "Console_5" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_5.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_5.jpg" }
     },
 
     "Console_6.002" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_6.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_6.jpg" }
     },
 
     "Console_7.002" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_7.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_7.jpg" }
     },
 
     "Console_8.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Console_8.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Console_8.jpg" }
     },
 
     "ExitHead.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Exithead.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Exithead.jpg" }
     },
 
     "Ground_1.008" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Ground1.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg", vertexColors: "vertex" }
     },
 
     "Ground_2.006" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Ground2.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Ground2.jpg", vertexColors: "vertex" }
     },
 
     "Rail_Console.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Rail_Console.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
     },
 
     "Rail_Console.002" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Rail_Console.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
     },
 
     "Rail_Console.003" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Rail_Console.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
     },
 
     "Signs" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Signs.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
     },
 
     "Signs.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Signs.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
     },
 
     "Signs.002" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Signs.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
     },
 
     "Vehicles" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Vehicles.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
     },
 
     "Vehicles.001" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Vehicles.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
     },
 
     "Vehicles.002" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Vehicles.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
     },
 
     "Vehicles.003" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Vehicles.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
     },
 
     "Vehicles.004" : {
-        "type": "MeshPhongMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0, map: "Vehicles.jpg" } 
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
     }
 },
 
 
-"cameras" : 
+"cameras" :
 {
     "default_camera" : {
         "type"  : "perspective",
@@ -3593,7 +3593,7 @@ var scene = {
 },
 
 
-"lights" : 
+"lights" :
 {
     "default_light": {
         "type"		 : "directional",
@@ -3604,14 +3604,14 @@ var scene = {
 },
 
 
-"transform" : 
+"transform" :
 {
     "position"  : [ 0.000000, 0.000000, 0.000000 ],
     "rotation"  : [ -1.570796, 0.000000, 0.000000 ],
     "scale"     : [ 1.000000, 1.000000, 1.000000 ],
 },
 
-"defaults" : 
+"defaults" :
 {
     "bgcolor" : [ 0.000000, 0.000000, 0.000000 ],
     "bgalpha" : 1.000000,
