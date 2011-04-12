@@ -15,9 +15,9 @@
 var model = {
 
     "version" : 2,
-    
+
     "scale" : 1.000000,
-    
+
     "materials": [	{
 	"DbgColor" : 15658734,
 	"DbgIndex" : 0,
@@ -25,6 +25,7 @@ var model = {
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [0.7764999866485596, 0.5647000074386597, 0.33730000257492065],
 	"colorSpecular" : [1.0, 1.0, 1.0],
+	"shading" : "Lambert",
 	"specularCoef" : 50,
 	"transparency" : 1.0,
 	"vertexColors" : false
@@ -37,6 +38,7 @@ var model = {
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [0.31369999051094055, 0.19609999656677246, 0.09019999951124191],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
+	"shading" : "Lambert",
 	"specularCoef" : 10,
 	"transparency" : 1.0,
 	"vertexColors" : false
