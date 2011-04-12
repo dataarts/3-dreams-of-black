@@ -47,9 +47,6 @@ var distortingShaderSource = {
                 "float distFade = normal.z*0.8+0.8;",
 
                 "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
-                //"distancePoly = max(distancePoly,distFade-0.1-length(projPosPoly-vec2(trail1.x, trail1.y)));",
-                //"distancePoly = max(distancePoly,distFade-0.2-length(projPosPoly-vec2(trail2.x, trail2.y)));",
-                //"distancePoly = max(distancePoly,distFade-0.3-length(projPosPoly-vec2(trail3.x, trail3.y)));",
 
                 "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
                 "gl_Position = viewPos;",
@@ -78,8 +75,9 @@ var distortingShaderSource = {
 			"void main() {",
 				"vec4 c = texture2D( sheet, vec2( vUv.x, vUv.y ) );",
                 "vec4 cPoly = texture2D( sheet, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.8) c = cPoly; ",
-                "gl_FragColor = c;",
+                "if ((distancePoly)>0.7) c = cPoly; ",
+                "if (c.a<=0.1) discard;",
+                "else gl_FragColor = c;",
 			"}"
 
 		].join("\n")

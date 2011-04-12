@@ -24,14 +24,30 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, shared, 450 );
 	collisionScene.settings.capBottom = 0;
-/*	loader.load( { model: "files/models/city/City.Collision_Big.js", callback: collisionLoadedProxy } );
+	loader.load( { model: "files/models/city/City.Collision_Big.js", callback: collisionLoadedProxy0 } );
+	loader.load( { model: "files/models/city/City.Collision_Big.001.js", callback: collisionLoadedProxy1 } );
+	loader.load( { model: "files/models/city/City.Collision_Big.002.js", callback: collisionLoadedProxy2 } );
+	loader.load( { model: "files/models/city/City.Collision_Big.003.js", callback: collisionLoadedProxy3 } );
 
-	function collisionLoadedProxy( geometry ) {
+	function collisionLoadedProxy0( geometry ) {
+		var rotation = new THREE.Vector3(-1.570796,0,3.141591); 
+		collisionScene.addLoaded( geometry, 0.1, rotation );
+	}
+
+	function collisionLoadedProxy1( geometry ) {
 		var rotation = new THREE.Vector3(-1.570796,0,0); 
-		var scale = 0.1;
-		var position = new THREE.Vector3(8784.392578*scale, 0.000000, -8654.229492*scale);
-		collisionScene.addLoaded( geometry, scale, rotation, position );
-	}*/
+		collisionScene.addLoaded( geometry, 0.1, rotation );
+	}
+
+	function collisionLoadedProxy2( geometry ) {
+		var rotation = new THREE.Vector3(-1.570796,0,0); 
+		collisionScene.addLoaded( geometry, 0.1, rotation );
+	}
+
+	function collisionLoadedProxy3( geometry ) {
+		var rotation = new THREE.Vector3(-1.570796,0,1.570797); 
+		collisionScene.addLoaded( geometry, 0.1, rotation );
+	}
 
 	// vector trail
 	var vectors = new Vectors();

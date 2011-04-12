@@ -104,15 +104,16 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, cityLoaded, function(){});
 
 	// random parts
+	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
 	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
 	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
 	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
 	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
 	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
 	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
+
 
 	function getRandomRotation () {
 		return Math.round(Math.random()*4)*(Math.PI/2);

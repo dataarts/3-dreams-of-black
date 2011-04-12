@@ -33,9 +33,8 @@
 	</div>
 
 		<script type="text/javascript" src="build_r38/Three.js"></script>
-    <script type="text/javascript" src="src/distortingShader.js"></script>
-    <script type="text/javascript" src="src/distortingShaderWire.js"></script>
-		<script type="text/javascript">			
+    <script type="text/javascript" src="src/distortingShaderInverted.js"></script>
+		<script type="text/javascript">
 			var viewWidth =  window.innerWidth;
 			var aspect = 2.35;
 			
@@ -53,8 +52,7 @@
 			var windowHalfX = window.innerWidth >> 1;
 			var windowHalfY = window.innerHeight >> 1;
 
-            var distortingShader = distortingShaderSource[ 'distortingShader' ];
-            var distortingShaderWire= distortingShaderWireSource[ 'distortingShaderWire' ];
+            var distortingShaderInverted = distortingShaderInvertedSource[ 'distortingShaderInverted' ];
 
 
             callbackGrid0 = function( geometry ) { grid[0] = geometry; loaded()}
@@ -119,15 +117,15 @@
 			function addLayer(path, w, h, d, a, id, lod) {
 				var tex = ImageUtils.loadTexture(path);
                 
-                var uniforms = Uniforms.clone( distortingShader.uniforms );
+                var uniforms = Uniforms.clone( distortingShaderInverted.uniforms );
                 uniforms[ 'sheet' ].texture = tex;
                 uniforms[ 'mouseXY' ].value = new THREE.Vector2(mouseX, mouseY);
                 uniforms[ 'aspect' ].value = aspect;
 
                 mat[id] = new THREE.MeshShaderMaterial( {
                         uniforms: uniforms,
-                        vertexShader: distortingShader.vertexShader,
-                        fragmentShader: distortingShader.fragmentShader,
+                        vertexShader: distortingShaderInverted.vertexShader,
+                        fragmentShader: distortingShaderInverted.fragmentShader,
                         blending: THREE.BillboardBlending
                     } );
 
@@ -142,26 +140,6 @@
 				p.doubleSided = false;
 				
 				scene.addObject(p);
-
-                mat2[id] = new THREE.MeshShaderMaterial( {
-                        uniforms: uniforms,
-                        vertexShader: distortingShaderWire.vertexShader,
-                        fragmentShader: distortingShaderWire.fragmentShader,
-                        blending: THREE.BillboardBlending,
-                        wireframe: true
-                    } );
-
-                var p2 = new THREE.Mesh( grid[lod], mat2[id] );
-				p2.scale.x *= w;
-				p2.scale.y *= h;
-                //var p = new THREE.Mesh( new Plane(w, h, 1, 1), mat[id] );
-
-				p2.position.z = d+0.1;
-				p2.scale.x *= Math.abs(d) * a * aspect;
-				p2.scale.y *= Math.abs(d) * a;
-				p2.doubleSided = false;
-
-				scene.addObject(p2);
 
 				return p;
 			}

@@ -15,9 +15,9 @@
 var model = {
 
     "version" : 2,
-    
+
     "scale" : 1.000000,
-    
+
     "materials": [	{
 	"DbgColor" : 15658734,
 	"DbgIndex" : 0,
@@ -26,6 +26,7 @@ var model = {
 	"colorDiffuse" : [0.9922000169754028, 0.9922000169754028, 0.9922000169754028],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
 	"mapDiffuse" : "Console_14.jpg",
+	"shading" : "Lambert",
 	"specularCoef" : 10,
 	"transparency" : 1.0,
 	"vertexColors" : false
