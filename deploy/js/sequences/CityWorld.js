@@ -70,6 +70,13 @@ var CityWorld = function ( shared ) {
 			object.updateMatrix();
 
 		}
+		
+		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+   
+			mesh = THREE.Collisions.colliders[ i ].mesh;
+			mesh.visible = false;
+    
+		}
 
 		result.scene.scale.set( 0.1, 0.1, 0.1 );
 		result.scene.updateMatrix();
@@ -97,7 +104,7 @@ var CityWorld = function ( shared ) {
 	};
 */
 	if (!shared.debug) {
-		loader.load( "files/models/blender/city/City.js", function(){}, sceneLoaded, function(){} );
+		loader.load( "files/models/city/City.js", function(){}, sceneLoaded, function(){} );
 	}
 
 	// lens flares custom callback

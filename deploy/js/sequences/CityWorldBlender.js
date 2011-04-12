@@ -181,7 +181,7 @@ var CityWorld = function ( shared ) {
 	
 
 	// Shadow
-
+/*
 	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
 
 		var shadowMesh = new THREE.Mesh( geometry );
@@ -200,7 +200,7 @@ var CityWorld = function ( shared ) {
 		preInitModel( geometry, shared.renderer, that.scene, shadowMesh );
 
 	} } );
-
+*/
 
 	var Shaders = {
 		
