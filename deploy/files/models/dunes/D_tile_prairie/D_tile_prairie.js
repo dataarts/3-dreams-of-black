@@ -44,142 +44,142 @@ var scene = {
 "materials" : 
 {
     "08 - Default" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 9803157, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "11 - Default" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 4600096, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "12 - Default" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 0, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "15 - Default" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 9803157, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "20 - Default" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 3231667, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Barn" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 8816262, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Desert.001" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00, ambient: 0, specular: 16777215, shininess: 50.0 } 
     },
 
     "Desert.002" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00, ambient: 0, specular: 16777215, shininess: 50.0 } 
     },
 
     "Desert.003" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00, ambient: 0, specular: 16777215, shininess: 50.0 } 
     },
 
     "Desert.004" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00, ambient: 0, specular: 16777215, shininess: 50.0 } 
     },
 
     "Desert.005" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00, ambient: 0, specular: 16777215, shininess: 50.0 } 
     },
 
     "Desert.006" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00, ambient: 0, specular: 16777215, shininess: 50.0 } 
     },
 
     "Desert.007" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00, ambient: 0, specular: 16777215, shininess: 50.0 } 
     },
 
     "mountain1" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "mountain2" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Rock.001" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 5190167, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Rock.002" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 5190167, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Rock.003" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 5190167, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Rock.004" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 5190167, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Rock.005" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 5190167, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Rock.006" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 5190167, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "RocksWhite" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 2960685, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Silo" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 9803157, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Standard_1" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 11885648, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Train" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 1907997, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Water_Opacy" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 6992127, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Water_Opacy.001" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 6992127, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     },
 
     "Watertower" : {
-        "type": "MeshPhongMaterial",
+        "type": "MeshLambertMaterial",
         "parameters": { color: 9803157, opacity: 1.00, ambient: 0, specular: 15066597, shininess: 10.0 } 
     }
 },
