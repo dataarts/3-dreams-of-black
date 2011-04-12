@@ -261,16 +261,17 @@ function onWindowResize( event ) {
 
 function animate() {
 
+	if ( audio.currentTime == audio.duration ) {
+
+		document.body.appendChild( launcher );
+		document.body.removeChild( experience );
+		return;
+	}
+
 	requestAnimationFrame( animate, renderer.domElement );
 
 	logger.clear();
-	render();
-	stats.update();
-
-}
-
-function render() {
-
 	sequencer.update( audio.currentTime * 1000 );
+	stats.update();
 
 }
