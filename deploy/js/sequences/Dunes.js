@@ -6,18 +6,18 @@ var Dunes = function ( shared ) {
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
 	var delta, time, oldTime;
 
-	var speedStart = 4.0,
+	var speedStart = 200.0,
 	//var speedStart = 40,
-		speedEnd = 6.0;
+		speedEnd = 400.0;
 
 	this.init = function () {
 
 		camera = new THREE.QuakeCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			movementSpeed: speedStart, lookSpeed: 0.0030, noFly: false, lookVertical: true,
+			movementSpeed: speedStart, lookSpeed: 0.1, noFly: false, lookVertical: true,
 			constrainVertical: true, verticalMin: 1.0, verticalMax: 2.1,
-			autoForward: true , heightSpeed: true, heightMin: 150, heightMax: 5000, heightCoef: 0.012
+			autoForward: true , heightSpeed: true, heightMin: 150, heightMax: 5000, heightCoef: 0.1
 
 		} );
 
@@ -77,7 +77,10 @@ var Dunes = function ( shared ) {
 
 		// not too high before lift-off
 
-		if ( progress < 0.30 ) {
+		var startLift = 0.29,
+			endLift   = 0.4;
+		
+		if ( progress < startLift ) {
 
 			camera.position.y = cap_top( camera.position.y, 150 );
 
@@ -93,11 +96,11 @@ var Dunes = function ( shared ) {
 
 		// lift-off
 
-		var localProgres = ( progress - 0.30 ) / ( 0.40 - 0.30 );
+		var localProgres = ( progress - startLift ) / ( endLift - startLift );
 
-		if ( progress > 0.30 && progress < 0.40 ) {
+		if ( progress > startLift && progress < endLift ) {
 
-			camera.position.y += 2;
+			camera.position.y += 250 * ( delta / 1000 );
 			camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 
 			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
