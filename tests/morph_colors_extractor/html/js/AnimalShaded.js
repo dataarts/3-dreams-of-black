@@ -14,12 +14,16 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	var vertexColors = geometry.materials[ 0 ][ 0 ].vertexColors;
 	
-	var material = new THREE.MeshShaderMaterial( { uniforms:       ROME.AnimalShader.uniforms, 
-												   vertexShader:   ROME.AnimalShader.vertex, 
-												   fragmentShader: ROME.AnimalShader.fragment,
-												   morphTargets:   true,
-												   vertexColors:   vertexColors,
-												   lights:         true } ); 
+	var pars = { uniforms:       ROME.AnimalShader.uniforms, 
+				 vertexShader:   ROME.AnimalShader.vertex, 
+				 fragmentShader: ROME.AnimalShader.fragment,
+				 morphTargets:   true,
+				 vertexColors:   vertexColors,
+				 lights:         true };
+
+	pars.uniforms.tDiffuse.texture = THREE.ImageUtils.loadTexture( 'textures/faceContour.jpg' );
+
+	var material = new THREE.MeshShaderMaterial( pars );
 
 	var that = {};
 	that.mesh = new THREE.Mesh( geometry, material );
@@ -33,6 +37,31 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 
 
+	for( var i = 0; i < geometry.faceVertexUvs[ 0 ].length; i++ ) {
+	
+		var uv = geometry.faceVertexUvs[ 0 ][ i ];
+		
+		if ( uv ) {
+		
+			if ( uv.length == 3 ) {
+				
+				uv[ 0 ].set( 0, 0 );
+				uv[ 1 ].set( 1, 0 );
+				uv[ 2 ].set( 1, 1 );
+				
+			} else if ( uv.length == 4 ) {
+				
+				uv[ 0 ].set( 0, 0 );
+				uv[ 1 ].set( 1, 0 );
+				uv[ 2 ].set( 1, 1 );
+				uv[ 3 ].set( 0, 1 );
+
+			}
+
+		}
+		
+	}
+	
 	//--- play ---
 
 	that.play = function( animalA, animalB, morph, startTimeAnimalA, startTimeAnimalB ) {
@@ -118,6 +147,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		}
 
 		material.uniforms.animalMorphValue.value = that.morph;
+
 	}
 
 
@@ -213,20 +243,29 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 ROME.AnimalShader = {
 	
-	uniforms: Uniforms.merge( [ THREE.UniformsLib[ "common" ],
+	uniforms: THREE.UniformsUtils.merge( [ THREE.UniformsLib[ "common" ],
 								THREE.UniformsLib[ "lights" ], 
+								{
+									"ambient"  : { type: "c", value: new THREE.Color( 0x050505 ) },
+									"specular" : { type: "c", value: new THREE.Color( 0x111111 ) },
+									"shininess": { type: "f", value: 30 }
+								},
 								{
 									"animalAInterpolation": { type: "f", value: 0.0 },
 									"animalBInterpolation": { type: "f", value: 0.0 },
-									"animalMorphValue" :    { type: "f", value: 0.0 }
+									"animalMorphValue" :    { type: "f", value: 0.0 },
+									"tDiffuse" : 		    { type: "t", value: 0, texture: null }
 								} ] ),
 
 	vertex: [
+
+		"#define PHONG",
 
 		"uniform float	animalAInterpolation;",
 		"uniform float	animalBInterpolation;",
 		"uniform float	animalMorphValue;",
 		"varying vec3 	vLightWeighting;",
+		"varying vec2 	vUv;",
 
 		THREE.ShaderChunk[ "map_pars_vertex" ],
 		THREE.ShaderChunk[ "lightmap_pars_vertex" ],
@@ -246,12 +285,13 @@ ROME.AnimalShader = {
 			"vec3 transformedNormal = normalize( normalMatrix * normal );",
 
 			THREE.ShaderChunk[ "lights_vertex" ],
-
 			
 			"vec3 animalA = mix( morphTarget0, morphTarget1, animalAInterpolation );",
 			"vec3 animalB = mix( morphTarget2, morphTarget3, animalBInterpolation );",
 			"vec3 morphed = mix( animalA,      animalB,      animalMorphValue );",
 			
+			"vUv = uv;",
+
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 		"}"
 
@@ -262,24 +302,39 @@ ROME.AnimalShader = {
 		"uniform vec3 diffuse;",
 		"uniform float opacity;",
 
-		"varying vec3 vLightWeighting;",
+		"uniform vec3 ambient;",
+		"uniform vec3 specular;",
+		"uniform float shininess;",
 
+		"uniform sampler2D tDiffuse;",
+
+		"varying vec3 vLightWeighting;",
+		"varying vec2 vUv;",
+		
 		THREE.ShaderChunk[ "color_pars_fragment" ],
 		THREE.ShaderChunk[ "map_pars_fragment" ],
 		THREE.ShaderChunk[ "lightmap_pars_fragment" ],
 		THREE.ShaderChunk[ "envmap_pars_fragment" ],
 		THREE.ShaderChunk[ "fog_pars_fragment" ],
+		THREE.ShaderChunk[ "lights_pars_fragment" ],
 
 		"void main() {",
 
-			"gl_FragColor = vec4( diffuse, opacity );",
-			"gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
+			"gl_FragColor = vec4( vLightWeighting, 1.0 );",
+			THREE.ShaderChunk[ "lights_fragment" ],
+
+			"gl_FragColor = gl_FragColor * vec4( diffuse, opacity );",
+
+			"vec3 diffuseTex = texture2D( tDiffuse, vUv ).xyz;",
+			"gl_FragColor = gl_FragColor * vec4( diffuseTex * diffuseTex, 1.0 );",
 
 			THREE.ShaderChunk[ "map_fragment" ],
 			THREE.ShaderChunk[ "lightmap_fragment" ],
 			THREE.ShaderChunk[ "color_fragment" ],
 			THREE.ShaderChunk[ "envmap_fragment" ],
 			THREE.ShaderChunk[ "fog_fragment" ],
+			
+			"gl_FragColor = mix( gl_FragColor, vec4( 1.0 * vColor, 1.0 ), 0.15 );",			 
 
 		"}"
 

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>ROME</title>
+		<style>
+			body {
+
+				font-family: Helvetica, Arial;
+				font-size: 14px;
+				background-color: #000000;
+				color: #808080;
+				margin: 0px;
+				overflow: hidden;
+
+			}
+
+			a {
+
+				color: #A0A0A0;
+				text-decoration: none;
+
+			}
+
+			a:hover {
+
+				text-decoration: underline;
+
+			}
+		</style>
+	</head>
+	<body>
+
+		<audio id="audio" autobuffer>
+			<source src="files/Black.ogg">
+		</audio>
+
+		<div id="launcher" style="padding: 100px;">
+
+			<strong>"ROME"</strong><br /><br />
+
+			<progress id="loadProgress" value="0"></progress><br /><br />
+
+			<a href="#" onClick="start( 16 );">City (sandbox)</a><br />
+
+		</div>
+
+		<script src="js/lib/Stats.js"></script>
+		<script src="js/lib/Tween.js"></script>
+
+		<script src="js/lib/js-signals.min.js"></script>
+		<script src="js/lib/gui.min.js"></script>
+
+		<script src="js/lib/ThreeBlender.js"></script>
+
+		<script src="js/lib/LoadProgress.js"></script>
+		<script src="js/lib/RequestAnimationFrame.js"></script>
+		<script src="js/lib/Sequencer.js"></script>
+		<script src="js/lib/Tune.js"></script>
+		<script src="js/lib/Utils.js"></script>
+
+		<script src="js/effects/ClearEffect.js"></script>
+		<script src="js/effects/FadeInEffect.js"></script>
+		<script src="js/effects/FadeOutEffect.js"></script>
+		<script src="js/effects/RenderEffect.js"></script>
+		<script src="js/effects/BloomEffect.js"></script>
+		<script src="js/effects/NoiseEffect.js"></script>
+
+		<script src="js/sequences/CityBlender.js"></script>
+		<script src="js/sequences/CityWorldBlender.js"></script>
+		<script src="js/sequences/CitySoup.js"></script>
+
+		<script src="js/sequences/soup/Ribbon.js"></script>
+		<script src="js/sequences/soup/Animal.js"></script>
+		<script src="js/sequences/soup/Ribbons.js"></script>
+		<script src="js/sequences/soup/Vectors.js"></script>
+		<script src="js/sequences/soup/Particles.js"></script>
+		<script src="js/sequences/soup/AnimalSwarm.js"></script>
+		<script src="js/sequences/soup/AnimalInFrontOfCamera.js"></script>
+		<script src="js/sequences/soup/Trail.js"></script>
+		<script src="js/sequences/soup/CollisionScene.js"></script>
+
+		<script src="js/MainCityTempBlender.js"></script>
+
+	</body>
+</html> 

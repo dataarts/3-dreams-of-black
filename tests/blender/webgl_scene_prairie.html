@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>three.js webgl - physics scene</title>
+		<title>three.js webgl - prairie</title>
 		<meta charset="utf-8">
 		
 		<style type="text/css">
@@ -221,7 +221,7 @@
 		<div id="viewport"></div> 
 		<script type="text/javascript" src="js/Three.js"></script>
 		
-		<script type="text/javascript" src="js/animal.js"></script>
+		<script type="text/javascript" src="js/Animal.js"></script>
 		<script type="text/javascript" src="js/Slider.js"></script>
 		
 		<script type="text/javascript" src="js/Detector.js"></script>
@@ -472,7 +472,7 @@
 
 		<script type="text/javascript">
 		
-		var SCENE_FILE = "models/physics/cityPhysics.js";
+		var SCENE_FILE = "models/prairie/Prairie.js";
 		
 		window.onload = init;
 	
@@ -480,17 +480,9 @@
 	
 		if ( ! Detector.fileapi ) alert( 'The File APIs are not fully supported in this browser.' );
 		
-		// Physics
-		
-		var mouse2d = new THREE.Vector3( 0, 0, 1 );
-
-		var ray = new THREE.Ray();
-		var matrix = new THREE.Matrix4(),
-			matrix2 = new THREE.Matrix4();
-		
 		// GUI
 		
-		var ENABLE_LENSFLARES = true;
+		var ENABLE_LENSFLARES = false;
 		
 		var guiVisible = true;
 		
@@ -604,8 +596,8 @@
 		// camera
 		
 		var useOrbitCamera = true;
-		var cameraDistance = 0,
-			cameraHeight = 0.25,
+		var cameraDistance = -150,
+			cameraHeight = 180,
 			cameraHeightOriginal = cameraHeight, 
 			cameraDistanceOriginal = cameraDistance;
 		
@@ -629,7 +621,7 @@
 			
 		// postprocessing
 		
-		var postprocessing = { enabled : false };
+		var postprocessing = { enabled : true };
 		
 		var nSliderN, nSliderS, nSliderC;
 		var bSlider;
@@ -672,26 +664,34 @@
 		
 			// hardcoded "import"
 			
-			scene.fog.density = 0.0382;
-			scene.fog.color.setHSV( 0.5588235294117647,  0,  0.6 );
+			scene.fog.density = 0.0;
+			scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
 			
 			ambientLight.color.setHSV( 0, 0, 0.3 );
 			
-			directionalLight1.position.set( 0.7648718326037581, -0.5885011172553458,  0.2619876231400604 );
+			directionalLight1.position.set( -0.3578915471010674,  0.7138857482214859, -0.6018976482757293 );
 			directionalLight1.color.setHSV( 0, 0, 0.7352941 );
 
 			directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
-			directionalLight2.color.setHSV( 0, 0, 0.1 );
+			directionalLight2.color.setHSV( 0, 0, 0.1 );						
+
+			camera.position.set( 0, 2, 0 );
+			camera.lon = -33;
 			
-			
-			postprocessing.materialFilm.uniforms.nIntensity.value = 0.064;
-			postprocessing.materialFilm.uniforms.sIntensity.value = 0.0;
-			postprocessing.materialFilm.uniforms.sCount.value = 2602.164705882353;
-			postprocessing.materialScreen.uniforms.opacity.value = 0.74;
-			
-			postprocessing.enabled = true;
-			
+			toggleAxis();
+
 			renderer.setClearColor( scene.fog.color, 1 );
+
+			overlays.filmStrip = true;
+
+			updateViewport();
+			
+			initPostprocessingNoise( postprocessing );
+
+			postprocessing.materialFilm.uniforms.nIntensity.value = 0.4;
+			postprocessing.materialFilm.uniforms.sIntensity.value = 0.0;
+			postprocessing.materialFilm.uniforms.sCount.value = 2502.164705882353;
+			postprocessing.materialScreen.uniforms.opacity.value = 0.74;
 
 		};
 		
@@ -703,7 +703,7 @@
 			scene.fog = new THREE.FogExp2( 0x000000, 0 );
 			
 
-			renderer = new THREE.WebGLRenderer( { antialias: !ENABLE_LENSFLARES } );
+			renderer = new THREE.WebGLRenderer( { antialias: false } );
 			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 
 			renderer.autoClear = false;
@@ -724,13 +724,13 @@
 			orbitCamera.position.set( 0, cameraHeight, cameraDistance );
 			orbitCamera.target.position.set( 0, 0, 0 );
 
-			flyCamera = new THREE.QuakeCamera( { fov: 40, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 0.1, far: 100000,
-											  movementSpeed: 0.05, lookSpeed: 0.0025, noFly: true, lookVertical: true,
+			flyCamera = new THREE.QuakeCamera( { fov: 40, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
+											  movementSpeed: 1, lookSpeed: 0.00125, noFly: false, lookVertical: true,
 											  activeLook: false
 											  } );
 
-			flyCamera.position.set( 0.43624280771602175,  0.25,  -4.085171167158238 );
-			flyCamera.lon = 180;
+			flyCamera.position.set( -100, cameraHeight, cameraDistance );
+			flyCamera.lon = -90;
 
 			camera = flyCamera;
 
@@ -772,7 +772,7 @@
 			
 			var swidth = 170, sd = 5;
 			
-			var fogSliderD = new Slider( $( "slider_wrap_fog_d" ), swidth, sd, 0.0, 0.5, 0, function(val) { scene.fog.density = val; $("fog_density").innerHTML = val.toFixed(7); } );
+			var fogSliderD = new Slider( $( "slider_wrap_fog_d" ), swidth, sd, 0.0, 0.0005, 0, function(val) { scene.fog.density = val; $("fog_density").innerHTML = val.toFixed(7); } );
 			var fogSliderH = new Slider( $( "slider_wrap_fog_h" ), swidth, sd, 0.0, 1.0, 0, function(val) { FOG.h = val; updateFog(); $("fog_hue").innerHTML = val.toFixed(2); } );
 			var fogSliderS = new Slider( $( "slider_wrap_fog_s" ), swidth, sd, 0.0, 1.0, 0, function(val) { FOG.s = val; updateFog(); $("fog_sat").innerHTML = val.toFixed(2); } );
 			var fogSliderV = new Slider( $( "slider_wrap_fog_v" ), swidth, sd, 0.0, 1.0, 0, function(val) { FOG.v = val; updateFog(); $("fog_val").innerHTML = val.toFixed(2); } );
@@ -977,8 +977,6 @@
 			var loader = new THREE.SceneLoader();
 			loader.load( SCENE_FILE, callbackSync, callbackAsync, callbackProgress );
 			
-			toggleAxis();
-			
 			
 		};
 
@@ -1033,7 +1031,7 @@
 
 			handleSceneUpdate( result, Math.floor( count/total ) );
 			
-			console.log( "progress", bar );
+			//console.log( "progress", bar );
 
 		};
 
@@ -1055,8 +1053,7 @@
 			sceneRoot.addChild( loaded.scene );
 			
 			initParams();
-			initColliders();
-			
+
 			console.log( loaded.scene );
 
 		};
@@ -1170,10 +1167,6 @@
 
 			mouseX = event.clientX - windowHalfX;
 			mouseY = event.clientY - windowHalfY;
-
-			mouse2d.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-			mouse2d.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-			mouse2d.z = 1;
 
 		};
 		
@@ -2176,7 +2169,7 @@
 			camera.target.position.set( 0, 0, 0 );
 			
 			axisVisible = false;
-			SceneUtils.showHierarchy( auxRoot, axisVisible );
+			THREE.SceneUtils.showHierarchy( auxRoot, axisVisible );
 			
 			//console.log( mesh.boundRadius, camera );
 			
@@ -2244,10 +2237,12 @@
 			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
 			effect.camera.position.z = 100;
 
-			var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
-			effect.rtTexture1 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars );
-			effect.rtTexture2 = new THREE.WebGLRenderTarget( 512, 512, pars );
-			effect.rtTexture3 = new THREE.WebGLRenderTarget( 512, 512, pars );
+			var pars1 = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+				pars2 = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
+
+			effect.rtTexture1 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars1 );
+			effect.rtTexture2 = new THREE.WebGLRenderTarget( 512, 512, pars2 );
+			effect.rtTexture3 = new THREE.WebGLRenderTarget( 512, 512, pars2 );
 
 			var screen_shader = THREE.ShaderUtils.lib["screen"];
 			var screen_uniforms = THREE.UniformsUtils.clone( screen_shader.uniforms );
@@ -2319,9 +2314,6 @@
 
 			updateCamera( delta );
 			updateMorph( delta );
-			
-			handlePhysics();
-			
 			render( delta );
 			
 			stats.update();
@@ -2366,80 +2358,6 @@
 			
 				lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
 				
-			}
-
-		};
-		
-		function handlePhysics() {
-		
-			ray.origin.copy( mouse2d );
-
-			matrix.copy( camera.matrixWorld );
-			matrix.multiplySelf( THREE.Matrix4.makeInvert( camera.projectionMatrix, matrix2 ) );
-			matrix.multiplyVector3( ray.origin );
-			
-			ray.direction.copy( ray.origin );
-			ray.direction.subSelf( camera.position );
-			
-			var i, geo, mesh;
-			
-			for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
-			
-				mesh = THREE.Collisions.colliders[ i ].mesh;
-				mesh.visible = false;
-				
-			}
-			
-			var nearest = false;
-			
-			if ( nearest ) {
-			
-				var c = THREE.Collisions.rayCastNearest( ray );
-				
-				if( c ) {
-				
-					//info.innerHTML += "Found @ distance " + c.distance;
-					c.mesh.visible = true;
-
-				} else {
-				
-					//info.innerHTML += "No intersection";
-
-				}
-				
-			} else {
-			
-				var cs = THREE.Collisions.rayCastAll( ray );
-				
-				if ( cs.length > 0 ) {
-
-					for ( var i = 0; i < cs.length; i++ ) {
-						
-						cs[ i ].mesh.visible = true;
- 
-					} 
-					
-				} else {
- 
-                    //info.innerHTML = "No intersection";
- 
-				}		
-
-			}
-			
-
-		};
-		
-		function initColliders() {
-		
-			for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
-			
-				mesh = THREE.Collisions.colliders[ i ].mesh;
-				geo = mesh.geometry;
-				geo.materials[ 0 ][ 0 ].color.setHex( 0xffaa00 );
-				geo.materials[ 0 ][ 0 ].wireframe = false;
-				mesh.visible = false;
-
 			}
 
 		};
