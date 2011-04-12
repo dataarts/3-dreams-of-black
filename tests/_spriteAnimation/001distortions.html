@@ -42,7 +42,9 @@
 			var fov = 54;
 			var cpt = -30;
 
-			var container, camera, scene, webglRenderer, gridLoader, grid;
+			var container, camera, scene, webglRenderer, gridLoader;
+
+            var grid = {};
 			
 			var mouseX = 0;
 			var mouseY = 0;
@@ -55,10 +57,21 @@
             var distortingShaderWire= distortingShaderWireSource[ 'distortingShaderWire' ];
 
 
-			callback = function( geometry ) {
-                grid = geometry;
-                init();
-                animate();
+            callbackGrid0 = function( geometry ) { grid[0] = geometry; loaded()}
+            callbackGrid1 = function( geometry ) { grid[1] = geometry; loaded()}
+            callbackGrid2 = function( geometry ) { grid[2] = geometry; loaded()}
+
+            gridLoader = new THREE.JSONLoader();
+            gridLoader.load( { model: "models/grid0.js", callback: callbackGrid0 } );
+            gridLoader.load( { model: "models/grid1.js", callback: callbackGrid1 } );
+            gridLoader.load( { model: "models/grid2.js", callback: callbackGrid2 } );
+
+
+            function loaded(){
+                if (grid[0]&&grid[1]&&grid[2]){
+                    init();
+                    animate();
+                }
             }
 
             function animate(){
@@ -66,18 +79,12 @@
                 requestAnimFrame(animate);
             }
 
-            gridLoader = new THREE.JSONLoader();
-            gridLoader.load( { model: "models/grid2.js", callback: callback } );
-
-
-			
-			document.addEventListener('mousemove', mouseMove, false);
-
 			function init() {
 
 				container = document.createElement('div');
 				document.body.appendChild(container);
-				
+				document.addEventListener('mousemove', mouseMove, false);
+                
 				camera = new THREE.Camera( fov, aspect, 1, 100000 );
                 camera.updateMatrix();
 				
@@ -85,19 +92,17 @@
 				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
 
 				var adj = Math.tan( fov * Math.PI / 360 ) * 2;
-				
-				//addLayer("textures/sample/frame.jpg", 1.104, 1.24, -1000, adj);
-				
-				addLayer("textures/sample/01.jpg", 1.104, 1.24, -3000, adj, 1);
-				addLayer("textures/sample/02.png", 1.104, 1.24, -900, adj, 2);
-				
-				addLayer("textures/sample/03.png", 1.104, 1.24, -550, adj, 3);
-				addLayer("textures/sample/04.png", 1.104, 1.24, -450, adj, 4);
-				addLayer("textures/sample/05.png", 1.104, 1.24, -350, adj, 5);
 
-				addLayer("textures/sample/06.png", 1.104, 1.24, -320, adj, 6);
-				addLayer("textures/sample/07.png", 1.104, 1.24, -220, adj, 7);
-				addLayer("textures/sample/08.png", 1.104, 1.24, -100, adj, 8);
+				addLayer("textures/sample/01.jpg", 1.104, 1.24, -3000, adj, 1, 0);
+				addLayer("textures/sample/02.png", 1.104, 1.24, -900, adj, 2, 0);
+				
+				addLayer("textures/sample/03.png", 1.104, 1.24, -550, adj, 3, 1);
+				addLayer("textures/sample/04.png", 1.104, 1.24, -450, adj, 4, 1);
+				addLayer("textures/sample/05.png", 1.104, 1.24, -350, adj, 5, 1);
+
+				addLayer("textures/sample/06.png", 1.104, 1.24, -320, adj, 6, 2);
+				addLayer("textures/sample/07.png", 1.104, 1.24, -220, adj, 7, 2);
+				addLayer("textures/sample/08.png", 1.104, 1.24, -100, adj, 8, 2);
 				
 				try {
 					webglRenderer = new THREE.WebGLRenderer( scene );
@@ -110,17 +115,13 @@
 			
             var mat = {};
             var mat2 = {};
-            
 
-			function addLayer(path, w, h, d, a, id) {
+			function addLayer(path, w, h, d, a, id, lod) {
 				var tex = ImageUtils.loadTexture(path);
                 
                 var uniforms = Uniforms.clone( distortingShader.uniforms );
                 uniforms[ 'sheet' ].texture = tex;
                 uniforms[ 'mouseXY' ].value = new THREE.Vector2(mouseX, mouseY);
-                uniforms[ 'trail1' ].value = new THREE.Vector2(mouseX, mouseY);
-                uniforms[ 'trail2' ].value = new THREE.Vector2(mouseX, mouseY);
-                uniforms[ 'trail3' ].value = new THREE.Vector2(mouseX, mouseY);
                 uniforms[ 'aspect' ].value = aspect;
 
                 mat[id] = new THREE.MeshShaderMaterial( {
@@ -130,7 +131,7 @@
                         blending: THREE.BillboardBlending
                     } );
 
-                var p = new THREE.Mesh( grid, mat[id] );
+                var p = new THREE.Mesh( grid[lod], mat[id] );
 				p.scale.x *= w;
 				p.scale.y *= h;
                 //var p = new THREE.Mesh( new Plane(w, h, 1, 1), mat[id] );
@@ -150,7 +151,7 @@
                         wireframe: true
                     } );
 
-                var p2 = new THREE.Mesh( grid, mat2[id] );
+                var p2 = new THREE.Mesh( grid[lod], mat2[id] );
 				p2.scale.x *= w;
 				p2.scale.y *= h;
                 //var p = new THREE.Mesh( new Plane(w, h, 1, 1), mat[id] );
@@ -169,17 +170,12 @@
 				mouseX = (event.clientX - windowHalfX) / -windowHalfX;
 				mouseY = (event.clientY - windowHalfY) / windowHalfY;
                 for (i = 1; i <=8; i++){
-                    //mat[i].uniforms[ 'mouseXY' ].value.x = -mouseX*aspect;
-                    //mat[i].uniforms[ 'mouseXY' ].value.y = -mouseY;
-                    mat2[i].uniforms[ 'mouseXY' ].value.x = -mouseX*aspect;
-                    mat2[i].uniforms[ 'mouseXY' ].value.y = -mouseY;
+                    mat[i].uniforms[ 'mouseXY' ].value.x = -mouseX*aspect;
+                    mat[i].uniforms[ 'mouseXY' ].value.y = -mouseY;
                 }
 			}
 
             var mouseXY = new THREE.Vector2(mouseX, mouseY);
-            var trail1 = new THREE.Vector2(mouseX, mouseY);
-            var trail2 = new THREE.Vector2(mouseX, mouseY);
-            var trail3 = new THREE.Vector2(mouseX, mouseY);
 
 			function loop() {
 				var cpt = parseFloat(document.getElementById("cpt").value) * -1 || -100;
@@ -187,23 +183,6 @@
 				var cmy = parseFloat(document.getElementById("cmy").value) || 1;
 
                 mouseXY = new THREE.Vector2(mouseX, mouseY);
-                trail1.addSelf(mouseXY);
-                trail1.multiplyScalar(0.5);
-                trail2.addSelf(trail1);
-                trail2.multiplyScalar(0.5);
-                trail3.addSelf(trail2);
-                trail3.multiplyScalar(0.5);
-
-                for (i = 1; i <=8; i++){
-                    mat[i].uniforms[ 'mouseXY' ].value.x = -mouseX*aspect;
-                    mat[i].uniforms[ 'mouseXY' ].value.y = -mouseY;
-                    mat[i].uniforms[ 'trail1' ].value.x = -trail1.x*aspect;
-                    mat[i].uniforms[ 'trail1' ].value.y = -trail1.y;
-                    mat[i].uniforms[ 'trail2' ].value.x = -trail2.x*aspect;
-                    mat[i].uniforms[ 'trail2' ].value.y = -trail2.y;
-                    mat[i].uniforms[ 'trail3' ].value.x = -trail3.x*aspect;
-                    mat[i].uniforms[ 'trail3' ].value.y = -trail3.y;
-                }
 
 				targetPos.x = mouseX * cmx;
 				targetPos.y = mouseY * cmy;
@@ -214,6 +193,9 @@
 				camera.target.position = new THREE.Vector3(0,0, cpt );
 				
 				webglRenderer.render( scene, camera );
+
+                
+
 			}
 
             window.requestAnimFrame = (function(){

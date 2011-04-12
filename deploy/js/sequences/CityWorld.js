@@ -70,15 +70,41 @@ var CityWorld = function ( shared ) {
 			object.updateMatrix();
 
 		}
+		
+		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+   
+			mesh = THREE.Collisions.colliders[ i ].mesh;
+			mesh.visible = false;
+    
+		}
 
 		result.scene.scale.set( 0.1, 0.1, 0.1 );
 		result.scene.updateMatrix();
 		that.scene.addChild( result.scene );
 
+
+		console.log("colliders = "+THREE.Collisions.colliders.length);
+	
 	}
 
+/*	function initColliders() {
+	
+		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+			
+			mesh = THREE.Collisions.colliders[ i ].mesh;
+			geo = mesh.geometry;
+			geo.materials[ 0 ][ 0 ].color.setHex( 0xff0000 );
+			geo.materials[ 0 ][ 0 ].wireframe = false;
+			mesh.visible = true;
+
+			console.log("baha = "+mesh);
+
+		}
+
+	};
+*/
 	if (!shared.debug) {
-		loader.load( "files/models/blender/city/City.js", function(){}, sceneLoaded, function(){} );
+		loader.load( "files/models/city/City.js", function(){}, sceneLoaded, function(){} );
 	}
 
 	// lens flares custom callback

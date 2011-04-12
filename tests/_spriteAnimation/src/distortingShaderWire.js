@@ -68,7 +68,7 @@ var distortingShaderWireSource = {
 
 			"void main() {",
                 "vec4 cPoly = texture2D( sheet, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.8 && cPoly.a>0.) cPoly = vec4(1.,1.,1.,distancePoly/4.); ",
+                "if ((distancePoly)>0.8 && cPoly.a>0.) cPoly = vec4(1.,1.,1.,distancePoly/16.); ",
                 "else cPoly = vec4(1.,1.,1.,0.); ",
                 "gl_FragColor = cPoly;",
 			"}"
