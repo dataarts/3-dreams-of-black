@@ -10,23 +10,30 @@ var Prairie = function ( shared ) {
 	this.init = function () {
 
 		waypoints = [
-			[ 3223, 930, -2510 ],
-			[ 4400, 885, -2990 ],
-			[ 5711, 820, -3352 ],
-			[ 6988, 775, -3550 ],
-			[ 8364, 730, -3455 ],
-			[ 9875, 736, -2857 ],
-			[ 10855, 736, -2162 ],
-			[ 12145, 736, -1080 ],
-			[ 13022, 740, -524 ],
-			[ 13365, 596, -208 ],
-			[ 13950, -276, 412 ]
+			[ 0, 0, 0 ],
+			[ 104, -6, -44 ],
+			[ 167, -9, -69 ],
+			[ 250, -14, -95 ],
+			[ 336, -17, -111 ],
+			[ 364, -17, -115 ],
+			[ 402, -19, -120 ],
+			[ 467, -19, -122 ],
+			[ 532, -19, -116 ],
+			[ 616, -20, -94 ],
+			[ 696, -20, -60 ],
+			[ 754, -19, -21 ],
+			[ 805, -19, 16 ],
+			[ 883, -18, 80 ],
+			[ 970, -19, 146 ],
+			[ 1028, -18, 182 ],
+			[ 1080, -52, 228 ],
+			[ 1142, -143, 288 ]
 		];
 
 		/*camera = new THREE.QuakeCamera( {
 		fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
-		movementSpeed: 1.5, lookSpeed: 0.0025, noFly: false, lookVertical: true,
-		autoForward: false, heightSpeed: true, heightMin: -1500, heightMax: 1000, heightCoef: 0.0125
+		movementSpeed: 0.75, lookSpeed: 0.0025, noFly: false, lookVertical: true,
+		autoForward: false
 		} );*/
 
 		cameraPath = new THREE.PathCamera( {
@@ -40,7 +47,7 @@ var Prairie = function ( shared ) {
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.3, Math.PI-0.3 ] }
 		 } );
 
-		cameraPath.position.set( 0, 10, 0 );
+		cameraPath.position.set( 0, 5, 0 );
 		cameraPath.lon = 160;
 
 		camera = cameraPath;

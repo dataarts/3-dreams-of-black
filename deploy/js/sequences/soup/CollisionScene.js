@@ -34,11 +34,11 @@ var CollisionScene = function ( camera, shared, collisionDistance ) {
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF } ) );
 
 
-	this.addLoaded = function ( geometry, scale ) {
+	this.addLoaded = function ( geometry, scale, rotation ) {
 
 		var mesh = new THREE.Mesh( geometry, invMaterial2 );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
-
+		mesh.rotation = rotation || new THREE.Vector3();
 		scene.addObject( mesh );
 
 	}

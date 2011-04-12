@@ -110,9 +110,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				toy = vectorArray[f].position.y - 6*1.75;
 			}
 
-			if (toy < 0) {
+			/*if (toy < 0) {
 				toy = 0;
-			}
+			}*/
 
 			// flying
 			if (that.settings.flying) {
