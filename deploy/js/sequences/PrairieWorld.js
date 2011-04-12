@@ -41,6 +41,8 @@ var PrairieWorld = function ( shared ) {
 
 		that.scene.addChild( result.scene );
 
+		console.log("colliders = "+THREE.Collisions.colliders.length);
+
 	};	
 
 	loader.load( "files/models/prairie/Prairie.js", function(){}, prairieLoaded, function(){});
