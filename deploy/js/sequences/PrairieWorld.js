@@ -31,6 +31,14 @@ var PrairieWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
+		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
+
+			var object = result.scene.objects[ i ];
+			object.matrixAutoUpdate = false;
+			object.updateMatrix();
+
+		}
+
 		that.scene.addChild( result.scene );
 
 	};	

@@ -8,7 +8,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0xeeffee, 4, 150 );
+	var pointLight = new THREE.PointLight( 0xeeffee, 4, 100 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -24,11 +24,14 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, shared, 450 );
 	collisionScene.settings.capBottom = 0;
-	loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
+/*	loader.load( { model: "files/models/city/City.Collision_Big.js", callback: collisionLoadedProxy } );
 
 	function collisionLoadedProxy( geometry ) {
-		collisionScene.addLoaded( geometry, 0.1 );
-	}
+		var rotation = new THREE.Vector3(-1.570796,0,0); 
+		var scale = 0.1;
+		var position = new THREE.Vector3(8784.392578*scale, 0.000000, -8654.229492*scale);
+		collisionScene.addLoaded( geometry, scale, rotation, position );
+	}*/
 
 	// vector trail
 	var vectors = new Vectors();
