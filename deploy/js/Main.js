@@ -2,15 +2,53 @@ var WIDTH = 1024, HEIGHT = 436;
 
 var Signal = signals.Signal;
 
-var audio, sequencer,
-camera, camera2, scene, renderer, renderTarget,
-container, shared;
+var launcher, experience;
 
-var loadProgress, tune, time, stats, gui;
+var shared, audio, sequencer,
+camera, camera2, scene, renderer, renderTarget;
 
-init();
+var loadProgress, tune, time, logger, stats, gui;
 
-function init() {
+initLauncher();
+initExperience();
+
+function initLauncher() {
+
+	launcher = document.getElementById( 'launcher' );
+	launcher.style.height = window.innerHeight + 'px';
+
+	var canvas = document.createElement( 'canvas' );
+	canvas.width = 32;
+	canvas.height = window.innerHeight;
+
+	var context = canvas.getContext( '2d' );
+
+	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
+	gradient.addColorStop(0, "#1e4877");
+	gradient.addColorStop(0.5, "#4584b4");
+
+	context.fillStyle = gradient;
+	context.fillRect(0, 0, canvas.width, canvas.height);
+
+	launcher.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
+
+}
+
+function initExperience() {
+
+	experience = document.createElement( 'div' );
+
+	logger = new Logger();
+	logger.domElement.style.position = 'fixed';
+	logger.domElement.style.left = '100px';
+	logger.domElement.style.top = '0px';
+	experience.appendChild( logger.domElement );
+
+	stats = new Stats();
+	stats.domElement.style.position = 'fixed';
+	stats.domElement.style.left = '0px';
+	stats.domElement.style.top = '0px';
+	experience.appendChild( stats.domElement );
 
 	audio = document.getElementById( 'audio' );
 
@@ -19,12 +57,15 @@ function init() {
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
 	renderer.sortObjects = false;
+	experience.appendChild( renderer.domElement );
 
 	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 	renderTarget.minFilter = THREE.LinearFilter;
 	renderTarget.magFilter = THREE.LinearFilter;
 
 	shared = {
+
+		logger: logger,
 
 		baseWidth: WIDTH,
 		baseHeight: HEIGHT,
@@ -109,18 +150,10 @@ function init() {
 
 function start( pattern ) {
 
-	document.body.removeChild( document.getElementById( 'launcher' ) );
+	document.body.removeChild( launcher );
+	document.body.appendChild( experience );
 
-	container = document.createElement( 'div' );
-	container.appendChild( renderer.domElement );
-	document.body.appendChild( container );
-
-	stats = new Stats();
-	stats.domElement.style.position = 'fixed';
-	stats.domElement.style.left = '0px';
-	stats.domElement.style.top = '0px';
-	document.body.appendChild( stats.domElement );
-
+	/*
 	var camera = { fov: 50 }
 
 	gui = new GUI();
@@ -135,6 +168,7 @@ function start( pattern ) {
 	gui.add( this, 'jumpToCity' ).name( 'City' );
 	gui.add( this, 'jumpToPrairie' ).name( 'Prairie' );
 	gui.add( this, 'jumpToDunes' ).name( 'Dunes' );
+	*/
 
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	audio.play();
@@ -146,8 +180,7 @@ function start( pattern ) {
 
 }
 
-// Hack for gui-dat :/
-
+/*
 this.jumpToCity = function () {
 
 	audio.currentTime = tune.getPatternMS( 16 ) / 1000;
@@ -165,6 +198,7 @@ this.jumpToDunes = function () {
 	audio.currentTime = tune.getPatternMS( 48 ) / 1000;
 
 }
+*/
 
 function onDocumentKeyDown( event ) {
 
@@ -228,8 +262,9 @@ function onWindowResize( event ) {
 function animate() {
 
 	requestAnimationFrame( animate, renderer.domElement );
-	render();
 
+	logger.clear();
+	render();
 	stats.update();
 
 }

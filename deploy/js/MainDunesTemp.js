@@ -26,6 +26,8 @@ function init() {
 
 	shared = {
 
+		logger: logger = new Logger(), // hack
+
 		baseWidth: WIDTH,
 		baseHeight: HEIGHT,
 

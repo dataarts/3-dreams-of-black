@@ -78,7 +78,15 @@ var CityWorld = function ( shared ) {
 	}
 
 	function sceneLoaded( result ) {
-		
+
+		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
+
+			var object = result.scene.objects[ i ];
+			object.matrixAutoUpdate = false;
+			object.updateMatrix();
+
+		}
+
 		result.scene.scale.set( 0.1, 0.1, 0.1 );
 		result.scene.updateMatrix();
 		that.scene.addChild( result.scene );
