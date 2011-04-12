@@ -4,12 +4,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// init
 
-	camPos = new THREE.Vector3( 3223, 930, -2510 );
+	camPos = new THREE.Vector3( 0, 5, 0 );
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0xeeffee, - 2.25, 1200 );
+	var pointLight = new THREE.PointLight( 0xeeffee, - 2.25, 120 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -18,13 +18,15 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, shared, 1500 );
+	var collisionScene = new CollisionScene( camera, shared, 400 );
 	collisionScene.settings.maxSpeedDivider = 1;
-	/*loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
+	collisionScene.settings.allowFlying = true;
+	loader.load( { model: "files/models/prairie/Prairie.Collision_Ground.js", callback: collisionLoadedProxy } );
 
 	function collisionLoadedProxy( geometry ) {
-		collisionScene.addLoaded( geometry, 0.1 );
-	}*/
+		var rotation = new THREE.Vector3(-1.570796,0,0); 
+		collisionScene.addLoaded( geometry, 1.0, rotation );
+	}
 
 	// vector trail
 	var vectors = new Vectors(20,3,5);
@@ -46,8 +48,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 */
 	// running animals
 	var runningAnimals = new AnimalSwarm(35, scene, vectors.array);
-	runningAnimals.settings.xPositionMultiplier = 150;
-	runningAnimals.settings.zPositionMultiplier = 100;
+	runningAnimals.settings.xPositionMultiplier = 30;
+	runningAnimals.settings.zPositionMultiplier = 15;
 	runningAnimals.settings.constantSpeed = 2.0
 	//loader.load( { model: "files/models/soup/tarbuffalo.js", callback: animalLoadedProxy } );
 	loader.load( { model: "files/models/soup/bison.js", callback: animalLoadedProxy } );
@@ -57,7 +59,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		for (var i=0; i<35; ++i ) {
 			morphArray[i] = 1;
 		}*/
-		runningAnimals.addAnimal( geometry, null, 1.8, null, 5 );
+		runningAnimals.addAnimal( geometry, null, 0.3, null, 5 );
 	}
 
 
@@ -69,12 +71,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		camPos.z = camera.matrixWorld.n34;
 
 		// temp reset
-		if (camPos.x > 13930) {
+		/*if (camPos.x > 13930) {
 			reset();
-		}
+		}*/
 
 		// update the soup parts	
-		collisionScene.settings.capBottom = camPos.y-80;
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		//ribbons.update(collisionScene.emitterFollow.position);
@@ -91,14 +92,14 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 
 
-	function reset () {
+	/*function reset () {
 		camPos = new THREE.Vector3( 3223, 930, -2510 );
 
 		collisionScene.reset(camPos.x,camPos.y,camPos.z);
 		vectors.reset(camPos.x,camPos.y,camPos.z);
 		runningAnimals.reset(camPos.x,camPos.y,camPos.z);
 
-	}
+	}*/
 
 	this.destruct = function () {
 
