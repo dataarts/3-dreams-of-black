@@ -20,9 +20,9 @@ function parseAEJSON(aj, scene, camera) {
 }
 
 function addPlane(d, s) {
-	var tex = ImageUtils.loadTexture(d.texture);
+	var tex = THREE.ImageUtils.loadTexture(d.texture);
 	var mat = new THREE.MeshBasicMaterial ( {map: tex, blending: THREE.BillboardBlending } );
-	var p = new THREE.Mesh( new Plane(d.width, d.height, 1, 1), mat );
+	var p = new THREE.Mesh( new THREE.Plane(d.width, d.height, 1, 1), mat );
 	p.doubleSided = true;
 	p.position = new THREE.Vector3( d.position.x, d.position.y, d.position.z );
 	p.scale = new THREE.Vector3( d.scale.x, d.scale.y, d.scale.z );
