@@ -79,8 +79,6 @@ var CityWorld = function ( shared ) {
 
 	function sceneLoaded( result ) {
 
-		console.log( result.scene.objects.length );
-
 		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
 
 			var object = result.scene.objects[ i ];
