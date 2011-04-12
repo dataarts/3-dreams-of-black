@@ -33,7 +33,8 @@
 			var ground;
 
 			var marchingcubes, resolution = 32, grid = 32, blob, blobMaterial;
-			var voxel_size = 50, voxel_geometry, voxel_material, voxels = [];
+
+			var voxel_size = 50, voxel_geometry, voxel_material, voxels = [], grid = {};
 
 			var collider, projector, mouse2D, mouse3D, ray;
 
@@ -63,35 +64,56 @@
 
 				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
 
-				sceneBlob = new THREE.Scene();
+				sceneBackground = new THREE.Scene();
+				// sceneBlob = new THREE.Scene();
 				sceneVoxels = new THREE.Scene();
 				sceneCollider = new THREE.Scene();
 
-				sceneVoxels.addLight( new THREE.AmbientLight( 0x404050 ) );
 
-				/*
-				var light = new THREE.DirectionalLight( 0xffffff );
-				light.position.set( 0.5, 0.5, 1 );
-				light.position.normalize();
-				sceneBlob.addLight( light );
-				*/
+				loader = new THREE.JSONLoader();
+				loader.load( { model: "models/D_tile_1.D_tile_1.js", callback: function ( geometry ) {
 
-				var pointLight = new THREE.PointLight( 0xffffff, 0.9 );
-				pointLight.position.set( 1000, 750, 500 );
-				sceneVoxels.addLight( pointLight );
+					var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+					mesh.position.x = 1500;
+					mesh.position.y = - 550;
+					mesh.rotation.x = - 90 * Math.PI / 180;
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.5;
+					sceneBackground.addChild( mesh );
 
-				var pointLight = new THREE.PointLight( 0xffffff, 2 );
-				pointLight.color.setHSV( 0.05, 1.0, 0.5 );
-				pointLight.position.set( - 1000, - 750, - 500 );
-				sceneVoxels.addLight( pointLight );
+				} } );
+
+				sceneBackground.fog = new THREE.Fog( 0xffffff, 1000, 10000 );
+				sceneBackground.fog.color.setHSV( 0.6, 0.1235, 1 );
+
+				var directionalLight1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
+				directionalLight1.position.set( 0.5, 0.75, 1 );
+				directionalLight1.color.setHSV( 0, 0, 1 );
+				sceneBackground.addLight( directionalLight1 );
+
+				var directionalLight2 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
+				directionalLight2.position.set( - 0.5, - 0.75, - 1 );
+				directionalLight2.color.setHSV( 0, 0, 0.306 );
+				sceneBackground.addLight( directionalLight2 );
+
+				//
+
+				var directionalLight1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
+				directionalLight1.position.set( 0.5, 0.75, 1 );
+				directionalLight1.color.setHSV( 0, 0, 1 );
+				sceneVoxels.addLight( directionalLight1 );
+
+				var directionalLight2 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
+				directionalLight2.position.set( - 0.5, - 0.75, - 1 );
+				directionalLight2.color.setHSV( 0, 0, 0.306 );
+				sceneVoxels.addLight( directionalLight2 );
 
 				//
 
 				var plane,
-				geometry = new Plane( 2000, 2000, 16, 16 );
+				geometry = new THREE.Plane( 2000, 2000, 16, 16 );
 
 				collider = new THREE.Object3D(); 
-				material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, depthTest: false, wireframe: true } );
+				material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, wireframe: true } );
 
 				plane = new THREE.Mesh( geometry, material );
 				plane.doubleSided = true;
@@ -112,6 +134,8 @@
 
 				//
 
+				// helper = new THREE.Object3D();
+
 				projector = new THREE.Projector();
 
 				mouse2D = new THREE.Vector3( 0, 0, 0.5 );
@@ -123,49 +147,25 @@
 				marchingcubes.isolation = 40;
 				marchingcubes.scale.x = marchingcubes.scale.y = marchingcubes.scale.z = 800;
 				// marchingcubes.visible = false;
-				sceneBlob.addObject( marchingcubes );
+				// sceneBlob.addObject( marchingcubes );
 
 				//
 
-				ground = new THREE.Mesh( new Plane( 2000, 2000, 41, 41 ), material );
+				ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 41, 41 ), material );
 				ground.position.y = - 500;
 				ground.rotation.x = - 90 * Math.PI / 180;
 				sceneVoxels.addObject( ground );
 
-				voxel_geometry = new Cube( 50, 50, 50 );
-				voxel_material = new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } );
+				voxel_geometry = new THREE.Cube( 50, 50, 50 );
+				voxel_material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
 
 				addVoxel( new THREE.Vector3() );
 
 				//
 
-				helper = new THREE.Mesh( new Sphere( 10 ), new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
-				sceneBlob.addObject( helper );
-
-
-				// Shadow
-
-				shadowCamera = new THREE.Camera( 20, 1, 1, 8000 );
-				shadowCamera.position.y = 7500;
-
-				shadowTexture = new THREE.WebGLRenderTarget( 64, 64 );
-
-				shadowPlane = new THREE.Mesh( new Plane( 3000, 3000 ), new THREE.MeshBasicMaterial( { map: shadowTexture } ) );
-				shadowPlane.position.y = - 500;
-				shadowPlane.rotation.x = - 90 * Math.PI / 180;
-				shadowPlane.rotation.z = - 90 * Math.PI / 180;
-				shadowPlane.scale.x = - 1;
-				shadowPlane.flipSided = true;
-				sceneBlob.addObject( shadowPlane );
-
-				shadowMaterial = new THREE.MeshBasicMaterial( { color: 0xE0E0EA } );
-
-
-				//
-
 				renderer = new THREE.WebGLRenderer( { antialias: false } );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setClearColorHex( 0xffffff );
+				renderer.setClearColorHex( sceneBackground.fog.color.hex );
 				renderer.autoClear = false;
 				container.appendChild( renderer.domElement );
 
@@ -236,8 +236,6 @@
 						collider.updateMatrix();
 						collider.update();
 
-						helper.position.copy( collider.position );
-
 					}
 
 				}
@@ -306,8 +304,6 @@
 
 					if ( intersectedFace && intersects.length > 0 ) {
 
-						helper.position.copy( intersects[ 0 ].point );
-
 						var face = intersectedFace,
 						point = intersects[ 0 ].point,
 						centroidWorld = face.centroid.clone().addSelf( intersectedObject.position ),
@@ -324,19 +320,7 @@
 
 					if ( intersects.length > 0 && intersects[ 0 ].object != ground ) {
 
-						sceneVoxels.removeObject( intersects[ 0 ].object );
-
-						for ( var i = 0, il = voxels.length; i < il; i ++ ) {
-
-							if ( voxels[ i ] == intersects[ 0 ].object ) {
-
-								voxels.splice( i, 1 );
-								updateBlob();
-								return;
-
-							}
-
-						}
+						removeVoxel( intersects[ 0 ].object );
 
 					}
 
@@ -379,35 +363,52 @@
 				// createBlob();
 
 				renderer.clear();
-
-				marchingcubes.materials[ 0 ] = shadowMaterial;
-				shadowPlane.visible = false;
-
-				renderer.render( sceneBlob, shadowCamera, shadowTexture, true );
-
-				marchingcubes.materials[ 0 ] = blobMaterial;
-				shadowPlane.visible = true;
-
-				// renderer.render( sceneBlob, camera );
+				renderer.render( sceneBackground, camera );
 				renderer.render( sceneVoxels, camera );
-				renderer.render( sceneCollider, camera );
+				// renderer.render( sceneCollider, camera );
 
 			}
 
 			function addVoxel( position ) {
 
-				voxel = new THREE.Mesh( voxel_geometry, voxel_material );
-				voxel.position.x = Math.round( position.x / voxel_size ) * voxel_size;
-				voxel.position.y = Math.round( position.y / voxel_size ) * voxel_size;
-				voxel.position.z = Math.round( position.z / voxel_size ) * voxel_size;
-				voxel.matrixAutoUpdate = false;
-				voxel.updateMatrix();
-				voxel.update();
-				sceneVoxels.addObject( voxel );
+				var x = Math.round( position.x / voxel_size );
+				var y = Math.round( position.y / voxel_size );
+				var z = Math.round( position.z / voxel_size );
 
-				voxels.push( voxel );
+				if ( grid[ x + "." + y + "." + z ] == null ) {
 
-				// updateBlob();
+					voxel = new THREE.Mesh( voxel_geometry, voxel_material );
+					voxel.position.x = x * voxel_size;
+					voxel.position.y = y * voxel_size;
+					voxel.position.z = z * voxel_size;
+					voxel.matrixAutoUpdate = false;
+					voxel.updateMatrix();
+					voxel.update();
+					sceneVoxels.addObject( voxel );
+
+					grid[ x + "." + y + "." + z ] = voxel;
+
+					// voxels.push( voxel );
+					// updateBlob();
+
+				}
+
+			}
+
+			function removeVoxel( voxel ) {
+
+				var x = Math.round( voxel.position.x / voxel_size );
+				var y = Math.round( voxel.position.y / voxel_size );
+				var z = Math.round( voxel.position.z / voxel_size );
+
+				grid[ x + "." + y + "." + z ] = null;
+
+				sceneVoxels.removeObject( voxel );
+
+				/*
+				var i = voxels.indexOf( voxel );
+				if ( i !== -1 ) voxels.splice( i, 1 );
+				*/
 
 			}
 
