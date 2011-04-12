@@ -2,42 +2,113 @@ var CityWorld = function ( shared ) {
 
 	var that = this;
 
+	var ENABLE_LENSFLARES = true;
+	
+	this.lensFlare = null;
+	this.lensFlareRotate = null;
+
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0004705882352941177 );
-	this.scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
+	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0 );
+	this.scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
+
 
 	// Lights
 
 	var ambientLight = new THREE.AmbientLight( 0xffffff );
-	//ambientLight.color.setHSV( 0, 0, 0.16470588235294117 );
-	ambientLight.color.setHSV( 0, 0, 0.36470588235294117 );
+	ambientLight.color.setHSV( 0, 0, 0.3 );
 	this.scene.addLight( ambientLight );
 
-	var directionalLight = new THREE.DirectionalLight( 0xffffff );
-	directionalLight.position.set( -0.6,  2.1,  -0.6 );
-	directionalLight.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
-	this.scene.addLight( directionalLight );
+	var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
+	directionalLight1.position.set( -0.6,  2.1,  -0.6 );
+	directionalLight1.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
+	this.scene.addLight( directionalLight1 );
 
 	/*gui.add( directionalLight.position, 'x', -10, 20 ).name( 'x' );
 	gui.add( directionalLight.position, 'y', -10, 20 ).name( 'y' );
 	gui.add( directionalLight.position, 'z', -10, 20 ).name( 'z' );
 	*/
 
-	// Mesh
+	if ( ENABLE_LENSFLARES ) {
 
-	var loader = new THREE.JSONLoader();
+		this.lensFlare = new THREE.LensFlare( THREE.ImageUtils.loadTexture( "files/textures/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
+
+		this.lensFlare.add( THREE.ImageUtils.loadTexture( "files/textures/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
+		this.lensFlare.add( this.lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
+		this.lensFlare.add( this.lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
+
+		this.lensFlare.add( THREE.ImageUtils.loadTexture( "files/textures/lensflare3.png" ), 60, 0.6, THREE.AdditiveBlending );
+		this.lensFlare.add( this.lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveBlending );
+		this.lensFlare.add( this.lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveBlending );
+		this.lensFlare.add( this.lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
+
+		this.lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+		this.lensFlare.position.set( 0, 0, -99000 );
+
+		this.lensFlareRotate = new THREE.Object3D();
+		this.lensFlareRotate.addChild( this.lensFlare );
+
+		this.lensFlareRotate.rotation.x =   9 * Math.PI / 180;
+		this.lensFlareRotate.rotation.y = 358 * Math.PI / 180;
+
+		that.scene.addChild( this.lensFlareRotate );
+
+	}
+
+	// Scene
+
+	var loader = new THREE.SceneLoader();
 
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	// Parts
-	if (!shared.debug) {
-	//loader.load( { model: "files/models/city/City_P1.js", callback: partLoaded } );
-	loader.load( { model: "files/models/city/City_P2.js", callback: partLoaded } );
-	//loader.load( { model: "files/models/city/City_P3.js", callback: partLoaded } );
+	function sceneLoaded( result ) {
+
+		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
+
+			var object = result.scene.objects[ i ];
+			object.matrixAutoUpdate = false;
+			object.updateMatrix();
+
+		}
+
+		result.scene.scale.set( 0.1, 0.1, 0.1 );
+		result.scene.updateMatrix();
+		that.scene.addChild( result.scene );
+
 	}
 
-	function partLoaded ( geometry ) {
+	if (!shared.debug) {
+		loader.load( "files/models/blender/city/City.js", function(){}, sceneLoaded, function(){} );
+	}
+
+	// lens flares custom callback
+	function lensFlareUpdateCallback( object ) {
+			   
+		var f, fl = object.lensFlares.length;
+		var flare;
+		var vecX = -object.positionScreen.x * 2;
+		var vecY = -object.positionScreen.y * 2; 
+
+
+		for( f = 0; f < fl; f++ ) {
+	   
+			flare = object.lensFlares[ f ];
+	   
+			flare.x = object.positionScreen.x + vecX * flare.distance;
+			flare.y = object.positionScreen.y + vecY * flare.distance;
+
+			flare.rotation = 0;
+
+		}
+
+		// hard coded stuff
+
+		object.lensFlares[ 2 ].y += 0.025;
+		object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + 45 * Math.PI / 180;
+
+	}
+
+/*	function partLoaded ( geometry ) {
 
 		// setup base material
 
@@ -239,5 +310,5 @@ var CityWorld = function ( shared ) {
 			].join("\n")
 
 		}
-	}
+	}*/
 }
