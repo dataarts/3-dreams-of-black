@@ -9,7 +9,7 @@ var Dunes = function ( shared ) {
 	var speedStart = 4.0,
 	//var speedStart = 40,
 		speedEnd = 6.0;
-	
+
 	this.init = function () {
 
 		camera = new THREE.QuakeCamera( {
@@ -27,7 +27,7 @@ var Dunes = function ( shared ) {
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			movementSpeed: speedStart, lookSpeed: 0.0035, noFly: false, lookVertical: true,
 			constrainVertical: true, verticalMin: 0, verticalMax: 3,
-			autoForward: false 
+			autoForward: false
 
 		} );*/
 
@@ -60,7 +60,7 @@ var Dunes = function ( shared ) {
 	};
 
 	this.update = function ( progress, time, start, end ) {
-		
+
 		time = new Date().getTime();
 		delta = time - oldTime;
 		oldTime = time;
@@ -68,19 +68,19 @@ var Dunes = function ( shared ) {
 		//THREE.AnimationHandler.update( delta );
 
 		// not too low
-		
+
 		camera.position.y = cap_bottom( camera.position.y, 150 );
 
 		// not too high
-		
+
 		camera.position.y = cap_top( camera.position.y, 5000 );
 
 		// not too high before lift-off
-		
+
 		if ( progress < 0.30 ) {
-			
+
 			camera.position.y = cap_top( camera.position.y, 150 );
-			
+
 			// small bump
 			camera.position.y += Math.sin(time/150);
 			// small roll
@@ -89,21 +89,21 @@ var Dunes = function ( shared ) {
 
 			camera.position.x = 0;
 
-		}	
-		
+		}
+
 		// lift-off
-		
+
 		var localProgres = ( progress - 0.30 ) / ( 0.40 - 0.30 );
-		
+
 		if ( progress > 0.30 && progress < 0.40 ) {
-			
+
 			camera.position.y += 2;
 			camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
-			
+
 			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
 			//world.scene.fog.density = 0.0004 - 0.0001 * localProgres;
 			//renderer.setClearColor( world.scene.fog.color );
-			
+
 		}
 
 
@@ -112,22 +112,25 @@ var Dunes = function ( shared ) {
 
 		renderer.render( world.scene, camera, renderTarget );
 
+		shared.logger.log( "vertices: " + renderer.data.vertices );
+		shared.logger.log( 'faces: ' + renderer.data.faces );
+
 	};
-	
+
 	function cap( val, bottom, top ) {
-		
+
 		return ( val < bottom ) ? bottom : ( val > top ? top : val );
-		
+
 	};
-	
+
 	function cap_bottom( val, bottom ) {
-		
+
 		return val < bottom ? bottom : val;
 
 	};
 
 	function cap_top( val, top ) {
-		
+
 		return val > top ? top : val;
 
 	};

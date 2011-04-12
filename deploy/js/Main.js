@@ -2,11 +2,12 @@ var WIDTH = 1024, HEIGHT = 436;
 
 var Signal = signals.Signal;
 
-var launcher, audio, sequencer,
-camera, camera2, scene, renderer, renderTarget,
-container, shared;
+var launcher, experience;
 
-var loadProgress, tune, time, stats, gui;
+var shared, audio, sequencer,
+camera, camera2, scene, renderer, renderTarget;
+
+var loadProgress, tune, time, logger, stats, gui;
 
 initLauncher();
 initExperience();
@@ -35,6 +36,20 @@ function initLauncher() {
 
 function initExperience() {
 
+	experience = document.createElement( 'div' );
+
+	logger = new Logger();
+	logger.domElement.style.position = 'fixed';
+	logger.domElement.style.left = '100px';
+	logger.domElement.style.top = '0px';
+	experience.appendChild( logger.domElement );
+
+	stats = new Stats();
+	stats.domElement.style.position = 'fixed';
+	stats.domElement.style.left = '0px';
+	stats.domElement.style.top = '0px';
+	experience.appendChild( stats.domElement );
+
 	audio = document.getElementById( 'audio' );
 
 	scene = new THREE.Scene();
@@ -42,12 +57,15 @@ function initExperience() {
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
 	renderer.sortObjects = false;
+	experience.appendChild( renderer.domElement );
 
 	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 	renderTarget.minFilter = THREE.LinearFilter;
 	renderTarget.magFilter = THREE.LinearFilter;
 
 	shared = {
+
+		logger: logger,
 
 		baseWidth: WIDTH,
 		baseHeight: HEIGHT,
@@ -133,16 +151,7 @@ function initExperience() {
 function start( pattern ) {
 
 	document.body.removeChild( launcher );
-
-	container = document.createElement( 'div' );
-	container.appendChild( renderer.domElement );
-	document.body.appendChild( container );
-
-	stats = new Stats();
-	stats.domElement.style.position = 'fixed';
-	stats.domElement.style.left = '0px';
-	stats.domElement.style.top = '0px';
-	document.body.appendChild( stats.domElement );
+	document.body.appendChild( experience );
 
 	/*
 	var camera = { fov: 50 }
@@ -253,8 +262,9 @@ function onWindowResize( event ) {
 function animate() {
 
 	requestAnimationFrame( animate, renderer.domElement );
-	render();
 
+	logger.clear();
+	render();
 	stats.update();
 
 }

@@ -32,7 +32,7 @@ var Prairie = function ( shared ) {
 		cameraPath = new THREE.PathCamera( {
 
 			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
-			waypoints: waypoints, duration: 25, 
+			waypoints: waypoints, duration: 25,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
@@ -79,7 +79,7 @@ var Prairie = function ( shared ) {
 	};
 
 	this.update = function ( f ) {
-	
+
 		time = new Date().getTime();
 		delta = time - oldTime;
 		oldTime = time;
@@ -106,6 +106,9 @@ var Prairie = function ( shared ) {
 		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );
+
+		shared.logger.log( "vertices: " + renderer.data.vertices );
+		shared.logger.log( 'faces: ' + renderer.data.faces );
 
 	};
 
