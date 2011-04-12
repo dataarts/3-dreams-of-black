@@ -2,15 +2,38 @@ var WIDTH = 1024, HEIGHT = 436;
 
 var Signal = signals.Signal;
 
-var audio, sequencer,
+var launcher, audio, sequencer,
 camera, camera2, scene, renderer, renderTarget,
 container, shared;
 
 var loadProgress, tune, time, stats, gui;
 
-init();
+initLauncher();
+initExperience();
 
-function init() {
+function initLauncher() {
+
+	launcher = document.getElementById( 'launcher' );
+	launcher.style.height = window.innerHeight + 'px';
+
+	var canvas = document.createElement( 'canvas' );
+	canvas.width = 32;
+	canvas.height = window.innerHeight;
+
+	var context = canvas.getContext( '2d' );
+
+	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
+	gradient.addColorStop(0, "#1e4877");
+	gradient.addColorStop(0.5, "#4584b4");
+
+	context.fillStyle = gradient;
+	context.fillRect(0, 0, canvas.width, canvas.height);
+
+	launcher.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
+
+}
+
+function initExperience() {
 
 	audio = document.getElementById( 'audio' );
 
@@ -109,7 +132,7 @@ function init() {
 
 function start( pattern ) {
 
-	document.body.removeChild( document.getElementById( 'launcher' ) );
+	document.body.removeChild( launcher );
 
 	container = document.createElement( 'div' );
 	container.appendChild( renderer.domElement );
@@ -121,6 +144,7 @@ function start( pattern ) {
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
+	/*
 	var camera = { fov: 50 }
 
 	gui = new GUI();
@@ -135,6 +159,7 @@ function start( pattern ) {
 	gui.add( this, 'jumpToCity' ).name( 'City' );
 	gui.add( this, 'jumpToPrairie' ).name( 'Prairie' );
 	gui.add( this, 'jumpToDunes' ).name( 'Dunes' );
+	*/
 
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	audio.play();
@@ -146,8 +171,7 @@ function start( pattern ) {
 
 }
 
-// Hack for gui-dat :/
-
+/*
 this.jumpToCity = function () {
 
 	audio.currentTime = tune.getPatternMS( 16 ) / 1000;
@@ -165,6 +189,7 @@ this.jumpToDunes = function () {
 	audio.currentTime = tune.getPatternMS( 48 ) / 1000;
 
 }
+*/
 
 function onDocumentKeyDown( event ) {
 
