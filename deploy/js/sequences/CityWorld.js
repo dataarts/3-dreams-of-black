@@ -19,10 +19,15 @@ var CityWorld = function ( shared ) {
 	this.scene.addLight( ambientLight );
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
-	directionalLight1.position.set( -0.6,  2.1,  -0.6 );
+	directionalLight1.position.set( 0.3939900991012673,  0.9033436622278614,  -0.16953474488413547 );
 	directionalLight1.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
 	directionalLight1.castShadow = true;
 	this.scene.addLight( directionalLight1 );
+
+	var directionalLight2 = new THREE.DirectionalLight( );
+	directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
+	directionalLight2.color.setHSV( 0, 0, 0.1 );
+	this.scene.addLight( directionalLight2 );
 
 	/*gui.add( directionalLight.position, 'x', -10, 20 ).name( 'x' );
 	gui.add( directionalLight.position, 'y', -10, 20 ).name( 'y' );
@@ -48,7 +53,7 @@ var CityWorld = function ( shared ) {
 		this.lensFlareRotate = new THREE.Object3D();
 		this.lensFlareRotate.addChild( this.lensFlare );
 
-		this.lensFlareRotate.rotation.x =   9 * Math.PI / 180;
+		this.lensFlareRotate.rotation.x =   15 * Math.PI / 180;
 		this.lensFlareRotate.rotation.y = 358 * Math.PI / 180;
 
 		that.scene.addChild( this.lensFlareRotate );
