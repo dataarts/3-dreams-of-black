@@ -33,6 +33,12 @@ var City = function ( shared ) {
 		camera.position.set( 0, 10, 0 );
 		camera.lon = 90;
 
+		/*camera = new THREE.QuakeCamera( {
+		fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+		movementSpeed: 100.0, lookSpeed: 0.25, noFly: false, lookVertical: true,
+		autoForward: false
+		} );*/
+
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
 		

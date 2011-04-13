@@ -66,7 +66,7 @@ var CityWorld = function ( shared ) {
 		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
    
 			mesh = THREE.Collisions.colliders[ i ].mesh;
-			mesh.visible = false;
+			mesh.visible = true;
     
 		}
 
@@ -84,27 +84,12 @@ var CityWorld = function ( shared ) {
 		that.scene.addChild( result.scene );
 
 
-		console.log("colliders = "+THREE.Collisions.colliders.length);
-		console.log(THREE.Collisions.colliders);
+		//console.log("colliders = "+THREE.Collisions.colliders.length);
+		//console.log(THREE.Collisions.colliders);
 	
 	}
 
-/*	function initColliders() {
-	
-		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
-			
-			mesh = THREE.Collisions.colliders[ i ].mesh;
-			geo = mesh.geometry;
-			geo.materials[ 0 ][ 0 ].color.setHex( 0xff0000 );
-			geo.materials[ 0 ][ 0 ].wireframe = false;
-			mesh.visible = true;
 
-			console.log("baha = "+mesh);
-
-		}
-
-	};
-*/
 	if (!shared.debug) {
 		loader.load( "files/models/city/City.js", function(){}, sceneLoaded, function(){} );
 	}
