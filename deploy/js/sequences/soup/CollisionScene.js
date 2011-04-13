@@ -42,13 +42,13 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var top = new THREE.Mesh ( cube, material );
 	var bottom = new THREE.Mesh ( cube, material );
 
-	front.visible = false;
+/*	front.visible = false;
 	back.visible = false;
 	left.visible = false;
 	right.visible = false;
 	top.visible = false;
 	bottom.visible = false;
-
+*/
 	scene.addObject( front );
 	scene.addObject( back );
 	scene.addObject( left );
@@ -135,8 +135,11 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			that.emitter.position = positionVector;
 			
 			if (c.normal != undefined) {
-				that.currentNormal.copy( c.normal );
-				//console.log(c.normal.y);
+				that.currentNormal.copy( c.normal ).normalize();
+				var temp = that.currentNormal.z;
+				that.currentNormal.z = that.currentNormal.y;
+				that.currentNormal.y = temp;
+				//console.log(that.currentNormal.x+" - "+that.currentNormal.y+" - "+that.currentNormal.z);
 			}
 
 			//console.log(c.normal);
@@ -156,6 +159,12 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 					var c = THREE.Collisions.rayCastNearest(ray);
 				
 					that.emitter.position.y -= c.distance;
+
+					that.currentNormal.copy( c.normal ).normalize();
+					var temp = that.currentNormal.z;
+					that.currentNormal.z = that.currentNormal.y;
+					that.currentNormal.y = temp;
+
 					//console.log(c.distance);
 
 				}
@@ -163,7 +172,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 			var amount = 6;
 
+			that.emitter.position.x += that.currentNormal.x*amount;
 			that.emitter.position.y += that.currentNormal.y*amount;
+			that.emitter.position.z += that.currentNormal.z*amount;
 
 		} else {
 		
