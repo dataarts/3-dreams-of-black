@@ -16,6 +16,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		zPositionMultiplier : 30,
 		constantSpeed : null,
 		visible : true,
+		shootRayDown : false,
 	}
 	
 	var r = 0;
@@ -68,7 +69,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				count = 0;
 			}
 
-			var obj = { c: mesh, a: animal, f: followIndex, count: count, scale: scale * scaleMultiplier };
+			ray = new THREE.Ray();
+			ray.direction = new THREE.Vector3(0, -1, 0);
+
+			var obj = { c: mesh, a: animal, f: followIndex, count: count, scale: scale * scaleMultiplier, ray: ray  };
 
 			that.array[i] = obj;
 
@@ -173,6 +177,31 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			animal.position.x += moveX;
 			animal.position.y += moveY;
 			animal.position.z += moveZ;
+
+			if (that.settings.shootRayDown) {
+
+				var ray = obj.ray;
+				ray.origin.y = animal.position.y-100;
+				ray.origin.x = animal.position.x;
+				ray.origin.z = animal.position.z;
+	
+				var c = THREE.Collisions.rayCastNearest(ray);
+				if(c) {
+					//var positionVector = new THREE.Vector3();
+					//positionVector.copy( ray.origin );
+					//positionVector.subSelf(ray.direction.multiplyScalar(c.distance*1));
+					var positionVector = ray.origin.clone().subSelf( new THREE.Vector3(0, c.distance, 0) );
+
+					animal.position.y = positionVector.y;
+
+					//console.log(c.distance);
+					//info.innerHTML = "Found @ distance " + c.distance;
+					//sphere.position = ray.origin.clone().subSelf( new THREE.Vector3(0, c.distance - sphereSize/2, 0) );
+				} else {
+					//info.innerHTML = "No intersection";
+				}
+
+			}
 
 			animal.visible = that.settings.visible;
 		}
