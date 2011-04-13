@@ -669,8 +669,9 @@
 			
 			ambientLight.color.setHSV( 0, 0, 0.3 );
 			
-			directionalLight1.position.set( 0.7648718326037581, -0.5885011172553458,  0.2619876231400604 );
+			directionalLight1.position.set( 0.3939900991012673,  0.9033436622278614,  -0.16953474488413547 );
 			directionalLight1.color.setHSV( 0, 0, 0.7352941 );
+			directionalLight1.castShadow = true;
 
 			directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
 			directionalLight2.color.setHSV( 0, 0, 0.1 );
@@ -1221,7 +1222,7 @@
 		};
 
 		function updateDLight2() {
-			
+
 			updateUnitVector( DLIGHT2 );
 					
 			directionalLight2.position.set( DLIGHT2.x, DLIGHT2.y, DLIGHT2.z );
@@ -1230,7 +1231,7 @@
 			tmpVec.copy( directionalLight2.position );
 			tmpVec.multiplyScalar( -1 );
 			arrow2.lookAt( tmpVec );
-			
+
 		};
 
 		function updateALight() {
