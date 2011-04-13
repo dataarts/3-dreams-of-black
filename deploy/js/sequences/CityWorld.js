@@ -21,6 +21,7 @@ var CityWorld = function ( shared ) {
 	var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
 	directionalLight1.position.set( -0.6,  2.1,  -0.6 );
 	directionalLight1.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
+	directionalLight1.castShadow = true;
 	this.scene.addLight( directionalLight1 );
 
 	/*gui.add( directionalLight.position, 'x', -10, 20 ).name( 'x' );
