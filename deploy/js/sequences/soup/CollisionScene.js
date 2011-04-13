@@ -42,12 +42,12 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var top = new THREE.Mesh ( cube, material );
 	var bottom = new THREE.Mesh ( cube, material );
 
-	/*front.visible = false;
+	front.visible = false;
 	back.visible = false;
 	left.visible = false;
 	right.visible = false;
 	top.visible = false;
-	bottom.visible = false;*/
+	bottom.visible = false;
 
 	scene.addObject( front );
 	scene.addObject( back );
