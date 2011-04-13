@@ -22,9 +22,9 @@ var CitySoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, shared, 450 );
+	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 7000 );
 	collisionScene.settings.capBottom = 0;
-	loader.load( { model: "files/models/city/City.Collision_Big.js", callback: collisionLoadedProxy0 } );
+/*	loader.load( { model: "files/models/city/City.Collision_Big.js", callback: collisionLoadedProxy0 } );
 	loader.load( { model: "files/models/city/City.Collision_Big.001.js", callback: collisionLoadedProxy1 } );
 	loader.load( { model: "files/models/city/City.Collision_Big.002.js", callback: collisionLoadedProxy2 } );
 	loader.load( { model: "files/models/city/City.Collision_Big.003.js", callback: collisionLoadedProxy3 } );
@@ -47,7 +47,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function collisionLoadedProxy3( geometry ) {
 		var rotation = new THREE.Vector3(-1.570796,0,1.570797); 
 		collisionScene.addLoaded( geometry, 0.1, rotation );
-	}
+	}*/
 
 	// vector trail
 	var vectors = new Vectors();

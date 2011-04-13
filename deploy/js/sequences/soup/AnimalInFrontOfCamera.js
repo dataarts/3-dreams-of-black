@@ -86,7 +86,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 			animal.lookAt( new THREE.Vector3(x,y,z) );
 
-			animal.rotation.y -= 3.14;
+			//animal.rotation.y -= 3.14;
 
 			animal.position.x = x;
 			animal.position.y = y;
