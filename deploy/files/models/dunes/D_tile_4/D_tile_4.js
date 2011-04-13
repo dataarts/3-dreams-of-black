@@ -5,7 +5,7 @@
  *
  * objects:    2
  * geometries: 2
- * materials:  39
+ * materials:  36
  * textures:   0
  */
 
@@ -126,11 +126,6 @@ var scene = {
         "parameters": { color: 11876351, opacity: 1.00 }
     },
 
-    "Collision.007" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
-    },
-
     "Collision.008" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 11876351, opacity: 1.00 }
@@ -167,11 +162,6 @@ var scene = {
     },
 
     "Desert.006" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 13012822, opacity: 1.00 }
-    },
-
-    "Desert.007" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 13012822, opacity: 1.00 }
     },
@@ -216,11 +206,6 @@ var scene = {
         "parameters": { color: 5190167, opacity: 1.00 }
     },
 
-    "Rock.006" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 5190167, opacity: 1.00 }
-    },
-
     "RocksWhite" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 2960685, opacity: 1.00 }
@@ -258,31 +243,6 @@ var scene = {
 },
 
 
-"cameras" :
-{
-    "default_camera" : {
-        "type"  : "perspective",
-        "fov"   : 60.000000,
-        "aspect": 1.333000,
-        "near"  : 1.000000,
-        "far"   : 10000.000000,
-        "position": [ 0.000000, 0.000000, 10.000000 ],
-        "target"  : [ 0.000000, 0.000000, 0.000000 ]
-    }
-},
-
-
-"lights" :
-{
-    "default_light": {
-        "type"		 : "directional",
-        "direction"	 : [ 0.000000, 1.000000, 1.000000 ],
-        "color" 	 : 16777215,
-        "intensity"	 : 0.80
-    }
-},
-
-
 "transform" :
 {
     "position"  : [ 0.000000, 0.000000, 0.000000 ],
@@ -294,7 +254,7 @@ var scene = {
 {
     "bgcolor" : [ 0.000000, 0.000000, 0.000000 ],
     "bgalpha" : 1.000000,
-    "camera"  : "default_camera"
+    "camera"  : ""
 }
 
 }

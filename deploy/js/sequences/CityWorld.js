@@ -63,6 +63,13 @@ var CityWorld = function ( shared ) {
 
 	function sceneLoaded( result ) {
 
+		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+   
+			mesh = THREE.Collisions.colliders[ i ].mesh;
+			mesh.visible = true;
+    
+		}
+
 		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
 
 			var object = result.scene.objects[ i ];
@@ -71,38 +78,20 @@ var CityWorld = function ( shared ) {
 
 		}
 		
-		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
-   
-			mesh = THREE.Collisions.colliders[ i ].mesh;
-			mesh.visible = false;
-    
-		}
 
 		result.scene.scale.set( 0.1, 0.1, 0.1 );
 		result.scene.updateMatrix();
 		that.scene.addChild( result.scene );
 
-		//initColliders();
 
 		//console.log("colliders = "+THREE.Collisions.colliders.length);
+		//console.log(THREE.Collisions.colliders);
 	
 	}
 
-	/*function initColliders() {
-	
-		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
-			
-			mesh = THREE.Collisions.colliders[ i ].mesh;
-			geo = mesh.geometry;
-			geo.materials[ 0 ][ 0 ].color.setHex( 0xff0000 );
-			mesh.visible = true;
-
-		}
-
-	};*/
 
 	if (!shared.debug) {
-	//	loader.load( "files/models/city/City.js", function(){}, sceneLoaded, function(){} );
+		loader.load( "files/models/city/City.js", function(){}, sceneLoaded, function(){} );
 	}
 
 	// lens flares custom callback

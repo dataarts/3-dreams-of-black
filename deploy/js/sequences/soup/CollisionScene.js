@@ -23,34 +23,37 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var matrix2 = new THREE.Matrix4();
 	var positionVector = new THREE.Vector3();
 
-	/*var scene = new THREE.Scene();
-	
-	var plane = new THREE.Plane( 100, 100, 1, 1 );
-	var invMaterial = new THREE.MeshBasicMaterial( { color:0x0000DE, opacity: 1.0 } );
-	var invMaterial2 = new THREE.MeshBasicMaterial( { color:0x00DE00, opacity: 1.0 } );
-
-	var downPlane = addMesh( plane, 100, 0, 0, 0, -1.57,0,0, invMaterial, true, true );
-	var rightPlane = addMesh( plane, 100, 0, 0, 0, 0,-1.57,0, invMaterial, false, true );
-	var leftPlane = addMesh( plane, 100, 0, 0, 0, 0,1.57,0, invMaterial, false, true );
-	var frontPlane = addMesh( plane, 100, 0, 0, 0, 0,0,-1.57, invMaterial, false, true );
-	var backPlane = addMesh( plane, 100, 0, 0, 0, 0,3.14,1.57, invMaterial, false, true );
-	var upPlane = addMesh( plane, 100, 0, 0, 0, 1.57,0,0, invMaterial, false, true );
-
-	var projector = new THREE.Projector();*/
 	var cube = new THREE.Cube( 5, 5, 5 );
-	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33 } ), false, false );
-	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF } ), false, false );
+	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33 } ) );
+	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF } ) );
 	//that.emitter.visible = false;
 	//that.emitterFollow.visible = false;
 
-	cube = new THREE.Mesh ( 	
-		new THREE.Cube( 3000,3000,5, 1,1,1 ), 
-		new THREE.MeshLambertMaterial( { color: 0x003300 })
-	);
+	// collision boxes
+	var cube = new THREE.Cube( 10000,10000,1, 1,1,1 );
+	var material = new THREE.MeshBasicMaterial( { color: 0x0000FF } );
+	var front = new THREE.Mesh ( cube, material	);
+	var back = new THREE.Mesh ( cube, material );
+	var cube = new THREE.Cube( 1,10000,10000, 1,1,1 );
+	var left = new THREE.Mesh ( cube, material );
+	var right = new THREE.Mesh ( cube, material	);
+	var cube = new THREE.Cube( 10000,1,10000, 1,1,1 );
+	var top = new THREE.Mesh ( cube, material );
+	var bottom = new THREE.Mesh ( cube, material );
 
-	scene.addObject( cube );
-
-	THREE.Collisions.colliders.push( THREE.CollisionUtils.MeshOBB( cube ) );
+	scene.addObject( front );
+	scene.addObject( back );
+	scene.addObject( left );
+	scene.addObject( right );
+	scene.addObject( top );
+	scene.addObject( bottom );
+	
+	THREE.Collisions.colliders.push( THREE.CollisionUtils.MeshOBB( front ) );
+	THREE.Collisions.colliders.push( THREE.CollisionUtils.MeshOBB( back ) );
+	THREE.Collisions.colliders.push( THREE.CollisionUtils.MeshOBB( left ) );
+	THREE.Collisions.colliders.push( THREE.CollisionUtils.MeshOBB( right ) );
+	THREE.Collisions.colliders.push( THREE.CollisionUtils.MeshOBB( top ) );
+	THREE.Collisions.colliders.push( THREE.CollisionUtils.MeshOBB( bottom ) );
 
 	this.addLoaded = function ( geometry, scale, rotation, position ) {
 
@@ -65,34 +68,32 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 	this.update = function (camPos, delta) {
 
-		cube.position.z = camPos.z-5000;
+		right.position.x = camPos.x+that.settings.collisionDistance;
+		left.position.x = camPos.x-that.settings.collisionDistance;
+		right.position.z = camPos.z;
+		right.position.y = camPos.y;
+		left.position.z = camPos.z;
+		left.position.y = camPos.y;
 
-		/*rightPlane.position.x = camPos.x+that.settings.collisionDistance;
-		leftPlane.position.x = camPos.x-that.settings.collisionDistance;
-		rightPlane.position.z = camPos.z;
-		rightPlane.position.y = camPos.y;
-		leftPlane.position.z = camPos.z;
-		leftPlane.position.y = camPos.y;
+		front.position.z = camPos.z-that.settings.collisionDistance;
+		back.position.z = camPos.z+that.settings.collisionDistance;
+		front.position.x = camPos.x;
+		front.position.y = camPos.y;
+		back.position.x = camPos.x;
+		back.position.y = camPos.y;
 
-		frontPlane.position.z = camPos.z-that.settings.collisionDistance;
-		backPlane.position.z = camPos.z+that.settings.collisionDistance;
-		frontPlane.position.x = camPos.x;
-		frontPlane.position.y = camPos.y;
-		backPlane.position.x = camPos.x;
-		backPlane.position.y = camPos.y;
-
-		downPlane.position.y = camPos.y-that.settings.collisionDistance;
-		upPlane.position.y = camPos.y+that.settings.collisionDistance;
-		downPlane.position.x = camPos.x;
-		downPlane.position.z = camPos.z;
-		upPlane.position.x = camPos.x;
-		upPlane.position.z = camPos.z;
+		bottom.position.y = camPos.y-that.settings.collisionDistance;
+		top.position.y = camPos.y+that.settings.collisionDistance;
+		bottom.position.x = camPos.x;
+		bottom.position.z = camPos.z;
+		top.position.x = camPos.x;
+		top.position.z = camPos.z;
 
 		if (that.settings.capBottom != null) {
-			if (downPlane.position.y < that.settings.capBottom) {
-				downPlane.position.y = that.settings.capBottom;
+			if (bottom.position.y < that.settings.capBottom) {
+				bottom.position.y = that.settings.capBottom;
 			}
-		}*/
+		}
 
 		mouse2d.x = ( shared.mouseX / shared.screenWidth ) * 2 - 1;
 		mouse2d.y = - ( shared.mouseY / shared.screenHeight ) * 2 + 1;
@@ -108,56 +109,59 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		//ray.direction.subSelf( camera.position );
 		ray.direction.subSelf( camPos );
 
-//		var nearest = true;
+
+		var c = THREE.Collisions.rayCastNearest( ray );
 		
-//		if ( nearest ) {
+		if( c && c.distance > 0) {
 		
-			var c = THREE.Collisions.rayCastNearest( ray );
+			//console.log(c.distance);
+			positionVector.copy( ray.origin );
+			positionVector.addSelf(ray.direction.multiplyScalar(c.distance*that.settings.scale))
 			
-			if( c ) {
-			
-				//console.log(c.distance);
-				positionVector.copy( ray.origin );
-				positionVector.addSelf(ray.direction.multiplyScalar(c.distance*that.settings.scale))
+			that.emitter.position = positionVector;
+
+			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top) {
+				that.currentNormal.x = 0;
+				that.currentNormal.y = 1;
+				that.currentNormal.z = 0;
+				// not to be airbourne
+				if (!that.settings.allowFlying) {
+					that.emitter.position.y = bottom.position.y;					
+				}
+			}
+
+		} else {
+		
+			// no collsion
+
+		}
+
+		
+		/*var cs = THREE.Collisions.rayCastAll( ray );
 				
-				that.emitter.position = positionVector;
-				//console.log(c.mesh == cube);
-				//info.innerHTML += "Found @ distance " + c.distance;
-				//c.mesh.visible = true;
-
-			} else {
+		if ( cs.length > 0 ) {
 			
-				//info.innerHTML += "No intersection";
+			var c = cs[0];
 
+			//console.log(c.distance);
+			positionVector.copy( ray.origin );
+			positionVector.addSelf(ray.direction.multiplyScalar(c.distance*that.settings.scale))
+			
+			that.emitter.position = positionVector;
+
+			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top) {
+				that.currentNormal.x = 0;
+				that.currentNormal.y = 1;
+				that.currentNormal.z = 0;
+				// not to be airbourne
+				if (!that.settings.allowFlying) {
+					that.emitter.position.y = bottom.position.y;					
+				}
 			}
 			
-		/*} else {
-		
-			var cs = THREE.Collisions.rayCastAll( ray );
-			
-			if ( cs.length > 0 ) {
+		} else {
 
-				//console.log("hello");
-				var c = cs[ 0 ];
-				//console.log(c.distance);
-				positionVector.copy( ray.origin );
-				positionVector.addSelf(ray.direction.multiplyScalar(c.distance))
-				
-				that.emitter.position = positionVector;
-
-				//console.log(positionVector.z);
-
-				for ( var i = 0; i < cs.length; i++ ) {
-										
-					//cs[ i ].mesh.visible = true;
-					//console.log(cs[ i ].distance);
-				} 
-				
-			} else {
-
-				//info.innerHTML = "No intersection";
-
-			}		
+			// no collsion
 
 		}*/
 
@@ -265,13 +269,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		that.emitterFollow.position.z += moveZ;
 
-		//renderer.render( scene, camera );
-		//renderer.render( scene, camera, renderTarget );
-		//renderer.clear();
-
 	}
 
-	function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided, collider ) {
+	function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
 
 		var mesh = new THREE.Mesh( geometry, material );
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
@@ -281,14 +281,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		mesh.rotation.x = rx;
 		mesh.rotation.y = ry;
 		mesh.rotation.z = rz;
-		mesh.doubleSided = doubleSided;
 		mesh.updateMatrix();
 		scene.addObject(mesh);
 
-		if (collider) {
-			var mc = THREE.CollisionUtils.MeshOBB(mesh);
-			THREE.Collisions.colliders.push( mc );
-		}
 		return mesh;
 	}
 

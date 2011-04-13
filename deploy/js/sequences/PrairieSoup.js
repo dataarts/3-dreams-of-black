@@ -21,12 +21,6 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 400 );
 	collisionScene.settings.maxSpeedDivider = 1;
 	collisionScene.settings.allowFlying = true;
-/*	loader.load( { model: "files/models/prairie/Prairie.Collision_Ground.js", callback: collisionLoadedProxy } );
-
-	function collisionLoadedProxy( geometry ) {
-		var rotation = new THREE.Vector3(-1.570796,0,0); 
-		collisionScene.addLoaded( geometry, 1.0, rotation );
-	}*/
 
 	// vector trail
 	var vectors = new Vectors(20,3,5);

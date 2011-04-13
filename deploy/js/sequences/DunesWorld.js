@@ -52,6 +52,8 @@ var DunesWorld = function ( shared ) {
 		scene.position = position;
 		scene.updateMatrix();
 
+		markColliders( scene );
+		
 		that.scene.addChild( scene );
 
 	};
@@ -76,7 +78,7 @@ var DunesWorld = function ( shared ) {
 
 		sceneCity = result.scene;
 		cityPosition = new THREE.Vector3(0,0,2*TILE_SIZE);
-		THREE.SceneUtils.showHierarchy( sceneCity, false );
+		showHierarchyNotColliders( sceneCity, false );
 		addDunesPart( sceneCity, cityPosition );
 
 	};
@@ -89,13 +91,45 @@ var DunesWorld = function ( shared ) {
 
 		result.scene.rotation.z = getRandomRotation();
 		if (x == 1 && (z == 1 || z == 2)) {
-			THREE.SceneUtils.showHierarchy( result.scene, false );
+			showHierarchyNotColliders( result.scene, false );
 		}
 		addDunesPart(result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE));
 
 		tiles[z][x] = result.scene;
 		++randomAdded;
 
+	};
+	
+	function showHierarchyNotColliders( scene, visible ) {
+
+		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
+			
+			if ( ! node.__isCollider ) {
+
+				node.visible = visible; 
+
+			}
+			
+		} );
+		
+	};
+
+	function markColliders( scene ) {
+
+		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
+			
+			for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+				
+				if ( THREE.Collisions.colliders[ i ].mesh == node ) {
+				
+					node.__isCollider = true; 
+
+				}
+
+			}
+			
+		} );
+		
 	};
 
 	// static parts
@@ -210,9 +244,9 @@ var DunesWorld = function ( shared ) {
 		t1.rotation.z = getRandomRotation();
 		t2.rotation.z = getRandomRotation();
 
-		THREE.SceneUtils.showHierarchy( t0, true );
-		THREE.SceneUtils.showHierarchy( t1, true );
-		THREE.SceneUtils.showHierarchy( t2, true );
+		showHierarchyNotColliders( t0, true );
+		showHierarchyNotColliders( t1, true );
+		showHierarchyNotColliders( t2, true );
 
 		var visible0 = showHideStaticTiles(t0.position, true);
 		var visible1 = showHideStaticTiles(t1.position, true);
@@ -220,13 +254,13 @@ var DunesWorld = function ( shared ) {
 
 		// temp, since visible don´t seem to effect scenes
 		if (visible0) {
-			THREE.SceneUtils.showHierarchy( t0, false );
+			showHierarchyNotColliders( t0, false );
 		}
 		if (visible1) {
-			THREE.SceneUtils.showHierarchy( t1, false );
+			showHierarchyNotColliders( t1, false );
 		}
 		if (visible2) {
-			THREE.SceneUtils.showHierarchy( t2, false );
+			showHierarchyNotColliders( t2, false );
 		}
 
 		t0.updateMatrix();
@@ -237,20 +271,21 @@ var DunesWorld = function ( shared ) {
 
 	// for the static tiles
 	function showHideStaticTiles ( position, show ) {
+
 		if (position.x == walkPosition.x && position.z == walkPosition.z) {
-			THREE.SceneUtils.showHierarchy( sceneWalk, show );
+			showHierarchyNotColliders( sceneWalk, show );
 			sceneWalk.updateMatrix();
 			return true;
 		}
 
 		if (position.x == prairiePosition.x && position.z == prairiePosition.z) {
-			THREE.SceneUtils.showHierarchy( scenePrairie, show );
+			showHierarchyNotColliders( scenePrairie, show );
 			scenePrairie.updateMatrix();
 			return true;
 		}
 
 		if (position.x == cityPosition.x && position.z == cityPosition.z) {
-			THREE.SceneUtils.showHierarchy( sceneCity, show );
+			showHierarchyNotColliders( sceneCity, show );
 			sceneCity.updateMatrix();
 			return true;
 		}

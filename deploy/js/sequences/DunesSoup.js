@@ -7,17 +7,11 @@ var DunesSoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, shared, 1500 );
+	var collisionScene = new CollisionScene( camera, scene, 0.15, shared, 5000 );
 	collisionScene.settings.emitterDivider = 2;
 	collisionScene.settings.maxSpeedDivider = 0.01;
 	collisionScene.settings.capBottom = 50;
 	collisionScene.settings.allowFlying = true;
-
-	/*loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
-
-	function collisionLoadedProxy( geometry ) {
-		collisionScene.addLoaded( geometry, 0.1 );
-	}*/
 
 	// vector trail
 	var vectors = new Vectors();
