@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - baked texture test</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#fff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:georgia;
+				text-align:center;
+			}
+			h1 { }
+			a { color:skyblue }
+			canvas { pointer-events:none; z-index:10; }
+			#log { position:absolute; top:0; display:block; text-align:left; z-index:1000; pointer-events:none; }
+			#d { text-align:center; margin:1em 0 0em 0; z-index:0; position:relative; display:block }
+			.button { background:#000; color:#fff; padding:0.2em 0.5em; cursor:pointer }
+			.inactive { background:#999; color:#eee }
+		</style>
+	</head>
+
+	<body>
+		<div id="d">
+			<a href="http://github.com/mrdoob/three.js">three.js</a> - baked texture test
+
+		</div>
+
+		<pre id="log"></pre>
+
+		<script type="text/javascript" src="js/ThreeExtras.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+
+			var container,stats;
+
+			var camera, scene;
+			var renderer;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.Camera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100000 );
+				camera.position.z = 50;
+
+				scene = new THREE.Scene();
+					
+				var loader = new THREE.Loader();
+				loader.loadAscii( { model: "obj/textureTest/textureTest_baked.js", 
+								    callback: function( geometry ) { 
+										
+											var object = new THREE.Mesh( geometry, [ new THREE.MeshFaceMaterial() ] );
+											object.scale.x = object.scale.y = object.scale.z = 2;
+											scene.addObject( object );
+											
+										} 
+									}
+								);
+
+				setInterval(loop, 1000/60);
+				
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				renderer.domElement.style.position = "relative";
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+
+			}
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = ( event.clientX - windowHalfX );
+				mouseY = ( event.clientY - windowHalfY );
+
+			}
+
+			function loop() {
+
+				camera.position.x += ( mouseX - camera.position.x ) * .001;
+				camera.position.y += ( - mouseY - camera.position.y ) * .001;
+
+				renderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+			function log( text ) {
+
+				var e = document.getElementById("log");
+				e.innerHTML = text + "<br/>" + e.innerHTML;
+
+			}
+
+		</script>
+
+	</body>
+</html>

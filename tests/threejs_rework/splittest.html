@@ -1,0 +1,192 @@
+<html>
+	<head>
+		<title>THREE TWO</title>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		<style type="text/css">
+			body {
+				background:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+
+
+		<!-- Signals -->
+
+		<script type="text/javascript" src="js/signals/signals.js"></script>
+		<script type="text/javascript" src="js/signals/Signal.js"></script>
+		<script type="text/javascript" src="js/signals/SignalBinding.js"></script>
+
+
+		<!-- THREE -->
+
+		<script type="text/javascript" src="src/Three.js"></script>
+
+		<script type="text/javascript" src="src/core/Vector2.js"></script>
+		<script type="text/javascript" src="src/core/Vector3.js"></script>
+		<script type="text/javascript" src="src/core/Vector4.js"></script>
+		<script type="text/javascript" src="src/core/Quaternion.js"></script>
+		<script type="text/javascript" src="src/core/Matrix3.js"></script>
+		<script type="text/javascript" src="src/core/Matrix4.js"></script>
+		<script type="text/javascript" src="src/core/Geometry.js"></script>
+		<script type="text/javascript" src="src/core/Vertex.js"></script>
+		<script type="text/javascript" src="src/core/Face3.js"></script>
+		<script type="text/javascript" src="src/core/Face4.js"></script>
+		<script type="text/javascript" src="src/core/Rectangle.js"></script>
+		<script type="text/javascript" src="src/core/UV.js"></script>
+		<script type="text/javascript" src="src/core/Color.js"></script>
+
+		<script type="text/javascript" src="src/extras/io/Loader.js"></script>
+
+		<script type="text/javascript" src="src/objects/Object3D.js"></script>
+		<script type="text/javascript" src="src/objects/Mesh.js"></script>
+		<script type="text/javascript" src="src/objects/Skin.js"></script>
+
+		<script type="text/javascript" src="src/scenes/Scene.js"></script>
+
+		<script type="text/javascript" src="src/cameras/Camera.js"></script>
+		<script type="text/javascript" src="src/cameras/Frustum.js"></script>
+
+		<script type="text/javascript" src="src/extras/primitives/Cube.js"></script>
+		<script type="text/javascript" src="src/extras/primitives/Cylinder.js"></script>
+
+		<script type="text/javascript" src="src/materials/Material.js"></script>
+		<script type="text/javascript" src="src/materials/MeshLambertMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshShaderMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/Material.js"></script>
+		<script type="text/javascript" src="src/materials/LineBasicMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshBasicMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshPhongMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshDepthMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshNormalMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshFaceMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshShaderMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/ParticleBasicMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/ParticleCircleMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/ParticleDOMMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/Texture.js"></script>
+		<script type="text/javascript" src="src/materials/RenderTarget.js"></script>
+		<script type="text/javascript" src="src/materials/Uniforms.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/CubeReflectionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/CubeRefractionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/LatitudeReflectionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/LatitudeRefractionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/SphericalReflectionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/SphericalRefractionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
+
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLRenderer.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLRendererScene.js"></script>
+
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatch.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchProgram.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchAttributes.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchUniforms.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompiler.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchCompilerMaterials.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLShaderDefinitions.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Skin.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Texture.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/shaders/Lambert.js"></script>
+	
+		<script type="text/javascript" src="src/animation/Animation.js"></script>
+		<script type="text/javascript" src="src/animation/AnimationTestData.js"></script>
+	
+		<!-- Experience Code -->
+	
+		<script type="text/javascript">
+
+			var Experience = function()
+			{
+				var renderer;
+				var scene;
+				var mesh, mesh2;
+				var skin;
+				var bone0, bone1, bone2;
+				var camera;
+				var rotationMatrix;
+				var time = 0;
+				var container;
+				var animation;
+				
+				//--- Init ---
+				
+				var startAnimation = function() {
+					
+					animation.play();
+				}
+				
+				var Init = function( buffalo )
+				{
+			
+					document.addEventListener( 'click', startAnimation, false );
+					
+					scene  = new THREE.Scene();
+					skin   = new THREE.Skin( buffalo, buffalo.materials );
+					camera = new THREE.Camera();
+
+					skin.position.z = -220;
+					skin.position.y = 0;
+
+					scene.addChild( skin );
+					scene.addChild( camera );
+
+					animation = new THREE.Animation( skin, buffalo.animation );
+
+					// renderer
+
+					renderer = new THREE.WebGLRenderer();
+					renderer.setSize( window.innerWidth, window.innerHeight );
+
+					var container = document.createElement( "div" );
+					document.body.appendChild( container );
+					container.appendChild( renderer.domElement );
+					
+
+					// start rendering
+
+				    setInterval( Update, 1000/60 );
+				}
+
+
+				var load = function() {
+
+					var loader = new THREE.Loader();
+					loader.loadAscii( { model: "assets/root.js", callback: Init } );
+				}
+				
+				
+				//--- Update ---
+				
+				var Update = function()
+				{
+					animation.update();			
+					
+/*					for( var i = 0; i < skin.bones.length; i++ ) {
+						
+						skin.bones[ i ].rotation.x += 0.1;
+					} 
+	*/				
+					skin.rotation.y += 2;
+	
+					time += 0.01;
+					
+					renderer.render( scene, camera );
+				}
+				
+				
+				//--- public ---
+				
+				return {
+					
+					load: load
+				}
+			}();
+		
+		</script>
+	</head>
+	<body onload="Experience.load();">
+	</body>
+</html>

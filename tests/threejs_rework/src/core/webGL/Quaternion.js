@@ -1,0 +1,4 @@
+THREE.Quaternion = function()
+{
+	// todo
+}

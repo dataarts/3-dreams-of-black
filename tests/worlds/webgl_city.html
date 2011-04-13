@@ -1,0 +1,204 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - city</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #808080;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				display:none;
+			}
+			
+			a { color:red }
+			
+			
+			.bar { width:100%; position:absolute; z-index:200; display:none }
+			#topbar1 { height:75px; background:#000; top:0px;  }
+			#topbar2 { height:200px; background:url(textures/gradient-top.png); top:75px; }
+			#bottombar1 { height:200px; background:url(textures/gradient-bottom2.png); bottom:75px }
+			#bottombar2 { height:75px; background:#000; bottom:0px }
+			
+			#oldie { z-index:500!important; margin-top:15em!important }
+			
+		</style>
+	</head>
+
+	<body>
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - OBJ converter example
+		</div>
+
+		<div id="hud">
+		</div>
+		
+		<div class="bar" id="topbar1"></div>
+		<div class="bar" id="topbar2"></div>
+		<div class="bar" id="bottombar1"></div>
+		<div class="bar" id="bottombar2"></div>
+
+		<script type="text/javascript" src="js/Three.js"></script>
+
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+		
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+
+			var height = window.innerHeight;
+			
+			var container,stats;
+
+			var camera, scene, renderer;
+
+			var mesh, zmesh, geometry;
+
+			var postprocessing = { enabled : true };
+
+			init();
+			animate();
+
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.QuakeCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+												  movementSpeed: 1.2, lookSpeed: 0.0035, noFly: true, lookVertical: true, 
+												  autoForward: true } );
+				camera.position.x = -150;
+				camera.position.y = -580;
+				camera.position.z = 200;
+
+				camera.lon = -95;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x000000, 0.0006 );
+				scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
+				
+				// LIGHTS
+
+				var ambient = new THREE.AmbientLight( 0x221100 );
+				scene.addLight( ambient );
+
+				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 1;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+
+				var pointLight = new THREE.PointLight( 0xffffff, 0.35 );
+				scene.addLight( pointLight );
+
+				initPostprocessing();
+				
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				container.appendChild( renderer.domElement );
+				
+				renderer.setClearColor( scene.fog.color );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				//container.appendChild( stats.domElement );
+
+				var loader = new THREE.Loader(),
+					callbackScene = function( geometry ) { createScene( geometry, 0, 0, 0, 0 ) };
+
+				loader.loadAscii( { model: "obj/max/city.js", callback: callbackScene } );
+
+			}
+
+			function createScene( geometry, x, y, z, b ) {
+
+				var material = new THREE.MeshFaceMaterial();
+				zmesh = new THREE.Mesh( geometry, material );
+				zmesh.position.x = x;
+				zmesh.position.z = y;
+				zmesh.position.y = z;
+				zmesh.scale.x = zmesh.scale.y = zmesh.scale.z = 0.10;
+				zmesh.matrixAutoUpdate = false;
+				zmesh.updateMatrix();
+				scene.addObject(zmesh);
+
+			}
+
+			function initPostprocessing() {
+				
+				postprocessing.scene = new THREE.Scene();		
+				
+				postprocessing.camera = new THREE.Camera();
+				postprocessing.camera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, height / 2, height / - 2, -10000, 10000 );
+				postprocessing.camera.position.z = 100;
+				
+				postprocessing.texture = new THREE.RenderTarget( window.innerWidth, height, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+
+				var film_shader = ShaderUtils.lib["film"];
+				var film_uniforms = Uniforms.clone( film_shader.uniforms );
+				
+				film_uniforms["tDiffuse"].texture = postprocessing.texture;
+				
+				postprocessing.material = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+				postprocessing.material.uniforms.grayscale.value = 0;
+				
+				var quad = new THREE.Mesh( new Plane( window.innerWidth, height ), postprocessing.material );
+				quad.position.z = -500;
+				postprocessing.scene.addObject( quad );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				render();
+				stats.update();
+
+			}
+
+			function render() {
+				
+				//document.getElementById("hud").innerHTML =  camera.position.x.toFixed(0) + " " + camera.position.z.toFixed(0);
+				
+				if ( postprocessing.enabled ) {
+				
+					postprocessing.material.uniforms.time.value += 0.01;
+					
+					renderer.render( scene, camera, postprocessing.texture );
+					renderer.render( postprocessing.scene, postprocessing.camera );
+					
+				} else {
+					
+					renderer.render( scene, camera );
+					
+				}
+				
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

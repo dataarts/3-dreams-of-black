@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>003 - Animated, no paralax</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000000;
+				color:#ffffff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align: left;
+			}
+			
+			#options {
+				padding: 10px;
+				text-aligh: left;
+				font-family: Georgia, serif;
+			}
+			
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="src/Animation2d.js"></script>
+		<script type="text/javascript" src="export/export002.js"></script>
+		
+		<script type="text/javascript">	
+		
+			/*var obj = {};
+			obj.property = {};
+			obj.property.values = {};
+			obj.property.values.x = 3;
+			
+			var ca = "property.values".split(".");
+			
+			var pv = obj;
+			while(p = ca.shift()) pv = pv[p];
+			
+			console.log( "PV is " + pv.x );
+			
+			obj.property.values.x = 5;
+			
+			console.log( "&PV is " + pv.x );
+			
+
+			var serie = [
+				{ t: 0, v: 0 },
+				{ t: 1, v: 2 },
+				{ t: 2, v: 4 },
+				{ t: 3, v: 6 },
+				{ t: 4, v: 8 },
+				{ t: 5, v: 10 },
+				{ t: 6, v: 12 },
+				{ t: 7, v: 14 },
+				{ t: 8, v: 16 },
+				{ t: 9, v: 18 },
+			];
+			
+			
+			var la = 0;
+			function getValueAtTime(t) {
+				for(var i = la; i < serie.length - 1; i++) {
+					var a = serie[i].t;
+					var b = serie[i+1].t;
+					
+					var va = serie[i].v;
+					var vb = serie[i+1].v;
+					
+					if(t == a) {
+						la = a;
+						return va;
+					}
+					
+					if(t == b) {
+						la = b;
+						return vb;
+						break;
+					}
+					
+					if(a < t && b > t) {
+						la = a;
+						return va + (vb - va) * ((t - a) / (b - a));
+						break;
+					}
+				}
+			}
+			
+			
+			for(var i = 0; i <= 9; i += 0.2) {
+				console.log(getValueAtTime(i));
+			}
+			
+			console.log(getValueAtTime(9));*/
+			
+
+			var viewWidth =  window.innerWidth;
+			var aspect = 2.35;
+			
+			var fov = 22.5;
+			var cpt = -30;
+
+			var container, camera, scene, webglRenderer, sky;			
+			
+			var mouseX = 0;
+			var mouseY = 0;
+			var targetPos = new THREE.Vector4();
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+			
+			var layers;
+
+			init();	
+			
+			var startTime = new Date().getTime();
+			var lastTime = new Date().getTime();
+			
+			loop();
+				
+			setInterval(loop, 1000/60);
+			
+			document.addEventListener('mousemove', mouseMove, false);
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				scene = new THREE.Scene();
+				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+
+				camera = new THREE.Camera( fov, aspect, 1, 100000 );
+	
+				layers = parseAEJSON(animation, scene, camera);
+				
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize(viewWidth, viewWidth * 1/aspect);
+					container.appendChild( webglRenderer.domElement );
+				} catch (e) {
+					console.log(e);
+				}
+			}
+			
+			
+
+			function mouseMove(e){
+				mouseX = (event.clientX - windowHalfX) / -windowHalfX;
+				mouseY = (event.clientY - windowHalfY) / windowHalfY;
+			}
+
+			function loop() {
+				time = ((new Date().getTime() - startTime) / 1000) % (animation.totalTime * 2);
+				
+				if(time > animation.totalTime) time = animation.totalTime - (time - animation.totalTime);
+				
+				for(var ln in layers) {
+					var ly = layers[ln];
+					
+					if(ly.keyframes) {			
+						animate(time, ly.keyframes, ly);
+					}
+				}
+				
+				webglRenderer.render( scene, camera );
+			}
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - webgl</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script type="text/javascript" src="src/Three.js"></script>
+
+		<script type="text/javascript" src="src/core/Vector2.js"></script>
+		<script type="text/javascript" src="src/core/Vector3.js"></script>
+		<script type="text/javascript" src="src/core/Vector4.js"></script>
+		<script type="text/javascript" src="src/core/Quaternion.js"></script>
+		<script type="text/javascript" src="src/core/Matrix3.js"></script>
+		<script type="text/javascript" src="src/core/Matrix4.js"></script>
+		<script type="text/javascript" src="src/core/Geometry.js"></script>
+		<script type="text/javascript" src="src/core/Vertex.js"></script>
+		<script type="text/javascript" src="src/core/Face3.js"></script>
+		<script type="text/javascript" src="src/core/Face4.js"></script>
+		<script type="text/javascript" src="src/core/Rectangle.js"></script>
+		<script type="text/javascript" src="src/core/UV.js"></script>
+		<script type="text/javascript" src="src/core/Color.js"></script>
+
+		<script type="text/javascript" src="src/extras/io/Loader.js"></script>
+
+		<script type="text/javascript" src="src/objects/Object3D.js"></script>
+		<script type="text/javascript" src="src/objects/Mesh.js"></script>
+		<script type="text/javascript" src="src/objects/Skin.js"></script>
+		<script type="text/javascript" src="src/objects/Bone.js"></script>
+		<script type="text/javascript" src="src/objects/LOD.js"></script>
+
+		<script type="text/javascript" src="src/scenes/Scene.js"></script>
+		<script type="text/javascript" src="src/cameras/Camera.js"></script>
+
+		<script type="text/javascript" src="src/extras/primitives/Cube.js"></script>
+		<script type="text/javascript" src="src/extras/primitives/Cylinder.js"></script>
+
+		<script type="text/javascript" src="src/materials/Material.js"></script>
+		<script type="text/javascript" src="src/materials/MeshLambertMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshShaderMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/Material.js"></script>
+		<script type="text/javascript" src="src/materials/LineBasicMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshBasicMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshPhongMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshDepthMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshNormalMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshFaceMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/MeshShaderMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/ParticleBasicMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/ParticleCircleMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/ParticleDOMMaterial.js"></script>
+		<script type="text/javascript" src="src/materials/Texture.js"></script>
+		<script type="text/javascript" src="src/materials/RenderTarget.js"></script>
+		<script type="text/javascript" src="src/materials/Uniforms.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/CubeReflectionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/CubeRefractionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/LatitudeReflectionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/LatitudeRefractionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/SphericalReflectionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/SphericalRefractionMapping.js"></script>
+		<script type="text/javascript" src="src/materials/mappings/UVMapping.js"></script>
+
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLRenderer.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/WebGLBlendModes.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatch.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchProgram.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchAttributes.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLBatch/WebGLBatchUniforms.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompiler.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLCompiler/WebGLBatchCompilerMaterials.js"></script>
+		
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderDefinitions.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderSkin.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderTexture.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderLambert.js"></script>
+		<script type="text/javascript" src="src/renderers/WebGL/webGLShaders/WebGLShaderNormal.js"></script>
+	
+		<script type="text/javascript" src="src/animation/Animation.js"></script>
+		<script type="text/javascript" src="src/animation/AnimationHandler.js"></script>
+
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var statsEnabled = true;
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var geometry, objects;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+			init();
+			setInterval( loop, 1000 / 60 );
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				scene = new THREE.Scene();
+			//	scene.fog = new THREE.Fog( 0xffffff, 1, 10000 );
+			
+				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 3500;
+				camera.useTarget = false;
+			
+				scene.addChild( camera );	
+				
+
+				var geometry = new THREE.Cube( 100, 100, 100 );
+				var material = new THREE.MeshShaderMaterial( { vertex_shader: "normalVertex", fragment_shader: "normalFragment" } );
+
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.position.x = 1000;
+				scene.addObject( mesh );
+
+				objects = [];
+
+				objects.push( mesh );
+
+				var amount = 200, child, object = mesh;
+
+				for ( var i = 0; i < amount; i ++ ) {
+
+					child = new THREE.Mesh( geometry, material );
+					child.position.x = 100;
+
+					object.addChild( child );
+					object = child;
+
+					objects.push( child );
+
+				}
+
+				object = mesh;
+
+				for ( var i = 0; i < amount; i ++ ) {
+
+					child = new THREE.Mesh( geometry, material );
+					child.position.x = - 100;
+
+					object.addChild( child );
+					object = child;
+
+					objects.push( child );
+
+				}
+
+				object = mesh;
+
+				for ( var i = 0; i < amount; i ++ ) {
+
+					child = new THREE.Mesh( geometry, material );
+					child.position.y = - 100;
+
+					object.addChild( child );
+					object = child;
+
+					objects.push( child );
+
+				}
+
+				object = mesh;
+
+				for ( var i = 0; i < amount; i ++ ) {
+
+					child = new THREE.Mesh( geometry, material );
+					child.position.y = 100;
+
+					object.addChild( child );
+					object = child;
+
+					objects.push( child );
+
+				}
+
+				object = mesh;
+
+				for ( var i = 0; i < amount; i ++ ) {
+
+					child = new THREE.Mesh( geometry, material );
+					child.position.z = - 100;
+
+					object.addChild( child );
+					object = child;
+
+					objects.push( child );
+
+				}
+
+				object = mesh;
+
+				for ( var i = 0; i < amount; i ++ ) {
+
+					child = new THREE.Mesh( geometry, material );
+					child.position.z = 100;
+
+					object.addChild( child );
+					object = child;
+
+					objects.push( child );
+
+				}
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+	//			renderer.sortObjects = false;
+				container.appendChild( renderer.domElement );
+
+				if ( statsEnabled ) {
+
+					stats = new Stats();
+					stats.domElement.style.position = 'absolute';
+					stats.domElement.style.top = '0px';
+					stats.domElement.style.zIndex = 100;
+					container.appendChild( stats.domElement );
+
+				}
+
+			}
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = ( event.clientX - windowHalfX ) * 10;
+				mouseY = ( event.clientY - windowHalfY ) * 10;
+
+			}
+
+			function loop() {
+
+				var rx = Math.sin( new Date().getTime() * 0.0007 ) * 0.2,
+				ry = Math.sin( new Date().getTime() * 0.0003 ) * 0.1,
+				rz = Math.sin( new Date().getTime() * 0.0002 ) * 0.1;
+
+				camera.position.x += ( mouseX - camera.position.x ) * .05;
+				camera.position.y += ( - mouseY - camera.position.y ) * .05;
+
+				for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+					objects[ i ].rotation.x = rx;
+					objects[ i ].rotation.y = ry;
+					objects[ i ].rotation.z = rz;
+
+				}
+
+				renderer.render( scene, camera );
+
+				if ( statsEnabled ) stats.update();
+
+			}
+
+			function log( text ) {
+
+				var e = document.getElementById("log");
+				e.innerHTML = text + "<br/>" + e.innerHTML;
+
+			}
+
+		</script>
+
+	</body>
+</html>

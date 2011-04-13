@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version='1.1' width='1912px' height='1573px' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+	<defs>
+		<linearGradient id="grad0" gradientUnits="userSpaceOnUse"  x2="1" gradientTransform="matrix(163.95 -92.025 122.45 218.175 102.075 356.462)">
+		<stop offset="0%" stop-color="#4789EB"/>
+		<stop offset="100%" stop-color="#D9E7FB"/>
+		</linearGradient>
+		<linearGradient id="grad1" gradientUnits="userSpaceOnUse"  x2="1" gradientTransform="matrix(-60.5 -250.275 236.725 -113.25 394.85 470.738)">
+		<stop offset="0%" stop-color="#4789EB"/>
+		<stop offset="100%" stop-color="#D9E7FB"/>
+		</linearGradient>
+		<linearGradient id="grad2" gradientUnits="userSpaceOnUse"  x2="1" gradientTransform="matrix(-238.3 -96.125 45.425 -257.925 758.15 295.013)">
+		<stop offset="0%" stop-color="#4789EB"/>
+		<stop offset="100%" stop-color="#D9E7FB"/>
+		</linearGradient>
+		<linearGradient id="grad3" gradientUnits="userSpaceOnUse"  x2="1" gradientTransform="matrix(-245.675 76.875 -128.6 -228.675 784.988 22.2625)">
+		<stop offset="0%" stop-color="#4789EB"/>
+		<stop offset="100%" stop-color="#D9E7FB"/>
+		</linearGradient>
+		<linearGradient id="grad4" gradientUnits="userSpaceOnUse"  x2="1" gradientTransform="matrix(-115.75 229.55 -253.325 -66.825 611.725 -208.225)">
+		<stop offset="0%" stop-color="#4789EB"/>
+		<stop offset="100%" stop-color="#D9E7FB"/>
+		</linearGradient>
+		<linearGradient id="grad5" gradientUnits="userSpaceOnUse"  x2="1" gradientTransform="matrix(152.375 206.9 -174.05 195.675 80.9625 -196.8)">
+		<stop offset="0%" stop-color="#4789EB"/>
+		<stop offset="100%" stop-color="#D9E7FB"/>
+		</linearGradient>
+		<linearGradient id="grad6" gradientUnits="userSpaceOnUse"  x2="1" gradientTransform="matrix(186.85 18.15 -24.15 248.65 31.175 179.025)">
+		<stop offset="0%" stop-color="#4789EB"/>
+		<stop offset="100%" stop-color="#D9E7FB"/>
+		</linearGradient>
+	</defs>
+	<g transform="translate(382.05,611.3)">
+		<path d="M 245.95 275.9 L -90 607.8 L -187.9 375.85 L 245.95 235.9 Z" fill="url(#grad0)"/>
+		<path d="M 373.95 215 L 828.65 729.15 L 73.05 833.5 L 302.65 240.95 Z" fill="url(#grad1)"/>
+		<path d="M 528.85 166.6 L 1529.6 512.65 L 1199.8 960.75 L 526.05 252.55 Z" fill="url(#grad2)"/>
+		<path d="M 535.8 82.35 L 1110.15 -233.65 L 1408.05 119.35 L 561.8 123.4 Z" fill="url(#grad3)"/>
+		<path d="M 919.1 -470.2 L 509.35 50.2 L 478.55 49.55 L 688.6 -611.3 Z" fill="url(#grad4)"/>
+		<path d="M 272.7 74.9 L -382.05 -224.95 L -35 -512.95 L 328.55 25 Q 336.823 77.4447 272.7 74.9 Z" fill="url(#grad5)"/>
+		<path d="M 209.1 211.1 L -313.6 271.4 L -269.4 105.45 L 209.9 160.35 Z" fill="url(#grad6)"/>
+	</g>
+</svg>

@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - geometry - marching cubes - webgl</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+
+		<div id="container"></div> 
+
+		<script type="text/javascript" src="js/ThreeExtras.js"></script>
+		<script type="text/javascript" src="js/ShaderExtras.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+		<script type="text/javascript" src="js/gui.min.js"></script>
+		
+		<script type="text/javascript" src="js/objects/ShadowMesh.js"></script>
+		<script type="text/javascript" src="js/core/Edge.js"></script>
+
+		<script type="text/javascript">
+
+			var container, stats;
+			var camera, scene, renderer;
+			var light, pointLight;
+			var effect, resolution, numBlobs;
+			var mouseX = 0, mouseY = 0;
+
+
+			init();
+			setInterval( loop, 1000 / 60 );
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 0, 0, 200 );
+
+				scene = new THREE.Scene();				
+				
+				pointLight = new THREE.PointLight( 0xffffff );
+				pointLight.position.x = 0;
+				pointLight.position.y = 0;
+				pointLight.position.z = 100;
+				scene.addLight( pointLight );
+
+				var light    = new THREE.DirectionalLight( 0xffffff );
+				
+				light.position.z = -40;
+				light.position.y = 40;
+				light.position.x = 20;
+
+				var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } ),
+					shadow_material = new THREE.MeshLambertMaterial( { color: 0x222222, wireframe: true } );
+
+				addGeometryWithShadow( scene, -20, 0, 0, new Cube( 20, 20, 20 ), material, shadow_material, light );
+				addGeometryWithShadow( scene,  20, 0, 0, new Sphere( 20, 64, 32 ), material, shadow_material, light );
+				
+				var loader = new THREE.Loader(),
+					callbackFemale = function( geometry ) { addGeometryWithShadow( scene,  50, 0, 0, geometry, new THREE.MeshFaceMaterial(), shadow_material, light ) };
+
+				loader.loadBinary( { model: "obj/female02/Female02_bin.js", callback: callbackFemale } );
+				
+				renderer = new THREE.WebGLRenderer( { clearColor: 0xffffff, clearAlpha: 1 } );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				
+				container.innerHTML = "";
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+			}
+
+			function addGeometryWithShadow( scene, x, y, z, geometry, material, shadow_material, light ) {
+			
+				var mesh   = new THREE.Mesh( geometry, material ),
+					shadow = new THREE.ShadowMesh( mesh );
+
+				shadow.calculate( light );
+				
+				var shadowVolumeMesh = new THREE.Mesh( shadow.geometry, shadow_material );
+				
+				mesh.position.set( x, y, z );
+				shadowVolumeMesh.position.set( x, y, z );
+				
+				scene.addObject( mesh );
+				scene.addObject( shadowVolumeMesh );
+				
+			}
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = event.clientX - window.innerWidth  * 0.5;
+				mouseY = event.clientY - window.innerHeight * 0.5;
+			}
+
+			
+			function loop() {
+
+				camera.position.x = mouseX;
+				camera.position.y = mouseY;
+
+				renderer.render( scene, camera );
+				stats.update();
+			}
+
+		</script>
+
+	</body>
+</html>

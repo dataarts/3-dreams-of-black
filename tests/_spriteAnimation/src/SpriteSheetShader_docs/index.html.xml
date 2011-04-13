@@ -1,0 +1,26 @@
+<?xml-stylesheet type="text/xsl" href="docs.xsl"?><javascript fileName="SpriteSheetShader.js">
+    <object_literal name="SpriteSheetShaderSource" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+        <object_literal name="&apos;spriteSheet&apos;" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+            <object_literal name="uniforms" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+                <object_literal name="sheet" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+                    <property name="type" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="String">
+                    </property>
+                    <property name="value" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Number">
+                    </property>
+                    <property name="texture" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="null">
+                    </property>
+                </object_literal>
+                <object_literal name="tileOffsetX" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+                    <property name="type" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="String">
+                    </property>
+                    <property name="value" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+                    </property>
+                </object_literal>
+            </object_literal>
+            <property name="vertexShader" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+            </property>
+            <property name="fragmentShader" scope="static" constructor="false" deprecated="false" private="false" protected="false" ignored="true" internal="false" type="Object">
+            </property>
+        </object_literal>
+    </object_literal>
+</javascript>

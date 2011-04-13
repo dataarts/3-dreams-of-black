@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/services/cron/</url>
+    <description>Repopulate the toplist every minute</description>
+    <!--<schedule>every 1 minutes</schedule>-->
+    
+    <!-- Here's an example using timezone -->
+    <schedule>every day 01:00</schedule>
+    <timezone>Europe/Zurich</timezone>
+  </cron> 
+</cronentries>

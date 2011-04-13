@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>mouseCube</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#2c3333;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+		<!-- test -->
+
+		<script type="text/javascript" src="build/ThreeExtras.js"></script>
+
+		<script type="text/javascript" src="Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = 0;
+
+			var container;
+			var stats;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+			var projector;
+
+			var directionalLight, pointLight;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var render_gl = 1;
+			var has_gl = 0;
+
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var cubefollowX = 0;
+			var cubefollowY = 0;
+
+			var cubeRef;
+			var cubeRefMesh;
+			
+			var emitter;
+			var emitterMesh;
+
+			var cubeArray = [];
+
+			var r = 0;
+
+			var currentNormal;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided ) {
+				
+				var inDouble = doubleSided || false;
+
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = inDouble;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+
+				return mesh;
+			}		
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+				camera.position.z = -130;
+				camera.position.x = -450;
+				camera.position.y = FLOOR+20;
+
+				scene = new THREE.Scene();
+
+				projector = new THREE.Projector();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x222222 );
+				scene.addLight( ambient );
+		
+				//emitter
+				emitter = new Cube( 10, 10, 10, 1, 1 );
+				emitterMesh = addMesh( emitter, 1,  300, FLOOR, -100, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
+				emitterMesh.visible = false;
+
+				// cubes
+				var cube = new Cube( 2, 2, 4, 1, 1 );
+				cube.vertices[2].position.x = 0;
+				cube.vertices[3].position.x = 0;
+				cube.vertices[6].position.x = 0;
+				cube.vertices[7].position.x = 0;
+				cube.vertices[2].position.y = 0;
+				cube.vertices[3].position.y = 0;
+				cube.vertices[6].position.y = -3;
+				cube.vertices[7].position.y = 0;
+
+
+				var material = [new THREE.MeshLambertMaterial( { color: 0x33DD33 } ) , new THREE.MeshLambertMaterial( { color:0x333333, wireframe: true } ) ];
+
+				for (var i=0; i<20; ++i ) {
+					
+					var x = camera.position.x-20*i;
+					var y = camera.position.y-10*i;
+					var z = camera.position.z-5*i;
+	
+					var c = addMesh( cube, 1,  x, FLOOR+150+y, z, 0,0,0, material );
+
+					c.autoUpdateMatrix = false;
+
+					var obj = {c:c, x:x, y:y, z:z, lastx:x, lasty:y, lastz:z, scale:1};
+					cubeArray.push(obj);
+				}
+
+				//cubeRef
+				cubeRef = new Cube( 15, 15, 15, 1, 1 );
+				cubeRefMesh = addMesh( cubeRef, 1,  50, FLOOR, -130, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
+				cubeRefMesh.visible = false;
+				camera.target = cubeRefMesh;
+
+				// planes
+				plane = new Plane( 100, 100, 1, 1 );
+				addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, getMaterial(), true );
+				addMesh( plane, 100,  0, FLOOR+100, 0, 1.57,0,0, getMaterial(), false );
+				frontPlane = addMesh( plane, 50,  camera.position.x+100, camera.position.y, camera.position.z, 0,-1.57,0, getMaterial(), false );
+				backPlane = addMesh( plane, 50,  camera.position.x-100, camera.position.y, camera.position.z, 0,1.57,0, getMaterial(), false );
+				leftPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z-100, 0,0,-1.57, getMaterial(), false );
+				rightPlane = addMesh( emitter, 1000,  camera.position.x, camera.position.y, camera.position.z+5080, 0,0,0, getMaterial(), false );
+
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setFaceCulling(0);
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+				
+			}
+
+			function getMaterial() {
+				var c = Math.random() * 0xffffff;
+				return [ new THREE.MeshLambertMaterial( { color:c, opacity: 0.1 } ) , new THREE.MeshLambertMaterial( { color:0x333333, wireframe: true } ) ];
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+			function runAll () {
+
+				for (var i=0; i<cubeArray.length; ++i ) {
+					var obj = cubeArray[i];
+					var c = obj.c;
+					var x = obj.x;
+					var y = obj.y;
+					var z = obj.z;
+					var scale = obj.scale;
+					var lastx = x;
+					var lasty = y;
+					var lastz = z;
+					
+					if (i == 0) {
+						var tox = emitterMesh.position.x;
+						var toy = emitterMesh.position.y;
+						var toz = emitterMesh.position.z;
+					} else {
+						var tox = cubeArray[i-1].lastx;
+						var toy = cubeArray[i-1].lasty;
+						var toz = cubeArray[i-1].lastz;
+					}
+			
+// The fix
+					var zvec = new THREE.Vector3(tox,toy,toz);
+					zvec.subSelf( c.position ).normalize();
+
+					var xvec = new THREE.Vector3();
+					var yvec = currentNormal.clone();
+
+					xvec.cross(zvec, yvec);
+					yvec.cross(zvec, xvec);
+		
+					c.matrix.n11 = xvec.x; c.matrix.n12 = yvec.x; c.matrix.n13 = zvec.x; c.matrix.n14 = x;
+					c.matrix.n21 = xvec.y; c.matrix.n22 = yvec.y; c.matrix.n23 = zvec.y; c.matrix.n24 = y;
+					c.matrix.n31 = xvec.z; c.matrix.n32 = yvec.z; c.matrix.n33 = zvec.z; c.matrix.n34 = z;
+// - - - - - - - -
+
+					var divider = 5;
+
+					var moveX = (tox-x)/divider;
+					var moveY = (toy-y)/divider;
+					var moveZ = (toz-z)/divider;
+
+					x += moveX;
+					y += moveY;
+					z += moveZ;
+					
+					c.position.x = x;
+					c.position.y = y;
+					c.position.z = z;
+
+					cubeArray[i].x = x;
+					cubeArray[i].y = y;
+					cubeArray[i].z = z;
+					cubeArray[i].lastx = lastx;
+					cubeArray[i].lasty = lasty;
+					cubeArray[i].lastz = lastz;
+
+				}
+			}
+
+			function updateEmitter() {
+				var moveX = (mouseX-followX)/20;
+				var moveY = (mouseY-followY)/20;
+
+				followX += moveX;
+				followY += moveY;
+
+				emitterMesh.position.y = FLOOR;
+
+				var vector = new THREE.Vector3( ( followX / window.innerWidth ) * 2 - 1, - ( followY / window.innerHeight ) * 2 + 1, 0.5 );
+				projector.unprojectVector( vector, camera );
+
+				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+
+				var intersects = ray.intersectScene( scene );
+				
+				if ( intersects.length > 0) {
+					for (var i=0; i<intersects.length; ++i ) {
+						var check;
+						if (vector.z < 0) {
+							check = intersects[i].point.z < camera.position.z;
+						} else {
+							check = intersects[i].point.z > camera.position.z;
+						}
+						if (intersects[i].object != emitterMesh && check && intersects[i].distance > 20) {
+							emitterMesh.position = intersects[i].point;
+
+							var face = intersects[i].face;
+							var object = intersects[i].object;
+
+							var normal = object.rotationMatrix.multiplyVector3( face.normal.clone() );
+							
+							currentNormal = normal;
+
+							break;
+						}
+					}
+
+				}
+				
+			}
+
+
+			function loop() {
+				var dist = 500;
+
+				r += 0.05;
+
+				var mx = ( mouseX - windowHalfX )/100;
+				var my = ( mouseY - windowHalfY )/100;
+
+				var moveX = (mx-cubefollowX)/40;
+				var moveY = (my-cubefollowY)/40;
+
+				cubefollowX += moveX;
+				cubefollowY += moveY;
+				
+				cubeRefMesh.position.x = camera.position.x + (dist*Math.cos(cubefollowX));
+				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX));
+				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY));
+				
+				updateEmitter();
+
+				runAll();
+
+				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

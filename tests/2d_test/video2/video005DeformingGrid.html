@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>video test</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000000;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+		<script type="text/javascript" src="build_r38/Three.js"></script>
+		<script type="text/javascript" src="src/SpriteSheetShaderDeforming.js"></script>
+        <script type="text/javascript" src="src/VideoShaderDeforming.js"></script>
+
+		<video id="video" autoplay loop style="display:none">
+			<source src="s02-1.webm" type='video/webm;'>
+			<source src="s02-1.m4v" type='video/mp4;'>
+			<source src="s02-1.ogv" type='video/ogg;'>
+		</video>
+
+		<script type="text/javascript">			
+			var aspect = window.innerWidth / window.innerHeight;
+			var fov = 45;
+			var adj;
+
+			var container, camera, scene, webglRenderer;			
+			var video, texture, vplane;
+            var grid;
+			
+			var xof = 0;
+			
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+			
+			var targetPos = new THREE.Vector4();
+
+			init();	
+			setTimeout( sequence, 1000/12 );
+			loop();
+				
+			setInterval(loop, 1000/24);
+			
+			document.addEventListener('mousemove', mouseMove, false);
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				camera = new THREE.Camera( fov, aspect, 0.1, 10000 );
+				camera.updateMatrix();
+                camera.target.position.z = -1000;
+
+				scene = new THREE.Scene();
+				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+
+				video = document.getElementById( 'video' );
+				video.addEventListener('ended', onVideoEnd, false);
+				videoTexture = new THREE.Texture( video );
+				videoTexture.minFilter = THREE.LinearFilter;
+				videoTexture.magFilter = THREE.LinearFilter;
+
+				var vidAspect = 544/960;
+                var bufAspect = 129/230;
+				adj = Math.tan( fov * Math.PI / 360 ) * 2 * aspect;
+				
+				var buffaloShader = SpriteSheetShaderSource[ 'spriteSheet' ];
+				var buffaloUniforms = Uniforms.clone( buffaloShader.uniforms );
+				buffaloUniforms[ 'sheet' ].texture = ImageUtils.loadTexture( "textures/buffalo/sbufseq.png" );
+				buffaloUniforms[ 'tileOffsetX' ].value = new THREE.Vector2(0.1, xof);
+                buffaloUniforms[ 'mouseXY' ].value = new THREE.Vector2(mouseX, mouseY);
+
+				buffaloMat = new THREE.MeshShaderMaterial( {
+					uniforms: buffaloUniforms,
+					vertexShader: buffaloShader.vertexShader,
+					fragmentShader: buffaloShader.fragmentShader,
+					blending: THREE.BillboardBlending,
+				} );
+
+				var videoShader = VideoShaderSource[ 'videoSheet' ];
+				var videoUniforms = Uniforms.clone( videoShader.uniforms );
+				videoUniforms[ 'sheet' ].texture = videoTexture;
+                videoUniforms[ 'mouseXY' ].value = new THREE.Vector2(mouseX, mouseY);
+
+				videoMat = new THREE.MeshShaderMaterial( {
+					uniforms: videoUniforms,
+					vertexShader: videoShader.vertexShader,
+					fragmentShader: videoShader.fragmentShader,
+					blending: THREE.BillboardBlending,
+				} );
+
+				callbackGrid   = function( geometry ) {
+                    grid = geometry;
+                    var vplane = new THREE.Mesh( geometry, videoMat);
+                    vplane.position.z = -145;
+                    vplane.scale.x = Math.abs(vplane.position.z) * adj;
+                    vplane.scale.y = Math.abs(vplane.position.z) * adj * vidAspect;
+                    scene.addObject(vplane);
+
+                    addBuffalo(.5, -95, bufAspect, -.5);
+                    addBuffalo(0.9, -125, bufAspect, .24);
+                    addBuffalo(.5, -120, bufAspect, -.25);
+                    addBuffalo(.7, -130, bufAspect, -.5);
+                }
+                var gridLoader = new THREE.JSONLoader();
+                gridLoader.load( { model: "models/grid.js", callback: callbackGrid } );
+               
+				
+				var trainFrame = new THREE.Mesh( new Plane(1.2, 1.2, 100, 50), new THREE.MeshBasicMaterial ( 
+					{
+                        map: ImageUtils.loadTexture( "textures/buffalo/window.png" ),
+                        blending: THREE.BillboardBlending
+                    }
+				)); 	
+						
+				trainFrame.position.z = -90;
+				trainFrame.scale.x = Math.abs(trainFrame.position.z) * adj;
+				trainFrame.scale.y = Math.abs(trainFrame.position.z) * adj * 1/aspect;
+				scene.addObject(trainFrame);
+				
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize( window.innerWidth, window.innerHeight );
+					container.appendChild( webglRenderer.domElement );
+				} catch (e) {
+				}
+			}
+			
+			function addBuffalo(relativeSize, zpos, asp, xp){
+				var buffalo = new THREE.Mesh( grid, buffaloMat );
+				buffalo.position.z = zpos;
+				buffalo.scale.x = adj * Math.abs(zpos);
+				buffalo.scale.y = adj * asp * Math.abs(zpos);
+				buffalo.position.y = adj * Math.abs(zpos) * -0.48 * asp;
+				buffalo.position.x = adj * Math.abs(zpos) * xp;
+				scene.addObject(buffalo);
+			}
+
+			function sequence() {		
+				xof += 0.1;	
+				if(xof > 0.9) xof = 0;
+				buffaloMat.uniforms[ 'tileOffsetX' ].value.y = xof;
+				setTimeout( sequence, 1000/24 );
+			}
+
+			function onVideoEnd() {
+				video.play();
+			}
+			
+			function mouseMove(e){
+				mouseX = (event.clientX - windowHalfX) / -windowHalfX;
+				mouseY = (event.clientY - windowHalfY) / windowHalfY;
+                buffaloMat.uniforms[ 'mouseXY' ].value.x = -mouseX;
+                buffaloMat.uniforms[ 'mouseXY' ].value.y = -mouseY;
+                videoMat.uniforms[ 'mouseXY' ].value.x = -mouseX;
+                videoMat.uniforms[ 'mouseXY' ].value.y = -mouseY;
+			}
+
+			function loop() {
+				if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+					if (videoTexture) videoTexture.needsUpdate = true;
+				}
+				
+				targetPos.x = mouseX * 10;
+				targetPos.y = mouseY * 5;
+				
+				targetPos.z = mouseX * -60;
+				targetPos.w = mouseY * -30;
+				
+				camera.position.x += (targetPos.x - camera.position.x) / 10;
+				camera.position.y += (targetPos.y - camera.position.y) / 10;
+				
+				camera.target.position.x += (targetPos.z - camera.target.position.x) / 10;
+				camera.target.position.y += (targetPos.w - camera.target.position.y) / 10;
+
+				webglRenderer.render( scene, camera );
+			}
+
+
+		</script>
+
+	</body>
+</html>

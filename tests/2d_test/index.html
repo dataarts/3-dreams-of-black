@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 5.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE>2d animation test</TITLE>
+	<META NAME="Generator" CONTENT="EditPlus">
+	<META NAME="Author" CONTENT="Klas">
+	<META NAME="Keywords" CONTENT="2d animation test">
+	
+	<script type="application/javascript" src="main.js"></script>
+	<script type="application/javascript" src="frame_1_12.js"></script>
+	<script type="text/javascript" src="swfobject.js"></script>
+	
+ </HEAD>
+
+<body onLoad="init();">
+	<canvas id="myCanvas" width="640" height="480" >Sorry! You need a modern browser to be able to view this.
+	</canvas>
+
+	<div id="flash">
+			<!-- This is were to put the non flash version. -->
+			<p><a href="http://www.adobe.com/go/getflashplayer">Get Flash Player.</a></p>
+    </div>
+
+	<script type="text/javascript">
+		var flashvars = 
+		{
+			as_swf_name:"website"
+		};
+		var params = 
+		{
+			bgcolor: "#999999",
+			menu: "false",
+			scale: "noborder",
+			salign: "l"
+		};
+		var attributes = {id:'flash', name:'flash'};
+
+		swfobject.embedSWF("flash.swf", "flash", "640", "480", "10.0.15.3", "expressInstall.swf", flashvars, params, attributes);
+	</script>
+</body>
+</HTML>

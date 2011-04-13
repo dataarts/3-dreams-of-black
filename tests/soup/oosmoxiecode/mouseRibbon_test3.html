@@ -1,0 +1,750 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>mouseRibbon</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#2c3333;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+		<!-- test -->
+
+		<script type="text/javascript" src="build_r34/Three.js"></script>
+
+		<script type="text/javascript" src="greycity.js"></script>
+		<script type="text/javascript" src="Ribbon.js"></script>
+
+		<script type="text/javascript" src="Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = 0;
+
+			var container;
+			var stats;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+			var projector;
+
+			var directionalLight, pointLight;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var render_gl = 1;
+			var has_gl = 0;
+
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var cubefollowX = 0;
+			var cubefollowY = 0;
+
+			var cubeRef;
+			var cubeRefMesh;
+			
+			var emitter;
+			var emitterMesh;
+
+			var frontPlane;
+			var backPlane;
+			var leftPlane;
+			var rightPlane;
+
+			var cubeArray = [];
+			var ribbonArray = [];
+			var ribbonMeshArray = [];
+
+			var animalArray = [];
+			var particleArray = [];
+
+			var numOfVectors = 30;
+			var numOfRibbons = 6;
+			var numOfAnimals = 18;
+
+			var currentNormal = new THREE.Vector3(0,1,0);
+
+			var r = 0;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided ) {
+				
+				var inDouble = doubleSided || false;
+
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = inDouble;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+
+				return mesh;
+			}		
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+				camera.position.z = -130;
+				camera.position.x = -450;
+				camera.position.y = FLOOR+20;
+
+				scene = new THREE.Scene();
+
+				projector = new THREE.Projector();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x666666 );
+				scene.addLight( ambient );
+
+				directionalLight = new THREE.DirectionalLight( 0x666666, 1.0 );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 2;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+				
+				pointLight = new THREE.PointLight( 0xddffdd );
+				pointLight.position.x = camera.position.x;
+				pointLight.position.y = camera.position.y;
+				pointLight.position.z = camera.position.z;
+				scene.addLight( pointLight, 1.0 );
+
+				greyCity();
+				
+				//emitter
+				emitter = new Cube( 10, 10, 10, 1, 1 );
+				emitterMesh = addMesh( emitter, 1,  300, FLOOR, -100, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFFFF33 } ) );
+				emitterMesh.visible = false;
+
+				//cubeRef
+				cubeRef = new Cube( 15, 15, 15, 1, 1 );
+				cubeRefMesh = addMesh( cubeRef, 1,  50, FLOOR, -130, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
+				cubeRefMesh.visible = false;
+				camera.target = cubeRefMesh;
+
+				// vectors
+				for (var i=0; i<numOfVectors+20; ++i ) {
+					var x = camera.position.x-20;
+					var y = camera.position.y-10;
+					var z = camera.position.z;
+	
+					var obj = {x:x, y:y, z:z, lastx:x, lasty:y, lastz:z, normalx:0, normaly:0, normalz:0, scale:1};
+					cubeArray.push(obj);
+				}
+	
+				// ribbons
+				var ribbonMaterials = [	
+										[ new THREE.MeshLambertMaterial( { color:0xf89010 } ) ],
+										[ new THREE.MeshLambertMaterial( { color:0x98f800 } ) ],
+										[ new THREE.MeshLambertMaterial( { color:0x5189bb } ) ],
+										[ new THREE.MeshLambertMaterial( { color:0xe850e8 } ) ],
+										[ new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ) ],
+										[ new THREE.MeshLambertMaterial( { color:0x08a620 } ) ]
+										  ];
+
+				for (var k=0; k<numOfRibbons; ++k ) {
+				
+					var ribbon = new Ribbon(15,6,numOfVectors-2);
+					var ribbonMesh = new THREE.Mesh( ribbon, ribbonMaterials[k%6] );
+					ribbonMesh.doubleSided = true;
+					scene.addObject( ribbonMesh );
+
+					var offset = Math.floor( Math.random()*20 );
+
+					var obj = {r:ribbon, rm:ribbonMesh, offset:offset}
+
+					ribbonArray.push(obj);
+					ribbonMeshArray.push(ribbonMesh);
+				}
+
+				// animals
+				var animalMaterial = new THREE.MeshLambertMaterial( { color: 0xFFFFFF } );
+
+				var cube = new Cube( 10, 10, 15, 1, 1 );
+				cube.vertices[2].position.x = 0;
+				cube.vertices[3].position.x = 0;
+				cube.vertices[6].position.x = 0;
+				cube.vertices[7].position.x = 0;
+				cube.vertices[2].position.y = 0;
+				cube.vertices[3].position.y = 0;
+				cube.vertices[6].position.y = -8;
+				cube.vertices[7].position.y = 0;
+
+				for (var i=0; i<numOfAnimals; ++i ) {
+					var scale = 0.05+(Math.random()/5);
+					if (i<2) {
+						scale = 0.5;
+					}
+			
+					var x = camera.position.x-100;
+					var y = camera.position.y-100;
+					var z = camera.position.z;
+
+					//var animal = addMesh( cubeRef, scale,  x, y, z, Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI, animalMaterial );
+					var animal = addMesh( cube, scale,  x, y, z, 0, 0, 0, animalMaterial );
+					
+					animal.matrixAutoUpdate = false;
+
+					var followIndex = i*2;
+					var obj = {c:animal, x:x, y:y, z:z, f:followIndex, scale:scale};
+						
+					animalArray.push(obj);
+				}
+
+				// particles
+				var geometry = new THREE.Geometry();
+
+				for (var i = 0; i < 20; i++) {
+					var vector = new THREE.Vector3( Math.random() * 20 - 10, Math.random() * 20 - 10, Math.random() * 20 - 10 );
+					geometry.vertices.push( new THREE.Vertex( vector ) );					
+				}
+
+				var particleColors = [0xdef8b4, 0xe6f2d2, 0xf89010, 0xd3f2a1, 0x98f800, 0xf5f9ee, 0x5189bb, 0xd0f792, 0xe850e8, 0xc5f5ee, 0xf1f1f1, 0x8feccc, 0x08a620];
+
+				for (var i = 0; i < 45; i++) {
+					var particleMaterial = new THREE.ParticleBasicMaterial( { color:particleColors[i%13], size: 1, opacity: 1.0} );
+
+					var particles = new THREE.ParticleSystem( geometry, particleMaterial );
+					particles.rotation.x = Math.random() * Math.PI;
+					particles.rotation.y = Math.random() * Math.PI;
+					particles.rotation.z = Math.random() * Math.PI;
+					
+					var x = camera.position.x-100;
+					var y = camera.position.y-100;
+					var z = camera.position.z;
+					
+					particles.position.x = x;
+					particles.position.y = y;
+					particles.position.z = z;
+
+					var obj = {c:particles, alivetime:i, x:x, y:y, z:z};
+					particleArray.push(obj);
+
+					particles.updateMatrix();
+					scene.addObject( particles );
+
+				}
+
+				// plane
+				plane = new Plane( 100, 100, 1, 1 );
+
+				addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, new THREE.MeshLambertMaterial( { color:0x777777 } ), true );
+
+				//var roof = addMesh( plane, 100,  0, FLOOR+250, 0, 1.57,0,0, new THREE.MeshLambertMaterial( { color:0xDEFFFF } ), false );
+				//roof.visible = false;
+
+				var invMaterial = new THREE.MeshLambertMaterial( { color:0xDE0000, opacity: 0 } );
+
+				frontPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z, 0,-1.57,0, invMaterial, false );
+				backPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z, 0,1.57,0, invMaterial, false );
+				leftPlane = addMesh( plane, 50,  camera.position.x, camera.position.y, camera.position.z-200, 0,0,-1.57, invMaterial, false );
+				
+				rightPlane = addMesh( emitter, 1000,  camera.position.x, camera.position.y, camera.position.z+5080, 0,0,0, invMaterial, false );
+
+				/*frontPlane.visible = true;
+				backPlane.visible = true;
+				leftPlane.visible = true;
+				rightPlane.visible = true;*/
+				
+				// animals
+				//var loader = new THREE.Loader();
+				//loader.loadAscii( { model: "assets/buffalo/spine1.js", callback: animalLoaded } );
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setFaceCulling(0);
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+				
+			}
+
+			/*function animalLoaded( geometry ) {
+
+				console.log("loaded");
+
+				var texture = { color: 0xffffff, map: ImageUtils.loadTexture( "assets/buffalo/Buffalo_Body4.png" ), blending: THREE.BillboardBlending, skinning: true };
+				var material = new THREE.MeshBasicMaterial( texture );
+				
+				for (var i=0; i<numOfAnimals; ++i ) {
+					var animal = new THREE.SkinnedMesh( geometry, material );
+
+					var scale = 0.005+(Math.random()/5);
+					if (i<2) {
+						scale = 0.2;
+					}
+					animal.scale.x = animal.scale.y = animal.scale.z = scale;
+
+					var x = camera.position.x-100;
+					var y = camera.position.y-100;
+					var z = camera.position.z;
+
+					animal.position.x = x;
+					animal.position.y = y;
+					animal.position.z = z;
+
+					//animal.matrixAutoUpdate = false;
+
+					animal.rotation.x = Math.random()*Math.PI;
+					animal.rotation.y = Math.random()*Math.PI;
+					animal.rotation.z = Math.random()*Math.PI;
+
+					scene.addObject( animal );
+					var animation = new THREE.Animation( animal, geometry.animation );
+					animation.play();
+
+					var followIndex = i*2;
+					var obj = {c:animal, a:animation, x:x, y:y, z:z, f:followIndex, scale:scale};
+
+					animalArray.push(obj);
+				}
+
+			}*/
+
+			function getMaterial() {
+				var c = Math.random() * 0xffffff;
+				return [ new THREE.MeshLambertMaterial( { color:c } ) , new THREE.MeshLambertMaterial( { color:0x333333, wireframe: true } ) ];
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+
+			function runAll () {
+
+				for (var k=0; k<ribbonArray.length; ++k ) {
+					var ribbonMesh = ribbonArray[k].rm;
+					ribbonMesh.position = emitterMesh.position;
+				}
+
+				for (var i=0; i<cubeArray.length; ++i ) {
+					var obj = cubeArray[i];
+					var x = obj.x;
+					var y = obj.y;
+					var z = obj.z;
+					var scale = obj.scale;
+					var lastx = x;
+					var lasty = y;
+					var lastz = z;
+
+					var normalx = obj.normalx;
+					var normaly = obj.normaly;
+					var normalz = obj.normalz;
+					
+					if (i == 0) {
+						var tox = emitterMesh.position.x;
+						var toy = emitterMesh.position.y;
+						var toz = emitterMesh.position.z;
+
+						var tonormalx = currentNormal.x;
+						var tonormaly = currentNormal.y;
+						var tonormalz = currentNormal.z;
+
+					} else {
+						var tox = cubeArray[i-1].lastx;
+						var toy = cubeArray[i-1].lasty;
+						var toz = cubeArray[i-1].lastz;
+
+						var tonormalx = cubeArray[i-1].normalx;
+						var tonormaly = cubeArray[i-1].normaly;
+						var tonormalz = cubeArray[i-1].normalz;
+					}
+
+					var divider = 3;
+
+					var moveX = (tox-x)/divider;
+					var moveY = (toy-y)/divider;
+					var moveZ = (toz-z)/divider;
+
+					x += moveX;
+					y += moveY;
+					z += moveZ;
+
+					var normaldivider = 48;
+
+					var moveNormalX = (tonormalx-normalx)/normaldivider;
+					var moveNormalY = (tonormaly-normaly)/normaldivider;
+					var moveNormalZ = (tonormalz-normalz)/normaldivider;
+
+					normalx += moveNormalX;
+					normaly += moveNormalY;
+					normalz += moveNormalZ;
+
+
+					if (y < FLOOR+5) {
+						y = FLOOR+5;
+					}
+
+					// ribbons
+					for (var k=0; k<ribbonArray.length; ++k ) {
+						var ribbon = ribbonArray[k].r;
+						var offset = ribbonArray[k].offset;
+
+						if (i < offset) {
+							continue;
+						}
+
+						var pulse = Math.cos((i-r*10)/10)*5;
+
+						var pulse2 = Math.cos((i-r*10)/8)*10;
+
+						var inc = (Math.PI*2)/ribbonArray.length;
+						var thisinc = k*inc;
+						var offsetz = Math.cos(thisinc+((i-r*10)/8))*pulse;
+						var offsety = Math.sin(thisinc+((i-r*10)/8))*pulse;
+
+						for (var j=0; j<2; ++j ) {
+							var index = ((i-offset)*2)+j;
+
+							if (ribbon.vertices[index] == undefined) {
+								continue;
+								break;
+							}
+
+							// for twister
+							var adder = i-(r*2);
+							var w = Math.max(0.25, i/(10+pulse2));
+							w = Math.min(w, 2)
+							var extrax = Math.cos(adder/3)*w;
+							var extray = Math.sin(adder/3)*w;
+
+							ribbon.vertices[index].position.x = x - emitterMesh.position.x;
+							if (j==0) {
+								ribbon.vertices[index].position.y = y+extray+offsety - emitterMesh.position.y;
+								ribbon.vertices[index].position.z = z+extrax+offsetz - emitterMesh.position.z;
+							} else {
+								ribbon.vertices[index].position.y = y-extray+offsety - emitterMesh.position.y;
+								ribbon.vertices[index].position.z = z-extrax+offsetz - emitterMesh.position.z;						
+							}
+						}
+
+					}
+
+
+					cubeArray[i].x = x;
+					cubeArray[i].y = y;
+					cubeArray[i].z = z;
+
+					cubeArray[i].normalx = normalx;
+					cubeArray[i].normaly = normaly;
+					cubeArray[i].normalz = normalz;
+
+					cubeArray[i].lastx = lastx;
+					cubeArray[i].lasty = lasty;
+					cubeArray[i].lastz = lastz;
+
+				}
+
+				// animals
+				for (var i=0; i<animalArray.length; ++i ) {
+					var obj =  animalArray[i]
+					var animal = obj.c;
+					var x = obj.x;
+					var y = obj.y;
+					var z = obj.z;
+					var f = obj.f;
+					var scale = obj.scale;
+
+					var pulse = Math.cos((i-r*10)/20)*12;
+
+					var inc = (Math.PI*2)/6;
+					var thisinc = i*inc;
+					var offsetz = Math.cos(thisinc+((i-r*5)/8))*pulse;
+					var offsety = Math.sin(thisinc+((i-r*5)/8))*pulse;
+
+
+					var tox = cubeArray[f].x;
+					var toy = cubeArray[f].y+offsety;
+					var toz = cubeArray[f].z+offsetz;
+
+					var divider = 6;
+
+					var moveX = (tox-x)/divider;
+					var moveY = (toy-y)/divider;
+					var moveZ = (toz-z)/divider;
+
+
+					var zvec = new THREE.Vector3(tox,toy,toz);
+					zvec.subSelf( animal.position ).normalize();
+
+					var xvec = new THREE.Vector3();
+					//var yvec = currentNormal.clone();
+					var yvec = new THREE.Vector3(cubeArray[f].normalx, cubeArray[f].normaly, cubeArray[f].normalz);
+
+
+					xvec.cross(zvec, yvec);
+					yvec.cross(zvec, xvec);
+		
+					animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = x;
+					animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = y;
+					animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = z;
+
+					//animal.matrixWorld.scale( scale );
+
+					/*animal.rotation.x += 0.02;
+					animal.rotation.y += 0.02;
+					animal.rotation.z += 0.01;*/
+
+					animal.position.x = x;
+					animal.position.y = y;
+					animal.position.z = z;
+
+					x += moveX;
+					y += moveY;
+					z += moveZ;
+
+					animalArray[i].x = x;
+					animalArray[i].y = y;
+					animalArray[i].z = z;
+				}
+
+				// particles
+				for (var i=0; i<particleArray.length; ++i ) {
+					var particles = particleArray[i].c;
+
+					particleArray[i].alivetime += 0.6;
+					if (particleArray[i].alivetime >= 45) {
+						particleArray[i].alivetime = 0;
+						particles.scale.x = particles.scale.y = particles.scale.z = 0.00001;
+						particles.position.x = cubeArray[0].x;
+						particles.position.y = cubeArray[0].y;
+						particles.position.z = cubeArray[0].z;
+
+						particleArray[i].x = particles.position.x;
+						particleArray[i].y = particles.position.y;
+						particleArray[i].z = particles.position.z;
+	
+						particles.materials[0].opacity = 0;
+						continue;
+					}
+
+					var alivetime = particleArray[i].alivetime;
+
+					particles.position.y += 0.15;
+
+					particles.rotation.y += 0.015;
+					particles.rotation.z += 0.005;
+
+					var scale = alivetime/100;
+					//scale = Math.max(scale,0.05);
+					particles.scale.x = particles.scale.y = particles.scale.z = 0.1+scale;
+
+					var alpha = 1-(alivetime/50);
+					alpha = Math.min(alpha,0.75);
+					particles.materials[0].opacity = alpha;
+				}
+
+
+				pointLight.position.x = cubeArray[0].x;
+				pointLight.position.y = cubeArray[0].y;
+				pointLight.position.z = cubeArray[0].z;
+
+
+			}
+
+			function updateEmitter() {
+				var moveX = (mouseX-followX)/20;
+				var moveY = (mouseY-followY)/20;
+
+				followX += moveX;
+				followY += moveY;
+
+				emitterMesh.position.y = FLOOR;
+
+				var vector = new THREE.Vector3( ( followX / window.innerWidth ) * 2 - 1, - ( followY / window.innerHeight ) * 2 + 1, 0.5 );
+				projector.unprojectVector( vector, camera );
+
+				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+
+				var intersects = ray.intersectScene( scene );
+				
+				if ( intersects.length > 0) {
+					for (var i=0; i<intersects.length; ++i ) {
+						var check;
+						if (vector.z < 0) {
+							check = intersects[i].point.z < camera.position.z;
+						} else {
+							check = intersects[i].point.z > camera.position.z;
+						}
+						var hitRibbon = false;
+						for (var j=0; j<ribbonMeshArray.length; ++j ) {
+							var rm = ribbonMeshArray[j];
+							if (intersects[i].object == rm) {
+								hitRibbon = true;
+								break;
+							}	
+						}
+
+						var hitAnimal = false;
+						for (var j=0; j<animalArray.length; ++j ) {
+							var animal = animalArray[j].c;
+							if (intersects[i].object == animal) {
+								hitAnimal = true;
+								break;
+							}	
+						}
+						 
+
+						if (check && intersects[i].object != emitterMesh && !hitRibbon && !hitAnimal) {
+							emitterMesh.position = intersects[i].point;
+							
+							// restrict height
+							if (emitterMesh.position.y > (FLOOR+150)) {
+								emitterMesh.position.y = (FLOOR+150);
+							}
+
+							var face = intersects[i].face;
+							var object = intersects[i].object;
+
+							var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
+							//console.log(normal.x+" - "+normal.y+" - "+normal.z)
+							
+							currentNormal = normal;
+
+							// walls
+							if (intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane) {
+								currentNormal.x = 0;
+								currentNormal.y = 1;
+								currentNormal.z = 0;						
+							}
+
+							var amount = 8;
+
+							if (currentNormal.x < -0.8) {
+								emitterMesh.position.x = intersects[i].point.x - amount;
+							}
+							if (currentNormal.x > 0.8) {
+								emitterMesh.position.x = intersects[i].point.x + amount;
+							}
+
+							if (currentNormal.y < -0.8) {
+								emitterMesh.position.y = intersects[i].point.y - amount;
+							}
+							if (currentNormal.y > 0.8) {
+								emitterMesh.position.y = intersects[i].point.y + amount;
+							}
+
+							if (currentNormal.z < -0.8) {
+								emitterMesh.position.z = intersects[i].point.z - amount;
+							}
+							if (currentNormal.z > 0.8) {
+								emitterMesh.position.z = intersects[i].point.z + amount;
+							}
+
+
+							// stay on floor
+							/*if (intersects[i].object == frontPlane || intersects[i].object == backPlane || intersects[i].object == leftPlane) {
+								emitterMesh.position.y = FLOOR+7;
+							}*/
+
+							break;
+						}
+					}
+
+				}
+				
+			}
+
+
+			function loop() {
+				var dist = 500;
+
+				r += 0.05;
+
+				camera.position.x += 0.35;
+
+				if (camera.position.x > 200 ) {
+					camera.position.x = -450;
+				}
+
+				var mx = ( mouseX - windowHalfX )/100;
+				var my = ( mouseY - windowHalfY )/100;
+
+				var moveX = (mx-cubefollowX)/40;
+				var moveY = (my-cubefollowY)/40;
+
+				cubefollowX += moveX;
+				cubefollowY += moveY;
+				
+				cubeRefMesh.position.x = camera.position.x + (dist*Math.cos(cubefollowX));
+				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX));
+				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY));
+				
+				frontPlane.position.x = camera.position.x+240;
+				backPlane.position.x = camera.position.x-120;
+				frontPlane.updateMatrix();
+				backPlane.updateMatrix();
+
+				camera.updateMatrix();
+				camera.update();
+
+				updateEmitter();
+
+				runAll();
+
+				for (var k=0; k<ribbonArray.length; ++k ) {
+					var ribbon = ribbonArray[k].r;
+					ribbon.__dirtyVertices = true;
+				}
+
+				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Desert mock-up (move mouse to rotate, left button to walk forward)</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#DEFFFF;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+		<script type="text/javascript" src="build/ThreeExtras.js"></script>
+
+		<script type="text/javascript" src="Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = 0;
+
+			var container;
+			var stats;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+
+			var directionalLight, pointLight;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var render_gl = 1;
+			var has_gl = 0;
+
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var leftMouse = false;
+			var rightMouse = false;
+
+			var followX = 0;
+			var followY = 0;
+
+			var cubefollowX = 0;
+			var cubefollowY = 0;
+
+			var cubeRef;
+			var cubeRefMesh;
+
+			var r = 0;
+			var speed = 0;
+			var maxSpeed = 1.2;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+			document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+			document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+			document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
+				
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = false;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+
+				return mesh;
+			}		
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+				camera.position.z = 200;
+				camera.position.x = 0;
+				camera.position.y = FLOOR+20;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.Fog( 0xDEFFFF, 0, 1750 );
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x333333 );
+				scene.addLight( ambient );
+
+				directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 2;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+
+				pointLight = new THREE.PointLight( 0xffffee );
+				pointLight.position.x = 0;
+				pointLight.position.y = FLOOR+250;
+				pointLight.position.z = 0;
+				scene.addLight( pointLight );
+
+				//cubeRef
+				cubeRef = new Cube( 10, 10, 10, 1, 1 );
+				cubeRefMesh = addMesh( cubeRef, 1,  50, FLOOR, -130, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
+				cubeRefMesh.visible = false
+				camera.target = cubeRefMesh;
+
+				// collusus:es
+				for (var i=0; i<4; ++i ) {
+					for (var j=0; j<4; ++j ) {
+						var x = (j*2500)-3500;
+						var z = (i*2500)-3500;
+						addMesh( cubeRef, 20,  x, FLOOR+130, z, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xBDBD86 } ) );
+						addMesh( cubeRef, 30,  x, FLOOR+310, z, Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI, new THREE.MeshLambertMaterial( { color: 0xBDBD86 } ) );
+					}
+				}
+
+				// plane
+				plane = new Plane( 100, 100, 100, 100 );
+
+				for ( var i = 0, l = plane.vertices.length; i < l; i++ ) {
+					plane.vertices[i].position.z = (Math.sin(i/200)/8);
+				}
+
+				addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, [new THREE.MeshLambertMaterial( { color:0x999973 } ), new THREE.MeshLambertMaterial( { color:0x7E7E5A, wireframe: true } )] );
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( { scene: scene, clearColor: 0xDEFFFF, clearAlpha: 1 } );
+					webglRenderer.setFaceCulling(0);
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+				
+			}
+
+			function getMaterial() {
+				var c = Math.random() * 0xffffff;
+				return new THREE.MeshLambertMaterial( { color:c } );
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+			function onDocumentMouseDown( event ) {
+				event.preventDefault();
+				event.stopPropagation();
+				
+				switch ( event.button ) {
+					case 0: leftMouse = true; break;
+					case 2: rightMouse = true; break;
+				}
+			}
+
+			function onDocumentMouseUp( event ) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				switch ( event.button ) {
+					case 0: leftMouse = false; break;
+					case 2: rightMouse = false; break;
+				}
+			}
+
+
+			function loop() {
+				var dist = 50;
+
+				// spin
+				var mx = ( mouseX - windowHalfX )/1000;
+				var my = ( mouseY - windowHalfY )/400;
+				
+				var moveX = ((cubefollowX+mx)-cubefollowX)/20;
+				var moveY = (my-cubefollowY)/20;
+
+				if (Math.abs(moveX) < 0.01) {
+					moveX *= 0.5;
+				}
+
+				cubefollowX += moveX+speed*Math.cos((r))/1000;
+				cubefollowY += moveY+speed*Math.sin((r))/1000;
+
+				cubeRefMesh.position.x = camera.position.x + (dist*Math.cos(cubefollowX));
+				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX));
+				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY-0.5));
+
+				// forward
+				if (leftMouse) {
+					speed += 0.05;
+					if (speed > maxSpeed) {
+						speed = maxSpeed;
+					}
+				}
+
+				// backwards
+				if (rightMouse) {
+					speed -= 0.05;
+					if (speed < -maxSpeed) {
+						speed = -maxSpeed;
+					}
+				}
+
+				if (!leftMouse && !rightMouse) {
+					speed *= 0.95;
+				}
+
+				camera.position.x += speed*Math.cos(cubefollowX);
+				camera.position.z += speed*Math.sin(cubefollowX);
+				
+				// bob
+				camera.position.y += speed*Math.sin((r))/16;
+				
+				pointLight.position.x = camera.position.x;
+				pointLight.position.z = camera.position.z;
+
+				r += 0.1;
+
+				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

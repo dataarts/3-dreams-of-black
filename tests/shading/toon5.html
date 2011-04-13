@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - hatching</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #ffffff;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				font-weight: bold;
+
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+			}
+
+			a {
+
+				color: #ee0000;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div> 
+
+		<script type="text/javascript" src="js/ThreeExtras.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+		var ShaderTest = {
+
+		'hatching' : {
+
+			uniforms: {
+
+				"uDirLightPos":	{ type: "v3", value: new THREE.Vector3() },
+				"uDirLightColor": { type: "c", value: new THREE.Color( 0xeeeeee ) },
+
+				"uAmbientLightColor": { type: "c", value: new THREE.Color( 0x050505 ) },
+
+				"uBaseColor":  { type: "c", value: new THREE.Color( 0xff0000 ) },
+
+			},
+
+			vertex_shader: [
+
+				"varying vec3 vNormal;",
+
+				"void main() {",
+
+					"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+					"vNormal = normalize( normalMatrix * normal );",
+
+				"}"
+
+			].join("\n"),
+
+			fragment_shader: [
+
+				"uniform vec3 uBaseColor;",
+
+				"uniform vec3 uDirLightPos;",
+				"uniform vec3 uDirLightColor;",
+
+				"uniform vec3 uAmbientLightColor;",
+
+				"varying vec3 vNormal;",
+
+				"void main() {",
+
+					"float directionalLightWeighting = max( dot( normalize( vNormal ), uDirLightPos ), 0.0);",
+					"vec3 lightWeighting = uAmbientLightColor + uDirLightColor * directionalLightWeighting;",
+
+					"float intensity = smoothstep( - 0.5, 1.0, pow( length(lightWeighting), 20.0 ) );",
+					"intensity += length(lightWeighting) * 0.2;",
+
+					"float cameraWeighting = dot( normalize( vNormal ), vec3( 0.0, 0.0, 1.0 ) );",
+					"intensity += pow( 1.0 - length( cameraWeighting ), 10.0 ) * 3.0;",
+					"intensity = intensity * 0.2 + 0.1;",
+
+					"if ( intensity < 0.50 ) {",
+
+						"gl_FragColor = vec4( 2.0 * intensity * uBaseColor, 1.0 );",
+
+					"} else {",
+
+						"gl_FragColor = vec4( 1.0 - 2.0 * ( 1.0 - intensity ) * ( 1.0 - uBaseColor ), 1.0 );",
+
+					"}",
+
+				"}"
+
+			].join("\n")
+
+		}
+		
+		};
+
+			var container, stats;
+
+			var start_time;
+			
+			var camera, scene, renderer;
+
+			var material, mesh, shader,light;
+
+			var mouseX = 0, mouseY = 0,
+			lat = 0, lon = 0, phy = 0, theta = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			setInterval( loop, 1000 / 60 );
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.Camera( 40, windowHalfX / windowHalfY, 1, 3000 );
+				camera.position.z = 125;
+
+				scene = new THREE.Scene();
+
+				light = new THREE.DirectionalLight( 0xffffff );
+				light.position.x = 1;
+				light.position.y = 0;
+				light.position.z = 1;
+				scene.addLight( light );
+				
+				start_time = new Date().getTime();
+				
+				shader = ShaderTest["hatching"];
+				
+				material1 = new THREE.MeshShaderMaterial( {
+
+					uniforms: Uniforms.clone( shader.uniforms ),
+					vertex_shader: shader.vertex_shader,
+					fragment_shader: shader.fragment_shader
+
+				} );
+
+				material1.uniforms.uDirLightPos.value = light.position;
+				material1.uniforms.uDirLightColor.value = light.color;
+				material1.uniforms.uBaseColor.value = new THREE.Color( Math.random() * 0xffffff );
+
+				/*
+				var lineColor1 = 0xff0000, lineColor2 = 0x0000ff;
+				material1.uniforms.uBaseColor.value.setHex( 0x000000 );
+				material1.uniforms.uLineColor1.value.setHex( lineColor1 );
+				material1.uniforms.uLineColor2.value.setHex( lineColor1 );
+				material1.uniforms.uLineColor3.value.setHex( lineColor1 );
+				material1.uniforms.uLineColor4.value.setHex( 0xffff00 );
+				*/
+
+				loader = new THREE.Loader( true );
+				document.body.appendChild( loader.statusDomElement );
+				loader.loadAscii( { model: "obj/leeperrysmith/LeePerrySmith.js", callback: function( geometry ) { createMesh( geometry, scene, 10, material1 ) } } );
+
+				renderer = new THREE.WebGLRenderer();
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				//container.appendChild( stats.domElement );
+
+				onWindowResize();
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function  createMesh( geometry, scene, scale, material1 ) {
+
+				mesh = new THREE.Mesh( geometry, material1 );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				scene.addObject( mesh );
+
+				loader.statusDomElement.style.display = "none";
+
+			}
+
+			function onWindowResize( event ) {
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function loop() {
+
+				var time = new Date().getTime() * 0.0004;
+
+				if ( mesh ) {
+
+					mesh.rotation.y += 0.01;
+
+				}
+
+				/*
+				light.position.x = Math.sin( time );
+				light.position.z = Math.cos( time );
+				light.position.y = 0.5;
+				light.position.normalize();
+				*/
+
+				renderer.render( scene, camera );
+				stats.update();
+
+			}
+
+		</script>
+
+	</body>
+</html>

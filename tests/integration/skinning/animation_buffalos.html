@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - animation - skinning</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #808080;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				display:none;
+			}
+
+			a {
+
+				color: #0080ff;
+			}
+
+			#topbar1 { width:100%; height:75px; background:#000; position:absolute; top:0px; }
+			#topbar2 { width:100%; height:200px; background:url(textures/gradient-top.png); position:absolute; top:75px; }
+			#bottombar1 { width:100%; height:200px; background:url(textures/gradient-bottom2.png); position:absolute; bottom:75px }
+			#bottombar2 { width:100%; height:75px; background:#000; position:absolute; bottom:0px }
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div> 
+		<div id="info"><a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - animation - skinning - webgl</div>
+		
+		<div id="topbar1"></div>
+		<div id="topbar2"></div>
+		<div id="bottombar1"></div>
+		<div id="bottombar2"></div>
+		
+
+		<script type="text/javascript" src="js/Three.js"></script>
+		
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			window.onload = init;
+			
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var mesh, light;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+			
+			var height = window.innerHeight;
+			
+			var postprocessing = { enabled  : true };
+				
+			var animations = [];
+			var buffalos = [];
+			var offset = [];
+			
+			var floor, dz = 0, dstep = -10, playback = false;			
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.Camera( 30, window.innerWidth / height, 1, 10000 );
+				camera.position.y = 200;
+				camera.position.z = 2000;
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0xffdddd, 0.0005 );
+				scene.fog.color.setHSV( 0.1, 0.6, 1.0 );
+				
+				light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0, 0, 1 );
+				light.position.normalize();
+				scene.addLight( light );
+
+				var planeSimple = new Plane( 200, 200, 1, 1 );
+				var planeTesselated = new Plane( 100, 200, 25, 40 );
+				var matWire = new THREE.MeshBasicMaterial( { color :0x110000, wireframe: true, wireframeLinewidth: 2 } );
+				var matSolid = new THREE.MeshBasicMaterial( { color :0x330000 } );
+
+				floor = new THREE.Mesh( planeSimple, matSolid );
+				floor.position.y = -10;
+				floor.scale.set( 25, 25, 25 );
+				floor.rotation.x = -1.57;
+				scene.addObject( floor );
+
+				floor = new THREE.Mesh( planeTesselated, matWire );
+				floor.scale.set( 25, 25, 25 );
+				floor.rotation.x = -1.57;
+				scene.addObject( floor );
+				
+				initPostprocessing();
+				
+				renderer = new THREE.WebGLRenderer( { clearColor: 0xffdddd, clearAlpha: 1 });
+				renderer.setClearColor( scene.fog.color, 1 );
+				renderer.setSize( window.innerWidth, height );
+				renderer.sortObjects = true;
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				//container.appendChild( stats.domElement );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'click', startAnimation, false );
+				
+				var loader = new THREE.Loader();
+				loader.loadAscii( { model: "obj/buffalo/spine1.js", callback: createScene } );
+
+				loop();
+
+			}
+			
+			function createScene( geometry ) {
+							
+				buffalos = [];
+				animations = [];
+							
+				var x, y,
+					buffalo,
+					gridx = 20, gridz = 10,
+					sepx  = 170, sepz = 300;
+				
+				var pars_color = { color: 0xff0000, skinning: true };
+				var pars_texture = { color: 0xffffff, map: ImageUtils.loadTexture( "obj/buffalo/Buffalo_Body4.png" ), blending: THREE.BillboardBlending, skinning: true };
+
+				var material = new THREE.MeshBasicMaterial( pars_texture );
+				
+				for( x = 0; x < gridx; x++ ) {
+					
+					for( z = 0; z < gridz; z++ ) {
+						
+						buffalo = new THREE.SkinnedMesh( geometry, material );
+						
+						buffalo.scale.x = buffalo.scale.y = buffalo.scale.z = 1;
+						
+						buffalo.position.x = - ( gridx - 1 ) * sepx * 0.5 + x * sepx + Math.random() * 0.5 * sepx; 
+						buffalo.position.z = - ( gridz - 1 ) * sepz * 0.5 + z * sepz + Math.random() * 0.5 * sepz - 500; 
+						
+						buffalo.position.y = buffalo.boundRadius * 0.5;
+						buffalo.rotation.y = 0.2 - Math.random() * 0.4;
+
+						scene.addObject( buffalo );
+						
+						buffalos.push( buffalo );
+						animations.push( new THREE.Animation( buffalo, geometry.animation ) );
+						
+						offset.push( Math.random() );
+
+					}
+				
+				}				
+			
+			}
+			
+			function startAnimation() {
+				
+				for( var i = 0; i < animations.length; i++ ) {
+					
+					animations[ i ].offset = 0.05 * Math.random();
+					animations[ i ].play();
+				
+				}
+					
+				dz = dstep;
+				playback = true;
+			
+			}
+			
+			function initPostprocessing() {
+				
+				postprocessing.scene = new THREE.Scene();		
+				
+				postprocessing.camera = new THREE.Camera();
+				postprocessing.camera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, height / 2, height / - 2, -10000, 10000 );
+				postprocessing.camera.position.z = 100;
+				
+				postprocessing.texture = new THREE.RenderTarget( window.innerWidth, height, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+
+				var film_shader = ShaderUtils.lib["film"];
+				var film_uniforms = Uniforms.clone( film_shader.uniforms );
+				
+				film_uniforms["tDiffuse"].texture = postprocessing.texture;
+				
+				postprocessing.material = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+				postprocessing.material.uniforms.grayscale.value = 0;
+				
+				var quad = new THREE.Mesh( new Plane( window.innerWidth, height ), postprocessing.material );
+				quad.position.z = -500;
+				postprocessing.scene.addObject( quad );
+
+			}
+
+			function onDocumentMouseMove( event ) {
+
+				mouseX = ( event.clientX - windowHalfX );
+				mouseY = ( event.clientY - windowHalfY );
+
+			}
+
+			function loop() {
+
+				requestAnimationFrame( loop, renderer.domElement );
+				
+				camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+				//camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
+
+				
+				if ( buffalos && playback ) {
+
+					camera.position.z += 2 * Math.sin( new Date().getTime() * 0.001 );
+
+					for( i = 0; i < buffalos.length; i++ ) {
+
+						buffalos[ i ].position.z += 2 * Math.sin( new Date().getTime() * 0.001  + offset[ i ] );
+						
+					}
+				
+				}
+				
+				floor.position.z += dz;
+				if( floor.position.z < -500 ) floor.position.z = 0;
+				
+				
+				if ( postprocessing.enabled ) {
+				
+					postprocessing.material.uniforms.time.value += 0.01;
+					
+					renderer.render( scene, camera, postprocessing.texture );
+					renderer.render( postprocessing.scene, postprocessing.camera );
+					
+				} else {
+					
+					renderer.render( scene, camera );
+					
+				}
+				
+				stats.update();
+
+			}
+
+		</script>
+
+	</body>
+</html>
+

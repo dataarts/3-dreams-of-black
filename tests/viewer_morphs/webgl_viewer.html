@@ -1,0 +1,1663 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - viewer</title>
+		<meta charset="utf-8">
+		
+		<style type="text/css">
+		body {
+			margin:0;
+			overflow: hidden;
+			background: #000;
+			
+			line-height:1.25em
+		}
+
+		#file_dialog {
+			width:100%;
+			height:100%;
+			position:absolute;
+			top:0px;
+			left:0px;
+			z-index:100;
+		}
+
+		#drop_zone {
+			position:absolute;
+			width:100%;
+			height:100%;
+			padding:15% 0;
+			color: #eee;
+			
+		}
+		  
+		#drop_label {
+			text-align: left;
+			font: 20pt bold georgia;
+			font-variant:small-caps;
+			text-transform:uppercase;
+		}
+		
+		#help {
+			background: rgba(0, 0, 0, 0.9);
+			padding:2em;
+			width:400px;
+			margin:1em auto;
+			text-align:left;
+		}
+		
+		.hh { color:gold }
+		.kw { color:red }
+		
+		#file_list { 
+			text-align: left;
+		}
+		
+		ul { padding:0; margin:0 }
+		ul li { list-style-type:none }
+		
+		.missing { color:red; font-weight:bold }
+		.loaded { color:black; font-weight:bold }
+		
+		.fsize { font-size:0.9em; color:#444 }
+		
+		#gui_wrapper {
+			position:absolute;
+			top:0px;
+			right:0px;
+			width:200px;
+			height:100%;
+			background:hsla(10,30%,80%, 0.75);
+			padding:10px 15px;
+			z-index:200;
+			overflow:auto;
+			font-size:0.9em;
+		}
+		
+		.lbl { 
+			font-weight:bold; 
+			cursor:pointer; 
+		}
+		
+		.chk { 
+			background:hsla(10,80%,50%, 0.4); 
+			color:#fff;
+			width:14px; 
+			height:14px; 
+			display:inline-block;
+			text-align:center;
+			font-weight:bold;
+			font-family:verdana;
+			font-size:14px;
+			line-height:10px;
+			cursor:pointer;
+		}
+		
+		#l_fog { margin-right:1em }
+		#l_bgDark { margin-right:0.25em }
+		
+		#morphs { 
+			background: rgba(0, 0, 0, 0.9);
+			padding:0 1em 1em;
+			z-index:500;
+			position:absolute;
+			top:1em;
+			left:100px;
+			color:#fff;
+			display:none;
+		}
+		
+		#camera {
+			background: rgba(0, 0, 0, 0.9);
+			padding:0 1em;
+			z-index:250;
+			position:absolute;
+			bottom:1em;
+			left:1em;
+			color:#fff;
+			display:block;
+		}
+		
+		.number { display:inline-block; width:4em }
+		
+		.morph_label { display:inline-block; width:4em; margin:0 0.5em }
+		.morph_pct { display:inline-block; width:3.5em; color:#555; text-align:right }
+		
+		.hud { display:block }
+		
+		#hud_button { 
+			background:#000;
+			color:#fff;
+			width:20px;
+			height:20px;
+			text-align:center;
+			font-weight:bold;
+			position:absolute;
+			top:0px;
+			right:0px;
+			z-index:250;
+			cursor:pointer;
+		}
+		
+		.header {
+			color: hsl(10, 80%, 30%);
+			font-weight:bold; 
+			text-transform:uppercase;
+		}
+		
+		
+		.overlay {
+			position:absolute;
+			left:0px;
+			top:0px;
+			width:100%; 
+			height:100%; 
+			background-size: 100%;
+			z-index:50;
+			display:none;
+		}
+		
+		#overlayDirt { 
+			background: url(textures/layers/VignetteWithDirt_alpha.png) no-repeat;
+		}		
+
+		#overlayVignette { 
+			background: url(textures/layers/Vignette_alpha.png) no-repeat;
+		}		
+
+		#overlayLensFlare { 
+			background: url(textures/layers/LensFlare_alpha.png) no-repeat;
+		}
+		
+		#images {
+			border:solid 2px red;
+			position:absolute;
+			top:0px;
+			left:0px;
+			z-index:200;
+		}
+		
+		.button {
+			color:white;
+			background:darkred;
+			font-size:0.9em;
+			font-weight:bold;
+			font-variant:small-caps;
+			text-transform:uppercase;
+			padding:0.2em 0.5em;
+			cursor:pointer;
+		}
+
+		#files_div { display:none }
+		#textures_div { display:none }
+		
+		</style>
+		
+	</head>
+
+	<body>
+	
+		<div id="viewport"></div> 
+
+
+		<script type="text/javascript" src="js/Three.js"></script>
+		
+		<script type="text/javascript" src="js/animal.js"></script>
+		<script type="text/javascript" src="js/Slider.js"></script>
+		
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+		
+		<div class="overlay" id="overlayDirt"></div>
+		<div class="overlay" id="overlayVignette"></div>
+		<div class="overlay" id="overlayLensFlare"></div>
+		
+		<div id="images"></div>
+
+		
+		<div id="morphs">
+			<p><span class="hh">Morphing</span>
+			<p>A <span class="kw morph_label" id="morph_a">aaa</span> <span class="kw morph_pct" id="morph_a_pct">10%</span><br/>
+			   B <span class="kw morph_label" id="morph_b">bbb</span> <span class="kw morph_pct" id="morph_b_pct">90%</span>
+			<div id="slider_wrap2"> </div>
+			   
+			<p>Speed <span class="morph_pct" id="speed_val">1.0</span>
+			<div id="slider_wrap1"> </div><br/>
+		</div>
+		
+		<div id="camera">
+			<p><span class="hh" id="cam_type">Orbit camera</span><br/>
+			<span id="cam_location"></span>
+		</div>
+		
+		<div class="hud" id="file_dialog"> 
+			<div id="drop_zone">
+				<div id="help">
+					<div id="drop_label">Drop files here</div>
+				
+					<p>Press <span class="kw">SPACE</span> to toggle user interface<br/>
+					Press <span class="kw">R</span> to toggle axis + grid<br/>
+					Press <span class="kw">1</span>, <span class="kw">2</span> to change camera mode<br/>
+					
+					<p><span class="hh">1: Camera orbit mode</span>
+					<p><span class="kw">SHIFT</span> + mouse to rotate<br/>
+					Mouse wheel to zoom
+					
+					<p><span class="hh">2: Camera fly mode</span>
+					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse<br/>
+					Press <span class="kw">0</span> to reset fly camera
+
+					<p><span class="hh">Morphing</span>
+					<p>Move sliders to control morph blending and animation speed<br/>
+					Press <span class="kw">O</span> to cycle through morphs sources A<br/>
+					Press <span class="kw">P</span> to cycle through morphs sources B<br/>
+				</div>
+			</div> 
+		</div>
+		
+		<div class="hud" id="gui_wrapper">
+		
+			<span class="header">Background</span><br/>
+
+			<span id="b_fog" class="chk">&nbsp;</span> <span id="l_fog" class="lbl">Fog</span>
+			
+			<span id="b_bgDark" class="chk">&nbsp;</span> <span id="l_bgDark" class="lbl">Dark</span>
+			<span id="b_bgLight" class="chk">&nbsp;</span> <span id="l_bgLight" class="lbl">Light</span> <br/>
+			<br/>
+			
+			<span class="header">Postprocessing</span><br/>
+			
+			<span id="b_noise" class="chk">&nbsp;</span> <span id="l_noise" class="lbl">Noise</span> <br/>
+			<span id="b_bloom" class="chk">&nbsp;</span> <span id="l_bloom" class="lbl">Bloom</span> <br/>
+			<span id="b_bloomnoise" class="chk">&nbsp;</span> <span id="l_bloomnoise" class="lbl">Bloom + Noise</span> <br/>
+			<span id="b_none" class="chk">&nbsp;</span> <span id="l_none" class="lbl">None</span> <br/>
+			<br/>
+			
+			<span class="header">Overlays</span><br/>
+			
+			<span id="b_film" class="chk">&nbsp;</span> <span id="l_film" class="lbl">Film strips</span> <br/>
+			<span id="b_vignette" class="chk">&nbsp;</span> <span id="l_vignette" class="lbl">Vignette</span> <br/>
+			<span id="b_dirt" class="chk">&nbsp;</span> <span id="l_dirt" class="lbl">Dirt</span> <br/>
+			<span id="b_lensFlare" class="chk">&nbsp;</span> <span id="l_lensFlare" class="lbl">Lens flare</span> <br/>
+			<br/>
+			
+			<span class="header">Light</span><br/>
+			
+			<span id="b_lightWhite" class="chk">&nbsp;</span> <span id="l_lightWhite" class="lbl">White</span> <br/>
+			<span id="b_lightCold" class="chk">&nbsp;</span> <span id="l_lightCold" class="lbl">Cold</span> <br/>
+			<span id="b_lightWarm" class="chk">&nbsp;</span> <span id="l_lightWarm" class="lbl">Warm</span> <br/>
+			<span id="b_lightSunset" class="chk">&nbsp;</span> <span id="l_lightSunset" class="lbl">Sunset</span> <br/>
+			<br/>
+			
+			<span class="header">Scale</span><br/>
+
+			<span id="b_s0001" class="chk">&nbsp;</span> <span id="l_s0001" class="lbl">0.001</span>
+			<span id="b_s001" class="chk">&nbsp;</span> <span id="l_s001" class="lbl">0.01</span>
+			<span id="b_s01" class="chk">&nbsp;</span> <span id="l_s01" class="lbl">0.1</span>
+			<span id="b_s05" class="chk">&nbsp;</span> <span id="l_s05" class="lbl">0.5</span><br/>
+			<span id="b_s1" class="chk">&diams;</span> <span id="l_s1" class="lbl">1</span>
+			<span id="b_s2" class="chk">&diams;</span> <span id="l_s2" class="lbl">2</span>
+			<span id="b_s5" class="chk">&diams;</span> <span id="l_s5" class="lbl">5</span>
+			<span id="b_s10" class="chk">&nbsp;</span> <span id="l_s10" class="lbl">10</span>
+			<span id="b_s100" class="chk">&nbsp;</span> <span id="l_s100" class="lbl">100</span>
+			
+			
+			<br/><br/>
+			
+			<div id="files_div">
+				<span class="header">Files</span><br/>
+				<div id="file_list"></div> 
+				<br/>
+			</div>
+			
+			
+			<div id="textures_div">
+				<span class="header">Textures</span><br/>
+				<div id="texture_list"></div> 
+				<br/>
+			</div>			
+
+		</div>
+		
+		<div id="hud_button">+</div>
+
+		<script type="text/javascript">
+		
+		window.onload = init;
+	
+		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+	
+		if ( ! Detector.fileapi ) alert( 'The File APIs are not fully supported in this browser.' );			
+		
+		// GUI
+		
+		var guiVisible = true;
+		
+		// scales
+		
+		var GLOBAL_SCALE = 1, 
+			BASE_SCALE = 1,
+			SCALES = [ [ "b_s0001",  0.001 ],
+					   [ "b_s001",   0.01 ], 			
+					   [ "b_s01",    0.1 ], 
+					   [ "b_s05",    0.5 ], 
+					   [ "b_s1",     1 ], 
+					   [ "b_s2",     2 ], 
+					   [ "b_s5",     5 ], 
+					   [ "b_s10",   10 ], 
+					   [ "b_s100", 100 ] ];
+		
+		// overlays
+		
+		var overlays = {
+			filmStrip: 	false,
+			dirt:		false,
+			vignette: 	false,
+			lensFlare:	false
+		};
+		
+		// fog
+		
+		var fogdensity = 0.000125;
+
+		// lights
+		
+		var ambientLight, directionalLight;
+		
+		var lightColors = {
+		"white":  [ 0x111111, 0xffffff ],
+		"cold":   [ 0x001122, 0xddeeff ],
+		"warm":   [ 0x221100, 0xffeedd ],
+		"sunset": [ 0x221100, 0xff8866 ]
+		};
+		var lightType = "white";
+		
+		// camera
+		
+		var useOrbitCamera = true;
+		var cameraDistance = 20,
+			cameraHeight = 5,
+			cameraHeightOriginal = cameraHeight, 
+			cameraDistanceOriginal = cameraDistance;
+		
+		var elCamLocation = $( "cam_location" ),
+			elCamType = $( "cam_type" );
+			
+		// scene
+		
+		var axisVisible = true;
+		
+		// controls
+
+		var mouseX, mouseY, mouseDelta;
+		
+		var windowHalfX = window.innerWidth / 2;
+		var windowHalfY = window.innerHeight / 2;
+
+		var isShiftDown = false,
+			theta = 45;
+			
+		// postprocessing
+		
+		var postprocessing = { enabled : false };
+
+		// morphing
+		
+		var morphA, morphB, morphObject,
+			morphSpeed = 1.0;
+		
+		var elMorphAPct = $( "morph_a_pct" ),
+			elMorphBPct = $( "morph_b_pct" ),
+			elMorphA = $( "morph_a" ),
+			elMorphB = $( "morph_b" );
+
+		// globals
+		
+		var SCREEN_WIDTH = window.innerWidth;
+		var SCREEN_HEIGHT = window.innerHeight;
+		
+		var TEXTURE_MAP = {},
+			IMAGE_MAP = {};
+
+		var DragAndDrop = {};	
+
+
+		var viewport, stats;
+
+		var camera, orbitCamera, flyCamera;
+		
+		var scene, sceneTemp, renderer;
+		
+		var delta, time, oldTime;
+		
+		var auxRoot, sceneRoot;
+
+		//init();
+		//animate();
+		
+		function init() {
+
+			viewport = $( "viewport" );
+			
+			scene = new THREE.Scene();
+			scene.fog = new THREE.FogExp2( 0x000000, 0 );
+			
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+			renderer.autoClear = false;
+			renderer.sortObjects = false;
+			renderer.setClearColor( scene.fog.color, 1 );
+
+			renderer.domElement.style.position = "absolute";
+			renderer.domElement.style.top = "0px";
+			renderer.domElement.style.left = "0px";
+	
+			viewport.appendChild( renderer.domElement );
+			
+			// CAMERAS
+			
+			orbitCamera = new THREE.Camera( 40, window.innerWidth / window.innerHeight, 1, 100000 );
+			orbitCamera.position.set( 0, cameraHeight, cameraDistance );
+			orbitCamera.target.position.set( 0, 0, 0 );
+						
+			flyCamera = new THREE.QuakeCamera( { fov: 40, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
+											  movementSpeed: 8, lookSpeed: 0.0025, noFly: false, lookVertical: true,
+											  dragToLook: true
+											  } );
+
+			flyCamera.position.set( 0, cameraHeight, cameraDistance );
+			flyCamera.lon = -90;
+
+			camera = orbitCamera;
+			
+			// LIGHTS
+
+			ambientLight = new THREE.AmbientLight( lightColors[ lightType ][ 0 ] );
+			scene.addLight( ambientLight );
+
+			directionalLight = new THREE.DirectionalLight( lightColors[ lightType ][ 1 ] );
+			directionalLight.position.set( 1, 1, 1 );
+			directionalLight.position.normalize();
+			scene.addLight( directionalLight );
+
+			// STATS
+			
+			stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			stats.domElement.style.left = '0px';
+			stats.domElement.style.zIndex = 400;
+			viewport.appendChild( stats.domElement );
+			
+			iniGui();
+			
+			var speedSlider = new Slider( $( "slider_wrap1" ), 200, 10, 0.01, 1.5, 1, changeMorphSpeed );
+			var morphSlider = new Slider( $( "slider_wrap2" ), 200, 10, 0.0, 1.0, 0, changeMorphPercent );
+			
+			auxRoot = new THREE.Object3D();
+			sceneRoot = new THREE.Object3D();
+			
+			var axis = createAxis();
+			var tempScene = createTempScene();
+			
+			auxRoot.addChild( axis );
+			sceneRoot.addChild( tempScene );
+			
+			scene.addChild( auxRoot );
+			scene.addChild( sceneRoot );			
+
+			window.addEventListener( 'resize', onWindowResize, false );
+
+			window.addEventListener( 'keydown', onKeyDown, false );
+			window.addEventListener( 'keyup', onKeyUp, false );
+			window.addEventListener( 'mousemove', onMouseMove, false );
+			window.addEventListener( 'mousewheel', onMouseWheel, false );
+			
+			oldTime = new Date().getTime();
+			
+			elSpeedVal = $( "speed_val" );
+	
+			animate();
+
+		};
+
+		// event handlers
+		
+		function onKeyDown ( event ) {
+			
+			switch( event.keyCode ) {
+
+				/* space */
+				case 32: toggleHUD( event ); break;
+				
+				/* shift */
+				case 16: isShiftDown = true; break;
+
+				/* 1 */
+				case 49: setOrbitCamera(); break;
+
+				/* 2 */
+				case 50: setFlyCamera(); break;
+
+				/* 0 */
+				case 48: resetFlyCamera(); break;
+
+				/* r */
+				case 82: toggleAxis(); break;
+
+				/* o */
+				case 79: cycleMorphA(); break;
+
+				/* p */
+				case 80: cycleMorphB(); break;
+
+			}
+			
+			console.log( "keyCode", event.keyCode );
+
+		};
+
+		function onKeyUp( event ) {
+ 
+			switch( event.keyCode ) {
+
+				/* shift */
+				case 16: isShiftDown = false; break;
+
+			}
+
+		};
+		
+		function onMouseMove ( event ) {
+
+			mouseX = event.clientX - windowHalfX;
+			mouseY = event.clientY - windowHalfY;
+
+		};
+		
+		function onMouseWheel( event ) {
+		
+			if ( event.wheelDelta ) mouseDelta = event.wheelDelta / 120;
+			if ( event.detail     ) mouseDelta = - event.detail / 3;
+
+			zoomCamera( mouseDelta );
+			
+		};
+
+		function onWindowResize( event ) {
+ 
+			updateViewport();
+ 
+		};
+			
+		// axis
+		
+		function createAxis() {
+		
+			var axis = new THREE.Object3D(),
+				d = 0.05;
+				
+			mesh = new THREE.Mesh( new Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+			mesh.position.set( 0.5, 0, 0 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new Cube( d, 1, d ), new THREE.MeshLambertMaterial( { color: 0x00ff00 } ) );
+			mesh.position.set( 0, 0.5, 0 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new Cube( d, d, 1 ), new THREE.MeshLambertMaterial( { color: 0x0000ff } ) );
+			mesh.position.set( 0, 0, 0.5 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new Plane( 100, 100, 100, 100 ), new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } ) );
+			mesh.rotation.set( -1.57, 0, 0 );
+			axis.addChild( mesh );
+
+			return axis
+		
+		};
+		
+		function toggleAxis() {
+		
+			axisVisible = !axisVisible;
+			SceneUtils.showHierarchy( auxRoot, axisVisible );
+		
+		};
+		
+		// camera controls
+		
+		function setOrbitCamera() {
+		
+			camera = orbitCamera;
+			elCamType.innerHTML = "Orbit camera";
+			
+		};
+
+		function setFlyCamera() {
+		
+			camera = flyCamera;
+			elCamType.innerHTML = "Fly camera";
+			
+		};
+
+		function resetFlyCamera() {		
+		
+			flyCamera.position.set( 0, cameraHeightOriginal, cameraDistanceOriginal );
+			flyCamera.target.position.set( 0, 0, 0 );	
+			flyCamera.lon = -90;			
+
+		};
+		
+		function zoomCamera( delta ) {
+		
+			cameraDistance = cap_bottom( cameraDistance - 0.75 * delta, 1 );
+
+		};
+		
+		// morph controls		
+		
+		function updateMorphs() {
+		
+			var nameA = morphObject.availableAnimals[ morphA ],
+				nameB = morphObject.availableAnimals[ morphB ];
+
+			morphObject.play( nameA, nameB );
+			
+			elMorphA.innerHTML = nameA;
+			elMorphB.innerHTML = nameB;
+
+		};
+		
+		function cycleMorphA() {
+		
+			if( morphObject && morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
+			
+				morphA = ( morphA + 1 ) % morphObject.availableAnimals.length;
+				updateMorphs();			
+				
+			}
+
+		};
+
+		function cycleMorphB() {
+		
+			if( morphObject && morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
+			
+				morphB = ( morphB + 1 ) % morphObject.availableAnimals.length;
+				updateMorphs();			
+				
+			}
+
+		};
+
+		function changeMorphSpeed( val ) {
+		
+			elSpeedVal.innerHTML = val.toFixed( 2 );
+
+			if ( morphObject ) { 
+			
+				morphObject.animalA.timeScale = morphObject.animalB.timeScale = val;
+				
+			}
+
+		};
+		
+		function changeMorphPercent( val ) {
+		
+			if ( morphObject ) {
+				
+				morphObject.morph = val;
+				
+				elMorphAPct.innerHTML = ( 100 * morphObject.morph ).toFixed( 1 ) + " %";
+				elMorphBPct.innerHTML = ( 100 * ( 1 - morphObject.morph) ).toFixed( 1 ) + " %";
+				
+			}
+
+		};
+		
+		// temp scene
+		
+		function createTempScene() {
+		
+			var tempScene = new THREE.Object3D();
+			
+			var i, x, y, z, 
+				d = 10000,
+				s = BASE_SCALE,
+				mesh,
+				geo = new Cube( 400, 400, 400 ),
+				mat = new THREE.MeshLambertMaterial( {color:0xffffff} );
+				
+			for ( i = 0; i < 1000; i++ ) {
+				
+				mesh = new THREE.Mesh( geo, mat );
+				
+				x = rr( -d, d );
+				y = rr( -d, d );
+				z = rr( -d, d );
+				
+				mesh.position.set( x, y, z );
+
+				x = rr( -3, 3 );
+				y = rr( -3, 3 );
+				z = rr( -3, 3 );
+				
+				mesh.rotation.set( x, y, z );
+				
+				mesh.scale.set( s, s, s );
+
+				mesh.matrixAutoUpdate = false;
+				mesh.updateMatrix();
+				mesh.update();
+				
+				tempScene.addChild( mesh );
+				
+			}
+			
+			return tempScene;
+			
+		};
+		
+		function resetScene() {
+			
+			scene.removeChild( sceneRoot );
+			
+			sceneRoot = new THREE.Object3D();			
+			scene.addChild( sceneRoot );
+			
+		};
+
+		function rescaleScene( s ) {
+			
+			sceneRoot.scale.set( s, s, s );
+			
+		};
+		
+		
+		// DOM helpers
+		
+		function toggle( id, how ) {
+			
+			var elStyle = $( id ).style;
+			
+			if ( elStyle.display == "none" )
+				elStyle.display = how !==undefined ? how : "block";
+			else
+				elStyle.display = "none";
+			
+		};
+		
+		function show( id ) {
+		
+			$( id ).style.display = "block";
+			
+		};
+
+		function hide( id ) {
+		
+			$( id ).style.display = "none";
+			
+		};
+
+		// Utils
+		
+		function $( id ) { return document.getElementById( id ); }
+		function rr( a, b ) { return a + ( b - a ) * Math.random(); }
+		
+		
+		function renderNumber( n, precision ) {
+		
+			return "<span class='number'>" + n.toFixed( precision ) + "</span>";
+			
+		};
+
+		function renderBigNumber( n ) {
+
+			return "<span class='number'>" + pretty_number( n.toFixed( 0 ) ) + "</span>";
+
+		};
+
+		function renderVec3( v, precision ) {
+		
+			if ( Math.abs( v.x ) > 10000 || Math.abs( v.y ) > 10000 || Math.abs( v.z ) > 10000 ) {
+				
+				return renderBigNumber( v.x ) + " " + renderBigNumber( v.y ) + " " + renderBigNumber( v.z );
+				
+			} else {
+			
+				return renderNumber( v.x, precision ) + " " + renderNumber( v.y, precision ) + " " + renderNumber( v.z, precision );
+
+			}
+			
+		};
+		
+		function capitalize( s ) {
+		
+			return s[ 0 ].toUpperCase() + s.substring( 1, s.length );
+
+		};
+
+		function pretty_number( x ) {
+		
+			var delimiter = "'";
+			var strx = x.toString();
+			var pretty = "";
+			
+			for( var i = strx.length - 1; i >= 0; i-- ) {
+				
+				if ( ( strx.length - 1 - i ) % 3 == 0 && ( strx.length - 1 - i ) > 0 )
+					pretty = delimiter+pretty;
+				
+				pretty = strx[ i ] + pretty;
+			}
+			
+			return pretty;
+
+		};
+		
+		function pretty_size( x ) {
+		
+			var kb = x / 1024;
+			return pretty_number( kb.toFixed( 0 ) ) + " KB";
+
+		};
+		
+		function cap_string( s, n ) {
+			
+			if ( n < s.length - 2 )
+				return s.substring( 0, n ) + " ...";
+			else
+				return s;
+
+		};
+
+		function cap_bottom( n, b ) {
+			
+			return n > b ? n : b;
+			
+		};
+		
+		// GUI
+		
+		function toggleHUD( e ) {
+			
+			guiVisible = !guiVisible;
+			
+			e.stopPropagation();
+			e.preventDefault();
+			
+			toggle( "file_dialog" );
+			toggle( "gui_wrapper" );
+			//toggle( "camera" );
+			
+			camera.dragToLook = guiVisible;
+			
+		};
+		
+		function toggleFog() {
+		
+			if ( scene.fog.density == 0 ) {
+			
+				scene.fog.density = fogdensity;
+				
+			} else {
+			
+				scene.fog.density = 0;
+				
+			}
+			
+			refreshGUI();
+			
+		};
+
+		function setPostNoise() {
+		
+			initPostprocessingNoise( postprocessing );
+			postprocessing.enabled = true;
+			
+			refreshGUI();
+
+		};
+
+		function setPostBloom() {
+		
+			initPostprocessingBloom( postprocessing );
+			postprocessing.enabled = true;
+			
+			refreshGUI();
+
+		};
+
+		function setPostBloomNoise() {
+		
+			initPostprocessingBloomNoise( postprocessing );
+			postprocessing.enabled = true;
+			
+			refreshGUI();
+
+		};
+
+		function setPostNone() {
+		
+			postprocessing.enabled = false;
+			
+			refreshGUI();
+
+		};
+
+		function updateAspect() {
+		
+			camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+		};
+		
+		function updateViewport() {
+		
+			if ( overlays.filmStrip ) {
+
+				SCREEN_WIDTH = window.innerWidth;
+				SCREEN_HEIGHT = window.innerHeight - 200;
+
+				updateAspect();
+				renderer.domElement.style.top = "100px";
+				
+
+			} else {
+
+				SCREEN_WIDTH = window.innerWidth;
+				SCREEN_HEIGHT = window.innerHeight;
+
+				updateAspect();
+				renderer.domElement.style.top = "0px";
+
+			}
+			
+			if ( postprocessing.type == "bloom" )
+				initPostprocessingBloom( postprocessing );
+			else
+				initPostprocessingNoise( postprocessing );
+
+		};
+		
+		function toggleFilm() {
+		
+			overlays.filmStrip = !overlays.filmStrip;
+			
+			updateViewport();
+			refreshGUI();
+
+		};
+
+		function setBackground( hex ) {
+		
+			scene.fog.color.setHex( hex );
+			renderer.setClearColor( scene.fog.color );
+			
+			refreshGUI();
+		
+		};
+
+		function setLight( ltype ) {
+
+			lightType = ltype;
+
+			ambientLight.color.setHex( lightColors[ lightType ][ 0 ] );
+			directionalLight.color.setHex( lightColors[ lightType ][ 1 ] );
+
+			refreshGUI();
+
+		};
+
+		function toggleOverlay( label ) {
+		
+			overlays[ label ] = !overlays[ label ];
+			
+			var id = "overlay" + capitalize( label );
+			
+			if ( overlays[ label ] )
+				show( id );
+			else
+				hide( id );
+			
+			refreshGUI();
+			
+		};
+
+		function refreshGUI() {
+			
+			// checkboxes
+			
+			$( "b_fog" ).innerHTML = scene.fog.density > 0 ? "x" : "&nbsp;";
+			
+			$( "b_film" ).innerHTML = overlays.filmStrip ? "x" : "&nbsp;";
+			$( "b_dirt" ).innerHTML = overlays.dirt ? "x" : "&nbsp;";
+			$( "b_vignette" ).innerHTML = overlays.vignette ? "x" : "&nbsp;";
+			$( "b_lensFlare" ).innerHTML = overlays.lensFlare ? "x" : "&nbsp;";
+			
+			// selections
+			
+			var c = scene.fog.color.hex;
+			
+			$( "b_bgLight" ).innerHTML = ( c == 0xffffff ) ? "&diams;" : "&nbsp;";
+			$( "b_bgDark" ).innerHTML = ( c == 0x000000 ) ? "&diams;" : "&nbsp;";
+			
+			
+			$( "b_noise" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "noise" ) ? "&diams;" : "&nbsp;";
+			$( "b_bloom" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloom" ) ? "&diams;" : "&nbsp;";
+			$( "b_bloomnoise" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloomnoise" ) ? "&diams;" : "&nbsp;";
+			$( "b_none" ).innerHTML = ( ! postprocessing.enabled ) ? "&diams;" : "&nbsp;";
+
+			$( "b_lightWhite" ).innerHTML = ( lightType == "white" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightCold" ).innerHTML = ( lightType == "cold" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightWarm" ).innerHTML = ( lightType == "warm" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightSunset" ).innerHTML = ( lightType == "sunset" ) ? "&diams;" : "&nbsp;";
+
+			var i, s;
+			
+			for ( i = 0; i < SCALES.length; i++ ) {
+			
+				s = SCALES[ i ];
+				
+				if( GLOBAL_SCALE == s[1] ) {
+				
+					$( s[0] ).innerHTML = "&diams;"
+					
+				} else {
+				
+					$( s[0] ).innerHTML = "&nbsp;";
+				}
+			}
+			
+			magicRepaint();
+
+		};
+		
+		function magicRepaint() {
+		
+			// workaround Chrome compositing bug
+			
+			$( "gui_wrapper" ).style.display = "none";
+			$( "gui_wrapper" ).offsetHeight;
+			$( "gui_wrapper" ).style.display = "block";
+			
+		};
+		
+		function handleScale( values ) {
+			
+			function generateHandler( s ) {
+
+				return function() {
+						
+						GLOBAL_SCALE = s;
+						
+						rescaleScene( BASE_SCALE * s );
+						refreshGUI();
+						
+					}
+
+			};
+			
+			var i, id, s;
+			
+			for ( i = 0; i < values.length; i++ ) {
+				
+				id = values[ i ][ 0 ];
+				s  = values[ i ][ 1 ];
+				
+				$( id ).addEventListener( "click", generateHandler( s ), true );
+				
+			}
+			
+		};
+
+		function handleProperty( ids, handler ) {
+			
+			for ( var i = 0; i < ids.length; i++ )
+				$( ids[ i ] ).addEventListener( "click", handler, true );
+			
+		};
+
+		function iniGui() {
+		
+			$( "hud_button" ).addEventListener( "click", toggleHUD, true );
+			
+			handleProperty( [ "b_fog", "l_fog" ], toggleFog );
+			
+			handleProperty( [ "b_noise", "l_noise" ], setPostNoise );
+			handleProperty( [ "b_bloom", "l_bloom" ], setPostBloom );
+			handleProperty( [ "b_bloomnoise", "l_bloomnoise" ], setPostBloomNoise );
+			handleProperty( [ "b_none", "l_none" ], setPostNone );
+
+			handleProperty( [ "b_film", "l_film" ], toggleFilm );
+
+			handleProperty( [ "b_dirt", "l_dirt" ], function() { toggleOverlay( "dirt") } );
+			handleProperty( [ "b_vignette", "l_vignette" ], function() { toggleOverlay( "vignette") } );
+			handleProperty( [ "b_lensFlare", "l_lensFlare" ], function() { toggleOverlay( "lensFlare") } );
+			
+			handleScale( SCALES );
+			
+			handleProperty( [ "b_bgDark", "l_bgDark" ], function() { setBackground( 0x000000 ) } );
+			handleProperty( [ "b_bgLight", "l_bgLight" ], function() { setBackground( 0xffffff ) } );
+
+			handleProperty( [ "b_lightWhite", "l_lightWhite" ], function() { setLight( "white" ) } );
+			handleProperty( [ "b_lightCold", "l_lightCold" ], function() { setLight( "cold" ) } );
+			handleProperty( [ "b_lightWarm", "l_lightWarm" ], function() { setLight( "warm" ) } );
+			handleProperty( [ "b_lightSunset", "l_lightSunset" ], function() { setLight( "sunset" ) } );
+
+			refreshGUI();
+		
+		};
+		
+		DragAndDrop.onDragOver = function( evt ) {
+		
+			evt.stopPropagation();
+			evt.preventDefault();
+
+		};
+		 
+		DragAndDrop.onDragFileDrop = function( evt ) {
+		
+			evt.stopPropagation();
+			evt.preventDefault();
+			
+			var i, f, 
+				files = evt.dataTransfer.files,
+				output = [],
+				loader = new THREE.Loader(),
+				callbackObject = function( geometry ) { addObject( geometry, 0, 0, 0, 1 ) };
+
+			
+			for ( i = 0; f = files[i]; i++ ) {
+				
+				output.push('<li><strong>' + cap_string( f.name, 17 ) + '</strong> <span class="fsize">' + pretty_size( f.size ) + '</span></li>');
+
+				var reader = new FileReader();
+
+				if ( f.type.indexOf( "javascript" ) >= 0 ) {
+				
+					reader.onload = ( function( theFile ) {
+						
+						return function( e ) {
+						
+							var content = e.target.result,
+								bb, blobURL = new BlobBuilder();
+
+							bb = new BlobBuilder();
+							bb.append( content );
+
+							if ( window.webkitURL )
+								blobURL = window.webkitURL.createObjectURL( bb.getBlob() );
+							else
+								blobURL = window.URL.createObjectURL( bb.getBlob() );
+
+							loader.loadAscii( { model: blobURL, callback: callbackObject } );					
+
+						};
+
+					  })(f);
+
+					reader.readAsText( f );
+					
+					$('file_list').innerHTML = "";
+
+				} else if ( f.type.indexOf( "image" ) >= 0 ) {
+				
+					
+					reader.onload = ( function( theFile ) {
+					
+						return function( e ) {
+							
+							var span = document.createElement( 'span' );
+						  
+							span.innerHTML = [ '<img class="thumb" src="', e.target.result,
+												'" title="', theFile.name, '"/>' ].join( '' );
+						  
+							//$( 'images' ).insertBefore( span, null );
+						  
+							addImage( theFile.name, e.target.result );
+
+						};
+					  })(f);
+
+					reader.readAsDataURL(f);
+
+				}
+
+			}
+			
+			$('file_list').innerHTML += '<ul>' + output.join('') + '</ul>';
+			
+			show( "files_div" );
+
+		};
+		 
+
+		function extractTexture( map, dst ) {
+			
+			var s;
+			
+			if ( map ) {
+			
+				s = map.sourceFile;
+				
+				if ( s ) {
+				
+					if ( dst[ s ] == undefined ) {
+					
+						dst[ s ] = [ map ];
+					
+					} else {
+					
+						dst[ s ].push( map );
+
+					}
+					
+				}
+				
+			}
+
+		};
+		
+		function collectTextures( geometry ) {
+		
+			var textureMap = {},
+				i, m, s, materials = geometry.materials;
+			
+			for ( i = 0; i < materials.length; i++ ) {
+			
+				m = materials[ i ][ 0 ];
+				
+				extractTexture( m.map, textureMap );
+				extractTexture( m.lightMap, textureMap );				 
+
+			}
+			
+			updateTextureList( "texture_list", textureMap );
+			
+			return textureMap;
+			
+		};
+		
+		function updateTextureList( id, map ) {
+			
+			var fname, item, zclass,
+				lst = [],
+				tmp = "";
+				el = $( id );
+			
+			for ( fname in map ) {
+				
+				if ( map[ fname ].__textureLoaded )
+					zclass = "loaded";
+				else
+					zclass = "missing";
+					
+				item = "<li><span class='" + zclass + "'>" + fname + "</span></li>";
+				lst.push( item );
+				
+			}
+			
+			if ( lst.length ) {
+			
+				tmp = "<ul>" + lst.join("") + "</ul>";
+				el.innerHTML = tmp;
+				
+				show( "textures_div" );
+				
+			} else {
+			
+				hide( "textures_div" );
+				
+			}
+			
+		};
+		
+		function checkTextureImages() {
+		
+			var i, tid, mid, maps, img;
+			
+			for ( tid in IMAGE_MAP ) {
+			
+				if ( TEXTURE_MAP[ tid ] != undefined ) {
+				
+					maps = TEXTURE_MAP[ tid ];
+					
+					for( i = 0; i < maps.length; i++ ) {
+					
+						img = document.createElement( 'img' );
+						img.src = IMAGE_MAP[ tid ];
+						
+						maps[ i ].image = img;
+						maps[ i ].needsUpdate = true;
+						maps[ i ].__wasSetOnce = false;
+
+					}
+					
+					maps.__textureLoaded = true;
+					
+				}
+
+			}
+			
+			updateTextureList( "texture_list", TEXTURE_MAP );
+			
+		};		
+		
+		function addObject( geometry, x, y, z, s ) {
+			
+			resetScene();
+			
+			var material, mesh;
+			
+			if ( geometry.morphTargets !== undefined && geometry.morphTargets.length > 0 ) {
+			
+				morphObject = ROME.Animal( geometry, true );
+				mesh = morphObject.mesh;
+			
+				cameraDistanceOriginal = mesh.boundRadius * 10;
+				cameraHeightOriginal = mesh.boundRadius * 0.1;
+				
+				if( morphObject.availableAnimals && morphObject.availableAnimals.length > 0 ) {
+				
+					morphA = 0;
+					morphB = ( morphA + 1 ) % morphObject.availableAnimals.length;
+					
+					morphObject.animalA.timeScale = 0.5;
+					
+					updateMorphs();
+					
+				}
+				
+				$( "morphs" ).style.display = "block";
+			
+			} else {
+				
+				morphObject = null;
+				
+				material = new THREE.MeshFaceMaterial(),
+				mesh = new THREE.Mesh( geometry, material );
+				
+				if ( mesh.boundRadius > 0.25 * camera.far ) {
+
+					cameraDistanceOriginal = 0.25 * camera.far;
+					cameraHeightOriginal = 0.01 * camera.far;
+
+				} else {
+				
+					cameraDistanceOriginal = mesh.boundRadius * 3;
+					cameraHeightOriginal = mesh.boundRadius * 0.1;
+					
+				}				
+				
+				$( "morphs" ).style.display = "none";
+				
+			}
+			
+
+			TEXTURE_MAP = collectTextures( geometry );
+			checkTextureImages();
+			
+			mesh.position.set( x, y, z );
+			mesh.scale.set( s, s, s );
+			mesh.matrixAutoUpdate = false;
+			mesh.updateMatrix();
+			mesh.update();
+			
+			sceneRoot.addChild( mesh );			
+
+			cameraDistance = cameraDistanceOriginal;
+			cameraHeight = cameraHeightOriginal;				
+
+			camera.position.set( 0, cameraHeight, cameraDistance );
+			camera.target.position.set( 0, 0, 0 );
+			
+			axisVisible = false;
+			SceneUtils.showHierarchy( auxRoot, axisVisible );
+			
+			//console.log( mesh.boundRadius, camera );
+
+		};
+		
+		function addImage( name, uri ) {
+		
+			IMAGE_MAP[ name ] = uri;
+			checkTextureImages();
+			
+		};
+
+		function initPostprocessingNoise( effect ) {
+			
+			effect.type = "noise";
+			
+			effect.scene = new THREE.Scene();		
+			
+			effect.camera = new THREE.Camera();
+			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+			effect.camera.position.z = 100;
+			
+			effect.texture = new THREE.RenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+
+			var film_shader = ShaderUtils.lib["film"];
+			var film_uniforms = Uniforms.clone( film_shader.uniforms );
+			
+			film_uniforms["tDiffuse"].texture = effect.texture;
+			
+			effect.material = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+			effect.material.uniforms.grayscale.value = 0;
+			
+			var quad = new THREE.Mesh( new Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.material );
+			quad.position.z = -500;
+			effect.scene.addObject( quad );
+
+		}
+		
+		function initPostprocessingBloom( effect ) {
+
+			effect.type = "bloom";
+			
+			effect.scene = new THREE.Scene();
+
+			effect.camera = new THREE.Camera();
+			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+			effect.camera.position.z = 100;
+
+			var pars = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+			effect.rtTexture1 = new THREE.RenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars );
+			effect.rtTexture2 = new THREE.RenderTarget( 512, 512, pars );
+			effect.rtTexture3 = new THREE.RenderTarget( 512, 512, pars );
+
+			var screen_shader = ShaderUtils.lib["screen"];
+			var screen_uniforms = Uniforms.clone( screen_shader.uniforms );
+
+			screen_uniforms["tDiffuse"].texture = effect.rtTexture1;
+			screen_uniforms["opacity"].value = 1.0;
+
+			effect.materialScreen = new THREE.MeshShaderMaterial( {
+
+				uniforms: screen_uniforms,
+				vertexShader: screen_shader.vertexShader,
+				fragmentShader: screen_shader.fragmentShader,
+				blending: THREE.AdditiveBlending
+
+			} );
+
+			var convolution_shader = ShaderUtils.lib["convolution"];
+			var convolution_uniforms = Uniforms.clone( convolution_shader.uniforms );
+
+			effect.blurx = new THREE.Vector2( 0.001953125, 0.0 ),
+			effect.blury = new THREE.Vector2( 0.0, 0.001953125 );
+
+			convolution_uniforms["tDiffuse"].texture = effect.rtTexture1;
+			convolution_uniforms["uImageIncrement"].value = effect.blurx;
+			convolution_uniforms["cKernel"].value = ShaderUtils.buildKernel( 4.0 );
+
+			effect.materialConvolution = new THREE.MeshShaderMaterial( {
+
+				uniforms: convolution_uniforms,
+				vertexShader:   "#define KERNEL_SIZE 25.0\n" + convolution_shader.vertexShader,
+				fragmentShader: "#define KERNEL_SIZE 25\n"   + convolution_shader.fragmentShader
+
+			} );
+
+			var film_shader = ShaderUtils.lib["film"];
+			var film_uniforms = Uniforms.clone( film_shader.uniforms );
+			
+			film_uniforms["tDiffuse"].texture = effect.rtTexture1;
+			
+			effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+			effect.materialFilm.uniforms.grayscale.value = 0;
+			effect.materialFilm.uniforms.nIntensity.value = 1;
+			//effect.materialFilm.uniforms.sIntensity.value = 0.25;
+			//effect.materialFilm.uniforms.sCount.value = 2048;
+
+			effect.quad = new THREE.Mesh( new Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialConvolution );
+			effect.quad.position.z = -500;
+			effect.scene.addObject( effect.quad );
+
+		}
+		
+		function initPostprocessingBloomNoise( effect ) {
+		
+			initPostprocessingBloom( effect );
+			effect.type = "bloomnoise";
+			
+		};
+		
+		// updates		
+
+		function animate() {
+
+			requestAnimationFrame( animate );
+
+			time = new Date().getTime();
+			delta = time - oldTime;
+			oldTime = time;
+
+			updateCamera( delta );
+			updateMorph( delta );
+			render( delta );
+			
+			stats.update();
+
+		};
+
+		function updateMorph( delta ) {
+		
+			if ( morphObject ) {
+				
+				THREE.AnimationHandler.update( delta );				
+				
+			}
+
+		};		
+		
+		function updateCamera( delta ) {
+		
+			if ( camera == orbitCamera ) {
+			
+				if ( isShiftDown ) {
+
+					theta += mouseX * delta * 0.0001;
+
+				}
+
+				camera.position.x = cameraDistance * Math.sin( theta * Math.PI / 360 );
+				camera.position.z = cameraDistance * Math.cos( theta * Math.PI / 360 );
+				camera.position.y = cameraHeight;
+				
+			}
+			
+			elCamLocation.innerHTML = renderVec3( camera.position, 2 );
+
+		};
+		
+		function render( delta ) {
+
+			renderer.clear();
+			
+			if ( postprocessing.enabled ) {
+			
+				if ( postprocessing.type == "noise" ) {
+				
+					postprocessing.material.uniforms.time.value += 0.01 * delta;
+					
+					renderer.render( scene, camera, postprocessing.texture, true );
+					renderer.render( postprocessing.scene, postprocessing.camera );
+					
+				} else if ( postprocessing.type == "bloom" || postprocessing.type == "bloomnoise" ) {
+
+					// Render scene into texture
+
+					renderer.render( scene, camera, postprocessing.rtTexture1, true );
+
+					// Render quad with blured scene into texture (convolution pass 1)
+
+					postprocessing.quad.materials = [ postprocessing.materialConvolution ];
+
+					postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+					postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blurx;
+
+					renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture2, true );
+
+					// Render quad with blured scene into texture (convolution pass 2)
+
+					postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture2;
+					postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blury;
+
+					renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture3, true );
+
+					// Render original scene with superimposed blur to texture
+
+					postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+					postprocessing.materialScreen.blending = THREE.AdditiveBlending;
+					postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture3;
+					postprocessing.materialScreen.uniforms.opacity.value = 1.0;
+
+					renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture1, false );
+
+					// Render to screen
+
+					if ( postprocessing.type == "bloomnoise" ) {
+						
+						postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
+						postprocessing.quad.materials = [ postprocessing.materialFilm ];
+						
+					} else {
+
+						postprocessing.materialScreen.blending = THREE.NormalBlending;
+						postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+					}
+					
+					postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+					renderer.render( postprocessing.scene, postprocessing.camera );
+				
+				}
+				
+			} else {
+				
+				renderer.render( scene, camera );
+				
+			}
+			
+
+		};
+
+		// it's nicer to be able to drop anywhere in the window
+		
+		//$( 'drop_zone' ).addEventListener( 'dragover', DragAndDrop.onDragOver, false );
+		//$( 'drop_zone' ).addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
+
+		window.addEventListener( 'dragover', DragAndDrop.onDragOver, false );
+		window.addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
+
+		</script>
+
+	</body>
+</html>

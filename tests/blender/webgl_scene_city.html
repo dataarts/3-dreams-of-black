@@ -1,0 +1,2452 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - city</title>
+		<meta charset="utf-8">
+		
+		<style type="text/css">
+		body {
+			margin:0;
+			overflow: hidden;
+			background: #000;
+			
+			line-height:1.25em
+		}
+
+		#file_dialog {
+			width:100%;
+			height:100%;
+			position:absolute;
+			top:0px;
+			left:0px;
+			z-index:100;
+		}
+
+		#drop_zone {
+			position:absolute;
+			width:100%;
+			height:100%;
+			padding:9% 0;
+			color: #eee;
+			
+		}
+		  
+		#drop_label {
+			text-align: left;
+			font: 20pt bold georgia;
+			font-variant:small-caps;
+			text-transform:uppercase;
+		}
+		
+		#help {
+			background: rgba(0, 0, 0, 0.9);
+			padding:2em;
+			width:400px;
+			margin:1em auto;
+			text-align:left;
+		}
+		
+		.hh { color:gold }
+		.kw { color:red }
+		
+		#file_list { 
+			text-align: left;
+		}
+		
+		ul { padding:0; margin:0 }
+		ul li { list-style-type:none }
+		
+		.missing { color:red; font-weight:bold }
+		.loaded { color:black; font-weight:bold }
+		
+		.fsize { font-size:0.9em; color:#444 }
+		
+		#gui_wrapper {
+			position:absolute;
+			top:0px;
+			right:0px;
+			width:200px;
+			height:100%;
+			background:hsla(10,30%,80%, 0.75);
+			padding:10px 15px;
+			z-index:200;
+			overflow:auto;
+			font-size:0.9em;
+		}
+		
+		.lbl { 
+			font-weight:bold; 
+			cursor:pointer; 
+		}
+		
+		.chk { 
+			background:hsla(10,80%,50%, 0.4); 
+			color:#fff;
+			width:14px; 
+			height:14px; 
+			display:inline-block;
+			text-align:center;
+			font-weight:bold;
+			font-family:verdana;
+			font-size:14px;
+			line-height:10px;
+			cursor:pointer;
+		}
+		
+		#l_fog { margin-right:1em }
+		#l_bgDark { margin-right:0.25em }
+		
+		#morphs { 
+			background: rgba(0, 0, 0, 0.9);
+			padding:0 1em 1em;
+			z-index:500;
+			position:absolute;
+			top:1em;
+			left:100px;
+			color:#fff;
+			display:none;
+		}
+		
+		#camera {
+			background: rgba(0, 0, 0, 0.9);
+			padding:0 1em;
+			z-index:250;
+			position:absolute;
+			bottom:1em;
+			left:1em;
+			color:#fff;
+			display:block;
+		}
+		
+		.number { display:inline-block; width:4em }
+		
+		.morph_label { display:inline-block; width:4em; margin:0 0.5em }
+		.morph_pct { display:inline-block; width:3.5em; color:#555; text-align:right }
+		
+		.sval { color:darkred; border:solid 0px red; display:block; margin:0.5em 0 1em 0;  }
+		.slabel { color:#333 }
+		.sgroup { background: rgba(0,0,0,0.1); padding:0.2em 0.5em 0.2em; margin:0.5em 0;  }
+		.sheader { font-weight:bold; }
+		.sinner { padding:0 0 1em 0; display:none }
+		.tbutton { display:inline-block; 
+					background:rgba(0,0,0,0.25); 
+					color:#fff; 
+					width:20px; 
+					height:20px; 
+					text-align:center;
+					font-weight:bold;
+					cursor:pointer;	
+					margin:0 -5px 0;
+					float:right;
+					}
+		
+		.button_action { background:#400; color:#fff; padding:0.2em 0.5em; margin:0 0 0.5em 0; cursor:pointer; font-weight:bold; }
+		
+		.zshadow { box-shadow: 0px 0px 5px rgba(0,0,0,0.35) }
+		
+		.hud { display:block }
+		
+		#hud_button { 
+			background:#000;
+			color:#fff;
+			width:20px;
+			height:20px;
+			text-align:center;
+			font-weight:bold;
+			position:absolute;
+			top:0px;
+			right:0px;
+			z-index:250;
+			cursor:pointer;
+		}
+		
+		.header {
+			color: hsl(10, 80%, 30%);
+			font-weight:bold; 
+			text-transform:uppercase;
+		}
+		
+		
+		.overlay {
+			position:absolute;
+			left:0px;
+			top:0px;
+			width:100%; 
+			height:100%; 
+			background-size: 100%;
+			z-index:50;
+			display:none;
+		}
+		
+		#overlayDirt { 
+			background: url(textures/layers/VignetteWithDirt_alpha.png) no-repeat;
+		}		
+
+		#overlayVignette { 
+			background: url(textures/layers/Vignette_alpha.png) no-repeat;
+		}		
+
+		#overlayLensFlare { 
+			background: url(textures/layers/LensFlare_alpha.png) no-repeat;
+		}
+		
+		#images {
+			border:solid 2px red;
+			position:absolute;
+			top:0px;
+			left:0px;
+			z-index:200;
+		}
+		
+		.button {
+			color:white;
+			background:darkred;
+			font-size:0.9em;
+			font-weight:bold;
+			font-variant:small-caps;
+			text-transform:uppercase;
+			padding:0.2em 0.5em;
+			cursor:pointer;
+		}
+
+		#files_div { display:none }
+		#textures_div { display:none }
+		
+		</style>
+		
+	</head>
+
+	<body>
+	
+		<div id="viewport"></div> 
+		<script type="text/javascript" src="js/Three.js"></script>
+		
+		<script type="text/javascript" src="js/Animal.js"></script>
+		<script type="text/javascript" src="js/Slider.js"></script>
+		
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+		
+		<div class="overlay" id="overlayDirt"></div>
+		<div class="overlay" id="overlayVignette"></div>
+		<div class="overlay" id="overlayLensFlare"></div>
+		
+		<div id="images"></div>
+
+		
+		<div id="morphs">
+			<p><span class="hh">Morphing</span>
+			<p>A <span class="kw morph_label" id="morph_a">aaa</span> <span class="kw morph_pct" id="morph_a_pct">10%</span><br/>
+			   B <span class="kw morph_label" id="morph_b">bbb</span> <span class="kw morph_pct" id="morph_b_pct">90%</span>
+			<div id="slider_wrap2"> </div>
+			   
+			<p>Speed <span class="morph_pct" id="speed_val">1.0</span>
+			<div id="slider_wrap1"> </div><br/>
+		</div>
+		
+		<div id="camera">
+			<p><span class="hh" id="cam_type">Orbit camera</span><br/>
+			<span id="cam_location"></span>
+		</div>
+		
+		<div class="hud" id="file_dialog"> 
+			<div id="drop_zone">
+				<div id="help">
+					<div id="drop_label">Drop files here</div>
+					<small>JSON format version 2</small>
+				
+					<p>Drop to <span class="hh">left</span> half of window to <span class="hh">reset</span> scene<br/>
+					drop to <span class="hh">right</span> half window to <span class="hh">append</span> to existing scene
+					
+					<p>Press <span class="kw">SPACE</span> to toggle user interface<br/>
+					Press <span class="kw">R</span> to toggle axis + grid<br/>
+					Press <span class="kw">1</span>, <span class="kw">2</span> to change camera mode<br/>
+					
+					<p><span class="hh">1: Camera orbit mode</span>
+					<p><span class="kw">SHIFT</span> + mouse to rotate<br/>
+					Mouse wheel to zoom
+					
+					<p><span class="hh">2: Camera fly mode</span>
+					<p>Navigate with <span class="kw">WASD</span> / arrows / mouse<br/>
+					<span class="kw">PgUp</span> / <span class="kw">PgDn</span> change speed<br/>
+					Press <span class="kw">0</span> to reset fly camera
+
+					<p><span class="hh">Morphing</span>
+					<p>Move mouse left-right to control morph blending<br/>
+					Press <span class="kw">O</span> to cycle through morphs sources A<br/>
+					Press <span class="kw">P</span> to cycle through morphs sources B<br/>
+				</div>
+			</div> 
+		</div>
+		
+		<div class="hud" id="gui_wrapper">
+			
+			<!--
+			<div class="button_action zshadow" id="btn_png">Create image</div>
+			-->
+			
+			<span class="header">Postprocessing</span><br/>
+			
+			<span id="b_noise" class="chk">&nbsp;</span> <span id="l_noise" class="lbl">Noise</span> <br/>
+			<span id="b_bloom" class="chk">&nbsp;</span> <span id="l_bloom" class="lbl">Bloom</span> <br/>
+			<span id="b_bloomnoise" class="chk">&nbsp;</span> <span id="l_bloomnoise" class="lbl">Bloom + Noise</span> <br/>
+			<span id="b_none" class="chk">&nbsp;</span> <span id="l_none" class="lbl">None</span> <br/>
+			<br/>
+			
+
+			<span class="header">Overlays</span><br/>
+			
+			<span id="b_film" class="chk">&nbsp;</span> <span id="l_film" class="lbl">Film strips</span> <br/>
+			<span id="b_vignette" class="chk">&nbsp;</span> <span id="l_vignette" class="lbl">Vignette</span> <br/>
+			<span id="b_dirt" class="chk">&nbsp;</span> <span id="l_dirt" class="lbl">Dirt</span> <br/>
+			<span id="b_lensFlare" class="chk">&nbsp;</span> <span id="l_lensFlare" class="lbl">Lens flare</span> <br/>
+			<br/>
+			
+			<span class="header">Light</span><br/>
+			
+			<span id="b_lightWhite" class="chk">&nbsp;</span> <span id="l_lightWhite" class="lbl">White</span> <br/>
+			<span id="b_lightCold" class="chk">&nbsp;</span> <span id="l_lightCold" class="lbl">Cold</span> <br/>
+			<span id="b_lightWarm" class="chk">&nbsp;</span> <span id="l_lightWarm" class="lbl">Warm</span> <br/>
+			<span id="b_lightSunset" class="chk">&nbsp;</span> <span id="l_lightSunset" class="lbl">Sunset</span> <br/>
+			<br/>
+
+			<span class="header">Scale</span><br/>
+
+			<span id="b_s0001" class="chk">&nbsp;</span> <span id="l_s0001" class="lbl">0.001</span>
+			<span id="b_s001" class="chk">&nbsp;</span> <span id="l_s001" class="lbl">0.01</span>
+			<span id="b_s01" class="chk">&nbsp;</span> <span id="l_s01" class="lbl">0.1</span>
+			<span id="b_s05" class="chk">&nbsp;</span> <span id="l_s05" class="lbl">0.5</span><br/>
+			<span id="b_s1" class="chk">&diams;</span> <span id="l_s1" class="lbl">1</span>
+			<span id="b_s2" class="chk">&diams;</span> <span id="l_s2" class="lbl">2</span>
+			<span id="b_s5" class="chk">&diams;</span> <span id="l_s5" class="lbl">5</span>
+			<span id="b_s10" class="chk">&nbsp;</span> <span id="l_s10" class="lbl">10</span>
+			<span id="b_s100" class="chk">&nbsp;</span> <span id="l_s100" class="lbl">100</span>
+			
+			<br/><br/>
+
+			<div class="button_action zshadow" id="btn_set">Export settings</div>			
+
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_fog">+</div>
+
+				<div class="sheader">Fog</div>
+				
+				<div class="sinner" id="grp_fog">
+					<div class="sval"><span class="slabel">Density:</span> <span id="fog_density">0.0000</span></div> 
+					<div id="slider_wrap_fog_d"> </div> 
+					
+					<div class="sval"><span class="slabel">Hue:</span> <span id="fog_hue">0.00</span></div>
+					<div id="slider_wrap_fog_h"> </div> 
+					
+					<div class="sval"><span class="slabel">Saturation:</span> <span id="fog_sat">0.00</span></div>
+					<div id="slider_wrap_fog_s"> </div> 
+					
+					<div class="sval"><span class="slabel">Value:</span> <span id="fog_val">0.00</span></div>
+					<div id="slider_wrap_fog_v"> </div>
+				</div>
+			</div>			
+			
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_noise">+</div>
+
+				<div class="sheader">Noise</div>
+				
+				<div class="sinner" id="grp_noise">
+					<div class="sval"><span class="slabel">Noise intensity:</span> <span id="noise_intensity">0.00</span></div> 
+					<div id="slider_wrap_noise_i"> </div> 					
+					<div class="sval"><span class="slabel">Scanlines intensity:</span> <span id="scanlines_intensity">0.00</span></div> 
+					<div id="slider_wrap_scanlines_i"> </div> 					
+					<div class="sval"><span class="slabel">Scanlines count:</span> <span id="scanlines_count">0</span></div> 
+					<div id="slider_wrap_linecount"> </div> 					
+				</div>
+			</div>
+
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_bloom">+</div>
+
+				<div class="sheader">Bloom</div>
+				
+				<div class="sinner" id="grp_bloom">
+					<div class="sval"><span class="slabel">Intensity:</span> <span id="bloom_intensity">0.00</span></div> 
+					<div id="slider_wrap_bloom"> </div> 					
+				</div>
+			</div>
+
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_alight">+</div>
+
+				<div class="sheader">Ambient light</div>
+				
+				<div class="sinner" id="grp_alight">					
+					<div class="sval"><span class="slabel">Hue:</span> <span id="al_hue">0.00</span></div>
+					<div id="slider_wrap_al_h"> </div> 
+					
+					<div class="sval"><span class="slabel">Saturation:</span> <span id="al_sat">0.00</span></div>
+					<div id="slider_wrap_al_s"> </div> 
+					
+					<div class="sval"><span class="slabel">Value:</span> <span id="al_val">0.00</span></div>
+					<div id="slider_wrap_al_v"> </div>					
+				</div>
+			</div>
+
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_dlight1">+</div>
+
+				<div class="sheader">Directional light 1</div>
+				
+				<div class="sinner" id="grp_dlight1">					
+					<div class="sval"><span class="slabel">Hue:</span> <span id="dl1_hue">0.00</span></div>
+					<div id="slider_wrap_dl1_h"> </div> 
+					
+					<div class="sval"><span class="slabel">Saturation:</span> <span id="dl1_sat">0.00</span></div>
+					<div id="slider_wrap_dl1_s"> </div> 
+					
+					<div class="sval"><span class="slabel">Value:</span> <span id="dl1_val">0.00</span></div>
+					<div id="slider_wrap_dl1_v"> </div>
+					
+					<div class="sval"><span class="slabel">Phi:</span> <span id="dl1_phi">0.00</span></div>
+					<div id="slider_wrap_dl1_phi"> </div>
+					
+					<div class="sval"><span class="slabel">Theta:</span> <span id="dl1_theta">0.00</span></div>
+					<div id="slider_wrap_dl1_theta"> </div>
+					
+				</div>
+			</div>
+
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_dlight2">+</div>
+
+				<div class="sheader">Directional light 2</div>
+				
+				<div class="sinner" id="grp_dlight2">					
+					<div class="sval"><span class="slabel">Hue:</span> <span id="dl2_hue">0.00</span></div>
+					<div id="slider_wrap_dl2_h"> </div> 
+					
+					<div class="sval"><span class="slabel">Saturation:</span> <span id="dl2_sat">0.00</span></div>
+					<div id="slider_wrap_dl2_s"> </div> 
+					
+					<div class="sval"><span class="slabel">Value:</span> <span id="dl2_val">0.00</span></div>
+					<div id="slider_wrap_dl2_v"> </div>
+					
+					<div class="sval"><span class="slabel">Phi:</span> <span id="dl2_phi">0.00</span></div>
+					<div id="slider_wrap_dl2_phi"> </div>
+					
+					<div class="sval"><span class="slabel">Theta:</span> <span id="dl2_theta">0.00</span></div>
+					<div id="slider_wrap_dl2_theta"> </div>
+					
+				</div>
+			</div>
+
+
+			<div class="sgroup zshadow">
+				<div class="tbutton" id="btn_lensflare">+</div>
+
+				<div class="sheader">Lens Flare</div>
+				
+				<div class="sinner" id="grp_lensflare">
+					<div class="sval"><span class="slabel">Vertical angle:</span> <span id="lf_x">0.00</span></div>
+					<div id="slider_wrap_lf_x"> </div> 
+
+					<div class="sval"><span class="slabel">Horizontal angle:</span> <span id="lf_y">0.00</span></div>
+					<div id="slider_wrap_lf_y"> </div> 
+				</div>
+			</div>
+
+			<div id="files_div">
+				<span class="header">Files</span><br/>
+				<div id="file_list"></div> 
+				<br/>
+			</div>
+			
+			
+			<div id="textures_div">
+				<span class="header">Textures</span><br/>
+				<div id="texture_list"></div> 
+				<br/>
+			</div>
+
+		</div>
+		
+		<div id="hud_button">+</div>
+
+		<script type="text/javascript">
+		
+		var SCENE_FILE = "models/city/City.js";
+		
+		window.onload = init;
+	
+		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+	
+		if ( ! Detector.fileapi ) alert( 'The File APIs are not fully supported in this browser.' );
+		
+		// GUI
+		
+		var ENABLE_LENSFLARES = true;
+		
+		var guiVisible = true;
+		
+		// scales
+		
+		var GLOBAL_SCALE = 1, 
+			BASE_SCALE = 1,
+			SCALES = [ [ "b_s0001",  0.001 ],
+					   [ "b_s001",   0.01 ],
+					   [ "b_s01",    0.1 ], 
+					   [ "b_s05",    0.5 ], 
+					   [ "b_s1",     1 ], 
+					   [ "b_s2",     2 ], 
+					   [ "b_s5",     5 ], 
+					   [ "b_s10",   10 ], 
+					   [ "b_s100", 100 ] ];
+		
+		// overlays
+		
+		var overlays = {
+			filmStrip: 	false,
+			dirt:		false,
+			vignette: 	false,
+			lensFlare:	false
+		};
+		
+		// fog
+		
+		var fogdensity = 0.000125;
+		var FOG = {
+		"h": 0.0,
+		"s": 0.0,
+		"v": 0.0
+		};
+
+		// lights
+		
+		var ambientLight, directionalLight1, directionalLight2;
+		
+		var lightColors = {
+		"white":  [ { h: 0.0, s: 0.0, v: 0.1 }, { h: 0.0, s: 0.0, v: 1.0 }, { h: 0.0, s: 0.0, v: 0.2 } ],
+		"cold":   [ { h: 0.6, s: 0.2, v: 0.1 }, { h: 0.6, s: 0.2, v: 1.0 }, { h: 0.6, s: 0.4, v: 0.2 } ],
+		"warm":   [ { h: 0.1, s: 0.2, v: 0.1 }, { h: 0.1, s: 0.2, v: 1.0 }, { h: 0.1, s: 0.4, v: 0.2 } ],
+		"sunset": [ { h: 0.1, s: 0.5, v: 0.1 }, { h: 0.1, s: 0.7, v: 1.0 }, { h: 0.1, s: 0.9, v: 0.2 } ]
+		};
+		var lightType = "white";
+		
+		var ALIGHT = {
+		"h": 0.0,
+		"s": 0.0,
+		"v": 0.0
+		};
+
+		var DLIGHT1 = {
+		"h": 0.0,
+		"s": 0.0,
+		"v": 0.0,
+		
+		"x": 1.0,
+		"y": 1.0,
+		"z": 1.0,
+		
+		"phi": 2.2,
+		"theta": 0.33
+		};
+
+		var DLIGHT2 = {
+		"h": 0.0,
+		"s": 0.0,
+		"v": 0.0,
+		
+		"x": -1.0,
+		"y": -1.0,
+		"z": -1.0,
+		
+		"phi": -0.5,
+		"theta": 0.33
+		};
+
+		function updateHSV( src, dst ) {
+			
+			dst.h = src.h;
+			dst.s = src.s;
+			dst.v = src.v;
+
+		};
+		
+		function updateUnitVector( src ) {
+
+			src.x = Math.sin( src.phi ) * Math.cos( src.theta );
+			src.y = Math.cos( src.phi );
+			src.z = Math.sin( src.phi ) * Math.sin( src.theta );
+			
+		};
+		
+		updateHSV( lightColors[ lightType ][ 0 ], ALIGHT );
+		updateHSV( lightColors[ lightType ][ 1 ], DLIGHT1 );
+		updateHSV( lightColors[ lightType ][ 2 ], DLIGHT2 );
+
+		updateUnitVector( DLIGHT1 );
+		updateUnitVector( DLIGHT2 );
+
+		var dl1SliderH, dl1SliderS, dl1SliderV,
+			dl2SliderH, dl2SliderS, dl2SliderV;
+
+		var alSliderH, alSliderS, alSliderV;
+		
+		var lensFlare;
+		var lensFlareRotate;
+		
+		// camera
+		
+		var useOrbitCamera = true;
+		var cameraDistance = -150,
+			cameraHeight = 180,
+			cameraHeightOriginal = cameraHeight, 
+			cameraDistanceOriginal = cameraDistance;
+		
+		var elCamLocation = $( "cam_location" ),
+			elCamType = $( "cam_type" );
+			
+		// scene
+		
+		var axisVisible = true;
+		var arrow1, arrow2;
+		
+		// controls
+
+		var mouseX, mouseY, mouseDelta;
+		
+		var windowHalfX = window.innerWidth / 2;
+		var windowHalfY = window.innerHeight / 2;
+
+		var isShiftDown = false,
+			theta = 45;
+			
+		// postprocessing
+		
+		var postprocessing = { enabled : true };
+		
+		var nSliderN, nSliderS, nSliderC;
+		var bSlider;
+
+		// morphing
+		
+		var morphA, morphB, morphObject,
+			morphSpeed = 1.0;
+		
+		var elMorphAPct = $( "morph_a_pct" ),
+			elMorphBPct = $( "morph_b_pct" ),
+			elMorphA = $( "morph_a" ),
+			elMorphB = $( "morph_b" );
+
+		// globals
+		
+		var SCREEN_WIDTH = window.innerWidth;
+		var SCREEN_HEIGHT = window.innerHeight;
+		
+		var TEXTURE_MAP = {},
+			IMAGE_MAP = {};
+
+		var DragAndDrop = {};
+
+
+		var viewport, stats;
+
+		var camera, orbitCamera, flyCamera;
+		
+		var scene, sceneTemp, renderer;
+		
+		var delta, time, oldTime;
+
+		var auxRoot, sceneRoot;
+
+		//init();
+		//animate();
+
+		function initParams() {
+		
+			// hardcoded "import"
+			
+			scene.fog.density = 0.0;
+			scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
+			
+			ambientLight.color.setHSV( 0, 0, 0.3 );
+			
+			directionalLight1.position.set( 0.3939900991012673,  0.9033436622278614,  -0.16953474488413547 );
+			directionalLight1.color.setHSV( 0, 0, 0.7352941 );
+			directionalLight1.castShadow = true;
+
+			directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
+			directionalLight2.color.setHSV( 0, 0, 0.1 );
+
+			overlays.filmStrip = true;
+
+			updateViewport();
+			
+			initPostprocessingNoise( postprocessing );
+			
+			postprocessing.materialFilm.uniforms.nIntensity.value = 0.4;
+			postprocessing.materialFilm.uniforms.sIntensity.value = 0.4;
+			postprocessing.materialFilm.uniforms.sCount.value = 2602.164705882353;
+			postprocessing.materialScreen.uniforms.opacity.value = 0.74;
+			
+			renderer.setClearColor( scene.fog.color, 1 );
+
+		};
+		
+		function init() {
+
+			viewport = $( "viewport" );
+
+			scene = new THREE.Scene();
+			scene.fog = new THREE.FogExp2( 0x000000, 0 );
+			
+
+			renderer = new THREE.WebGLRenderer( { antialias: !ENABLE_LENSFLARES } );
+			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+			renderer.autoClear = false;
+			renderer.sortObjects = false;
+			renderer.setClearColor( scene.fog.color, 1 );
+
+			renderer.domElement.style.position = "absolute";
+			renderer.domElement.style.top = "0px";
+			renderer.domElement.style.left = "0px";
+
+			viewport.appendChild( renderer.domElement );
+
+			initPostprocessingBloomNoise( postprocessing );
+
+			// CAMERAS
+
+			orbitCamera = new THREE.Camera( 40, window.innerWidth / window.innerHeight, 1, 100000 );
+			orbitCamera.position.set( 0, cameraHeight, cameraDistance );
+			orbitCamera.target.position.set( 0, 0, 0 );
+
+			flyCamera = new THREE.QuakeCamera( { fov: 40, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
+											  movementSpeed: 1200, lookSpeed: 0.1, noFly: true, lookVertical: true,
+											  activeLook: false
+											  } );
+
+			flyCamera.position.set( -100, cameraHeight, cameraDistance );
+			flyCamera.lon = -90;
+
+			camera = flyCamera;
+
+			// LIGHTS
+
+			var acolor;
+			
+			acolor  = lightColors[ lightType ][ 0 ];
+			d1color = lightColors[ lightType ][ 1 ];
+			d2color = lightColors[ lightType ][ 2 ];
+			
+			ambientLight = new THREE.AmbientLight();
+			ambientLight.color.setHSV( acolor.h, acolor.s, acolor.v );
+			scene.addLight( ambientLight );
+
+			directionalLight1 = new THREE.DirectionalLight( );
+			scene.addLight( directionalLight1 );
+
+			directionalLight2 = new THREE.DirectionalLight( );
+			scene.addLight( directionalLight2 );
+
+			// STATS
+
+			stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			stats.domElement.style.left = '0px';
+			stats.domElement.style.zIndex = 400;
+			viewport.appendChild( stats.domElement );
+
+			iniGui();
+
+			// sliders - morphs
+
+			var speedSlider = new Slider( $( "slider_wrap1" ), 200, 10, 0.01, 1.5, 1, changeMorphSpeed );
+			var morphSlider = new Slider( $( "slider_wrap2" ), 200, 10, 0.0, 1.0, 0, changeMorphPercent );
+			
+			// sliders - fog
+			
+			var swidth = 170, sd = 5;
+			
+			var fogSliderD = new Slider( $( "slider_wrap_fog_d" ), swidth, sd, 0.0, 0.0005, 0, function(val) { scene.fog.density = val; $("fog_density").innerHTML = val.toFixed(7); } );
+			var fogSliderH = new Slider( $( "slider_wrap_fog_h" ), swidth, sd, 0.0, 1.0, 0, function(val) { FOG.h = val; updateFog(); $("fog_hue").innerHTML = val.toFixed(2); } );
+			var fogSliderS = new Slider( $( "slider_wrap_fog_s" ), swidth, sd, 0.0, 1.0, 0, function(val) { FOG.s = val; updateFog(); $("fog_sat").innerHTML = val.toFixed(2); } );
+			var fogSliderV = new Slider( $( "slider_wrap_fog_v" ), swidth, sd, 0.0, 1.0, 0, function(val) { FOG.v = val; updateFog(); $("fog_val").innerHTML = val.toFixed(2); } );
+			
+			addGroupToggle( "btn_fog", "grp_fog" );
+			hide( "grp_fog" );
+			
+			// sliders - noise
+
+			nSliderN = new Slider( $( "slider_wrap_noise_i" ), swidth, sd, 0.0, 1.0, 0, function(val) {  postprocessing.materialFilm.uniforms.nIntensity.value = val; updateNoiseDisplay(); } );
+			nSliderS = new Slider( $( "slider_wrap_scanlines_i" ), swidth, sd, 0.0, 1.0, 0, function(val) {  postprocessing.materialFilm.uniforms.sIntensity.value = val; updateNoiseDisplay(); } );
+			nSliderC = new Slider( $( "slider_wrap_linecount" ), swidth, sd, 0, 4096, 0, function(val) {  postprocessing.materialFilm.uniforms.sCount.value = val; updateNoiseDisplay(); } );
+
+			function updateNoiseDisplay() {
+			
+				if ( postprocessing.materialFilm ) {
+
+					var u = postprocessing.materialFilm.uniforms;
+
+					$("noise_intensity").innerHTML = u.nIntensity.value.toFixed(2);
+					$("scanlines_intensity").innerHTML = u.sIntensity.value.toFixed(2);
+					$("scanlines_count").innerHTML = u.sCount.value.toFixed(2);
+					
+				}
+				
+			};
+			
+			if ( postprocessing.materialFilm ) {
+			
+				var u = postprocessing.materialFilm.uniforms;
+
+				nSliderN.setValue( u.nIntensity.value );
+				nSliderS.setValue( u.sIntensity.value );
+				nSliderC.setValue( u.sCount.value );
+				
+			}
+			
+			updateNoiseDisplay();
+			addGroupToggle( "btn_noise", "grp_noise" );
+			hide( "grp_noise" );
+
+			// sliders - bloom
+			
+			bSlider = new Slider( $( "slider_wrap_bloom" ), swidth, sd, 0.0, 3.0, 0, function(val) {  postprocessing.materialScreen.uniforms.opacity.value = val; $("bloom_intensity").innerHTML = val.toFixed(2); } );
+
+			if ( postprocessing.materialScreen ) {
+			
+				var u = postprocessing.materialScreen.uniforms;
+
+				bSlider.setValue( u.opacity.value );
+				$("bloom_intensity").innerHTML = u.opacity.value.toFixed(2);
+				
+			}
+
+			addGroupToggle( "btn_bloom", "grp_bloom" );
+			hide( "grp_bloom" );
+
+			// sliders - directional light
+			
+			function angleDegrees( rad ) {
+				
+				var deg = rad * ( 180 / Math.PI );
+				return deg.toFixed(0);
+				
+			};
+			
+			// sliders - directional light 1
+			
+			dl1SliderH = new Slider( $( "slider_wrap_dl1_h" ), swidth, sd, 0.0, 1.0, d1color.h, function(val) { DLIGHT1.h = val; updateDLight1(); $("dl1_hue").innerHTML = val.toFixed(2); } );
+			dl1SliderS = new Slider( $( "slider_wrap_dl1_s" ), swidth, sd, 0.0, 1.0, d1color.s, function(val) { DLIGHT1.s = val; updateDLight1(); $("dl1_sat").innerHTML = val.toFixed(2); } );
+			dl1SliderV = new Slider( $( "slider_wrap_dl1_v" ), swidth, sd, 0.0, 1.0, d1color.v, function(val) { DLIGHT1.v = val; updateDLight1(); $("dl1_val").innerHTML = val.toFixed(2); } );
+
+			var dl1SliderX = new Slider( $( "slider_wrap_dl1_phi" ),   swidth, sd, -3.14, 3.14, DLIGHT1.phi,   function(val) { DLIGHT1.phi = val; updateDLight1(); $("dl1_phi").innerHTML = angleDegrees( val ); } );
+			var dl1SliderY = new Slider( $( "slider_wrap_dl1_theta" ), swidth, sd, -3.14, 3.14, DLIGHT1.theta, function(val) { DLIGHT1.theta = val; updateDLight1(); $("dl1_theta").innerHTML = angleDegrees( val ); } );
+			
+			$( "dl1_phi" ).innerHTML = angleDegrees( DLIGHT1.phi );
+			$( "dl1_theta" ).innerHTML = angleDegrees( DLIGHT1.theta );
+
+			addGroupToggle( "btn_dlight1", "grp_dlight1" );
+			hide( "grp_dlight1" );
+
+			// sliders - directional light 2
+			
+			dl2SliderH = new Slider( $( "slider_wrap_dl2_h" ), swidth, sd, 0.0, 1.0, d2color.h, function(val) { DLIGHT2.h = val; updateDLight2(); $("dl2_hue").innerHTML = val.toFixed(2); } );
+			dl2SliderS = new Slider( $( "slider_wrap_dl2_s" ), swidth, sd, 0.0, 1.0, d2color.s, function(val) { DLIGHT2.s = val; updateDLight2(); $("dl2_sat").innerHTML = val.toFixed(2); } );
+			dl2SliderV = new Slider( $( "slider_wrap_dl2_v" ), swidth, sd, 0.0, 1.0, d2color.v, function(val) { DLIGHT2.v = val; updateDLight2(); $("dl2_val").innerHTML = val.toFixed(2); } );
+
+			var dl2SliderX = new Slider( $( "slider_wrap_dl2_phi" ),   swidth, sd, -3.14, 3.14, DLIGHT2.phi,   function(val) { DLIGHT2.phi = val; updateDLight2(); $("dl2_phi").innerHTML = angleDegrees( val ); } );
+			var dl2SliderY = new Slider( $( "slider_wrap_dl2_theta" ), swidth, sd, -3.14, 3.14, DLIGHT2.theta, function(val) { DLIGHT2.theta = val; updateDLight2(); $("dl2_theta").innerHTML = angleDegrees( val ); } );
+			
+			$( "dl2_phi" ).innerHTML = angleDegrees( DLIGHT2.phi );
+			$( "dl2_theta" ).innerHTML = angleDegrees( DLIGHT2.theta );
+
+			addGroupToggle( "btn_dlight2", "grp_dlight2" );
+			hide( "grp_dlight2" );
+
+			// sliders - lens flare
+			
+			if ( ENABLE_LENSFLARES ) {
+
+				var flareStartX = 9,
+					flareStartY = 358;
+				
+				var flSliderX = new Slider( $( "slider_wrap_lf_x" ), swidth, sd, 0.0, 45.0,  flareStartX, function(val) { updateLensflare( val, -1 ); $("lf_x").innerHTML = val.toFixed(0); } );
+				var flSliderY = new Slider( $( "slider_wrap_lf_y" ), swidth, sd, 0.0, 360.0, flareStartY, function(val) { updateLensflare( -1, val ); $("lf_y").innerHTML = val.toFixed(0); } );
+
+				addGroupToggle( "btn_lensflare", "grp_lensflare" );
+				hide( "grp_lensflare" );
+								
+				$("lf_x").innerHTML = flareStartX.toFixed(0);
+				$("lf_y").innerHTML = flareStartY.toFixed(0);
+				
+			}
+
+			// sliders - ambientLight light
+			
+			alSliderH = new Slider( $( "slider_wrap_al_h" ), swidth, sd, 0.0, 1.0, acolor.h, function(val) { ALIGHT.h = val; updateALight(); $("al_hue").innerHTML = val.toFixed(2); } );
+			alSliderS = new Slider( $( "slider_wrap_al_s" ), swidth, sd, 0.0, 1.0, acolor.s, function(val) { ALIGHT.s = val; updateALight(); $("al_sat").innerHTML = val.toFixed(2); } );
+			alSliderV = new Slider( $( "slider_wrap_al_v" ), swidth, sd, 0.0, 1.0, acolor.v, function(val) { ALIGHT.v = val; updateALight(); $("al_val").innerHTML = val.toFixed(2); } );
+
+
+			addGroupToggle( "btn_alight", "grp_alight" );
+			hide( "grp_alight" );
+
+
+			// export image
+			
+			// doesn't work in Chrome canary and occasionally crashes dev-channel
+			//$( "btn_png" ).addEventListener( "click", function() { window.open( renderer.domElement.toDataURL("image/png"), "_blank" ) }, false )
+			
+			// export settings
+			
+			$( "btn_set" ).addEventListener( "click", function() { window.open( generateSettingsURL(), "_blank" ) }, false )
+			
+			
+			// lensflare
+			
+			if ( ENABLE_LENSFLARES ) {
+
+				lensFlare = new THREE.LensFlare( THREE.ImageUtils.loadTexture( "textures/lensflare/lensflare0.png" ), 700, 0.0, THREE.AdditiveBlending );
+
+				lensFlare.add( THREE.ImageUtils.loadTexture( "textures/lensflare/lensflare2.png" ), 512, 0.0, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 1 ].texture, 512, 0.0, THREE.AdditiveBlending );
+
+				lensFlare.add( THREE.ImageUtils.loadTexture( "textures/lensflare/lensflare3.png" ), 60, 0.6, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 0.7, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 120, 0.9, THREE.AdditiveBlending );
+				lensFlare.add( lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
+
+				lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+				lensFlare.position.set( 0, 0, -99000 );
+
+				lensFlareRotate = new THREE.Object3D();
+				lensFlareRotate.addChild( lensFlare );
+
+				updateLensflare( flareStartX, -1 );
+				updateLensflare( -1, flareStartY );
+
+				scene.addChild( lensFlareRotate );
+
+			}
+
+			// axis
+			
+			auxRoot = new THREE.Object3D();
+			sceneRoot = new THREE.Object3D();
+			
+			var axis = createAxis();
+			
+			arrow1 = createArrow( 0xffaa00 );
+			arrow2 = createArrow( 0xff2200 );
+			
+			var tempScene = createTempScene();
+
+			auxRoot.addChild( axis );
+			auxRoot.addChild( arrow1 );
+			auxRoot.addChild( arrow2 );
+			sceneRoot.addChild( tempScene );
+
+			scene.addChild( auxRoot );
+			scene.addChild( sceneRoot );
+
+			window.addEventListener( 'resize', onWindowResize, false );
+
+			window.addEventListener( 'keydown', onKeyDown, false );
+			window.addEventListener( 'keyup', onKeyUp, false );
+			window.addEventListener( 'mousemove', onMouseMove, false );
+			window.addEventListener( 'mousewheel', onMouseWheel, false );
+			
+			oldTime = new Date().getTime();
+			
+			elSpeedVal = $( "speed_val" );
+	
+			animate();
+			
+			setLight( lightType );
+
+			updateDLight1();
+			updateDLight2();
+			
+			var loader = new THREE.SceneLoader();
+			loader.load( SCENE_FILE, callbackSync, callbackAsync, callbackProgress );
+			
+			
+		};
+
+		// scene loader
+		
+		function handleSceneUpdate( result, pieces ) {
+
+			//refreshSceneView( result );
+			renderer.initWebGLObjects( result.scene );
+
+			var m, material, count = 0;
+
+			for ( m in result.materials ) {
+
+				material = result.materials[ m ];
+				if ( ! ( material instanceof THREE.MeshFaceMaterial ) ) {
+
+					if( !material.program ) {
+
+						//console.log(m);
+						renderer.initMaterial( material, scene.lights, scene.fog );
+
+						count += 1;
+						if( count > pieces ) {
+
+							//console.log("xxxxxxxxx");
+							break;
+
+						}
+
+					}
+
+				}
+
+			}
+
+		};
+		
+		function callbackProgress( progress, result ) {
+
+			var bar = 250,
+				total = progress.total_models + progress.total_textures,
+				loaded = progress.loaded_models + progress.loaded_textures;
+
+			if ( total )
+				bar = Math.floor( bar * loaded / total );
+
+			//$( "bar" ).style.width = bar + "px";
+
+			count = 0;
+			for ( var m in result.materials ) count++;
+
+			handleSceneUpdate( result, Math.floor( count/total ) );
+			
+			//console.log( "progress", bar );
+
+		};
+
+		function callbackAsync( result ) {
+
+			loaded = result;
+
+			/*
+			$( "message" ).style.display = "none";
+			$( "progressbar" ).style.display = "none";
+			$( "start" ).style.display = "block";
+			$( "start" ).className = "enabled";
+			*/
+
+			handleSceneUpdate( result, 1 );
+
+			resetScene();
+
+			for ( var o in result.objects ) {
+			
+				result.objects[ o ].matrixAutoUpdate = false;
+				result.objects[ o ].updateMatrix();
+
+			}
+
+			sceneRoot.addChild( loaded.scene );
+			
+			initParams();
+
+			console.log( loaded.scene );
+
+		};
+
+		function callbackSync( result ) {
+		};
+		
+		// export
+
+		function generateSettingsURL() {
+		
+			var pars = {},
+				tmp = "";
+
+			pars.fogDensity = scene.fog.density;
+			pars.fogColor = FOG;
+			
+			pars.ambientLight = ALIGHT;
+			pars.directionalLight1 = DLIGHT1;
+			pars.directionalLight2 = DLIGHT2;
+			
+			pars.effectEnabled = postprocessing.enabled;
+			pars.effectType = postprocessing.type;
+			
+			if( postprocessing.materialFilm ) {
+			
+				pars.postprocessingNoise =  {
+				
+				nIntensity: postprocessing.materialFilm.uniforms.nIntensity.value,
+				sIntensity: postprocessing.materialFilm.uniforms.sIntensity.value,
+				sCount: 	postprocessing.materialFilm.uniforms.sCount.value
+
+				};
+				
+			}
+
+			if( postprocessing.materialScreen ) {
+			
+				pars.postprocessingBloom =  {
+				
+					opacity: postprocessing.materialScreen.uniforms.opacity.value
+
+				};
+				
+			}
+
+			pars.flyCamera = { position: flyCamera.position, target: flyCamera.target.position };
+			pars.sceneScale = GLOBAL_SCALE;
+
+			tmp += "data:text/plain;charset=utf-8,";
+			tmp += JSON.stringify(pars, null, " ");
+			
+			return tmp;
+			
+		};
+		
+		// event handlers
+		
+		function onKeyDown ( event ) {
+			
+			switch( event.keyCode ) {
+
+				/* space */
+				case 32: toggleHUD( event ); break;
+				
+				/* shift */
+				case 16: isShiftDown = true; break;
+
+				/* 1 */
+				case 49: setOrbitCamera(); break;
+
+				/* 2 */
+				case 50: setFlyCamera(); break;
+
+				/* 0 */
+				case 48: resetFlyCamera(); break;
+
+				/* r */
+				case 82: toggleAxis(); break;
+
+				/* o */
+				case 79: cycleMorphA(); break;
+
+				/* p */
+				case 80: cycleMorphB(); break;
+
+				/* pgup */
+				case 33: cameraFaster(); break;
+
+				/* pgdn */
+				case 34: cameraSlower(); break;
+
+			}
+			
+			//console.log( "keyCode", event.keyCode );
+
+		};
+
+		function onKeyUp( event ) {
+ 
+			switch( event.keyCode ) {
+
+				/* shift */
+				case 16: isShiftDown = false; break;
+
+			}
+
+		};
+		
+		function onMouseMove ( event ) {
+
+			mouseX = event.clientX - windowHalfX;
+			mouseY = event.clientY - windowHalfY;
+
+		};
+		
+		function onMouseWheel( event ) {
+		
+			if ( event.wheelDelta ) mouseDelta = event.wheelDelta / 120;
+			if ( event.detail     ) mouseDelta = - event.detail / 3;
+
+			zoomCamera( mouseDelta );
+			
+		};
+
+		function onWindowResize( event ) {
+ 
+			updateViewport();
+ 
+		};
+			
+			
+		function addGroupToggle( button_id, group_id ) {
+			
+			$( button_id ).addEventListener( 'click', function() { toggle( group_id ); }, false );
+			
+		};
+		
+		// fog
+		
+		function updateFog() {
+		
+			scene.fog.color.setHSV( FOG.h, FOG.s, FOG.v );
+			renderer.setClearColor( scene.fog.color );
+			
+		};
+		
+		// lights
+
+		var tmpVec = new THREE.Vector3(), unitVector = new THREE.Vector3();
+		
+		function updateDLight1() {
+			
+			updateUnitVector( DLIGHT1 );
+					
+			directionalLight1.position.set( DLIGHT1.x, DLIGHT1.y, DLIGHT1.z );
+			directionalLight1.color.setHSV( DLIGHT1.h, DLIGHT1.s, DLIGHT1.v );
+			
+			tmpVec.copy( directionalLight1.position );
+			tmpVec.multiplyScalar( -1 );
+			arrow1.lookAt( tmpVec );
+			
+		};
+
+		function updateDLight2() {
+
+			updateUnitVector( DLIGHT2 );
+					
+			directionalLight2.position.set( DLIGHT2.x, DLIGHT2.y, DLIGHT2.z );
+			directionalLight2.color.setHSV( DLIGHT2.h, DLIGHT2.s, DLIGHT2.v );
+			
+			tmpVec.copy( directionalLight2.position );
+			tmpVec.multiplyScalar( -1 );
+			arrow2.lookAt( tmpVec );
+
+		};
+
+		function updateALight() {
+					
+			ambientLight.color.setHSV( ALIGHT.h, ALIGHT.s, ALIGHT.v );
+			
+		};
+		
+		function updateLensflare( newX, newY ) {
+			
+			// update X?
+			
+			if( newX !== -1 ) {
+				
+				lensFlareRotate.rotation.x = newX * Math.PI / 180;
+			
+			} else {
+				
+				lensFlareRotate.rotation.y = newY * Math.PI / 180;
+				
+			}
+			
+		}
+		
+		 function lensFlareUpdateCallback( object ) {
+                       
+			var f, fl = object.lensFlares.length;
+			var flare;
+			var vecX = -object.positionScreen.x * 2;
+			var vecY = -object.positionScreen.y * 2; 
+
+
+			for( f = 0; f < fl; f++ ) {
+			   
+			   flare = object.lensFlares[ f ];
+			   
+			   flare.x = object.positionScreen.x + vecX * flare.distance;
+			   flare.y = object.positionScreen.y + vecY * flare.distance;
+
+			   flare.rotation = 0;
+
+			}
+
+			// hard coded stuff
+
+			object.lensFlares[ 2 ].y += 0.025;
+			object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + 45 * Math.PI / 180;
+
+		}
+
+		// axis
+		
+		function createAxis() {
+		
+			var axis = new THREE.Object3D(),
+				d = 0.05;
+				
+			var mesh = new THREE.Mesh( new THREE.Cube( 1, d, d ), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+			mesh.position.set( 0.5, 0, 0 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new THREE.Cube( d, 1, d ), new THREE.MeshLambertMaterial( { color: 0x00ff00 } ) );
+			mesh.position.set( 0, 0.5, 0 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new THREE.Cube( d, d, 1 ), new THREE.MeshLambertMaterial( { color: 0x0000ff } ) );
+			mesh.position.set( 0, 0, 0.5 );
+			axis.addChild( mesh );
+
+			mesh = new THREE.Mesh( new THREE.Plane( 100, 100, 100, 100 ), new THREE.MeshLambertMaterial( { color: 0xffffff, wireframe: true } ) );
+			mesh.rotation.set( -1.57, 0, 0 );
+			axis.addChild( mesh );
+
+			return axis;
+		
+		};
+		
+		function createArrow( color ) {
+			
+			var arrow = new THREE.Object3D(),
+				d = 0.05;
+			
+			var material = new THREE.MeshBasicMaterial( { color: color } );
+			
+			var mesh = new THREE.Mesh( new THREE.Cube( d, d, 1 ), material );
+			mesh.position.set( 0, 0, -0.5 );
+			arrow.addChild( mesh );
+			
+			mesh = new THREE.Mesh( new THREE.Cylinder( 4, 0.001, 0.25, 0.5 ), material );
+			mesh.position.set( 0, 0, -1 );
+			arrow.addChild( mesh );
+			
+			arrow.rotation.set( 0, 0, 0 );
+			
+			return arrow;
+			
+		};
+		
+		function toggleAxis() {
+		
+			axisVisible = !axisVisible;
+			THREE.SceneUtils.showHierarchy( auxRoot, axisVisible );
+		
+		};
+		
+		// camera controls
+		
+		function cameraFaster() {
+		
+			flyCamera.movementSpeed += 0.125;
+
+		};
+
+		function cameraSlower() {
+			
+			flyCamera.movementSpeed = cap_bottom( flyCamera.movementSpeed - 0.125, 0 );
+
+		};
+
+		
+		function setOrbitCamera() {
+		
+			camera = orbitCamera;
+			elCamType.innerHTML = "Orbit camera";
+			
+		};
+
+		function setFlyCamera() {
+		
+			camera = flyCamera;
+			elCamType.innerHTML = "Fly camera";
+			
+		};
+
+		function resetFlyCamera() {
+		
+			flyCamera.position.set( 0, cameraHeightOriginal, cameraDistanceOriginal );
+			flyCamera.target.position.set( 0, 0, 0 );
+			flyCamera.lon = -90;
+
+		};
+		
+		function zoomCamera( delta ) {
+		
+			cameraDistance = cap_bottom( cameraDistance - 0.75 * delta, 1 );
+
+		};
+		
+		// morph controls		
+		
+		function updateMorphs() {
+		
+			var nameA = morphObject.availableAnimals[ morphA ],
+				nameB = morphObject.availableAnimals[ morphB ];
+
+			morphObject.play( nameA, nameB );
+			
+			elMorphA.innerHTML = nameA;
+			elMorphB.innerHTML = nameB;
+
+		};
+		
+		function cycleMorphA() {
+		
+			if( morphObject && morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
+			
+				morphA = ( morphA + 1 ) % morphObject.availableAnimals.length;
+				updateMorphs();
+				
+			}
+
+		};
+
+		function cycleMorphB() {
+		
+			if( morphObject && morphObject.availableAnimals && morphObject.availableAnimals.length > 1 ) {
+			
+				morphB = ( morphB + 1 ) % morphObject.availableAnimals.length;
+				updateMorphs();
+				
+			}
+
+		};
+
+		function changeMorphSpeed( val ) {
+		
+			elSpeedVal.innerHTML = val.toFixed( 2 );
+
+			if ( morphObject ) { 
+			
+				morphObject.animalA.timeScale = morphObject.animalB.timeScale = val;
+				
+			}
+
+		};
+		
+		function changeMorphPercent( val ) {
+		
+			if ( morphObject ) {
+				
+				morphObject.morph = val;
+				
+				elMorphAPct.innerHTML = ( 100 * morphObject.morph ).toFixed( 1 ) + " %";
+				elMorphBPct.innerHTML = ( 100 * ( 1 - morphObject.morph) ).toFixed( 1 ) + " %";
+				
+			}
+
+		};
+		
+		// temp scene
+		
+		function createTempScene() {
+		
+			var tempScene = new THREE.Object3D();
+			
+			var i, x, y, z, 
+				d = 10000,
+				s = BASE_SCALE,
+				mesh,
+				geo = new THREE.Cube( 400, 400, 400 ),
+				mat = new THREE.MeshLambertMaterial( {color:0xffffff} );
+				
+			for ( i = 0; i < 1000; i++ ) {
+				
+				mesh = new THREE.Mesh( geo, mat );
+				
+				x = rr( -d, d );
+				y = rr( -d, d );
+				z = rr( -d, d );
+				
+				mesh.position.set( x, y, z );
+
+				x = rr( -3, 3 );
+				y = rr( -3, 3 );
+				z = rr( -3, 3 );
+				
+				mesh.rotation.set( x, y, z );
+				
+				mesh.scale.set( s, s, s );
+
+				mesh.matrixAutoUpdate = false;
+				mesh.updateMatrix();
+				mesh.update();
+				
+				tempScene.addChild( mesh );
+				
+			}
+			
+			return tempScene;
+			
+		};
+		
+		function resetScene() {
+
+			scene.removeChild( sceneRoot );
+
+			sceneRoot = new THREE.Object3D();
+			scene.addChild( sceneRoot );
+
+		};
+
+		function rescaleScene( s ) {
+			
+			sceneRoot.scale.set( s, s, s );
+			
+		};
+		
+		
+		// DOM helpers
+		
+		function toggle( id, how ) {
+			
+			var elStyle = $( id ).style;
+
+			if ( elStyle.display == "none" )
+				elStyle.display = how !==undefined ? how : "block";
+			else
+				elStyle.display = "none";
+			
+		};
+		
+		function show( id ) {
+		
+			$( id ).style.display = "block";
+			
+		};
+
+		function hide( id ) {
+		
+			$( id ).style.display = "none";
+			
+		};
+
+		// Utils
+		
+		function $( id ) { return document.getElementById( id ); }
+		function rr( a, b ) { return a + ( b - a ) * Math.random(); }
+		
+		
+		function renderNumber( n, precision ) {
+		
+			return "<span class='number'>" + n.toFixed( precision ) + "</span>";
+			
+		};
+
+		function renderBigNumber( n ) {
+
+			return "<span class='number'>" + pretty_number( n.toFixed( 0 ) ) + "</span>";
+
+		};
+
+		function renderVec3( v, precision ) {
+		
+			if ( Math.abs( v.x ) > 10000 || Math.abs( v.y ) > 10000 || Math.abs( v.z ) > 10000 ) {
+				
+				return renderBigNumber( v.x ) + " " + renderBigNumber( v.y ) + " " + renderBigNumber( v.z );
+				
+			} else {
+			
+				return renderNumber( v.x, precision ) + " " + renderNumber( v.y, precision ) + " " + renderNumber( v.z, precision );
+
+			}
+			
+		};
+		
+		function capitalize( s ) {
+		
+			return s[ 0 ].toUpperCase() + s.substring( 1, s.length );
+
+		};
+
+		function pretty_number( x ) {
+		
+			var delimiter = "'";
+			var strx = x.toString();
+			var pretty = "";
+			
+			for( var i = strx.length - 1; i >= 0; i-- ) {
+				
+				if ( ( strx.length - 1 - i ) % 3 == 0 && ( strx.length - 1 - i ) > 0 )
+					pretty = delimiter+pretty;
+				
+				pretty = strx[ i ] + pretty;
+			}
+			
+			return pretty;
+
+		};
+		
+		function pretty_size( x ) {
+		
+			var kb = x / 1024;
+			return pretty_number( kb.toFixed( 0 ) ) + " KB";
+
+		};
+		
+		function cap_string( s, n ) {
+			
+			if ( n < s.length - 2 )
+				return s.substring( 0, n ) + " ...";
+			else
+				return s;
+
+		};
+
+		function cap_bottom( n, b ) {
+			
+			return n > b ? n : b;
+			
+		};
+		
+		// GUI
+		
+		function toggleHUD( e ) {
+			
+			guiVisible = !guiVisible;
+			
+			e.stopPropagation();
+			e.preventDefault();
+			
+			toggle( "file_dialog" );
+			toggle( "gui_wrapper" );
+			//toggle( "camera" );
+			
+			camera.activeLook = !guiVisible;
+			
+		};
+		
+		function toggleFog() {
+		
+			if ( scene.fog.density == 0 ) {
+			
+				scene.fog.density = fogdensity;
+				
+			} else {
+			
+				scene.fog.density = 0;
+				
+			}
+			
+			refreshGUI();
+			
+		};
+
+		function setPostNoise() {
+		
+			initPostprocessingNoise( postprocessing );
+			postprocessing.enabled = true;
+			
+			refreshGUI();
+
+		};
+
+		function setPostBloom() {
+		
+			initPostprocessingBloom( postprocessing );
+			postprocessing.enabled = true;
+			
+			refreshGUI();
+
+		};
+
+		function setPostBloomNoise() {
+		
+			initPostprocessingBloomNoise( postprocessing );
+			postprocessing.enabled = true;
+			
+			refreshGUI();
+
+		};
+
+		function setPostNone() {
+		
+			postprocessing.enabled = false;
+			
+			refreshGUI();
+
+		};
+
+		function updateAspect() {
+		
+			camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+		};
+		
+		function updateViewport() {
+		
+			if ( overlays.filmStrip ) {
+
+				SCREEN_WIDTH = window.innerWidth;
+				SCREEN_HEIGHT = window.innerHeight - 200;
+
+				updateAspect();
+				renderer.domElement.style.top = "100px";
+				
+
+			} else {
+
+				SCREEN_WIDTH = window.innerWidth;
+				SCREEN_HEIGHT = window.innerHeight;
+
+				updateAspect();
+				renderer.domElement.style.top = "0px";
+
+			}
+			
+			if ( postprocessing.type == "bloom" )
+				initPostprocessingBloom( postprocessing );
+			else
+				initPostprocessingNoise( postprocessing );
+
+		};
+		
+		function toggleFilm() {
+		
+			overlays.filmStrip = !overlays.filmStrip;
+			
+			updateViewport();
+			refreshGUI();
+
+		};
+
+
+		function setLight( ltype ) {
+
+			lightType = ltype;
+
+			var acolor  = lightColors[ lightType ][ 0 ];
+			var d1color = lightColors[ lightType ][ 1 ];
+			var d2color = lightColors[ lightType ][ 2 ];
+			
+			ambientLight.color.setHSV( acolor.h, acolor.s, acolor.v );
+			directionalLight1.color.setHSV( d1color.h, d1color.s, d1color.v );
+			directionalLight2.color.setHSV( d2color.h, d2color.s, d2color.v );
+
+			updateHSV( lightColors[lightType][0], ALIGHT );
+			updateHSV( lightColors[lightType][1], DLIGHT1 );
+			updateHSV( lightColors[lightType][0], DLIGHT2 );
+
+			$("al_hue").innerHTML = acolor.h.toFixed(2);
+			$("al_sat").innerHTML = acolor.s.toFixed(2);
+			$("al_val").innerHTML = acolor.v.toFixed(2);
+
+			$("dl1_hue").innerHTML = d1color.h.toFixed(2);
+			$("dl1_sat").innerHTML = d1color.s.toFixed(2);
+			$("dl1_val").innerHTML = d1color.v.toFixed(2);
+
+			$("dl2_hue").innerHTML = d2color.h.toFixed(2);
+			$("dl2_sat").innerHTML = d2color.s.toFixed(2);
+			$("dl2_val").innerHTML = d2color.v.toFixed(2);
+
+			alSliderH.setValue( acolor.h );
+			alSliderS.setValue( acolor.s );
+			alSliderV.setValue( acolor.v );
+
+			dl1SliderH.setValue( d1color.h );
+			dl1SliderS.setValue( d1color.s );
+			dl1SliderV.setValue( d1color.v );
+
+			dl2SliderH.setValue( d2color.h );
+			dl2SliderS.setValue( d2color.s );
+			dl2SliderV.setValue( d2color.v );
+
+			refreshGUI();
+
+		};
+
+		function toggleOverlay( label ) {
+		
+			overlays[ label ] = !overlays[ label ];
+			
+			var id = "overlay" + capitalize( label );
+			
+			if ( overlays[ label ] )
+				show( id );
+			else
+				hide( id );
+			
+			refreshGUI();
+			
+		};
+
+		function refreshGUI() {
+			
+			// checkboxes
+			
+			$( "b_film" ).innerHTML = overlays.filmStrip ? "x" : "&nbsp;";
+			$( "b_dirt" ).innerHTML = overlays.dirt ? "x" : "&nbsp;";
+			$( "b_vignette" ).innerHTML = overlays.vignette ? "x" : "&nbsp;";
+			$( "b_lensFlare" ).innerHTML = overlays.lensFlare ? "x" : "&nbsp;";
+			
+			// selections
+			
+			
+			$( "b_noise" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "noise" ) ? "&diams;" : "&nbsp;";
+			$( "b_bloom" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloom" ) ? "&diams;" : "&nbsp;";
+			$( "b_bloomnoise" ).innerHTML = ( postprocessing.enabled && postprocessing.type == "bloomnoise" ) ? "&diams;" : "&nbsp;";
+			$( "b_none" ).innerHTML = ( ! postprocessing.enabled ) ? "&diams;" : "&nbsp;";
+
+			$( "b_lightWhite" ).innerHTML = ( lightType == "white" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightCold" ).innerHTML = ( lightType == "cold" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightWarm" ).innerHTML = ( lightType == "warm" ) ? "&diams;" : "&nbsp;";
+			$( "b_lightSunset" ).innerHTML = ( lightType == "sunset" ) ? "&diams;" : "&nbsp;";
+
+			var i, s;
+			
+			for ( i = 0; i < SCALES.length; i++ ) {
+			
+				s = SCALES[ i ];
+				
+				if( GLOBAL_SCALE == s[1] ) {
+				
+					$( s[0] ).innerHTML = "&diams;"
+					
+				} else {
+				
+					$( s[0] ).innerHTML = "&nbsp;";
+
+				}
+			}
+			
+			magicRepaint();
+
+		};
+		
+		function magicRepaint() {
+		
+			// workaround Chrome compositing bug
+			
+			//$( "gui_wrapper" ).style.display = "none";
+			//$( "gui_wrapper" ).offsetHeight;
+			//$( "gui_wrapper" ).style.display = "block";
+			
+		};
+		
+		function handleScale( values ) {
+			
+			function generateHandler( s ) {
+
+				return function() {
+						
+						GLOBAL_SCALE = s;
+						
+						rescaleScene( BASE_SCALE * s );
+						refreshGUI();
+						
+					}
+
+			};
+			
+			var i, id, s;
+			
+			for ( i = 0; i < values.length; i++ ) {
+				
+				id = values[ i ][ 0 ];
+				s  = values[ i ][ 1 ];
+				
+				$( id ).addEventListener( "click", generateHandler( s ), true );
+				
+			}
+			
+		};
+
+		function handleProperty( ids, handler ) {
+			
+			for ( var i = 0; i < ids.length; i++ )
+				$( ids[ i ] ).addEventListener( "click", handler, true );
+			
+		};
+
+		function iniGui() {
+		
+			$( "hud_button" ).addEventListener( "click", toggleHUD, true );
+			
+			handleProperty( [ "b_noise", "l_noise" ], setPostNoise );
+			handleProperty( [ "b_bloom", "l_bloom" ], setPostBloom );
+			handleProperty( [ "b_bloomnoise", "l_bloomnoise" ], setPostBloomNoise );
+			handleProperty( [ "b_none", "l_none" ], setPostNone );
+
+			handleProperty( [ "b_film", "l_film" ], toggleFilm );
+
+			handleProperty( [ "b_dirt", "l_dirt" ], function() { toggleOverlay( "dirt") } );
+			handleProperty( [ "b_vignette", "l_vignette" ], function() { toggleOverlay( "vignette") } );
+			handleProperty( [ "b_lensFlare", "l_lensFlare" ], function() { toggleOverlay( "lensFlare") } );
+			
+			handleScale( SCALES );
+
+			handleProperty( [ "b_lightWhite", "l_lightWhite" ], function() { setLight( "white" ) } );
+			handleProperty( [ "b_lightCold", "l_lightCold" ], function() { setLight( "cold" ) } );
+			handleProperty( [ "b_lightWarm", "l_lightWarm" ], function() { setLight( "warm" ) } );
+			handleProperty( [ "b_lightSunset", "l_lightSunset" ], function() { setLight( "sunset" ) } );
+
+			refreshGUI();
+		
+		};
+		
+		DragAndDrop.onDragOver = function( evt ) {
+		
+			evt.stopPropagation();
+			evt.preventDefault();
+
+		};
+		 
+		DragAndDrop.onDragFileDrop = function( evt ) {
+		
+			evt.stopPropagation();
+			evt.preventDefault();
+			
+			console.log( evt );
+			var sceneResetFlag = true;
+			if( evt.offsetX > windowHalfX ) sceneResetFlag = false;
+			
+			var i, f, 
+				files = evt.dataTransfer.files,
+				output = [],
+				loader = new THREE.JSONLoader(),
+				callbackObject = function( geometry ) { addObject( geometry, 0, 0, 0, 1, sceneResetFlag ) };
+
+			
+			for ( i = 0; f = files[i]; i++ ) {
+				
+				output.push('<li><strong>' + cap_string( f.name, 17 ) + '</strong> <span class="fsize">' + pretty_size( f.size ) + '</span></li>');
+
+				var reader = new FileReader();
+
+				if ( f.type.indexOf( "javascript" ) >= 0 ) {
+				
+					reader.onload = ( function( theFile ) {
+						
+						return function( e ) {
+						
+							var content = e.target.result,
+								bb, blobURL = new BlobBuilder();
+
+							bb = new BlobBuilder();
+							bb.append( content );
+
+							if ( window.webkitURL )
+								blobURL = window.webkitURL.createObjectURL( bb.getBlob() );
+							else
+								blobURL = window.URL.createObjectURL( bb.getBlob() );
+
+							loader.load( { model: blobURL, callback: callbackObject } );
+
+						};
+
+					  })(f);
+
+					reader.readAsText( f );
+					
+					$('file_list').innerHTML = "";
+
+				} else if ( f.type.indexOf( "image" ) >= 0 ) {
+				
+					
+					reader.onload = ( function( theFile ) {
+					
+						return function( e ) {
+							
+							var span = document.createElement( 'span' );
+						  
+							span.innerHTML = [ '<img class="thumb" src="', e.target.result,
+												'" title="', theFile.name, '"/>' ].join( '' );
+						  
+							//$( 'images' ).insertBefore( span, null );
+						 
+							//alert("handling [" + theFile.name + "]");
+							//addImage( theFile.name, e.target.result );
+							
+							// hack to work around Chrome crash bug
+							// when dropping first model and then textures
+							
+							setTimeout( function() { addImage( theFile.name, e.target.result ); }, 500 );
+							
+
+						};
+					  })(f);
+
+					reader.readAsDataURL(f);
+
+				}
+
+			}
+			
+			$('file_list').innerHTML += '<ul>' + output.join('') + '</ul>';
+			
+			show( "files_div" );
+
+		};
+		 
+
+		function extractTexture( map, dst ) {
+			
+			var s;
+			
+			if ( map ) {
+			
+				s = map.sourceFile;
+				
+				if ( s ) {
+				
+					if ( dst[ s ] == undefined ) {
+					
+						dst[ s ] = [ map ];
+					
+					} else {
+					
+						dst[ s ].push( map );
+
+					}
+					
+				}
+				
+			}
+
+		};
+		
+		function collectTextures( geometry ) {
+		
+			var textureMap = {},
+				i, m, s, materials = geometry.materials;
+			
+			for ( i = 0; i < materials.length; i++ ) {
+			
+				m = materials[ i ][ 0 ];
+				
+				extractTexture( m.map, textureMap );
+				extractTexture( m.lightMap, textureMap );
+
+			}
+			
+			updateTextureList( "texture_list", textureMap );
+			
+			return textureMap;
+			
+		};
+		
+		function updateTextureList( id, map ) {
+			
+			var fname, item, zclass,
+				lst = [],
+				tmp = "";
+				el = $( id );
+			
+			for ( fname in map ) {
+				
+				if ( map[ fname ].__textureLoaded )
+					zclass = "loaded";
+				else
+					zclass = "missing";
+					
+				item = "<li><span class='" + zclass + "'>" + fname + "</span></li>";
+				lst.push( item );
+				
+			}
+			
+			if ( lst.length ) {
+			
+				tmp = "<ul>" + lst.join("") + "</ul>";
+				el.innerHTML = tmp;
+				
+				show( "textures_div" );
+				
+			} else {
+			
+				hide( "textures_div" );
+				
+			}
+			
+		};
+		
+		function checkTextureImages() {
+		
+			var i, tid, mid, maps, img;
+			
+			for ( tid in IMAGE_MAP ) {
+			
+				if ( TEXTURE_MAP[ tid ] != undefined ) {
+				
+					maps = TEXTURE_MAP[ tid ];
+					
+					for( i = 0; i < maps.length; i++ ) {
+					
+						img = document.createElement( 'img' );
+						img.src = IMAGE_MAP[ tid ];
+						
+						maps[ i ].image = img;
+						maps[ i ].needsUpdate = true;
+						maps[ i ].__wasSetOnce = false;
+
+					}
+					
+					maps.__textureLoaded = true;
+					
+				}
+
+			}
+			
+			updateTextureList( "texture_list", TEXTURE_MAP );
+			
+		};		
+		
+		function addObject( geometry, x, y, z, s, sceneResetFlag ) {
+			
+			if ( sceneResetFlag ) resetScene();
+			
+			var material, mesh;
+			
+			console.log(geometry);
+			
+			if ( geometry.morphTargets !== undefined && geometry.morphTargets.length > 0 ) {
+			
+				morphObject = ROME.Animal( geometry, true );
+				mesh = morphObject.mesh;
+			
+				cameraDistanceOriginal = mesh.boundRadius * 10;
+				cameraHeightOriginal = mesh.boundRadius * 0.1;
+				
+				if( morphObject.availableAnimals && morphObject.availableAnimals.length > 0 ) {
+				
+					morphA = 0;
+					morphB = ( morphA + 1 ) % morphObject.availableAnimals.length;
+					
+					morphObject.animalA.timeScale = 0.5;
+					
+					updateMorphs();
+					
+				}
+				
+				$( "morphs" ).style.display = "block";
+			
+			} else {
+				
+				morphObject = null;
+				
+				if ( geometry.materials.length > 0 )
+					material = new THREE.MeshFaceMaterial();
+				else
+					material = new THREE.MeshLambertMaterial( { color: 0xdddddd } );
+				
+				mesh = new THREE.Mesh( geometry, material );
+				
+				if ( mesh.boundRadius > 0.25 * camera.far ) {
+
+					cameraDistanceOriginal = 0.25 * camera.far;
+					cameraHeightOriginal = 0.01 * camera.far;
+
+				} else {
+				
+					cameraDistanceOriginal = mesh.boundRadius * 3;
+					cameraHeightOriginal = mesh.boundRadius * 0.1;
+					
+				}
+				
+				$( "morphs" ).style.display = "none";
+				
+			}
+			
+
+			TEXTURE_MAP = collectTextures( geometry );
+			checkTextureImages();
+			
+			mesh.position.set( x, y, z );
+			mesh.scale.set( s, s, s );
+			mesh.matrixAutoUpdate = false;
+			mesh.updateMatrix();
+			mesh.update();
+			
+			sceneRoot.addChild( mesh );
+
+			cameraDistance = cameraDistanceOriginal;
+			cameraHeight = cameraHeightOriginal;
+
+			camera.position.set( 0, cameraHeight, cameraDistance );
+			camera.target.position.set( 0, 0, 0 );
+			
+			axisVisible = false;
+			THREE.SceneUtils.showHierarchy( auxRoot, axisVisible );
+			
+			//console.log( mesh.boundRadius, camera );
+			
+			if ( geometry.edges.length > 0 ) {
+			
+				var lineGeo = new THREE.Geometry();
+				var lineMat = new THREE.LineBasicMaterial( { color: 0xff0000, opacity: 1, linewidth: 2 } );
+				
+				for( var i = 0; i < geometry.edges.length; i ++ ) {
+				
+					lineGeo.vertices.push( geometry.edges[ i ].vertices[ 0 ] );
+					lineGeo.vertices.push( geometry.edges[ i ].vertices[ 1 ] );
+
+				}
+				
+				console.log( lineGeo );
+				
+				var edgeLines = new THREE.Line( lineGeo, lineMat, THREE.LinePieces );
+				sceneRoot.addChild( edgeLines );
+				
+			}
+
+		};
+		
+		function addImage( name, uri ) {
+		
+			IMAGE_MAP[ name ] = uri;
+			checkTextureImages();
+			
+		};
+
+		function initPostprocessingNoise( effect ) {
+			
+			effect.type = "noise";
+			
+			effect.scene = new THREE.Scene();
+			
+			effect.camera = new THREE.Camera();
+			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+			effect.camera.position.z = 100;
+			
+			effect.texture = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+
+			var film_shader = THREE.ShaderUtils.lib["film"];
+			var film_uniforms = THREE.UniformsUtils.clone( film_shader.uniforms );
+			
+			film_uniforms["tDiffuse"].texture = effect.texture;
+			
+			effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+			effect.materialFilm.uniforms.grayscale.value = 0;
+			
+			var quad = new THREE.Mesh( new THREE.Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialFilm );
+			quad.position.z = -500;
+			effect.scene.addObject( quad );
+
+		}
+		
+		function initPostprocessingBloom( effect ) {
+
+			effect.type = "bloom";
+			
+			effect.scene = new THREE.Scene();
+
+			effect.camera = new THREE.Camera();
+			effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+			effect.camera.position.z = 100;
+
+			var pars1 = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+				pars2 = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
+
+			effect.rtTexture1 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, pars1 );
+			effect.rtTexture2 = new THREE.WebGLRenderTarget( 512, 512, pars2 );
+			effect.rtTexture3 = new THREE.WebGLRenderTarget( 512, 512, pars2 );
+
+			var screen_shader = THREE.ShaderUtils.lib["screen"];
+			var screen_uniforms = THREE.UniformsUtils.clone( screen_shader.uniforms );
+
+			screen_uniforms["tDiffuse"].texture = effect.rtTexture1;
+			screen_uniforms["opacity"].value = 1.0;
+
+			effect.materialScreen = new THREE.MeshShaderMaterial( {
+
+				uniforms: screen_uniforms,
+				vertexShader: screen_shader.vertexShader,
+				fragmentShader: screen_shader.fragmentShader,
+				blending: THREE.AdditiveBlending,
+				transparent: true
+
+			} );
+
+			var convolution_shader = THREE.ShaderUtils.lib["convolution"];
+			var convolution_uniforms = THREE.UniformsUtils.clone( convolution_shader.uniforms );
+
+			effect.blurx = new THREE.Vector2( 0.001953125, 0.0 ),
+			effect.blury = new THREE.Vector2( 0.0, 0.001953125 );
+
+			convolution_uniforms["tDiffuse"].texture = effect.rtTexture1;
+			convolution_uniforms["uImageIncrement"].value = effect.blurx;
+			convolution_uniforms["cKernel"].value = THREE.ShaderUtils.buildKernel( 4.0 );
+
+			effect.materialConvolution = new THREE.MeshShaderMaterial( {
+
+				uniforms: convolution_uniforms,
+				vertexShader:   "#define KERNEL_SIZE 25.0\n" + convolution_shader.vertexShader,
+				fragmentShader: "#define KERNEL_SIZE 25\n"   + convolution_shader.fragmentShader
+
+			} );
+
+			var film_shader = THREE.ShaderUtils.lib["film"];
+			var film_uniforms = THREE.UniformsUtils.clone( film_shader.uniforms );
+			
+			film_uniforms["tDiffuse"].texture = effect.rtTexture1;
+			
+			effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+			effect.materialFilm.uniforms.grayscale.value = 0;
+			effect.materialFilm.uniforms.nIntensity.value = 1;
+			//effect.materialFilm.uniforms.sIntensity.value = 0.25;
+			//effect.materialFilm.uniforms.sCount.value = 2048;
+
+			effect.quad = new THREE.Mesh( new THREE.Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialConvolution );
+			effect.quad.position.z = -500;
+			effect.scene.addObject( effect.quad );
+
+		}
+		
+		function initPostprocessingBloomNoise( effect ) {
+		
+			initPostprocessingBloom( effect );
+			effect.type = "bloomnoise";
+			
+		};
+		
+		// updates
+
+		function animate() {
+
+			requestAnimationFrame( animate );
+
+			time = new Date().getTime();
+			delta = time - oldTime;
+			oldTime = time;
+
+			updateCamera( delta );
+			updateMorph( delta );
+			render( delta );
+			
+			stats.update();
+
+		};
+
+		function updateMorph( delta ) {
+		
+			if ( morphObject ) {
+				
+				THREE.AnimationHandler.update( delta );
+				
+			}
+
+		};		
+		
+		function updateCamera( delta ) {
+		
+			if ( camera == orbitCamera ) {
+			
+				if ( isShiftDown ) {
+
+					theta += mouseX * delta * 0.0001;
+
+				}
+
+				camera.position.x = cameraDistance * Math.sin( theta * Math.PI / 360 );
+				camera.position.z = cameraDistance * Math.cos( theta * Math.PI / 360 );
+				camera.position.y = cameraHeight;
+				
+			}
+			
+			elCamLocation.innerHTML = renderVec3( camera.position, 2 );
+			
+			if ( camera == flyCamera ) {
+			
+				elCamLocation.innerHTML += " speed: " + camera.movementSpeed.toFixed(3);
+
+			}
+			
+			if ( ENABLE_LENSFLARES ) {
+			
+				lensFlareRotate.position.set( camera.position.x, camera.position.y, camera.position.z );
+				
+			}
+
+		};
+		
+		function render( delta ) {
+			
+			renderer.clear();
+			
+			if ( postprocessing.enabled ) {
+			
+				if ( postprocessing.type == "noise" ) {
+				
+					postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
+					
+					renderer.render( scene, camera, postprocessing.texture, true );
+					renderer.render( postprocessing.scene, postprocessing.camera );
+					
+				} else if ( postprocessing.type == "bloom" || postprocessing.type == "bloomnoise" ) {
+
+					// Render scene into texture
+
+					renderer.render( scene, camera, postprocessing.rtTexture1, true );
+
+					// Render quad with blured scene into texture (convolution pass 1)
+
+					postprocessing.quad.materials = [ postprocessing.materialConvolution ];
+
+					postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+					postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blurx;
+
+					renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture2, true );
+
+					// Render quad with blured scene into texture (convolution pass 2)
+
+					postprocessing.materialConvolution.uniforms.tDiffuse.texture = postprocessing.rtTexture2;
+					postprocessing.materialConvolution.uniforms.uImageIncrement.value = postprocessing.blury;
+
+					renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture3, true );
+
+					// Render original scene with superimposed blur to texture
+
+					postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+					postprocessing.materialScreen.blending = THREE.AdditiveBlending;
+					postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture3;
+					//postprocessing.materialScreen.uniforms.opacity.value = 1.0;
+
+					renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.rtTexture1, false );
+
+					// Render to screen
+
+					if ( postprocessing.type == "bloomnoise" ) {
+						
+						postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
+						postprocessing.quad.materials = [ postprocessing.materialFilm ];
+						
+					} else {
+
+						postprocessing.materialScreen.blending = THREE.NormalBlending;
+						postprocessing.quad.materials = [ postprocessing.materialScreen ];
+
+					}
+					
+					postprocessing.materialScreen.uniforms.tDiffuse.texture = postprocessing.rtTexture1;
+					renderer.render( postprocessing.scene, postprocessing.camera );
+				
+				}
+				
+			} else {
+				
+				renderer.render( scene, camera );
+				
+			}
+			
+
+		};
+
+		// it's nicer to be able to drop anywhere in the window
+		
+		//$( 'drop_zone' ).addEventListener( 'dragover', DragAndDrop.onDragOver, false );
+		//$( 'drop_zone' ).addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
+
+		window.addEventListener( 'dragover', DragAndDrop.onDragOver, false );
+		window.addEventListener( 'drop', DragAndDrop.onDragFileDrop, false );
+
+		</script>
+
+	</body>
+</html>

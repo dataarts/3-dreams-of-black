@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - webgl</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="rome/animal.js"></script>
+
+
+		<script type="text/javascript">
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var geometry, objects;
+			var skin;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+			var animation;
+			var animal;
+
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			document.addEventListener( 'click', onDocumentMouseClick, false );
+
+			
+			var loader = new THREE.JSONLoader();
+			loader.load( { model: "assets/wolfBison2.js", callback: init } );
+
+		//	init();
+
+			function init( geometry ) {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x535758, 0.0004705882352941177 );
+				scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
+
+/*				var light = new THREE.PointLight( 0xff2200 );
+				light.position.set( 100, 100, 0 );
+				scene.addChild( light );
+*/
+				var light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0, 1, 0 );
+				scene.addChild( light );
+
+				var light = new THREE.AmbientLight( 0x888888 );
+				scene.addLight( light );
+
+	
+	/*			geometry = new Cube( 100, 100, 100, 2, 2, 2, undefined, true );
+				geometry.morphTargets = [
+				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "bison_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+					{ "name": "wolf_001", "vertices": geometry.vertices },				
+				];
+*/
+				for( var i = 0; i < geometry.faces.length; i++ ) {
+					
+					geometry.faces[ i ].normal.negate();
+										
+				}
+				
+				animal = ROME.Animal( geometry, true );
+				animal.mesh.doubleSided = true;
+				scene.addChild( animal.mesh );
+				animal.mesh.rotation.y = 90 * Math.PI / 180;
+				animal.play( "bison", "wolf" );
+
+
+				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 0, 250, 350 );
+				camera.target.position.y = 100;
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.sortObjects = false;
+				container.appendChild( renderer.domElement );
+
+				setInterval( loop, 1000 / 60 );
+			}
+
+			function onDocumentMouseClick( event ) {
+				
+				animal.play( "wolf", "bison" );
+			}
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = ( event.clientX - windowHalfX );
+				mouseY = ( event.clientY - windowHalfY );
+			}
+
+			var t = 0;
+
+			function loop() {
+
+				animal.morph = Math.abs( mouseX / windowHalfX );
+				animal.mesh.rotation.y += 0.01;
+
+				THREE.AnimationHandler.update( 1000 / 60 );
+				renderer.render( scene, camera );
+
+			}
+
+			function log( text ) {
+
+				var e = document.getElementById("log");
+				e.innerHTML = text + "<br/>" + e.innerHTML;
+
+			}
+
+		</script>
+
+	</body>
+</html>

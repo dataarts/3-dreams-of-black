@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>005 - deformation</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000000;
+				color:#ffffff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align: left;
+			}
+			
+			#options, #info {
+				padding: 10px;
+				text-aligh: left;
+				font-family: Georgia, serif;
+			}
+			
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+		
+	<div id="options">
+		Camera look depth: <input size="5" id="cpt" value="1500"> | 
+		Camera max x: <input size="3" id="cmx" value="30"> | 
+		Camera max y: <input size="3" id="cmy" value="10">
+	</div>
+	
+	<div id="info"></div>
+
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="src/MouseDeformShader.js"></script>
+
+		<script type="text/javascript">			
+			var viewWidth =  window.innerWidth;
+			var aspect = 2.35;
+			
+			var fov = 54;
+			var cpt = -30;
+
+			var container, camera, scene, webglRenderer, sky, deformMat;			
+			
+			var mouseX = 0;
+			var mouseY = 0;
+			var targetPos = new THREE.Vector4();
+			var mouse2d = new THREE.Vector3();
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+			
+			var ray = new THREE.Ray();
+			var poi = new THREE.Vector3();
+			var matrix = new THREE.Matrix4(),
+				matrix2 = new THREE.Matrix4();
+
+			init();	
+			loop();
+				
+			setInterval(loop, 1000/60);
+			
+			document.addEventListener('mousemove', mouseMove, false);
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				camera = new THREE.Camera( fov, aspect, 1, 5000 );
+				camera.updateMatrix();
+				
+				scene = new THREE.Scene();
+				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+
+				var adj = Math.tan( fov * Math.PI / 360 ) * 2;
+				
+				//addLayer("textures/sample/frame.jpg", 1.104, 1.24, -1000, adj);
+				
+				addLayer("textures/sample/01.jpg", 1.104, 1.24, -3000, adj);	
+				deformMat = addDistortedLayer("textures/sample/02.png", 1.104, 1.24, -900, adj);
+
+				addLayer("textures/sample/03.png", 1.104, 1.24, -550, adj);
+				addLayer("textures/sample/04.png", 1.104, 1.24, -450, adj);
+				addLayer("textures/sample/05.png", 1.104, 1.24, -350, adj);
+				
+				addLayer("textures/sample/06.png", 1.104, 1.24, -320, adj);
+				addLayer("textures/sample/07.png", 1.104, 1.24, -220, adj);
+				addLayer("textures/sample/08.png", 1.104, 1.24, -100, adj);
+				
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize(viewWidth, viewWidth * 1/aspect);
+					container.appendChild( webglRenderer.domElement );
+				} catch (e) {
+					console.log(e);
+				}
+			}
+			
+			function addDistortedLayer(path, w, h, d, a) {
+				var shader = MouseDeformShaderSource[ 'mouseDeform' ];
+				var uniforms = shader.uniforms;
+				
+				uniforms[ 'texture' ].texture =  THREE.ImageUtils.loadTexture(path);
+				uniforms[ 'poi' ].value = new THREE.Vector3(0, 0, 0);
+				
+				var df = new THREE.MeshShaderMaterial( {
+					uniforms: uniforms,
+					vertexShader: shader.vertexShader,
+					fragmentShader: shader.fragmentShader,
+					blending: THREE.BillboardBlending
+				} );
+				
+				w *= Math.abs(d) * a * aspect;
+				h *= Math.abs(d) * a;
+
+				var p = new THREE.Mesh( new THREE.Plane(w, h, 120, 70), df );
+				
+				p.position.z = d;
+
+				scene.addObject(p);
+				
+				var mc = THREE.CollisionUtils.MeshColliderWBox(p);
+				//mc.box = null;
+				THREE.Collisions.colliders.push(mc);
+
+				return df;
+			}
+
+			function addLayer(path, w, h, d, a) {
+				
+				w *= Math.abs(d) * a * aspect;
+				h *= Math.abs(d) * a;
+				
+				var tex = THREE.ImageUtils.loadTexture(path);
+				var mat = new THREE.MeshBasicMaterial ( {map: tex, blending: THREE.BillboardBlending } );
+				var p = new THREE.Mesh( new THREE.Plane(w, h, 1, 1), mat );
+				
+				p.position.z = d;
+				
+				p.doubleSided = true;
+				
+				scene.addObject(p);
+
+				return p;
+			}
+
+			function mouseMove(e){
+				mouseX = (event.clientX - windowHalfX) / -windowHalfX;
+				mouseY = (event.clientY - windowHalfY) / windowHalfY;
+					
+				mouse2d.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse2d.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+				mouse2d.z = 1;
+			}
+
+			function loop() {
+				
+				var cpt = parseFloat(document.getElementById("cpt").value) * -1 || -100;
+				var cmx = parseFloat(document.getElementById("cmx").value) || 1;
+				var cmy = parseFloat(document.getElementById("cmy").value) || 1;
+					
+				targetPos.x = mouseX * cmx;
+				targetPos.y = mouseY * cmy;
+
+				camera.position.x += (targetPos.x - camera.position.x) / 10;
+				camera.position.y += (targetPos.y - camera.position.y) / 10;	
+				
+				camera.target.position = new THREE.Vector3(0,0, cpt );
+				
+				
+				
+				ray.origin.copy( mouse2d );
+				matrix.copy( camera.matrixWorld );
+				matrix.multiplySelf( THREE.Matrix4.makeInvert( camera.projectionMatrix, matrix2 ) );
+				matrix.multiplyVector3( ray.origin );
+	
+				ray.direction.copy( ray.origin );
+				ray.direction.subSelf( camera.position );
+				
+				ray.direction.normalize();
+				
+				var c = THREE.Collisions.rayCastNearest( ray );
+				
+				if(c) {
+					poi = ray.origin.clone().addSelf( ray.direction.multiplyScalar(c.distance) );
+					//info.innerHTML = vts(poi);
+				} else {
+					//info.innerHTML = "No hit!";
+				}
+				
+				deformMat.uniforms[ 'poi' ].value = poi;
+				
+				webglRenderer.render( scene, camera );
+			}
+			
+			function vts(v) {
+				if(!v) return "undefined<br>";
+				else return v.x + " , " + v.y + " , " + v.z + "<br>";
+			};
+
+
+		</script>
+
+	</body>
+</html>

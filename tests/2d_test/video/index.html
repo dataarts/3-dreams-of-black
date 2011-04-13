@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>video test</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#2c3333;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+
+
+		<script type="text/javascript" src="build_r36/Three.js"></script>
+
+		<video id="video" autoplay loop style="display:none">
+			<source src="s02-1.webm" type='video/webm;'>
+			<source src="s02-1.m4v" type='video/mp4;'>
+			<source src="s02-1.ogv" type='video/ogg;'>
+		</video>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = -180;
+
+			var container;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+			
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var has_gl = 0;
+			
+			var cubeRefMesh;
+			var bentplaneMesh;
+
+			var video, texture;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
+				
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = false;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+				
+				return mesh;
+			}
+			
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+				console.log(aspect);
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+				camera.position.z = -100;
+				camera.position.x = 0;
+				camera.position.y = 0;
+
+				camera.updateMatrix();
+
+				scene = new THREE.Scene();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x000000 );
+				scene.addLight( ambient );
+
+				var cubeRef = new Cube( 0, 0, 0, 0, 0 );
+				cubeRefMesh = addMesh( cubeRef, 1,  0, 0, -800, 0,0,0, new THREE.MeshLambertMaterial( { color: 0x333333 } ) );
+				camera.target = cubeRefMesh;
+
+				var bentplane = new Plane( 960, 544, 19, 9 );
+
+				for ( var i=0; i < bentplane.vertices.length; ++i ) {
+					var col = i%20;
+
+					var sin = 50*Math.sin(col/6.25);
+
+					bentplane.vertices[i].position.z = -sin
+				}
+
+				video = document.getElementById( 'video' );
+				video.addEventListener('ended', onVideoEnd, false);
+
+				texture = new THREE.Texture( video );
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+
+				var material = new THREE.MeshLambertMaterial( { color: 0xffffff, map: texture } )
+
+				bentplaneMesh = addMesh( bentplane, 2.4,  0, FLOOR+544, -800, 0,0,0, material );
+				
+				// bg
+				var bgplane = new Plane( 100, 100, 1, 1 );
+				var mat = new THREE.MeshBasicMaterial( { color: 0x93bbc8 } )
+				var bgplaneMesh = addMesh( bgplane, 100,  0, 0, -1200, 0,0,0, mat );
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				
+			}
+			
+			function getTextureMaterial (tex) {
+				var textureMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: new THREE.Texture(), blending: THREE.BillboardBlending } );
+				var img = new Image();
+				textureMaterial.map.image = img;
+				img.onload = function () {
+					textureMaterial.map.image.loaded = 1;
+				};
+				img.src = tex;
+				
+				return textureMaterial;
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = ( event.clientX - windowHalfX );
+				mouseY = ( event.clientY - windowHalfY );
+			}
+
+			// firefox loop fix
+			function onVideoEnd() {
+				video.play();
+			}
+
+			function loop() {
+
+				if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+					if (texture) texture.needsUpdate = true;
+				}
+
+				var moveX = (mouseX-followX)/20;
+				var moveY = (mouseY-followY)/20;
+
+				followX += moveX;
+				followY += moveY;
+
+				cubeRefMesh.position.y = (544*0.7)+(followY/10)*-1;
+				cubeRefMesh.position.x = (followX/20);
+
+				bentplaneMesh.position.x = (followX/10)*-1;
+				camera.position.y = FLOOR+544+25 + (followY/4)*-1;
+				
+				if ( has_gl ) webglRenderer.render( scene, camera );
+
+			}
+
+
+		</script>
+
+	</body>
+</html>

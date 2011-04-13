@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - city - path</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #808080;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				display:none;
+			}
+			
+			a { color:red }
+			
+			
+			.bar { width:100%; position:absolute; z-index:200; display:block }
+			#topbar { height:75px; background:#000; top:0px;  }
+			#bottombar { height:75px; background:#000; bottom:0px }
+			
+			#oldie { z-index:500!important; margin-top:15em!important }
+			
+			#hud { color:#fff; z-index:300; font-size:2em; position:absolute; margin:0.5em 0 0 0.5em }
+			.val { color:orange; font-weight:bold; margin:0; width:4em; text-align:right; display:inline-block }
+		</style>
+	</head>
+
+	<body>
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - OBJ converter example
+		</div>
+		
+		<div class="bar" id="topbar"></div>
+		<div class="bar" id="bottombar"></div>
+
+		<div id="hud">
+		</div>
+
+		<script type="text/javascript" src="js/Three.js"></script>
+		
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+
+		<script type="text/javascript">
+		
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			var height = window.innerHeight;
+			
+			var container,stats;
+
+			var camera, scene, renderer;
+
+			var mesh, zmesh, geometry;
+
+			var waypoints = [];
+			
+			var cameraOnRails = true;
+			
+			var postprocessing = { enabled : true };
+
+			init();
+			animate();
+
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				// WAYPOINTS
+				
+				waypoints = [ [ -150, -580, 200 ],
+							  [ -150, -580, -500 ], 
+							  [ -150, -580, -1150 ],
+							  [ -150, -580, -1300 ],
+							  
+							  [ -175, -580, -1375 ], // corner
+							  
+							  [ -275, -580, -1400 ],
+							  [ -350, -580, -1400 ],
+							  [ -500, -580, -1400 ],
+							  [ -1000, -580, -1400 ]
+							  ];
+
+				cameraPath = new THREE.PathCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+												 waypoints: waypoints, duration: 20, 
+												 useConstantSpeed: true, resamplingCoef: 20,
+												 createDebugPath: true, createDebugDummy: true,
+												 lookSpeed: 0.01, lookVertical: true, lookHorizontal: true,
+												 verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+												 horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.7, 2.5 ] }
+											 } );
+		
+				
+				cameraPath.position.set( 0, 10, 0 );
+				cameraPath.lon = 95;
+					
+				camera = cameraPath;
+				
+				if ( !cameraOnRails ) {
+				
+					cameraManual = new THREE.QuakeCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000,
+													  movementSpeed: 3.2, lookSpeed: 0.0035, noFly: false, lookVertical: true, 
+													  autoForward: false } );
+													  
+					cameraManual.position.set( -150, -580, 200 );
+					cameraManual.lon = -95;
+					
+					camera = cameraManual;
+					
+				}				
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x000000, 0.0006 );
+				scene.fog.color.setHSV( 0.6, 0.35, 1.0 );
+				
+				// DEBUG OBJECTS
+				
+				scene.addObject( cameraPath.debugPath );
+				scene.addObject( cameraPath.animationParent );				
+				
+				// LIGHTS
+
+				var ambient = new THREE.AmbientLight( 0x221100 );
+				scene.addLight( ambient );
+
+				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 1;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+
+				var pointLight = new THREE.PointLight( 0xffffff, 0.35 );
+				scene.addLight( pointLight );
+
+				initPostprocessing();
+				
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				container.appendChild( renderer.domElement );
+				
+				renderer.setClearColor( scene.fog.color );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+
+				var loader = new THREE.Loader(),
+					callbackScene = function( geometry ) { createScene( geometry, 0, 0, 0, 0 ) };
+
+				loader.loadAscii( { model: "obj/max/city.js", callback: callbackScene } );				
+
+			};
+
+			
+			function createScene( geometry, x, y, z, b ) {
+
+				var material = new THREE.MeshFaceMaterial();
+				zmesh = new THREE.Mesh( geometry, material );
+				zmesh.position.x = x;
+				zmesh.position.z = y;
+				zmesh.position.y = z;
+				zmesh.scale.x = zmesh.scale.y = zmesh.scale.z = 0.10;
+				zmesh.matrixAutoUpdate = false;
+				zmesh.updateMatrix();
+				scene.addObject( zmesh );	
+
+				cameraPath.animation.play( true, 0 );
+
+			}
+
+			function initPostprocessing() {
+				
+				postprocessing.scene = new THREE.Scene();		
+				
+				postprocessing.camera = new THREE.Camera();
+				postprocessing.camera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, height / 2, height / - 2, -10000, 10000 );
+				postprocessing.camera.position.z = 100;
+				
+				postprocessing.texture = new THREE.RenderTarget( window.innerWidth, height, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+
+				var film_shader = ShaderUtils.lib["film"];
+				var film_uniforms = Uniforms.clone( film_shader.uniforms );
+				
+				film_uniforms["tDiffuse"].texture = postprocessing.texture;
+				
+				postprocessing.material = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+				postprocessing.material.uniforms.grayscale.value = 0;
+				
+				var quad = new THREE.Mesh( new Plane( window.innerWidth, height ), postprocessing.material );
+				quad.position.z = -500;
+				postprocessing.scene.addObject( quad );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				render();
+				stats.update();
+
+			};
+
+			function renderNumber( label, x, precision ) {
+
+				x = x.toFixed( precision );
+				x = ( x <= 0 ) ? x : "+" + x;
+				return label + ": <span class='val'>" + x + "</span> ";
+				
+			};
+			
+			var tmp, delta, 
+				time, oldTime = new Date().getTime(),
+				hud = document.getElementById( "hud" );
+			
+			function render() {
+
+				time = new Date().getTime();
+				delta = time - oldTime;
+				oldTime = time;
+				
+				THREE.AnimationHandler.update( delta );
+
+				if ( cameraOnRails ) {
+
+					tmp =   renderNumber( "x", camera.animationParent.position.x, 0 )
+						  + renderNumber( "z", camera.animationParent.position.z, 0 )
+						  + renderNumber( "y", camera.animationParent.position.y, 0 )
+						  + renderNumber( "phi", camera.phi, 2 )
+						  + renderNumber( "theta", camera.theta, 2 );
+
+				} else {
+				
+					tmp =   renderNumber( "x", camera.position.x, 0 )
+						  + renderNumber( "z", camera.position.z, 0 )
+						  + renderNumber( "y", camera.position.y, 0 )
+						  + renderNumber( "phi", camera.phi, 2 )
+						  + renderNumber( "theta", camera.theta, 2 );
+
+				}
+
+				if ( hud )	hud.innerHTML = tmp;
+
+				if ( postprocessing.enabled ) {
+				
+					postprocessing.material.uniforms.time.value += 0.01;
+					
+					renderer.render( scene, camera, postprocessing.texture );
+					renderer.render( postprocessing.scene, postprocessing.camera );
+					
+				} else {
+					
+					renderer.render( scene, camera );
+					
+				}
+
+			};
+
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,46 @@
+animation = {
+	camera: {
+		position: {  x:240, y:-102, z:579.41125497 },
+		target: {  x:240, y:-102, z:0 },
+	},
+	barn: {
+		position: {  x:542.765434304966, y:-108.67352635568, z:-480 },
+		scale: {  x:0.84642857142696, y:0.84642857142696, z:0.84642857142696 },
+		rotation: {  x:0, y:0, z:0 },
+		texture: "export/mineBarn.png",
+		width: 253,
+		height: 224,
+	},
+	bufs: {
+		position: {  x:46.8035363468288, y:-174.774611443453, z:-80 },
+		scale: {  x:1, y:1, z:1 },
+		rotation: {  x:0, y:0, z:0 },
+		texture: "export/mineBufSmall.png",
+		width: 445,
+		height: 299,
+	},
+	buf: {
+		position: {  x:282.397144945554, y:-131.810492540618, z:-100 },
+		scale: {  x:0.66108244230647, y:0.66108244230647, z:0.66108244230647 },
+		rotation: {  x:0, y:0, z:0 },
+		texture: "export/mineBuf.png",
+		width: 1060,
+		height: 508,
+	},
+	mnt: {
+		position: {  x:240, y:-102, z:-500 },
+		scale: {  x:1.0493781565663, y:1.0493781565663, z:1.0493781565663 },
+		rotation: {  x:0, y:0, z:0 },
+		texture: "export/mineMnt.png",
+		width: 1060,
+		height: 508,
+	},
+	sky: {
+		position: {  x:240, y:-102, z:-600 },
+		scale: {  x:1.14918513574557, y:1.14918513574557, z:1.14918513574557 },
+		rotation: {  x:0, y:0, z:0 },
+		texture: "export/mineSky.jpg",
+		width: 1060,
+		height: 508,
+	},
+};

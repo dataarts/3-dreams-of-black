@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>animation test</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #808080;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div> 
+
+		<script type="text/javascript" src="build_r35_empa/Three.js"></script>
+
+		<script type="text/javascript">
+
+			window.onload = init;
+			
+			var container;
+
+			var camera, scene, renderer;
+
+			var light;
+
+			var r = 0;
+
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.y = 100;
+				//camera.position.z = 500;
+
+				scene = new THREE.Scene();
+				
+				light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0, 0, 1 );
+				light.position.normalize();
+				scene.addLight( light );
+
+				renderer = new THREE.WebGLRenderer( { clearColor: 0xffdddd, clearAlpha: 1 });
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.sortObjects = true;
+				container.appendChild( renderer.domElement );
+
+				var loader = new THREE.Loader();
+				loader.loadAscii( { model: "assets/wolf/a_wolf.js", callback: createScene } );
+
+				setInterval( loop, 1000 / 60 );
+
+			}
+			
+			function createScene( geometry ) {
+
+				var texture = { color: 0xffffff, skinning: true, wireframe: true };
+				var material = new THREE.MeshLambertMaterial( texture );				
+				var mesh = new THREE.SkinnedMesh( geometry, material );
+				
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = 100;
+				
+				/*mesh.position.x = 0; 
+				mesh.position.y = 0;
+				mesh.position.z = 0;*/
+
+				THREE.AnimationHandler.add( geometry.animation );
+
+				scene.addObject( mesh );
+
+				//var anim = new THREE.Animation( mesh, geometry.animation );
+				var anim = new THREE.Animation( mesh, "take_001", undefined, false );
+				
+				anim.play();
+				
+			}
+
+			function loop() {
+				r += 0.01;
+
+				THREE.AnimationHandler.update( 16 );
+
+				camera.position.x = 500*Math.cos(r);
+				camera.position.z = 500*Math.sin(r);
+
+				renderer.render( scene, camera );
+			}
+
+		</script>
+
+	</body>
+</html>
+

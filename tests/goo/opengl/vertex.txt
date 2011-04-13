@@ -1,0 +1,59 @@
+
+attribute vec3 vertex;
+attribute vec3 normal;
+attribute vec3 rand_a;
+attribute vec3 rand_b;
+attribute vec3 color;
+
+varying vec3 v_pos;
+varying vec3 v_color;
+varying vec3 n;
+uniform vec3 pos;
+uniform vec2 time;
+
+void main()
+{
+	float f;
+	f = max(0.0, 1.0 - length(vertex - pos) * 0.8);
+	v_pos = vertex + (rand_a - vertex) * vec3(f * time.x) + (rand_b - vertex) * vec3(f * time.y);
+	v_color = color;
+	n = normal;
+	gl_Position = gl_ModelViewProjectionMatrix * vec4(v_pos, 1.0);
+}
+
+
+//// fragment /////
+
+uniform sampler2D noise_image;
+uniform sampler2D grass_image;
+uniform sampler2D surface_image;
+varying vec3 v_pos; // position of the pixel
+varying vec3 v_color; // vertex color
+varying vec3 n;
+uniform vec3 pos; // the position of the goo
+
+void main()
+{
+	float f, dist;
+	vec3 normal, v, light;
+	vec4 c;
+
+	f = 1.0 - length(v_pos - pos);
+	f += texture2D(noise_image, v_pos.xz * vec2(0.2)).x - 0.5;
+
+	normal = n * n;
+	if(f > 0.0)
+	{
+		c = (texture2D(grass_image, v_pos.yz * vec2(1.2)) * vec4(normal.x) +
+				texture2D(grass_image, v_pos.xz * vec2(1.2)) * vec4(normal.y) +
+				texture2D(grass_image, v_pos.xy * vec2(1.2)) * vec4(normal.z));
+		gl_FragColor = c;
+	}else
+	{
+		c = (texture2D(surface_image, v_pos.yz * vec2(0.1)) * vec4(normal.x) +
+				texture2D(surface_image, v_pos.xz * vec2(0.1)) * vec4(normal.y) +
+				texture2D(surface_image, v_pos.xy * vec2(0.1)) * vec4(normal.z)) - vec4(0.5);
+		gl_FragColor = (vec4(v_color, 1.0) + c);
+	}
+}
+

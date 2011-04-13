@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>mouseCube</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#2c3333;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align:center;
+			}
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+		<!-- test -->
+
+		<script type="text/javascript" src="build/ThreeExtras.js"></script>
+
+		<script type="text/javascript" src="greycity.js"></script>
+
+		<script type="text/javascript" src="Stats.js"></script>
+
+		<script type="text/javascript">
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var FLOOR = 0;
+
+			var container;
+			var stats;
+
+			var camera;
+			var scene;
+			var webglRenderer;
+			
+			var directionalLight, pointLight;
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+
+			var render_gl = 1;
+			var has_gl = 0;
+
+			var mouseX = 0;
+			var mouseY = 0;
+
+			var followX = 0;
+			var followY = 0;
+
+			var cubefollowX = 0;
+			var cubefollowY = 0;
+
+			var cubeRef;
+			var cubeRefMesh;
+			
+			var cubeArray = [];
+
+			var r = 0;
+
+			document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			init();
+				
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function addMesh( geometry, scale, x, y, z, rx, ry, rz, material, doubleSided ) {
+				
+				var inDouble = doubleSided || false;
+
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+				mesh.position.x = x;
+				mesh.position.y = y;
+				mesh.position.z = z;
+				mesh.rotation.x = rx;
+				mesh.rotation.y = ry;
+				mesh.rotation.z = rz;
+				mesh.overdraw = true;
+				mesh.doubleSided = inDouble;
+				mesh.updateMatrix();
+				scene.addObject(mesh);
+
+				return mesh;
+			}		
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				var aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+
+				camera = new THREE.Camera( 75, aspect, 1, 100000 );
+				camera.position.z = -130;
+				camera.position.x = -450;
+				camera.position.y = FLOOR+20;
+
+				scene = new THREE.Scene();
+
+				// LIGHTS
+				var ambient = new THREE.AmbientLight( 0x333333 );
+				scene.addLight( ambient );
+
+				directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 2;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+				
+				greyCity();
+				
+				// cubes
+				var cube = new Cube( 4, 4, 4, 1, 1 );
+				var material = new THREE.MeshLambertMaterial( { color: 0x33DD33 } );
+
+				for (var i=0; i<100; ++i ) {
+					
+					var x = camera.position.x;
+					var y = camera.position.y;
+					var z = camera.position.z;
+	
+					var c = addMesh( cube, 1,  x, FLOOR+150+y, z, i/10,0,0, material );
+
+					var obj = {c:c, x:x, y:y, z:z, yspeed:0, scale:0, alivetime:i};
+					cubeArray.push(obj);
+				}
+
+				//cubeRef
+				cubeRef = new Cube( 15, 15, 15, 1, 1 );
+				cubeRefMesh = addMesh( cubeRef, 1,  50, FLOOR, -130, 0,0,0, new THREE.MeshLambertMaterial( { color: 0xFF3333 } ) );
+				cubeRefMesh.visible = false;
+				camera.target = cubeRefMesh;
+
+				// plane
+				plane = new Plane( 100, 100, 1, 1 );
+
+				addMesh( plane, 100,  0, FLOOR, 0, -1.57,0,0, new THREE.MeshLambertMaterial( { color:0x777777 } ), true );
+
+				addMesh( plane, 100,  0, FLOOR+400, 0, 1.57,0,0, new THREE.MeshLambertMaterial( { color:0xDEFFFF } ), false );
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setFaceCulling(0);
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+					// need webgl
+					container.innerHTML = "<P><BR><B>WebGL required.</B> You need <a href='http://www.google.com/landing/chrome/beta/' target='_blank'>Google Chrome 9+</a>.</P>";
+					return;
+				}
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+				
+			}
+
+			function getMaterial() {
+				var c = Math.random() * 0xffffff;
+				return [ new THREE.MeshLambertMaterial( { color:c } ) , new THREE.MeshLambertMaterial( { color:0x333333, wireframe: true } ) ];
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+			function runAll () {
+
+				for (var i=0; i<cubeArray.length; ++i ) {
+					var obj = cubeArray[i];
+					var c = obj.c;
+					var x = obj.x;
+					var y = obj.y;
+					var z = obj.z;
+					//var yspeed = obj.yspeed;
+					//var scale = obj.scale;
+					//var alivetime = obj.alivetime;
+					
+					var dist = i*2;
+
+					var tox = camera.position.x + (dist*Math.cos(cubefollowX));
+					var toy = (camera.position.y-15)-(dist*Math.sin(cubefollowY));
+					var toz = camera.position.z + (dist*Math.sin(cubefollowX));
+
+					var divider = cubeArray.length-i;
+					divider = Math.min(divider,40);
+
+					var moveX = (tox-x)/divider;
+					var moveY = (toy-y)/divider;
+					var moveZ = (toz-z)/divider;
+
+					x += moveX;
+					y += moveY;
+					z += moveZ;
+					
+					c.position.x = x;
+					c.position.y = y;
+					c.position.z = z;
+
+					cubeArray[i].x = x;
+					cubeArray[i].y = y;
+					cubeArray[i].z = z;
+					//cubeArray[i].yspeed = yspeed;
+					//cubeArray[i].scale = scale;
+					//cubeArray[i].alivetime = alivetime;
+
+				}
+			}
+
+			function loop() {
+				var dist = 500;
+
+				r += 0.05;
+
+				camera.position.x += 0.35;
+
+				if (camera.position.x > 200 ) {
+					camera.position.x = -450;
+				}
+
+				var mx = ( mouseX - windowHalfX )/100;
+				var my = ( mouseY - windowHalfY )/100;
+
+				var moveX = (mx-cubefollowX)/40;
+				var moveY = (my-cubefollowY)/40;
+
+				var extrax = Math.cos(r)/200;
+				var extray = Math.sin(r)/200;
+
+				cubefollowX += moveX + extrax;
+				cubefollowY += moveY + extray;
+				
+				cubeRefMesh.position.x = camera.position.x + (dist*Math.cos(cubefollowX));
+				cubeRefMesh.position.z = camera.position.z + (dist*Math.sin(cubefollowX));
+				cubeRefMesh.position.y = -(dist*Math.sin(cubefollowY));
+
+				runAll();
+
+				if ( render_gl && has_gl ) webglRenderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+
+		</script>
+
+	</body>
+</html>
