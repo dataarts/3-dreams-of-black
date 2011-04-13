@@ -13,7 +13,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		capBottom : null,
 		allowFlying : false,
 		collisionDistance : collisionDistance || 400,
-		scale : scale || 1.0
+		scale : scale || 1.0,
+		shootRayDown : false
 	}
 
 	var mouse2d = new THREE.Vector3( 0, 0, 1 );
@@ -30,23 +31,23 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	//that.emitterFollow.visible = false;
 
 	// collision boxes
-	var cube = new THREE.Cube( 10000,10000,1, 1,1,1 );
+	var cube = new THREE.Cube( 30000,30000,1, 1,1,1 );
 	var material = new THREE.MeshBasicMaterial( { color: 0x0000FF } );
 	var front = new THREE.Mesh ( cube, material	);
 	var back = new THREE.Mesh ( cube, material );
-	var cube = new THREE.Cube( 1,10000,10000, 1,1,1 );
+	var cube = new THREE.Cube( 1,30000,30000, 1,1,1 );
 	var left = new THREE.Mesh ( cube, material );
 	var right = new THREE.Mesh ( cube, material	);
-	var cube = new THREE.Cube( 10000,1,10000, 1,1,1 );
+	var cube = new THREE.Cube( 30000,1,30000, 1,1,1 );
 	var top = new THREE.Mesh ( cube, material );
 	var bottom = new THREE.Mesh ( cube, material );
 
-	front.visible = false;
+	/*front.visible = false;
 	back.visible = false;
 	left.visible = false;
 	right.visible = false;
 	top.visible = false;
-	bottom.visible = false;
+	bottom.visible = false;*/
 
 	scene.addObject( front );
 	scene.addObject( back );
@@ -96,6 +97,13 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		top.position.x = camPos.x;
 		top.position.z = camPos.z;
 
+		/*left.updateMatrix();
+		right.updateMatrix();
+		front.updateMatrix();
+		back.updateMatrix();
+		top.updateMatrix();
+		bottom.updateMatrix();*/
+	
 		if (that.settings.capBottom != null) {
 			if (bottom.position.y < that.settings.capBottom) {
 				bottom.position.y = that.settings.capBottom;
@@ -119,21 +127,37 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		var c = THREE.Collisions.rayCastNearest( ray );
 		
-		if( c && c.distance > 0) {
-		
-			//console.log(c.distance);
+		if( c && c.distance > 0 ) {
+
 			positionVector.copy( ray.origin );
 			positionVector.addSelf(ray.direction.multiplyScalar(c.distance*that.settings.scale))
 			
 			that.emitter.position = positionVector;
+			
+			if (c.normal != undefined) {
+				that.currentNormal.copy( c.normal );
+				//console.log(c.normal.y);
+			}
+
+			//console.log(c.normal);
 
 			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top) {
 				that.currentNormal.x = 0;
 				that.currentNormal.y = 1;
 				that.currentNormal.z = 0;
 				// not to be airbourne
-				if (!that.settings.allowFlying) {
+				if (!that.settings.allowFlying && !that.settings.shootRayDown) {
 					that.emitter.position.y = bottom.position.y;					
+				}
+				if (that.settings.shootRayDown) {
+					ray.origin.copy( that.emitter.position )//.normalize();
+					ray.direction = new THREE.Vector3(0, -1, 0);
+
+					var c = THREE.Collisions.rayCastNearest(ray);
+				
+					that.emitter.position.y -= c.distance;
+					//console.log(c.distance);
+
 				}
 			}
 
@@ -149,26 +173,46 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		
 		/*var cs = THREE.Collisions.rayCastAll( ray );
-				
-		if ( cs.length > 0 ) {
-			
-			var c = cs[0];
 
-			//console.log(c.distance);
+		if ( cs.length > 1 ) {
+			
+			var c = cs[1];
+
 			positionVector.copy( ray.origin );
 			positionVector.addSelf(ray.direction.multiplyScalar(c.distance*that.settings.scale))
 			
 			that.emitter.position = positionVector;
+			
+			if (c.normal != undefined) {
+				that.currentNormal.copy( c.normal );
+				//console.log(c.normal.y);
+			}
+
+			//console.log(cs[1].distance);
 
 			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top) {
 				that.currentNormal.x = 0;
 				that.currentNormal.y = 1;
 				that.currentNormal.z = 0;
 				// not to be airbourne
-				if (!that.settings.allowFlying) {
+				if (!that.settings.allowFlying && !that.settings.shootRayDown) {
 					that.emitter.position.y = bottom.position.y;					
 				}
+				if (that.settings.shootRayDown) {
+					ray.origin.copy( that.emitter.position )//.normalize();
+					ray.direction = new THREE.Vector3(0, -1, 0);
+
+					var c = THREE.Collisions.rayCastNearest(ray);
+				
+					that.emitter.position.y -= c.distance;
+					//console.log(c.distance);
+
+				}
 			}
+
+			var amount = 6;
+
+			that.emitter.position.y += that.currentNormal.y*amount;
 			
 		} else {
 

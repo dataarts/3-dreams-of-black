@@ -190,7 +190,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 					//var positionVector = new THREE.Vector3();
 					//positionVector.copy( ray.origin );
 					//positionVector.subSelf(ray.direction.multiplyScalar(c.distance*1));
-					var positionVector = ray.origin.clone().subSelf( new THREE.Vector3(0, c.distance, 0) );
+					var positionVector = ray.origin.clone().addSelf( new THREE.Vector3(0, c.distance, 0) );
 
 					animal.position.y = positionVector.y;
 

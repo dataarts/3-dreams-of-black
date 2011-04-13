@@ -26,8 +26,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 200 );
 	collisionScene.settings.maxSpeedDivider = 3;
-	collisionScene.settings.allowFlying = true;
-	collisionScene.settings.emitterDivider = 5;
+	collisionScene.settings.allowFlying = false;
+	collisionScene.settings.emitterDivider = 10;
+	collisionScene.settings.shootRayDown = true;
 
 	// vector trail
 	vectors = new Vectors();
@@ -65,7 +66,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.settings.xPositionMultiplier = 30;
 	runningAnimals.settings.zPositionMultiplier = 15;
 	//runningAnimals.settings.shootRayDown = true;
-	//runningAnimals.settings.constantSpeed = 2.0
+	runningAnimals.settings.constantSpeed = 2.0
 
 	// preoccupy slots for specific animals - hack...
 	runningAnimals.array[0] = "gator";
