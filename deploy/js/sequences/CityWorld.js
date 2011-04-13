@@ -63,6 +63,13 @@ var CityWorld = function ( shared ) {
 
 	function sceneLoaded( result ) {
 
+		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+   
+			mesh = THREE.Collisions.colliders[ i ].mesh;
+			mesh.visible = false;
+    
+		}
+
 		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
 
 			var object = result.scene.objects[ i ];
@@ -71,12 +78,6 @@ var CityWorld = function ( shared ) {
 
 		}
 		
-		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
-   
-			mesh = THREE.Collisions.colliders[ i ].mesh;
-			mesh.visible = false;
-    
-		}
 
 		result.scene.scale.set( 0.1, 0.1, 0.1 );
 		result.scene.updateMatrix();
@@ -84,6 +85,7 @@ var CityWorld = function ( shared ) {
 
 
 		console.log("colliders = "+THREE.Collisions.colliders.length);
+		console.log(THREE.Collisions.colliders);
 	
 	}
 
