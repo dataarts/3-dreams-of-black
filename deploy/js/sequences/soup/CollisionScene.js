@@ -41,6 +41,13 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var top = new THREE.Mesh ( cube, material );
 	var bottom = new THREE.Mesh ( cube, material );
 
+	front.visible = false;
+	back.visible = false;
+	left.visible = false;
+	right.visible = false;
+	top.visible = false;
+	bottom.visible = false;
+
 	scene.addObject( front );
 	scene.addObject( back );
 	scene.addObject( left );
@@ -129,6 +136,10 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 					that.emitter.position.y = bottom.position.y;					
 				}
 			}
+
+			var amount = 6;
+
+			that.emitter.position.y += that.currentNormal.y*amount;
 
 		} else {
 		

@@ -9,11 +9,18 @@ var Soup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0xeeffee, 4, 150 );
+	var pointLight = new THREE.PointLight( 0xeeffee, - 2.25, 800 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
+
+	var vectors;
+	var ribbons;
+	var trail;
+	var runningAnimals;
+	var flyingAnimals;
+	var particles;
 
 	shared.targetStart = new THREE.Vector3();
 	shared.targetEnd = new THREE.Vector3();
@@ -23,7 +30,7 @@ var Soup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, shared, 1500 );
+	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 1500 );
 	collisionScene.settings.capBottom = 0;
 /*	loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
 
@@ -32,80 +39,99 @@ var Soup = function ( camera, scene, shared ) {
 	}
 */
 	// vector trail
-	var vectors = new Vectors();
+	vectors = new Vectors();
 
 	// ribbons
 	var ribbonMaterials = [
-			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
-			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
-			new THREE.MeshLambertMaterial( { color:0x5189bb } ),
-			new THREE.MeshLambertMaterial( { color:0xe850e8 } ),
-			new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ),
-			new THREE.MeshLambertMaterial( { color:0x08a620 } )
+			new THREE.MeshLambertMaterial( { color:0x000000 } ),
+			new THREE.MeshLambertMaterial( { color:0x555555 } ),
+			new THREE.MeshLambertMaterial( { color:0x000000 } ),
+			new THREE.MeshLambertMaterial( { color:0x555555 } ),
+			new THREE.MeshLambertMaterial( { color:0x000000 } ),
+			new THREE.MeshLambertMaterial( { color:0x555555 } )
 	];
 
-	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
+	ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
+	ribbons.settings.ribbonPulseMultiplier_1 = 15;
+	ribbons.settings.ribbonPulseMultiplier_2 = 4;
+	ribbons.settings.ribbonMin = 4;
+	ribbons.settings.ribbonMax = 8;
 
 	// particles
-	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
-	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
-	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
-	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/particle_3.png" );
-	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/particle_4.png" );
+	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/dark_0.png" );
+	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/dark_1.png" );
+	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/dark_2.png" );
+	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/dark_3.png" );
+	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/dark_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
-
-	var particles = new Particles(25, scene, 4, particleSprites);
+	particles = new Particles(20, scene, 8, particleSprites, 15, 80);
+	particles.settings.zeroAlphaStart = false;
+	particles.settings.aliveDivider = 3;
 
 	// running animals
-	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
+	runningAnimals = new AnimalSwarm(40, scene, vectors.array);
+	runningAnimals.settings.xPositionMultiplier = 90;
+	runningAnimals.settings.zPositionMultiplier = 60;
+	//runningAnimals.settings.constantSpeed = 2.0
 
 	// preoccupy slots for specific animals - hack...
-	runningAnimals.array[0] = "elk";
-	runningAnimals.array[1] = "moose";
-	runningAnimals.array[4] = "moose";
-	runningAnimals.array[10] = "elk";
-	runningAnimals.array[14] = "moose";
-	runningAnimals.array[20] = "elk";
+	runningAnimals.array[0] = "gator";
+	runningAnimals.array[1] = "wolf";
+	runningAnimals.array[4] = "wolf";
+	runningAnimals.array[10] = "gator";
+	runningAnimals.array[14] = "wolf";
+	runningAnimals.array[20] = "gator";
+	runningAnimals.array[2] = "goat";
+	runningAnimals.array[18] = "goat";
+	runningAnimals.array[25] = "goat";
+	runningAnimals.array[21] = "arm";
 
-	loader.load( { model: "files/models/soup/animals_A_life.js", callback: animalLoadedProxy } );
-	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoadedProxy } );
-	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
+	loader.load( { model: "files/models/soup/bison.js", callback: bisonLoadedProxy } );
+	loader.load( { model: "files/models/soup/gator.js", callback: gatorLoadedProxy } );
+	loader.load( { model: "files/models/soup/wolf.js", callback: wolfLoadedProxy } );
+	loader.load( { model: "files/models/soup/goat.js", callback: goatLoadedProxy } );
+	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
 
-	function animalLoadedProxy( geometry ) {
-		var morphArray = [0,0,4,3,2,1,0,1,2,7,3,4,1,0,0,5,6,2,4,3];
-		runningAnimals.addAnimal( geometry, null, 1.2, morphArray );
+	var colorArray = [ new THREE.Color( 0x101010 ),
+					   new THREE.Color( 0x111111 ),
+					   new THREE.Color( 0x010101 )
+					 ];
+
+	function bisonLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, null, 1.2, null, 4, colorArray );
 	}
 
-	function elkLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "elk", 2.2, null );
+	function gatorLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "gator", 1.5, null, 4, colorArray );
 	}
 
-	function mooseLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "moose", 1.1, null );
+	function wolfLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "wolf", 2.0, null, 4, colorArray );
 	}
+
+	function goatLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "goat", 2.0, null, 4, colorArray );
+	}
+
+	function armLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "arm", 4.0, null, 4, colorArray );
+	}
+
 
 	// flying animals
-	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
+	flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
 	flyingAnimals.settings.flying = true;
-	for (var i=0; i<10; ++i ) {
-		var odd = i%2;
-		if (odd == 0) {
-			flyingAnimals.array[i] = "b";
-		}
-	}
+	flyingAnimals.settings.xPositionMultiplier = 70;
+	flyingAnimals.settings.zPositionMultiplier = 60;
+	flyingAnimals.settings.constantSpeed = 2.0;
+	flyingAnimals.settings.divider = 4;
 
-	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
-	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
+	loader.load( { model: "files/models/soup/vulture_raven.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, 1 );
-	}
-
-	function birdsBLoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 1 );
+		flyingAnimals.addAnimal( geometry, null, 1.2, morphArray, 0.8, colorArray );
 	}
 
 	// butterflys
@@ -113,54 +139,27 @@ var Soup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/butterfly_hiA.js", callback: butterflys.addAnimal } );
 	
 	// trail - of grass/trees/etc
-	var grassMaterials = [new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x93c171, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x7eaa5e, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x77bb45, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x7da75e, shading: THREE.FlatShading } )
+	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x170202, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x030303, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x080808, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x171302, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x030303, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x080808, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x030303, shading: THREE.FlatShading } ),
+					 new THREE.MeshLambertMaterial( { color: 0x080808, shading: THREE.FlatShading } )
 	];
 
-	var trail = new Trail(100, scene);
-	// preoccupy slots for trees and lighthouse
-	for (i=0; i<100; i+=10 ) {
-		var odd = i%3;
-		if (odd == 0) {
-			trail.array[i] = "a";
-		}
-		if (odd == 1) {
-			trail.array[i] = "b";
-		}
-		if (odd == 2) {
-			trail.array[i] = "c";
-		}
-	}
-	trail.array[4] = "light";
+	trail = new Trail(100, scene);
+	trail.settings.spread = 150;
+	trail.settings.aliveDivider = 40;
+	trail.settings.tweenTime = 3000;
 
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoadedProxy } );
-	
-	loader.load( { model: "files/models/soup/evergreen_low.js", callback: treeALoadedProxy } );
-	loader.load( { model: "files/models/soup/evergreen_high.js", callback: treeBLoadedProxy } );
-	loader.load( { model: "files/models/soup/tree_Generic.js", callback: treeCLoadedProxy } );
-	// lighthouse
-	loader.load( { model: "files/models/soup/lighthouse.js", callback: ligthhouseLoadedProxy } );
 
 	function grassLoadedProxy( geometry ) {
-		trail.addInstance( geometry, null, false, grassMaterials );
+		trail.addInstance( geometry, null, false, trailMaterials );
 	}
-	function treeALoadedProxy( geometry ) {
-		trail.addInstance( geometry, "a", true, grassMaterials );
-	}
-	function treeBLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "b", true, grassMaterials);
-	}
-	function treeCLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "c", true, grassMaterials );
-	}
-	function ligthhouseLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "light", true, [new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } )] );
-		trail.array[4].maxHeight = 5;
-	}
-
 	
 
 	setupGui();
@@ -185,19 +184,20 @@ var Soup = function ( camera, scene, shared ) {
 		// update the soup parts	
 		collisionScene.update(camPos, delta);
 
-		var pulse = Math.sin(r*2)*70;
-		collisionScene.emitter.position.x = 100+Math.cos( r )*(180+pulse);
-		collisionScene.emitter.position.z = Math.sin( r )*(180+pulse);
+		var pulse = Math.sin(r*2)*100;
+		var distance = 280;
+		collisionScene.emitter.position.x = 80+Math.cos( r )*(distance-pulse);
+		collisionScene.emitter.position.z = Math.sin( r )*(distance-pulse);
 		collisionScene.emitterFollow.position.x = collisionScene.emitter.position.x;
 		collisionScene.emitterFollow.position.z = collisionScene.emitter.position.z;
 
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		ribbons.update(collisionScene.emitterFollow.position);
-		particles.update(delta, vectors.array[0].position);
+		particles.update(delta, vectors.array[5].position);
 		runningAnimals.update();
 		flyingAnimals.update();
 		butterflys.update(camPos, camera.theta, delta);
-		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
+		trail.update(vectors.array[7].position, vectors.array[7].normal, camPos, delta);
 		
 		TWEEN.update();
 
@@ -211,8 +211,9 @@ var Soup = function ( camera, scene, shared ) {
 		shared.targetEnd.z = vectors.array[20].position.z;
 
 		// pointlight
-		pointLight.position = collisionScene.emitterFollow.position;
-
+		pointLight.position.x = collisionScene.emitterFollow.position.x;
+		pointLight.position.y = collisionScene.emitterFollow.position.y+50;
+		pointLight.position.z = collisionScene.emitterFollow.position.z;
 	}
 
 

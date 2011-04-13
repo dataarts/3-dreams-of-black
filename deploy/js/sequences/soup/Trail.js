@@ -10,7 +10,10 @@ var Trail = function ( numOfInstances, scene ) {
 	}
 
 	that.settings = {
+		spread : 50,
 		visible : true,
+		aliveDivider: that.initSettings.numOfInstances,
+		tweenTime: 4000,
 	}
 
 	var i;
@@ -45,7 +48,7 @@ var Trail = function ( numOfInstances, scene ) {
 			delta = 1000/60;
 		}
 
-		var multiplier = delta/that.initSettings.numOfInstances;
+		var multiplier = delta/that.settings.aliveDivider;
 		
 		// grass
 		for (i=0; i<that.array.length; ++i ) {
@@ -68,7 +71,7 @@ var Trail = function ( numOfInstances, scene ) {
 				c.rotation.z = 0;
 				c.rotation.y = 0;
 
-				var amount = 8;
+				var amount = 4;
 
 				var torotx = 0;
 				var toroty = 0;
@@ -84,8 +87,8 @@ var Trail = function ( numOfInstances, scene ) {
 						torotx = c.rotation.x;
 						toroty = c.rotation.y;
 					}
-					c.position.y += (Math.random()*50)-25;
-					c.position.z += (Math.random()*50)-25;
+					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
 				if (normal.x > 0.8) {
 					c.position.x = position.x - amount/2;
@@ -98,8 +101,8 @@ var Trail = function ( numOfInstances, scene ) {
 					}
 					c.rotation.x = Math.random()*Math.PI;
 
-					c.position.y += (Math.random()*50)-25;
-					c.position.z += (Math.random()*50)-25;
+					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
 				if (normal.y < -0.8) {
 					c.position.y = position.y + amount;
@@ -110,8 +113,8 @@ var Trail = function ( numOfInstances, scene ) {
 						torotx = c.rotation.x;
 						toroty = c.rotation.y;
 					}
-					c.position.x += (Math.random()*50)-25;
-					c.position.z += (Math.random()*50)-25;
+					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
 				if (normal.y > 0.8) {
 					c.position.y = position.y - amount;
@@ -123,8 +126,8 @@ var Trail = function ( numOfInstances, scene ) {
 						toroty = c.rotation.y;
 					}
 					
-					c.position.x += (Math.random()*40)-20;
-					c.position.z += (Math.random()*40)-20;
+					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
 				if (normal.z < -0.8) {
 					c.position.z = position.z + amount/2;
@@ -136,8 +139,8 @@ var Trail = function ( numOfInstances, scene ) {
 						torotz = c.rotation.z;
 						toroty = c.rotation.y;
 					}
-					c.position.y += (Math.random()*50)-25;
-					c.position.x += (Math.random()*50)-25;
+					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);;
+					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
 				if (normal.z > 0.8) {
 					c.position.z = position.z - amount/2;
@@ -150,13 +153,13 @@ var Trail = function ( numOfInstances, scene ) {
 						toroty = c.rotation.y;
 					}
 
-					c.position.y += (Math.random()*50)-25;
-					c.position.x += (Math.random()*50)-25;
+					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
 
 				if (tree) {
 					var treeRotateTween = new TWEEN.Tween(c.rotation)
-								.to({x: torotx, y: toroty, z: torotz}, 4000)
+								.to({x: torotx, y: toroty, z: torotz}, that.settings.tweenTime)
 								.easing(TWEEN.Easing.Elastic.EaseOut)
 								.delay(400);
 					treeRotateTween.start();				
@@ -178,7 +181,7 @@ var Trail = function ( numOfInstances, scene ) {
 				}
 
 				var growTween = new TWEEN.Tween(c.scale)
-							.to({x: xscale, y: yscale, z: zscale}, 4000)
+							.to({x: xscale, y: yscale, z: zscale}, that.settings.tweenTime)
 							.easing(TWEEN.Easing.Elastic.EaseOut)
 							.delay(300);
 				growTween.start();				

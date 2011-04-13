@@ -34,7 +34,7 @@ var City = function ( shared ) {
 		camera.lon = 90;*/
 
 		camera = new THREE.Camera(50, shared.viewportWidth / shared.viewportHeight, 1, 100000);
-		camera.position.set(0,75,-350)
+		camera.position.set(0,150,-550)
 
 		world = new SoupWorld( shared );
 		soup = new Soup( camera, world.scene, shared );
