@@ -22,6 +22,9 @@ var PrairieWorld = function ( shared ) {
 	directionalLight2.color.setHSV( 0, 0, 0.1 );						
 	this.scene.addLight( directionalLight2 );
 
+	// trail
+	var markTexture = THREE.ImageUtils.loadTexture( "files/textures/trailMarkTexture.jpg" );
+
 	// Scene
 
 	var loader = new THREE.SceneLoader();
@@ -36,8 +39,11 @@ var PrairieWorld = function ( shared ) {
 			var object = result.scene.objects[ i ];
 			object.matrixAutoUpdate = false;
 			object.updateMatrix();
-
+			//console.log(object);
 		}
+
+		var groundMesh = result.objects[ "Ground" ];
+		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, renderer );
 
 		that.scene.addChild( result.scene );
 
@@ -53,6 +59,13 @@ var PrairieWorld = function ( shared ) {
 	};	
 
 	loader.load( "files/models/prairie/Prairie.js", function(){}, prairieLoaded, function(){});
+
+	this.update = function ( x, z ) {
+
+		ROME.TrailShaderUtils.updateLava();
+		ROME.TrailShaderUtils.setMarkAtWorldPosition( x, -z );
+
+	}
 
 
 }

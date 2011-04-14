@@ -193,6 +193,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		pointLight.position.y = vectors.array[8].position.y + 20;
 		pointLight.position.z = vectors.array[8].position.z;
 
+		shared.x = vectors.array[30].position.x;
+		shared.z = vectors.array[30].position.z;
 
 	}
 
