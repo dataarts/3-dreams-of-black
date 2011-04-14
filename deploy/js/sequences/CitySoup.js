@@ -23,11 +23,15 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
+	collisionScene.settings.maxSpeedDivider = 4;
 	collisionScene.settings.capBottom = 0;
 	collisionScene.settings.shootRayDown = true;
+	collisionScene.settings.allowFlying = false;
+	collisionScene.settings.emitterDivider = 3;
 
 	// vector trail
 	var vectors = new Vectors();
+	vectors.settings.normaldivider = 15;
 
 	// ribbons
 	var ribbonMaterials = [

@@ -25,7 +25,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 200 );
-	collisionScene.settings.maxSpeedDivider = 5;
+	collisionScene.settings.maxSpeedDivider = 8;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.shootRayDown = false;

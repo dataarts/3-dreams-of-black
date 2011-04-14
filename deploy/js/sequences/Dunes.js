@@ -33,7 +33,7 @@ var Dunes = function ( shared ) {
 		camera = new THREE.QuakeCamera( autoCameraPars );
 		//camera = new THREE.QuakeCamera( testCameraPars );
 
-		camera.lon = 90;
+		camera.lon = 100;
 
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
@@ -48,6 +48,8 @@ var Dunes = function ( shared ) {
 	};
 
 	this.show = function ( f ) {
+
+		oldTime = new Date().getTime();
 
 		camera.position.x = 0;
 		camera.position.y = 150;
@@ -67,7 +69,7 @@ var Dunes = function ( shared ) {
 		delta = time - oldTime;
 		oldTime = time;
 
-		//THREE.AnimationHandler.update( delta );
+		THREE.AnimationHandler.update( delta );
 
 		// not too low
 
