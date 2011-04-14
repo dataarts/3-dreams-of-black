@@ -12,6 +12,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 	that.settings = {
 		divider : 2,
 		flying : false,
+		flyingDistance : 35,
 		xPositionMultiplier : 30,
 		zPositionMultiplier : 30,
 		constantSpeed : null,
@@ -126,7 +127,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			// flying
 			if (that.settings.flying) {
 				var pulse = Math.cos((i-r*10)/15)*10
-				var flyAmount = 35+Math.abs(Math.sin((thisinc+pulse)/30)*40);			
+				var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/30)*40);			
 
 				if (cNormal.x < -0.8) {
 					tox -= flyAmount;

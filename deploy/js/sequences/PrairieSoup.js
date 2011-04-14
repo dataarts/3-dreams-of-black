@@ -4,12 +4,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// init
 
-	camPos = new THREE.Vector3( 0, 5, 0 );
+	camPos = new THREE.Vector3( 0, 0, 0 );
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0xeeffee, - 2.25, 120 );
+	var pointLight = new THREE.PointLight( 0x999999, - 2.25, 100 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -25,13 +25,16 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 200 );
-	collisionScene.settings.maxSpeedDivider = 3;
+	collisionScene.settings.maxSpeedDivider = 5;
 	collisionScene.settings.allowFlying = false;
-	collisionScene.settings.emitterDivider = 10;
-	collisionScene.settings.shootRayDown = true;
-
+	collisionScene.settings.emitterDivider = 5;
+	collisionScene.settings.shootRayDown = false;
+	collisionScene.settings.keepEmitterFollowDown = true;
+	collisionScene.settings.normalOffsetAmount = 8;
 	// vector trail
 	vectors = new Vectors();
+	vectors.settings.normaldivider = 10;
+	vectors.settings.divider = 2;
 
 	// ribbons
 	var ribbonMaterials = [
@@ -67,6 +70,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.settings.zPositionMultiplier = 15;
 	//runningAnimals.settings.shootRayDown = true;
 	runningAnimals.settings.constantSpeed = 2.0
+	runningAnimals.settings.divider = 1;
 
 	// preoccupy slots for specific animals - hack...
 	runningAnimals.array[0] = "gator";
@@ -79,12 +83,17 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.array[18] = "goat";
 	runningAnimals.array[25] = "goat";
 	runningAnimals.array[21] = "arm";
+	runningAnimals.array[2] = "spider";
+	runningAnimals.array[5] = "spider";
+	runningAnimals.array[32] = "spider";
+
 
 	loader.load( { model: "files/models/soup/bison.js", callback: bisonLoadedProxy } );
 	loader.load( { model: "files/models/soup/gator.js", callback: gatorLoadedProxy } );
 	loader.load( { model: "files/models/soup/wolf.js", callback: wolfLoadedProxy } );
 	loader.load( { model: "files/models/soup/goat.js", callback: goatLoadedProxy } );
 	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
+	loader.load( { model: "files/models/soup/blackWidow.js", callback: spiderLoadedProxy } );
 
 	var colorArray = [ new THREE.Color( 0x101010 ),
 					   new THREE.Color( 0x111111 ),
@@ -92,25 +101,27 @@ var PrairieSoup = function ( camera, scene, shared ) {
 					 ];
 
 	function bisonLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, null, 0.4, null, 4, colorArray );
+		runningAnimals.addAnimal( geometry, null, 0.4, null, 2, colorArray );
 	}
 
 	function gatorLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "gator", 0.3, null, 4, colorArray );
+		runningAnimals.addAnimal( geometry, "gator", 0.3, null, 2, colorArray );
 	}
 
 	function wolfLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "wolf", 0.5, null, 4, colorArray );
+		runningAnimals.addAnimal( geometry, "wolf", 0.5, null, 2, colorArray );
 	}
 
 	function goatLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "goat", 0.5, null, 4, colorArray );
+		runningAnimals.addAnimal( geometry, "goat", 0.5, null, 2, colorArray );
 	}
 
 	function armLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 4, colorArray );
+		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2, colorArray );
 	}
-
+	function spiderLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "spider", 2.8, null, 2, colorArray );
+	}
 
 	// flying animals
 	flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
@@ -119,16 +130,17 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.zPositionMultiplier = 20;
 	flyingAnimals.settings.constantSpeed = 2.0;
 	flyingAnimals.settings.divider = 4;
+	flyingAnimals.settings.flyingDistance = 8;
 
 	loader.load( { model: "files/models/soup/vulture_raven.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 0.8, morphArray, 0.8, colorArray );
+		flyingAnimals.addAnimal( geometry, null, 0.8, morphArray, 0.4, colorArray );
 	}
 	
 	// trail - of grass/trees/etc
-/*	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } ),
+	/*var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } ),
 					 new THREE.MeshLambertMaterial( { color: 0x170202, shading: THREE.FlatShading } ),
 					 new THREE.MeshLambertMaterial( { color: 0x030303, shading: THREE.FlatShading } ),
 					 new THREE.MeshLambertMaterial( { color: 0x080808, shading: THREE.FlatShading } ),
@@ -143,44 +155,14 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	trail.settings.spread = 150;
 	trail.settings.aliveDivider = 100;
 	trail.settings.tweenTime = 4000;
+	trail.settings.scale = 0.4;
 
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoadedProxy } );
 
 	function grassLoadedProxy( geometry ) {
 		trail.addInstance( geometry, null, false, trailMaterials );
-	}
-	*/
+	}*/
 
-/*	// vector trail
-	var vectors = new Vectors(20,3,5);
-
-	// ribbons
-	//var ribbons = new Ribbons(6, vectors.array, scene, collisionScene.emitterFollow.position);
-
-	// particles
-	var sprite0 = ImageUtils.loadTexture( "files/textures/dark_0.png" );
-	var sprite1 = ImageUtils.loadTexture( "files/textures/dark_1.png" );
-	var sprite2 = ImageUtils.loadTexture( "files/textures/dark_2.png" );
-	var sprite3 = ImageUtils.loadTexture( "files/textures/dark_3.png" );
-	var sprite4 = ImageUtils.loadTexture( "files/textures/dark_4.png" );
-
-	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
-	
-	var particles = new Particles(40, scene, 4, particleSprites, 200, 80);
-	particles.zeroAlphaStart = false;
-
-	// running animals
-	var runningAnimals = new AnimalSwarm(35, scene, vectors.array);
-	runningAnimals.settings.xPositionMultiplier = 30;
-	runningAnimals.settings.zPositionMultiplier = 15;
-	runningAnimals.settings.constantSpeed = 2.0
-	//loader.load( { model: "files/models/soup/tarbuffalo.js", callback: animalLoadedProxy } );
-	loader.load( { model: "files/models/soup/bison.js", callback: animalLoadedProxy } );
-
-	function animalLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, null, 0.3, null, 5 );
-	}
-*/
 
 	this.update = function ( delta ) {
 
@@ -207,9 +189,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 
 		// pointlight
-		pointLight.position.x = vectors.array[3].position.x;
-		pointLight.position.y = vectors.array[3].position.y + 50;
-		pointLight.position.z = vectors.array[3].position.z;
+		pointLight.position.x = vectors.array[8].position.x;
+		pointLight.position.y = vectors.array[8].position.y + 20;
+		pointLight.position.z = vectors.array[8].position.z;
 
 
 	}
