@@ -4,11 +4,33 @@ var Dunes = function ( shared ) {
 
 	var camera, world, soup
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
-	var delta, time, oldTime;
+	var delta, deltaSec, time, oldTime;
 
 	var speedStart = 200.0,
 		speedEnd = 400.0;
 
+	var frontCube;
+	
+	var colorHighlight = new THREE.Color( 0xffaa00 );
+	var colorNormal = new THREE.Color( 0x666666 );
+
+	var startRoll = Math.PI, deltaRoll = 0, rollAngle = Math.PI, rollSpeed = Math.PI,
+		startSpeed, targetSpeed = speedStart, deltaSpeed = 0, speedInside = -150, speedOutside = 150;
+
+	var domElement = document.createElement( 'div' );
+	domElement.style.position = "absolute";
+	domElement.style.right = "0px";
+	domElement.style.top = "0px";
+	domElement.style.background = "#000";
+	domElement.style.color = "#fff";
+	domElement.style.fontWeight = "bold";
+	domElement.style.padding = "20px";
+	domElement.style.zIndex = 500;
+	domElement.style.width = "100%";
+	domElement.style.textAlign = "right";
+	domElement.style.display = "none";
+	document.body.appendChild( domElement )
+	
 	this.init = function () {
 
 		var autoCameraPars = {
@@ -30,14 +52,31 @@ var Dunes = function ( shared ) {
 
 		};
 		
-		camera = new THREE.QuakeCamera( autoCameraPars );
+		//camera = new THREE.QuakeCamera( autoCameraPars );
 		//camera = new THREE.QuakeCamera( testCameraPars );
+		//camera.lon = 90;
 
-		camera.lon = 90;
-
+		
+		camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+		camera.movementSpeed = 300;
+		camera.lookSpeed = 3;
+		camera.autoForward = true;
+		
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
 
+
+		//frontCube = new THREE.Mesh( new THREE.Cube( 1, 1, 1 ), new THREE.MeshLambertMaterial( { color:0xff0000 } ) );
+		frontCube = new THREE.Object3D();
+		frontCube.position.set( 0, 0, -10 );
+		frontCube.scale.set( 1, 1, 1 );
+		frontCube.visible = true;
+		camera.addChild( frontCube );
+
+		world.scene.addChild( camera );
+		
+		shared.frontCube = frontCube;
+		
 		shared.signals.cameraFov.add( function ( value ) {
 
 			camera.fov = value;
@@ -67,8 +106,83 @@ var Dunes = function ( shared ) {
 		delta = time - oldTime;
 		oldTime = time;
 
+		deltaSec = delta / 1000;
+
+		var current = camera.matrixWorld.getPosition();
+
+		domElement.innerHTML = current.x.toFixed( 2 ) + " " + current.y.toFixed( 2 ) + " " + current.z.toFixed( 2 );
+
 		//THREE.AnimationHandler.update( delta );
 
+		// check if we are close to islands
+
+		var i, d, influenceSphere;
+		
+		for( i = 0; i < shared.influenceSpheres.length; i ++ ) {
+			
+			influenceSphere = shared.influenceSpheres[ i ];
+			
+			d = influenceSphere.center.distanceTo( current );
+			
+			if( d < influenceSphere.radius ) {
+				
+				if ( influenceSphere.mesh ) 
+					influenceSphere.mesh.materials[ 0 ].color = colorHighlight;
+				
+				// entering
+				
+				if ( influenceSphere.state == 0 ) {
+					
+					influenceSphere.state = 1;
+					
+					startRoll = camera.roll;
+					deltaRoll = rollAngle;
+					
+					deltaSpeed = speedInside;
+
+					liftSpeed = 0;
+					
+					//console.log( "entered [" + influenceSphere.name + "]" );
+
+				}
+				
+			} else {
+				
+				if ( influenceSphere.mesh ) 
+					influenceSphere.mesh.materials[ 0 ].color = colorNormal;
+				
+				// leaving
+				
+				if ( influenceSphere.state == 1 ) {
+					
+					influenceSphere.state = 0;
+					
+					startRoll = camera.roll;
+					deltaRoll = rollAngle;
+					
+					deltaSpeed = speedOutside;
+					
+					//console.log( " left [" + influenceSphere.name + "]" );
+
+				}
+
+			}
+			
+		}
+		
+		if ( deltaRoll > 0 ) {
+			
+			deltaRoll -= deltaSec * rollSpeed;
+			camera.roll = startRoll + ( rollAngle - deltaRoll );
+			
+			camera.movementSpeed += deltaSpeed * deltaSec;
+
+		} else {
+			
+			camera.roll = startRoll + rollAngle;
+
+		}
+		
 		// not too low
 
 		camera.position.y = cap_bottom( camera.position.y, 150 );
@@ -80,8 +194,9 @@ var Dunes = function ( shared ) {
 		// not too high before lift-off
 
 		var startLift = 0.29,
-			endLift   = 0.4,
+			endLift   = 0.35,
 			liftSpeed = 250;
+
 		
 		if ( progress < startLift ) {
 
@@ -93,10 +208,12 @@ var Dunes = function ( shared ) {
 
 			// small roll
 
-			camera.up.z = Math.sin( time / 250 ) / 200;
-			camera.up.x = Math.cos( time / 250 ) / 200;
+			// RollCamera doesn't use up vector
 
-			camera.position.x = 0;
+			//camera.up.z = Math.sin( time / 250 ) / 200;
+			//camera.up.x = Math.cos( time / 250 ) / 200;
+
+			//camera.position.x = 0;
 
 		}
 
@@ -106,15 +223,14 @@ var Dunes = function ( shared ) {
 
 		if ( progress > startLift && progress < endLift ) {
 
-			camera.position.y += liftSpeed * ( delta / 1000 );
-			camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
+			camera.position.y += liftSpeed * deltaSec;
+			//camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 
 			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
 			//world.scene.fog.density = 0.0004 - 0.0001 * localProgres;
 			//renderer.setClearColor( world.scene.fog.color );
 
 		}
-
 
 		world.update( camera );
 		soup.update( delta );
