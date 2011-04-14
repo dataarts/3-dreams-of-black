@@ -15,7 +15,7 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		waypoints = [ [ 0, 10, 0 ], [ 0, 10, -3300 ] ];
+		waypoints = [ [ 0, 20, 0 ], [ 0, 20, -3300 ] ];
 
 		camera = new THREE.PathCamera( {
 
@@ -30,7 +30,7 @@ var City = function ( shared ) {
 		 } );
 
 
-		camera.position.set( 0, 10, 0 );
+		camera.position.set( 0, 0, 0 );
 		camera.lon = 90;
 
 		/*camera = new THREE.QuakeCamera( {
