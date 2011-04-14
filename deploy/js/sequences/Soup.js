@@ -13,7 +13,7 @@ var Soup = function ( camera, scene, shared ) {
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
-	scene.addLight( pointLight, 1.0 );
+//	scene.addLight( pointLight, 1.0 );
 
 	var vectors;
 	var ribbons;
@@ -30,7 +30,7 @@ var Soup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 1500 );
+	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 2500 );
 	collisionScene.settings.capBottom = 0;
 /*	loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
 
@@ -150,10 +150,10 @@ var Soup = function ( camera, scene, shared ) {
 					 new THREE.MeshLambertMaterial( { color: 0x080808, shading: THREE.FlatShading } )
 	];
 
-	trail = new Trail(100, scene);
+	trail = new Trail(50, scene);
 	trail.settings.spread = 150;
-	trail.settings.aliveDivider = 40;
-	trail.settings.tweenTime = 3000;
+	trail.settings.aliveDivider = 100;
+	trail.settings.tweenTime = 4000;
 
 	loader.load( { model: "files/models/soup/grass.js", callback: grassLoadedProxy } );
 
@@ -197,7 +197,7 @@ var Soup = function ( camera, scene, shared ) {
 		runningAnimals.update();
 		flyingAnimals.update();
 		butterflys.update(camPos, camera.theta, delta);
-		trail.update(vectors.array[7].position, vectors.array[7].normal, camPos, delta);
+		trail.update(vectors.array[5].position, collisionScene.currentNormal, camPos, delta);
 		
 		TWEEN.update();
 
