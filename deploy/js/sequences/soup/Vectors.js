@@ -66,6 +66,7 @@ var Vectors = function ( length, divider, normaldivider ) {
 			obj.normal.x += moveNormalX;
 			obj.normal.y += moveNormalY;
 			obj.normal.z += moveNormalZ;
+
 		}
 
 	}
