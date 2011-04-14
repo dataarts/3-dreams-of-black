@@ -3,7 +3,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var that = this;
 
 	// init
-	camPos = new THREE.Vector3( 0, 20, 0 );
+	camPos = new THREE.Vector3( 0, 0, 0 );
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -24,6 +24,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
 	collisionScene.settings.capBottom = 0;
+	collisionScene.settings.shootRayDown = true;
 
 	// vector trail
 	var vectors = new Vectors();

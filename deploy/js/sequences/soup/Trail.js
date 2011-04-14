@@ -14,6 +14,7 @@ var Trail = function ( numOfInstances, scene ) {
 		visible : true,
 		aliveDivider: that.initSettings.numOfInstances,
 		tweenTime: 4000,
+		scale: 1,
 	}
 
 	var i;
@@ -174,10 +175,10 @@ var Trail = function ( numOfInstances, scene ) {
 				}
 
 
-				c.scale.x = c.scale.y= c.scale.z = 0.001;
-				var xscale = zscale = yscale = 0.1;
+				c.scale.x = c.scale.y= c.scale.z = 0.001*that.settings.scale;
+				var xscale = zscale = yscale = 0.1*that.settings.scale;
 				if (!tree) {
-					yscale = 0.07;
+					yscale = 0.07*that.settings.scale;
 				}
 
 				var growTween = new TWEEN.Tween(c.scale)

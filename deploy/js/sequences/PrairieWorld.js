@@ -41,7 +41,14 @@ var PrairieWorld = function ( shared ) {
 
 		that.scene.addChild( result.scene );
 
-		console.log("colliders = "+THREE.Collisions.colliders.length);
+		//console.log("colliders = "+THREE.Collisions.colliders.length);
+
+		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+   
+			mesh = THREE.Collisions.colliders[ i ].mesh;
+			mesh.visible = false;
+    
+		}
 
 	};	
 
