@@ -18,8 +18,8 @@ var DunesWorld = function ( shared ) {
 	var sceneWalk, scenePrairie, sceneCity;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00030 );
-	this.scene.fog.color.setHSV( 0.6, 0.1235, 1 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0002529411764705882 );
+	this.scene.fog.color.setHSV( 0.5764705882352941,  0.38235294117647056,  1  );
 
 	// Lights
 
@@ -28,13 +28,13 @@ var DunesWorld = function ( shared ) {
 	this.scene.addLight( ambient );
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight1.position.set( -0.7143659529263534, 0.5424784186070764, 0.4420389696001798 );
-	directionalLight1.color.setHSV( 0, 0, 1 );
+	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
+	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
 	this.scene.addLight( directionalLight1 );
 
 	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight2.position.set( -0.19979561807642718, -0.1646853205760528,  0.9658987815419486 );
-	directionalLight2.color.setHSV( 0, 0, 0.306 );
+	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
+	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
 	this.scene.addLight( directionalLight2 );
 
 	// reference cube
@@ -49,8 +49,8 @@ var DunesWorld = function ( shared ) {
 
 	shared.influenceSpheres = [ 
 		
-		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1300, state: 0 },
-		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1300, state: 0 }
+		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1100, state: 0 },
+		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1100, state: 0 }
 
 	];
 
@@ -201,7 +201,7 @@ var DunesWorld = function ( shared ) {
 
 	}
 
-	function updateTiles (z,x) {
+	function updateTiles ( z, x ) {
 	
 		var difz = lastz - z;
 		var difx = lastx - x;
@@ -215,6 +215,7 @@ var DunesWorld = function ( shared ) {
 		var t0, t1, t2;
 
 		// z
+		
 		if ( difz < 0 ) {
 
 			//console.log("z0");
@@ -254,6 +255,7 @@ var DunesWorld = function ( shared ) {
 		}
 
 		// x
+		
 		if ( difx < 0 ) {
 
 			//console.log("x0");
@@ -273,7 +275,7 @@ var DunesWorld = function ( shared ) {
 			tiles[1].push(t1);
 			tiles[2].push(t2);
 		
-		} else if (difx > 0) {
+		} else if ( difx > 0 ) {
 
 			//console.log("x1");
 			t0 = tiles[0].pop();
@@ -313,7 +315,7 @@ var DunesWorld = function ( shared ) {
 			showHierarchyNotColliders( t0, false );
 		}
 
-		if  (visible1 ) {
+		if ( visible1 ) {
 
 			showHierarchyNotColliders( t1, false );
 

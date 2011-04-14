@@ -8,11 +8,18 @@ var CityWorld = function ( shared ) {
 	this.lensFlareRotate = null;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0 );
-	this.scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
+	
+	/*
 
+	// Fog (clear blue sky)
+	
+	//this.scene.fog = new THREE.FogExp2( 0x535758, 0.0 );
+	//this.scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
+	*/
 
-	// Lights
+	/*
+	
+	// Lights (correct shadows from right)
 
 	var ambientLight = new THREE.AmbientLight( 0xffffff );
 	ambientLight.color.setHSV( 0, 0, 0.3 );
@@ -20,7 +27,7 @@ var CityWorld = function ( shared ) {
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
 	directionalLight1.position.set( 0.3939900991012673,  0.9033436622278614,  -0.16953474488413547 );
-	directionalLight1.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
+	directionalLight1.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7 );
 	directionalLight1.castShadow = true;
 	this.scene.addLight( directionalLight1 );
 
@@ -28,7 +35,34 @@ var CityWorld = function ( shared ) {
 	directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
 	directionalLight2.color.setHSV( 0, 0, 0.1 );
 	this.scene.addLight( directionalLight2 );
+	*/
 
+	// Fog (gray foggy day)
+
+	this.scene.fog = new THREE.FogExp2( 0x535758, 0.0000676470588235294 );
+	this.scene.fog.color.setHSV( 0.058823529411764705,  0.058823529411764705,  0.7352941176470589 );
+	
+	// Lights
+
+	var ambientLight = new THREE.AmbientLight( 0xffffff );
+	ambientLight.color.setHSV( 0.6352941176470588,  0.1411764705882353,  0.17647058823529413 );
+	this.scene.addLight( ambientLight );
+
+	var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
+	//directionalLight1.position.set( 0.832587085547529,  0.34452945220032116,  0.43370289547801955 );
+	directionalLight1.position.set( 0.3939900991012673,  0.9033436622278614,  -0.16953474488413547 );
+	directionalLight1.color.setHSV( 0.08823529411764706,  0.17058823529411765,  0.788235294117647 );		
+	directionalLight1.castShadow = true;
+	this.scene.addLight( directionalLight1 );
+
+	var directionalLight2 = new THREE.DirectionalLight( 0xffffff );
+	directionalLight2.position.set( -0.86557805630173,  -0.09142875402949198,  -0.49235699587345544 );
+	//directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
+	directionalLight2.color.setHSV( 0,  0,  0.15294117647058825 );
+	directionalLight2.castShadow = false;
+	this.scene.addLight( directionalLight2 );
+
+   
 	/*gui.add( directionalLight.position, 'x', -10, 20 ).name( 'x' );
 	gui.add( directionalLight.position, 'y', -10, 20 ).name( 'y' );
 	gui.add( directionalLight.position, 'z', -10, 20 ).name( 'z' );
@@ -96,8 +130,10 @@ var CityWorld = function ( shared ) {
 	}
 
 
-	if (!shared.debug) {
+	if ( !shared.debug ) {
+
 		loader.load( "files/models/city/City.js", function(){}, sceneLoaded, function(){} );
+
 	}
 
 	// lens flares custom callback

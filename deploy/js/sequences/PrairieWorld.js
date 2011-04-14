@@ -9,17 +9,17 @@ var PrairieWorld = function ( shared ) {
 	// Lights
 
 	var ambient = new THREE.AmbientLight( 0x221100 );
-	ambient.color.setHSV( 0, 0, 0.3 );
+	ambient.color.setHSV( 0.23529411764705882,  0.3411764705882353,  0.1411764705882353 );
 	this.scene.addLight( ambient );
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );	
-	directionalLight1.position.set( 0.30068100380721313,  0.23859030453344973,  0.9233989389923093 );
-	directionalLight1.color.setHSV( 0, 0, 0.9588 );
+	directionalLight1.position.set( 0.19587102348124588,  0.9325398992514422,  -0.30332141115410777  );
+	directionalLight1.color.setHSV( 0,  0,  0.8764705882352941 );
 	this.scene.addLight( directionalLight1 );
 
 	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );	
-	directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
-	directionalLight2.color.setHSV( 0, 0, 0.1 );						
+	directionalLight2.position.set( 0.19122302057716462,  -0.30810803127799236,  -0.9319351895187481 );
+	directionalLight2.color.setHSV( 0.34705882352941175,  0.5058823529411764,  0.13529411764705881 );						
 	this.scene.addLight( directionalLight2 );
 
 	// Scene

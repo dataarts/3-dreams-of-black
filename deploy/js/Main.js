@@ -5,7 +5,7 @@ var Signal = signals.Signal;
 var launcher, experience;
 
 var shared, audio, sequencer,
-camera, camera2, scene, renderer, renderTarget;
+renderer, renderTarget;
 
 var loadProgress, tune, time, logger, stats, gui;
 
@@ -24,11 +24,11 @@ function initLauncher() {
 	var context = canvas.getContext( '2d' );
 
 	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-	gradient.addColorStop(0, "#1e4877");
-	gradient.addColorStop(0.5, "#4584b4");
+	gradient.addColorStop( 0, "#1e4877" );
+	gradient.addColorStop( 0.5, "#4584b4" );
 
 	context.fillStyle = gradient;
-	context.fillRect(0, 0, canvas.width, canvas.height);
+	context.fillRect( 0, 0, canvas.width, canvas.height );
 
 	launcher.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
 
@@ -51,8 +51,6 @@ function initExperience() {
 	experience.appendChild( stats.domElement );
 
 	audio = document.getElementById( 'audio' );
-
-	scene = new THREE.Scene();
 
 	renderer = new THREE.WebGLRenderer( { antialias: false } );
 	renderer.autoClear = false;
@@ -119,19 +117,19 @@ function initExperience() {
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.16, 0.0005, 2096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.07058823529411765, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
 
 	sequencer.add( new TransitionToPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.1647, 0.005, 2096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.18235294117647058, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 
 	sequencer.add( new TransitionToDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
 
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
 	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.094, 0.0005, 2096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.094, 0.0, 4096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
 
 	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 3 );
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 3 );

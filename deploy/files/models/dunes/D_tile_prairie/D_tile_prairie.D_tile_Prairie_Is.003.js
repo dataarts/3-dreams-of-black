@@ -21,7 +21,7 @@ var model = {
     "materials": [	{
 	"DbgColor" : 15658734,
 	"DbgIndex" : 0,
-	"DbgName" : "Collision.006",
+	"DbgName" : "Collision.007",
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [0.713699996471405, 0.21960000693798065, 1.0],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
