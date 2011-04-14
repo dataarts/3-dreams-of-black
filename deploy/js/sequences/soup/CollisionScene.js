@@ -29,8 +29,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var cube = new THREE.Cube( 2, 2, 2 );
 	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FFFF, opacity: 0.4 } ) );
-	that.emitter.visible = false;
-	that.emitterFollow.visible = false;
+	//that.emitter.visible = false;
+	//that.emitterFollow.visible = false;
 
 	// collision boxes
 	var cube = new THREE.Cube( 30000,30000,1, 1,1,1 );
@@ -142,11 +142,13 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			that.emitter.position = positionVector;
 			
 			if (c.normal != undefined) {
-				that.currentNormal.copy( c.normal ).normalize();
-				var temp = that.currentNormal.z;
-				that.currentNormal.z = that.currentNormal.y;
-				that.currentNormal.y = temp;
-				//console.log(that.currentNormal.x+" - "+that.currentNormal.y+" - "+that.currentNormal.z);
+				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+				that.currentNormal = normal;
+
+				//var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
+				//that.currentNormal = normal;
+
+				console.log(normal.x+" | "+normal.y+" | "+normal.z);
 			}
 
 			//console.log(c.distance);
@@ -167,10 +169,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 				
 					that.emitter.position.y -= c.distance*that.settings.scale;
 
-					that.currentNormal.copy( c.normal ).normalize();
-					var temp = that.currentNormal.z;
-					that.currentNormal.z = that.currentNormal.y;
-					that.currentNormal.y = temp;
+					var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+					that.currentNormal = normal;
 
 					//console.log(c.distance);
 
@@ -350,13 +350,16 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			if (c) {
 				that.emitterFollow.position.y -= (c.distance*that.settings.scale)-that.settings.normalOffsetAmount;
 				
-				that.currentNormal.copy( c.normal ).normalize();
+/*				that.currentNormal.copy( c.normal ).normalize();
 				var temp = that.currentNormal.z;
 				that.currentNormal.z = that.currentNormal.y;
 				that.currentNormal.y = temp;
+*/
+
+				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+				that.currentNormal = normal;
 
 				//console.log(c.distance);
-				//console.log(that.emitterFollow.position.y+" - "+that.emitter.position.y);
 			}
 		}
 
