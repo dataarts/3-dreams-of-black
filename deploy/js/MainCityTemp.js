@@ -114,7 +114,7 @@ function start( pattern ) {
 
 	animate();
 
-	//setInterval(animate, 1000/60);
+	//setInterval(animate, 1000/20);
 }
 
 // Hack for gui-dat :/

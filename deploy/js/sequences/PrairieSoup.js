@@ -9,7 +9,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0x999999, - 2.25, 100 );
+	var pointLight = new THREE.PointLight( 0x999999, -5, 1000 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -25,7 +25,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 200 );
-	collisionScene.settings.maxSpeedDivider = 5;
+	collisionScene.settings.maxSpeedDivider = 8;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.shootRayDown = false;
@@ -193,6 +193,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		pointLight.position.y = vectors.array[8].position.y + 20;
 		pointLight.position.z = vectors.array[8].position.z;
 
+		shared.x = vectors.array[30].position.x;
+		shared.z = vectors.array[30].position.z;
 
 	}
 
