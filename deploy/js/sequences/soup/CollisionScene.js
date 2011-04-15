@@ -150,7 +150,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 				//console.log(c.normal);
 			}
 
-			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top) {
+			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top || c.mesh == bottom) {
 				that.currentNormal.x = 0;
 				that.currentNormal.y = 1;
 				that.currentNormal.z = 0;

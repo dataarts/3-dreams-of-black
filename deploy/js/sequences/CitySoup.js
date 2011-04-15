@@ -24,7 +24,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
 	collisionScene.settings.maxSpeedDivider = 4;
-	//collisionScene.settings.capBottom = -1;
+	collisionScene.settings.capBottom = -2;
 	collisionScene.settings.shootRayDown = true;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 3;
@@ -56,7 +56,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
-	var particles = new Particles(25, scene, 4, particleSprites, 35);
+	var particles = new Particles(25, scene, 4, particleSprites, 35, 50, THREE.AdditiveBlending);
 
 	// running animals
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
@@ -173,7 +173,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.z = camera.matrixWorld.n34;
 
 		// temp reset
-		if (camPos.z <= -3260) {
+		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
 			reset();
 		}
 		

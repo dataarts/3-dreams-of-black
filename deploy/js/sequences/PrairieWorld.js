@@ -43,7 +43,8 @@ var PrairieWorld = function ( shared, camera ) {
 			//console.log(object);
 		}
 
-		var groundMesh = result.objects[ "Ground" ];
+		//var groundMesh = result.objects[ "Ground" ];
+		var groundMesh = result.scene.getChildByName("Ground");
 		//ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
 
 		that.scene.addChild( result.scene );

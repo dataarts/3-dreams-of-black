@@ -15,13 +15,15 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		waypoints = [ [ 0, 20, 0 ], [ 0, 20, -3300 ] ];
+		waypointsStraight = [ [ 0, 20, 0 ], [ 0, 20, -3300 ] ];
+		waypointsRight = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ 250, 20, -1750 ], [ 1660, 20, -1750 ] ];
+		waypointsLeft = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ -250, 20, -1750 ], [ -1660, 20, -1750 ] ];
 
 		camera = new THREE.PathCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypoints, duration: 30, 
-			useConstantSpeed: true, resamplingCoef: 1,
+			waypoints: waypointsStraight, duration: 30, 
+			useConstantSpeed: true, resamplingCoef: 10,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
@@ -37,7 +39,11 @@ var City = function ( shared ) {
 		fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 		movementSpeed: 100.0, lookSpeed: 0.25, noFly: false, lookVertical: true,
 		autoForward: false
-		} );*/
+		} );
+		gui.add( camera.position, 'x' ).name( 'Camera x' ).listen();
+		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
+		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
+		*/
 
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
@@ -60,6 +66,7 @@ var City = function ( shared ) {
 	this.show = function ( f ) {
 
 		oldTime = new Date().getTime();
+		
 		camera.animation.play( true, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
