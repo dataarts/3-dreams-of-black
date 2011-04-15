@@ -30,8 +30,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var cube = new THREE.Cube( 2, 2, 2 );
 	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FFFF, opacity: 0.4 } ) );
-	//that.emitter.visible = false;
-	//that.emitterFollow.visible = false;
+	that.emitter.visible = false;
+	that.emitterFollow.visible = false;
 
 	// collision boxes
 	var cube = new THREE.Cube( 30000,30000,1, 1,1,1 );

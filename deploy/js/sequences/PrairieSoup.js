@@ -9,7 +9,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0x999999, -2.25, 100 );
+	var pointLight = new THREE.PointLight( 0x999999, -2.25, 400 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -102,9 +102,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
 	loader.load( { model: "files/models/soup/blackWidow.js", callback: spiderLoadedProxy } );
 
-	var colorArray = [ new THREE.Color( 0x101010 ),
-					   new THREE.Color( 0x111111 ),
-					   new THREE.Color( 0x010101 )
+	var colorArray = [ new THREE.Color( 0x111111 ),
+					   new THREE.Color( 0x333333 ),
+					   new THREE.Color( 0x222222 )
 					 ];
 
 	function bisonLoadedProxy( geometry ) {
@@ -207,8 +207,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		pointLight.position.y = vectors.array[8].position.y + 20;
 		pointLight.position.z = vectors.array[8].position.z;
 
-		shared.x = vectors.array[30].position.x;
-		shared.z = vectors.array[30].position.z;
+		shared.lavatrailx = vectors.array[30].position.x;
+		shared.lavatrailz = vectors.array[30].position.z;
 
 	}
 
