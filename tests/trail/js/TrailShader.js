@@ -8,6 +8,11 @@ ROME.TrailShaderUtils = ( function() {
 	var markTexture;
 	var GL;
 	var renderer;
+	var maxX = -9999999, maxZ = -9999999, minX = 9999999, minZ = 9999999;
+	var width, depth;
+	
+	
+	//--- set materials ---
 	
 	that.setMaterials = function( meshes, trailTextureSizeIn, markTextureIn, rendererIn ) {
 
@@ -40,8 +45,6 @@ ROME.TrailShaderUtils = ( function() {
 		var m, ml, mesh, positionX, positionZ;
 		var x, z;
 		var v, vl, vertices, vertex;
-		var maxX = -9999999, maxZ = -9999999, minX = 9999999, minZ = 9999999;
-		var width, depth;
 		
 		for( m = 0, ml = meshes.length; m < ml; m++ ) {
 			
@@ -128,12 +131,32 @@ ROME.TrailShaderUtils = ( function() {
 
 	}
 
-	that.updateTrail = function( u, v ) {
+
+	//--- update lava ---
+
+	that.updateLava = function() {
 		
 		ROME.TrailShader.uniforms.lavaTime.value += 0.01;
 		
-		GL.bindTexture( GL.TEXTURE_2D, trailTexture );
-		GL.texSubImage2D( GL.TEXTURE_2D, 0, u * trailTextureSize, v * trailTextureSize, GL.RGB, GL.UNSIGNED_BYTE, markTexture.image );
+	}
+	
+	
+	//--- set mark at ---
+	
+	that.setMarkAtWorldPosition = function( worldX, worldZ ) {
+
+		console.log( worldX );
+
+		var u = (( worldX - minX ) / width ) * trailTextureSize;
+		var v = (( worldZ - minZ ) / depth ) * trailTextureSize;
+		
+		if( u >= 0 && u < trailTextureSize - markTexture.image.width && 
+			v >= 0 && v < trailTextureSize - markTexture.image.height ) {
+				
+			GL.bindTexture( GL.TEXTURE_2D, trailTexture );
+			GL.texSubImage2D( GL.TEXTURE_2D, 0, u, v, GL.RGB, GL.UNSIGNED_BYTE, markTexture.image );
+				
+		}
 		
 	}
 
@@ -238,10 +261,16 @@ ROME.TrailShader = {
 
 			"vec4 lavaColor;",
 			"float mixValue;",
-			"mixValue  = texture2D( trailMap, vTrailUV + vec2(  0.002,  0.001 )).r;",
-			"mixValue += texture2D( trailMap, vTrailUV + vec2( -0.001, -0.002 )).r;",
-			"mixValue += texture2D( trailMap, vTrailUV + vec2( -0.002,  0.001 )).r;",
-			"mixValue += texture2D( trailMap, vTrailUV + vec2(  0.001, -0.002 )).r;",
+			
+			"float offsetU = sin( lavaTime ) * 0.0025;",
+			"float offsetV = cos( lavaTime * 0.2 ) * 0.002;",
+			"vec2 uvOffsetA = vec2( offsetU, offsetV );",
+			"vec2 uvOffsetB = vec2( -offsetU, offsetV );",
+			
+			"mixValue  = texture2D( trailMap, vTrailUV + uvOffsetA ).r;",
+			"mixValue += texture2D( trailMap, vTrailUV - uvOffsetA ).r;",
+			"mixValue += texture2D( trailMap, vTrailUV + uvOffsetB ).r;",
+			"mixValue += texture2D( trailMap, vTrailUV - uvOffsetB ).r;",
 			"mixValue /= 4.0;",
 			"mixValue *= mixValue;",
 			
