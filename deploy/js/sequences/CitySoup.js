@@ -8,7 +8,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0xeeffee, 4, 100 );
+	var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -60,6 +60,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// running animals
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
+	runningAnimals.settings.addaptiveSpeed = true;
 
 	// preoccupy slots for specific animals - hack...
 	runningAnimals.array[0] = "elk";
@@ -199,7 +200,9 @@ var CitySoup = function ( camera, scene, shared ) {
 		shared.targetEnd.z = vectors.array[20].position.z;
 
 		// pointlight
-		pointLight.position = collisionScene.emitterFollow.position;
+		pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;
+		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*20;
+		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*20;
 
 	}
 

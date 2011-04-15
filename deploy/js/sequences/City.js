@@ -15,7 +15,7 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		waypointsStraight = [ [ 0, 20, 0 ], [ 0, 20, -3300 ] ];
+		waypointsStraight = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ 0, 20, -3300 ] ];
 		waypointsRight = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ 250, 20, -1750 ], [ 1660, 20, -1750 ] ];
 		waypointsLeft = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ -250, 20, -1750 ], [ -1660, 20, -1750 ] ];
 
@@ -23,7 +23,7 @@ var City = function ( shared ) {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			waypoints: waypointsStraight, duration: 30, 
-			useConstantSpeed: true, resamplingCoef: 10,
+			useConstantSpeed: true, resamplingCoef: 20,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },

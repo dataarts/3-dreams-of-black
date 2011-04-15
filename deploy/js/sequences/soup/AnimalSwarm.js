@@ -18,6 +18,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		constantSpeed : null,
 		visible : true,
 		shootRayDown : false,
+		addaptiveSpeed : false,
 	}
 	
 	var r = 0;
@@ -174,6 +175,17 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = animal.position.x;
 			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = animal.position.y;
 			animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = animal.position.z;
+
+			if (that.settings.addaptiveSpeed) {
+				var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
+				var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
+
+				var speed = Math.max(distance/40, 0.8);
+				speed = Math.min(speed, 2.0);
+				
+				that.array[i].a.animalA.timeScale = speed;
+				that.array[i].a.animalB.timeScale = speed;
+			}
 
 			animal.position.x += moveX;
 			animal.position.y += moveY;

@@ -93,6 +93,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.array[2] = "spider";
 	runningAnimals.array[5] = "spider";
 	runningAnimals.array[32] = "spider";
+	runningAnimals.array[38] = "scorpion";
 
 
 	loader.load( { model: "files/models/soup/bison.js", callback: bisonLoadedProxy } );
@@ -101,10 +102,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/goat.js", callback: goatLoadedProxy } );
 	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
 	loader.load( { model: "files/models/soup/blackWidow.js", callback: spiderLoadedProxy } );
+	loader.load( { model: "files/models/soup/scorpion.js", callback: scorpionLoadedProxy } );
 
 	var colorArray = [ new THREE.Color( 0x444444 ),
-					   new THREE.Color( 0x333333 ),
-					   new THREE.Color( 0x222222 )
+					   new THREE.Color( 0x666666 ),
+					   new THREE.Color( 0x888888 )
 					 ];
 
 	function bisonLoadedProxy( geometry ) {
@@ -128,6 +130,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	}
 	function spiderLoadedProxy( geometry ) {
 		runningAnimals.addAnimal( geometry, "spider", 2.5, null, 2, colorArray );
+	}
+	function scorpionLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "scorpion", 0.65, null, 2, colorArray );
 	}
 
 	// flying animals
