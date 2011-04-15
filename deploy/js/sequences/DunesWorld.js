@@ -57,25 +57,38 @@ var DunesWorld = function ( shared ) {
 		
 	];
 
-	var showSpheres = false;
+	var showSpheres = true;
 	
 	if ( showSpheres ) {
 	
-		var sphere = new THREE.Sphere( 1, 32, 16 );
+		var sphere = new THREE.Sphere( 1, 64, 32 );
+		//var sphere = new THREE.Icosahedron( 4 );
+		var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
 
 		for ( var i = 0; i < shared.influenceSpheres.length; i ++ ) {
 			
-			var radius = shared.influenceSpheres[ i ].radius;
-			var center = shared.influenceSpheres[ i ].center;
+			var s = shared.influenceSpheres[ i ];
 			
-			var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-			var sphereMesh = new THREE.Mesh( sphere, wireMaterial );
-			sphereMesh.position.copy( center );
-			sphereMesh.scale.set( radius, radius, radius );
+			if ( s.type == 1 ) {
 			
-			shared.influenceSpheres[ i ].mesh = sphereMesh;
+				var radius = s.radius;
+				var center = s.center;
 			
-			that.scene.addObject( sphereMesh );
+				//var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+				//var sphereObject = new THREE.Mesh( sphere, wireMaterial );
+				
+				var particleMaterial = new THREE.ParticleBasicMaterial( { size: 5, color:0xff7700, map: sprite, transparent: true } );
+				var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
+				sphereObject.sortParticles = true;
+				
+				sphereObject.position.copy( center );
+				sphereObject.scale.set( radius, radius, radius );
+				
+				s.mesh = sphereObject;
+				
+				that.scene.addObject( sphereObject );
+				
+			}
 
 		}
 
