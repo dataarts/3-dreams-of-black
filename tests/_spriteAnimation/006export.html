@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>006 - export, paralax, sprite sheets, nested comps</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000000;
+				color:#ffffff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align: left;
+			}
+			
+			#options {
+				padding: 10px;
+				text-aligh: left;
+				font-family: Georgia, serif;
+			}
+			
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+	
+	<div id="options">
+		Camera max x: <input size="3" id="cmx" value="90"> | 
+		Camera max y: <input size="3" id="cmy" value="100">
+	</div>
+
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="src/Animation2d.js"></script>
+		<script type="text/javascript" src="src/SpriteSheetShader.js"></script>
+		<script type="text/javascript" src="export2/export003.js"></script>
+		
+		<script type="text/javascript">	
+		
+			
+
+			var viewWidth =  window.innerWidth;
+			var aspect = 2.35;
+			
+			var fov = 22.5;
+			var cpt = -30;
+
+			var container, camera, scene, webglRenderer, sky;			
+			
+			var mouseX = 0;
+			var mouseY = 0;
+			var targetPos = new THREE.Vector4();
+			var origPos = new THREE.Vector4();
+
+			var windowHalfX = window.innerWidth >> 1;
+			var windowHalfY = window.innerHeight >> 1;
+			
+			var layers;
+
+			init();	
+			
+			var startTime = new Date().getTime();
+			var lastTime = new Date().getTime();
+			
+			loop();
+				
+			setInterval(loop, 1000/60);
+			
+			document.addEventListener('mousemove', mouseMove, false);
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				scene = new THREE.Scene();
+				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+
+				camera = new THREE.Camera( fov, aspect, 1, 2000 );
+	
+				layers = parseAEJSON(animation, scene, camera);
+				
+				origPos = camera.position.clone();
+				
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize(viewWidth, viewWidth * 1/aspect);
+					container.appendChild( webglRenderer.domElement );
+				} catch (e) {
+					console.log(e);
+				}
+			}
+			
+			
+
+			function mouseMove(e){
+				mouseX = (event.clientX - windowHalfX) / -windowHalfX;
+				mouseY = (event.clientY - windowHalfY) / windowHalfY;
+			}
+
+			function loop() {
+				var cmx = parseFloat(document.getElementById("cmx").value) || 1;
+				var cmy = parseFloat(document.getElementById("cmy").value) || 1;
+				
+			
+				time = ((new Date().getTime() - startTime) / 1000);
+				
+				for(var i in spriteSheets) {
+					var s = spriteSheets[i];
+					var f = (parseInt(time / s.fps) / s.numFrames) % 1;
+					s.materials[0].uniforms[ 'tileOffsetX' ].value.y = f;
+				}
+				
+				animateParticles(time, scene);
+				
+				time = time % (animation.totalTime * 2);
+				if(time > animation.totalTime) time = animation.totalTime - (time - animation.totalTime);
+				
+				for(var ln in layers) {
+					var ly = layers[ln];
+					
+					if(ly.keyframes) {			
+						animate(time, ly.keyframes, ly);
+					}
+				}
+				
+				targetPos.x = origPos.x + mouseX * cmx;
+				targetPos.y = origPos.y + mouseY * cmy;
+
+				//camera.position.x += (targetPos.x - camera.position.x) / 10;
+				//camera.position.y += (targetPos.y - camera.position.y) / 10;	
+				
+				
+				webglRenderer.render( scene, camera );
+			}
+
+		</script>
+
+	</body>
+</html>
