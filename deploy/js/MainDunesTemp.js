@@ -103,7 +103,7 @@ function start( pattern ) {
 
 	audio.play();
 	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.volume = 0//.2;
+	audio.volume = 0.0;
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 

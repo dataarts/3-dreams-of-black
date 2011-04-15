@@ -142,12 +142,12 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			that.emitter.position = positionVector;
 			
 			if (c.normal != undefined) {
-				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
-				//var normal = c.mesh.matrixWorld.multiplyVector3( c.normal ).normalize()
-
+				//var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 				that.currentNormal = normal;
-
-				console.log(normal.x+" | "+normal.y+" | "+normal.z);
+				//console.log(c.mesh.parent);
+				//console.log(normal.x+" | "+normal.y+" | "+normal.z);
+				//console.log(c.normal);
 			}
 
 			//console.log(c.distance);
@@ -168,7 +168,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 				
 					that.emitter.position.y -= c.distance*that.settings.scale;
 
-					var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+					var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();;
 					that.currentNormal = normal;
 
 					//console.log(c.distance);
@@ -354,8 +354,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 				that.currentNormal.z = that.currentNormal.y;
 				that.currentNormal.y = temp;
 */
-
-				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();;
 				that.currentNormal = normal;
 
 				//console.log(c.distance);
