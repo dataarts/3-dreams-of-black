@@ -107,6 +107,14 @@ var DunesWorld = function ( shared ) {
 		scene.position = position;
 		scene.updateMatrix();
 
+		for ( var i = 0, l = scene.objects.length; i < l; i ++ ) {
+
+			var object = scene.objects[ i ];
+			object.matrixAutoUpdate = false;
+			object.updateMatrix();
+
+		}
+		
 		markColliders( scene );
 		
 		that.scene.addChild( scene );
@@ -334,6 +342,7 @@ var DunesWorld = function ( shared ) {
 		if ( visible0 ) {
 
 			showHierarchyNotColliders( t0, false );
+
 		}
 
 		if ( visible1 ) {
