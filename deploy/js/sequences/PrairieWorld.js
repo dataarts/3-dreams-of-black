@@ -1,4 +1,4 @@
-var PrairieWorld = function ( shared ) {
+var PrairieWorld = function ( shared, camera ) {
 
 	var that = this;
 
@@ -22,6 +22,10 @@ var PrairieWorld = function ( shared ) {
 	directionalLight2.color.setHSV( 0.34705882352941175,  0.5058823529411764,  0.13529411764705881 );						
 	this.scene.addLight( directionalLight2 );
 
+	// trail
+
+	var markTexture = THREE.ImageUtils.loadTexture( "files/textures/trailMarkTexture.jpg" );
+
 	// Scene
 
 	var loader = new THREE.SceneLoader();
@@ -36,8 +40,11 @@ var PrairieWorld = function ( shared ) {
 			var object = result.scene.objects[ i ];
 			object.matrixAutoUpdate = false;
 			object.updateMatrix();
-
+			//console.log(object);
 		}
+
+		var groundMesh = result.objects[ "Ground" ];
+		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, renderer );
 
 		that.scene.addChild( result.scene );
 
@@ -50,9 +57,36 @@ var PrairieWorld = function ( shared ) {
     
 		}
 
+		var train = result.objects[ "Train" ],
+			cargo1 = result.objects[ "cargo1" ],
+			cargo2 = result.objects[ "cargo2" ];
+		 
+		//train.materials[ 0 ].wireframe = true;
+		train.position.set( -0.5, -6, 11 );
+		train.rotation.set( -1.57, 0, 3.14  );
+		train.updateMatrix();
+		camera.animationParent.addChild( train );
+
+		cargo1.position.set( -0.5, -6, 0 );
+		cargo1.rotation.set( -1.57, 0, 3.14  );
+		cargo1.updateMatrix();
+		camera.animationParent.addChild( cargo1 );
+
+		cargo2.position.set( 0, -6, -11 );
+		cargo2.rotation.set( -1.57, 0, 3.14  );
+		cargo2.updateMatrix();
+		camera.animationParent.addChild( cargo2 );
+
 	};	
 
 	loader.load( "files/models/prairie/Prairie.js", function(){}, prairieLoaded, function(){});
+
+	this.update = function ( x, z ) {
+
+		ROME.TrailShaderUtils.updateLava();
+		ROME.TrailShaderUtils.setMarkAtWorldPosition( x, -z );
+
+	}
 
 
 }

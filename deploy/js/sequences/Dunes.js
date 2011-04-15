@@ -6,7 +6,7 @@ var Dunes = function ( shared ) {
 	renderer = shared.renderer, 
 	renderTarget = shared.renderTarget;
 	
-	var delta, deltaSec, time, oldTime;
+	var delta, deltaSec, currentTime, oldTime = -1;
 
 	var speedStart = 150,
 		speedEnd = 300;
@@ -205,13 +205,19 @@ var Dunes = function ( shared ) {
 	
 	this.update = function ( progress, time, start, end ) {
 
-		time = new Date().getTime();
-		delta = time - oldTime;
-		oldTime = time;
+		currentTime = new Date().getTime();
+		
+		if ( oldTime == -1 ) oldTime = currentTime;
+		
+		delta = currentTime - oldTime;
+		oldTime = currentTime;
 
 		deltaSec = delta / 1000;
 
-		//THREE.AnimationHandler.update( delta );
+		// this throws exception in THREE.Animation.interpolateCatmullRom
+		// Uncaught TypeError: Cannot read property '0' of undefined
+
+		THREE.AnimationHandler.update( delta );
 
 		// check if we are close to islands
 		
