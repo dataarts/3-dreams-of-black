@@ -116,6 +116,7 @@ ROME.TrailShaderUtils = ( function() {
 			} );
 			
 			trailMaterial.fog = true;
+			trailMaterial.lights = true;
 			trailMaterial.vertexColors = 2;
 			trailMaterial.uniforms.trailMap.texture = ROME.TrailShader.textures.trailMap;
 			trailMaterial.uniforms.faceMap.texture = ROME.TrailShader.textures.faceMap;
@@ -144,8 +145,6 @@ ROME.TrailShaderUtils = ( function() {
 	//--- set mark at ---
 	
 	that.setMarkAtWorldPosition = function( worldX, worldZ ) {
-
-		console.log( worldX );
 
 		var u = (( worldX - minX ) / width ) * trailTextureSize;
 		var v = (( worldZ - minZ ) / depth ) * trailTextureSize;
@@ -208,22 +207,70 @@ ROME.TrailShader = {
 
 	vertexShader: [
 
-		"uniform 	float	animalAInterpolation;",
-		"uniform 	float	animalBInterpolation;",
-		"uniform 	float	animalMorphValue;",
+		"#if MAX_DIR_LIGHTS > 0",
+			"uniform vec3 		directionalLightColor    [ MAX_DIR_LIGHTS ];",
+			"uniform vec3 		directionalLightDirection[ MAX_DIR_LIGHTS ];",
+		"#endif",
+	
+		"#if MAX_POINT_LIGHTS > 0",
+			"uniform vec3 		pointLightColor   [ MAX_POINT_LIGHTS ];",
+			"uniform vec3 		pointLightPosition[ MAX_POINT_LIGHTS ];",
+			"uniform float	 	pointLightDistance[ MAX_POINT_LIGHTS ];",
+		"#endif",
+
+		"uniform vec3 		ambientLightColor;",
 
 		"attribute	vec2	trailUV;",
 
 		"varying 	vec2	vUV;",
 		"varying 	vec2	vTrailUV;",
 		"varying	vec3	vColor;",
+		"varying  	vec4	vLightWeighting;",
 
 		"void main() {",
+
+			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
+			"vec3 transformedNormal = normalize( normalMatrix * normal );",
+	
+			"vLightWeighting = vec4( ambientLightColor, 1.0 );",
+	
+			"#if MAX_DIR_LIGHTS > 0",
+	
+				"for( int i = 0; i < MAX_DIR_LIGHTS; i++ ) {",
+		
+					"vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ i ], 0.0 );",
+					"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
+					"vLightWeighting.xyz += directionalLightColor[ i ] * directionalLightWeighting;",
+		
+				"}",
+	
+			"#endif",
+	
+			"#if MAX_POINT_LIGHTS > 0",
+	
+				"for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {",
+	
+					"vec4 lPosition = viewMatrix * vec4( pointLightPosition[ i ], 1.0 );",
+					"vec3 lVector = lPosition.xyz - mvPosition.xyz;",
+					"float lDistance = 1.0;",
+	
+					"if ( pointLightDistance[ i ] > 0.0 )",
+						"lDistance = 1.0 - min( ( length( lVector ) / pointLightDistance[ i ] ), 1.0 );",
+	
+					"lVector = normalize( lVector );",
+	
+					"float pointLightWeighting = max( dot( transformedNormal, lVector ), 0.0 );",
+					"vLightWeighting.xyz += pointLightColor[ i ] * pointLightWeighting * lDistance;",
+	
+				"}",
+	
+			"#endif",
 
 			"vUV = uv;",
 			"vTrailUV = trailUV;",
 			"vColor = color;",
-			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+			
+			"gl_Position = projectionMatrix * mvPosition;",
 		"}"
 
 	].join("\n"),
@@ -240,11 +287,11 @@ ROME.TrailShader = {
 
 		"uniform 	vec3 		fogColor;",
 		"uniform 	float 		fogDensity;",
-		"uniform 	vec3 		directionalLightColor[ 1 ];",
 
 		"varying 	vec2		vUV;",
 		"varying 	vec2		vTrailUV;",
 		"varying	vec3		vColor;",
+		"varying 	vec4 		vLightWeighting;",
 
 		"void main() {",
 
@@ -294,10 +341,9 @@ ROME.TrailShader = {
 			
 			// add up
 			
-			"gl_FragColor = mix( grassColor, lavaColor, mixValue );",
-
-//			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), texture2D( faceLight, vLightUV ).r ) * texture2D( contour, vContourUV );",
-//			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+			"gl_FragColor = mix( grassColor, lavaColor, mixValue ) * vLightWeighting;", 
+			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+			"gl_FragColor.a = 1.0;",
 
 		"}"
 

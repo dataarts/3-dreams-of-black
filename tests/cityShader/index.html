@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js webgl - city</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				color: #808080;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				display:none;
+			}
+
+			a { color:red }
+
+			.bar { width:100%; position:absolute; z-index:200; display:none }
+
+			#oldie { z-index:500!important; margin-top:15em!important }
+
+		</style>
+	</head>
+
+	<body>
+		<div id="info">
+			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - OBJ converter example
+		</div>
+
+		<div id="hud">
+		</div>
+
+		<div class="bar" id="topbar1"></div>
+		<div class="bar" id="topbar2"></div>
+		<div class="bar" id="bottombar1"></div>
+		<div class="bar" id="bottombar2"></div>
+
+		<script type="text/javascript" src="js/Three.js"></script>
+
+		<script type="text/javascript" src="js/Detector.js"></script>
+		<script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+		<script type="text/javascript" src="js/Stats.js"></script>
+		<script type="text/javascript" src="js/CityShader.js"></script>
+
+		<script type="text/javascript">
+
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+
+			var height = window.innerHeight;
+
+			var container,stats;
+
+			var camera, cameraOrtho, scene, sceneScreen, quadScreen, renderer, materialShader, renderTarget, light;
+
+			var targetStart, targetEnd;
+
+			var mesh, zmesh, geometry, materials, timer = new THREE.Vector2();
+
+			var mouseX = 0, mouseY = 0, r = 0;
+			var renderPost = true;
+			
+			function bind( scope, fn ) {
+		
+				return function () {
+		
+					fn.apply( scope, arguments );
+		
+				};
+		
+			};
+			
+
+			init();
+			animate();
+
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				document.addEventListener( 'mousemove', onMouseMove, false );
+				document.addEventListener( 'keydown', bind( this, this.onKeyDown ), false );
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x535758, 0.0 );
+				scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
+			
+			
+				// Lights
+			
+				var ambientLight = new THREE.AmbientLight( 0xffffff );
+				ambientLight.color.setHSV( 0, 0, 0.3 );
+				scene.addLight( ambientLight );
+			
+				var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
+				directionalLight1.position.set( 0.3939900991012673,  0.9033436622278614,  -0.16953474488413547 );
+				directionalLight1.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
+				directionalLight1.castShadow = true;
+				scene.addLight( directionalLight1 );
+			
+				var directionalLight2 = new THREE.DirectionalLight( );
+				directionalLight2.position.set( -0.4535568600884794,  0.8775825618903728,  -0.1553545034191468 );
+				directionalLight2.color.setHSV( 0, 0, 0.1 );
+				scene.addLight( directionalLight2 );
+				
+				camera = new THREE.QuakeCamera( { fov: 40, aspect: SCREEN_WIDTH / SCREEN_HEIGHT, near: 1, far: 100000,
+												  movementSpeed: 200, lookSpeed: 0.045, noFly: false, lookVertical: true,
+												  activeLook: true
+												  } );
+				camera.position.set( 0, 200, -400 );
+				camera.lon = -90;
+				
+
+				//camera = new THREE.QuakeCamera( { fov: 50, aspect: window.innerWidth / window.innerHeight, near: 1, far: 100000, movementSpeed: 5 } );
+				//camera.position.set( 0, 200, 0 );
+
+
+				var geom = new THREE.Sphere( 5, 5, 5 );
+
+				targetStart = new THREE.Mesh( geom, new THREE.MeshBasicMaterial( { color: 0xff0000 } ) );
+				targetEnd   = new THREE.Mesh( geom, new THREE.MeshBasicMaterial( { color: 0x00ff00 } ) );
+
+				scene.addChild( targetStart );
+				scene.addChild( targetEnd );
+
+
+				renderer = new THREE.WebGLRenderer( { antialias: false } );
+				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+				container.appendChild( renderer.domElement );
+				renderer.setClearColor( scene.fog.color );
+				renderer.setStencilShadowDarkness( 0.3 );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+
+
+				var loader = new THREE.SceneLoader()
+				loader.load( "assets/city/city.js", function(){}, onSceneLoaded, function(){} );
+
+			}
+
+
+			function onSceneLoaded( result ) {
+
+				result.scene.scale.set( 0.1, 0.1, 0.1 );
+				result.scene.updateMatrix();
+				scene.addChild( result.scene );
+
+				ROME.CityShaderUtils.setMaterials( result.scene.children, scene );
+
+			};
+
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+
+				var time = new Date().getTime();
+
+				ROME.CityShaderUtils.soupHead.x = Math.cos( time * 0.001 ) * 150;
+				ROME.CityShaderUtils.soupHead.y = 0;
+				ROME.CityShaderUtils.soupHead.z = Math.cos( time * 0.001 ) * 200 - 2000;
+
+				ROME.CityShaderUtils.soupTail.x = Math.cos( time * 0.002 ) * 150;
+				ROME.CityShaderUtils.soupTail.y = 0;
+				ROME.CityShaderUtils.soupTail.z = Math.cos( time * 0.002 ) * 200 - 1000;
+
+				//light.position.x = Math.cos( time * 0.002 );
+
+				renderer.render( scene, camera );
+				stats.update();
+
+			}
+
+
+			function onKeyDown( event ) {
+				
+				if( event.keyCode == 80 ) {
+		
+					renderPost = !renderPost;
+		
+				}
+				
+			}
+			
+			function onMouseMove(event) {
+
+				mouseX = ( event.clientX - SCREEN_WIDTH * 0.5 ) / SCREEN_HEIGHT;
+				mouseY = ( event.clientY - SCREEN_HEIGHT * 0.5 ) / SCREEN_WIDTH;
+			}
+
+		</script>
+	</body>
+</html>
