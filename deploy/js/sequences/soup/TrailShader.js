@@ -145,7 +145,7 @@ ROME.TrailShaderUtils = ( function() {
 	
 	that.setMarkAtWorldPosition = function( worldX, worldZ ) {
 
-		console.log( worldX );
+		//console.log( worldX );
 
 		var u = (( worldX - minX ) / width ) * trailTextureSize;
 		var v = (( worldZ - minZ ) / depth ) * trailTextureSize;
