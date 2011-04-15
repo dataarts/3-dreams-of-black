@@ -24,14 +24,16 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
 	collisionScene.settings.maxSpeedDivider = 4;
-	collisionScene.settings.capBottom = 0;
+	//collisionScene.settings.capBottom = -1;
 	collisionScene.settings.shootRayDown = true;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 3;
+	collisionScene.settings.normalOffsetAmount = 8;
+	collisionScene.settings.minDistance = 30;
 
 	// vector trail
 	var vectors = new Vectors();
-	vectors.settings.normaldivider = 15;
+	vectors.settings.normaldivider = 8;
 
 	// ribbons
 	var ribbonMaterials = [
@@ -54,7 +56,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
-	var particles = new Particles(25, scene, 4, particleSprites);
+	var particles = new Particles(25, scene, 4, particleSprites, 35);
 
 	// running animals
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);

@@ -5,7 +5,7 @@ var Prairie = function ( shared ) {
 	var camera, world, soup,
 	renderer = shared.renderer, renderTarget = shared.renderTarget,
 	cameraPath, waypoints = [],
-	delta, time, oldTime;
+	delta, currentTime, oldTime = -1;
 
 	this.init = function () {
 
@@ -45,6 +45,7 @@ var Prairie = function ( shared ) {
 			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.3, Math.PI-0.3 ] }
+
 		 } );
 
 		cameraPath.position.set( 0, 0, 0 );
@@ -52,7 +53,7 @@ var Prairie = function ( shared ) {
 
 		camera = cameraPath;
 
-		world = new PrairieWorld( shared );
+		world = new PrairieWorld( shared, camera );
 		soup = new PrairieSoup( camera, world.scene, shared );
 
 		//world.scene.addObject( cameraPath.debugPath );
@@ -62,7 +63,7 @@ var Prairie = function ( shared ) {
 		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
-
+		
 		shared.signals.cameraFov.add( function ( value ) {
 
 			camera.fov = value;
@@ -85,25 +86,29 @@ var Prairie = function ( shared ) {
 
 	};
 
-	this.update = function ( f ) {
+	this.update = function ( progress, time, start, end ) {
 
-		time = new Date().getTime();
-		delta = time - oldTime;
-		oldTime = time;
+		currentTime = new Date().getTime();
+		
+		if ( oldTime == -1 ) oldTime = currentTime;
+		
+		delta = currentTime - oldTime;
+		oldTime = currentTime;
 
 		THREE.AnimationHandler.update( delta );
 
 		// slight camera roll
-		if (camera.animationParent) {
 
-			camera.animationParent.rotation.z = (camera.target.position.x)/600;
+		if ( camera.animationParent ) {
+
+			camera.animationParent.rotation.z = camera.target.position.x / 600;
 
 		}
 
-		/*
+		
 		// slightly bumpy camera, since we're on a train
-		camera.animationParent.position.y += Math.sin(time/100)*2;
-		*/
+		camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
+		
 
 		// make it darker towards the end
 		/*var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );

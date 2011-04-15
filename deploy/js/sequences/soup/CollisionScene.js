@@ -17,6 +17,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		shootRayDown : false,
 		keepEmitterFollowDown : false,
 		normalOffsetAmount : 6,
+		minDistance : 10,
 	}
 
 	var mouse2d = new THREE.Vector3( 0, 0, 1 );
@@ -129,7 +130,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		var c = THREE.Collisions.rayCastNearest( ray );
 
-		if( c && c.distance > 10 ) {
+		if( c && c.distance > that.settings.minDistance ) {
 
 			var distance = c.distance*that.settings.scale;
 			if (distance > that.settings.collisionDistance) {
@@ -142,15 +143,12 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			that.emitter.position = positionVector;
 			
 			if (c.normal != undefined) {
-				//var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
 				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 				that.currentNormal = normal;
 				//console.log(c.mesh.parent);
 				//console.log(normal.x+" | "+normal.y+" | "+normal.z);
 				//console.log(c.normal);
 			}
-
-			//console.log(c.distance);
 
 			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top) {
 				that.currentNormal.x = 0;
@@ -161,7 +159,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 					that.emitter.position.y = bottom.position.y;					
 				}
 				if (that.settings.shootRayDown) {
-					ray.origin.copy( that.emitter.position )//.normalize();
+					ray.origin.copy( that.emitter.position );
 					ray.direction = new THREE.Vector3(0, -1, 0);
 
 					var c = THREE.Collisions.rayCastNearest(ray);
@@ -348,12 +346,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			var c = THREE.Collisions.rayCastNearest(ray);
 			if (c) {
 				that.emitterFollow.position.y -= (c.distance*that.settings.scale)-that.settings.normalOffsetAmount;
-				
-/*				that.currentNormal.copy( c.normal ).normalize();
-				var temp = that.currentNormal.z;
-				that.currentNormal.z = that.currentNormal.y;
-				that.currentNormal.y = temp;
-*/
+
 				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();;
 				that.currentNormal = normal;
 

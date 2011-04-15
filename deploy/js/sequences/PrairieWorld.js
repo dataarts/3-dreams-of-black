@@ -1,4 +1,4 @@
-var PrairieWorld = function ( shared ) {
+var PrairieWorld = function ( shared, camera ) {
 
 	var that = this;
 
@@ -23,6 +23,7 @@ var PrairieWorld = function ( shared ) {
 	this.scene.addLight( directionalLight2 );
 
 	// trail
+
 	var markTexture = THREE.ImageUtils.loadTexture( "files/textures/trailMarkTexture.jpg" );
 
 	// Scene
@@ -55,6 +56,26 @@ var PrairieWorld = function ( shared ) {
 			mesh.visible = false;
     
 		}
+
+		var train = result.objects[ "Train" ],
+			cargo1 = result.objects[ "cargo1" ],
+			cargo2 = result.objects[ "cargo2" ];
+		 
+		//train.materials[ 0 ].wireframe = true;
+		train.position.set( -0.5, -6, 11 );
+		train.rotation.set( -1.57, 0, 3.14  );
+		train.updateMatrix();
+		camera.animationParent.addChild( train );
+
+		cargo1.position.set( -0.5, -6, 0 );
+		cargo1.rotation.set( -1.57, 0, 3.14  );
+		cargo1.updateMatrix();
+		camera.animationParent.addChild( cargo1 );
+
+		cargo2.position.set( 0, -6, -11 );
+		cargo2.rotation.set( -1.57, 0, 3.14  );
+		cargo2.updateMatrix();
+		camera.animationParent.addChild( cargo2 );
 
 	};	
 

@@ -16,6 +16,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	scene.addLight( pointLight, 1.0 );
 
 	// setup the different parts of the soup
+
 	var vectors;
 	var ribbons;
 	var trail;
@@ -24,6 +25,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var particles;
 
 	// collision scene
+	
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 200 );
 	collisionScene.settings.maxSpeedDivider = 8;
 	collisionScene.settings.allowFlying = false;
@@ -31,22 +33,27 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.keepEmitterFollowDown = true;
 	collisionScene.settings.normalOffsetAmount = 8;
+	
 	// vector trail
+
 	vectors = new Vectors();
 	vectors.settings.normaldivider = 10;
 	vectors.settings.divider = 2;
 
 	// ribbons
+
 	var ribbonMaterials = [
-			new THREE.MeshLambertMaterial( { color:0x000000 } ),
-			new THREE.MeshLambertMaterial( { color:0x555555 } ),
-			new THREE.MeshLambertMaterial( { color:0x000000 } ),
-			new THREE.MeshLambertMaterial( { color:0x555555 } ),
-			new THREE.MeshLambertMaterial( { color:0x000000 } ),
-			new THREE.MeshLambertMaterial( { color:0x555555 } )
+
+		new THREE.MeshLambertMaterial( { color:0x000000 } ),
+		new THREE.MeshLambertMaterial( { color:0x555555 } ),
+		new THREE.MeshLambertMaterial( { color:0x000000 } ),
+		new THREE.MeshLambertMaterial( { color:0x555555 } ),
+		new THREE.MeshLambertMaterial( { color:0x000000 } ),
+		new THREE.MeshLambertMaterial( { color:0x555555 } )
+
 	];
 
-	ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
+	ribbons = new Ribbons( 6, vectors.array, scene, ribbonMaterials );
 	ribbons.settings.ribbonPulseMultiplier_1 = 4;
 	ribbons.settings.ribbonPulseMultiplier_2 = 4;
 	ribbons.settings.ribbonMin = 0.2;
@@ -65,7 +72,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	particles.settings.aliveDivider = 3;
 
 	// running animals
-	runningAnimals = new AnimalSwarm(40, scene, vectors.array);
+	runningAnimals = new AnimalSwarm( 40, scene, vectors.array );
 	runningAnimals.settings.xPositionMultiplier = 30;
 	runningAnimals.settings.zPositionMultiplier = 15;
 	//runningAnimals.settings.shootRayDown = true;
@@ -124,7 +131,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	}
 
 	// flying animals
-	flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
+
+	flyingAnimals = new AnimalSwarm( 10, scene, vectors.array );
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.xPositionMultiplier = 30;
 	flyingAnimals.settings.zPositionMultiplier = 20;
@@ -167,20 +175,25 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	this.update = function ( delta ) {
 
 		// update to reflect _real_ camera position
+
 		camPos.x = camera.matrixWorld.n14;
 		camPos.y = camera.matrixWorld.n24;
 		camPos.z = camera.matrixWorld.n34;
 
 		// temp reset
-		if (camPos.x > 1130) {
+
+		if ( camPos.x > 1130 ) {
+
 			reset();
+
 		}
 
 		// update the soup parts	
-		collisionScene.update(camPos, delta);
-		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		ribbons.update(collisionScene.emitterFollow.position);
-		particles.update(delta, vectors.array[5].position);
+
+		collisionScene.update( camPos, delta );
+		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
+		ribbons.update( collisionScene.emitterFollow.position );
+		particles.update( delta, vectors.array[5].position );
 		runningAnimals.update();
 		flyingAnimals.update();
 		//trail.update(vectors.array[5].position, collisionScene.currentNormal, camPos, delta);
@@ -189,6 +202,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 
 		// pointlight
+
 		pointLight.position.x = vectors.array[8].position.x;
 		pointLight.position.y = vectors.array[8].position.y + 20;
 		pointLight.position.z = vectors.array[8].position.z;
@@ -201,13 +215,14 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 
 	function reset () {
+
 		camPos = new THREE.Vector3( 0, 0, 0 );
 
-		collisionScene.reset(camPos.x,camPos.y,camPos.z);
-		vectors.reset(camPos.x,camPos.y,camPos.z);
-		runningAnimals.reset(camPos.x,camPos.y,camPos.z);
-		flyingAnimals.reset(camPos.x,camPos.y,camPos.z);
-		particles.reset(camPos.x,camPos.y,camPos.z);
+		collisionScene.reset( camPos.x, camPos.y, camPos.z );
+		vectors.reset( camPos.x, camPos.y, camPos.z );
+		runningAnimals.reset( camPos.x, camPos.y, camPos.z );
+		flyingAnimals.reset( camPos.x, camPos.y, camPos.z );
+		particles.reset( camPos.x, camPos.y, camPos.z );
 
 	}
 

@@ -106,7 +106,7 @@ var CityWorld = function ( shared ) {
 		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
    
 			mesh = THREE.Collisions.colliders[ i ].mesh;
-			mesh.visible = true;
+			mesh.visible = false;
     
 		}
 

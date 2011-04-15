@@ -1,4 +1,3 @@
-
 //ROME = {};
 
 ROME.TrailShaderUtils = ( function() {
@@ -184,7 +183,7 @@ ROME.TrailShader = {
 		"lavaNoiseMap": 			 	{ type: "t", value: 3, texture: undefined },
 
 		"lavaTime": 					{ type: "f", value: 0 },
-		"lavaUvScale": 					{ type: "v2", value: new THREE.Vector2( 5.0, 5.0 ) },
+		"lavaUvScale": 					{ type: "v2", value: new THREE.Vector2( 50.0, 50.0 ) },
 
 		"fogColor": 					{ type: "c", value: new THREE.Color() },
 		"fogDensity": 					{ type: "f", value: 0 },
@@ -294,7 +293,7 @@ ROME.TrailShader = {
 			
 			// add up
 			
-			"gl_FragColor = mix( grassColor, lavaColor, mixValue );",
+			"gl_FragColor = mix( grassColor, vec4( lavaColor.xyz, 1.0 ), mixValue );",
 
 //			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), texture2D( faceLight, vLightUV ).r ) * texture2D( contour, vContourUV );",
 //			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
@@ -304,4 +303,3 @@ ROME.TrailShader = {
 	].join("\n")
 			
 }
-

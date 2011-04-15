@@ -30,8 +30,8 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 	for (var i = 0; i < that.initSettings.numOfParticleSystems; i++) {
 
-		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
+		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 
