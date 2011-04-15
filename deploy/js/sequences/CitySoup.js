@@ -8,7 +8,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0xeeffee, 4, 100 );
+	var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -24,14 +24,16 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
 	collisionScene.settings.maxSpeedDivider = 4;
-	collisionScene.settings.capBottom = 0;
+	collisionScene.settings.capBottom = -2;
 	collisionScene.settings.shootRayDown = true;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 3;
+	collisionScene.settings.normalOffsetAmount = 8;
+	collisionScene.settings.minDistance = 30;
 
 	// vector trail
 	var vectors = new Vectors();
-	vectors.settings.normaldivider = 15;
+	vectors.settings.normaldivider = 8;
 
 	// ribbons
 	var ribbonMaterials = [
@@ -54,10 +56,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
-	var particles = new Particles(25, scene, 4, particleSprites);
+	var particles = new Particles(25, scene, 4, particleSprites, 35, 50, THREE.AdditiveBlending);
 
 	// running animals
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
+	runningAnimals.settings.addaptiveSpeed = true;
 
 	// preoccupy slots for specific animals - hack...
 	runningAnimals.array[0] = "elk";
@@ -171,7 +174,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.z = camera.matrixWorld.n34;
 
 		// temp reset
-		if (camPos.z <= -3260) {
+		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
 			reset();
 		}
 		
@@ -197,7 +200,9 @@ var CitySoup = function ( camera, scene, shared ) {
 		shared.targetEnd.z = vectors.array[20].position.z;
 
 		// pointlight
-		pointLight.position = collisionScene.emitterFollow.position;
+		pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;
+		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*20;
+		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*20;
 
 	}
 

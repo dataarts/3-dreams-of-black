@@ -43,8 +43,9 @@ var PrairieWorld = function ( shared, camera ) {
 			//console.log(object);
 		}
 
-		var groundMesh = result.objects[ "Ground" ];
-		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, renderer );
+		//var groundMesh = result.objects[ "Ground" ];
+		var groundMesh = result.scene.getChildByName("Ground");
+		//ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
 
 		that.scene.addChild( result.scene );
 
@@ -81,10 +82,10 @@ var PrairieWorld = function ( shared, camera ) {
 
 	loader.load( "files/models/prairie/Prairie.js", function(){}, prairieLoaded, function(){});
 
-	this.update = function ( x, z ) {
+	this.update = function ( ) {
 
-		ROME.TrailShaderUtils.updateLava();
-		ROME.TrailShaderUtils.setMarkAtWorldPosition( x, -z );
+		//ROME.TrailShaderUtils.updateLava();
+		//ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
 
 	}
 

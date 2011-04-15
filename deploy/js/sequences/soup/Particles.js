@@ -1,9 +1,10 @@
-var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArray, numInSystem, spread ) {
+var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArray, numInSystem, spread, blendMode ) {
 	
 	var that = this;
 
 	var particleArray = [];
 	var scene = scene;
+	var blendMode = blendMode || THREE.NormalBlending;
 
 	that.initSettings = {
 		numOfParticleSystems : numOfParticleSystems || 25,
@@ -31,7 +32,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 	for (var i = 0; i < that.initSettings.numOfParticleSystems; i++) {
 
 		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: blendMode } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 

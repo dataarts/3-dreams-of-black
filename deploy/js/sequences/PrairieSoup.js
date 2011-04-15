@@ -9,7 +9,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0x999999, -5, 1000 );
+	var pointLight = new THREE.PointLight( 0x999999, -2.25, 400 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
@@ -26,14 +26,14 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// collision scene
 	
-	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 200 );
+	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 220 );
 	collisionScene.settings.maxSpeedDivider = 8;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.keepEmitterFollowDown = true;
 	collisionScene.settings.normalOffsetAmount = 8;
-	
+	collisionScene.settings.minDistance = 0;
 	// vector trail
 
 	vectors = new Vectors();
@@ -53,12 +53,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	];
 
-	ribbons = new Ribbons( 6, vectors.array, scene, ribbonMaterials );
+	/*ribbons = new Ribbons( 6, vectors.array, scene, ribbonMaterials );
 	ribbons.settings.ribbonPulseMultiplier_1 = 4;
 	ribbons.settings.ribbonPulseMultiplier_2 = 4;
 	ribbons.settings.ribbonMin = 0.2;
 	ribbons.settings.ribbonMax = 0.2;
-
+	*/
 	// particles
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/dark_0.png" );
 	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/dark_1.png" );
@@ -67,9 +67,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/dark_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
-	particles = new Particles(20, scene, 2, particleSprites, 15, 30);
+	particles = new Particles(20, scene, 1.5, particleSprites, 15, 30);
 	particles.settings.zeroAlphaStart = false;
-	particles.settings.aliveDivider = 3;
+	particles.settings.aliveDivider = 2;
 
 	// running animals
 	runningAnimals = new AnimalSwarm( 40, scene, vectors.array );
@@ -93,6 +93,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.array[2] = "spider";
 	runningAnimals.array[5] = "spider";
 	runningAnimals.array[32] = "spider";
+	runningAnimals.array[38] = "scorpion";
 
 
 	loader.load( { model: "files/models/soup/bison.js", callback: bisonLoadedProxy } );
@@ -101,14 +102,15 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/goat.js", callback: goatLoadedProxy } );
 	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
 	loader.load( { model: "files/models/soup/blackWidow.js", callback: spiderLoadedProxy } );
+	loader.load( { model: "files/models/soup/scorpion.js", callback: scorpionLoadedProxy } );
 
-	var colorArray = [ new THREE.Color( 0x101010 ),
-					   new THREE.Color( 0x111111 ),
-					   new THREE.Color( 0x010101 )
+	var colorArray = [ new THREE.Color( 0x444444 ),
+					   new THREE.Color( 0x666666 ),
+					   new THREE.Color( 0x888888 )
 					 ];
 
 	function bisonLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, null, 0.4, null, 2, colorArray );
+		runningAnimals.addAnimal( geometry, null, 0.33, null, 2, colorArray );
 	}
 
 	function gatorLoadedProxy( geometry ) {
@@ -116,18 +118,21 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	}
 
 	function wolfLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "wolf", 0.5, null, 2, colorArray );
+		runningAnimals.addAnimal( geometry, "wolf", 0.4, null, 2, colorArray );
 	}
 
 	function goatLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "goat", 0.5, null, 2, colorArray );
+		runningAnimals.addAnimal( geometry, "goat", 0.4, null, 2, colorArray );
 	}
 
 	function armLoadedProxy( geometry ) {
 		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2, colorArray );
 	}
 	function spiderLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "spider", 2.8, null, 2, colorArray );
+		runningAnimals.addAnimal( geometry, "spider", 2.5, null, 2, colorArray );
+	}
+	function scorpionLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "scorpion", 0.65, null, 2, colorArray );
 	}
 
 	// flying animals
@@ -136,15 +141,15 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.xPositionMultiplier = 30;
 	flyingAnimals.settings.zPositionMultiplier = 20;
-	flyingAnimals.settings.constantSpeed = 2.0;
+	flyingAnimals.settings.constantSpeed = 2.5;
 	flyingAnimals.settings.divider = 4;
-	flyingAnimals.settings.flyingDistance = 8;
+	flyingAnimals.settings.flyingDistance = 4;
 
 	loader.load( { model: "files/models/soup/vulture_raven.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 0.8, morphArray, 0.4, colorArray );
+		flyingAnimals.addAnimal( geometry, null, 0.5, morphArray, 0.4, colorArray );
 	}
 	
 	// trail - of grass/trees/etc
@@ -192,7 +197,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		collisionScene.update( camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
-		ribbons.update( collisionScene.emitterFollow.position );
+		//ribbons.update( collisionScene.emitterFollow.position );
 		particles.update( delta, vectors.array[5].position );
 		runningAnimals.update();
 		flyingAnimals.update();
@@ -204,11 +209,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		// pointlight
 
 		pointLight.position.x = vectors.array[8].position.x;
-		pointLight.position.y = vectors.array[8].position.y + 20;
+		pointLight.position.y = vectors.array[8].position.y + 30;
 		pointLight.position.z = vectors.array[8].position.z;
 
-		shared.x = vectors.array[30].position.x;
-		shared.z = vectors.array[30].position.z;
+		shared.lavatrailx = vectors.array[30].position.x;
+		shared.lavatrailz = vectors.array[30].position.z;
 
 	}
 

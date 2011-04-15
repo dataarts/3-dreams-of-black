@@ -17,6 +17,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		shootRayDown : false,
 		keepEmitterFollowDown : false,
 		normalOffsetAmount : 6,
+		minDistance : 10,
 	}
 
 	var mouse2d = new THREE.Vector3( 0, 0, 1 );
@@ -29,8 +30,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var cube = new THREE.Cube( 2, 2, 2 );
 	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FFFF, opacity: 0.4 } ) );
-	//that.emitter.visible = false;
-	//that.emitterFollow.visible = false;
+	that.emitter.visible = false;
+	that.emitterFollow.visible = false;
 
 	// collision boxes
 	var cube = new THREE.Cube( 30000,30000,1, 1,1,1 );
@@ -129,7 +130,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		var c = THREE.Collisions.rayCastNearest( ray );
 
-		if( c && c.distance > 10 ) {
+		if( c && c.distance > that.settings.minDistance ) {
 
 			var distance = c.distance*that.settings.scale;
 			if (distance > that.settings.collisionDistance) {
@@ -142,18 +143,14 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			that.emitter.position = positionVector;
 			
 			if (c.normal != undefined) {
-				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
-				//var normal = c.mesh.matrixWorld.multiplyVector3( c.normal ).normalize()
-
+				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 				that.currentNormal = normal;
-
+				//console.log(c.mesh.parent);
 				//console.log(normal.x+" | "+normal.y+" | "+normal.z);
-
+				//console.log(c.normal);
 			}
 
-			//console.log(c.distance);
-
-			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top) {
+			if (c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top || c.mesh == bottom) {
 				that.currentNormal.x = 0;
 				that.currentNormal.y = 1;
 				that.currentNormal.z = 0;
@@ -162,14 +159,14 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 					that.emitter.position.y = bottom.position.y;					
 				}
 				if (that.settings.shootRayDown) {
-					ray.origin.copy( that.emitter.position )//.normalize();
+					ray.origin.copy( that.emitter.position );
 					ray.direction = new THREE.Vector3(0, -1, 0);
 
 					var c = THREE.Collisions.rayCastNearest(ray);
 				
 					that.emitter.position.y -= c.distance*that.settings.scale;
 
-					var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+					var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();;
 					that.currentNormal = normal;
 
 					//console.log(c.distance);
@@ -349,14 +346,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			var c = THREE.Collisions.rayCastNearest(ray);
 			if (c) {
 				that.emitterFollow.position.y -= (c.distance*that.settings.scale)-that.settings.normalOffsetAmount;
-				
-/*				that.currentNormal.copy( c.normal ).normalize();
-				var temp = that.currentNormal.z;
-				that.currentNormal.z = that.currentNormal.y;
-				that.currentNormal.y = temp;
-*/
 
-				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal.normalize() ).normalize();
+				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();;
 				that.currentNormal = normal;
 
 				//console.log(c.distance);
