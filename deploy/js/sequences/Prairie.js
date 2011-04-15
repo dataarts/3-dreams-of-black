@@ -63,13 +63,6 @@ var Prairie = function ( shared ) {
 		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
-		
-		shared.signals.cameraFov.add( function ( value ) {
-
-			camera.fov = value;
-			camera.updateProjectionMatrix();
-
-		} );
 
 	};
 

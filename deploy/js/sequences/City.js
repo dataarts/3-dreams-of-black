@@ -53,14 +53,6 @@ var City = function ( shared ) {
 		}
 		world.scene.addObject( camera.animationParent );
 
-
-		shared.signals.cameraFov.add( function ( value ) {
-
-			camera.fov = value;
-			camera.updateProjectionMatrix();
-
-		} );
-
 	};
 
 	this.show = function ( f ) {
