@@ -135,9 +135,11 @@ ROME.TrailShaderUtils = ( function() {
 
 	//--- update lava ---
 
-	that.updateLava = function() {
+	that.updateLava = function( deltaTime ) {
 		
-		ROME.TrailShader.uniforms.lavaTime.value += 0.01;
+		deltaTime = deltaTime !== undefined ? deltaTime : 1;
+		
+		ROME.TrailShader.uniforms.lavaTime.value += 0.0001 * deltaTime;
 		
 	}
 	
@@ -171,7 +173,7 @@ ROME.TrailShader = {
 		trailMap: undefined,		// set by code
 		faceMap: THREE.ImageUtils.loadTexture( "assets/PaintDubs.jpg" ),
 		lavaMap: THREE.ImageUtils.loadTexture( "assets/lava.jpg" ),
-		lavaNoiseMap: THREE.ImageUtils.loadTexture( "assets/lavaNoise.png" )
+		lavaNoiseMap: THREE.ImageUtils.loadTexture( "assets/cloud.png" )
 		
 	},
 	
@@ -183,7 +185,7 @@ ROME.TrailShader = {
 		"lavaNoiseMap": 			 	{ type: "t", value: 3, texture: undefined },
 
 		"lavaTime": 					{ type: "f", value: 0 },
-		"lavaUvScale": 					{ type: "v2", value: new THREE.Vector2( 5.0, 5.0 ) },
+		"lavaUvScale": 					{ type: "v2", value: new THREE.Vector2( 7.0, 7.0 ) },
 
 		"fogColor": 					{ type: "c", value: new THREE.Color() },
 		"fogDensity": 					{ type: "f", value: 0 },
@@ -309,8 +311,8 @@ ROME.TrailShader = {
 			"vec4 lavaColor;",
 			"float mixValue;",
 			
-			"float offsetU = sin( lavaTime ) * 0.0025;",
-			"float offsetV = cos( lavaTime * 0.2 ) * 0.002;",
+			"float offsetU = sin( lavaTime * 10.0 ) * 0.002;",
+			"float offsetV = cos( lavaTime * 11.0 ) * 0.002;",
 			"vec2 uvOffsetA = vec2( offsetU, offsetV );",
 			"vec2 uvOffsetB = vec2( -offsetU, offsetV );",
 			
@@ -319,18 +321,15 @@ ROME.TrailShader = {
 			"mixValue += texture2D( trailMap, vTrailUV + uvOffsetB ).r;",
 			"mixValue += texture2D( trailMap, vTrailUV - uvOffsetB ).r;",
 			"mixValue /= 4.0;",
-			"mixValue *= mixValue;",
+			"mixValue = smoothstep( 0.0, 0.5, mixValue );",
 			
 			"if( mixValue != 0.0 ) {",
 
-				"vec2 noiseUV = vTrailUV * lavaUvScale;",
-				"vec4 noise = texture2D( lavaNoiseMap, noiseUV );",
-				
-				"vec2 lavaUV = vec2( lavaTime ) * 0.05 + noiseUV * vec2( sin( noise.a ) * 0.1 + 0.8, cos( noise.a * 0.2 ) * 0.1 + 0.8 );",
-	
-				"vec4 color = texture2D( lavaMap, lavaUV );",
+				"vec2 movement = vec2( lavaTime );",
+				"vec4 noise = texture2D( lavaNoiseMap, ( vTrailUV - movement ) * lavaUvScale * 3.0 + vec2( sin( lavaTime * 100.0 ) * 0.05, cos( lavaTime * 150.0 ) * 0.05 ));",
+				"vec4 color = texture2D( lavaMap, ( vTrailUV + movement ) * lavaUvScale + vec2( sin( noise.a ) * 0.03, cos( noise.a * 1.1 ) * 0.03 ));",
 
-				"lavaColor = ( color * noise + color * color ) * mixValue;",
+				"lavaColor = color * color * mixValue * noise.a;",
 			"}",
 
 
