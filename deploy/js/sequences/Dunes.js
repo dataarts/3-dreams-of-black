@@ -147,20 +147,32 @@ var Dunes = function ( shared ) {
 				if ( influenceSphere.mesh ) 
 					influenceSphere.mesh.materials[ 0 ].color = colorHighlight;
 				
-				// entering
+				// flip sphere
 				
-				if ( influenceSphere.state == 0 ) {
+				if ( influenceSphere.type == 0 ) {
 					
-					influenceSphere.state = 1;
+					// entering
 					
-					startRoll = camera.roll;
-					deltaRoll = rollAngle;
-					
-					deltaSpeed = speedInside;
+					if ( influenceSphere.state == 0 ) {
+						
+						influenceSphere.state = 1;
+						
+						startRoll = camera.roll;
+						deltaRoll = rollAngle;
+						
+						deltaSpeed = speedInside;
 
-					liftSpeed = 0;
+						liftSpeed = 0;
+						
+						//console.log( "entered [" + influenceSphere.name + "]" );
+
+					}
 					
-					//console.log( "entered [" + influenceSphere.name + "]" );
+				// portal
+
+				} else if ( influenceSphere.type == 1 ) {
+					
+					console.log( "entered portal [" + influenceSphere.name + "]" );
 
 				}
 				
@@ -169,19 +181,25 @@ var Dunes = function ( shared ) {
 				if ( influenceSphere.mesh ) 
 					influenceSphere.mesh.materials[ 0 ].color = colorNormal;
 				
-				// leaving
+				// flip sphere
 				
-				if ( influenceSphere.state == 1 ) {
+				if ( influenceSphere.type == 0 ) {
+				
+					// leaving
 					
-					influenceSphere.state = 0;
-					
-					startRoll = camera.roll;
-					deltaRoll = rollAngle;
-					
-					deltaSpeed = speedOutside;
-					
-					//console.log( " left [" + influenceSphere.name + "]" );
+					if ( influenceSphere.state == 1 ) {
+						
+						influenceSphere.state = 0;
+						
+						startRoll = camera.roll;
+						deltaRoll = rollAngle;
+						
+						deltaSpeed = speedOutside;
+						
+						//console.log( " left [" + influenceSphere.name + "]" );
 
+					}
+					
 				}
 
 			}

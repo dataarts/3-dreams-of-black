@@ -1,4 +1,4 @@
-/* Converted from: City_Export3b.blend
+/* Converted from: City_Export4b.blend
  *
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
@@ -6,7 +6,7 @@
  * objects:    253
  * geometries: 49
  * materials:  32
- * textures:   19
+ * textures:   17
  */
 
 var scene = {
@@ -580,7 +580,7 @@ var scene = {
         "geometry"  : "geo_Cube.008",
         "groups"    : [  ],
         "materials" : [  ],
-        "position"  : [ -3599.839355, 19209.816406, 1744.303955 ],
+        "position"  : [ -3599.839355, 19236.136719, 1744.303955 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 0.000000, 1.000000 ],
@@ -3591,10 +3591,6 @@ var scene = {
         "url": "Console_15.jpg"
     },
 
-    "Console_4.jpg" : {
-        "url": "Console_4.jpg"
-    },
-
     "Console_5.jpg" : {
         "url": "Console_5.jpg"
     },
@@ -3617,10 +3613,6 @@ var scene = {
 
     "Ground1.jpg" : {
         "url": "Ground1.jpg"
-    },
-
-    "Ground2.jpg" : {
-        "url": "Ground2.jpg"
     },
 
     "Rail_Console.jpg" : {

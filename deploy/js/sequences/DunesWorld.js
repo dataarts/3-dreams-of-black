@@ -49,9 +49,12 @@ var DunesWorld = function ( shared ) {
 
 	shared.influenceSpheres = [ 
 		
-		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1100, state: 0 },
-		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1100, state: 0 }
-
+		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1100, state: 0, type: 0 },
+		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1100, state: 0, type: 0 },
+		
+		{ name: "prairiePortal", center: new THREE.Vector3( -824, 2365, 4336 ), radius: 200, state: 0, type: 1 },
+		{ name: "cityPortal",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 200, state: 0, type: 1 }
+		
 	];
 
 	var showSpheres = false;
