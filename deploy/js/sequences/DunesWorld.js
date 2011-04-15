@@ -181,22 +181,21 @@ var DunesWorld = function ( shared ) {
 
 	// static parts
 
-	loader.load( "files/models/dunes/D_tile_walk/D_tile_walk.js", function(){}, walkLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_prairie/D_tile_prairie.js", function(){}, prairieLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, cityLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_walk.js", function(){}, walkLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_prairie.js", function(){}, prairieLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_city.js", function(){}, cityLoaded, function(){});
 
 	// random parts
 
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-
+	loader.load( "files/models/dunes/D_tile_1.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_2.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_3.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_4.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_1.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_2.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_3.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_4.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_1.js", function(){}, randomLoaded, function(){});
 
 	function getRandomRotation () {
 
@@ -222,7 +221,9 @@ var DunesWorld = function ( shared ) {
 		if ( difz < 0 ) {
 
 			//console.log("z0");
-			var row = tiles.shift(); 
+
+			var row = tiles.shift();
+
 			t0 = row[0];
 			t1 = row[1];
 			t2 = row[2];
@@ -240,7 +241,9 @@ var DunesWorld = function ( shared ) {
 		} else if ( difz > 0 ) {
 
 			//console.log("z1");
+
 			var row = tiles.pop(); 
+
 			t0 = row[0];
 			t1 = row[1];
 			t2 = row[2];
@@ -262,6 +265,7 @@ var DunesWorld = function ( shared ) {
 		if ( difx < 0 ) {
 
 			//console.log("x0");
+
 			t0 = tiles[0].shift();
 			t1 = tiles[1].shift();
 			t2 = tiles[2].shift();
@@ -281,6 +285,7 @@ var DunesWorld = function ( shared ) {
 		} else if ( difx > 0 ) {
 
 			//console.log("x1");
+
 			t0 = tiles[0].pop();
 			t1 = tiles[1].pop();
 			t2 = tiles[2].pop();
@@ -327,6 +332,7 @@ var DunesWorld = function ( shared ) {
 		if ( visible2 ) {
 
 			showHierarchyNotColliders( t2, false );
+
 		}
 
 		t0.updateMatrix();
