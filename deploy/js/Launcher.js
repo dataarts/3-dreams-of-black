@@ -2,6 +2,7 @@ var Launcher = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 	domElement.id = 'launcher';
+	domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
 
 	// Bg

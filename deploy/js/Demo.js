@@ -7,6 +7,7 @@ var Demo = function ( shared ) {
 	// init
 
 	domElement = document.createElement( 'div' );
+	domElement.style.display = 'none';
 
 	audio = document.createElement( 'audio' );
 	audio.autobuffer = true;

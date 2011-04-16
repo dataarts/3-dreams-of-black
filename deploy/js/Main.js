@@ -50,10 +50,19 @@
 	};
 
 	launcher = new Launcher( shared );
+	document.body.appendChild( launcher.getDomElement() );
+
 	demo = new Demo( shared );
+	document.body.appendChild( demo.getDomElement() );
+
 	relauncher = new Relauncher( shared );
+	document.body.appendChild( relauncher.getDomElement() );
+
 	exploration = new Exploration( shared );
+	document.body.appendChild( exploration.getDomElement() );
+
 	tool = new Tool( shared );
+	document.body.appendChild( tool.getDomElement() );
 
 	// signals
 
@@ -77,12 +86,12 @@
 
 		if ( currentSection ) {
 
-			document.body.removeChild( currentSection.getDomElement() );
+			currentSection.getDomElement().style.display = 'none';
 
 		}
 
 		currentSection = section;
-		document.body.appendChild( currentSection.getDomElement() );
+		currentSection.getDomElement().style.display = 'block';
 
 	}
 

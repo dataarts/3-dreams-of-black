@@ -1,6 +1,7 @@
 var Exploration = function () {
 
-	var domElement;
+	var domElement = document.createElement( 'div' );
+	domElement.style.display = 'none';
 
 	this.getDomElement = function () {
 
