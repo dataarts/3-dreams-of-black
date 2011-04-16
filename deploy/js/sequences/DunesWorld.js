@@ -18,6 +18,8 @@ var DunesWorld = function ( shared ) {
 	var sceneWalk, scenePrairie, sceneCity;
 
 	this.scene = new THREE.Scene();
+	this.scene.collisions = new THREE.CollisionSystem();
+
 	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0002529411764705882 );
 	this.scene.fog.color.setHSV( 0.5764705882352941,  0.38235294117647056,  1  );
 
@@ -49,30 +51,46 @@ var DunesWorld = function ( shared ) {
 
 	shared.influenceSpheres = [ 
 		
-		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1100, state: 0 },
-		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1100, state: 0 }
-
+		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1100, state: 0, type: 0 },
+		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1100, state: 0, type: 0 },
+		
+		{ name: "prairiePortal", center: new THREE.Vector3( -824, 2365, 4336 ), radius: 200, state: 0, type: 1 },
+		{ name: "cityPortal",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 200, state: 0, type: 1 }
+		
 	];
 
-	var showSpheres = false;
+	var showSpheres = true;
 	
 	if ( showSpheres ) {
 	
-		var sphere = new THREE.Sphere( 1, 32, 16 );
+		var sphere = new THREE.Sphere( 1, 64, 32 );
+		//var sphere = new THREE.Icosahedron( 4 );
+		var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
 
 		for ( var i = 0; i < shared.influenceSpheres.length; i ++ ) {
 			
-			var radius = shared.influenceSpheres[ i ].radius;
-			var center = shared.influenceSpheres[ i ].center;
+			var s = shared.influenceSpheres[ i ];
 			
-			var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-			var sphereMesh = new THREE.Mesh( sphere, wireMaterial );
-			sphereMesh.position.copy( center );
-			sphereMesh.scale.set( radius, radius, radius );
+			if ( s.type == 1 ) {
 			
-			shared.influenceSpheres[ i ].mesh = sphereMesh;
+				var radius = s.radius;
+				var center = s.center;
 			
-			that.scene.addObject( sphereMesh );
+				//var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+				//var sphereObject = new THREE.Mesh( sphere, wireMaterial );
+				
+				var particleMaterial = new THREE.ParticleBasicMaterial( { size: 5, color:0xff7700, map: sprite, transparent: true } );
+				var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
+				sphereObject.sortParticles = true;
+				
+				sphereObject.position.copy( center );
+				sphereObject.scale.set( radius, radius, radius );
+				
+				s.mesh = sphereObject;
+				
+				that.scene.addObject( sphereObject );
+				
+			}
 
 		}
 
@@ -91,9 +109,23 @@ var DunesWorld = function ( shared ) {
 		scene.position = position;
 		scene.updateMatrix();
 
+		for ( var i = 0, l = scene.objects.length; i < l; i ++ ) {
+
+			var object = scene.objects[ i ];
+			object.matrixAutoUpdate = false;
+			object.updateMatrix();
+
+		}
+		
 		markColliders( scene );
 		
 		that.scene.addChild( scene );
+		
+		if ( scene.collisions ) {
+		
+			that.scene.collisions.merge( scene.collisions );
+
+		}
 
 	};
 
@@ -162,9 +194,11 @@ var DunesWorld = function ( shared ) {
 
 		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
 			
-			for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+			var colliders = scene.collisions.colliders;
+
+			for( var i = 0; i < colliders.length; i++ ) {
 				
-				if ( THREE.Collisions.colliders[ i ].mesh == node ) {
+				if ( colliders[ i ].mesh == node ) {
 				
 					node.__isCollider = true; 
 
@@ -178,22 +212,21 @@ var DunesWorld = function ( shared ) {
 
 	// static parts
 
-	loader.load( "files/models/dunes/D_tile_walk/D_tile_walk.js", function(){}, walkLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_prairie/D_tile_prairie.js", function(){}, prairieLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, cityLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_walk.js", walkLoaded );
+	loader.load( "files/models/dunes/D_tile_prairie.js", prairieLoaded );
+	loader.load( "files/models/dunes/D_tile_city.js", cityLoaded );
 
 	// random parts
 
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_2.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_3.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_2.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_3.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
 
 	function getRandomRotation () {
 
@@ -219,7 +252,9 @@ var DunesWorld = function ( shared ) {
 		if ( difz < 0 ) {
 
 			//console.log("z0");
-			var row = tiles.shift(); 
+
+			var row = tiles.shift();
+
 			t0 = row[0];
 			t1 = row[1];
 			t2 = row[2];
@@ -237,7 +272,9 @@ var DunesWorld = function ( shared ) {
 		} else if ( difz > 0 ) {
 
 			//console.log("z1");
+
 			var row = tiles.pop(); 
+
 			t0 = row[0];
 			t1 = row[1];
 			t2 = row[2];
@@ -259,6 +296,7 @@ var DunesWorld = function ( shared ) {
 		if ( difx < 0 ) {
 
 			//console.log("x0");
+
 			t0 = tiles[0].shift();
 			t1 = tiles[1].shift();
 			t2 = tiles[2].shift();
@@ -278,6 +316,7 @@ var DunesWorld = function ( shared ) {
 		} else if ( difx > 0 ) {
 
 			//console.log("x1");
+
 			t0 = tiles[0].pop();
 			t1 = tiles[1].pop();
 			t2 = tiles[2].pop();
@@ -313,6 +352,7 @@ var DunesWorld = function ( shared ) {
 		if ( visible0 ) {
 
 			showHierarchyNotColliders( t0, false );
+
 		}
 
 		if ( visible1 ) {
@@ -324,6 +364,7 @@ var DunesWorld = function ( shared ) {
 		if ( visible2 ) {
 
 			showHierarchyNotColliders( t2, false );
+
 		}
 
 		t0.updateMatrix();
@@ -402,7 +443,7 @@ var DunesWorld = function ( shared ) {
 
 	};
 
-	//loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, addDunesPart, function(){});
+	//loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", addDunesPart );
 
 
 

@@ -1,10 +1,12 @@
 var CitySoup = function ( camera, scene, shared ) {
 
 	var that = this;
-	this.camera = camera;
+	that.camera = camera;
 
 	// init
+	
 	camPos = new THREE.Vector3( 0, 0, 0 );
+	
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -23,7 +25,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
+
+	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 5000 );
 	collisionScene.settings.maxSpeedDivider = 4;
 	collisionScene.settings.capBottom = -2;
 	collisionScene.settings.shootRayDown = true;
@@ -34,10 +37,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	collisionScene.settings.keepEmitterFollowDown = false;
 
 	// vector trail
+
 	var vectors = new Vectors();
 	vectors.settings.normaldivider = 8;
 
 	// ribbons
+
 	var ribbonMaterials = [
 			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
 			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
@@ -50,6 +55,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
 
 	// particles
+
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
 	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
 	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
@@ -61,10 +67,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particles = new Particles(25, scene, 4, particleSprites, 35, 50, THREE.AdditiveBlending);
 
 	// running animals
+
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
 	runningAnimals.settings.addaptiveSpeed = true;
 
 	// preoccupy slots for specific animals - hack...
+
 	runningAnimals.array[0] = "elk";
 	runningAnimals.array[1] = "moose";
 	runningAnimals.array[4] = "moose";
@@ -171,10 +179,10 @@ var CitySoup = function ( camera, scene, shared ) {
 		//console.log(ribbons.settings.ribbonMin);
 
 		// update to reflect _real_ camera position
-		camPos.x = camera.matrixWorld.n14;
-		camPos.y = camera.matrixWorld.n24;
-		camPos.z = camera.matrixWorld.n34;
-
+		camPos.x = that.camera.matrixWorld.n14;
+		camPos.y = that.camera.matrixWorld.n24;
+		camPos.z = that.camera.matrixWorld.n34;
+		
 		// temp reset
 		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
 			reset();
@@ -187,7 +195,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		particles.update(delta, vectors.array[0].position);
 		runningAnimals.update();
 		flyingAnimals.update();
-		butterflys.update(camPos, camera.theta, delta);
+		butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
 		
 		TWEEN.update();
@@ -206,6 +214,11 @@ var CitySoup = function ( camera, scene, shared ) {
 		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*20;
 		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*20;
 
+	}
+
+	this.changeCamera = function (camera) {
+		that.camera = camera;
+		collisionScene.settings.camera = camera;
 	}
 
 

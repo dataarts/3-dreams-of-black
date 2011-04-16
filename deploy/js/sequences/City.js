@@ -2,30 +2,31 @@ var City = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, world, soup,
-	cameraStraight, cameraRight, cameraLeft,
+	var camera, startCamera, switchCamera, world, soup,
 	renderer = shared.renderer, renderTarget = shared.renderTarget,
-	waypointsStraight = [], waypointsRight = [], waypointsLeft = [], delta, time, oldTime;
-	var switched = false;
+	waypointsA = [], waypointsB = [], delta, time, oldTime;
+	var switchedCamera = false;
 
 	// temp debug, start with ?debug=true
+
 	shared.debug = false;
-	if (getParameterByName("debug") == "true") {
+
+	if ( getParameterByName( "debug" ) == "true" ) {
+
 		shared.debug = true;
+
 	}
 
 	this.init = function () {
 
-		waypointsStraight = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ 0, 20, -3350 ] ];
-		waypointsRight = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ 250, 20, -1750 ], [ 1600, 20, -1750 ] ];
-		waypointsLeft = [ [ 0, 20, 0 ], [ 0, 20, -1570 ], [ -250, 20, -1750 ], [ -1600, 20, -1750 ] ];
+		waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -1210 ] ];
 
-		cameraStraight = new THREE.PathCamera( {
+		startCamera = new THREE.PathCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsStraight, duration: 30, 
-			useConstantSpeed: true, resamplingCoef: 100,
-			createDebugPath: shared.debug, createDebugDummy: true,
+			waypoints: waypointsA, duration: 11, 
+			useConstantSpeed: true, resamplingCoef: 30,
+			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
@@ -33,34 +34,10 @@ var City = function ( shared ) {
 		 } );
 
 
-		cameraRight = new THREE.PathCamera( {
+		startCamera.position.set( 0, 0, 0 );
+		startCamera.lon = 90;
 
-			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsRight, duration: 30, 
-			useConstantSpeed: true, resamplingCoef: 100,
-			createDebugPath: shared.debug, createDebugDummy: true,
-			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
-
-		 } );
-
-		cameraLeft = new THREE.PathCamera( {
-
-			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsLeft, duration: 30, 
-			useConstantSpeed: true, resamplingCoef: 100,
-			createDebugPath: shared.debug, createDebugDummy: true,
-			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
-
-		 } );
-
-		camera = cameraStraight;
-
-		camera.position.set( 0, 0, 0 );
-		camera.lon = 90;
+		camera = startCamera;
 
 		/*camera = new THREE.QuakeCamera( {
 		fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
@@ -75,12 +52,13 @@ var City = function ( shared ) {
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
 		
-		if (shared.debug) {
+		if ( shared.debug ) {
+
 			world.scene.addObject( camera.debugPath );
+
 		}
+
 		world.scene.addObject( camera.animationParent );
-		world.scene.addObject( cameraRight.animationParent );
-		world.scene.addObject( cameraLeft.animationParent );
 
 
 		shared.signals.cameraFov.add( function ( value ) {
@@ -96,9 +74,7 @@ var City = function ( shared ) {
 
 		oldTime = new Date().getTime();
 		
-		camera.animation.play( true, 0 );
-		cameraRight.animation.play( true, 0 );
-		cameraLeft.animation.play( true, 0 );
+		camera.animation.play( false, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
 
@@ -116,28 +92,60 @@ var City = function ( shared ) {
 		delta = time - oldTime;
 		oldTime = time;
 
+		// choose path
+		var camz = camera.matrixWorld.n34;
+	
+		if (camz < -1200 && !switchedCamera ) {
+
+			waypointsB = [ [ 0, 20, camz ], [ 0, 20, -3350 ] ];
+
+			if (camera.theta < 1.2) {
+				// turn left
+				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ -250, 20, -1740 ], [ -1670, 20, -1740 ] ];
+			}
+			if (camera.theta > 1.8) {
+				// turn right
+				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ 250, 20, -1740 ], [ 1670, 20, -1740 ] ];
+			}
+
+			switchCamera = new THREE.PathCamera( {
+
+				fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+				waypoints: waypointsB, duration: 19, 
+				useConstantSpeed: true, resamplingCoef: 5,
+				createDebugPath: false, createDebugDummy: false,
+				lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
+				verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+				horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
+
+			 } );
+		
+			switchCamera.lat = startCamera.lat;
+			switchCamera.lon = startCamera.lon;
+
+			world.scene.addObject( switchCamera.animationParent );
+			switchCamera.animation.play( false, 0 );
+
+			camera = switchCamera;
+			soup.changeCamera(camera);
+
+			startCamera.animation.stop();
+			
+			//console.log("switched camera");
+			switchedCamera = true;
+
+		}
+
 		THREE.AnimationHandler.update( delta );
 
 		soup.update( delta );
 
-		// choose path
-		var camz = camera.matrixWorld.n34;
-	
-		if (camz < -1000 && camz > -1030 && !switched ) {
-			if (camera.theta < 1) {
-				camera = cameraLeft;
-			}
-			if (camera.theta > 2) {
-				camera = cameraRight;
-			}
-			//soup.camera = camera;
-			console.log("switch");
-			switched = true;
-		}
-
 		// slight camera roll
-		/*if (camera.animationParent) {
-			camera.animationParent.rotation.z = (camera.target.position.x)/700;
+
+		/*if ( camera.animationParent ) {
+
+			camera.animationParent.rotation.z = ( camera.target.position.x ) / 700;
+
 		}*/
 
 		renderer.render( world.scene, camera, renderTarget );
