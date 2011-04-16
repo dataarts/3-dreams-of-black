@@ -18,6 +18,8 @@ var DunesWorld = function ( shared ) {
 	var sceneWalk, scenePrairie, sceneCity;
 
 	this.scene = new THREE.Scene();
+	this.scene.collisions = new THREE.CollisionSystem();
+
 	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0002529411764705882 );
 	this.scene.fog.color.setHSV( 0.5764705882352941,  0.38235294117647056,  1  );
 
@@ -118,6 +120,12 @@ var DunesWorld = function ( shared ) {
 		markColliders( scene );
 		
 		that.scene.addChild( scene );
+		
+		if ( scene.collisions ) {
+		
+			that.scene.collisions.merge( scene.collisions );
+
+		}
 
 	};
 
@@ -186,9 +194,11 @@ var DunesWorld = function ( shared ) {
 
 		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
 			
-			for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+			var colliders = scene.collisions.colliders;
+
+			for( var i = 0; i < colliders.length; i++ ) {
 				
-				if ( THREE.Collisions.colliders[ i ].mesh == node ) {
+				if ( colliders[ i ].mesh == node ) {
 				
 					node.__isCollider = true; 
 
@@ -202,21 +212,21 @@ var DunesWorld = function ( shared ) {
 
 	// static parts
 
-	loader.load( "files/models/dunes/D_tile_walk.js", function(){}, walkLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_prairie.js", function(){}, prairieLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_city.js", function(){}, cityLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_walk.js", walkLoaded );
+	loader.load( "files/models/dunes/D_tile_prairie.js", prairieLoaded );
+	loader.load( "files/models/dunes/D_tile_city.js", cityLoaded );
 
 	// random parts
 
-	loader.load( "files/models/dunes/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1.js", function(){}, randomLoaded, function(){});
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_2.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_3.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_2.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_3.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
 
 	function getRandomRotation () {
 
@@ -433,7 +443,7 @@ var DunesWorld = function ( shared ) {
 
 	};
 
-	//loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, addDunesPart, function(){});
+	//loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", addDunesPart );
 
 
 

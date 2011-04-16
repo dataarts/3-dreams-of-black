@@ -8,9 +8,13 @@ var City = function ( shared ) {
 	waypoints = [], delta, time, oldTime;
 
 	// temp debug, start with ?debug=true
+
 	shared.debug = false;
-	if (getParameterByName("debug") == "true") {
+
+	if ( getParameterByName( "debug" ) == "true" ) {
+
 		shared.debug = true;
+
 	}
 
 	this.init = function () {
@@ -48,9 +52,12 @@ var City = function ( shared ) {
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
 		
-		if (shared.debug) {
+		if ( shared.debug ) {
+
 			world.scene.addObject( camera.debugPath );
+
 		}
+
 		world.scene.addObject( camera.animationParent );
 
 	};
@@ -82,8 +89,11 @@ var City = function ( shared ) {
 		soup.update( delta );
 
 		// slight camera roll
-		if (camera.animationParent) {
-			camera.animationParent.rotation.z = (camera.target.position.x)/700;
+
+		if ( camera.animationParent ) {
+
+			camera.animationParent.rotation.z = ( camera.target.position.x ) / 700;
+
 		}
 
 		renderer.render( world.scene, camera, renderTarget );

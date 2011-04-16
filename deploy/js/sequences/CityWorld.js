@@ -8,6 +8,7 @@ var CityWorld = function ( shared ) {
 	this.lensFlareRotate = null;
 
 	this.scene = new THREE.Scene();
+	this.scene.collisions = new THREE.CollisionSystem();
 	
 	/*
 
@@ -109,40 +110,45 @@ var CityWorld = function ( shared ) {
 
 	function sceneLoaded( result ) {
 
-		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+		var i, l, scene = result.scene;
+
+		for( i = 0, l = scene.collisions.colliders.length; i < l; i++ ) {
    
-			mesh = THREE.Collisions.colliders[ i ].mesh;
+			mesh = scene.collisions.colliders[ i ].mesh;
 			mesh.visible = false;
     
 		}
 
-		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
+		for ( i = 0, l = scene.objects.length; i < l; i ++ ) {
 
-			var object = result.scene.objects[ i ];
+			var object = scene.objects[ i ];
 			object.matrixAutoUpdate = false;
 			object.updateMatrix();
 
 		}
 		
 
-		result.scene.scale.set( 0.1, 0.1, 0.1 );
-		result.scene.updateMatrix();
-		that.scene.addChild( result.scene );
-
-
-		//console.log("colliders = "+THREE.Collisions.colliders.length);
-		//console.log(THREE.Collisions.colliders);
+		scene.scale.set( 0.1, 0.1, 0.1 );
+		scene.updateMatrix();
+		that.scene.addChild( scene );
+		
+		if ( scene.collisions ) {
+		
+			that.scene.collisions.merge( scene.collisions );
+			
+		}
 	
 	}
 
 
 	if ( !shared.debug ) {
 
-		loader.load( "files/models/city/City.js", function(){}, sceneLoaded, function(){} );
+		loader.load( "files/models/city/City.js", sceneLoaded );
 
 	}
 
 	// lens flares custom callback
+
 	function lensFlareUpdateCallback( object ) {
 			   
 		var f, fl = object.lensFlares.length;
