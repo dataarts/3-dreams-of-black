@@ -43,6 +43,18 @@ var Launcher = function ( shared ) {
 	addLaunchLink( 'Transition to Dunes', 40 ); addBreackLine();
 	addLaunchLink( 'Dunes', 48 ); addBreackLine(); addBreackLine();
 
+	var title = document.createElement( 'div' );
+	title.style.paddingTop = '60px';
+	title.innerHTML = '<img src="files/title_heart.png">';
+	domElement.appendChild( title );
+
+	var footer = document.createElement( 'div' );
+	footer.style.position = 'absolute';
+	footer.style.left = '20px';
+	footer.style.bottom = '10px';
+	footer.innerHTML = '<img src="files/footer.png">';
+	domElement.appendChild( footer );
+
 	// signals
 
 	shared.signals.loadItemAdded.add( loadProgress.addItem );
