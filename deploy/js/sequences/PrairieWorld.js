@@ -3,13 +3,15 @@ var PrairieWorld = function ( shared, camera ) {
 	var that = this;
 
 	this.scene = new THREE.Scene();
+	this.scene.collisions = new THREE.CollisionSystem();
+
 	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0 );
-	this.scene.fog.color.setHSV( 0.5588235294117647,  0.7411764705882353,  0.5882352941176471 );
+	this.scene.fog.color.setHSV( 0.559, 0.741, 0.588 );
 
 	// Lights
 
 	var ambient = new THREE.AmbientLight( 0x221100 );
-	ambient.color.setHSV( 0.23529411764705882,  0.3411764705882353,  0.1411764705882353 );
+	ambient.color.setHSV( 0.235,  0.341,  0.141 );
 	this.scene.addLight( ambient );
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );	
@@ -35,34 +37,41 @@ var PrairieWorld = function ( shared, camera ) {
 
 	function prairieLoaded( result ) {
 
-		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
+		var i, l, object, scene = result.scene;
 
-			var object = result.scene.objects[ i ];
-			object.matrixAutoUpdate = false;
-			object.updateMatrix();
-			//console.log(object);
-		}
+		for( i = 0, l = scene.collisions.colliders.length; i < l; i++ ) {
 
-		//var groundMesh = result.objects[ "Ground" ];
-		var groundMesh = result.scene.getChildByName("Ground");
-		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
-
-		that.scene.addChild( result.scene );
-
-		//console.log("colliders = "+THREE.Collisions.colliders.length);
-
-		for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
-   
-			mesh = THREE.Collisions.colliders[ i ].mesh;
+			mesh = scene.collisions.colliders[ i ].mesh;
 			mesh.visible = false;
     
 		}
 
-		var train = result.objects[ "Train" ],
+		for ( i = 0, l = scene.objects.length; i < l; i ++ ) {
+
+			object = scene.objects[ i ];
+			object.matrixAutoUpdate = false;
+			object.updateMatrix();
+
+		}
+
+		var groundMesh = result.objects[ "Ground" ];
+
+		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
+
+		that.scene.addChild( scene );
+		
+		if ( scene.collisions ) {
+		
+			that.scene.collisions.merge( scene.collisions );
+
+		}
+
+		var train  = result.objects[ "Train" ],
 			cargo1 = result.objects[ "cargo1" ],
 			cargo2 = result.objects[ "cargo2" ];
 		 
 		//train.materials[ 0 ].wireframe = true;
+
 		train.position.set( -0.5, -6, 11 );
 		train.rotation.set( -1.57, 0, 3.14  );
 		train.updateMatrix();
@@ -80,14 +89,14 @@ var PrairieWorld = function ( shared, camera ) {
 
 	};	
 
-	loader.load( "files/models/prairie/Prairie.js", function(){}, prairieLoaded, function(){});
+	loader.load( "files/models/prairie/Prairie.js", prairieLoaded );
 
 	this.update = function ( delta ) {
 
 		ROME.TrailShaderUtils.updateLava( delta );
 		ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
 
-	}
+	};
 
 
-}
+};

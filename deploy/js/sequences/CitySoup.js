@@ -3,7 +3,9 @@ var CitySoup = function ( camera, scene, shared ) {
 	var that = this;
 
 	// init
+	
 	camPos = new THREE.Vector3( 0, 0, 0 );
+	
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -22,6 +24,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
+
 	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
 	collisionScene.settings.maxSpeedDivider = 4;
 	collisionScene.settings.capBottom = -2;
@@ -32,10 +35,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	collisionScene.settings.minDistance = 30;
 
 	// vector trail
+
 	var vectors = new Vectors();
 	vectors.settings.normaldivider = 8;
 
 	// ribbons
+
 	var ribbonMaterials = [
 			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
 			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
@@ -48,6 +53,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
 
 	// particles
+
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
 	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
 	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
@@ -59,10 +65,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particles = new Particles(25, scene, 4, particleSprites, 35, 50, THREE.AdditiveBlending);
 
 	// running animals
+
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
 	runningAnimals.settings.addaptiveSpeed = true;
 
 	// preoccupy slots for specific animals - hack...
+
 	runningAnimals.array[0] = "elk";
 	runningAnimals.array[1] = "moose";
 	runningAnimals.array[4] = "moose";
