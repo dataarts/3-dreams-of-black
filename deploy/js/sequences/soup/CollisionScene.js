@@ -340,15 +340,30 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		if (that.settings.keepEmitterFollowDown) {
 			that.emitterFollow.position.y = that.emitter.position.y+that.settings.collisionDistance;
+		//that.emitterFollow.position.y = that.emitter.position.y+that.currentNormal.y*5;
+		//that.emitterFollow.position.x = that.emitter.position.x+that.currentNormal.x*5;
+		//that.emitterFollow.position.z = that.emitter.position.z+that.currentNormal.z*5;
+
 			ray.origin.copy( that.emitterFollow.position )//.normalize();
 			ray.direction = new THREE.Vector3(0, -1, 0);
+		//ray.direction = new THREE.Vector3(that.currentNormal.x*-1, that.currentNormal.y*-1, that.currentNormal.z*-1);
 
 			var c = THREE.Collisions.rayCastNearest(ray);
 			if (c) {
 				that.emitterFollow.position.y -= (c.distance*that.settings.scale)-that.settings.normalOffsetAmount;
 
+			//positionVector.copy( ray.origin );
+			//positionVector.addSelf(ray.direction.multiplyScalar(c.distance*that.settings.scale));
+			
+			//that.emitterFollow.position = positionVector;
+
 				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();;
 				that.currentNormal = normal;
+
+			//that.emitterFollow.position.x += that.currentNormal.x*that.settings.normalOffsetAmount;
+			//that.emitterFollow.position.y += that.currentNormal.y*that.settings.normalOffsetAmount;
+			//that.emitterFollow.position.z += that.currentNormal.z*that.settings.normalOffsetAmount;
+
 
 				//console.log(c.distance);
 			}

@@ -1,6 +1,7 @@
 var CitySoup = function ( camera, scene, shared ) {
 
 	var that = this;
+	this.camera = camera;
 
 	// init
 	camPos = new THREE.Vector3( 0, 0, 0 );
@@ -30,6 +31,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	collisionScene.settings.emitterDivider = 3;
 	collisionScene.settings.normalOffsetAmount = 8;
 	collisionScene.settings.minDistance = 30;
+	collisionScene.settings.keepEmitterFollowDown = false;
 
 	// vector trail
 	var vectors = new Vectors();

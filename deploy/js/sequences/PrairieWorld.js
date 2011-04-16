@@ -45,7 +45,7 @@ var PrairieWorld = function ( shared, camera ) {
 
 		//var groundMesh = result.objects[ "Ground" ];
 		var groundMesh = result.scene.getChildByName("Ground");
-		//ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
+		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
 
 		that.scene.addChild( result.scene );
 
@@ -84,8 +84,8 @@ var PrairieWorld = function ( shared, camera ) {
 
 	this.update = function ( ) {
 
-		//ROME.TrailShaderUtils.updateLava();
-		//ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
+		ROME.TrailShaderUtils.updateLava();
+		ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
 
 	}
 
