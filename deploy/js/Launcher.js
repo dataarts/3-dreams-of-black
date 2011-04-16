@@ -1,26 +1,10 @@
-var Launcher = function () {
+var Launcher = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 	domElement.id = 'launcher';
 	domElement.style.height = window.innerHeight + 'px';
 
-	domElement.innerHTML = [
-
-		'<h1>ROME</h1>',
-		'<progress id="loadProgress" value="0"></progress><br /><br /><br />',
-
-		'<a href="#0" onClick="start( 0 );">Intro</a><br /><br />',
-
-		'<a href="#0" onClick="start( 8 );">Transition to City</a><br />',
-		'<a href="#16" onClick="start( 16 );">City</a><br /><br />',
-
-		'<a href="#24" onClick="start( 24 );">Transition to Prairie</a><br />',
-		'<a href="#32" onClick="start( 32 );">Prairie</a><br /><br />',
-
-		'<a href="#40" onClick="start( 40 );">Transition to Dunes</a><br />',
-		'<a href="#48" onClick="start( 48 );">Dunes</a>'
-
-	].join( '' );
+	// Bg
 
 	var canvas = document.createElement( 'canvas' );
 	canvas.width = 32;
@@ -36,6 +20,54 @@ var Launcher = function () {
 	context.fillRect( 0, 0, canvas.width, canvas.height );
 
 	domElement.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
+
+	// UI
+
+	var progress = document.createElement( 'progress' );
+	progress.value = 0;
+	domElement.appendChild( progress );
+
+	loadProgress = new LoadProgress( progress );
+
+	addBreackLine(); addBreackLine();
+
+	addLaunchLink( 'Intro', 0 ); addBreackLine(); addBreackLine();
+
+	addLaunchLink( 'Transition to City', 8 ); addBreackLine();
+	addLaunchLink( 'City', 16 ); addBreackLine(); addBreackLine();
+
+	addLaunchLink( 'Transition to Prairie', 24 ); addBreackLine();
+	addLaunchLink( 'Prairie', 32 ); addBreackLine(); addBreackLine();
+
+	addLaunchLink( 'Transition to Dunes', 40 ); addBreackLine();
+	addLaunchLink( 'Dunes', 48 ); addBreackLine(); addBreackLine();
+
+	// signals
+
+	shared.signals.loadItemAdded.add( loadProgress.addItem );
+	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
+
+	function addBreackLine() {
+
+		domElement.appendChild( document.createElement( 'br' ) );
+
+	}
+
+	function addLaunchLink( text, pattern ) {
+
+		var element = document.createElement( 'span' );
+		element.style.cursor = 'pointer';
+		element.innerHTML = text;
+		element.addEventListener( 'click', function () {
+
+			shared.signals.showdemo.dispatch();
+			shared.signals.startdemo.dispatch( pattern );
+
+		}, false );
+
+		domElement.appendChild( element );
+
+	}
 
 	//
 

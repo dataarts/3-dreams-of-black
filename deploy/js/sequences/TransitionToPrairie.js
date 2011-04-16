@@ -1,4 +1,4 @@
-var TransitionToPrairie = function ( renderer, events ) {
+var TransitionToPrairie = function ( shared ) {
 
 	SequencerItem.call( this );
 

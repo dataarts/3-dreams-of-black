@@ -19,7 +19,9 @@ var Intro = function ( shared ) {
 		// video
 
 		video = document.createElement( 'video' );
+		video.autobuffer = true;
 		video.src = 'files/videos/intro.webm';
+
 
 		// 3d
 
