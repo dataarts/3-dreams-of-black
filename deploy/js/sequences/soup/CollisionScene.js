@@ -18,7 +18,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		shootRayDown : false,
 		keepEmitterFollowDown : false,
 		normalOffsetAmount : 6,
-		minDistance : 10
+		minDistance : 10,
+		camera : camera,
 
 	};
 
@@ -128,8 +129,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		ray.origin.copy( mouse2d );
 
-		matrix.copy( camera.matrixWorld );
-		matrix.multiplySelf( THREE.Matrix4.makeInvert( camera.projectionMatrix, matrix2 ) );
+		matrix.copy( that.settings.camera.matrixWorld );
+		matrix.multiplySelf( THREE.Matrix4.makeInvert( that.settings.camera.projectionMatrix, matrix2 ) );
 		matrix.multiplyVector3( ray.origin );
 		
 		ray.direction.copy( ray.origin );

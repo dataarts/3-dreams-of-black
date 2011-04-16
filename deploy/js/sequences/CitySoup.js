@@ -1,6 +1,7 @@
 var CitySoup = function ( camera, scene, shared ) {
 
 	var that = this;
+	that.camera = camera;
 
 	// init
 	
@@ -25,7 +26,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// collision scene
 
-	var collisionScene = new CollisionScene( camera, scene, 0.1, shared, 5000 );
+	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 5000 );
 	collisionScene.settings.maxSpeedDivider = 4;
 	collisionScene.settings.capBottom = -2;
 	collisionScene.settings.shootRayDown = true;
@@ -33,6 +34,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	collisionScene.settings.emitterDivider = 3;
 	collisionScene.settings.normalOffsetAmount = 8;
 	collisionScene.settings.minDistance = 30;
+	collisionScene.settings.keepEmitterFollowDown = false;
 
 	// vector trail
 
@@ -177,10 +179,10 @@ var CitySoup = function ( camera, scene, shared ) {
 		//console.log(ribbons.settings.ribbonMin);
 
 		// update to reflect _real_ camera position
-		camPos.x = camera.matrixWorld.n14;
-		camPos.y = camera.matrixWorld.n24;
-		camPos.z = camera.matrixWorld.n34;
-
+		camPos.x = that.camera.matrixWorld.n14;
+		camPos.y = that.camera.matrixWorld.n24;
+		camPos.z = that.camera.matrixWorld.n34;
+		
 		// temp reset
 		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
 			reset();
@@ -193,7 +195,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		particles.update(delta, vectors.array[0].position);
 		runningAnimals.update();
 		flyingAnimals.update();
-		butterflys.update(camPos, camera.theta, delta);
+		butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
 		
 		TWEEN.update();
@@ -212,6 +214,11 @@ var CitySoup = function ( camera, scene, shared ) {
 		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*20;
 		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*20;
 
+	}
+
+	this.changeCamera = function (camera) {
+		that.camera = camera;
+		collisionScene.settings.camera = camera;
 	}
 
 
