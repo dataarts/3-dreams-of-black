@@ -24,9 +24,7 @@
 
 		logger : logger,
 
-		// mouse : { x: 0, y: 0 },
-		mouseX : 0,
-		mouseY : 0,
+		mouse : { x: 0, y: 0 },
 
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
