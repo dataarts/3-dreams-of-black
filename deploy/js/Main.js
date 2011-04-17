@@ -2,13 +2,14 @@
 
 	var logger, stats, shared,
 	Signal = signals.Signal, currentSection,
-	launcher, demo, relauncher, exploration, tool;
+	launcher, demo, relauncher, exploration, tool,
+	shortcuts;
 
 	// debug
 
 	logger = new Logger();
 	logger.domElement.style.position = 'fixed';
-	logger.domElement.style.left = '100px';
+	logger.domElement.style.right = '100px';
 	logger.domElement.style.top = '0px';
 	document.body.appendChild( logger.domElement );
 
@@ -67,6 +68,9 @@
 
 	tool = new Tool( shared );
 	document.body.appendChild( tool.getDomElement() );
+
+	shortcuts = new Shortcuts( shared );
+	document.body.appendChild( shortcuts.getDomElement() );
 
 	// signals
 

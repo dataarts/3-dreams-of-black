@@ -75,16 +75,16 @@ var Demo = function ( shared ) {
 	sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
 	sequencer.add( new NoiseEffect( shared, 0.094, 0.0, 4096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 4 );
 
-	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 5 );
-	// sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 5 );
+	// sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 5 );
+	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 5 );
 
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 5 );
-	// sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 5 );
+	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 5 );
 
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 5 );
-	// sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 5 );
+	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 5 );
 
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
 
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 6 );
 

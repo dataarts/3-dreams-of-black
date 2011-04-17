@@ -5,6 +5,7 @@ var Launcher = function ( shared ) {
 	domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#4584b4';
+	domElement.style.textAlign = 'center';
 
 	// Background
 
@@ -24,18 +25,6 @@ var Launcher = function ( shared ) {
 	domElement.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
 
 	// UI
-
-	var shortcuts = document.createElement( 'div' );
-	shortcuts.style.position = "absolute";
-	shortcuts.style.left = "10px";
-	shortcuts.style.top = "10px";
-	shortcuts.style.padding = "1em";
-	shortcuts.style.textAlign = "left";
-	shortcuts.style.boxShadow = "0px 0px 5px rgba(0,0,0,0.5)";
-	shortcuts.style.background = "rgba(255,255,255,0.15)";
-	domElement.appendChild( shortcuts );
-
-	createShortcuts( shortcuts );
 
 	var title = document.createElement( 'div' );
 	title.style.paddingTop = '60px';
@@ -79,44 +68,6 @@ var Launcher = function ( shared ) {
 	footer.style.bottom = '10px';
 	footer.innerHTML = '<img src="files/footer.png">';
 	domElement.appendChild( footer );
-
-
-	function createShortcuts( target ) {
-
-		addLink( target, 'Intro', 0 ); addBreakLine( target ); addBreakLine( target );
-
-		addLink( target, 'Transition to City', 8 ); addBreakLine( target );
-		addLink( target, 'City', 16 ); addBreakLine( target ); addBreakLine( target );
-
-		addLink( target, 'Transition to Prairie', 24 ); addBreakLine( target );
-		addLink( target, 'Prairie', 32 ); addBreakLine( target ); addBreakLine( target );
-
-		addLink( target, 'Transition to Dunes', 40 ); addBreakLine( target );
-		addLink( target, 'Dunes', 48 ); addBreakLine( target ); addBreakLine( target );
-
-	};
-
-	function addBreakLine( target ) {
-
-		target.appendChild( document.createElement( 'br' ) );
-
-	};
-
-	function addLink( target, text, callback ) {
-
-		var element = document.createElement( 'span' );
-		element.style.cursor = 'pointer';
-		element.innerHTML = text;
-		element.addEventListener( 'click', function () {
-
-			shared.signals.showdemo.dispatch();
-			shared.signals.startdemo.dispatch( pattern );
-
-		}, false );
-
-		target.appendChild( element );
-
-	};
 
 	//
 
