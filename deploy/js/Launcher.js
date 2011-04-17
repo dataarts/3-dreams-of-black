@@ -5,7 +5,7 @@ var Launcher = function ( shared ) {
 	domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
 
-	// Bg
+	// Background
 
 	var canvas = document.createElement( 'canvas' );
 	canvas.width = 32;
@@ -24,30 +24,62 @@ var Launcher = function ( shared ) {
 
 	// UI
 
-	var progress = document.createElement( 'progress' );
-	progress.value = 0;
-	domElement.appendChild( progress );
-
-	loadProgress = new LoadProgress( progress );
-
-	addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Intro', 0 ); addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Transition to City', 8 ); addBreackLine();
-	addLaunchLink( 'City', 16 ); addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Transition to Prairie', 24 ); addBreackLine();
-	addLaunchLink( 'Prairie', 32 ); addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Transition to Dunes', 40 ); addBreackLine();
-	addLaunchLink( 'Dunes', 48 ); addBreackLine(); addBreackLine();
+	var shortcutsRoot = document.createElement( 'div' );
+	createShortcuts( shortcutsRoot );
+	
+	shortcutsRoot.style.position = "absolute";
+	shortcutsRoot.style.left = "10px";
+	shortcutsRoot.style.top = "10px";
+	shortcutsRoot.style.padding = "1em";
+	shortcutsRoot.style.textAlign = "left";
+	shortcutsRoot.style.boxShadow = "0px 0px 5px rgba(0,0,0,0.5)";
+	shortcutsRoot.style.background = "rgba(255,255,255,0.15)";
+	
+	domElement.appendChild( shortcutsRoot );
 
 	var title = document.createElement( 'div' );
 	title.style.paddingTop = '60px';
-	title.innerHTML = '<img src="files/title_heart.png">';
+	title.innerHTML = '<img src="files/title_heart_loading.png">';
 	domElement.appendChild( title );
 
+	var titleOverlay = document.createElement( 'div' );
+	titleOverlay.style.position = 'relative';
+	titleOverlay.style.top = '-488px';
+	titleOverlay.style.display = 'none';
+	titleOverlay.style.cursor = 'pointer';
+	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';	
+	
+	titleOverlay.addEventListener( 'click', function () {
+
+		shared.signals.showdemo.dispatch();
+		shared.signals.startdemo.dispatch( 0 );
+
+	}, false );
+	
+	domElement.appendChild( titleOverlay );
+
+	var totalItems = 0, doneItems = 0, maxProgress = 0, loadBegin = false;
+		
+	var loadBar = document.createElement( 'div' );
+	loadBar.style.position = 'relative';
+	loadBar.style.top = '-480px';
+	loadBar.style.height = '10px';
+	loadBar.style.width = '358px';
+	loadBar.style.margin = '0 auto';
+	loadBar.style.background = '#fff';
+	loadBar.style.borderRadius = '5px';
+	loadBar.style.display = 'block';
+	domElement.appendChild( loadBar );
+
+	var loadVal = document.createElement( 'div' );
+	loadVal.style.position = 'relative';
+	loadVal.style.top = '0px';
+	loadVal.style.height = '10px';
+	loadVal.style.width = '0px';
+	loadVal.style.background = '#000';
+	loadVal.style.borderRadius = '5px 0px 0px 5px';
+	loadBar.appendChild( loadVal );
+		
 	var footer = document.createElement( 'div' );
 	footer.style.position = 'absolute';
 	footer.style.left = '20px';
@@ -57,16 +89,45 @@ var Launcher = function ( shared ) {
 
 	// signals
 
-	shared.signals.loadItemAdded.add( loadProgress.addItem );
-	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
+	//shared.signals.loadItemAdded.add( loadProgress.addItem );
+	//shared.signals.loadItemCompleted.add( loadProgress.completeItem );
+	//shared.signals.loadBegin.add( loadProgress.loadBegin );
 
-	function addBreackLine() {
+	shared.signals.loadItemAdded.add( loadAddItemCallback );
+	shared.signals.loadItemCompleted.add( loadCompleteItemCallback );
+	shared.signals.loadBegin.add( loadBeginCallback );
 
-		domElement.appendChild( document.createElement( 'br' ) );
+	function createShortcuts( root ) {
+/*
+		var progress = document.createElement( 'progress' );
+		progress.style.display = "none";
+		progress.value = 0;
+		root.appendChild( progress );
 
-	}
+		loadProgress = new LoadProgress( progress, loadFinishedCallback );
+*/
+		//addBreakLine( root ); addBreakLine( root );
 
-	function addLaunchLink( text, pattern ) {
+		addLaunchLink( root, 'Intro', 0 ); addBreakLine( root ); addBreakLine( root );
+
+		addLaunchLink( root, 'Transition to City', 8 ); addBreakLine( root );
+		addLaunchLink( root, 'City', 16 ); addBreakLine( root ); addBreakLine( root );
+
+		addLaunchLink( root, 'Transition to Prairie', 24 ); addBreakLine( root );
+		addLaunchLink( root, 'Prairie', 32 ); addBreakLine( root ); addBreakLine( root );
+
+		addLaunchLink( root, 'Transition to Dunes', 40 ); addBreakLine( root );
+		addLaunchLink( root, 'Dunes', 48 ); addBreakLine( root ); //addBreakLine( root );
+
+	};
+	
+	function addBreakLine( root ) {
+
+		root.appendChild( document.createElement( 'br' ) );
+
+	};
+
+	function addLaunchLink( root, text, pattern ) {
 
 		var element = document.createElement( 'span' );
 		element.style.cursor = 'pointer';
@@ -78,10 +139,58 @@ var Launcher = function ( shared ) {
 
 		}, false );
 
-		domElement.appendChild( element );
+		root.appendChild( element );
 
-	}
+	};
 
+	function loadAddItemCallback() {
+		
+		totalItems += 1;
+		
+		updateProgress();
+
+	};
+
+	function loadCompleteItemCallback() {
+		
+		doneItems += 1;
+		
+		updateProgress();
+		
+		if ( loadBegin && totalItems == doneItems ) {
+			
+			loadFinishedCallback();
+
+		}
+
+	};
+	
+	function loadBeginCallback() {
+		
+		loadBegin = true;
+
+	};
+	
+	function updateProgress() {
+		
+		var progress = doneItems / totalItems;
+
+		if ( progress > maxProgress ) {
+
+			maxProgress = progress;
+			loadVal.style.width = progress * 358 + "px";
+
+		}
+		
+	};
+
+	function loadFinishedCallback() {
+
+		loadBar.style.display = 'none';
+		titleOverlay.style.display = 'block';
+		
+	};
+	
 	//
 
 	this.getDomElement = function () {

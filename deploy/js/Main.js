@@ -14,7 +14,7 @@
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
-	stats.domElement.style.left = '0px';
+	stats.domElement.style.right = '0px';
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
@@ -40,9 +40,10 @@
 			showexploration : new Signal(),
 			showtool : new Signal(),
 
+			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
-
+			
 			startdemo : new Signal()
 
 		}
@@ -77,6 +78,7 @@
 
 	//
 
+	shared.signals.loadBegin.dispatch();
 	shared.signals.showlauncher.dispatch();
 	animate();
 
