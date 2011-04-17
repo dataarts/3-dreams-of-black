@@ -4,7 +4,7 @@ var Signal = signals.Signal;
 
 var audio, sequencer,
 camera, camera2, scene, renderer, renderTarget,
-container, shared;
+container, loading, shared;
 
 var tune, time, stats, gui;
 
@@ -41,8 +41,7 @@ function init() {
 
 		signals: {
 
-			cameraFov : new Signal(),
-
+			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
@@ -65,9 +64,11 @@ function init() {
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
-	shared.signals.loadItemAdded.add( loadProgress.addItem );
-	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
+	loading = new LoadingBar();
+	shared.signals.loadBegin.add( loading.loadBegin );
+	shared.signals.loadItemAdded.add( loading.addItem );
+	shared.signals.loadItemCompleted.add( loading.completeItem );
+	document.getElementById( 'launcher' ).appendChild( loading.getDomElement() );
 
 	sequencer = new Sequencer();
 

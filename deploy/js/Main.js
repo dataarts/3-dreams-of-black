@@ -82,6 +82,7 @@
 	//
 
 	shared.signals.loadBegin.dispatch();
+
 	shared.signals.showlauncher.dispatch();
 	animate();
 
