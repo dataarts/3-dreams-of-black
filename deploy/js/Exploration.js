@@ -6,8 +6,6 @@ var Exploration = function ( shared ) {
 	var renderer = shared.renderer,
 	renderTarget = shared.renderTarget;
 
-	domElement.appendChild( renderer.domElement );
-
 	var camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 	camera.movementSpeed = 200;
 	camera.lookSpeed = 3;
@@ -68,6 +66,8 @@ var Exploration = function ( shared ) {
 	};
 
 	function startExplore ( worldId ) {
+
+		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();
 

@@ -62,8 +62,8 @@
 	relauncher = new Relauncher( shared );
 	document.body.appendChild( relauncher.getDomElement() );
 
-	// exploration = new Exploration( shared );
-	// document.body.appendChild( exploration.getDomElement() );
+	exploration = new Exploration( shared );
+	document.body.appendChild( exploration.getDomElement() );
 
 	tool = new Tool( shared );
 	document.body.appendChild( tool.getDomElement() );
