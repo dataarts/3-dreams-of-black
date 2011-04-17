@@ -39,8 +39,7 @@ function init() {
 		viewportWidth: WIDTH,
 		viewportHeight: HEIGHT,
 
-		mouseX: 0,
-		mouseY: 0,
+		mouse : { x: 0, y : 0 },
 
 		signals: {
 
@@ -164,8 +163,8 @@ function onDocumentKeyDown( event ) {
 
 function onDocumentMouseMove( event ) {
 
-	shared.mouseX = event.clientX;
-	shared.mouseY = event.clientY;
+	shared.mouse.x = event.clientX;
+	shared.mouse.y = event.clientY;
 
 	shared.signals.mousemoved.dispatch();
 

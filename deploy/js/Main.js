@@ -1,278 +1,126 @@
-var WIDTH = 1024, HEIGHT = 436;
+( function () {
 
-var Signal = signals.Signal;
+	var logger, stats, shared,
+	Signal = signals.Signal, currentSection,
+	launcher, demo, relauncher, exploration, tool;
 
-var launcher, experience;
-
-var shared, audio, sequencer,
-renderer, renderTarget;
-
-var loadProgress, tune, time, logger, stats, gui;
-
-initLauncher();
-initExperience();
-
-function initLauncher() {
-
-	launcher = document.getElementById( 'launcher' );
-	launcher.style.height = window.innerHeight + 'px';
-
-	var canvas = document.createElement( 'canvas' );
-	canvas.width = 32;
-	canvas.height = window.innerHeight;
-
-	var context = canvas.getContext( '2d' );
-
-	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-	gradient.addColorStop( 0, "#1e4877" );
-	gradient.addColorStop( 0.5, "#4584b4" );
-
-	context.fillStyle = gradient;
-	context.fillRect( 0, 0, canvas.width, canvas.height );
-
-	launcher.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
-
-}
-
-function initExperience() {
-
-	experience = document.createElement( 'div' );
+	// debug
 
 	logger = new Logger();
 	logger.domElement.style.position = 'fixed';
 	logger.domElement.style.left = '100px';
 	logger.domElement.style.top = '0px';
-	experience.appendChild( logger.domElement );
+	document.body.appendChild( logger.domElement );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
-	experience.appendChild( stats.domElement );
+	document.body.appendChild( stats.domElement );
 
-	audio = document.getElementById( 'audio' );
-
-	renderer = new THREE.WebGLRenderer( { antialias: false } );
-	renderer.autoClear = false;
-	renderer.sortObjects = false;
-	experience.appendChild( renderer.domElement );
-
-	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
-	renderTarget.minFilter = THREE.LinearFilter;
-	renderTarget.magFilter = THREE.LinearFilter;
+	// init
 
 	shared = {
 
-		logger: logger,
+		logger : logger,
 
-		baseWidth: WIDTH,
-		baseHeight: HEIGHT,
+		mouse : { x: 0, y: 0 },
 
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
 
-		viewportWidth: WIDTH,
-		viewportHeight: HEIGHT,
+		signals : {
 
-		mouseX: 0,
-		mouseY: 0,
+			mousemoved : new Signal(),
+			windowresized : new Signal(),
 
-		signals: {
-
-			cameraFov : new Signal(),
+			showlauncher : new Signal(),
+			showdemo : new Signal(),
+			showrelauncher : new Signal(),
+			showexploration : new Signal(),
+			showtool : new Signal(),
 
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
-			mousemoved : new Signal(),
-			windowresized : new Signal()
+			startdemo : new Signal()
 
-		},
-
-		renderer: renderer,
-		renderTarget: renderTarget
+		}
 
 	};
 
-	window.addEventListener( 'resize', onWindowResize, false );
-	onWindowResize();
+	launcher = new Launcher( shared );
+	document.body.appendChild( launcher.getDomElement() );
 
-	tune = new Tune( audio );
-	tune.setBPM( 85 );
-	tune.setRows( 4 );
+	demo = new Demo( shared );
+	document.body.appendChild( demo.getDomElement() );
 
-	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
+	relauncher = new Relauncher( shared );
+	document.body.appendChild( relauncher.getDomElement() );
 
-	shared.signals.loadItemAdded.add( loadProgress.addItem );
-	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
+	exploration = new Exploration( shared );
+	document.body.appendChild( exploration.getDomElement() );
 
-	sequencer = new Sequencer();
+	tool = new Tool( shared );
+	document.body.appendChild( tool.getDomElement() );
 
-	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
-	// sequencer.add( new NoiseEffect( shared, 0.79, 0.19, 2385 ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 2 );
+	// signals
 
-	sequencer.add( new Intro( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
+	shared.signals.showdemo.add( function () { setSection( demo ); } );
+	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
+	shared.signals.showexploration.add( function () { setSection( exploration ); } );
+	shared.signals.showtool.add( function () { setSection( tool ); } );
 
-	sequencer.add( new TransitionToCity( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
-
-	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
-	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 2 );
-	sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.15, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
-
-	sequencer.add( new TransitionToPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
-
-	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
-	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 2 );
-	sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.18, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 4 );
-
-	sequencer.add( new TransitionToDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
-
-	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
-	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 2 );
-	sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.094, 0.0, 4096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 4 );
-
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 5 );
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 5 );
-
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 5 );
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 5 );
-
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 5 );
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 5 );
-
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
-
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 6 );
-
-}
-
-function start( pattern ) {
-
-	document.body.removeChild( launcher );
-	document.body.appendChild( experience );
-
-	/*
-	var camera = { fov: 50 }
-
-	gui = new GUI();
-	gui.add( audio, 'currentTime', 0, 210, 10 ).name( 'Time' ).listen();
-	gui.add( audio, 'volume', 0, 1 ).name( 'Volume' );
-	gui.add( camera, 'fov', 0, 100 ).name( 'Camera.fov' ).onChange( function ( value ) {
-
-		shared.signals.cameraFov.dispatch( value );
-
-	});
-
-	gui.add( this, 'jumpToCity' ).name( 'City' );
-	gui.add( this, 'jumpToPrairie' ).name( 'Prairie' );
-	gui.add( this, 'jumpToDunes' ).name( 'Dunes' );
-	*/
-
-	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
-	audio.play();
-
-	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+	window.addEventListener( 'resize', onWindowResize, false );
 
+	//
+
+	shared.signals.showlauncher.dispatch();
 	animate();
 
-}
+	//
 
-/*
-this.jumpToCity = function () {
+	function setSection( section ) {
 
-	audio.currentTime = tune.getPatternMS( 16 ) / 1000;
+		if ( currentSection ) {
 
-}
+			currentSection.getDomElement().style.display = 'none';
 
-this.jumpToPrairie = function () {
+		}
 
-	audio.currentTime = tune.getPatternMS( 32 ) / 1000;
-
-}
-
-this.jumpToDunes = function () {
-
-	audio.currentTime = tune.getPatternMS( 48 ) / 1000;
-
-}
-*/
-
-function onDocumentKeyDown( event ) {
-
-	switch( event.keyCode ) {
-
-		case 32:
-
-			audio.paused ? audio.play() : audio.pause();
-			break;
-
-		case 37:
-
-			audio.currentTime -= 1;
-			sequencer.clear();
-			break;
-
-		case 39:
-
-			audio.currentTime += 1;
-			sequencer.clear();
-			break;
+		currentSection = section;
+		currentSection.getDomElement().style.display = 'block';
 
 	}
 
-}
+	function onDocumentMouseMove( event ) {
 
-function onDocumentMouseMove( event ) {
+		shared.mouse.x = event.clientX;
+		shared.mouse.y = event.clientY;
 
-	shared.mouseX = event.clientX;
-	shared.mouseY = event.clientY;
+		shared.signals.mousemoved.dispatch();
 
-	shared.signals.mousemoved.dispatch();
-
-}
-
-function onWindowResize( event ) {
-
-	var scale = window.innerWidth / WIDTH;
-
-	shared.screenWidth = window.innerWidth;
-	shared.screenHeight = window.innerHeight;
-
-	shared.viewportWidth = WIDTH * scale;
-	shared.viewportHeight = HEIGHT * scale
-
-	renderer.setSize( shared.viewportWidth, shared.viewportHeight );
-
-	// TODO: Hacky...
-
-	renderTarget.width = shared.viewportWidth;
-	renderTarget.height = shared.viewportHeight;
-	delete renderTarget.__webglFramebuffer;
-
-	renderer.domElement.style.position = 'absolute';
-	renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
-
-	shared.signals.windowresized.dispatch();
-
-}
-
-function animate() {
-
-	if ( audio.currentTime == audio.duration ) {
-
-		document.body.appendChild( launcher );
-		document.body.removeChild( experience );
-		return;
 	}
 
-	requestAnimationFrame( animate, renderer.domElement );
+	function onWindowResize( event ) {
 
-	logger.clear();
-	sequencer.update( audio.currentTime * 1000 );
-	stats.update();
+		shared.screenWidth = window.innerWidth;
+		shared.screenHeight = window.innerHeight;
 
-}
+		shared.signals.windowresized.dispatch();
+
+	}
+
+	function animate() {
+
+		requestAnimationFrame( animate );
+
+		logger.clear();
+		currentSection.update();
+		stats.update();
+
+	}
+
+} )();

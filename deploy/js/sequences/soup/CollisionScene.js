@@ -123,8 +123,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		}
 
-		mouse2d.x = ( shared.mouseX / shared.screenWidth ) * 2 - 1;
-		mouse2d.y = - ( shared.mouseY / shared.screenHeight ) * 2 + 1;
+		mouse2d.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
+		mouse2d.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
 		mouse2d.z = 1;
 
 		ray.origin.copy( mouse2d );
@@ -256,7 +256,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		}*/
 
 		// emitter
-		/*var vector = new THREE.Vector3( ( shared.mouseX / shared.screenWidth ) * 2 - 1, - ( shared.mouseY / shared.screenHeight ) * 2 + 1, 0.5 );
+		/*var vector = new THREE.Vector3( ( shared.mouse.x / shared.screenWidth ) * 2 - 1, - ( shared.mouse.y / shared.screenHeight ) * 2 + 1, 0.5 );
 		projector.unprojectVector( vector, camera );
 		var ray = new THREE.Ray( camPos, vector.subSelf( camPos ).normalize() );
 		var intersects = ray.intersectScene( scene );

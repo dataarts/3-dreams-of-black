@@ -84,13 +84,6 @@ var Dunes = function ( shared ) {
 		world.scene.addChild( camera );
 		
 		shared.frontCube = frontCube;
-		
-		shared.signals.cameraFov.add( function ( value ) {
-
-			camera.fov = value;
-			camera.updateProjectionMatrix();
-
-		} );
 
 	};
 	
