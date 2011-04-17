@@ -4,6 +4,7 @@ var Launcher = function ( shared ) {
 	domElement.id = 'launcher';
 	domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
+	domElement.style.backgroundColor = '#4584b4';
 
 	// Background
 
@@ -24,18 +25,17 @@ var Launcher = function ( shared ) {
 
 	// UI
 
-	var shortcutsRoot = document.createElement( 'div' );
-	createShortcuts( shortcutsRoot );
-	
-	shortcutsRoot.style.position = "absolute";
-	shortcutsRoot.style.left = "10px";
-	shortcutsRoot.style.top = "10px";
-	shortcutsRoot.style.padding = "1em";
-	shortcutsRoot.style.textAlign = "left";
-	shortcutsRoot.style.boxShadow = "0px 0px 5px rgba(0,0,0,0.5)";
-	shortcutsRoot.style.background = "rgba(255,255,255,0.15)";
-	
-	domElement.appendChild( shortcutsRoot );
+	var shortcuts = document.createElement( 'div' );
+	shortcuts.style.position = "absolute";
+	shortcuts.style.left = "10px";
+	shortcuts.style.top = "10px";
+	shortcuts.style.padding = "1em";
+	shortcuts.style.textAlign = "left";
+	shortcuts.style.boxShadow = "0px 0px 5px rgba(0,0,0,0.5)";
+	shortcuts.style.background = "rgba(255,255,255,0.15)";
+	domElement.appendChild( shortcuts );
+
+	createShortcuts( shortcuts );
 
 	var title = document.createElement( 'div' );
 	title.style.paddingTop = '60px';
@@ -50,39 +50,29 @@ var Launcher = function ( shared ) {
 	titleOverlay.style.display = 'none';
 	titleOverlay.style.cursor = 'pointer';
 	//titleOverlay.style.border = 'solid 1px red';
-	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';	
-	
+	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
 	titleOverlay.addEventListener( 'click', function () {
-		
+
 		shared.signals.showdemo.dispatch();
 		shared.signals.startdemo.dispatch( 0 );
 
 	}, false );
-	
 	domElement.appendChild( titleOverlay );
 
-	var totalItems = 0, doneItems = 0, maxProgress = 0, loadBegin = false;
-		
-	var loadBar = document.createElement( 'div' );
-	loadBar.style.position = 'relative';
-	loadBar.style.top = '-480px';
-	loadBar.style.height = '10px';
-	loadBar.style.width = '358px';
-	loadBar.style.margin = '0 auto';
-	loadBar.style.background = '#fff';
-	loadBar.style.borderRadius = '5px';
-	loadBar.style.display = 'block';
-	domElement.appendChild( loadBar );
+	var loading = new LoadingBar( function () {
 
-	var loadVal = document.createElement( 'div' );
-	loadVal.style.position = 'relative';
-	loadVal.style.top = '0px';
-	loadVal.style.height = '10px';
-	loadVal.style.width = '0px';
-	loadVal.style.background = '#000';
-	loadVal.style.borderRadius = '5px 0px 0px 5px';
-	loadBar.appendChild( loadVal );
-		
+		loading.getDomElement().style.display = 'none';
+		titleOverlay.style.display = 'block';
+
+	} );
+
+	domElement.appendChild( loading.getDomElement() );
+
+	shared.signals.loadBegin.add( loading.loadBegin );
+	shared.signals.loadItemAdded.add( loading.addItem );
+	shared.signals.loadItemCompleted.add( loading.completeItem );
+
+
 	var footer = document.createElement( 'div' );
 	footer.style.position = 'absolute';
 	footer.style.left = '20px';
@@ -90,138 +80,44 @@ var Launcher = function ( shared ) {
 	footer.innerHTML = '<img src="files/footer.png">';
 	domElement.appendChild( footer );
 
-	// signals
 
-	//shared.signals.loadItemAdded.add( loadProgress.addItem );
-	//shared.signals.loadItemCompleted.add( loadProgress.completeItem );
-	//shared.signals.loadBegin.add( loadProgress.loadBegin );
+	function createShortcuts( target ) {
 
-	shared.signals.loadItemAdded.add( loadAddItemCallback );
-	shared.signals.loadItemCompleted.add( loadCompleteItemCallback );
-	shared.signals.loadBegin.add( loadBeginCallback );
+		addLink( target, 'Intro', 0 ); addBreakLine( target ); addBreakLine( target );
 
-	function createShortcuts( root ) {
-/*
-		var progress = document.createElement( 'progress' );
-		progress.style.display = "none";
-		progress.value = 0;
-		root.appendChild( progress );
+		addLink( target, 'Transition to City', 8 ); addBreakLine( target );
+		addLink( target, 'City', 16 ); addBreakLine( target ); addBreakLine( target );
 
-		loadProgress = new LoadProgress( progress, loadFinishedCallback );
-*/
-		//addBreakLine( root ); addBreakLine( root );
+		addLink( target, 'Transition to Prairie', 24 ); addBreakLine( target );
+		addLink( target, 'Prairie', 32 ); addBreakLine( target ); addBreakLine( target );
 
-		addLaunchLink( root, 'Intro', 0 ); addBreakLine( root ); addBreakLine( root );
-
-		addLaunchLink( root, 'Transition to City', 8 ); addBreakLine( root );
-		addLaunchLink( root, 'City', 16 ); addBreakLine( root ); addBreakLine( root );
-
-		addLaunchLink( root, 'Transition to Prairie', 24 ); addBreakLine( root );
-		addLaunchLink( root, 'Prairie', 32 ); addBreakLine( root ); addBreakLine( root );
-
-		addLaunchLink( root, 'Transition to Dunes', 40 ); addBreakLine( root );
-		addLaunchLink( root, 'Dunes', 48 ); addBreakLine( root ); addBreakLine( root );
-		
-		addExploreLink( root, 'Explore City', 'city' ); addBreakLine( root );
-		addExploreLink( root, 'Explore Prairie', 'prairie' ); addBreakLine( root );
-		addExploreLink( root, 'Explore Dunes', 'dunes' ); addBreakLine( root );
-
-	};
-	
-	function addBreakLine( root ) {
-
-		root.appendChild( document.createElement( 'br' ) );
+		addLink( target, 'Transition to Dunes', 40 ); addBreakLine( target );
+		addLink( target, 'Dunes', 48 ); addBreakLine( target ); addBreakLine( target );
 
 	};
 
-	function addLink( root, text, callback ) {
+	function addBreakLine( target ) {
+
+		target.appendChild( document.createElement( 'br' ) );
+
+	};
+
+	function addLink( target, text, callback ) {
 
 		var element = document.createElement( 'span' );
 		element.style.cursor = 'pointer';
 		element.innerHTML = text;
-		element.addEventListener( 'click', callback, false );
+		element.addEventListener( 'click', function () {
 
-		root.appendChild( element );
-		
-	};
+			shared.signals.showdemo.dispatch();
+			shared.signals.startdemo.dispatch( pattern );
 
-	function callbackExplore ( worldId ) {
-		
-		shared.signals.showexploration.dispatch();
-		shared.signals.startexploration.dispatch( worldId );
+		}, false );
 
-	};
-	
-	function callbackLaunch ( pattern ) {
-		
-		shared.signals.showdemo.dispatch();
-		shared.signals.startdemo.dispatch( pattern );
-
-	};
-	
-	
-	function addExploreLink( root, text, worldId ) {
-
-		addLink( root, text, function() { callbackExplore( worldId ); } );
-		
-	};
-
-	
-	function addLaunchLink( root, text, pattern ) {
-
-		addLink( root, text, function() { callbackLaunch( pattern ); } );
-		
-	};	
-
-
-	function loadAddItemCallback() {
-		
-		totalItems += 1;
-		
-		updateProgress();
+		target.appendChild( element );
 
 	};
 
-	function loadCompleteItemCallback() {
-		
-		doneItems += 1;
-		
-		updateProgress();
-		
-		if ( loadBegin && totalItems == doneItems ) {
-			
-			loadFinishedCallback();
-
-		}
-
-	};
-	
-	function loadBeginCallback() {
-		
-		loadBegin = true;
-
-	};
-	
-	function updateProgress() {
-		
-		var progress = doneItems / totalItems;
-
-		if ( progress > maxProgress ) {
-
-			maxProgress = progress;
-			loadVal.style.width = progress * 358 + "px";
-
-		}
-		
-	};
-
-	function loadFinishedCallback() {
-
-		loadBar.style.display = 'none';
-		titleOverlay.style.display = 'block';
-		
-	};
-	
 	//
 
 	this.getDomElement = function () {

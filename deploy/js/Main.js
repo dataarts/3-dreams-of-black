@@ -43,12 +43,12 @@
 			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
-			
+
 			startdemo : new Signal(),
 			startexploration: new Signal()
 
 		},
-		
+
 		worlds: { }
 
 	};
@@ -62,8 +62,8 @@
 	relauncher = new Relauncher( shared );
 	document.body.appendChild( relauncher.getDomElement() );
 
-	exploration = new Exploration( shared );
-	document.body.appendChild( exploration.getDomElement() );
+	// exploration = new Exploration( shared );
+	// document.body.appendChild( exploration.getDomElement() );
 
 	tool = new Tool( shared );
 	document.body.appendChild( tool.getDomElement() );
@@ -94,7 +94,7 @@
 			currentSection.getDomElement().style.display = 'none';
 
 		}
-		
+
 		currentSection = section;
 		currentSection.getDomElement().style.display = 'block';
 

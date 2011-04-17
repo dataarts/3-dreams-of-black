@@ -7,33 +7,36 @@ var Exploration = function ( shared ) {
 	renderTarget = shared.renderTarget;
 
 	domElement.appendChild( renderer.domElement );
-	
+
 	var camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 	camera.movementSpeed = 200;
 	camera.lookSpeed = 3;
 	camera.constrainVertical = [ -0.4, 0.4 ];
 	camera.autoForward = true;
 
-	var world, scene;
-	
-	var clearEffect = new ClearEffect( shared );
-	var heatEffect = new HeatEffect( shared );
-	var noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
-	var renderEffect = new RenderEffect( shared );
-	
+	var world, scene,
+	clearEffect, heatEffect, noiseEffect, renderEffect;
+
+	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
+
+	heatEffect = new HeatEffect( shared );
 	heatEffect.init();
+
+	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
 	noiseEffect.init();
+
+	renderEffect = new RenderEffect( shared );
 	renderEffect.init();
-	
+
 	var progress = 0, time = 0;
 
 	// signals
 
 	shared.signals.startexploration.add( startExplore );
 	shared.signals.windowresized.add( updateViewportSize );
-	
-	
+
+
 	this.getDomElement = function () {
 
 		return domElement;
@@ -61,29 +64,27 @@ var Exploration = function ( shared ) {
 			renderEffect.update( progress, time );
 
 		}
-		
+
 	};
-	
+
 	function startExplore ( worldId ) {
-		
+
 		updateViewportSize();
-		
+
 		world = shared.worlds[ worldId ];
 		scene = world.scene;
-		
+
 		scene.addChild( camera );
-		
-		console.log( scene );
-		
+
 		THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
-			
+
 			if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
 				|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
 
 				node.visible = false; 
 
 			}
-			
+
 		} );
 
 	};
@@ -91,7 +92,7 @@ var Exploration = function ( shared ) {
 	function stop () {
 
 	};
-	
+
 	function updateViewportSize () {
 
 		var scale = window.innerWidth / shared.viewportWidth;
@@ -111,5 +112,5 @@ var Exploration = function ( shared ) {
 		renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
 
 	};
-	
+
 };

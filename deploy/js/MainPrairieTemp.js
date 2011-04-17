@@ -43,8 +43,7 @@ function init() {
 
 		signals: {
 
-			cameraFov : new Signal(),
-
+			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
@@ -52,6 +51,8 @@ function init() {
 			windowresized : new Signal()
 
 		},
+
+		worlds: { },
 
 		renderer: renderer,
 		renderTarget: renderTarget
@@ -65,7 +66,7 @@ function init() {
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
+	loadProgress = new LoadingBar( document.getElementById( 'loadProgress' ) );
 	shared.signals.loadItemAdded.add( loadProgress.addItem );
 	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
 

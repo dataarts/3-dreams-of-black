@@ -41,8 +41,7 @@ function init() {
 
 		signals: {
 
-			cameraFov : new Signal(),
-
+			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
@@ -50,6 +49,8 @@ function init() {
 			windowresized : new Signal()
 
 		},
+
+		worlds: { },
 
 		renderer: renderer,
 		renderTarget: renderTarget

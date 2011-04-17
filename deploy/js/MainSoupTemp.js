@@ -51,6 +51,8 @@ function init() {
 
 		},
 
+		worlds: { },
+
 		renderer: renderer,
 		renderTarget: renderTarget
 
