@@ -45,12 +45,15 @@ var Launcher = function ( shared ) {
 	var titleOverlay = document.createElement( 'div' );
 	titleOverlay.style.position = 'relative';
 	titleOverlay.style.top = '-488px';
+	titleOverlay.style.width = '358px';
+	titleOverlay.style.margin = '0 auto';
 	titleOverlay.style.display = 'none';
 	titleOverlay.style.cursor = 'pointer';
+	//titleOverlay.style.border = 'solid 1px red';
 	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';	
 	
 	titleOverlay.addEventListener( 'click', function () {
-
+		
 		shared.signals.showdemo.dispatch();
 		shared.signals.startdemo.dispatch( 0 );
 
@@ -117,7 +120,11 @@ var Launcher = function ( shared ) {
 		addLaunchLink( root, 'Prairie', 32 ); addBreakLine( root ); addBreakLine( root );
 
 		addLaunchLink( root, 'Transition to Dunes', 40 ); addBreakLine( root );
-		addLaunchLink( root, 'Dunes', 48 ); addBreakLine( root ); //addBreakLine( root );
+		addLaunchLink( root, 'Dunes', 48 ); addBreakLine( root ); addBreakLine( root );
+		
+		addExploreLink( root, 'Explore City', 'city' ); addBreakLine( root );
+		addExploreLink( root, 'Explore Prairie', 'prairie' ); addBreakLine( root );
+		addExploreLink( root, 'Explore Dunes', 'dunes' ); addBreakLine( root );
 
 	};
 	
@@ -127,21 +134,45 @@ var Launcher = function ( shared ) {
 
 	};
 
-	function addLaunchLink( root, text, pattern ) {
+	function addLink( root, text, callback ) {
 
 		var element = document.createElement( 'span' );
 		element.style.cursor = 'pointer';
 		element.innerHTML = text;
-		element.addEventListener( 'click', function () {
-
-			shared.signals.showdemo.dispatch();
-			shared.signals.startdemo.dispatch( pattern );
-
-		}, false );
+		element.addEventListener( 'click', callback, false );
 
 		root.appendChild( element );
+		
+	};
+
+	function callbackExplore ( worldId ) {
+		
+		shared.signals.showexploration.dispatch();
+		shared.signals.startexploration.dispatch( worldId );
 
 	};
+	
+	function callbackLaunch ( pattern ) {
+		
+		shared.signals.showdemo.dispatch();
+		shared.signals.startdemo.dispatch( pattern );
+
+	};
+	
+	
+	function addExploreLink( root, text, worldId ) {
+
+		addLink( root, text, function() { callbackExplore( worldId ); } );
+		
+	};
+
+	
+	function addLaunchLink( root, text, pattern ) {
+
+		addLink( root, text, function() { callbackLaunch( pattern ); } );
+		
+	};	
+
 
 	function loadAddItemCallback() {
 		
@@ -203,4 +234,4 @@ var Launcher = function ( shared ) {
 
 	};
 
-}
+};

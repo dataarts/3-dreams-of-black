@@ -91,7 +91,7 @@ var PrairieWorld = function ( shared, camera ) {
 
 	loader.load( "files/models/prairie/Prairie.js", prairieLoaded );
 
-	this.update = function ( delta ) {
+	this.update = function ( delta, camera ) {
 
 		ROME.TrailShaderUtils.updateLava( delta );
 		ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );

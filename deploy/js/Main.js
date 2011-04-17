@@ -44,9 +44,12 @@
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 			
-			startdemo : new Signal()
+			startdemo : new Signal(),
+			startexploration: new Signal()
 
-		}
+		},
+		
+		worlds: { }
 
 	};
 
@@ -91,11 +94,11 @@
 			currentSection.getDomElement().style.display = 'none';
 
 		}
-
+		
 		currentSection = section;
 		currentSection.getDomElement().style.display = 'block';
 
-	}
+	};
 
 	function onDocumentMouseMove( event ) {
 
@@ -104,7 +107,7 @@
 
 		shared.signals.mousemoved.dispatch();
 
-	}
+	};
 
 	function onWindowResize( event ) {
 
@@ -113,7 +116,7 @@
 
 		shared.signals.windowresized.dispatch();
 
-	}
+	};
 
 	function animate() {
 
@@ -123,6 +126,6 @@
 		currentSection.update();
 		stats.update();
 
-	}
+	};
 
 } )();

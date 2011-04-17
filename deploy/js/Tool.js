@@ -1,4 +1,4 @@
-var Tool = function () {
+var Tool = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';

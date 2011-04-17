@@ -1,4 +1,4 @@
-var Relauncher = function () {
+var Relauncher = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 	domElement.id = 'relauncher';

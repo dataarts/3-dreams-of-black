@@ -72,6 +72,8 @@ var Dunes = function ( shared ) {
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
 
+		shared.worlds.dunes = world;
+		
 		//frontCube = new THREE.Mesh( new THREE.Cube( 1, 1, 1 ), new THREE.MeshLambertMaterial( { color:0xff0000 } ) );
 		frontCube = new THREE.Object3D();
 		frontCube.position.set( 0, 0, -10 );
@@ -284,7 +286,7 @@ var Dunes = function ( shared ) {
 
 		}
 
-		world.update( camera );
+		world.update( delta, camera );
 		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );

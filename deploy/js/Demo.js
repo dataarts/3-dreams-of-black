@@ -100,13 +100,13 @@ var Demo = function ( shared ) {
 
 		document.addEventListener( 'keydown', onDocumentKeyDown, false );
 
-	}
+	};
 
 	function stop() {
 
 		document.removeEventListener( 'keydown', onDocumentKeyDown, false );
 
-	}
+	};
 
 	function onDocumentKeyDown( event ) {
 
@@ -131,7 +131,7 @@ var Demo = function ( shared ) {
 
 		}
 
-	}
+	};
 
 	function updateViewportSize() {
 
@@ -151,7 +151,7 @@ var Demo = function ( shared ) {
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
 
-	}
+	};
 
 	this.getDomElement = function () {
 
@@ -166,10 +166,11 @@ var Demo = function ( shared ) {
 			shared.signals.showrelauncher.dispatch();
 			stop();
 			return;
+
 		}
 
 		sequencer.update( audio.currentTime * 1000 );
 
 	};
 
-}
+};
