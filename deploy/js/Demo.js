@@ -43,6 +43,7 @@ var Demo = function ( shared ) {
 	// signals
 
 	shared.signals.startdemo.add( start );
+	shared.signals.stopdemo.add( stop );
 	shared.signals.windowresized.add( updateViewportSize );
 
 	// sequence
@@ -105,6 +106,7 @@ var Demo = function ( shared ) {
 
 	function stop() {
 
+		audio.pause();
 		document.removeEventListener( 'keydown', onDocumentKeyDown, false );
 
 	};

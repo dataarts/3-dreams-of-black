@@ -46,6 +46,8 @@
 			loadItemCompleted : new Signal(),
 
 			startdemo : new Signal(),
+			stopdemo : new Signal(),
+
 			startexploration: new Signal()
 
 		},
@@ -96,6 +98,7 @@
 
 		if ( currentSection ) {
 
+			if ( currentSection == demo ) shared.signals.stopdemo.dispatch();
 			currentSection.getDomElement().style.display = 'none';
 
 		}

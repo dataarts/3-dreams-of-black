@@ -7,6 +7,13 @@ var Shortcuts = function ( shared ) {
 	domElement.style.padding = "0.5em";
 	domElement.style.fontSize = '10px';
 
+	// Launcher
+
+	addLauncherShortcut( 'Launcher' );
+	addSeparator();
+
+	// Demo
+
 	addDemoShortcut( 'Intro', 0 );
 	addSeparator();
 
@@ -21,6 +28,22 @@ var Shortcuts = function ( shared ) {
 	addDemoShortcut( 'Transition to Dunes', 40 );
 	addDemoShortcut( 'Dunes', 48 );
 	addSeparator();
+
+	// Relauncher
+
+	addRelauncherShortcut( 'Relauncher' );
+	addSeparator();
+
+	// Exploration
+
+	addExplorationShortcut( 'Explore City', 'city' );
+	addExplorationShortcut( 'Explore Prairie', 'prairie' );
+	addExplorationShortcut( 'Explore Dunes', 'dunes' );
+	addSeparator();
+
+	// Tool
+
+	addToolShortcut( 'Tool' );
 
 	function addSeparator() {
 
@@ -43,6 +66,16 @@ var Shortcuts = function ( shared ) {
 
 	}
 
+	function addLauncherShortcut( text ) {
+
+		addLink( text, function () {
+
+			shared.signals.showlauncher.dispatch();
+
+		} );
+
+	}
+
 	function addDemoShortcut( text, pattern ) {
 
 		addLink( text, function () {
@@ -54,11 +87,37 @@ var Shortcuts = function ( shared ) {
 
 	};
 
-	function addSectionShortcut( target, text, section ) {
+	function addRelauncherShortcut( text ) {
 
-		
+		addLink( text, function () {
+
+			shared.signals.showrelauncher.dispatch();
+
+		} );
 
 	}
+
+	function addExplorationShortcut( text, worldId ) {
+
+		addLink( text, function () {
+
+			shared.signals.showexploration.dispatch();
+			shared.signals.startexploration.dispatch( worldId );
+
+		} );
+
+	}
+
+	function addToolShortcut( text ) {
+
+		addLink( text, function () {
+
+			shared.signals.showtool.dispatch();
+
+		} );
+
+	}
+
 
 	this.getDomElement = function () {
 
