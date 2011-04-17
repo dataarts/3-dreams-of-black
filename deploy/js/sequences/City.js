@@ -123,6 +123,8 @@ var City = function ( shared ) {
 			switchCamera.lat = startCamera.lat;
 			switchCamera.lon = startCamera.lon;
 
+			switchCamera.position.set( 0, 0, 0 );
+
 			world.scene.addObject( switchCamera.animationParent );
 			switchCamera.animation.play( false, 0 );
 
@@ -139,6 +141,7 @@ var City = function ( shared ) {
 		THREE.AnimationHandler.update( delta );
 
 		soup.update( delta );
+
 
 		// slight camera roll
 

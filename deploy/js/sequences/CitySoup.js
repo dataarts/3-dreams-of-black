@@ -182,7 +182,13 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.x = that.camera.matrixWorld.n14;
 		camPos.y = that.camera.matrixWorld.n24;
 		camPos.z = that.camera.matrixWorld.n34;
+
+		if (camPos.x == 0 && camPos.y == 0 && camPos.z == 0) {
+			console.log("zero");
+			return;
+		}
 		
+
 		// temp reset
 		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
 			reset();
