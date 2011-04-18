@@ -85,8 +85,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
-		var morphArray = [0,0,4,3,2,1,0,1,2,7,3,4,1,0,0,5,6,2,4,3];
-		runningAnimals.addAnimal( geometry, null, 1.2, morphArray );
+		var morphArray = [0,0,4,3,2,1,0,5,6,7,8,9,10,0,0,3,3,5,2,3];
+		runningAnimals.addAnimal( geometry, null, 1.4, morphArray );
 	}
 
 	function elkLoadedProxy( geometry ) {
@@ -111,7 +111,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
+		var morphArray = [0,1,2,3,0,1,2,3,0,1];
 		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, 1 );
 	}
 
