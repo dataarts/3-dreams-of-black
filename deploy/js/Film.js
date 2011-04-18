@@ -1,4 +1,4 @@
-var Demo = function ( shared ) {
+var Film = function ( shared ) {
 
 	var WIDTH = 1024, HEIGHT = 436,
 	domElement, audio, tune,
@@ -42,8 +42,8 @@ var Demo = function ( shared ) {
 
 	// signals
 
-	shared.signals.startdemo.add( start );
-	shared.signals.stopdemo.add( stop );
+	shared.signals.startfilm.add( start );
+	shared.signals.stopfilm.add( stop );
 	shared.signals.windowresized.add( updateViewportSize );
 
 	// sequence

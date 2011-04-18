@@ -2,7 +2,7 @@
 
 	var logger, stats, shared,
 	Signal = signals.Signal, currentSection,
-	launcher, demo, relauncher, exploration, tool,
+	launcher, film, relauncher, exploration, tool,
 	shortcuts;
 
 	// debug
@@ -36,7 +36,7 @@
 			windowresized : new Signal(),
 
 			showlauncher : new Signal(),
-			showdemo : new Signal(),
+			showfilm : new Signal(),
 			showrelauncher : new Signal(),
 			showexploration : new Signal(),
 			showtool : new Signal(),
@@ -45,8 +45,8 @@
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
-			startdemo : new Signal(),
-			stopdemo : new Signal(),
+			startfilm : new Signal(),
+			stopfilm : new Signal(),
 
 			startexploration: new Signal()
 
@@ -59,8 +59,8 @@
 	launcher = new Launcher( shared );
 	document.body.appendChild( launcher.getDomElement() );
 
-	demo = new Demo( shared );
-	document.body.appendChild( demo.getDomElement() );
+	film = new Film( shared );
+	document.body.appendChild( film.getDomElement() );
 
 	relauncher = new Relauncher( shared );
 	document.body.appendChild( relauncher.getDomElement() );
@@ -77,7 +77,7 @@
 	// signals
 
 	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
-	shared.signals.showdemo.add( function () { setSection( demo ); } );
+	shared.signals.showfilm.add( function () { setSection( film ); } );
 	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
 	shared.signals.showexploration.add( function () { setSection( exploration ); } );
 	shared.signals.showtool.add( function () { setSection( tool ); } );
@@ -98,7 +98,7 @@
 
 		if ( currentSection ) {
 
-			if ( currentSection == demo ) shared.signals.stopdemo.dispatch();
+			if ( currentSection == film ) shared.signals.stopfilm.dispatch();
 			currentSection.getDomElement().style.display = 'none';
 
 		}
