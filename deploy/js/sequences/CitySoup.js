@@ -17,9 +17,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
 
-	shared.targetStart = new THREE.Vector3();
-	shared.targetEnd = new THREE.Vector3();
-
 	// refactoring
 
 	// setup the different parts of the soup
@@ -27,7 +24,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 
 	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 5000 );
-	collisionScene.settings.maxSpeedDivider = 4;
+	collisionScene.settings.maxSpeedDivider = 3;
 	collisionScene.settings.capBottom = -2;
 	collisionScene.settings.shootRayDown = true;
 	collisionScene.settings.allowFlying = false;
@@ -42,7 +39,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	vectors.settings.normaldivider = 8;
 
 	// ribbons
-
+/*
 	var ribbonMaterials = [
 			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
 			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
@@ -53,7 +50,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	];
 
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
-
+*/
 	// particles
 
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -119,6 +116,22 @@ var CitySoup = function ( camera, scene, shared ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
 		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 1 );
 	}
+
+	// flying animals 2
+	var flyingAnimals2 = new AnimalSwarm(100, scene, vectors.array);
+	flyingAnimals2.settings.flying = true;
+	flyingAnimals2.settings.divider = 8;
+	flyingAnimals2.settings.flyingDistance = 10;
+	flyingAnimals2.settings.xPositionMultiplier = 30;
+	flyingAnimals2.settings.zPositionMultiplier = 30;
+	//flyingAnimals2.settings.constantSpeed = 0.5;
+
+	loader.load( { model: "files/models/soup/butterfly_lowA.js", callback: flying2LoadedProxy } );
+	
+	function flying2LoadedProxy( geometry ) {
+		flyingAnimals2.addAnimal( geometry, null, 5, null, 6, null, true );
+	}
+
 
 	// butterflys
 	var butterflys = new AnimalInFrontOfCamera(30, scene);
@@ -208,23 +221,15 @@ var CitySoup = function ( camera, scene, shared ) {
 		// update the soup parts	
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		ribbons.update(collisionScene.emitterFollow.position);
+		//ribbons.update(collisionScene.emitterFollow.position);
 		particles.update(delta, vectors.array[0].position);
 		runningAnimals.update();
 		flyingAnimals.update();
+		flyingAnimals2.update();
 		butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
 		
 		TWEEN.update();
-
-		// update for the green stuff shader
-		shared.targetStart.x = vectors.array[3].position.x;
-		shared.targetStart.y = vectors.array[3].position.y;
-		shared.targetStart.z = vectors.array[3].position.z;
-
-		shared.targetEnd.x = vectors.array[20].position.x;
-		shared.targetEnd.y = vectors.array[20].position.y;
-		shared.targetEnd.z = vectors.array[20].position.z;
 
 		// pointlight
 		pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;
