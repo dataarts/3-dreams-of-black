@@ -4,21 +4,19 @@ var distortingShaderSource = {
 
 		uniforms: {
             "aspect": { type: "f", value: 0 },
+            "near": { type: "f", value: 0 },
+            "far": { type: "f", value: 0 },
 			"sheet": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() },
-            "trail1": { type: "v2", value: new THREE.Vector2() },
-            "trail2": { type: "v2", value: new THREE.Vector2() },
-            "trail3": { type: "v2", value: new THREE.Vector2() },
+            "mouseXYZ": { type: "v3", value: new THREE.Vector3() },
             "tileOffsetX": { type: "v2", value: new THREE.Vector2() }
 		},
 
 		vertexShader: [
 
-            "uniform vec2 mouseXY;",
-            "uniform vec2 trail1;",
-            "uniform vec2 trail2;",
-            "uniform vec2 trail3;",
+            "uniform vec3 mouseXYZ;",
             "uniform float aspect;",
+            "uniform float near;",
+            "uniform float far;",
 
             "varying vec2 vUv;",
             "varying vec2 vUvPoly;",
@@ -42,13 +40,15 @@ var distortingShaderSource = {
                 "projPos = vec2(aspect,1.)*vec2(viewPos.x/viewPos.z,viewPos.y/viewPos.z);",
                 "projPosPoly = vec2(aspect,1.)*vec2(viewPosPoly.x/viewPosPoly.z,viewPosPoly.y/viewPosPoly.z);",
 
-                "distance = max(0.,1.0-length(projPos-vec2(mouseXY.x, mouseXY.y)));",
+                "float depth = (viewPos.z+near)/far;",
+                
+                "distance = max(0.,1.0-length(vec3(projPos,depth*10.)-vec3(mouseXYZ.x, mouseXYZ.y, mouseXYZ.z/25.5)));",
 
                 "float distFade = normal.z*0.8+0.8;",
 
-                "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
+                "distancePoly = max(0.,distFade-length(vec3(projPosPoly,depth*10.)-vec3(mouseXYZ.x, mouseXYZ.y, mouseXYZ.z/25.5)));",
 
-                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
+                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXYZ.x, mouseXYZ.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
                 "gl_Position = viewPos;",
 
 			"}"
@@ -59,7 +59,7 @@ var distortingShaderSource = {
             "uniform sampler2D sheet;",
             "uniform vec2 tileOffsetX;",
 
-            "uniform vec2 mouseXY;",
+            "uniform vec2 mouseXYZ;",
             "varying vec2 vUv;",
             "varying vec2 vUvPoly;",
             "varying vec3 pos;",

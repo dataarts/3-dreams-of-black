@@ -15,9 +15,6 @@ var distortingShaderInvertedSource = {
 		vertexShader: [
 
             "uniform vec2 mouseXY;",
-            "uniform vec2 trail1;",
-            "uniform vec2 trail2;",
-            "uniform vec2 trail3;",
             "uniform float aspect;",
 
             "varying vec2 vUv;",
