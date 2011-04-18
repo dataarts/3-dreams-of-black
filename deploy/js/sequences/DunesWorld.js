@@ -403,7 +403,7 @@ var DunesWorld = function ( shared ) {
 
 	};
 
-	this.update = function ( camera ) {
+	this.update = function ( delta, camera ) {
 
 		// for the moment RollCamera doesn't have straightforward way to get orientation yet
 		// so we attach child in front of it to get direction vector

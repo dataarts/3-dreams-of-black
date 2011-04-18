@@ -25,7 +25,6 @@ var Demo = function ( shared ) {
 	renderer.setSize( WIDTH, HEIGHT );
 	renderer.autoClear = false;
 	renderer.sortObjects = false;
-	domElement.appendChild( renderer.domElement );
 
 	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 	renderTarget.minFilter = THREE.LinearFilter;
@@ -44,6 +43,7 @@ var Demo = function ( shared ) {
 	// signals
 
 	shared.signals.startdemo.add( start );
+	shared.signals.stopdemo.add( stop );
 	shared.signals.windowresized.add( updateViewportSize );
 
 	// sequence
@@ -76,22 +76,24 @@ var Demo = function ( shared ) {
 	sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
 	sequencer.add( new NoiseEffect( shared, 0.094, 0.0, 4096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 4 );
 
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 5 );
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 5 );
+	// sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 5 );
+	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 5 );
 
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 5 );
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 5 );
+	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 5 );
 
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 5 );
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 5 );
+	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 5 );
 
-	sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
 
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 6 );
 
 	//
 
 	function start( pattern ) {
+
+		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();
 
@@ -100,13 +102,14 @@ var Demo = function ( shared ) {
 
 		document.addEventListener( 'keydown', onDocumentKeyDown, false );
 
-	}
+	};
 
 	function stop() {
 
+		audio.pause();
 		document.removeEventListener( 'keydown', onDocumentKeyDown, false );
 
-	}
+	};
 
 	function onDocumentKeyDown( event ) {
 
@@ -131,7 +134,7 @@ var Demo = function ( shared ) {
 
 		}
 
-	}
+	};
 
 	function updateViewportSize() {
 
@@ -151,7 +154,7 @@ var Demo = function ( shared ) {
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
 
-	}
+	};
 
 	this.getDomElement = function () {
 
@@ -166,10 +169,11 @@ var Demo = function ( shared ) {
 			shared.signals.showrelauncher.dispatch();
 			stop();
 			return;
+
 		}
 
 		sequencer.update( audio.currentTime * 1000 );
 
 	};
 
-}
+};

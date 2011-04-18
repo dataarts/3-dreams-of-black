@@ -52,6 +52,8 @@ var City = function ( shared ) {
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
 		
+		shared.worlds.city = world;
+		 
 		if ( shared.debug ) {
 
 			world.scene.addObject( camera.debugPath );

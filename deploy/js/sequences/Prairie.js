@@ -56,6 +56,8 @@ var Prairie = function ( shared ) {
 		world = new PrairieWorld( shared, camera );
 		soup = new PrairieSoup( camera, world.scene, shared );
 
+		shared.worlds.prairie = world;
+
 		//world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
 

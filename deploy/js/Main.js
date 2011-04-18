@@ -2,19 +2,20 @@
 
 	var logger, stats, shared,
 	Signal = signals.Signal, currentSection,
-	launcher, demo, relauncher, exploration, tool;
+	launcher, demo, relauncher, exploration, tool,
+	shortcuts;
 
 	// debug
 
 	logger = new Logger();
 	logger.domElement.style.position = 'fixed';
-	logger.domElement.style.left = '100px';
+	logger.domElement.style.right = '100px';
 	logger.domElement.style.top = '0px';
 	document.body.appendChild( logger.domElement );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
-	stats.domElement.style.left = '0px';
+	stats.domElement.style.right = '0px';
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
 
@@ -40,12 +41,18 @@
 			showexploration : new Signal(),
 			showtool : new Signal(),
 
+			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
-			startdemo : new Signal()
+			startdemo : new Signal(),
+			stopdemo : new Signal(),
 
-		}
+			startexploration: new Signal()
+
+		},
+
+		worlds: { }
 
 	};
 
@@ -64,6 +71,9 @@
 	tool = new Tool( shared );
 	document.body.appendChild( tool.getDomElement() );
 
+	shortcuts = new Shortcuts( shared );
+	document.body.appendChild( shortcuts.getDomElement() );
+
 	// signals
 
 	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
@@ -77,6 +87,8 @@
 
 	//
 
+	shared.signals.loadBegin.dispatch();
+
 	shared.signals.showlauncher.dispatch();
 	animate();
 
@@ -86,6 +98,7 @@
 
 		if ( currentSection ) {
 
+			if ( currentSection == demo ) shared.signals.stopdemo.dispatch();
 			currentSection.getDomElement().style.display = 'none';
 
 		}
@@ -93,7 +106,7 @@
 		currentSection = section;
 		currentSection.getDomElement().style.display = 'block';
 
-	}
+	};
 
 	function onDocumentMouseMove( event ) {
 
@@ -102,7 +115,7 @@
 
 		shared.signals.mousemoved.dispatch();
 
-	}
+	};
 
 	function onWindowResize( event ) {
 
@@ -111,7 +124,7 @@
 
 		shared.signals.windowresized.dispatch();
 
-	}
+	};
 
 	function animate() {
 
@@ -121,6 +134,6 @@
 		currentSection.update();
 		stats.update();
 
-	}
+	};
 
 } )();

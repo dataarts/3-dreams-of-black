@@ -1,11 +1,12 @@
 var Launcher = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
-	domElement.id = 'launcher';
 	domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
+	domElement.style.backgroundColor = '#4584b4';
+	domElement.style.textAlign = 'center';
 
-	// Bg
+	// Background
 
 	var canvas = document.createElement( 'canvas' );
 	canvas.width = 32;
@@ -24,29 +25,41 @@ var Launcher = function ( shared ) {
 
 	// UI
 
-	var progress = document.createElement( 'progress' );
-	progress.value = 0;
-	domElement.appendChild( progress );
-
-	loadProgress = new LoadProgress( progress );
-
-	addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Intro', 0 ); addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Transition to City', 8 ); addBreackLine();
-	addLaunchLink( 'City', 16 ); addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Transition to Prairie', 24 ); addBreackLine();
-	addLaunchLink( 'Prairie', 32 ); addBreackLine(); addBreackLine();
-
-	addLaunchLink( 'Transition to Dunes', 40 ); addBreackLine();
-	addLaunchLink( 'Dunes', 48 ); addBreackLine(); addBreackLine();
-
 	var title = document.createElement( 'div' );
 	title.style.paddingTop = '60px';
-	title.innerHTML = '<img src="files/title_heart.png">';
+	title.innerHTML = '<img src="files/title_heart_loading.png">';
 	domElement.appendChild( title );
+
+	var titleOverlay = document.createElement( 'div' );
+	titleOverlay.style.position = 'relative';
+	titleOverlay.style.top = '-488px';
+	titleOverlay.style.width = '358px';
+	titleOverlay.style.margin = '0 auto';
+	titleOverlay.style.display = 'none';
+	titleOverlay.style.cursor = 'pointer';
+	//titleOverlay.style.border = 'solid 1px red';
+	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
+	titleOverlay.addEventListener( 'click', function () {
+
+		shared.signals.showdemo.dispatch();
+		shared.signals.startdemo.dispatch( 0 );
+
+	}, false );
+	domElement.appendChild( titleOverlay );
+
+	var loading = new LoadingBar( function () {
+
+		loading.getDomElement().style.display = 'none';
+		titleOverlay.style.display = 'block';
+
+	} );
+
+	domElement.appendChild( loading.getDomElement() );
+
+	shared.signals.loadBegin.add( loading.loadBegin );
+	shared.signals.loadItemAdded.add( loading.addItem );
+	shared.signals.loadItemCompleted.add( loading.completeItem );
+
 
 	var footer = document.createElement( 'div' );
 	footer.style.position = 'absolute';
@@ -54,33 +67,6 @@ var Launcher = function ( shared ) {
 	footer.style.bottom = '10px';
 	footer.innerHTML = '<img src="files/footer.png">';
 	domElement.appendChild( footer );
-
-	// signals
-
-	shared.signals.loadItemAdded.add( loadProgress.addItem );
-	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
-
-	function addBreackLine() {
-
-		domElement.appendChild( document.createElement( 'br' ) );
-
-	}
-
-	function addLaunchLink( text, pattern ) {
-
-		var element = document.createElement( 'span' );
-		element.style.cursor = 'pointer';
-		element.innerHTML = text;
-		element.addEventListener( 'click', function () {
-
-			shared.signals.showdemo.dispatch();
-			shared.signals.startdemo.dispatch( pattern );
-
-		}, false );
-
-		domElement.appendChild( element );
-
-	}
 
 	//
 
@@ -94,4 +80,4 @@ var Launcher = function ( shared ) {
 
 	};
 
-}
+};

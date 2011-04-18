@@ -138,7 +138,7 @@ var CityWorld = function ( shared ) {
 			
 		}
 	
-	}
+	};
 
 
 	if ( !shared.debug ) {
@@ -173,7 +173,11 @@ var CityWorld = function ( shared ) {
 		object.lensFlares[ 2 ].y += 0.025;
 		object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + 45 * Math.PI / 180;
 
-	}
+	};
+	
+	
+	this.update = function ( delta, camera ) {
+	};
 
 /*	function partLoaded ( geometry ) {
 
@@ -378,4 +382,4 @@ var CityWorld = function ( shared ) {
 
 		}
 	}*/
-}
+};
