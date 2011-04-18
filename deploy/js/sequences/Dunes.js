@@ -110,6 +110,8 @@ var Dunes = function ( shared ) {
 		setRollCameraPosTarget( camera, new THREE.Vector3( 0, 150, -1600 ), shared.influenceSpheres[ 0 ].center );
 
 		renderer.setClearColor( world.scene.fog.color );
+		
+		shared.started.dunes = true;
 
 	};
 

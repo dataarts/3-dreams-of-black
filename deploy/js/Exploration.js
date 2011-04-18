@@ -102,20 +102,29 @@ var Exploration = function ( shared ) {
 
 		scene.addChild( camera );
 
-		// hide soup
+		// hide soup (if it wasn't yet activated)
 
-		THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
+		if ( !shared.started[ worldId ] ) {
+		
+			THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
 
-			if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
-				|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
+				if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
+					|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
 
-				if ( ! none.name.toLowerCase.find( "portal" ) )
-					node.visible = false; 
+					var name = node.name.toLowerCase();
+					
+					if ( ! ( name && name.indexOf( "portal" ) >= 0 ) ) {
+						
+						node.visible = false;					
+						
+					}
 
-			}
+				}
 
-		} );
+			} );
 
+		}
+		
 		start = lastTime = new Date().getTime();
 
 	};

@@ -72,6 +72,8 @@ var City = function ( shared ) {
 
 		renderer.setClearColor( world.scene.fog.color );
 
+		shared.started.city = true;
+
 	};
 
 	this.hide = function () {

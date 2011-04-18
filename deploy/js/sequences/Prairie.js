@@ -75,6 +75,8 @@ var Prairie = function ( shared ) {
 
 		renderer.setClearColor( world.scene.fog.color );
 
+		shared.started.prairie = true;
+		
 	};
 
 	this.hide = function () {
