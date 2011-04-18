@@ -19,14 +19,14 @@ var Exploration = function ( shared ) {
 	cameras.prairie.movementSpeed = 50;
 	cameras.prairie.lookSpeed = 3;
 	cameras.prairie.constrainVertical = [ -0.4, 0.4 ];
-	cameras.prairie.autoForward = false;
+	cameras.prairie.autoForward = true;
 	cameras.prairie.position.set( 0, 0, 0 );
 
 	cameras.city = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 	cameras.city.movementSpeed = 100;
 	cameras.city.lookSpeed = 3;
 	cameras.city.constrainVertical = [ -0.4, 0.4 ];
-	cameras.city.autoForward = false;
+	cameras.city.autoForward = true;
 	cameras.city.position.set( 0, 0, 0 );
 
 	var world, scene,
@@ -98,10 +98,12 @@ var Exploration = function ( shared ) {
 
 		world = shared.worlds[ worldId ];
 		scene = world.scene;
-		camera = cameras[ worldId ];
-
+		camera = cameras[ worldId ];		
+		
 		scene.addChild( camera );
 
+		camera.position.set( 0, 0, 0 );
+		
 		// hide soup (if it wasn't yet activated)
 
 		if ( !shared.started[ worldId ] ) {
