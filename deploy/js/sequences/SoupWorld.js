@@ -18,6 +18,7 @@ var SoupWorld = function ( shared ) {
 	//directionalLight.color.setHSV( 0.5411764705882353, 0.12352941176470589, 0.7294117647058823 );
 	this.scene.addLight( directionalLight );
 
+	that.scene.collisions = new THREE.CollisionSystem();
 
 	// reference cube
 	var cube = new THREE.Cube(100,50,100);

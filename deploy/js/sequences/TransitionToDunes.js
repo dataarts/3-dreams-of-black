@@ -11,8 +11,8 @@ var TransitionToDunes = function ( shared ) {
 
 		shared.signals.mousemoved.add( function () {
 
-			mouseX = ( shared.mouseX / shared.screenWidth ) * 200 - 100;
-			mouseY = ( shared.mouseY / shared.screenHeight ) * 200 - 100;
+			mouseX = ( shared.mouse.x / shared.screenWidth ) * 200 - 100;
+			mouseY = ( shared.mouse.y / shared.screenHeight ) * 200 - 100;
 
 		} );
 

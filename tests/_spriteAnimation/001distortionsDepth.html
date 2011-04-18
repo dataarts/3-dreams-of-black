@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>001 - Still paralax</title>
+  <meta charset="utf-8">
+  <style type="text/css">
+    body {
+      background: #ccc;
+      color: #ffffff;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+      text-align: left;
+    }
+
+    #options {
+      padding: 10px;
+      text-aligh: left;
+      font-family: Georgia, serif;
+    }
+
+    canvas {
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="options">
+  Camera look depth: <input size="5" id="cpt" value="1500"> |
+  Camera max x: <input size="3" id="cmx" value="30"> |
+  Camera max y: <input size="3" id="cmy" value="10">
+</div>
+
+<script type="text/javascript" src="build_r38/Three_modified.js"></script>
+<script type="text/javascript" src="src/distortingShader.js"></script>
+<script type="text/javascript" src="src/distortingShaderWire.js"></script>
+<script type="text/javascript" src="src/depthShader.js"></script>
+<script type="text/javascript">
+  var viewWidth = 640;
+  var viewHeight = 360;
+  var aspect = viewWidth/viewHeight;
+
+  var fov = 54;
+  var cpt = -30;
+  var near = 1;
+  var far = 3100;
+
+  var container, camera, scene, sceneDepth, webglRenderer, glContext;
+  var readBuffer = new Uint8Array(4);
+
+  var mesh = [];
+
+  var mouseXYZ = new THREE.Vector3();
+  var mouseUVW = new THREE.Vector3();
+  var targetPos = new THREE.Vector4();
+
+  var windowHalfX = window.innerWidth >> 1;
+  var windowHalfY = window.innerHeight >> 1;
+
+  var distortingShader = distortingShaderSource[ 'distortingShader' ];
+  var distortingShaderWire = distortingShaderWireSource[ 'distortingShaderWire' ];
+  var depthShader = depthShaderSource[ 'depthShader' ];
+
+  //var target1 = new THREE.WebGLRenderTarget();
+
+  function meshLoader(filename, id) {
+    loader = new THREE.JSONLoader();
+    loader.load({ model: filename, callback: function(g) {
+      addMesh(g, id);
+    } });
+  }
+  function addMesh(geometry, id) {
+    mesh[id] = {
+      "name": name,
+      "geometry": geometry
+    };
+    mesh.loaded++;
+    if (mesh.loaded == mesh.count) (init());
+  }
+  mesh.count = 3;
+  mesh.loaded = 0;
+  meshLoader( "models/grid0.js", 0);
+  meshLoader( "models/grid1.js", 1);
+  meshLoader( "models/grid2.js", 2);
+
+  function init() {
+
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    container.addEventListener('mousemove', mouseMove, false);
+
+    rtTexture = new THREE.WebGLRenderTarget( viewWidth, viewHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
+
+    camera = new THREE.Camera(fov, aspect, near, far);
+    camera.updateMatrix();
+
+    scene = new THREE.Scene();
+    scene.addLight(new THREE.AmbientLight(0x000000));
+    sceneDepth = new THREE.Scene();
+    sceneDepth.addLight(new THREE.AmbientLight(0x000000));
+
+    var adj = Math.tan(fov * Math.PI / 360) * 2;
+
+    addLayer("textures/sample/01.jpg", 1.104, 1.24, -3000, adj, 1, 0);
+    addLayer("textures/sample/02.png", 1.104, 1.24, -900, adj, 2, 0);
+
+    addLayer("textures/sample/03.png", 1.104, 1.24, -550, adj, 3, 1);
+    addLayer("textures/sample/04.png", 1.104, 1.24, -450, adj, 4, 1);
+    addLayer("textures/sample/05.png", 1.104, 1.24, -350, adj, 5, 1);
+
+    addLayer("textures/sample/06.png", 1.104, 1.24, -320, adj, 6, 2);
+    addLayer("textures/sample/07.png", 1.104, 1.24, -220, adj, 7, 2);
+    addLayer("textures/sample/08.png", 1.104, 1.24, -100, adj, 8, 2);
+
+    try {
+      webglRenderer = new THREE.WebGLRenderer(scene);
+      webglRenderer.setSize(viewWidth, viewHeight);
+      container.appendChild(webglRenderer.domElement);
+      glContext = webglRenderer.getGLContext();
+    } catch (e) {
+      console.log(e);
+    }
+
+    loop();
+  }
+
+  var mat = {};
+  var matDepth = {};
+
+  function addLayer(path, w, h, d, a, id, lod) {
+    var tex = ImageUtils.loadTexture(path);
+
+    var uniforms = Uniforms.clone(depthShader.uniforms);
+    uniforms[ 'sheet' ].texture = tex;
+    uniforms[ 'mouseXYZ' ].value = new THREE.Vector3();
+    uniforms[ 'aspect' ].value = aspect;
+    uniforms[ 'near' ].value = near;
+    uniforms[ 'far' ].value = far;
+
+    mat[id] = new THREE.MeshShaderMaterial({
+          uniforms: uniforms,
+          vertexShader: distortingShader.vertexShader,
+          fragmentShader: distortingShader.fragmentShader,
+          blending: THREE.BillboardBlending
+        });
+
+    matDepth[id] = new THREE.MeshShaderMaterial({
+          uniforms: uniforms,
+          vertexShader: depthShader.vertexShader,
+          fragmentShader: depthShader.fragmentShader,
+          blending: THREE.BillboardBlending
+        });
+
+    var p = new THREE.Mesh(mesh[lod].geometry, mat[id]);
+    p.scale.x *= w;
+    p.scale.y *= h;
+    p.position.z = d;
+    p.scale.x *= Math.abs(d) * a * aspect;
+    p.scale.y *= Math.abs(d) * a;
+    p.doubleSided = false;
+    scene.addObject(p);
+
+    var pd = new THREE.Mesh(mesh[lod].geometry, matDepth[id]);
+    pd.scale.x *= w;
+    pd.scale.y *= h;
+    pd.position.z = d;
+    pd.scale.x *= Math.abs(d) * a * aspect;
+    pd.scale.y *= Math.abs(d) * a;
+    pd.doubleSided = false;
+    sceneDepth.addObject(pd);
+
+    return p;
+  }
+function mouseMove(e) {
+  mouseXYZ.x = (event.clientX - container.offsetLeft - viewWidth / 2) / viewWidth * 2;
+  mouseXYZ.y = (event.clientY - container.offsetTop - viewHeight / 2) / viewHeight * 2;
+  mouseUVW.x = (event.clientX - container.offsetLeft) / viewWidth;
+  mouseUVW.y = (event.clientY - container.offsetTop) / viewHeight / aspect;
+
+  //console.log(mouseUVW.x+','+mouseUVW.y+','+mouseXYZ.z);
+  //console.log(Math.floor(mouseUVW.x*viewWidth)+'.'+Math.floor(mouseUVW.y*viewHeight * aspect)+'.'+mouseXYZ.z);
+    for (i = 1; i <= 8; i++) {
+      mat[i].uniforms[ 'mouseXYZ' ].value.x = mouseXYZ.x * aspect;
+      mat[i].uniforms[ 'mouseXYZ' ].value.y = -mouseXYZ.y;
+      mat[i].uniforms[ 'mouseXYZ' ].value.z = mouseXYZ.z;
+    }
+  }
+
+  function loop() {
+    var cpt = parseFloat(document.getElementById("cpt").value) * -1 || -100;
+    var cmx = parseFloat(document.getElementById("cmx").value) || 1;
+    var cmy = parseFloat(document.getElementById("cmy").value) || 1;
+
+    targetPos.x = mouseXYZ.x * cmx;
+    targetPos.y = mouseXYZ.y * cmy;
+
+    camera.position.x += (targetPos.x - camera.position.x) / 10;
+    camera.position.y += (targetPos.y - camera.position.y) / 10;
+
+    camera.target.position = new THREE.Vector3(0, 0, cpt);
+
+    webglRenderer.render( sceneDepth, camera, rtTexture, true );
+    glContext.readPixels(Math.floor(mouseUVW.x*viewWidth), 360-Math.floor(mouseUVW.y*viewHeight * aspect), 1, 1, glContext.RGBA, glContext.UNSIGNED_BYTE, readBuffer);
+
+
+    mouseXYZ.z = readBuffer[0];
+
+
+    //webglDepthRenderer.clear();
+    //rtTexture
+    webglRenderer.render(scene, camera);
+
+
+    requestAnimFrame(loop);
+
+  }
+
+  window.requestAnimFrame = (function() {
+    return  window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame
+  })();
+</script>
+</body>
+</html>

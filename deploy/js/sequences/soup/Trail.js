@@ -19,11 +19,10 @@ var Trail = function ( numOfInstances, scene ) {
 
 	var i;
 
-	this.addInstance = function( geometry, predefined, tree, materialArray ) {
+	this.addInstance = function( geometry, predefined, tree ) {
 		
 		var predefined = predefined || null;
 		var tree = tree || false;
-		var materialArray = materialArray || [new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } )];
 
 		for ( i = 0; i < that.initSettings.numOfInstances; ++i ) {
 			
@@ -31,7 +30,8 @@ var Trail = function ( numOfInstances, scene ) {
 				continue;
 			}
 
-			var c = new THREE.Mesh( geometry, materialArray[i%materialArray.length] );
+			var c = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+
 			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
 			
 			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree};
@@ -72,7 +72,11 @@ var Trail = function ( numOfInstances, scene ) {
 				c.rotation.z = 0;
 				c.rotation.y = 0;
 
-				var amount = 4;
+				var amount = 8;
+
+				if (tree) {
+					amount = 10;
+				}
 
 				var torotx = 0;
 				var toroty = 0;
@@ -178,7 +182,8 @@ var Trail = function ( numOfInstances, scene ) {
 				c.scale.x = c.scale.y= c.scale.z = 0.001*that.settings.scale;
 				var xscale = zscale = yscale = 0.1*that.settings.scale;
 				if (!tree) {
-					yscale = 0.07*that.settings.scale;
+					yscale = 0.3*that.settings.scale;
+					xscale = zscale = 0.4*that.settings.scale;
 				}
 
 				var growTween = new TWEEN.Tween(c.scale)

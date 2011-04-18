@@ -4,7 +4,7 @@ var Signal = signals.Signal;
 
 var audio, sequencer,
 camera, camera2, scene, renderer, renderTarget,
-container, events;
+container, loading, shared;
 
 var tune, time, stats, gui;
 
@@ -39,13 +39,11 @@ function init() {
 		viewportWidth: WIDTH,
 		viewportHeight: HEIGHT,
 
-		mouseX: 0,
-		mouseY: 0,
+		mouse : { x: 0, y : 0 },
 
 		signals: {
 
-			cameraFov : new Signal(),
-
+			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
@@ -53,6 +51,8 @@ function init() {
 			windowresized : new Signal()
 
 		},
+
+		worlds: { },
 
 		renderer: renderer,
 		renderTarget: renderTarget
@@ -66,16 +66,19 @@ function init() {
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	loadProgress = new LoadProgress( document.getElementById( 'loadProgress' ) );
-	shared.signals.loadItemAdded.add( loadProgress.addItem );
-	shared.signals.loadItemCompleted.add( loadProgress.completeItem );
+	loading = new LoadingBar();
+	shared.signals.loadBegin.add( loading.loadBegin );
+	shared.signals.loadItemAdded.add( loading.addItem );
+	shared.signals.loadItemCompleted.add( loading.completeItem );
+	document.getElementById( 'launcher' ).appendChild( loading.getDomElement() );
 
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 75 ), 1 );
-	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.1647, 0.005, 2096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
+	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 2 );
+	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
+	sequencer.add( new NoiseEffect( shared, 0.1647, 0.005, 2096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 
 }
@@ -163,8 +166,8 @@ function onDocumentKeyDown( event ) {
 
 function onDocumentMouseMove( event ) {
 
-	shared.mouseX = event.clientX;
-	shared.mouseY = event.clientY;
+	shared.mouse.x = event.clientX;
+	shared.mouse.y = event.clientY;
 
 	shared.signals.mousemoved.dispatch();
 

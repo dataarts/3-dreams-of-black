@@ -2,19 +2,42 @@ var DunesWorld = function ( shared ) {
 
 	var that = this,
 	scale = 0.15,
-	TILE_SIZE = 30000*scale;
+	TILE_SIZE = 30000 * scale;
+
+	// camera front facing direction vector
+
+	var dirVec = new THREE.Vector3();
+	
+	// camera roll parameters
+	
+	var startRoll = Math.PI, deltaRoll = 0, rollAngle = Math.PI, rollSpeed = Math.PI,
+		startSpeed, deltaSpeed = 0, speedInside = -90, speedOutside = 90;
+	
+	this.liftSpeed = 250;
+	this.startLift = 0.29,
+	this.endLift   = 0.375;
+
+	// debug
+
+	var colorHighlight = new THREE.Color( 0xffaa00 );
+	var colorNormal = new THREE.Color( 0x666666 );
+
+	// tiles
 
 	var randomAdded = 0;
 	var tiles = [ [], [], [] ]; // 9x9 grid
 	var lastx, lastz;
 
 	// static tiles
+
 	var walkPosition, prairiePosition, cityPosition;
 	var sceneWalk, scenePrairie, sceneCity;
 
 	this.scene = new THREE.Scene();
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00030 );
-	this.scene.fog.color.setHSV( 0.6, 0.1235, 1 );
+	this.scene.collisions = new THREE.CollisionSystem();
+
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0002529411764705882 );
+	this.scene.fog.color.setHSV( 0.5764705882352941,  0.38235294117647056,  1  );
 
 	// Lights
 
@@ -23,22 +46,74 @@ var DunesWorld = function ( shared ) {
 	this.scene.addLight( ambient );
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight1.position.set( -0.7143659529263534, 0.5424784186070764, 0.4420389696001798 );
-	directionalLight1.color.setHSV( 0, 0, 1 );
+	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
+	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
 	this.scene.addLight( directionalLight1 );
 
 	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
-	directionalLight2.position.set( -0.19979561807642718, -0.1646853205760528,  0.9658987815419486 );
-	directionalLight2.color.setHSV( 0, 0, 0.306 );
+	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
+	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
 	this.scene.addLight( directionalLight2 );
 
 	// reference cube
-	var cube = new THREE.Cube(100,100,100);
+
+	var cube = new THREE.Cube( 100, 100, 100 );
 	var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 	that.refCube = new THREE.Mesh( cube, material );
 	that.refCube.visible = false;
 	that.scene.addObject( that.refCube );
 
+	// islands influence spheres
+
+	shared.influenceSpheres = [ 
+		
+		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1100, state: 0, type: 0 },
+		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1100, state: 0, type: 0 },
+		
+		{ name: "prairiePortal", center: new THREE.Vector3( -824, 2365, 4336 ), radius: 200, state: 0, type: 1 },
+		{ name: "cityPortal",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 200, state: 0, type: 1 }
+		
+	];
+
+	var showSpheres = true;
+	
+	if ( showSpheres ) {
+	
+		var sphere = new THREE.Sphere( 1, 64, 32 );
+		//var sphere = new THREE.Icosahedron( 4 );
+		var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
+
+		for ( var i = 0; i < shared.influenceSpheres.length; i ++ ) {
+			
+			var s = shared.influenceSpheres[ i ];
+			
+			if ( s.type == 1 ) {
+			
+				var radius = s.radius;
+				var center = s.center;
+			
+				//var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+				//var sphereObject = new THREE.Mesh( sphere, wireMaterial );
+				
+				var particleMaterial = new THREE.ParticleBasicMaterial( { size: 5, color:0xff7700, map: sprite, transparent: true } );
+				var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
+				sphereObject.sortParticles = true;
+				
+				sphereObject.name = s.name;
+				
+				sphereObject.position.copy( center );
+				sphereObject.scale.set( radius, radius, radius );
+				
+				s.mesh = sphereObject;
+				
+				that.scene.addObject( sphereObject );
+				
+			}
+
+		}
+
+	}
+	
 	// Mesh
 
 	var loader = new THREE.SceneLoader();
@@ -52,24 +127,39 @@ var DunesWorld = function ( shared ) {
 		scene.position = position;
 		scene.updateMatrix();
 
+		for ( var i = 0, l = scene.objects.length; i < l; i ++ ) {
+
+			var object = scene.objects[ i ];
+			object.matrixAutoUpdate = false;
+			object.updateMatrix();
+
+		}
+		
 		markColliders( scene );
 		
 		that.scene.addChild( scene );
+		
+		if ( scene.collisions ) {
+		
+			that.scene.collisions.merge( scene.collisions );
+
+		}
 
 	};
 
 	function walkLoaded( result ) {
 
 		sceneWalk = result.scene;
-		walkPosition = new THREE.Vector3(0,0,0*TILE_SIZE);
+		walkPosition = new THREE.Vector3( 0, 0, 0 * TILE_SIZE );
 		sceneWalk.rotation.z = Math.PI;
 		addDunesPart( sceneWalk, walkPosition );
+
 	};
 
 	function prairieLoaded( result ) {
 
 		scenePrairie = result.scene;
-		prairiePosition = new THREE.Vector3(0,0,1*TILE_SIZE);
+		prairiePosition = new THREE.Vector3( 0, 0, 1 * TILE_SIZE );
 		addDunesPart( scenePrairie, prairiePosition );
 
 	};
@@ -77,7 +167,7 @@ var DunesWorld = function ( shared ) {
 	function cityLoaded( result ) {
 
 		sceneCity = result.scene;
-		cityPosition = new THREE.Vector3(0,0,2*TILE_SIZE);
+		cityPosition = new THREE.Vector3( 0, 0, 2 * TILE_SIZE );
 		showHierarchyNotColliders( sceneCity, false );
 		addDunesPart( sceneCity, cityPosition );
 
@@ -85,15 +175,19 @@ var DunesWorld = function ( shared ) {
 
 	function randomLoaded( result ) {
 
-		var x = (randomAdded%3);
-		var z = Math.floor(randomAdded/3);
+		var x = ( randomAdded % 3 );
+		var z = Math.floor( randomAdded / 3 );
 		//console.log(x+" - "+z);
 
 		result.scene.rotation.z = getRandomRotation();
-		if (x == 1 && (z == 1 || z == 2)) {
+
+		if (x == 1 && ( z == 1 || z == 2 ) ) {
+
 			showHierarchyNotColliders( result.scene, false );
+
 		}
-		addDunesPart(result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE));
+
+		addDunesPart( result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE) );
 
 		tiles[z][x] = result.scene;
 		++randomAdded;
@@ -118,10 +212,13 @@ var DunesWorld = function ( shared ) {
 
 		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
 			
-			for( var i = 0; i < THREE.Collisions.colliders.length; i++ ) {
+			var colliders = scene.collisions.colliders;
+
+			for( var i = 0; i < colliders.length; i++ ) {
 				
-				if ( THREE.Collisions.colliders[ i ].mesh == node ) {
+				if ( colliders[ i ].mesh == node ) {
 				
+					//colliders[ i ].mesh.visible = true;
 					node.__isCollider = true; 
 
 				}
@@ -133,41 +230,50 @@ var DunesWorld = function ( shared ) {
 	};
 
 	// static parts
-	loader.load( "files/models/dunes/D_tile_walk/D_tile_walk.js", function(){}, walkLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_prairie/D_tile_prairie.js", function(){}, prairieLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, cityLoaded, function(){});
+
+	loader.load( "files/models/dunes/D_tile_walk.js", walkLoaded );
+	loader.load( "files/models/dunes/D_tile_prairie.js", prairieLoaded );
+	loader.load( "files/models/dunes/D_tile_city.js", cityLoaded );
 
 	// random parts
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_2/D_tile_2.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_3/D_tile_3.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_4/D_tile_4.js", function(){}, randomLoaded, function(){});
-	loader.load( "files/models/dunes/D_tile_1/D_tile_1.js", function(){}, randomLoaded, function(){});
 
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_2.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_3.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_2.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_3.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", randomLoaded );
+	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
 
 	function getRandomRotation () {
-		return Math.round(Math.random()*4)*(Math.PI/2);
+
+		return Math.round( Math.random() * 4 ) * ( Math.PI / 2 );
+
 	}
 
-	function updateTiles (z,x) {
+	function updateTiles ( z, x ) {
 	
-		var difz = lastz-z;
-		var difx = lastx-x;
+		var difz = lastz - z;
+		var difx = lastx - x;
 	
-		if (isNaN(difz) || isNaN(difx)) {
+		if ( isNaN(difz) || isNaN(difx) ) {
+
 			return;
+
 		}
 
 		var t0, t1, t2;
 
 		// z
-		if (difz < 0) {
+		
+		if ( difz < 0 ) {
+
 			//console.log("z0");
-			var row = tiles.shift(); 
+
+			var row = tiles.shift();
+
 			t0 = row[0];
 			t1 = row[1];
 			t2 = row[2];
@@ -182,9 +288,12 @@ var DunesWorld = function ( shared ) {
 	
 			tiles.push(row);
 
-		} else if (difz > 0) {	
+		} else if ( difz > 0 ) {
+
 			//console.log("z1");
+
 			var row = tiles.pop(); 
+
 			t0 = row[0];
 			t1 = row[1];
 			t2 = row[2];
@@ -202,8 +311,11 @@ var DunesWorld = function ( shared ) {
 		}
 
 		// x
-		if (difx < 0) {
+		
+		if ( difx < 0 ) {
+
 			//console.log("x0");
+
 			t0 = tiles[0].shift();
 			t1 = tiles[1].shift();
 			t2 = tiles[2].shift();
@@ -220,8 +332,10 @@ var DunesWorld = function ( shared ) {
 			tiles[1].push(t1);
 			tiles[2].push(t2);
 		
-		} else if (difx > 0) {	
+		} else if ( difx > 0 ) {
+
 			//console.log("x1");
+
 			t0 = tiles[0].pop();
 			t1 = tiles[1].pop();
 			t2 = tiles[2].pop();
@@ -253,14 +367,23 @@ var DunesWorld = function ( shared ) {
 		var visible2 = showHideStaticTiles(t2.position, true);
 
 		// temp, since visible don´t seem to effect scenes
-		if (visible0) {
+
+		if ( visible0 ) {
+
 			showHierarchyNotColliders( t0, false );
+
 		}
-		if (visible1) {
+
+		if ( visible1 ) {
+
 			showHierarchyNotColliders( t1, false );
+
 		}
-		if (visible2) {
+
+		if ( visible2 ) {
+
 			showHierarchyNotColliders( t2, false );
+
 		}
 
 		t0.updateMatrix();
@@ -270,50 +393,173 @@ var DunesWorld = function ( shared ) {
 	};
 
 	// for the static tiles
+
 	function showHideStaticTiles ( position, show ) {
 
-		if (position.x == walkPosition.x && position.z == walkPosition.z) {
+		if ( position.x == walkPosition.x && position.z == walkPosition.z ) {
+
 			showHierarchyNotColliders( sceneWalk, show );
 			sceneWalk.updateMatrix();
 			return true;
+
 		}
 
-		if (position.x == prairiePosition.x && position.z == prairiePosition.z) {
+		if ( position.x == prairiePosition.x && position.z == prairiePosition.z ) {
+
 			showHierarchyNotColliders( scenePrairie, show );
 			scenePrairie.updateMatrix();
 			return true;
+
 		}
 
-		if (position.x == cityPosition.x && position.z == cityPosition.z) {
+		if ( position.x == cityPosition.x && position.z == cityPosition.z ) {
+
 			showHierarchyNotColliders( sceneCity, show );
 			sceneCity.updateMatrix();
 			return true;
+
 		}
 
-	}
+	};
 
-	this.update = function ( camera ) {
+	function checkInfluenceSpheres( camera, deltaSec ) {
 
-		that.refCube.position.x = camera.position.x + Math.cos( camera.theta )*2000;
-		that.refCube.position.z = camera.position.z + Math.sin( camera.theta )*2000;
+		var i, d, influenceSphere;
+		
+		var currentPosition = camera.matrixWorld.getPosition();
+
+		// domElement.innerHTML = currentPosition.x.toFixed( 2 ) + " " + currentPosition.y.toFixed( 2 ) + " " + currentPosition.z.toFixed( 2 );
+		
+		for( i = 0; i < shared.influenceSpheres.length; i ++ ) {
+			
+			influenceSphere = shared.influenceSpheres[ i ];
+			
+			d = influenceSphere.center.distanceTo( currentPosition );
+			
+			if( d < influenceSphere.radius ) {
+				
+				if ( influenceSphere.mesh ) 
+					influenceSphere.mesh.materials[ 0 ].color = colorHighlight;
+				
+				// flip sphere
+				
+				if ( influenceSphere.type == 0 ) {
+					
+					// entering
+					
+					if ( influenceSphere.state == 0 ) {
+						
+						influenceSphere.state = 1;
+						
+						startRoll = camera.roll;
+						deltaRoll = rollAngle;
+						
+						deltaSpeed = speedInside;
+
+						this.liftSpeed = 0;
+						
+						//console.log( "entered [" + influenceSphere.name + "]" );
+
+					}
+					
+				// portal
+
+				} else if ( influenceSphere.type == 1 ) {
+					
+					console.log( "entered portal [" + influenceSphere.name + "]" );
+
+				}
+				
+			} else {
+				
+				if ( influenceSphere.mesh ) 
+					influenceSphere.mesh.materials[ 0 ].color = colorNormal;
+				
+				// flip sphere
+				
+				if ( influenceSphere.type == 0 ) {
+				
+					// leaving
+					
+					if ( influenceSphere.state == 1 ) {
+						
+						influenceSphere.state = 0;
+						
+						startRoll = camera.roll;
+						deltaRoll = rollAngle;
+						
+						deltaSpeed = speedOutside;
+						
+						//console.log( " left [" + influenceSphere.name + "]" );
+
+					}
+					
+				}
+
+			}
+			
+		}
+		
+		if ( deltaRoll > 0 ) {
+			
+			deltaRoll -= deltaSec * rollSpeed;
+			camera.roll = startRoll + ( rollAngle - deltaRoll );
+			
+			camera.movementSpeed += deltaSpeed * deltaSec;
+
+		} else {
+			
+			camera.roll = startRoll + rollAngle;
+
+		}
+
+	};
+	
+	this.update = function ( delta, camera ) {
+
+		// check if we are close to islands
+		
+		checkInfluenceSpheres( camera, delta / 1000 );
+		
+		// for the moment RollCamera doesn't have straightforward way to get orientation yet
+		// so we attach child in front of it to get direction vector
+
+		var front = shared.frontCube.matrixWorld.getPosition();
+		var current = camera.matrixWorld.getPosition();
+
+		dirVec.sub( front, current );
+		dirVec.normalize();
+		
+		//console.log( dirVec.x, dirVec.y, dirVec.z );
+		//console.log( current.x, current.y, current.z );
+		
+		var z = Math.round( ( camera.position.z  + 2000 * dirVec.z ) / TILE_SIZE );
+		var x = Math.round( ( camera.position.x  + 2000 * dirVec.x ) / TILE_SIZE );
+		
+		//that.refCube.position.x = camera.position.x + Math.cos( camera.theta ) * 2000;
+		//that.refCube.position.z = camera.position.z + Math.sin( camera.theta ) * 2000;
 		//that.refCube.position.y = camera.position.y;
+
+		//var z = Math.round( that.refCube.position.z / TILE_SIZE );
+		//var x = Math.round( that.refCube.position.x / TILE_SIZE );
 
 		//var z = Math.round( camera.position.z / TILE_SIZE );
 		//var x = Math.round( camera.position.x / TILE_SIZE );
-		var z = Math.round( that.refCube.position.z / TILE_SIZE );
-		var x = Math.round( that.refCube.position.x / TILE_SIZE );
 
 		// did we change?
-		if (z != lastz || x != lastx) {
-			updateTiles(z,x);
+
+		if ( z != lastz || x != lastx ) {
+
+			updateTiles( z, x );
+
 		}
 
 		lastz = z;
 		lastx = x;
 
-	}
+	};
 
-	//loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", function(){}, addDunesPart, function(){});
+	//loader.load( "files/models/dunes/D_tile_city/D_tile_city.js", addDunesPart );
 
 
 

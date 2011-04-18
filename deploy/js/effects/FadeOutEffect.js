@@ -23,7 +23,7 @@ var FadeOutEffect = function ( hex, shared ) {
 
 	this.update = function ( f ) {
 
-		material.opacity = 1 - f;
+		material.opacity = f;
 		renderer.render( scene, camera, renderTarget );
 
 	};

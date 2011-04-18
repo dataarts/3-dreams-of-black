@@ -2,15 +2,41 @@ var Dunes = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var camera, world, soup
-	renderer = shared.renderer, renderTarget = shared.renderTarget;
-	var delta, time, oldTime;
+	var camera, world, soup,
+	renderer = shared.renderer, 
+	renderTarget = shared.renderTarget;
+	
+	var ray = new THREE.Ray();
+	ray.origin.y = 100;
+	ray.direction = new THREE.Vector3(0, -1, 0);
+	var positionVector = new THREE.Vector3();
 
-	var speedStart = 200.0,
-		speedEnd = 400.0;
+	var delta, deltaSec, currentTime, oldTime = -1;
 
+	var speedStart = 150,
+		speedEnd = 300;
+
+	var frontCube;
+
+	// debug
+
+	var domElement = document.createElement( 'div' );
+	domElement.style.position = "absolute";
+	domElement.style.right = "0px";
+	domElement.style.top = "0px";
+	domElement.style.background = "#000";
+	domElement.style.color = "#fff";
+	domElement.style.fontWeight = "bold";
+	domElement.style.padding = "20px";
+	domElement.style.zIndex = 500;
+	domElement.style.width = "100%";
+	domElement.style.textAlign = "right";
+	domElement.style.display = "none";
+	document.body.appendChild( domElement )
+	
 	this.init = function () {
 
+		/*
 		var autoCameraPars = {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
@@ -30,30 +56,63 @@ var Dunes = function ( shared ) {
 
 		};
 		
-		camera = new THREE.QuakeCamera( autoCameraPars );
+		//camera = new THREE.QuakeCamera( autoCameraPars );
 		//camera = new THREE.QuakeCamera( testCameraPars );
-
-		camera.lon = 100;
-
+		//camera.lon = 90;
+		*/
+		
+		camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+		camera.movementSpeed = speedStart;
+		camera.lookSpeed = 3;
+		camera.constrainVertical = [ -0.4, 0.4 ];
+		camera.autoForward = true;
+		//camera.mouseLook = false;	
+		
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
 
-		shared.signals.cameraFov.add( function ( value ) {
+		shared.worlds.dunes = world;
+		
+		//frontCube = new THREE.Mesh( new THREE.Cube( 1, 1, 1 ), new THREE.MeshLambertMaterial( { color:0xff0000 } ) );
+		frontCube = new THREE.Object3D();
+		frontCube.position.set( 0, 0, -5 );
+		frontCube.scale.set( 1, 1, 1 );
+		frontCube.visible = true;
+		camera.addChild( frontCube );
 
-			camera.fov = value;
-			camera.updateProjectionMatrix();
+		// RollCamera must be added to scene
 
-		} );
+		world.scene.addChild( camera );
+		
+		shared.frontCube = frontCube;
+
+	};
+	
+	function setRollCameraPosTarget( camera, cameraPosition, targetPosition ) {
+
+		var dirVec = new THREE.Vector3(),
+			cameraGround = new THREE.Vector3(),
+			targetGround = new THREE.Vector3();
+		
+		cameraGround.copy( cameraPosition );
+		cameraGround.y = 0;
+		
+		targetGround.copy( targetPosition );
+		targetGround.y = 0;
+
+		dirVec.sub( cameraGround, targetGround );
+		dirVec.normalize();
+		
+		camera.forward.copy( dirVec );
+		camera.update();
 
 	};
 
 	this.show = function ( f ) {
 
-		oldTime = new Date().getTime();
+		// look at prairie island
 
-		camera.position.x = 0;
-		camera.position.y = 150;
-		camera.position.z = -1600;
+		setRollCameraPosTarget( camera, new THREE.Vector3( 0, 150, -1600 ), shared.influenceSpheres[ 0 ].center );
 
 		renderer.setClearColor( world.scene.fog.color );
 
@@ -63,53 +122,77 @@ var Dunes = function ( shared ) {
 
 	};
 
+	
 	this.update = function ( progress, time, start, end ) {
 
-		time = new Date().getTime();
-		delta = time - oldTime;
-		oldTime = time;
+		currentTime = new Date().getTime();
+		
+		if ( oldTime == -1 ) oldTime = currentTime;
+		
+		delta = currentTime - oldTime;
+		oldTime = currentTime;
+
+		deltaSec = delta / 1000;
 
 		THREE.AnimationHandler.update( delta );
-
+		
 		// not too low
 
-		camera.position.y = cap_bottom( camera.position.y, 150 );
+		//camera.position.y = cap_bottom( camera.position.y, 150 );
+
+		// some sort of ground collision
+		ray.origin.x = frontCube.matrixWorld.n14;
+		ray.origin.y = frontCube.matrixWorld.n24+400;
+		ray.origin.z = frontCube.matrixWorld.n34;
+
+		if (ray.origin.y < 1000) {
+
+			var c = world.scene.collisions.rayCastNearest( ray );
+			if (c) {
+				positionVector.copy( ray.origin );
+				positionVector.addSelf( ray.direction.multiplyScalar( c.distance*0.15 ) );
+				positionVector.y += 50;
+
+				if (positionVector.y > 0 && camera.position.y < positionVector.y) {
+					camera.position.y = positionVector.y;
+				}
+			}
+		
+		}
 
 		// not too high
 
 		camera.position.y = cap_top( camera.position.y, 5000 );
 
 		// not too high before lift-off
-
-		var startLift = 0.29,
-			endLift   = 0.4,
-			liftSpeed = 250;
 		
-		if ( progress < startLift ) {
+		if ( progress < world.startLift ) {
 
 			camera.position.y = cap_top( camera.position.y, 150 );
 
 			// small bump
 
-			camera.position.y += Math.sin( time / 150 );
+			camera.position.y += Math.sin( time / 100 )*0.5;
 
 			// small roll
 
-			camera.up.z = Math.sin( time / 250 ) / 200;
-			camera.up.x = Math.cos( time / 250 ) / 200;
+			// RollCamera doesn't use up vector
 
-			camera.position.x = 0;
+			//camera.up.z = Math.sin( time / 250 ) / 200;
+			//camera.up.x = Math.cos( time / 250 ) / 200;
+
+			//camera.position.x = 0;
 
 		}
 
 		// lift-off
 
-		var localProgres = ( progress - startLift ) / ( endLift - startLift );
+		var localProgres = ( progress - world.startLift ) / ( world.endLift - world.startLift );
 
-		if ( progress > startLift && progress < endLift ) {
+		if ( progress > world.startLift && progress < world.endLift ) {
 
-			camera.position.y += liftSpeed * ( delta / 1000 );
-			camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
+			camera.position.y += world.liftSpeed * deltaSec;
+			//camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 
 			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
 			//world.scene.fog.density = 0.0004 - 0.0001 * localProgres;
@@ -117,8 +200,7 @@ var Dunes = function ( shared ) {
 
 		}
 
-
-		world.update( camera );
+		world.update( delta, camera );
 		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );
