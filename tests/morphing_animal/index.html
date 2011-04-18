@@ -33,14 +33,14 @@
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
 			var animation;
-			var animal;
+			var animal, animal2, animal3;
 
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 			document.addEventListener( 'click', onDocumentMouseClick, false );
 
 			
 			var loader = new THREE.JSONLoader();
-			loader.load( { model: "assets/wolfBison2.js", callback: init } );
+			loader.load( { model: "assets/quadruped_A.js", callback: init } );
 
 		//	init();
 
@@ -55,56 +55,42 @@
 				scene.fog = new THREE.FogExp2( 0x535758, 0.0004705882352941177 );
 				scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
 
-/*				var light = new THREE.PointLight( 0xff2200 );
-				light.position.set( 100, 100, 0 );
-				scene.addChild( light );
-*/
 				var light = new THREE.DirectionalLight( 0xffffff );
 				light.position.set( 0, 1, 0 );
 				scene.addChild( light );
 
 				var light = new THREE.AmbientLight( 0x888888 );
 				scene.addLight( light );
-
-	
-	/*			geometry = new Cube( 100, 100, 100, 2, 2, 2, undefined, true );
-				geometry.morphTargets = [
 				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "bison_001", "vertices": geometry.vertices },				
-					{ "name": "wolf_001", "vertices": geometry.vertices },				
-					{ "name": "wolf_001", "vertices": geometry.vertices },				
-					{ "name": "wolf_001", "vertices": geometry.vertices },				
-					{ "name": "wolf_001", "vertices": geometry.vertices },				
-					{ "name": "wolf_001", "vertices": geometry.vertices },				
-					{ "name": "wolf_001", "vertices": geometry.vertices },				
-				];
-*/
-				for( var i = 0; i < geometry.faces.length; i++ ) {
-					
-					geometry.faces[ i ].normal.negate();
-										
-				}
-				
-				animal = ROME.Animal( geometry, true );
-				animal.mesh.doubleSided = true;
-				scene.addChild( animal.mesh );
+				animal = new ROME.Animal( geometry, true );
 				animal.mesh.rotation.y = 90 * Math.PI / 180;
-				animal.play( "bison", "wolf" );
+				animal.mesh.position.x = -200;
+				animal.mesh.position.z = -200;
+				animal.play( "horse", "deer" );
+				scene.addChild( animal.mesh );
+
+				animal2 = new ROME.Animal( geometry, true );
+				animal2.mesh.rotation.y = 65 * Math.PI / 180;
+				animal2.mesh.position.x = 0;
+				animal2.mesh.position.z = -200;
+				animal2.play( "seal", "bear" );
+				scene.addChild( animal2.mesh );
+
+				animal3 = new ROME.Animal( geometry, true );
+				animal3.mesh.rotation.y = 75 * Math.PI / 180;
+				animal3.mesh.position.x = 200;
+				animal3.mesh.position.z = -200;
+				animal3.play( "frog", "rabbit" );
+				scene.addChild( animal3.mesh );
 
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 0, 250, 350 );
+				camera.position.set( 0, 250, 250 );
 				camera.target.position.y = 100;
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColorHex( 0x001144, 1.0 );
 				renderer.sortObjects = false;
 				container.appendChild( renderer.domElement );
 
@@ -113,7 +99,7 @@
 
 			function onDocumentMouseClick( event ) {
 				
-				animal.play( "wolf", "bison" );
+			//	animal.play( "wolf", "bison" );
 			}
 
 			function onDocumentMouseMove(event) {
@@ -127,7 +113,13 @@
 			function loop() {
 
 				animal.morph = Math.abs( mouseX / windowHalfX );
-				animal.mesh.rotation.y += 0.01;
+				animal.mesh.rotation.y -= 0.01;
+
+				animal2.morph = Math.abs( mouseX / windowHalfX );
+				animal2.mesh.rotation.y += 0.01;
+
+				animal3.morph = Math.abs( mouseX / windowHalfX );
+				animal3.mesh.rotation.y += 0.01;
 
 				THREE.AnimationHandler.update( 1000 / 60 );
 				renderer.render( scene, camera );
