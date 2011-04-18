@@ -6,6 +6,11 @@ var Dunes = function ( shared ) {
 	renderer = shared.renderer, 
 	renderTarget = shared.renderTarget;
 	
+	var ray = new THREE.Ray();
+	ray.origin.y = 100;
+	ray.direction = new THREE.Vector3(0, -1, 0);
+	var positionVector = new THREE.Vector3();
+
 	var delta, deltaSec, currentTime, oldTime = -1;
 
 	var speedStart = 150,
@@ -70,7 +75,7 @@ var Dunes = function ( shared ) {
 		
 		//frontCube = new THREE.Mesh( new THREE.Cube( 1, 1, 1 ), new THREE.MeshLambertMaterial( { color:0xff0000 } ) );
 		frontCube = new THREE.Object3D();
-		frontCube.position.set( 0, 0, -10 );
+		frontCube.position.set( 0, 0, -5 );
 		frontCube.scale.set( 1, 1, 1 );
 		frontCube.visible = true;
 		camera.addChild( frontCube );
@@ -135,7 +140,27 @@ var Dunes = function ( shared ) {
 		
 		// not too low
 
-		camera.position.y = cap_bottom( camera.position.y, 150 );
+		//camera.position.y = cap_bottom( camera.position.y, 150 );
+
+		// some sort of ground collision
+		ray.origin.x = frontCube.matrixWorld.n14;
+		ray.origin.y = frontCube.matrixWorld.n24+400;
+		ray.origin.z = frontCube.matrixWorld.n34;
+
+		if (ray.origin.y < 1000) {
+
+			var c = world.scene.collisions.rayCastNearest( ray );
+			if (c) {
+				positionVector.copy( ray.origin );
+				positionVector.addSelf( ray.direction.multiplyScalar( c.distance*0.15 ) );
+				positionVector.y += 50;
+
+				if (positionVector.y > 0 && camera.position.y < positionVector.y) {
+					camera.position.y = positionVector.y;
+				}
+			}
+		
+		}
 
 		// not too high
 
@@ -149,7 +174,7 @@ var Dunes = function ( shared ) {
 
 			// small bump
 
-			camera.position.y += Math.sin( time / 150 );
+			camera.position.y += Math.sin( time / 100 )*0.5;
 
 			// small roll
 

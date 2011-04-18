@@ -218,6 +218,7 @@ var DunesWorld = function ( shared ) {
 				
 				if ( colliders[ i ].mesh == node ) {
 				
+					//colliders[ i ].mesh.visible = true;
 					node.__isCollider = true; 
 
 				}

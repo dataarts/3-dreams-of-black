@@ -17,9 +17,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
 
-	shared.targetStart = new THREE.Vector3();
-	shared.targetEnd = new THREE.Vector3();
-
 	// refactoring
 
 	// setup the different parts of the soup
@@ -27,7 +24,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 
 	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 5000 );
-	collisionScene.settings.maxSpeedDivider = 4;
+	collisionScene.settings.maxSpeedDivider = 3;
 	collisionScene.settings.capBottom = -2;
 	collisionScene.settings.shootRayDown = true;
 	collisionScene.settings.allowFlying = false;
@@ -42,7 +39,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	vectors.settings.normaldivider = 8;
 
 	// ribbons
-
+/*
 	var ribbonMaterials = [
 			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
 			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
@@ -53,7 +50,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	];
 
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
-
+*/
 	// particles
 
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -85,8 +82,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
-		var morphArray = [0,0,4,3,2,1,0,1,2,7,3,4,1,0,0,5,6,2,4,3];
-		runningAnimals.addAnimal( geometry, null, 1.2, morphArray );
+		var morphArray = [0,0,4,3,2,1,0,5,6,7,8,9,10,0,0,3,3,5,2,3];
+		runningAnimals.addAnimal( geometry, null, 1.4, morphArray );
 	}
 
 	function elkLoadedProxy( geometry ) {
@@ -111,7 +108,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
+		var morphArray = [0,1,2,3,0,1,2,3,0,1];
 		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, 1 );
 	}
 
@@ -120,54 +117,87 @@ var CitySoup = function ( camera, scene, shared ) {
 		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 1 );
 	}
 
+	// flying animals 2
+	var flyingAnimals2 = new AnimalSwarm(100, scene, vectors.array);
+	flyingAnimals2.settings.flying = true;
+	flyingAnimals2.settings.divider = 8;
+	flyingAnimals2.settings.flyingDistance = 10;
+	flyingAnimals2.settings.xPositionMultiplier = 30;
+	flyingAnimals2.settings.zPositionMultiplier = 30;
+	//flyingAnimals2.settings.constantSpeed = 0.5;
+
+	loader.load( { model: "files/models/soup/butterfly_lowA.js", callback: flying2LoadedProxy } );
+	
+	function flying2LoadedProxy( geometry ) {
+		flyingAnimals2.addAnimal( geometry, null, 5, null, 6, null, true );
+	}
+
+
 	// butterflys
 	var butterflys = new AnimalInFrontOfCamera(30, scene);
 	loader.load( { model: "files/models/soup/butterfly_hiA.js", callback: butterflys.addAnimal } );
 	
 	// trail - of grass/trees/etc
-	var grassMaterials = [new THREE.MeshLambertMaterial( { color: 0x83b95b, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x93c171, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x7eaa5e, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x77bb45, shading: THREE.FlatShading } ),
-					 new THREE.MeshLambertMaterial( { color: 0x7da75e, shading: THREE.FlatShading } )
-	];
-
 	var trail = new Trail(100, scene);
+	// preoccupy for differnt grass
+	for (i=0; i<100; ++i ) {
+		var type = i%5;
+		trail.array[i] = "0"+(type+1);
+	}
 	// preoccupy slots for trees and lighthouse
 	for (i=0; i<100; i+=10 ) {
-		var odd = i%3;
-		if (odd == 0) {
-			trail.array[i] = "a";
-		}
-		if (odd == 1) {
-			trail.array[i] = "b";
-		}
-		if (odd == 2) {
-			trail.array[i] = "c";
-		}
+		var type = (i/10)%5;
+		trail.array[i] = "tree"+(type+1);
 	}
 	trail.array[4] = "light";
 
-	loader.load( { model: "files/models/soup/grass.js", callback: grassLoadedProxy } );
+	loader.load( { model: "files/models/soup/grass01.js", callback: grass01LoadedProxy } );
+	loader.load( { model: "files/models/soup/grass02.js", callback: grass02LoadedProxy } );
+	loader.load( { model: "files/models/soup/grass03.js", callback: grass03LoadedProxy } );
+	loader.load( { model: "files/models/soup/grass04.js", callback: grass04LoadedProxy } );
+	loader.load( { model: "files/models/soup/grass05.js", callback: grass05LoadedProxy } );
 	
 	loader.load( { model: "files/models/soup/evergreen_low.js", callback: treeALoadedProxy } );
 	loader.load( { model: "files/models/soup/evergreen_high.js", callback: treeBLoadedProxy } );
-	loader.load( { model: "files/models/soup/tree_Generic.js", callback: treeCLoadedProxy } );
+	loader.load( { model: "files/models/soup/treeGeneric.js", callback: treeCLoadedProxy } );
+	loader.load( { model: "files/models/soup/treeGenericLower.js", callback: treeDLoadedProxy } );
+	loader.load( { model: "files/models/soup/treeOrange.js", callback: treeELoadedProxy } );
+
 	// lighthouse
 	loader.load( { model: "files/models/soup/lighthouse.js", callback: ligthhouseLoadedProxy } );
 
-	function grassLoadedProxy( geometry ) {
-		trail.addInstance( geometry, null, false, grassMaterials );
+	function grass01LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "01", false );
 	}
+	function grass02LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "02", false );
+	}
+	function grass03LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "03", false );
+	}
+	function grass04LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "04", false );
+	}
+	function grass05LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "05", false );
+	}
+
 	function treeALoadedProxy( geometry ) {
-		trail.addInstance( geometry, "a", true, grassMaterials );
+		trail.addInstance( geometry, "tree1", true );
 	}
 	function treeBLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "b", true, grassMaterials);
+		trail.addInstance( geometry, "tree2", true);
 	}
 	function treeCLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "c", true, grassMaterials );
+		trail.addInstance( geometry, "tree3", true );
 	}
+	function treeDLoadedProxy( geometry ) {
+		trail.addInstance( geometry, "tree4", true );
+	}
+	function treeELoadedProxy( geometry ) {
+		trail.addInstance( geometry, "tree5", true );
+	}
+
 	function ligthhouseLoadedProxy( geometry ) {
 		trail.addInstance( geometry, "light", true, [new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } )] );
 		trail.array[4].maxHeight = 5;
@@ -182,7 +212,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.x = that.camera.matrixWorld.n14;
 		camPos.y = that.camera.matrixWorld.n24;
 		camPos.z = that.camera.matrixWorld.n34;
-		
+
 		// temp reset
 		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
 			reset();
@@ -191,23 +221,15 @@ var CitySoup = function ( camera, scene, shared ) {
 		// update the soup parts	
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		ribbons.update(collisionScene.emitterFollow.position);
+		//ribbons.update(collisionScene.emitterFollow.position);
 		particles.update(delta, vectors.array[0].position);
 		runningAnimals.update();
 		flyingAnimals.update();
+		flyingAnimals2.update();
 		butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
 		
 		TWEEN.update();
-
-		// update for the green stuff shader
-		shared.targetStart.x = vectors.array[3].position.x;
-		shared.targetStart.y = vectors.array[3].position.y;
-		shared.targetStart.z = vectors.array[3].position.z;
-
-		shared.targetEnd.x = vectors.array[20].position.x;
-		shared.targetEnd.y = vectors.array[20].position.y;
-		shared.targetEnd.z = vectors.array[20].position.z;
 
 		// pointlight
 		pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;

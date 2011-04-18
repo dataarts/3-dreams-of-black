@@ -40,14 +40,14 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 	// collision boxes
 
-	var cube = new THREE.Cube( 30000,30000,1, 1,1,1 );
+	var cube = new THREE.Cube( 5000,5000,1, 1,1,1 );
 	var material = new THREE.MeshLambertMaterial( { color: 0x0000FF, opacity: 0.5 } );
 	var front = new THREE.Mesh ( cube, material	);
 	var back = new THREE.Mesh ( cube, material );
-	var cube = new THREE.Cube( 1,30000,30000, 1,1,1 );
+	var cube = new THREE.Cube( 1,5000,5000, 1,1,1 );
 	var left = new THREE.Mesh ( cube, material );
 	var right = new THREE.Mesh ( cube, material	);
-	var cube = new THREE.Cube( 30000,1,30000, 1,1,1 );
+	var cube = new THREE.Cube( 5000,1,5000, 1,1,1 );
 	var top = new THREE.Mesh ( cube, material );
 	var bottom = new THREE.Mesh ( cube, material );
 
@@ -108,12 +108,6 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		top.position.x    = camPos.x;
 		top.position.z    = camPos.z;
 
-		left.updateMatrix();
-		right.updateMatrix();
-		front.updateMatrix();
-		back.updateMatrix();
-		top.updateMatrix();
-		bottom.updateMatrix();
 	
 		if ( that.settings.capBottom != null ) {
 
@@ -122,6 +116,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			}
 
 		}
+
 
 		mouse2d.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
 		mouse2d.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
@@ -137,8 +132,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		//ray.direction.subSelf( camera.position );
 		ray.direction.subSelf( camPos );
 
-
 		var c = scene.collisions.rayCastNearest( ray );
+		//console.log(c.distance);
 
 		if( c && c.distance > that.settings.minDistance ) {
 
@@ -205,7 +200,6 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			// no collsion
 
 		}
-
 		
 		/*var cs = scene.collisions.rayCastAll( ray );
 

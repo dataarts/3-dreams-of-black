@@ -41,8 +41,8 @@ var Launcher = function ( shared ) {
 	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
 	titleOverlay.addEventListener( 'click', function () {
 
-		shared.signals.showdemo.dispatch();
-		shared.signals.startdemo.dispatch( 0 );
+		shared.signals.showfilm.dispatch();
+		shared.signals.startfilm.dispatch( 0 );
 
 	}, false );
 	domElement.appendChild( titleOverlay );

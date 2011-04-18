@@ -24,12 +24,13 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 	var r = 0;
 	var i;
 
-	this.addAnimal = function( geometry, predefined, scale, morphArray, followDivider, colorArray ) {
+	this.addAnimal = function( geometry, predefined, scale, morphArray, followDivider, colorArray, doubleSided ) {
 		
 		var predefined = predefined || null;
 		var scaleMultiplier = scale || 1.2;
 		var morphArray = morphArray || null;
 		var followDivider = followDivider || 4;
+		var doubleSided = doubleSided || false;
 
 		for ( i = 0; i < that.initSettings.numOfAnimals; ++i ) {
 			
@@ -38,12 +39,13 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			var col = new THREE.Color( Math.random() * 0xffffff );
-			if (colorArray != undefined) {
+			if (colorArray != undefined && colorArray != null) {
 				col = colorArray[i%colorArray.length];
 			}
 
 			var animal = ROME.Animal( geometry, false, col );
 			var mesh = animal.mesh;
+			mesh.doubleSided = doubleSided;
 
 			var followIndex = Math.floor(i/followDivider);
 
