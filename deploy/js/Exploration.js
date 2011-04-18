@@ -6,15 +6,32 @@ var Exploration = function ( shared ) {
 	var renderer = shared.renderer,
 	renderTarget = shared.renderTarget;
 
-	var camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-	camera.movementSpeed = 200;
-	camera.lookSpeed = 3;
-	camera.constrainVertical = [ -0.4, 0.4 ];
-	camera.autoForward = true;
+	var camera, cameras = {};
+
+	cameras.dunes = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+	cameras.dunes.movementSpeed = 200;
+	cameras.dunes.lookSpeed = 3;
+	cameras.dunes.constrainVertical = [ -0.4, 0.4 ];
+	cameras.dunes.autoForward = true;
+	cameras.dunes.position.set( 0, 0, 0 );
+
+	cameras.prairie = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+	cameras.prairie.movementSpeed = 50;
+	cameras.prairie.lookSpeed = 3;
+	cameras.prairie.constrainVertical = [ -0.4, 0.4 ];
+	cameras.prairie.autoForward = false;
+	cameras.prairie.position.set( 0, 0, 0 );
+
+	cameras.city = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+	cameras.city.movementSpeed = 100;
+	cameras.city.lookSpeed = 3;
+	cameras.city.constrainVertical = [ -0.4, 0.4 ];
+	cameras.city.autoForward = false;
+	cameras.city.position.set( 0, 0, 0 );
 
 	var world, scene,
 	clearEffect, heatEffect, noiseEffect, renderEffect;
-
+	
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
 
@@ -27,7 +44,7 @@ var Exploration = function ( shared ) {
 	renderEffect = new RenderEffect( shared );
 	renderEffect.init();
 
-	var progress = 0, time = 0;
+	var progress = 0, start = 0, lastTime = 0;
 
 	// signals
 
@@ -45,12 +62,14 @@ var Exploration = function ( shared ) {
 
 		if ( world ) {
 
-			world.update( 0, camera );
+			time = new Date().getTime() - start;
+			delta = time - lastTime;
+			lastTime = time;
+
+			world.update( delta, camera );
 
 			clearEffect.update( progress, time );
-			//console.log( world.scene );
 
-			//renderer.clear();
 			renderer.setClearColor( world.scene.fog.color );
 			renderer.render( world.scene, camera, renderTarget );
 
@@ -67,14 +86,23 @@ var Exploration = function ( shared ) {
 
 	function startExplore ( worldId ) {
 
+		if ( renderer.domElement.parentElement ) {
+			
+			renderer.domElement.parentElement.removeChild( renderer.domElement );
+			
+		}
+		
 		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();
 
 		world = shared.worlds[ worldId ];
 		scene = world.scene;
+		camera = cameras[ worldId ];
 
 		scene.addChild( camera );
+
+		// hide soup
 
 		THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
 
@@ -86,6 +114,8 @@ var Exploration = function ( shared ) {
 			}
 
 		} );
+
+		start = lastTime = new Date().getTime();
 
 	};
 
