@@ -10,22 +10,22 @@ ROME = {};
 
 ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
-	// construct
-	var material = new THREE.MeshShaderMaterial( {
-		
-		uniforms: ROME.AnimalShader.uniforms(), 
-		attributes: ROME.AnimalShader.attributes(),
-		vertexShader: ROME.AnimalShader.vertex(), 
-		fragmentShader: ROME.AnimalShader.fragment(),
-		morphTargets: true,
-		fog: true,
-		lights: true
-		
-	} );
+	var result = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
+
+	var that = {};
+	that.morph = 0.0;
+	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
+	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
+	that.availableAnimals = result.availableAnimals;
+	that.mesh = new THREE.Mesh( geometry, result.material );
+
+	var isPlaying = false;
+	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
+	var material = result.material;
 
 
-
-	
+	/*
+	  
 	// hack: attributes
 
 	var calcAO = function( vertices, faces, edges ) {
@@ -82,65 +82,9 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	var aoA = calcAO( geometry.vertices, geometry.faces, geometry.edges );	
 	var aoB = calcAO( geometry.morphTargets[ 10 ].vertices, geometry.faces, geometry.edges );	
-
-//	var aoA = calcAO( geometry.vertices, geometry.faces );	
-//	var aoB = calcAO( geometry.morphTargets[ 10 ].vertices, geometry.faces );	
-
-	for( var i = 0; i < geometry.faces.length; i++ ) {
-		
-		if( geometry.faces[ i ] instanceof THREE.Face3 ) {
-			
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
-
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
-			
-			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
-			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
-			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 1.0 ));
-
-		} else {
-			
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].c ] ));
-			material.attributes.colorAnimalA.value.push( new THREE.Vector3( 1, 0, 1 ).multiplyScalar( aoA[ geometry.faces[ i ].d ] ));
-
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].a ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].b ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].c ] ));
-			material.attributes.colorAnimalB.value.push( new THREE.Vector3( 1, 1, 0 ).multiplyScalar( aoB[ geometry.faces[ i ].d ] ));
-
-			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 0.0 ));
-			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 0.0 ));
-			material.attributes.contourUV.value.push( new THREE.Vector2( 1.0, 1.0 ));
-			material.attributes.contourUV.value.push( new THREE.Vector2( 0.0, 1.0 ));
-
-		}	
-		
-	}
-	
-	// end hack!
-	
-	
-	// these should be global
-	
-	//material.uniforms.contour.texture = 
-	//material.uniforms.faceLight.texture = ImageUtils.loadTexture( 'assets/faceLight.jpg' );
-	
-	var that = {};
-	that.mesh = new THREE.Mesh( geometry, material );
-	that.morph = 0.0;
-	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
-	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
-	that.availableAnimals = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
-
-	
-	var isPlaying = false;
-	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
+	  
+	  
+	 */
 
 
 	//--- play ---
@@ -325,8 +269,8 @@ ROME.AnimalShader = {
 	
 	textures: {
 		
-		contour: ImageUtils.loadTexture( 'assets/faceContour.jpg' ),
-		faceLight: ImageUtils.loadTexture( 'assets/faceLight.jpg' )
+		contour: THREE.ImageUtils.loadTexture( 'assets/faceContour.png' ),
+		faceLight: THREE.ImageUtils.loadTexture( 'assets/faceLight.jpg' )
 		
 	},
 	
@@ -358,15 +302,15 @@ ROME.AnimalShader = {
 		
 		return {
 			
-			"colorAnimalA": 	{ type: "v3", boundTo: "faceVertices", value:[] },
-			"colorAnimalB": 	{ type: "v3", boundTo: "faceVertices", value:[] },
+			"colorAnimalA": 	{ type: "c", boundTo: "faces", value:[] },
+			"colorAnimalB": 	{ type: "c", boundTo: "faces", value:[] },
 			"contourUV": 		{ type: "v2", boundTo: "faceVertices", value:[] },
 			
 		}
 		
 	},
 
-	vertex: function () { return[
+	vertexShader: [
 
 		"uniform 	float	animalAInterpolation;",
 		"uniform 	float	animalBInterpolation;",
@@ -399,9 +343,9 @@ ROME.AnimalShader = {
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 		"}"
 
-	].join("\n")},
+	].join("\n"),
 
-	fragment: function () { return[
+	fragmentShader: [
 
 		"uniform 	sampler2D 	contour;",
 		"uniform 	sampler2D 	faceLight;",
@@ -427,7 +371,7 @@ ROME.AnimalShader = {
 
 		"}"
 
-	].join("\n") }
+	].join("\n")
 }
 
 
@@ -444,79 +388,97 @@ ROME.AnimalAnimationData = {
 	
 	init: function( geometry, parseMorphTargetNames ) {
 		
-		var availableAnimals = [];
-		var animal, animalName;
-		var charCode, morphTargetName, morphTargets = geometry.morphTargets;
-		var a, al, m, ml, currentTime;
-		
-		// add animal names to static list?
-		
-		if( parseMorphTargetNames ) {
+		if( !geometry.initialized ) {
 			
-			for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
-								
-				// check so not already exists
+			geometry.initialized = true;
+			
+			var availableAnimals = [];
+			var animal, animalName;
+			var charCode, morphTargetName, morphTargets = geometry.morphTargets;
+			var a, al, m, ml, currentTime;
+			
+			// add animal names to static list?
+			
+			if( parseMorphTargetNames ) {
 				
-				for( a = 0, al = this.animalNames.length; a < al; a++ ) {
+				for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+									
+					// check so not already exists
 					
-					animalName = this.animalNames[ a ];
-					
-					if( morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
+					for( a = 0, al = this.animalNames.length; a < al; a++ ) {
 						
-						break;
-					}
-					
-				}
-				
-				
-				// did not exist?
-				
-				if( a === al ) {
-					
-					morphTargetName = morphTargets[ m ].name;
-					
-					for( a = 0; a < morphTargetName.length; a++ ) {
-				
-						charCode = morphTargetName.charCodeAt( a );
+						animalName = this.animalNames[ a ];
 						
-						if(! (( charCode >= 65 && charCode <= 90  ) ||
-						      ( charCode >= 97 && charCode <= 122 ))) {
-						      	
-							break;      	
-
-						} 
+						if( morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
+							
+							break;
+						}
 						
 					}
 					
-					this.animalNames.push( morphTargetName.slice( 0, a ));
+					
+					// did not exist?
+					
+					if( a === al ) {
+						
+						morphTargetName = morphTargets[ m ].name;
+						
+						for( a = 0; a < morphTargetName.length; a++ ) {
+					
+							charCode = morphTargetName.charCodeAt( a );
+							
+							if(! (( charCode >= 65 && charCode <= 90  ) ||
+							      ( charCode >= 97 && charCode <= 122 ))) {
+							      	
+								break;      	
+	
+							} 
+							
+						}
+						
+						this.animalNames.push( morphTargetName.slice( 0, a ));
+						
+					}
 					
 				}
 				
 			}
+					
+			// parse out the names
 			
-		}
+			for( a = 0, al = this.animalNames.length; a < al; a++ ) {
 				
-		// parse out the names
+				animalName  = this.animalNames[ a ];
+				animal      = this[ animalName ];
+				currentTime = 0;
+				
+				if( animal === undefined || animal.length === 0 ) {
+					
+					animal = this[ animalName ] = [];
+					
+					for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
 		
-		for( a = 0, al = this.animalNames.length; a < al; a++ ) {
-			
-			animalName  = this.animalNames[ a ];
-			animal      = this[ animalName ];
-			currentTime = 0;
-			
-			if( animal === undefined || animal.length === 0 ) {
-				
-				animal = this[ animalName ] = [];
-				
-				for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+						if( morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
 	
-					if( morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
-
-						animal.push( { index: m, time: currentTime } );
-						currentTime += parseInt( 1000 / 24, 10 );		// 24 fps			
+							animal.push( { index: m, time: currentTime } );
+							currentTime += parseInt( 1000 / 24, 10 );		// 24 fps			
+							
+		
+							if( availableAnimals.indexOf( animalName ) === -1 ) {
+								
+								availableAnimals.push( animalName );
+								
+							}
+							
+						}
 						
+					}
 	
-						if( availableAnimals.indexOf( animalName ) === -1 ) {
+				} else {
+					
+					for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+						
+						if( availableAnimals.indexOf( animalName ) === -1 && morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
 							
 							availableAnimals.push( animalName );
 							
@@ -525,27 +487,136 @@ ROME.AnimalAnimationData = {
 					}
 					
 				}
-
-			} else {
+				 
+			}
+	
+	
+			// create material
+	
+			var material = new THREE.MeshShaderMaterial( {
 				
-				for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+				uniforms: ROME.AnimalShader.uniforms(),
+				attributes: ROME.AnimalShader.attributes(),
+				vertexShader: ROME.AnimalShader.vertexShader,
+				fragmentShader: ROME.AnimalShader.fragmentShader,
+				
+				fog: true,
+				lights: true,
+				morphTargets: true
+				
+			} );
+	
+	
+			// init custom attributes
+			
+			var c, cl, morphColor, morphColors = geometry.morphColors;
+			var attributes = material.attributes;
+			
+			for( c = 0, cl = morphColors.length; c < cl; c++ ) {
+				
+				morphColor = morphColors[ c ];
+				morphTargetName = morphColor.name;
+				
+				for( a = 0; a < morphTargetName.length; a++ ) {
+			
+					charCode = morphTargetName.charCodeAt( a );
 					
-					if( availableAnimals.indexOf( animalName ) === -1 && morphTargets[ m ].name.indexOf( animalName ) !== -1 ) {
-						
-						availableAnimals.push( animalName );
-						
-					}
+					if(! (( charCode >= 65 && charCode <= 90  ) ||
+					      ( charCode >= 97 && charCode <= 122 ))) {
+					      	
+						break;   
+
+					} 
+					
+				}
+				
+				attributes[ morphTargetName.slice( 0, a ) ] = { type: "c", boundTo: "faces", value: morphColor.colors }
+				
+			}
+	
+			attributes.colorAnimalA.value = morphColors[ 0 ].colors;
+			attributes.colorAnimalB.value = morphColors[ 0 ].colors;
+	
+	
+			var f, fl, faces = geometry.faces; 
+			var contourUv = attributes.contourUV.value;
+	
+			for( f = 0, fl = faces.length; f < fl; f++ ) {
+				
+				contourUv.push( new THREE.Vector2( 0.0, 0.0 ));
+				contourUv.push( new THREE.Vector2( 0.0, 1.0 ));
+				contourUv.push( new THREE.Vector2( 1.0, 1.0 ));
+				
+				if( faces[ f ].d ) {
+					
+					contourUv.push( new THREE.Vector2( 1.0, 0.0 ));
 					
 				}
 				
 			}
-			 
+	
+	
+	
+			// set return values
+	
+			geometry.availableAnimals = availableAnimals;
+			geometry.customAttributes = material.attributes;
+
+		} else {
+			
+			// create material
+			
+			var material = new THREE.MeshShaderMaterial( {
+				
+				uniforms: ROME.AnimalShader.uniforms(),
+				attributes: {},
+				vertexShader: ROME.AnimalShader.vertexShader,
+				fragmentShader: ROME.AnimalShader.fragmentShader,
+				
+				fog: true,
+				lights: true,
+				morphTargets: true
+				
+			} );
+			
+			
+			// copy custom attributes
+
+			for( var a in geometry.customAttributes ) {
+
+				var srcAttribute = geometry.customAttributes[ a ];
+				
+				if( a === "colorAnimalA" || a === "colorAnimalB" ) {
+					
+					material.attributes[ a ] = { 
+						
+						type: srcAttribute.type, 
+						boundTo: srcAttribute.boundTo, 
+						value: srcAttribute.value, 
+						size: srcAttribute.size,
+						array: srcAttribute.array,
+						buffer: srcAttribute.buffer,
+						needsUpdate: false,
+						__webglInitialized: true,
+
+					};
+					
+				} else {
+					
+					material.attributes[ a ] = srcAttribute;
+					
+				}
+				
+			}
+			
 		}
 
-		return availableAnimals;
-
+		return {
+			
+			availableAnimals: geometry.availableAnimals,
+			material: material
+			
+		};
 	}
-	
+		
 }
-
-
