@@ -8,6 +8,22 @@ var DunesWorld = function ( shared ) {
 
 	var dirVec = new THREE.Vector3();
 	
+	// camera roll parameters
+	
+	var startRoll = Math.PI, deltaRoll = 0, rollAngle = Math.PI, rollSpeed = Math.PI,
+		startSpeed, deltaSpeed = 0, speedInside = -90, speedOutside = 90;
+	
+	this.liftSpeed = 250;
+	this.startLift = 0.29,
+	this.endLift   = 0.375;
+
+	// debug
+
+	var colorHighlight = new THREE.Color( 0xffaa00 );
+	var colorNormal = new THREE.Color( 0x666666 );
+
+	// tiles
+
 	var randomAdded = 0;
 	var tiles = [ [], [], [] ]; // 9x9 grid
 	var lastx, lastz;
@@ -82,6 +98,8 @@ var DunesWorld = function ( shared ) {
 				var particleMaterial = new THREE.ParticleBasicMaterial( { size: 5, color:0xff7700, map: sprite, transparent: true } );
 				var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
 				sphereObject.sortParticles = true;
+				
+				sphereObject.name = s.name;
 				
 				sphereObject.position.copy( center );
 				sphereObject.scale.set( radius, radius, radius );
@@ -404,8 +422,105 @@ var DunesWorld = function ( shared ) {
 
 	};
 
+	function checkInfluenceSpheres( camera, deltaSec ) {
+
+		var i, d, influenceSphere;
+		
+		var currentPosition = camera.matrixWorld.getPosition();
+
+		// domElement.innerHTML = currentPosition.x.toFixed( 2 ) + " " + currentPosition.y.toFixed( 2 ) + " " + currentPosition.z.toFixed( 2 );
+		
+		for( i = 0; i < shared.influenceSpheres.length; i ++ ) {
+			
+			influenceSphere = shared.influenceSpheres[ i ];
+			
+			d = influenceSphere.center.distanceTo( currentPosition );
+			
+			if( d < influenceSphere.radius ) {
+				
+				if ( influenceSphere.mesh ) 
+					influenceSphere.mesh.materials[ 0 ].color = colorHighlight;
+				
+				// flip sphere
+				
+				if ( influenceSphere.type == 0 ) {
+					
+					// entering
+					
+					if ( influenceSphere.state == 0 ) {
+						
+						influenceSphere.state = 1;
+						
+						startRoll = camera.roll;
+						deltaRoll = rollAngle;
+						
+						deltaSpeed = speedInside;
+
+						this.liftSpeed = 0;
+						
+						//console.log( "entered [" + influenceSphere.name + "]" );
+
+					}
+					
+				// portal
+
+				} else if ( influenceSphere.type == 1 ) {
+					
+					console.log( "entered portal [" + influenceSphere.name + "]" );
+
+				}
+				
+			} else {
+				
+				if ( influenceSphere.mesh ) 
+					influenceSphere.mesh.materials[ 0 ].color = colorNormal;
+				
+				// flip sphere
+				
+				if ( influenceSphere.type == 0 ) {
+				
+					// leaving
+					
+					if ( influenceSphere.state == 1 ) {
+						
+						influenceSphere.state = 0;
+						
+						startRoll = camera.roll;
+						deltaRoll = rollAngle;
+						
+						deltaSpeed = speedOutside;
+						
+						//console.log( " left [" + influenceSphere.name + "]" );
+
+					}
+					
+				}
+
+			}
+			
+		}
+		
+		if ( deltaRoll > 0 ) {
+			
+			deltaRoll -= deltaSec * rollSpeed;
+			camera.roll = startRoll + ( rollAngle - deltaRoll );
+			
+			camera.movementSpeed += deltaSpeed * deltaSec;
+
+		} else {
+			
+			camera.roll = startRoll + rollAngle;
+
+		}
+
+	};
+	
 	this.update = function ( delta, camera ) {
 
+		// check if we are close to islands
+		
+		checkInfluenceSpheres( camera, delta / 1000 );
+		
 		// for the moment RollCamera doesn't have straightforward way to get orientation yet
 		// so we attach child in front of it to get direction vector
 

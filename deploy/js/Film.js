@@ -93,6 +93,12 @@ var Film = function ( shared ) {
 
 	function start( pattern ) {
 
+		if ( renderer.domElement.parentElement ) {
+			
+			renderer.domElement.parentElement.removeChild( renderer.domElement );
+			
+		}
+		
 		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();

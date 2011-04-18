@@ -18,13 +18,7 @@ var Dunes = function ( shared ) {
 
 	var frontCube;
 
-	var startRoll = Math.PI, deltaRoll = 0, rollAngle = Math.PI, rollSpeed = Math.PI,
-		startSpeed, targetSpeed = speedStart, deltaSpeed = 0, speedInside = -90, speedOutside = 90;
-
 	// debug
-
-	var colorHighlight = new THREE.Color( 0xffaa00 );
-	var colorNormal = new THREE.Color( 0x666666 );
 
 	var domElement = document.createElement( 'div' );
 	domElement.style.position = "absolute";
@@ -128,98 +122,6 @@ var Dunes = function ( shared ) {
 
 	};
 
-	function checkInfluenceSpheres( camera, deltaSec ) {
-
-		var i, d, influenceSphere;
-		
-		var currentPosition = camera.matrixWorld.getPosition();
-
-		// domElement.innerHTML = currentPosition.x.toFixed( 2 ) + " " + currentPosition.y.toFixed( 2 ) + " " + currentPosition.z.toFixed( 2 );
-		
-		for( i = 0; i < shared.influenceSpheres.length; i ++ ) {
-			
-			influenceSphere = shared.influenceSpheres[ i ];
-			
-			d = influenceSphere.center.distanceTo( currentPosition );
-			
-			if( d < influenceSphere.radius ) {
-				
-				if ( influenceSphere.mesh ) 
-					influenceSphere.mesh.materials[ 0 ].color = colorHighlight;
-				
-				// flip sphere
-				
-				if ( influenceSphere.type == 0 ) {
-					
-					// entering
-					
-					if ( influenceSphere.state == 0 ) {
-						
-						influenceSphere.state = 1;
-						
-						startRoll = camera.roll;
-						deltaRoll = rollAngle;
-						
-						deltaSpeed = speedInside;
-
-						liftSpeed = 0;
-						
-						//console.log( "entered [" + influenceSphere.name + "]" );
-
-					}
-					
-				// portal
-
-				} else if ( influenceSphere.type == 1 ) {
-					
-					console.log( "entered portal [" + influenceSphere.name + "]" );
-
-				}
-				
-			} else {
-				
-				if ( influenceSphere.mesh ) 
-					influenceSphere.mesh.materials[ 0 ].color = colorNormal;
-				
-				// flip sphere
-				
-				if ( influenceSphere.type == 0 ) {
-				
-					// leaving
-					
-					if ( influenceSphere.state == 1 ) {
-						
-						influenceSphere.state = 0;
-						
-						startRoll = camera.roll;
-						deltaRoll = rollAngle;
-						
-						deltaSpeed = speedOutside;
-						
-						//console.log( " left [" + influenceSphere.name + "]" );
-
-					}
-					
-				}
-
-			}
-			
-		}
-		
-		if ( deltaRoll > 0 ) {
-			
-			deltaRoll -= deltaSec * rollSpeed;
-			camera.roll = startRoll + ( rollAngle - deltaRoll );
-			
-			camera.movementSpeed += deltaSpeed * deltaSec;
-
-		} else {
-			
-			camera.roll = startRoll + rollAngle;
-
-		}
-
-	};
 	
 	this.update = function ( progress, time, start, end ) {
 
@@ -232,15 +134,7 @@ var Dunes = function ( shared ) {
 
 		deltaSec = delta / 1000;
 
-		// this throws exception in THREE.Animation.interpolateCatmullRom
-		// Uncaught TypeError: Cannot read property '0' of undefined
-
 		THREE.AnimationHandler.update( delta );
-
-		// check if we are close to islands
-		
-		checkInfluenceSpheres( camera, deltaSec );
-		
 		
 		// not too low
 
@@ -271,13 +165,8 @@ var Dunes = function ( shared ) {
 		camera.position.y = cap_top( camera.position.y, 5000 );
 
 		// not too high before lift-off
-
-		var startLift = 0.29,
-			endLift   = 0.375,
-			liftSpeed = 250;
-
 		
-		if ( progress < startLift ) {
+		if ( progress < world.startLift ) {
 
 			camera.position.y = cap_top( camera.position.y, 150 );
 
@@ -298,11 +187,11 @@ var Dunes = function ( shared ) {
 
 		// lift-off
 
-		var localProgres = ( progress - startLift ) / ( endLift - startLift );
+		var localProgres = ( progress - world.startLift ) / ( world.endLift - world.startLift );
 
-		if ( progress > startLift && progress < endLift ) {
+		if ( progress > world.startLift && progress < world.endLift ) {
 
-			camera.position.y += liftSpeed * deltaSec;
+			camera.position.y += world.liftSpeed * deltaSec;
 			//camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 
 			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
