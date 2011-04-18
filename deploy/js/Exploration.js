@@ -109,7 +109,8 @@ var Exploration = function ( shared ) {
 			if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
 				|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
 
-				node.visible = false; 
+				if ( ! none.name.toLowerCase.find( "portal" ) )
+					node.visible = false; 
 
 			}
 
