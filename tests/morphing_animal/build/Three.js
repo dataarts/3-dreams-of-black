@@ -5217,6 +5217,8 @@ THREE.Scene = function () {
 
 	this.fog = null;
 
+	this.collisions = null;
+	
 	this.objects = [];
 	this.lights = [];
 	this.sounds = [];
@@ -8903,9 +8905,9 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 	parameters = parameters || {};
 
-	stencil = parameters.stencil !== undefined ? parameters.stencil : true;
-	antialias = parameters.antialias !== undefined ? parameters.antialias : false;
-	clearColor = parameters.clearColor !== undefined ? new THREE.Color( parameters.clearColor ) : new THREE.Color( 0x000000 );
+	stencil = parameters.stencil !== undefined ? parameters.stencil : true,
+	antialias = parameters.antialias !== undefined ? parameters.antialias : false,
+	clearColor = parameters.clearColor !== undefined ? new THREE.Color( parameters.clearColor ) : new THREE.Color( 0x000000 ),
 	clearAlpha = parameters.clearAlpha !== undefined ? parameters.clearAlpha : 0;
 
 	this.data = {
@@ -8913,7 +8915,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 		vertices: 0,
 		faces: 0
 
-	}
+	};
 
 	this.maxMorphTargets = 8;
 	this.domElement = _canvas;
@@ -9496,6 +9498,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 						attribute.needsUpdate = true;
 						attribute.array = new Float32Array( nvertices * size );
 						attribute.buffer = _gl.createBuffer();
+						attribute.buffer.belongsToAttribute = a;
 						
 					}
 
@@ -11232,7 +11235,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			 material instanceof THREE.MeshPhongMaterial ||
 			 material.envMap ) {
 
-			if( p_uniforms.cameraPosition >= 0 ) {
+			if( p_uniforms.cameraPosition !== null ) {
 				
 				_gl.uniform3f( p_uniforms.cameraPosition, camera.position.x, camera.position.y, camera.position.z );
 				
@@ -11244,7 +11247,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			 material.envMap ||
 			 material.skinning ) {
 
-			if ( p_uniforms.objectMatrix >= 0 ) {
+			if ( p_uniforms.objectMatrix !== null ) {
 				
 				_gl.uniformMatrix4fv( p_uniforms.objectMatrix, false, object._objectMatrixArray );
 				
@@ -11257,7 +11260,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 			 material instanceof THREE.MeshShaderMaterial ||
 			 material.skinning ) {
 
-			if( p_uniforms.viewMatrix >= 0 ) {
+			if( p_uniforms.viewMatrix !== null ) {
 				
 				_gl.uniformMatrix4fv( p_uniforms.viewMatrix, false, _viewMatrixArray );
 				
@@ -11315,7 +11318,7 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 		// custom attributes
 
-		if ( geometryGroup.__webglCustomAttributes ) {
+/*		if ( geometryGroup.__webglCustomAttributes ) {
 
 			for( a in geometryGroup.__webglCustomAttributes ) {
 
@@ -11330,7 +11333,26 @@ THREE.WebGLRenderer = function ( parameters ) {
 
 			}
 
+		}*/
+
+
+		if ( material.attributes ) {
+
+			for( a in material.attributes ) {
+
+				if( attributes[ a ] >= 0 ) {
+
+					attribute = material.attributes[ a ];
+
+					_gl.bindBuffer( _gl.ARRAY_BUFFER, attribute.buffer );
+					_gl.vertexAttribPointer( attributes[ a ], attribute.size, _gl.FLOAT, false, 0, 0 );
+
+				}
+
+			}
+
 		}
+
 
 
 		// colors
@@ -15937,6 +15959,7 @@ THREE.QuakeCamera = function ( parameters ) {
 			targetPosition.x = position.x + 100 * Math.sin( this.phi ) * Math.cos( this.theta );
 			targetPosition.y = position.y + 100 * Math.cos( this.phi );
 			targetPosition.z = position.z + 100 * Math.sin( this.phi ) * Math.sin( this.theta );
+
 		}
 
 		this.lon += this.mouseX * actualLookSpeed;
@@ -16294,7 +16317,7 @@ THREE.PathCamera = function ( parameters ) {
 		parent.addChild( particleObj );
 
 		var waypoint,
-			geo = new Sphere( 1, 16, 8 ),
+			geo = new THREE.Sphere( 1, 16, 8 ),
 			mat = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
 		for ( i = 0; i < spline.points.length; i++ ) {
@@ -16421,7 +16444,7 @@ THREE.FlyCamera = function ( parameters ) {
 	this.moveVector = new THREE.Vector3( 0, 0, 0 );
 	this.rotationVector = new THREE.Vector3( 0, 0, 0 );
 
-	this.lastUpdate = new Date().getTime();
+	this.lastUpdate = -1;
 	this.tdiff = 0;
 
 	this.handleEvent = function ( event ) {
@@ -16570,6 +16593,9 @@ THREE.FlyCamera = function ( parameters ) {
 	this.update = function( parentMatrixWorld, forceUpdate, camera ) {
 
 		var now = new Date().getTime();
+		
+		if ( this.lastUpdate == -1 ) this.lastUpdate = now;
+		
 		this.tdiff = ( now - this.lastUpdate ) / 1000;
 		this.lastUpdate = now;
 
@@ -16661,20 +16687,20 @@ THREE.FlyCamera.prototype.constructor = THREE.FlyCamera;
 THREE.FlyCamera.prototype.supr = THREE.Camera.prototype;
 /**
  * @author mikael emtinger / http://gomo.se/
+ * @author alteredq / http://alteredqualia.com/
  *
  * parameters = {
  *  fov: <float>,
  *  aspect: <float>,
  *  near: <float>,
  *  far: <float>,
- *  target: <THREE.Object3D>,
 
  *  movementSpeed: <float>,
  *  lookSpeed: <float>,
  *  rollSpeed: <float>,
 
  *  autoForward: <bool>,
-
+ * 	mouseLook: <bool>,
 
  *  domElement: <HTMLElement>,
  * }
@@ -16684,31 +16710,87 @@ THREE.RollCamera = function ( fov, aspect, near, far ) {
 
 	THREE.Camera.call( this, fov, aspect, near, far );
 
-	this.forward = new THREE.Vector3( 0, 0, 1 );
-	this.roll = 0;
+	// API
+
+	this.mouseLook = true;
+	this.autoForward = false;
+
+	this.lookSpeed = 1;
+	this.movementSpeed = 1;
+	this.rollSpeed = 1;
+
+	this.constrainVertical = [ -0.9, 0.9 ];
+
+	this.domElement = document;
+
+	// disable default camera behavior
+
 	this.useTarget = false;
 	this.matrixAutoUpdate = false;
 
+	// internals
+
+	this.forward = new THREE.Vector3( 0, 0, 1 );
+	this.roll = 0;
+
+	this.lastUpdate = -1;
+	this.delta = 0;
+	
 	var xTemp = new THREE.Vector3();
 	var yTemp = new THREE.Vector3();
 	var zTemp = new THREE.Vector3();
 	var rollMatrix = new THREE.Matrix4();
 
+	var doRoll = false, rollDirection = 1, forwardSpeed = 0, sideSpeed = 0, upSpeed = 0;
+
+	var mouseX = 0, mouseY = 0;
+	
+	var windowHalfX = window.innerWidth / 2;
+	var windowHalfY = window.innerHeight / 2;
 
 	// custom update
 
 	this.update = function() {
-	
+
+		var now = new Date().getTime();
+
+		if ( this.lastUpdate == -1 ) this.lastUpdate = now;
+		
+		this.delta = ( now - this.lastUpdate ) / 1000;
+		this.lastUpdate = now;
+
+		if ( this.mouseLook ) {
+		
+			var actualLookSpeed = this.delta * this.lookSpeed;
+			
+			this.rotateHorizontally( actualLookSpeed * mouseX );
+			this.rotateVertically( actualLookSpeed * mouseY );
+
+		}
+
+		var actualSpeed = this.delta * this.movementSpeed;
+		var forwardOrAuto = ( forwardSpeed > 0 || ( this.autoForward && ! ( forwardSpeed < 0 ) ) ) ? 1 : forwardSpeed;
+		
+		this.translateZ( actualSpeed * forwardOrAuto );
+		this.translateX( actualSpeed * sideSpeed );
+		this.translateY( actualSpeed * upSpeed );
+
+		if( doRoll ) {
+			
+			this.roll += this.rollSpeed * this.delta * rollDirection;
+
+		}
+		
 		// cap forward up / down
 		
-		if( this.forward.y > 0.9 ) {
+		if( this.forward.y > this.constrainVertical[ 1 ] ) {
 			
-			this.forward.y = 0.9;
+			this.forward.y = this.constrainVertical[ 1 ];
 			this.forward.normalize();
 			
-		} else if( this.forward.y < -0.9 ) {
+		} else if( this.forward.y < this.constrainVertical[ 0 ] ) {
 			
-			this.forward.y = -0.9;
+			this.forward.y = this.constrainVertical[ 0 ];
 			this.forward.normalize();
 			
 		}
@@ -16751,7 +16833,7 @@ THREE.RollCamera = function ( fov, aspect, near, far ) {
 
 		this.supr.update.call( this );
 
-	}
+	};
 	
 	this.translateX = function ( distance ) {
 		
@@ -16788,7 +16870,7 @@ THREE.RollCamera = function ( fov, aspect, near, far ) {
 		this.forward.subSelf( xTemp );
 		this.forward.normalize();
 	
-	}
+	};
 	
 	this.rotateVertically = function ( amount ) {
 		
@@ -16800,9 +16882,104 @@ THREE.RollCamera = function ( fov, aspect, near, far ) {
 		this.forward.addSelf( yTemp );
 		this.forward.normalize();
 	
-	}
+	};
 
-}
+	function onKeyDown( event ) {
+
+		switch( event.keyCode ) {
+
+			case 38: /*up*/
+			case 87: /*W*/ forwardSpeed = 1; break;
+
+			case 37: /*left*/
+			case 65: /*A*/ sideSpeed = -1; break;
+
+			case 40: /*down*/
+			case 83: /*S*/ forwardSpeed = -1; break;
+
+			case 39: /*right*/
+			case 68: /*D*/ sideSpeed = 1; break;
+
+			case 81: /*Q*/ doRoll = true; rollDirection = 1; break;
+			case 69: /*E*/ doRoll = true; rollDirection = -1; break;
+
+			case 82: /*R*/ upSpeed = 1; break;
+			case 70: /*F*/ upSpeed = -1; break;
+
+		}
+
+	};
+
+	function onKeyUp( event ) {
+
+		switch( event.keyCode ) {
+
+			case 38: /*up*/
+			case 87: /*W*/ forwardSpeed = 0; break;
+
+			case 37: /*left*/
+			case 65: /*A*/ sideSpeed = 0; break;
+
+			case 40: /*down*/
+			case 83: /*S*/ forwardSpeed = 0; break;
+
+			case 39: /*right*/
+			case 68: /*D*/ sideSpeed = 0; break;
+
+			case 81: /*Q*/ doRoll = false; break;
+			case 69: /*E*/ doRoll = false; break;
+
+			case 82: /*R*/ upSpeed = 0; break;
+			case 70: /*F*/ upSpeed = 0; break;
+
+		}
+
+	};
+
+	function onMouseMove( event ) {
+
+		mouseX = ( event.clientX - windowHalfX ) / window.innerWidth;
+		mouseY = ( event.clientY - windowHalfY ) / window.innerHeight;
+
+	};
+	
+	function onMouseDown ( event ) {
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		switch ( event.button ) {
+
+			case 0: forwardSpeed = 1; break;
+			case 2: forwardSpeed = -1; break;
+
+		}
+
+	};
+
+	function onMouseUp ( event ) {
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		switch ( event.button ) {
+
+			case 0: forwardSpeed = 0; break;
+			case 2: forwardSpeed = 0; break;
+
+		}
+
+	};
+	
+	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+
+	this.domElement.addEventListener( 'mousemove', onMouseMove, false );
+	this.domElement.addEventListener( 'mousedown', onMouseDown, false );
+	this.domElement.addEventListener( 'mouseup', onMouseUp, false );
+	this.domElement.addEventListener( 'keydown', onKeyDown, false );
+	this.domElement.addEventListener( 'keyup', onKeyUp, false );	
+
+};
 
 
 THREE.RollCamera.prototype = new THREE.Camera();
@@ -17878,7 +18055,7 @@ THREE.Loader.prototype = {
 
 		}
 
-		if ( m.transparent !== undefined ) {
+		if ( m.transparent !== undefined || m.opacity < 1.0 ) {
 
 			mpars.transparent = m.transparent;
 
@@ -18312,7 +18489,7 @@ THREE.JSONLoader.prototype.createModel = function ( json, callback, texture_path
 				for ( c = 0, cl = srcColors.length; c < cl; c += 3 ) {
 
 					color = new THREE.Color( 0xffaa00 );
-					color.setRGB( srcColors[ v ], srcColors[ v + 1 ], srcColors[ v + 2 ] );
+					color.setRGB( srcColors[ c ], srcColors[ c + 1 ], srcColors[ c + 2 ] );
 					dstColors.push( color );
 
 				}
@@ -19120,11 +19297,21 @@ THREE.BinaryLoader.prototype = {
  */
 
 THREE.SceneLoader = function () {
+
+	this.onLoadStart = function () {};
+	this.onLoadProgress = function() {};
+	this.onLoadComplete = function () {};
+		
+	this.callbackSync = function () {};
+	this.callbackProgress = function () {};
+
 };
 
 THREE.SceneLoader.prototype = {
 
-	load : function ( url, callback_sync, callback_async, callback_progress ) {
+	load : function ( url, callbackFinished ) {
+
+		var scope = this;
 
 		var worker = new Worker( url );
 		worker.postMessage( 0 );
@@ -19163,6 +19350,29 @@ THREE.SceneLoader.prototype = {
 				fogs: {}
 
 			};
+
+			// find out if there are some colliders
+			
+			var hasColliders = false;
+			
+			for( dd in data.objects ) {
+				
+				o = data.objects[ dd ];
+
+				if ( o.meshCollider )  {
+					
+					hasColliders = true;
+					break;
+
+				}
+				
+			}
+			
+			if ( hasColliders ) {
+			
+				result.scene.collisions = new THREE.CollisionSystem();
+
+			}
 
 			if ( data.transform ) {
 
@@ -19266,10 +19476,24 @@ THREE.SceneLoader.prototype = {
 							if ( o.meshCollider ) {
 
 								var meshCollider = THREE.CollisionUtils.MeshColliderWBox( object );
-								THREE.Collisions.colliders.push( meshCollider );
+								result.scene.collisions.colliders.push( meshCollider );
 
 							}
 
+							if ( o.castsShadow ) {
+								
+								//object.visible = true;
+								//object.materials = [ new THREE.MeshBasicMaterial( { color: 0xff0000 } ) ];
+
+								var shadow = new THREE.ShadowVolume( geometry )
+								result.scene.addChild( shadow );
+								
+								shadow.position = object.position;
+								shadow.rotation = object.rotation;
+								shadow.scale = object.scale;
+
+							}
+							
 						}
 
 
@@ -19293,6 +19517,8 @@ THREE.SceneLoader.prototype = {
 					handle_mesh( geo, id );
 
 					counter_models -= 1;
+					
+					scope.onLoadComplete();
 
 					async_callback_gate();
 
@@ -19304,27 +19530,31 @@ THREE.SceneLoader.prototype = {
 
 				var progress = {
 
-					total_models: total_models,
-					total_textures: total_textures,
-					loaded_models: total_models - counter_models,
-					loaded_textures: total_textures - counter_textures
+					totalModels		: total_models,
+					totalTextures	: total_textures,
+					loadedModels	: total_models - counter_models,
+					loadedTextures	: total_textures - counter_textures
 
 				};
 
-				callback_progress( progress, result );
+				scope.callbackProgress( progress, result );
+				
+				scope.onLoadProgress();
 
 				if( counter_models == 0 && counter_textures == 0 ) {
 
-					callback_async( result );
+					callbackFinished( result );
 
 				}
 
 			};
 
-			var callback_texture = function( images ) {
+			var callbackTexture = function( images ) {
 
 				counter_textures -= 1;
 				async_callback_gate();
+
+				scope.onLoadComplete();
 
 			};
 
@@ -19446,6 +19676,8 @@ THREE.SceneLoader.prototype = {
 				if ( g.type == "bin_mesh" || g.type == "ascii_mesh" ) {
 
 					counter_models += 1;
+					
+					scope.onLoadStart();
 
 				}
 
@@ -19514,10 +19746,18 @@ THREE.SceneLoader.prototype = {
 				if( tt.url instanceof Array ) {
 
 					counter_textures += tt.url.length;
+					
+					for( var n = 0; n < tt.url.length; n ++ ) {
+						
+						scope.onLoadStart();
+
+					}
 
 				} else {
 
 					counter_textures += 1;
+
+					scope.onLoadStart();
 
 				}
 
@@ -19545,11 +19785,11 @@ THREE.SceneLoader.prototype = {
 
 					}
 
-					texture = THREE.ImageUtils.loadTextureCube( url_array, tt.mapping, callback_texture );
+					texture = THREE.ImageUtils.loadTextureCube( url_array, tt.mapping, callbackTexture );
 
 				} else {
 
-					texture = THREE.ImageUtils.loadTexture( get_url( tt.url, data.urlBaseType ), tt.mapping, callback_texture );
+					texture = THREE.ImageUtils.loadTexture( get_url( tt.url, data.urlBaseType ), tt.mapping, callbackTexture );
 
 					if ( THREE[ tt.minFilter ] != undefined )
 						texture.minFilter = THREE[ tt.minFilter ];
@@ -19605,6 +19845,12 @@ THREE.SceneLoader.prototype = {
 
 				}
 
+				if ( m.parameters.opacity !== undefined && m.parameters.opacity < 1.0 ) {
+					
+					m.parameters.transparent = true;
+
+				}
+				
 				material = new THREE[ m.type ]( m.parameters );
 				result.materials[ dm ] = material;
 
@@ -19616,7 +19862,7 @@ THREE.SceneLoader.prototype = {
 
 			// synchronous callback
 
-			callback_sync( result );
+			scope.callbackSync( result );
 
 		};
 
@@ -20594,7 +20840,7 @@ THREE.triTable = new Int32Array([
 0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]);
 /**
- * @author drojdjou / http://everyday3d.com/
+ * @author bartek drozdz / http://everyday3d.com/
  */
 
 THREE.PlaneCollider = function( point, normal ) {
@@ -20619,6 +20865,8 @@ THREE.BoxCollider = function( min, max ) {
 	this.max = max;
 	this.dynamic = true;
 
+	this.normal = new THREE.Vector3();
+
 };
 
 THREE.MeshCollider = function( vertices, faces, normals, box ) {
@@ -20629,16 +20877,28 @@ THREE.MeshCollider = function( vertices, faces, normals, box ) {
 	this.box = box;
 	this.numFaces = this.faces.length;
 
+	this.normal = new THREE.Vector3();
+
 };
 
 THREE.CollisionSystem = function() {
 
+	this.collisionNormal = new THREE.Vector3();
 	this.colliders = [];
 	this.hits = [];
+
+	// console.log("Collision system init / 004");
 
 };
 
 THREE.Collisions = new THREE.CollisionSystem();
+
+THREE.CollisionSystem.prototype.merge = function( collisionSystem ) {
+
+	this.colliders = this.colliders.concat( collisionSystem.colliders );
+	this.hits = this.hits.concat( collisionSystem.hits );
+
+};
 
 THREE.CollisionSystem.prototype.rayCastAll = function( ray ) {
 
@@ -20703,19 +20963,19 @@ THREE.CollisionSystem.prototype.rayCastNearest = function( ray ) {
 
 };
 
-THREE.CollisionSystem.prototype.rayCast = function( r, c ) {
+THREE.CollisionSystem.prototype.rayCast = function( ray, collider ) {
 
-	if ( c instanceof THREE.PlaneCollider )
-		return this.rayPlane( r, c );
+	if ( collider instanceof THREE.PlaneCollider )
+		return this.rayPlane( ray, collider );
 
-	else if ( c instanceof THREE.SphereCollider )
-		return this.raySphere( r, c );
+	else if ( collider instanceof THREE.SphereCollider )
+		return this.raySphere( ray, collider );
 
-	else if ( c instanceof THREE.BoxCollider )
-		return this.rayBox( r, c );
+	else if ( collider instanceof THREE.BoxCollider )
+		return this.rayBox( ray, collider );
 
-	else if ( c instanceof THREE.MeshCollider && c.box )
-		return this.rayBox( r, c.box );
+	else if ( collider instanceof THREE.MeshCollider && collider.box )
+		return this.rayBox( ray, collider.box );
 
 };
 
@@ -20732,9 +20992,16 @@ THREE.CollisionSystem.prototype.rayMesh = function( r, me ) {
 		var p0 = me.vertices[ me.faces[ t + 0 ] ];
 		var p1 = me.vertices[ me.faces[ t + 1 ] ];
 		var p2 = me.vertices[ me.faces[ t + 2 ] ];
-		var n = me.normals[ me.faces[ i ] ];
 
-		d = Math.min(d, this.rayTriangle( rt, p0, p1, p2, n, d ) );
+		var nd = this.rayTriangle( rt, p0, p1, p2, d, this.collisionNormal );
+
+		if( nd < d ) {
+
+			d = nd;
+			me.normal.copy( this.collisionNormal );
+			me.normal.normalize();
+
+		}
 
 	}
 
@@ -20742,14 +21009,14 @@ THREE.CollisionSystem.prototype.rayMesh = function( r, me ) {
 
 };
 
-THREE.CollisionSystem.prototype.rayTriangle = function( ray, p0, p1, p2, n, mind ) {
+THREE.CollisionSystem.prototype.rayTriangle = function( ray, p0, p1, p2, mind, n ) {
 
 	var e1 = THREE.CollisionSystem.__v1,
 		e2 = THREE.CollisionSystem.__v2;
+	
+	n.set( 0, 0, 0 );
 
 	// do not crash on quads, fail instead
-
-	//if ( !n ) n = THREE.CollisionSystem.__v3;
 
 	e1.sub( p1, p0 );
 	e2.sub( p2, p1 );
@@ -20847,28 +21114,35 @@ THREE.CollisionSystem.prototype.rayTriangle = function( ray, p0, p1, p2, n, mind
 
 THREE.CollisionSystem.prototype.makeRayLocal = function( ray, m ) {
 
-	var rt = new THREE.Ray( ray.origin.clone(), ray.direction.clone() );
-	var mt = THREE.Matrix4.makeInvert( m.matrixWorld );
+	var mt = THREE.CollisionSystem.__m;
+	THREE.Matrix4.makeInvert( m.matrixWorld, mt );
+
+	var rt = THREE.CollisionSystem.__r;
+	rt.origin.copy( ray.origin );
+	rt.direction.copy( ray.direction );
 
 	mt.multiplyVector3( rt.origin );
 	mt.rotateAxis( rt.direction );
 	rt.direction.normalize();
 	//m.localRay = rt;
+
 	return rt;
 
 };
 
-THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
+THREE.CollisionSystem.prototype.rayBox = function( ray, ab ) {
 
 	var rt;
 
 	if ( ab.dynamic && ab.mesh && ab.mesh.matrixWorld ) {
 
-		rt = this.makeRayLocal( r, ab.mesh );
+		rt = this.makeRayLocal( ray, ab.mesh );
 
 	} else {
 
-		rt = new THREE.Ray( r.origin.clone(), r.direction.clone() );
+		rt = THREE.CollisionSystem.__r;
+		rt.origin.copy( ray.origin );
+		rt.direction.copy( ray.direction );
 
 	}
 
@@ -20879,7 +21153,7 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 	if( rt.origin.x < ab.min.x ) {
 
 		xt = ab.min.x - rt.origin.x;
-		//if(xt > r.direction.x) return return Number.MAX_VALUE;
+		//if(xt > ray.direction.x) return return Number.MAX_VALUE;
 		xt /= rt.direction.x;
 		ins = false;
 		xn = -1;
@@ -20887,7 +21161,7 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 	} else if( rt.origin.x > ab.max.x ) {
 
 		xt = ab.max.x - rt.origin.x;
-		//if(xt < r.direction.x) return return Number.MAX_VALUE;
+		//if(xt < ray.direction.x) return return Number.MAX_VALUE;
 		xt /= rt.direction.x;
 		ins = false;
 		xn = 1;
@@ -20897,7 +21171,7 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 	if( rt.origin.y < ab.min.y ) {
 
 		yt = ab.min.y - rt.origin.y;
-		//if(yt > r.direction.y) return return Number.MAX_VALUE;
+		//if(yt > ray.direction.y) return return Number.MAX_VALUE;
 		yt /= rt.direction.y;
 		ins = false;
 		yn = -1;
@@ -20905,7 +21179,7 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 	} else if( rt.origin.y > ab.max.y ) {
 
 		yt = ab.max.y - rt.origin.y;
-		//if(yt < r.direction.y) return return Number.MAX_VALUE;
+		//if(yt < ray.direction.y) return return Number.MAX_VALUE;
 		yt /= rt.direction.y;
 		ins = false;
 		yn = 1;
@@ -20915,7 +21189,7 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 	if( rt.origin.z < ab.min.z ) {
 
 		zt = ab.min.z - rt.origin.z;
-		//if(zt > r.direction.z) return return Number.MAX_VALUE;
+		//if(zt > ray.direction.z) return return Number.MAX_VALUE;
 		zt /= rt.direction.z;
 		ins = false;
 		zn = -1;
@@ -20923,7 +21197,7 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 	} else if( rt.origin.z > ab.max.z ) {
 
 		zt = ab.max.z - rt.origin.z;
-		//if(zt < r.direction.z) return return Number.MAX_VALUE;
+		//if(zt < ray.direction.z) return return Number.MAX_VALUE;
 		zt /= rt.direction.z;
 		ins = false;
 		zn = 1;
@@ -20957,7 +21231,7 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 			if ( y < ab.min.y || y > ab.max.y ) return Number.MAX_VALUE;
 			var z = rt.origin.z + rt.direction.z * t;
 			if ( z < ab.min.z || z > ab.max.z ) return Number.MAX_VALUE;
-			ab.normal = new THREE.Vector3( xn, 0, 0 );
+			ab.normal.set( xn, 0, 0 );
 			break;
 
 		case 1:
@@ -20966,16 +21240,16 @@ THREE.CollisionSystem.prototype.rayBox = function( r, ab ) {
 			if ( x < ab.min.x || x > ab.max.x ) return Number.MAX_VALUE;
 			var z = rt.origin.z + rt.direction.z * t;
 			if ( z < ab.min.z || z > ab.max.z ) return Number.MAX_VALUE;
-			ab.normal = new THREE.Vector3( 0, yn, 0) ;
+			ab.normal.set( 0, yn, 0) ;
 			break;
 
 		case 2:
 
 			var x = rt.origin.x + rt.direction.x * t;
-			if (x < ab.min.x || x > ab.max.x ) return Number.MAX_VALUE;
+			if ( x < ab.min.x || x > ab.max.x ) return Number.MAX_VALUE;
 			var y = rt.origin.y + rt.direction.y * t;
-			if (y < ab.min.y || y > ab.max.y ) return Number.MAX_VALUE;
-			ab.normal = new THREE.Vector3( 0, 0, zn );
+			if ( y < ab.min.y || y > ab.max.y ) return Number.MAX_VALUE;
+			ab.normal.set( 0, 0, zn );
 			break;
 
 	}
@@ -21016,8 +21290,11 @@ THREE.CollisionSystem.prototype.raySphere = function( r, s ) {
 THREE.CollisionSystem.__v1 = new THREE.Vector3();
 THREE.CollisionSystem.__v2 = new THREE.Vector3();
 THREE.CollisionSystem.__v3 = new THREE.Vector3();
+THREE.CollisionSystem.__nr = new THREE.Vector3();
+THREE.CollisionSystem.__m = new THREE.Matrix4();
+THREE.CollisionSystem.__r = new THREE.Ray();
 /**
- * @author drojdjou / http://everyday3d.com/
+ * @author bartek drozdz / http://everyday3d.com/
  */
 
 THREE.CollisionUtils = {};

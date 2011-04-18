@@ -14,8 +14,8 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	var that = {};
 	that.morph = 0.0;
-	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
-	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
+	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0, name: "" };
+	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0, name: "" };
 	that.availableAnimals = result.availableAnimals;
 	that.mesh = new THREE.Mesh( geometry, result.material );
 
@@ -113,65 +113,71 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	
 	that.update = function( deltaTimeMS ) {
 		
-		var data, dataNames = [ "animalA", "animalB" ];
-		var d, dl;
-		var f, fl;
-		var frame, nextFrame;
-		var time, nextTime;
-		var unloopedTime;
-		var lengthInMS;
-		var lenghtInFrames;
-		var morphTarget;
-		var scale;
-		
-		for( d = 0, dl = dataNames.length, morphTarget = 0; d < dl; d++ ) {
+		if( that.mesh._modelViewMatrix ) {
 			
-			data = that[ dataNames[ d ]];
+			var data, dataNames = [ "animalA", "animalB" ];
+			var d, dl;
+			var f, fl;
+			var frame, nextFrame;
+			var time, nextTime;
+			var unloopedTime;
+			var lengthInMS;
+			var lenghtInFrames;
+			var morphTarget;
+			var scale;
 			
-			unloopedTime = data.currentTime;
-			data.currentTime = ( data.currentTime + deltaTimeMS * data.timeScale ) % data.lengthInMS;
-
-
-			// did we loop?
-
-			if( unloopedTime > data.currentTime ) {
-
-				data.currentFrame = 0;				
-
-			}
-
-
-			// find frame/nextFrame
-			
-
-			frame = 0;
-			
-			for( f = data.currentFrame, fl = data.lengthInFrames - 1; f < fl; f++ ) {
+			for( d = 0, dl = dataNames.length, morphTarget = 0; d < dl; d++ ) {
 				
-				if( data.currentTime >= data.frames[ f ].time && data.currentTime < data.frames[ f + 1 ].time ) {
-					
-					frame = f;
-					break;
+				data = that[ dataNames[ d ]];
+				
+				unloopedTime = data.currentTime;
+				data.currentTime = ( data.currentTime + deltaTimeMS * data.timeScale ) % data.lengthInMS;
+	
+	
+				// did we loop?
+	
+				if( unloopedTime > data.currentTime ) {
+	
+					data.currentFrame = 0;				
+	
 				}
+	
+	
+				// find frame/nextFrame
+				
+	
+				frame = 0;
+				
+				for( f = data.currentFrame, fl = data.lengthInFrames - 1; f < fl; f++ ) {
+					
+					if( data.currentTime >= data.frames[ f ].time && data.currentTime < data.frames[ f + 1 ].time ) {
+						
+						frame = f;
+						break;
+					}
+				}
+	
+				data.currentFrame = frame;
+				nextFrame = frame + 1 < fl ? frame + 1 : 0;
+	
+				
+				morphTargetOrder[ morphTarget++ ] = data.frames[ frame     ].index;
+				morphTargetOrder[ morphTarget++ ] = data.frames[ nextFrame ].index;
+				
+				time     = data.frames[ frame     ].time;
+				nextTime = data.frames[ nextFrame ].time > time ? data.frames[ nextFrame ].time : data.frames[ nextFrame ].time + data.lengthInMS; 
+				
+				scale = ( data.currentTime - time ) / ( nextTime - time ) ;
+				
+				material.uniforms[ dataNames[ d ] + "Interpolation" ].value = scale;
+	
 			}
-
-			data.currentFrame = frame;
-			nextFrame = frame + 1 < fl ? frame + 1 : 0;
-
-			
-			morphTargetOrder[ morphTarget++ ] = data.frames[ frame     ].index;
-			morphTargetOrder[ morphTarget++ ] = data.frames[ nextFrame ].index;
-			
-			time     = data.frames[ frame     ].time;
-			nextTime = data.frames[ nextFrame ].time > time ? data.frames[ nextFrame ].time : data.frames[ nextFrame ].time + data.lengthInMS; 
-			
-			scale = ( data.currentTime - time ) / ( nextTime - time ) ;
-			
-			material.uniforms[ dataNames[ d ] + "Interpolation" ].value = scale;
-
+	
+			material.uniforms.animalMorphValue.value = that.morph;
+			material.attributes.colorAnimalA.buffer = material.attributes[ that.animalA.name ].buffer;
+			material.attributes.colorAnimalB.buffer = material.attributes[ that.animalB.name ].buffer;
 		}
-
-		material.uniforms.animalMorphValue.value = that.morph;
+		
 	}
 
 
@@ -215,7 +221,8 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			data.frames         = ROME.AnimalAnimationData[ name ];
 			data.lengthInFrames = data.frames.length;
 			data.lengthInMS     = data.frames[ data.lengthInFrames - 1 ].time;
-			
+			data.name           = name.toLowerCase();
+
 		} else {
 			
 			console.log( "Error: Couldn't find data for animal " + name );
@@ -269,7 +276,7 @@ ROME.AnimalShader = {
 	
 	textures: {
 		
-		contour: THREE.ImageUtils.loadTexture( 'assets/faceContour.png' ),
+		contour: THREE.ImageUtils.loadTexture( 'assets/faceContour.jpg' ),
 		faceLight: THREE.ImageUtils.loadTexture( 'assets/faceLight.jpg' )
 		
 	},
@@ -366,8 +373,11 @@ ROME.AnimalShader = {
 			"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
 			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
 
-			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), texture2D( faceLight, vLightUV ).r ) * texture2D( contour, vContourUV );",
+			"float envLight = texture2D( faceLight, vLightUV ).r;",
+
+			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.8 ) * (( texture2D( contour, vContourUV ).r - 0.2 ) * 0.4 + 1.0 );",
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+//			"gl_FragColor = vec4( vColor, 1.0 );",
 
 		"}"
 
@@ -530,12 +540,26 @@ ROME.AnimalAnimationData = {
 					
 				}
 				
-				attributes[ morphTargetName.slice( 0, a ) ] = { type: "c", boundTo: "faces", value: morphColor.colors }
+				morphTargetName = morphTargetName.slice( 0, a ).toLowerCase();
+				attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors }
 				
 			}
 	
 			attributes.colorAnimalA.value = morphColors[ 0 ].colors;
 			attributes.colorAnimalB.value = morphColors[ 0 ].colors;
+	
+			var r;
+	
+			for( c = 0, cl = morphColors[ 5 ].colors.length; c < cl; c++ ) {
+				
+				r = Math.random() * 0.2 + 0.9;
+				
+				morphColors[ 5 ].colors[ c ].r *= r;
+				morphColors[ 5 ].colors[ c ].g *= r;
+				morphColors[ 5 ].colors[ c ].b *= r;
+				
+			}
+	
 	
 	
 			var f, fl, faces = geometry.faces; 
@@ -590,12 +614,12 @@ ROME.AnimalAnimationData = {
 					
 					material.attributes[ a ] = { 
 						
-						type: srcAttribute.type, 
+						type: "c", 
+						size: 3,
 						boundTo: srcAttribute.boundTo, 
 						value: srcAttribute.value, 
-						size: srcAttribute.size,
-						array: srcAttribute.array,
-						buffer: srcAttribute.buffer,
+						array: undefined,
+						buffer: undefined,
 						needsUpdate: false,
 						__webglInitialized: true,
 
