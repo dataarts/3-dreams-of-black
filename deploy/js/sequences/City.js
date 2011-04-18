@@ -24,7 +24,7 @@ var City = function ( shared ) {
 		startCamera = new THREE.PathCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsA, duration: 11, 
+			waypoints: waypointsA, duration: 9.2, 
 			useConstantSpeed: true, resamplingCoef: 30,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
@@ -86,6 +86,12 @@ var City = function ( shared ) {
 		delta = time - oldTime;
 		oldTime = time;
 
+
+		THREE.AnimationHandler.update( delta );
+
+		soup.update( delta );
+
+
 		// choose path
 		var camz = camera.matrixWorld.n34;
 	
@@ -95,17 +101,17 @@ var City = function ( shared ) {
 
 			if (camera.theta < 1.2) {
 				// turn left
-				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ -250, 20, -1740 ], [ -1670, 20, -1740 ] ];
+				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ -110, 20, -1740 ], [ -1670, 20, -1740 ] ];
 			}
 			if (camera.theta > 1.8) {
 				// turn right
-				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ 250, 20, -1740 ], [ 1670, 20, -1740 ] ];
+				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ 110, 20, -1740 ], [ 1670, 20, -1740 ] ];
 			}
 
 			switchCamera = new THREE.PathCamera( {
 
 				fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-				waypoints: waypointsB, duration: 19, 
+				waypoints: waypointsB, duration: 14.3, 
 				useConstantSpeed: true, resamplingCoef: 5,
 				createDebugPath: false, createDebugDummy: false,
 				lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
@@ -130,9 +136,6 @@ var City = function ( shared ) {
 
 		}
 
-		THREE.AnimationHandler.update( delta );
-
-		soup.update( delta );
 
 		// slight camera roll
 

@@ -108,12 +108,6 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		top.position.x    = camPos.x;
 		top.position.z    = camPos.z;
 
-		left.updateMatrix();
-		right.updateMatrix();
-		front.updateMatrix();
-		back.updateMatrix();
-		top.updateMatrix();
-		bottom.updateMatrix();
 	
 		if ( that.settings.capBottom != null ) {
 
@@ -122,6 +116,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 			}
 
 		}
+
 
 		mouse2d.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
 		mouse2d.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
@@ -136,7 +131,6 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		ray.direction.copy( ray.origin );
 		//ray.direction.subSelf( camera.position );
 		ray.direction.subSelf( camPos );
-
 
 		var c = scene.collisions.rayCastNearest( ray );
 
