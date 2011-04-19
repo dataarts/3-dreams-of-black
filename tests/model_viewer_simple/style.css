@@ -30,6 +30,7 @@ body {
   height: 360px;
   margin: auto;
   z-index: 10000;
+  cursor: move;
 }
 
 #viewerConsole {
