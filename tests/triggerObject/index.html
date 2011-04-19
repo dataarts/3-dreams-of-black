@@ -16,8 +16,7 @@
 
 	<body>
 		<script type="text/javascript" src="build/Three.js"></script>
-		<script type="text/javascript" src="rome/Animal.js"></script>
-
+		<script type="text/javascript" src="ROME/Trigger.js"></script>
 
 		<script type="text/javascript">
 
@@ -33,14 +32,14 @@
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
 			var animation;
-			var animal, animal2, animal3;
+			var trigger;
 
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 			document.addEventListener( 'click', onDocumentMouseClick, false );
 
 			
 			var loader = new THREE.JSONLoader();
-			loader.load( { model: "files/quadruped_A.js", callback: init } );
+			loader.load( { model: "assets/lamppost.js", callback: init } );
 
 		//	init();
 
@@ -50,47 +49,35 @@
 				document.body.appendChild( container );
 
 
-
 				scene = new THREE.Scene();
 				scene.fog = new THREE.FogExp2( 0x535758, 0.0004705882352941177 );
 				scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
 
+				trigger = new Trigger( geometry, scene );
+
+				var t = new Trigger( geometry, scene );
+				t.mesh.position.x = 10;
+				t.mesh.rotation.z = Math.PI * 0.5;
+
+
 				var light = new THREE.DirectionalLight( 0xffffff );
-				light.position.set( 0, 1, 0 );
+				light.position.set( 1, 1, 0 );
+				scene.addChild( light );
+
+				var light = new THREE.PointLight( 0xff0000 );
+				light.position.set( 0, 0, 0 );
 				scene.addChild( light );
 
 				var light = new THREE.AmbientLight( 0x888888 );
 				scene.addLight( light );
-				
-				animal = new Animal( geometry, true );
-				animal.mesh.rotation.y = 90 * Math.PI / 180;
-				animal.mesh.position.x = -200;
-				animal.mesh.position.z = -200;
-				animal.play( "horse", "deer" );
-				scene.addChild( animal.mesh );
-
-				animal2 = new Animal( geometry, true );
-				animal2.mesh.rotation.y = 65 * Math.PI / 180;
-				animal2.mesh.position.x = 0;
-				animal2.mesh.position.z = -200;
-				animal2.play( "seal", "bear" );
-				scene.addChild( animal2.mesh );
-
-				animal3 = new Animal( geometry, true );
-				animal3.mesh.rotation.y = 75 * Math.PI / 180;
-				animal3.mesh.position.x = 200;
-				animal3.mesh.position.z = -200;
-				animal3.play( "frog", "rabbit" );
-				scene.addChild( animal3.mesh );
 
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.set( 0, 250, 250 );
-				camera.target.position.y = 180;
+				camera.position.set( 0, 100, 1650 );
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setClearColorHex( 0x001144, 1.0 );
+				renderer.setClearColorHex( 0x444444, 1.0 );
 				renderer.sortObjects = false;
 				container.appendChild( renderer.domElement );
 
@@ -99,7 +86,7 @@
 
 			function onDocumentMouseClick( event ) {
 				
-			//	animal.play( "wolf", "bison" );
+				trigger.play();
 			}
 
 			function onDocumentMouseMove(event) {
@@ -112,17 +99,16 @@
 
 			function loop() {
 
-				animal.morph = Math.abs( mouseX / windowHalfX );
-				animal.mesh.rotation.y -= 0.01;
+			//	trigger.mesh.rotation.x += 0.005;
+			//	trigger.mesh.rotation.y += 0.005;
+			//	trigger.mesh.rotation.z += 0.005;
 
-				animal2.morph = Math.abs( mouseX / windowHalfX );
-				animal2.mesh.rotation.y += 0.01;
-
-				animal3.morph = Math.abs( mouseX / windowHalfX );
-				animal3.mesh.rotation.y += 0.01;
-
-				THREE.AnimationHandler.update( 1000 / 120 );
+				THREE.AnimationHandler.update( 1000 / 60 );
 				renderer.render( scene, camera );
+
+				trigger.mesh.morphTargetInfluences[ 1 ] = Math.sin( t ) * 0.5 + 0.5;
+				
+				t+=0.01;
 
 			}
 
