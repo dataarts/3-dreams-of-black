@@ -135,9 +135,9 @@ var CitySoup = function ( camera, scene, shared ) {
 
 */
 	// butterflys
-	var butterflys = new AnimalInFrontOfCamera(30, scene);
+	/*var butterflys = new AnimalInFrontOfCamera(30, scene);
 	loader.load( { model: "files/models/soup/butterfly_hiA.js", callback: butterflys.addAnimal } );
-	
+	*/
 	// trail - of grass/trees/etc
 	var trail = new Trail(100, scene);
 	// preoccupy for differnt grass
@@ -225,7 +225,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		runningAnimals.update();
 		flyingAnimals.update();
 		//flyingAnimals2.update();
-		butterflys.update(camPos, that.camera.theta, delta);
+		//butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
 		
 		TWEEN.update();
