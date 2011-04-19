@@ -82,7 +82,6 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// preoccupy slots for specific animals - hack...
 	runningAnimals.array[0] = "gator";
 	runningAnimals.array[10] = "gator";
-	runningAnimals.array[20] = "gator";
 	runningAnimals.array[2] = "goat";
 	runningAnimals.array[18] = "goat";
 	runningAnimals.array[25] = "goat";
@@ -92,26 +91,29 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.array[32] = "octo";
 	runningAnimals.array[38] = "octo";
 
-/*	runningAnimals.array[3] = "tar";
-	runningAnimals.array[4] = "tar";
-	runningAnimals.array[6] = "tar";
-*/
+	runningAnimals.array[3] = "animal";
+	runningAnimals.array[4] = "animal";
+	runningAnimals.array[6] = "animal";
+	runningAnimals.array[11] = "animal";
+	runningAnimals.array[15] = "animal";
+	runningAnimals.array[19] = "animal";
+	runningAnimals.array[28] = "animal";
 
-	//loader.load( { model: "files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
-	loader.load( { model: "files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
+	loader.load( { model: "files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
 	loader.load( { model: "files/models/soup/animals_A_black.js", callback: animalsLoadedProxy } );
+	loader.load( { model: "files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
 	loader.load( { model: "files/models/soup/goat_black.js", callback: goatLoadedProxy } );
 //	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
 	loader.load( { model: "files/models/soup/octo_black.js", callback: octoLoadedProxy } );
 
 	function animalsLoadedProxy( geometry ) {
 		var morphArray = [0,0,1,2,1,2,0,2,3];
-		runningAnimals.addAnimal( geometry, null, 0.5, morphArray, 2 );
+		runningAnimals.addAnimal( geometry, "animal", 0.4, morphArray, 2 );
 	}
 
 	function taruffaloLoadedProxy( geometry ) {
-		var morphArray = [0,0,1,1];
-		runningAnimals.addAnimal( geometry, "tar", 0.33, morphArray, 2 );
+		var morphArray = [0,1,0,1];
+		runningAnimals.addAnimal( geometry, null, 0.33, morphArray, 2 );
 	}
 
 	function gatorLoadedProxy( geometry ) {
