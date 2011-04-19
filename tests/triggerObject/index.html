@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - webgl</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="ROME/Trigger.js"></script>
+
+		<script type="text/javascript">
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var geometry, objects;
+			var skin;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+			var animation;
+			var trigger;
+
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			document.addEventListener( 'click', onDocumentMouseClick, false );
+
+			
+			var loader = new THREE.JSONLoader();
+			loader.load( { model: "assets/lamppost.js", callback: init } );
+
+		//	init();
+
+			function init( geometry ) {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x535758, 0.0004705882352941177 );
+				scene.fog.color.setHSV( 0, 0, 0.6411764705882353 );
+
+				trigger = new Trigger( geometry, scene );
+
+				var t = new Trigger( geometry, scene );
+				t.mesh.position.x = 10;
+				t.mesh.rotation.z = Math.PI * 0.5;
+
+
+				var light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 1, 1, 0 );
+				scene.addChild( light );
+
+				var light = new THREE.PointLight( 0xff0000 );
+				light.position.set( 0, 0, 0 );
+				scene.addChild( light );
+
+				var light = new THREE.AmbientLight( 0x888888 );
+				scene.addLight( light );
+
+
+				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( 0, 100, 1650 );
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColorHex( 0x444444, 1.0 );
+				renderer.sortObjects = false;
+				container.appendChild( renderer.domElement );
+
+				setInterval( loop, 1000 / 60 );
+			}
+
+			function onDocumentMouseClick( event ) {
+				
+				trigger.play();
+			}
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = ( event.clientX - windowHalfX );
+				mouseY = ( event.clientY - windowHalfY );
+			}
+
+			var t = 0;
+
+			function loop() {
+
+			//	trigger.mesh.rotation.x += 0.005;
+			//	trigger.mesh.rotation.y += 0.005;
+			//	trigger.mesh.rotation.z += 0.005;
+
+				THREE.AnimationHandler.update( 1000 / 60 );
+				renderer.render( scene, camera );
+
+				trigger.mesh.morphTargetInfluences[ 1 ] = Math.sin( t ) * 0.5 + 0.5;
+				
+				t+=0.01;
+
+			}
+
+			function log( text ) {
+
+				var e = document.getElementById("log");
+				e.innerHTML = text + "<br/>" + e.innerHTML;
+
+			}
+
+		</script>
+
+	</body>
+</html>
