@@ -3,7 +3,7 @@
  */
 
 
-ROME = {};
+if( ROME === undefined ) ROME = {};
 
 
 // animal
