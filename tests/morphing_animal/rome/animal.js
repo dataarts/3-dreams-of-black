@@ -99,6 +99,9 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			THREE.AnimationHandler.addToUpdate( that );
 		}
 		
+		animalB = animalB !== undefined ? animalB : animalA;
+		morph = morph !== undefined ? morph : 0;
+		
 		setAnimalData( animalA, that.animalA );
 		setAnimalData( animalB, that.animalB );
 		
@@ -161,8 +164,16 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 				nextFrame = frame + 1 < fl ? frame + 1 : 0;
 	
 				
+/*				morphTargetOrder[ morphTarget + 0 ] = data.frames[ frame     ].index;
+				morphTargetOrder[ morphTarget + 4 ] = data.frames[ frame     ].index + data.normalsOffset;
+				morphTargetOrder[ morphTarget + 1 ] = data.frames[ nextFrame ].index;
+				morphTargetOrder[ morphTarget + 5 ] = data.frames[ nextFrame ].index + data.normalsOffset;
+				
+				morphTarget += 2;*/
+
 				morphTargetOrder[ morphTarget++ ] = data.frames[ frame     ].index;
 				morphTargetOrder[ morphTarget++ ] = data.frames[ nextFrame ].index;
+				
 				
 				time     = data.frames[ frame     ].time;
 				nextTime = data.frames[ nextFrame ].time > time ? data.frames[ nextFrame ].time : data.frames[ nextFrame ].time + data.lengthInMS; 
@@ -176,6 +187,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			material.uniforms.animalMorphValue.value = that.morph;
 			material.attributes.colorAnimalA.buffer = material.attributes[ that.animalA.name ].buffer;
 			material.attributes.colorAnimalB.buffer = material.attributes[ that.animalB.name ].buffer;
+			
 		}
 		
 	}
@@ -222,6 +234,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			data.lengthInFrames = data.frames.length;
 			data.lengthInMS     = data.frames[ data.lengthInFrames - 1 ].time;
 			data.name           = name.toLowerCase();
+			data.normalsOffset  = Math.floor( data.frames.length * 0.5, 10 );
 
 		} else {
 			
@@ -276,7 +289,7 @@ ROME.AnimalShader = {
 	
 	textures: {
 		
-		contour: THREE.ImageUtils.loadTexture( 'assets/faceContour.jpg' ),
+		contour: THREE.ImageUtils.loadTexture( 'assets/faceContourNoise.jpg' ),
 		faceLight: THREE.ImageUtils.loadTexture( 'assets/faceLight.jpg' )
 		
 	},
@@ -336,12 +349,20 @@ ROME.AnimalShader = {
 			// uv
 			
 			"vContourUV = contourUV;",
-			"vLightUV = normalize( normalMatrix * normal ).xy * 0.5 + 0.5;",
 			
 
-			// morph
+			// morph color, normal and position
 			
 			"vColor = mix( colorAnimalA, colorAnimalB, animalMorphValue );",
+			
+			
+/*			"vec3 animalA = mix( morphTarget4, morphTarget5, animalAInterpolation );",
+			"vec3 animalB = mix( morphTarget6, morphTarget7, animalBInterpolation );",
+			"vec3 morphed = mix( animalA,      animalB,      animalMorphValue );",
+			
+			"vLightUV = normalize( normalMatrix * morphed ).xy * 0.5 + 0.5;",
+*/			
+			"vLightUV = normalize( normalMatrix * normal ).xy * 0.5 + 0.5;",
 			
 			"vec3 animalA = mix( morphTarget0, morphTarget1, animalAInterpolation );",
 			"vec3 animalB = mix( morphTarget2, morphTarget3, animalBInterpolation );",
@@ -375,8 +396,13 @@ ROME.AnimalShader = {
 
 			"float envLight = texture2D( faceLight, vLightUV ).r;",
 
-			"gl_FragColor = mix( vec4( vColor, 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.8 ) * (( texture2D( contour, vContourUV ).r - 0.2 ) * 0.4 + 1.0 );",
+			// below: mix( color overlayed by ( contour map * influence constant ), directional light color, envlight above * influence constant )
+
+			"gl_FragColor  = mix( vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 0.7 + 1.0 ), 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.9 );",
+			"gl_FragColor *= gl_FragColor;",
+
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+
 //			"gl_FragColor = vec4( vColor, 1.0 );",
 
 		"}"
@@ -404,7 +430,7 @@ ROME.AnimalAnimationData = {
 			
 			var availableAnimals = [];
 			var animal, animalName;
-			var charCode, morphTargetName, morphTargets = geometry.morphTargets;
+			var charCode, morphTargetName, morphTarget, morphTargets = geometry.morphTargets;
 			var a, al, m, ml, currentTime;
 			
 			// add animal names to static list?
@@ -501,6 +527,26 @@ ROME.AnimalAnimationData = {
 			}
 	
 	
+			// create normals for each morph target
+	
+/*			var m, ml;
+			var n, nl, normals, faces, vertices;
+			var f, fl;
+	
+			for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
+				
+				morphTarget = { name: morphTargets[ m ].name + "Normal", vertices: [] };
+				vertices = morphTargets[ m ].vertices;
+				faces = geometry.faces;
+				normals = morphTarget.vertices;
+				
+				for( f = 0, fl = faces.length; f < fl; f++ ) {
+					
+					normals.push( )
+					
+				}
+			} */
+	
 			// create material
 	
 			var material = new THREE.MeshShaderMaterial( {
@@ -522,45 +568,88 @@ ROME.AnimalAnimationData = {
 			var c, cl, morphColor, morphColors = geometry.morphColors;
 			var attributes = material.attributes;
 			
-			for( c = 0, cl = morphColors.length; c < cl; c++ ) {
+			if( geometry.morphColors ) {
 				
-				morphColor = morphColors[ c ];
-				morphTargetName = morphColor.name;
-				
-				for( a = 0; a < morphTargetName.length; a++ ) {
-			
-					charCode = morphTargetName.charCodeAt( a );
+				for( c = 0, cl = morphColors.length; c < cl; c++ ) {
 					
-					if(! (( charCode >= 65 && charCode <= 90  ) ||
-					      ( charCode >= 97 && charCode <= 122 ))) {
-					      	
-						break;   
+					morphColor = morphColors[ c ];
+					morphTargetName = morphColor.name;
+					
+					for( a = 0; a < morphTargetName.length; a++ ) {
+				
+						charCode = morphTargetName.charCodeAt( a );
+						
+						if(! (( charCode >= 65 && charCode <= 90  ) ||
+						      ( charCode >= 97 && charCode <= 122 ))) {
+						      	
+							break;   
 
-					} 
+						} 
+
+					}
+
+					morphTargetName = morphTargetName.slice( 0, a ).toLowerCase();
+					attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors }
 					
 				}
 				
-				morphTargetName = morphTargetName.slice( 0, a ).toLowerCase();
-				attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors }
+				attributes.colorAnimalA.value = morphColors[ 0 ].colors;
+				attributes.colorAnimalB.value = morphColors[ 0 ].colors;
 				
+				
+				// check so each animal has a morph color
+		
+				for( a = 0, al = availableAnimals.length; a < al; a++ ) {
+					
+					animalName = availableAnimals[ a ].toLowerCase();
+						
+					for( c = 0, cl = morphColors.length; c < cl; c++ ) {
+						
+						morphColor = morphColors[ c ].name.toLowerCase();
+						
+						if( morphColor.indexOf( animalName ) !== -1 ) {
+							
+							break;
+							
+						}
+						
+					}
+					
+					// didn't exist?
+					
+					if( c === cl ) {
+						
+						console.error( "Animal.constructor: Morph Color missing for animal " + animalName + ". Deploying backup plan." );
+
+						attributes[ animalName ] = { type: "c", boundTo: "faces", value: [] };
+						
+						for( c = 0, cl = geometry.faces.length; c < cl; c++ ) {
+							
+							attributes[ animalName ].value.push( new THREE.Color( 0xff0000 ));
+							
+						}
+						
+					}
+										
+				}
+		
+		
+			} else {
+				
+				console.error( "Animal.constructor: Morph Colors doesn't exist, deploying fallback!" );
+				
+				for( c = 0, cl = geometry.faces.length; c < cl; c++ ) {
+					
+					attributes.colorAnimalA.value.push( new THREE.Color( 0xff00ff ));
+					
+				}
+				
+				attributes.colorAnimalB.value = attributes.colorAnimalA.value;
+	
 			}
+			
 	
-			attributes.colorAnimalA.value = morphColors[ 0 ].colors;
-			attributes.colorAnimalB.value = morphColors[ 0 ].colors;
-	
-			var r;
-	
-			for( c = 0, cl = morphColors[ 5 ].colors.length; c < cl; c++ ) {
-				
-				r = Math.random() * 0.2 + 0.9;
-				
-				morphColors[ 5 ].colors[ c ].r *= r;
-				morphColors[ 5 ].colors[ c ].g *= r;
-				morphColors[ 5 ].colors[ c ].b *= r;
-				
-			}
-	
-	
+			// create contour UV
 	
 			var f, fl, faces = geometry.faces; 
 			var contourUv = attributes.contourUV.value;
