@@ -67,11 +67,11 @@ var DunesWorld = function ( shared ) {
 
 	shared.influenceSpheres = [ 
 		
-		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 1100, state: 0, type: 0 },
-		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 1100, state: 0, type: 0 },
+		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 800, state: 0, type: 0 },
+		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 800, state: 0, type: 0 },
 		
-		{ name: "prairiePortal", center: new THREE.Vector3( -824, 2365, 4336 ), radius: 200, state: 0, type: 1 },
-		{ name: "cityPortal",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 200, state: 0, type: 1 }
+		{ name: "prairiePortal", center: new THREE.Vector3( -824, 2365, 4336 ), radius: 200, state: 0, type: 1, destination: "prairie" },
+		{ name: "cityPortal",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 200, state: 0, type: 1, destination: "city" }
 		
 	];
 
@@ -218,7 +218,6 @@ var DunesWorld = function ( shared ) {
 				
 				if ( colliders[ i ].mesh == node ) {
 				
-					//colliders[ i ].mesh.visible = true;
 					node.__isCollider = true; 
 
 				}
@@ -467,6 +466,8 @@ var DunesWorld = function ( shared ) {
 				} else if ( influenceSphere.type == 1 ) {
 					
 					console.log( "entered portal [" + influenceSphere.name + "]" );
+					
+					shared.signals.startexploration.dispatch( influenceSphere.destination );
 
 				}
 				

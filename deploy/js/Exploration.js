@@ -19,14 +19,14 @@ var Exploration = function ( shared ) {
 	cameras.prairie.movementSpeed = 50;
 	cameras.prairie.lookSpeed = 3;
 	cameras.prairie.constrainVertical = [ -0.4, 0.4 ];
-	cameras.prairie.autoForward = false;
+	cameras.prairie.autoForward = true;
 	cameras.prairie.position.set( 0, 0, 0 );
 
 	cameras.city = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 	cameras.city.movementSpeed = 100;
 	cameras.city.lookSpeed = 3;
 	cameras.city.constrainVertical = [ -0.4, 0.4 ];
-	cameras.city.autoForward = false;
+	cameras.city.autoForward = true;
 	cameras.city.position.set( 0, 0, 0 );
 
 	var world, scene,
@@ -98,24 +98,35 @@ var Exploration = function ( shared ) {
 
 		world = shared.worlds[ worldId ];
 		scene = world.scene;
-		camera = cameras[ worldId ];
-
+		camera = cameras[ worldId ];		
+		
 		scene.addChild( camera );
 
-		// hide soup
+		camera.position.set( 0, 0, 0 );
+		
+		// hide soup (if it wasn't yet activated)
 
-		THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
+		if ( !shared.started[ worldId ] ) {
+		
+			THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
 
-			if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
-				|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
+				if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
+					|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
 
-				if ( ! none.name.toLowerCase.find( "portal" ) )
-					node.visible = false; 
+					var name = node.name.toLowerCase();
+					
+					if ( ! ( name && name.indexOf( "portal" ) >= 0 ) ) {
+						
+						node.visible = false;					
+						
+					}
 
-			}
+				}
 
-		} );
+			} );
 
+		}
+		
 		start = lastTime = new Date().getTime();
 
 	};
