@@ -86,7 +86,7 @@
 
 				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.set( 0, 250, 250 );
-				camera.target.position.y = 100;
+				camera.target.position.y = 180;
 
 				renderer = new THREE.WebGLRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -121,7 +121,7 @@
 				animal3.morph = Math.abs( mouseX / windowHalfX );
 				animal3.mesh.rotation.y += 0.01;
 
-				THREE.AnimationHandler.update( 1000 / 60 );
+				THREE.AnimationHandler.update( 1000 / 120 );
 				renderer.render( scene, camera );
 
 			}
