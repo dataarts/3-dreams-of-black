@@ -59,6 +59,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	for (var i=0; i<20; ++i ) {
 		var odd = i%2;
 		if (odd == 0) {
+			console.log(i);
 			flyingAnimals.array[i] = "b";
 		}
 	}
@@ -67,7 +68,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
+		var morphArray = [0,1,2,3,3,2,1,0];
 		flyingAnimals.addAnimal( geometry, null, 1.8, morphArray, 0.8 );
 	}
 

@@ -81,59 +81,55 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// preoccupy slots for specific animals - hack...
 	runningAnimals.array[0] = "gator";
-	runningAnimals.array[1] = "wolf";
-	runningAnimals.array[4] = "wolf";
 	runningAnimals.array[10] = "gator";
-	runningAnimals.array[14] = "wolf";
 	runningAnimals.array[20] = "gator";
 	runningAnimals.array[2] = "goat";
 	runningAnimals.array[18] = "goat";
 	runningAnimals.array[25] = "goat";
-	runningAnimals.array[21] = "arm";
-	runningAnimals.array[2] = "spider";
-	runningAnimals.array[5] = "spider";
-	runningAnimals.array[32] = "spider";
-	runningAnimals.array[38] = "scorpion";
+//	runningAnimals.array[21] = "arm";
+	runningAnimals.array[2] = "octo";
+	runningAnimals.array[5] = "octo";
+	runningAnimals.array[32] = "octo";
+	runningAnimals.array[38] = "octo";
 
+/*	runningAnimals.array[3] = "tar";
+	runningAnimals.array[4] = "tar";
+	runningAnimals.array[6] = "tar";
+*/
 
-	loader.load( { model: "files/models/soup/bison.js", callback: bisonLoadedProxy } );
-	loader.load( { model: "files/models/soup/gator.js", callback: gatorLoadedProxy } );
-	loader.load( { model: "files/models/soup/wolf.js", callback: wolfLoadedProxy } );
-	loader.load( { model: "files/models/soup/goat.js", callback: goatLoadedProxy } );
-	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
-	loader.load( { model: "files/models/soup/blackWidow.js", callback: spiderLoadedProxy } );
-	loader.load( { model: "files/models/soup/scorpion.js", callback: scorpionLoadedProxy } );
+	//loader.load( { model: "files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
+	loader.load( { model: "files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
+	loader.load( { model: "files/models/soup/animals_A_black.js", callback: animalsLoadedProxy } );
+	loader.load( { model: "files/models/soup/goat_black.js", callback: goatLoadedProxy } );
+//	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
+	loader.load( { model: "files/models/soup/octo_black.js", callback: octoLoadedProxy } );
 
-	var colorArray = [ new THREE.Color( 0x444444 ),
-					   new THREE.Color( 0x666666 ),
-					   new THREE.Color( 0x888888 )
-					 ];
+	function animalsLoadedProxy( geometry ) {
+		var morphArray = [0,0,1,2,1,2,0,2,3];
+		runningAnimals.addAnimal( geometry, null, 0.5, morphArray, 2 );
+	}
 
-	function bisonLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, null, 0.33, null, 2, colorArray );
+	function taruffaloLoadedProxy( geometry ) {
+		var morphArray = [0,0,1,1];
+		runningAnimals.addAnimal( geometry, "tar", 0.33, morphArray, 2 );
 	}
 
 	function gatorLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "gator", 0.3, null, 2, colorArray );
-	}
-
-	function wolfLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "wolf", 0.4, null, 2, colorArray );
+		runningAnimals.addAnimal( geometry, "gator", 0.4, null, 2 );
 	}
 
 	function goatLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "goat", 0.4, null, 2, colorArray );
+		runningAnimals.addAnimal( geometry, "goat", 0.5, null, 2 );
 	}
 
 	function armLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2, colorArray );
+		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2 );
 	}
-	function spiderLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "spider", 2.5, null, 2, colorArray );
+	function octoLoadedProxy( geometry ) {
+		var morphArray = [0,0,0,2];
+		runningAnimals.addAnimal( geometry, "octo", 0.7, morphArray, 2 );
 	}
-	function scorpionLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "scorpion", 0.65, null, 2, colorArray );
-	}
+
 
 	// flying animals
 
@@ -145,11 +141,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.divider = 4;
 	flyingAnimals.settings.flyingDistance = 4;
 
-	loader.load( { model: "files/models/soup/vulture_raven.js", callback: birdsALoadedProxy } );
+	loader.load( { model: "files/models/soup/birds_A_black.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 0.5, morphArray, 0.4, colorArray );
+		flyingAnimals.addAnimal( geometry, null, 0.5, morphArray, 0.4 );
 	}
 	
 	// trail - of grass/trees/etc

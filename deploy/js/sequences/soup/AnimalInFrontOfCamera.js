@@ -24,7 +24,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 		for ( var i = 0; i < that.initSettings.numOfAnimals; ++i ) {
 
-			var animal = ROME.Animal( geometry, false );
+			var animal = ROME.Animal_old( geometry, false );
 			var mesh = animal.mesh;
 
 			var scale = 0.02+(Math.random()/8);

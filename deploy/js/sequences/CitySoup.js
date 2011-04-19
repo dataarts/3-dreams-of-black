@@ -117,6 +117,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 1 );
 	}
 
+/*
 	// flying animals 2
 	var flyingAnimals2 = new AnimalSwarm(100, scene, vectors.array);
 	flyingAnimals2.settings.flying = true;
@@ -132,7 +133,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		flyingAnimals2.addAnimal( geometry, null, 5, null, 6, null, true );
 	}
 
-
+*/
 	// butterflys
 	var butterflys = new AnimalInFrontOfCamera(30, scene);
 	loader.load( { model: "files/models/soup/butterfly_hiA.js", callback: butterflys.addAnimal } );
@@ -206,8 +207,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	
 	this.update = function ( delta ) {
 
-		//console.log(ribbons.settings.ribbonMin);
-
 		// update to reflect _real_ camera position
 		camPos.x = that.camera.matrixWorld.n14;
 		camPos.y = that.camera.matrixWorld.n24;
@@ -225,7 +224,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		particles.update(delta, vectors.array[0].position);
 		runningAnimals.update();
 		flyingAnimals.update();
-		flyingAnimals2.update();
+		//flyingAnimals2.update();
 		butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
 		

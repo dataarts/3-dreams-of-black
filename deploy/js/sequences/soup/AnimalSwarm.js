@@ -43,7 +43,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				col = colorArray[i%colorArray.length];
 			}
 
-			var animal = ROME.Animal( geometry, false, col );
+			//var animal = ROME.Animal( geometry, false, col );
+			var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
 			mesh.doubleSided = doubleSided;
 
@@ -66,7 +67,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
 			}
 
+			//console.log(animal.availableAnimals);
+			
 			animal.play( animal.availableAnimals[ startMorph ], animal.availableAnimals[ endMorph ], 0, Math.random() );
+			//animal.play( animal.availableAnimals[ 0 ], animal.availableAnimals[ 0 ], 0, Math.random() );
 
 			var count = Math.random();
 			if (i<2) {
