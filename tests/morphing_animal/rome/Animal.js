@@ -169,11 +169,12 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 				morphTargetOrder[ morphTarget + 1 ] = data.frames[ nextFrame ].index;
 				morphTargetOrder[ morphTarget + 5 ] = data.frames[ nextFrame ].index + data.normalsOffset;
 				
-				morphTarget += 2;*/
+				morphTarget += 2;
+*/				
 
 				morphTargetOrder[ morphTarget++ ] = data.frames[ frame     ].index;
 				morphTargetOrder[ morphTarget++ ] = data.frames[ nextFrame ].index;
-				
+
 				
 				time     = data.frames[ frame     ].time;
 				nextTime = data.frames[ nextFrame ].time > time ? data.frames[ nextFrame ].time : data.frames[ nextFrame ].time + data.lengthInMS; 
@@ -185,8 +186,18 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			}
 	
 			material.uniforms.animalMorphValue.value = that.morph;
-			material.attributes.colorAnimalA.buffer = material.attributes[ that.animalA.name ].buffer;
-			material.attributes.colorAnimalB.buffer = material.attributes[ that.animalB.name ].buffer;
+			
+			if( material.attributes[ that.animalA.name ] !== undefined ) {
+				
+				material.attributes.colorAnimalA.buffer = material.attributes[ that.animalA.name ].buffer;
+				
+			}
+
+			if( material.attributes[ that.animalB.name ] !== undefined ) {
+				
+				material.attributes.colorAnimalB.buffer = material.attributes[ that.animalB.name ].buffer;
+				
+			}
 			
 		}
 		
@@ -355,14 +366,15 @@ ROME.AnimalShader = {
 			
 			"vColor = mix( colorAnimalA, colorAnimalB, animalMorphValue );",
 			
-			
-/*			"vec3 animalA = mix( morphTarget4, morphTarget5, animalAInterpolation );",
+/*			
+			"vec3 animalA = mix( morphTarget4, morphTarget5, animalAInterpolation );",
 			"vec3 animalB = mix( morphTarget6, morphTarget7, animalBInterpolation );",
 			"vec3 morphed = mix( animalA,      animalB,      animalMorphValue );",
 			
 			"vLightUV = normalize( normalMatrix * morphed ).xy * 0.5 + 0.5;",
-*/			
+*/
 			"vLightUV = normalize( normalMatrix * normal ).xy * 0.5 + 0.5;",
+
 			
 			"vec3 animalA = mix( morphTarget0, morphTarget1, animalAInterpolation );",
 			"vec3 animalB = mix( morphTarget2, morphTarget3, animalBInterpolation );",
@@ -402,8 +414,6 @@ ROME.AnimalShader = {
 			"gl_FragColor *= gl_FragColor;",
 
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
-
-//			"gl_FragColor = vec4( vColor, 1.0 );",
 
 		"}"
 
@@ -529,23 +539,36 @@ ROME.AnimalAnimationData = {
 	
 			// create normals for each morph target
 	
-/*			var m, ml;
-			var n, nl, normals, faces, vertices;
+	/*		var m, ml;
+			var n, nl, normal, normals, face, faces, vertices;
 			var f, fl;
+			var AB = new THREE.Vector3();
+			var AC = new THREE.Vector3();
 	
 			for( m = 0, ml = morphTargets.length; m < ml; m++ ) {
 				
 				morphTarget = { name: morphTargets[ m ].name + "Normal", vertices: [] };
+				
 				vertices = morphTargets[ m ].vertices;
 				faces = geometry.faces;
 				normals = morphTarget.vertices;
 				
 				for( f = 0, fl = faces.length; f < fl; f++ ) {
+
+					face = faces[ f ];
+
+					AB.sub( vertices[ face.b ].position, vertices[ face.a ].position );
+					AC.sub( vertices[ face.c ].position, vertices[ face.a ].position );
+
+					normal = new THREE.Vector3();
+					normal.cross( AB, AC );
 					
-					normals.push( )
+					normals.push( normal );
 					
 				}
-			} */
+				
+				morphTargets.push( morphTarget );
+			}*/
 	
 			// create material
 	
@@ -561,6 +584,7 @@ ROME.AnimalAnimationData = {
 				morphTargets: true
 				
 			} );
+			
 	
 	
 			// init custom attributes
@@ -568,7 +592,7 @@ ROME.AnimalAnimationData = {
 			var c, cl, morphColor, morphColors = geometry.morphColors;
 			var attributes = material.attributes;
 			
-			if( geometry.morphColors ) {
+			if( geometry.morphColors && geometry.morphColors.length ) {
 				
 				for( c = 0, cl = morphColors.length; c < cl; c++ ) {
 					
@@ -626,14 +650,13 @@ ROME.AnimalAnimationData = {
 						for( c = 0, cl = geometry.faces.length; c < cl; c++ ) {
 							
 							attributes[ animalName ].value.push( new THREE.Color( 0xff0000 ));
-							
+
 						}
 						
 					}
-										
+
 				}
-		
-		
+
 			} else {
 				
 				console.error( "Animal.constructor: Morph Colors doesn't exist, deploying fallback!" );
@@ -645,6 +668,12 @@ ROME.AnimalAnimationData = {
 				}
 				
 				attributes.colorAnimalB.value = attributes.colorAnimalA.value;
+
+				for( a = 0, al = availableAnimals; a < al; a++ ) {
+					
+					attributes[ availableAnimals[ a ]] = { type: "c", boundTo: "faces", value: attributes.colorAnimalA.value };
+					
+				}
 	
 			}
 			
