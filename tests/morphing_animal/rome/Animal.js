@@ -3,14 +3,9 @@
  */
 
 
-if( ROME === undefined ) ROME = {};
+Animal = function( geometry, parseMorphTargetsNames ) {
 
-
-// animal
-
-ROME.Animal = function( geometry, parseMorphTargetsNames ) {
-
-	var result = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
+	var result = AnimalAnimationData.init( geometry, parseMorphTargetsNames );
 
 	var that = {};
 	that.morph = 0.0;
@@ -237,13 +232,13 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 	var setAnimalData = function( name, data ) {
 		
-		if( ROME.AnimalAnimationData[ name ] !== undefined ) {
+		if( AnimalAnimationData[ name ] !== undefined ) {
 			
-			data.frames         = ROME.AnimalAnimationData[ name ];
+			data.frames         = AnimalAnimationData[ name ];
 			data.lengthInFrames = data.frames.length;
 			data.lengthInMS     = data.frames[ data.lengthInFrames - 1 ].time;
 			data.name           = name.toLowerCase();
-//			data.normals        = ROME.AnimalAnimationData[ name + "Normals" ];
+//			data.normals        = AnimalAnimationData[ name + "Normals" ];
 
 		} else {
 			
@@ -294,7 +289,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 // shader
 
-ROME.AnimalShader = {
+AnimalShader = {
 	
 	textures: {
 		
@@ -313,8 +308,8 @@ ROME.AnimalShader = {
 					"fogColor": 					{ type: "c", value: new THREE.Color() },
 					"fogDensity": 					{ type: "f", value: 0 },
 
-					"contour": 						{ type: "t", value: 0, texture: ROME.AnimalShader.textures.contour },
-					"faceLight":                    { type: "t", value: 1, texture: ROME.AnimalShader.textures.faceLight },
+					"contour": 						{ type: "t", value: 0, texture: AnimalShader.textures.contour },
+					"faceLight":                    { type: "t", value: 1, texture: AnimalShader.textures.faceLight },
 
 					"enableLighting": 				{ type: "i", value: 1 },
 					"ambientLightColor": 			{ type: "fv", value: [] },
@@ -418,7 +413,7 @@ ROME.AnimalShader = {
 
 // animation data
 
-ROME.AnimalAnimationData = {
+AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
@@ -536,10 +531,10 @@ ROME.AnimalAnimationData = {
 	
 			var material = new THREE.MeshShaderMaterial( {
 				
-				uniforms: ROME.AnimalShader.uniforms(),
-				attributes: ROME.AnimalShader.attributes(),
-				vertexShader: ROME.AnimalShader.vertexShader,
-				fragmentShader: ROME.AnimalShader.fragmentShader,
+				uniforms: AnimalShader.uniforms(),
+				attributes: AnimalShader.attributes(),
+				vertexShader: AnimalShader.vertexShader,
+				fragmentShader: AnimalShader.fragmentShader,
 				
 				fog: true,
 				lights: true,
@@ -707,10 +702,10 @@ ROME.AnimalAnimationData = {
 			
 			var material = new THREE.MeshShaderMaterial( {
 				
-				uniforms: ROME.AnimalShader.uniforms(),
+				uniforms: AnimalShader.uniforms(),
 				attributes: {},
-				vertexShader: ROME.AnimalShader.vertexShader,
-				fragmentShader: ROME.AnimalShader.fragmentShader,
+				vertexShader: AnimalShader.vertexShader,
+				fragmentShader: AnimalShader.fragmentShader,
 				
 				fog: true,
 				lights: true,
