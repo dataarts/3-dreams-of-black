@@ -51,6 +51,7 @@ function init() {
 		},
 
 		worlds: { },
+		started: { "city": false, "prairie": false, "dunes" : false },
 
 		renderer: renderer,
 		renderTarget: renderTarget

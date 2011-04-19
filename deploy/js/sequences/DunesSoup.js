@@ -59,7 +59,6 @@ var DunesSoup = function ( camera, scene, shared ) {
 	for (var i=0; i<20; ++i ) {
 		var odd = i%2;
 		if (odd == 0) {
-			console.log(i);
 			flyingAnimals.array[i] = "b";
 		}
 	}
