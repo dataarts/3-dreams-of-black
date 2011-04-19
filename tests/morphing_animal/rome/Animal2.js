@@ -584,6 +584,7 @@ ROME.AnimalAnimationData = {
 				morphTargets: true
 				
 			} );
+			
 	
 	
 			// init custom attributes
