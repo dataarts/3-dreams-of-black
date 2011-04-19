@@ -300,8 +300,8 @@ ROME.AnimalShader = {
 	
 	textures: {
 		
-		contour: THREE.ImageUtils.loadTexture( 'assets/faceContourNoise.jpg' ),
-		faceLight: THREE.ImageUtils.loadTexture( 'assets/faceLight.jpg' )
+		contour: THREE.ImageUtils.loadTexture( 'files/textures/faceContourNoise.jpg' ),
+		faceLight: THREE.ImageUtils.loadTexture( 'files/textures/faceLight.jpg' )
 		
 	},
 	
@@ -366,8 +366,8 @@ ROME.AnimalShader = {
 			
 			"vColor = mix( colorAnimalA, colorAnimalB, animalMorphValue );",
 			
-/*			
-			"vec3 animalA = mix( morphTarget4, morphTarget5, animalAInterpolation );",
+			
+/*			"vec3 animalA = mix( morphTarget4, morphTarget5, animalAInterpolation );",
 			"vec3 animalB = mix( morphTarget6, morphTarget7, animalBInterpolation );",
 			"vec3 morphed = mix( animalA,      animalB,      animalMorphValue );",
 			
@@ -539,7 +539,7 @@ ROME.AnimalAnimationData = {
 	
 			// create normals for each morph target
 	
-	/*		var m, ml;
+/*			var m, ml;
 			var n, nl, normal, normals, face, faces, vertices;
 			var f, fl;
 			var AB = new THREE.Vector3();
