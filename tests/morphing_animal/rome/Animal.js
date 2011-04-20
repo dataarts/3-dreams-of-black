@@ -304,6 +304,9 @@ AnimalShader = {
 					"animalAInterpolation": 		{ type: "f", value: 0.0 },
 					"animalBInterpolation": 		{ type: "f", value: 0.0 },
 					"animalMorphValue" :    		{ type: "f", value: 0.0 },
+					"animalLength": 				{ type: "f", value: 250.0 },
+					"animalAOffset": 				{ type: "v3", value: new THREE.Vector3() },
+					"animalBOffset": 				{ type: "v3", value: new THREE.Vector3( 50, 0, 50 ) },
 					
 					"fogColor": 					{ type: "c", value: new THREE.Color() },
 					"fogDensity": 					{ type: "f", value: 0 },
@@ -328,8 +331,6 @@ AnimalShader = {
 			
 			"colorAnimalA": 	{ type: "c", boundTo: "faces", value:[] },
 			"colorAnimalB": 	{ type: "c", boundTo: "faces", value:[] },
-//			"normalAnimalA": 	{ type: "v3", boundTo: "faces", value:[] },
-//			"normalAnimalB": 	{ type: "v3", boundTo: "faces", value:[] },
 			"contourUV": 		{ type: "v2", boundTo: "faceVertices", value:[] },
 			
 		}
@@ -342,10 +343,13 @@ AnimalShader = {
 		"uniform 	float	animalBInterpolation;",
 		"uniform 	float	animalMorphValue;",
 
+		"uniform 	float	animalLength;",
+
+		"uniform 	vec3	animalAOffset;",
+		"uniform 	vec3	animalBOffset;",
+
 		"attribute	vec3	colorAnimalA;",
 		"attribute	vec3	colorAnimalB;",
-		"attribute  vec3    normalAnimalA;",
-		"attribute  vec3    normalAnimalB;",
 		"attribute	vec2	contourUV;",
 
 		"varying 	vec2	vContourUV;",
@@ -357,17 +361,26 @@ AnimalShader = {
 			// uv
 			
 			"vContourUV = contourUV;",
-			
 
-			// morph color, normal and position
-			
-			"vColor = mix( colorAnimalA, colorAnimalB, animalMorphValue );",
-//			"vLightUV = normalize( normalMatrix * mix( normalAnimalA, normalAnimalB, animalMorphValue ) ).xy * 0.5 + 0.5;",
-			"vLightUV = normalize( normalMatrix * normal ).xy * 0.5 + 0.5;",
+
+			// animal animation
 
 			"vec3 animalA = mix( morphTarget0, morphTarget1, animalAInterpolation );",
 			"vec3 animalB = mix( morphTarget2, morphTarget3, animalBInterpolation );",
-			"vec3 morphed = mix( animalA,      animalB,      animalMorphValue );",
+
+
+			// morph between animals
+
+			"float morphValue = smoothstep( animalMorphValue - 0.1, animalMorphValue + 0.1, ( position.z + animalLength * 0.5 ) / animalLength );",
+			
+			"vec3 morphed = mix( animalA + animalAOffset, animalB + animalBOffset, morphValue );",
+
+
+			// color and light
+
+			"vColor = mix( colorAnimalA, colorAnimalB, morphValue );",
+			"vLightUV = normalize( normalMatrix * normal ).xy * 0.5 + 0.5;",
+
 			
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 		"}"
@@ -399,10 +412,7 @@ AnimalShader = {
 
 			// below: mix( color overlayed by ( contour map * influence constant ), directional light color, envlight above * influence constant )
 
-			"gl_FragColor  = mix( vec4( 0.0, 0.0, 0.0, 1.0 ), vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 1.5 + 1.0 ), 1.0 ), envLight * 0.6 + 0.4 );",
-			//"gl_FragColor *= gl_FragColor;",
-			//"gl_FragColor = vec4( vColor, 1.0 );",
-
+			"gl_FragColor = mix( vec4( 0.0, 0.0, 0.0, 1.0 ), vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 1.5 + 1.0 ), 1.0 ), envLight * 0.6 + 0.4 );",
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
 
 		"}"
