@@ -36,6 +36,7 @@ TriggerBig = function( geometry, wantedParent ) {
 	// setup mesh
 
 	that.mesh = new THREE.Mesh( geometry, material );
+	that.mesh.doubleSided = true;
 
 
 	// setup interal
