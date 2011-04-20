@@ -71,6 +71,8 @@ var City = function ( shared ) {
 		camera.animation.play( false, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
+		
+		renderer.setStencilShadowDarkness( 0.7 );
 
 		shared.started.city = true;
 
