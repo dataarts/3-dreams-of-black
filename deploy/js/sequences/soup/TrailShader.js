@@ -168,7 +168,7 @@ ROME.TrailShader = {
 	textures: {
 		
 		trailMap: undefined,		// set by code
-		faceMap: THREE.ImageUtils.loadTexture( "files/textures/PaintDubs.jpg" ),
+		faceMap: THREE.ImageUtils.loadTexture( "files/textures/Closeup_PaintDubs.jpg" ),
 		lavaMap: THREE.ImageUtils.loadTexture( "files/textures/lava.jpg" ),
 		lavaNoiseMap: THREE.ImageUtils.loadTexture( "files/textures/lavaNoise.png" )
 		
