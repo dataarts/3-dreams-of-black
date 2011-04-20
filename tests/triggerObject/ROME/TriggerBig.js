@@ -112,7 +112,7 @@ TriggerBigShader = {
 			
 			"for( int i = 0; i < NUMEFFECTORS; i++ ) {",
 			
-				"morph = max( morph, smoothstep( 0.0, 0.3, 1.0 - distance( worldPosition, effectors[ i ] ) / 2000.0 ));",
+				"morph = max( morph, smoothstep( 0.0, 0.4, 1.0 - distance( morphTarget0, effectors[ i ] ) / 2000.0 ));",
 //				"morph = distance( worldPosition, effectors[ i ] ) / 1000.0;",
 			
 			"}",
