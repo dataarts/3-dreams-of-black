@@ -11,44 +11,51 @@ html {
 
 body {
   font-family: Times;
-  background-color: #999;
+  background-color: #333;
 }
 
 #wrapper {
-  width: 640px;
+  width: 960px;
   height: auto;
   margin: auto;
   background: #f0efe4;
   border: 20px solid #fff;
-  padding: 20px;
   margin-top: 20px;
 }
 
 #viewerCanvas {
   display: block;
-  width: 640px;
+  width: 960px;
   height: 360px;
-  margin: auto;
+  float:left;
   z-index: 10000;
   cursor: move;
 }
 
 #viewerConsole {
-  margin: 10px 0 0 0;
-  padding-top: 10px;
-  height:80px;
+
 }
 
 #viewerModels {
   float: left;
-  width: 320px;
+  width: 960px;
+  height:96px;
+}
+
+a.modelLink{
+  display:block;
+  font-size:10px;
+  width:42px;
+  height:42px;
+  background:#fff;
+  border:1px solid #b65024;
+  float:left;
+  margin:2px;
 }
 
 #viewerSettings {
-  float: left;
-  width: 280px;
-  margin-left:40px;
-  height:60px;
+  float:left;
+  width:960px;
 }
 
 h1, h2, h3, h4, h5 {

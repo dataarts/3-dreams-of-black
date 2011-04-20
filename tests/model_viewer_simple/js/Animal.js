@@ -5,7 +5,7 @@
 
 ROME = {};
 
-
+var that = {};
 // animal
 
 ROME.Animal = function( geometry, parseMorphTargetsNames ) {
@@ -21,14 +21,15 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 												   vertexColors:   vertexColors,
 												   lights:         true } ); 
 
-	var that = {};
+
 	that.mesh = new THREE.Mesh( geometry, material );
+  that.mesh.doubleSided = true;
 	that.morph = 0.0;
 	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
 	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
 	that.availableAnimals = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
-	
-	
+
+
 	var isPlaying = false;
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 
@@ -36,7 +37,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	//--- play ---
 
 	that.play = function( animalA, animalB, morph, startTimeAnimalA, startTimeAnimalB ) {
-		
+
 		if( !isPlaying ) {
 
 			isPlaying = true;
@@ -44,21 +45,21 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 			THREE.AnimationHandler.addToUpdate( that );
 		}
-		
+
 		setAnimalData( animalA, that.animalA );
 		setAnimalData( animalB, that.animalB );
-		
+
 		that.animalA.currentTime = startTimeAnimalA ? startTimeAnimalA : 0;
 		that.animalB.currentTime = startTimeAnimalB ? startTimeAnimalB : 0;
-		
+
 		that.update( 0 );
-	} 
+	}
 
 
 	//--- update ---
-	
+
 	that.update = function( deltaTimeMS ) {
-		
+
 		var data, dataNames = [ "animalA", "animalB" ];
 		var d, dl;
 		var f, fl;
@@ -69,11 +70,11 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		var lenghtInFrames;
 		var morphTarget;
 		var scale;
-		
+
 		for( d = 0, dl = dataNames.length, morphTarget = 0; d < dl; d++ ) {
-			
+
 			data = that[ dataNames[ d ]];
-			
+
 			unloopedTime = data.currentTime;
 			data.currentTime = ( data.currentTime + deltaTimeMS * data.timeScale ) % data.lengthInMS;
 
@@ -82,20 +83,20 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 			if( unloopedTime > data.currentTime ) {
 
-				data.currentFrame = 0;				
+				data.currentFrame = 0;
 
 			}
 
 
 			// find frame/nextFrame
-			
+
 
 			frame = 0;
-			
+
 			for( f = data.currentFrame, fl = data.lengthInFrames - 1; f < fl; f++ ) {
-				
+
 				if( data.currentTime >= data.frames[ f ].time && data.currentTime < data.frames[ f + 1 ].time ) {
-					
+
 					frame = f;
 					break;
 				}
@@ -104,15 +105,15 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			data.currentFrame = frame;
 			nextFrame = frame + 1 < fl ? frame + 1 : 0;
 
-			
+
 			morphTargetOrder[ morphTarget++ ] = data.frames[ frame     ].index;
 			morphTargetOrder[ morphTarget++ ] = data.frames[ nextFrame ].index;
-			
+
 			time     = data.frames[ frame     ].time;
-			nextTime = data.frames[ nextFrame ].time > time ? data.frames[ nextFrame ].time : data.frames[ nextFrame ].time + data.lengthInMS; 
-			
+			nextTime = data.frames[ nextFrame ].time > time ? data.frames[ nextFrame ].time : data.frames[ nextFrame ].time + data.lengthInMS;
+
 			scale = ( data.currentTime - time ) / ( nextTime - time ) ;
-			
+
 			material.uniforms[ dataNames[ d ] + "Interpolation" ].value = scale;
 
 		}
@@ -123,88 +124,88 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
 
 	//--- set new target animal ---
-	
+
 	that.setNewTargetAnimal = function( animal, startTimeAnimalB ) {
-		
+
 		if( that.morph === 1 ) {
-			
+
 			// switch so B -> A
-			
+
 			for( var property in that.animalA ) {
-				
+
 				that.animalA[ property ] = that.animalB[ property ];
-				
+
 			}
-			
-			
+
+
 			// set new B and change morph
-			
+
 			that.animalB.currentTime = startTimeAnimalB ? startTimeAnimalB : 0;
 			setAnimalData( animal, that.animalB );
 			setFrame( that.animalB );
 			that.morph = 0;
-			
+
 		}
 		else {
-			
+
 			console.log( "Error: Cannot change animal target if morph != 1. Skipping." );
 		}
-		
+
 	}
 
 
 	//--- set animal data ---
 
 	var setAnimalData = function( name, data ) {
-		
+
 		if( ROME.AnimalAnimationData[ name ] !== undefined ) {
-			
+
 			data.frames         = ROME.AnimalAnimationData[ name ];
 			data.lengthInFrames = data.frames.length;
 			data.lengthInMS     = data.frames[ data.lengthInFrames - 1 ].time;
-			
+
 		} else {
-			
+
 			console.log( "Error: Couldn't find data for animal " + name );
-			
+
 		}
-		
+
 	}
-	
-	
+
+
 	//--- set frame ---
-	
+
 	var setFrame = function( data ) {
-		
+
 		var f, fl;
 		var currentTime = data.currentTime;
 		var frames = data.frames;
-		
+
 		for( f = 0, fl < frames.length; f < fl; f++ ) {
-			
+
 			if( currentTime >= frames[ f ].time ) {
-				
+
 				data.currentFrame = f;
 				return;
-				
+
 			}
-			
+
 		}
-		
+
 	}
 
 
 	//--- set current frame ---
-	
+
 	var setCurrentFrame = function( data ) {
-		
-				
+
+
 
 	}
 
-	
+
 	//--- return public ---
-	
+
 	return that;
 }
 

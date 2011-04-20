@@ -7,8 +7,6 @@
     color: #fff;
     opacity: 0.97;
     text-align: left;
-    margin-right: 20px;
-    margin-bottom: 20px;
 }
 
 .guidat,
@@ -24,12 +22,13 @@
 
 a.guidat-toggle { 
     text-decoration: none;
+    width:960px;
     cursor: pointer;
     color: #fff;
     background-color: #ccc;
     text-align: center;
     display: block;
-    padding: 5px;
+    padding: 5px 0;
 
 }
 
