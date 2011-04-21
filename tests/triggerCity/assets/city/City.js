@@ -3,9 +3,9 @@
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
- * objects:    250
- * geometries: 56
- * materials:  79
+ * objects:    252
+ * geometries: 58
+ * materials:  93
  * textures:   18
  */
 
@@ -17,6 +17,34 @@ var scene = {
 
 "objects" :
 {
+    "TriggerMesh_CarNiss_" : {
+        "geometry"  : "geo_TriggerMesh_CarNiss_",
+        "groups"    : [  ],
+        "materials" : [ "car_0003_bus_0006_lam", "car_0003_bus_0006.007", "car_0003_bus_0006.008", "lambert2SG.002", "car_0003_bus_0006_tre", "car_0003_bus_0006.000", "car_0003_bus_0006.001", "car_0003_bus_0006.006", "car_0003_lambert2SG", "car_0003_flowerDaisyL", "car_0003_bus_0006.003", "car_0003_bus_0006.005", "car_0003_bus_0006.002", "car_0003_bus_0006_flo", "car_0003_glowbulb_000", "car_0003_flowerDa.000", "car_0003_bus_0006.004", "car_0003_bus_0006_rai", "car_0003_grass04_0002" ],
+        "position"  : [ 5020.933105, -3669.899414, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "Large"
+    },
+
+    "TriggerMesh_Car_" : {
+        "geometry"  : "geo_TriggerMesh_Car_",
+        "groups"    : [  ],
+        "materials" : [ "glowbulb_0002_glowbul", "flowerDaisyLower_0001", "bus_0006_flowerSunflo", "flowerDaisyLower_.000", "bus_0006_flowerSu.000", "bus_0006_railTrai.005", "bus_0006_railTrai.006", "lambert2SG", "bus_0006_railTrai.002", "bus_0006_railTrai.003", "bus_0006_railTrai.004", "bus_0006_lambert2SG", "bus_0006_railTrai.000", "bus_0006_railTrai.001", "bus_0006_railTrain_00", "bus_0006_treeGene.000", "bus_0006_treeGenericL", "bus_0006_railTrai.007", "grass04_0002_grass_la" ],
+        "position"  : [ -1543.828247, -2754.608887, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "Large"
+    },
+
     "TriggerMesh_LampPost_" : {
         "geometry"  : "geo_TriggerMesh_LampPost_",
         "groups"    : [  ],
@@ -966,7 +994,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "Wheel_.234" : {
@@ -1190,7 +1218,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "LampPost_.314" : {
@@ -1876,7 +1904,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "Wheel_.225" : {
@@ -1960,7 +1988,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "CarNiss_.044" : {
@@ -2380,7 +2408,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Large"
     },
 
     "SignBroken_.039" : {
@@ -2520,7 +2548,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "LampPost_.271" : {
@@ -3080,7 +3108,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "LampPost_.246" : {
@@ -3388,7 +3416,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "Wheel_.184" : {
@@ -3458,7 +3486,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Large"
     },
 
     "ExitHead_.009" : {
@@ -3521,6 +3549,16 @@ var scene = {
 
 "geometries" :
 {
+    "geo_TriggerMesh_CarNiss_" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.TriggerMesh_CarNiss_.js"
+    },
+
+    "geo_TriggerMesh_Car_" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.TriggerMesh_Car_.js"
+    },
+
     "geo_TriggerMesh_LampPost_" : {
         "type" : "ascii_mesh",
         "url"  : "City.TriggerMesh_LampPost_.js"
@@ -3886,6 +3924,166 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "Backdrop_City.jpg" }
     },
 
+    "bus_0006_flowerSu.000" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 5975582, opacity: 1.00 }
+    },
+
+    "bus_0006_flowerSunflo" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 13417216, opacity: 1.00 }
+    },
+
+    "bus_0006_lambert2SG" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 2119442, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.000" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 5864505, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.001" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 2377506, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.002" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11105426, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.003" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11993192, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.004" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 10158080, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.005" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 13399552, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.006" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3742332, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrai.007" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 4943908, opacity: 1.00 }
+    },
+
+    "bus_0006_railTrain_00" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3875328, opacity: 1.00 }
+    },
+
+    "bus_0006_treeGene.000" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3875328, opacity: 1.00 }
+    },
+
+    "bus_0006_treeGenericL" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3497764, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.000" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11105426, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.001" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 10158080, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.002" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 5864505, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.003" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11993192, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.004" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 13417216, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.005" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3742332, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.006" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 13399552, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.007" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3875328, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006.008" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 2377506, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006_flo" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 5975582, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006_lam" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 2119442, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006_rai" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3162908, opacity: 1.00 }
+    },
+
+    "car_0003_bus_0006_tre" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3875328, opacity: 1.00 }
+    },
+
+    "car_0003_flowerDa.000" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 10062892, opacity: 1.00 }
+    },
+
+    "car_0003_flowerDaisyL" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 13421772, opacity: 1.00 }
+    },
+
+    "car_0003_glowbulb_000" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 13396992, opacity: 1.00 }
+    },
+
+    "car_0003_grass04_0002" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 3168010, opacity: 1.00 }
+    },
+
+    "car_0003_lambert2SG" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 13421772, opacity: 1.00 }
+    },
+
     "Collision" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16592639, opacity: 1.00 }
@@ -3966,24 +4164,19 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "Exithead.jpg" }
     },
 
-    "ExitHead.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Exithead.jpg" }
-    },
-
     "flowerDaisyLow_00.000" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
-    "flowerDaisyLow_0003_D" : {
+    "flowerDaisyLower_.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { color: 10062892, opacity: 1.00 }
     },
 
-    "flowerSunflowerLo.000" : {
+    "flowerDaisyLower_0001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { color: 13421772, opacity: 1.00 }
     },
 
     "flowerSunflowerLo.001" : {
@@ -3996,11 +4189,6 @@ var scene = {
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
-    "flowerSunflowerLowest" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
     "glowbulb_0002_glo.000" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
@@ -4008,7 +4196,7 @@ var scene = {
 
     "glowbulb_0002_glowbul" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { color: 13396992, opacity: 1.00 }
     },
 
     "grass03_0001_gras.000" : {
@@ -4016,9 +4204,9 @@ var scene = {
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
-    "grass03_0001_grass_la" : {
+    "grass04_0002_grass_la" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { color: 5864505, opacity: 1.00 }
     },
 
     "Ground_1.005" : {
@@ -4026,14 +4214,9 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg", vertexColors: "vertex" }
     },
 
-    "Ground_1.008" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg", vertexColors: "vertex" }
-    },
-
     "lambert2SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { color: 13421772, opacity: 1.00 }
     },
 
     "lambert2SG.001" : {
@@ -4041,9 +4224,9 @@ var scene = {
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
-    "lambert3SG" : {
+    "lambert2SG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { color: 12386304, opacity: 1.00 }
     },
 
     "lambert3SG.001" : {
@@ -4066,57 +4249,12 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
     },
 
-    "railTrain_0006_gr.000" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
     "railTrain_0006_gr.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
     "railTrain_0006_gr.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_grass0" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_la.000" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_la.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_la.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_la.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_la.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_la.005" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_la.006" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     },
@@ -4161,27 +4299,12 @@ var scene = {
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
-    "railTrain_0006_lamber" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_tr.000" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
     "railTrain_0006_tr.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
     "railTrain_0006_tr.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "railTrain_0006_treeEv" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     },
@@ -4221,22 +4344,12 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
     },
 
-    "treeGenericLower_.000" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
     "treeGenericLower_.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
     "treeGenericLower_.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "treeGenericLower_0001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     },
@@ -4267,11 +4380,6 @@ var scene = {
     },
 
     "vines_0002_vinesS.000" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "vines_0002_vinesSG" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
     }

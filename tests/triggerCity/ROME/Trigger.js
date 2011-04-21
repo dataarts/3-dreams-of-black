@@ -27,6 +27,7 @@ Trigger = function( geometry, wantedParent ) {
 
 	that.mesh = new THREE.Mesh( geometry, material );
 	that.mesh.visible = false;
+	that.parent = wantedParent;
 
 
 	// setup internals
@@ -131,7 +132,7 @@ var TriggerBig = function( geometry, wantedParent ) {
 	var material = new THREE.MeshShaderMaterial( {
 		
 		uniforms: TriggerBigShader.uniforms(),
-		vertexShader: TriggerBigShader.vertexShader,
+		vertexShader: TriggerBigShader.vertexShader(),
 		fragmentShader: TriggerBigShader.fragmentShader, 
 		
 		shading: THREE.FlatShading,
@@ -151,11 +152,66 @@ var TriggerBig = function( geometry, wantedParent ) {
 
 	// setup interal
 
+	var timeScale = 0.1;
+	var currentTime = 0;
+	var lengthInMS = ( geometry.morphTargets.length - 1 ) * 1000;
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 
 	morphTargetOrder[ 0 ] = 0;
 	morphTargetOrder[ 1 ] = 1;
 
+
+	//--- play ---
+
+	that.play = function( _timeScale ) {
+	
+		timeScale = _timeScale || 1;
+		currentTime = 0;
+
+		THREE.AnimationHandler.addToUpdate( that );
+		that.update( 0 );
+
+	} 
+
+
+	//--- update ---
+	
+	that.update = function( deltaTimeMS ) {
+		
+		currentTime += deltaTimeMS * timeScale;
+		
+		if( currentTime >= lengthInMS ) {
+			
+			morphTargetOrder[ 0 ] = 0;
+			morphTargetOrder[ 1 ] = that.mesh.geometry.morphTargets.length - 1;
+			
+			material.uniforms.morph.value = 1;
+			
+			THREE.AnimationHandler.removeFromUpdate( that );
+			
+		
+		} else {
+			
+			var time = ( currentTime / lengthInMS ) * lengthInMS;
+
+			if( time < lengthInMS ) {
+				
+				morphTargetOrder[ 0 ] = Math.floor( time / 1000 );
+				morphTargetOrder[ 1 ] = Math.ceil( time / 1000 );
+							
+				
+			} else {
+				
+				morphTargetOrder[ 0 ] = that.mesh.geometry.morphTargets.length - 2;
+				morphTargetOrder[ 1 ] = that.mesh.geometry.morphTargets.length - 1;
+				
+			}
+
+			material.uniforms.morph.value = time / lengthInMS;
+			
+		}
+		
+	}
 
 	//--- public ---
 
@@ -171,11 +227,18 @@ var TriggerBig = function( geometry, wantedParent ) {
 var TriggerUtils = (function() {
 	
 	var that = {};
+	that.effectors = [ 0, 200, 0 ];		// xyz xyz for each effector (remeber to change const in shader, too)
+	that.effectorRadius = 2000;
+
+	var smallTriggers = [];
+	var bigTriggers = [];
 	
 	
 	//--- city ---
 	
 	that.setupCityTriggers = function( loadedSceneResult ) {
+		
+		if( !loadedSceneResult.triggers ) return;
 		
 		var t, tl, name, trigger, triggers = loadedSceneResult.triggers;
 		var triggerGeometries = [];
@@ -209,10 +272,21 @@ var TriggerUtils = (function() {
 				
 				if( name.indexOf( triggerGeometries[ t ].name ) !== -1 ) {
 					
-					trigger = new TriggerBig( triggerGeometries[ t ].geometry );
+					if( triggers[ name ].type === "Small" ) {
+						
+						trigger = new Trigger( triggerGeometries[ t ].geometry, loadedSceneResult.objects[ name ] );
+						smallTriggers.push( trigger );
+						
+					} else {
+						
+						trigger = new TriggerBig( triggerGeometries[ t ].geometry );
+						loadedSceneResult.objects[ name ].addChild( trigger.mesh );
+
+						bigTriggers.push( trigger );
+						
+					}
+ 					
 					trigger.mesh.rotation.x = 90 * Math.PI / 180;
-					
-					loadedSceneResult.objects[ name ].addChild( trigger.mesh );
 					
 				}
 				
@@ -227,6 +301,69 @@ var TriggerUtils = (function() {
 	
 	that.setupPrairieTriggers = function( loadedSceneResult ) {
 		
+		
+	}
+	
+	
+	//--- update ---
+	
+	that.update = function() {
+		
+		var s, sl, pos;
+		var e, el, effectors = that.effectors;
+		var x, y, z;
+		var manhattanRadius = that.effectorRadius * 1.5;
+		
+		for( s = 0, sl = smallTriggers.length; s < sl; s++ ) {
+			
+			pos = smallTriggers[ s ].parent.matrixWorld.getPosition();
+			
+			for( e = 0, el = effectors.length; e < el; e += 3 ) {
+				
+				x = Math.abs( effectors[ e + 0 ] - pos.x );
+				y = Math.abs( effectors[ e + 1 ] - pos.y ); 
+				z = Math.abs( effectors[ e + 2 ] - pos.z ); 
+				
+				if( x + y + z < manhattanRadius ) {
+					
+					smallTriggers[ s ].play( 0.5 + Math.random() * 0.5 );
+					smallTriggers.splice( s, 1 );
+					s--;
+					sl--;
+					
+					break;
+					
+				}
+				
+			}
+			
+		}
+		
+		
+		for( s = 0, sl = bigTriggers.length; s < sl; s++ ) {
+			
+			pos = bigTriggers[ s ].mesh.matrixWorld.getPosition();
+			
+			for( e = 0, el = effectors.length; e < el; e += 3 ) {
+				
+				x = Math.abs( effectors[ e + 0 ] - pos.x );
+				y = Math.abs( effectors[ e + 1 ] - pos.y ); 
+				z = Math.abs( effectors[ e + 2 ] - pos.z ); 
+				
+				if( x + y + z < manhattanRadius ) {
+					
+					bigTriggers[ s ].play( 0.2 + Math.random() * 0.1 );
+					bigTriggers.splice( s, 1 );
+					s--;
+					sl--;
+					
+					break;
+					
+				}
+				
+			}
+
+		}
 		
 	}
 	
@@ -333,13 +470,12 @@ TriggerShader = {
 
 TriggerBigShader = {
 
-	effectors: [ 0, 200, 0, 0, 0, 0 ],		// xyz xyz for each effector (remeber to change const in shader, too)
-	
 	uniforms: function () {
 
 		return {
 
-				"effectors": 					{ type: "fv", value: TriggerBigShader.effectors },
+				"effectors": 					{ type: "fv", value: TriggerUtils.effectors },
+				"morph": 						{ type: "f", value: 0.0 },
 
 				"diffuse":                      { type: "c", value: new THREE.Color( 0xffffff ) },
 
@@ -358,10 +494,11 @@ TriggerBigShader = {
 	},
 
 
-	vertexShader: [
+	vertexShader: function() { return [
 
-		"const 		int		NUMEFFECTORS = 2;",
+		"const 		int		NUMEFFECTORS = " + (TriggerUtils.effectors.length / 3) + ";",
 		"uniform 	vec3 	effectors[ NUMEFFECTORS ];",
+		"uniform 	float	morph;",
 		
 		THREE.ShaderChunk[ "map_pars_vertex" ],
 		THREE.ShaderChunk[ "lights_pars_vertex" ],
@@ -384,18 +521,27 @@ TriggerBigShader = {
 
 		"void main() {",
 
-			"vec3 worldPosition = ( objectMatrix * vec4( morphTarget0, 1.0 )).xyz;",
-			"float morph = 0.0;",
-			
-			"for( int i = 0; i < NUMEFFECTORS; i++ ) {",
-			
-				"morph = max( morph, smoothstep( 0.0, 0.4, 1.0 - distance( worldPosition, effectors[ i ] ) / 2000.0 ));",
-			
+			"float distanceMorph = 0.0;",
+
+			"if( morph < 1.0 ) { ",
+
+				"vec3 worldPosition = ( objectMatrix * vec4( morphTarget0, 1.0 )).xyz;",
+				
+				"for( int i = 0; i < NUMEFFECTORS; i++ ) {",
+				
+					"distanceMorph = max( distanceMorph, smoothstep( 0.0, 0.4, 1.0 - distance( worldPosition, effectors[ i ] ) / " + TriggerUtils.effectorRadius + ".0 ));",
+				
+				"}",
+				
+				"distanceMorph = elastic( max( morph, distanceMorph ));",
+
+			"} else {",
+
+				"distanceMorph = 1.0;",
+
 			"}",
-			
-			"morph = elastic( morph );",
 						
-			"vec4 mvPosition = modelViewMatrix * vec4( mix( morphTarget0, morphTarget1, morph ), 1.0 );",
+			"vec4 mvPosition = modelViewMatrix * vec4( mix( morphTarget0, morphTarget1, distanceMorph ), 1.0 );",
 
 			THREE.ShaderChunk[ "map_vertex" ],
 			THREE.ShaderChunk[ "color_vertex" ],
@@ -409,7 +555,7 @@ TriggerBigShader = {
 		"}",
 		
 		
-	].join("\n"),
+	].join("\n") },
 
 	fragmentShader: [
 
