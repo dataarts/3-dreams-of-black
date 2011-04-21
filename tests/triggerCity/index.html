@@ -58,7 +58,7 @@
 
 				renderer = new THREE.WebGLRenderer( { stencil: false } );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setClearColorHex( 0x444444, 1.0 );
+				renderer.setClearColor( scene.fog.color, 1.0 );
 				renderer.sortObjects = false;
 				container.appendChild( renderer.domElement );
 
