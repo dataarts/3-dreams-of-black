@@ -21,7 +21,8 @@ var Launcher = function ( shared ) {
 	context.fillStyle = gradient;
 	context.fillRect( 0, 0, canvas.width, canvas.height );
 
-	domElement.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
+	domElement.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
+	domElement.style.backgroundRepeat = 'repeat-x';
 
 	// UI
 
@@ -60,13 +61,18 @@ var Launcher = function ( shared ) {
 	shared.signals.loadItemAdded.add( loading.addItem );
 	shared.signals.loadItemCompleted.add( loading.completeItem );
 
-
 	var footer = document.createElement( 'div' );
 	footer.style.position = 'absolute';
 	footer.style.left = '20px';
 	footer.style.bottom = '10px';
 	footer.innerHTML = '<img src="files/footer.png">';
 	domElement.appendChild( footer );
+
+	shared.signals.windowresized.add( function () {
+
+		domElement.style.height = window.innerHeight + 'px';
+
+	} );
 
 	//
 
