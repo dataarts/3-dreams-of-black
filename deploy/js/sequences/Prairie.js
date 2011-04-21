@@ -144,6 +144,7 @@ var Prairie = function ( shared ) {
 
 		shared.logger.log( "vertices: " + renderer.data.vertices );
 		shared.logger.log( 'faces: ' + renderer.data.faces );
+		shared.logger.log( 'draw calls: ' + renderer.data.drawCalls );
 
 	};
 

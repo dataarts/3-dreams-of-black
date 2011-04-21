@@ -31,7 +31,7 @@ var Exploration = function ( shared ) {
 
 	var world, scene,
 	clearEffect, heatEffect, noiseEffect, renderEffect;
-	
+
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
 
@@ -76,9 +76,9 @@ var Exploration = function ( shared ) {
 			shared.logger.log( "vertices: " + renderer.data.vertices );
 			shared.logger.log( 'faces: ' + renderer.data.faces );
 
-			heatEffect.update( progress, time );
-			noiseEffect.update( progress, time );
-			renderEffect.update( progress, time );
+			noiseEffect.update( progress, null, time );
+			heatEffect.update( progress, null, time );
+			renderEffect.update( progress, null, time );
 
 		}
 
@@ -86,39 +86,41 @@ var Exploration = function ( shared ) {
 
 	function startExplore ( worldId ) {
 
+		/*
 		if ( renderer.domElement.parentElement ) {
-			
+
 			renderer.domElement.parentElement.removeChild( renderer.domElement );
-			
+
 		}
-		
+		*/
+
 		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();
 
 		world = shared.worlds[ worldId ];
 		scene = world.scene;
-		camera = cameras[ worldId ];		
-		
+		camera = cameras[ worldId ];
+
 		scene.addChild( camera );
 
 		camera.position.set( 0, 0, 0 );
-		
+
 		// hide soup (if it wasn't yet activated)
 
 		if ( !shared.started[ worldId ] ) {
-		
+
 			THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
 
 				if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
 					|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
 
 					var name = node.name.toLowerCase();
-					
+
 					if ( ! ( name && name.indexOf( "portal" ) >= 0 ) ) {
-						
-						node.visible = false;					
-						
+
+						node.visible = false;
+
 					}
 
 				}
@@ -126,7 +128,7 @@ var Exploration = function ( shared ) {
 			} );
 
 		}
-		
+
 		start = lastTime = new Date().getTime();
 
 	};
