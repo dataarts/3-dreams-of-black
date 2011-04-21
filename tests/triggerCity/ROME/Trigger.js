@@ -238,6 +238,8 @@ var TriggerUtils = (function() {
 	
 	that.setupCityTriggers = function( loadedSceneResult ) {
 		
+		if( !loadedSceneResult.triggers ) return;
+		
 		var t, tl, name, trigger, triggers = loadedSceneResult.triggers;
 		var triggerGeometries = [];
 
