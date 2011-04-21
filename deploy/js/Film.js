@@ -47,9 +47,9 @@ var Film = function ( shared ) {
 	shared.signals.windowresized.add( updateViewportSize );
 
 	// effects
-	
+
 	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
-	
+
 	// sequence
 
 	sequencer = new Sequencer();
@@ -86,11 +86,8 @@ var Film = function ( shared ) {
 	// sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 8 ) - 850, tune.getPatternMS( 8 ), 5 );
 	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 8 ) + 400, 5 );
 
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 24 ) - 850, tune.getPatternMS( 24 ), 5 );
-	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 24 ) + 400, 5 );
-
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 40 ) - 850, tune.getPatternMS( 40 ), 5 );
-	// sequencer.add( new FadeInEffect( 0x000000, shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 40 ) + 400, 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 23.5 ), tune.getPatternMS( 24 ), 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 39.5 ), tune.getPatternMS( 40 ), 5 );
 
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
 
@@ -101,11 +98,11 @@ var Film = function ( shared ) {
 	function start( pattern ) {
 
 		if ( renderer.domElement.parentElement ) {
-			
+
 			renderer.domElement.parentElement.removeChild( renderer.domElement );
-			
+
 		}
-		
+
 		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();
@@ -143,6 +140,16 @@ var Film = function ( shared ) {
 
 				audio.currentTime ++;
 				sequencer.clear();
+				break;
+
+			case 38:
+
+				audio.playbackRate += 0.1;
+				break;
+
+			case 40:
+
+				audio.playbackRate -= 0.1;
 				break;
 
 		}
