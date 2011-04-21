@@ -63,7 +63,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			var startMorph = 0;
 			var endMorph = 0;
 			if (morphArray != null) {
-				startMorph = morphArray[i%morphArray.length];
+				startMorph = morphArray[i%morphArray.length]%animal.availableAnimals.length;
 				endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
 			}
 

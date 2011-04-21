@@ -11,35 +11,36 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
+/*	var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
-
+*/
 	// refactoring
 
 	// setup the different parts of the soup
 
 	// collision scene
 
-	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 5000 );
+	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 400 );
 	collisionScene.settings.maxSpeedDivider = 3;
 	collisionScene.settings.capBottom = -2;
-	collisionScene.settings.shootRayDown = true;
+	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 3;
 	collisionScene.settings.normalOffsetAmount = 8;
-	collisionScene.settings.minDistance = 30;
-	collisionScene.settings.keepEmitterFollowDown = false;
+	//collisionScene.settings.minDistance = 30;
+	collisionScene.settings.keepEmitterFollowDown = true;
 
 	// vector trail
 
 	var vectors = new Vectors();
 	vectors.settings.normaldivider = 8;
+	vectors.settings.absoluteTrail = true;
 
 	// ribbons
-/*
+
 	var ribbonMaterials = [
 			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
 			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
@@ -50,7 +51,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	];
 
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
-*/
+
 	// particles
 
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -220,10 +221,13 @@ var CitySoup = function ( camera, scene, shared ) {
 		// update the soup parts	
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		//ribbons.update(collisionScene.emitterFollow.position);
-		particles.update(delta, vectors.array[0].position);
-		runningAnimals.update();
-		flyingAnimals.update();
+		ribbons.update(collisionScene.emitterFollow.position);
+		//vectors.update(collisionScene.emitter.position, collisionScene.currentNormal);
+		//ribbons.update(collisionScene.emitter.position);
+
+		//particles.update(delta, vectors.array[0].position);
+		//runningAnimals.update();
+		//flyingAnimals.update();
 		//flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
@@ -231,10 +235,10 @@ var CitySoup = function ( camera, scene, shared ) {
 		TWEEN.update();
 
 		// pointlight
-		pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;
+		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;
 		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*20;
 		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*20;
-
+		*/
 	}
 
 	this.changeCamera = function (camera) {

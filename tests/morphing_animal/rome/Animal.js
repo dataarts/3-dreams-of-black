@@ -164,13 +164,13 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 				nextFrame = frame + 1 < fl ? frame + 1 : 0;
 	
 				
-/*				morphTargetOrder[ morphTarget + 0 ] = data.frames[ frame     ].index;
-				morphTargetOrder[ morphTarget + 4 ] = data.frames[ frame     ].index + data.normalsOffset;
-				morphTargetOrder[ morphTarget + 1 ] = data.frames[ nextFrame ].index;
-				morphTargetOrder[ morphTarget + 5 ] = data.frames[ nextFrame ].index + data.normalsOffset;
+		/*		morphTargetOrder[ morphTarget + 0 ] = data.frames [ frame     ].index;
+				morphTargetOrder[ morphTarget + 4 ] = data.normals[ frame     ].index + data.normalsOffset;
+				morphTargetOrder[ morphTarget + 1 ] = data.frames [ nextFrame ].index;
+				morphTargetOrder[ morphTarget + 5 ] = data.normals[ nextFrame ].index + data.normalsOffset;
 				
 				morphTarget += 2;
-*/				
+			*/	
 
 				morphTargetOrder[ morphTarget++ ] = data.frames[ frame     ].index;
 				morphTargetOrder[ morphTarget++ ] = data.frames[ nextFrame ].index;
@@ -187,17 +187,15 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	
 			material.uniforms.animalMorphValue.value = that.morph;
 			
-			if( material.attributes[ that.animalA.name ] !== undefined ) {
+			if( material.attributes[ that.animalA.name ] === undefined ) {
 				
-				material.attributes.colorAnimalA.buffer = material.attributes[ that.animalA.name ].buffer;
-				
-			}
-
-			if( material.attributes[ that.animalB.name ] !== undefined ) {
-				
-				material.attributes.colorAnimalB.buffer = material.attributes[ that.animalB.name ].buffer;
+				console.error( "Couldn't find attribute for " + that.animalA.name );
+				return;
 				
 			}
+			
+			material.attributes.colorAnimalA.buffer = material.attributes[ that.animalA.name ].buffer;
+			material.attributes.colorAnimalB.buffer = material.attributes[ that.animalB.name ].buffer;
 			
 		}
 		
@@ -427,7 +425,7 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "parrot", "eagle", "vulture", "raven" ],
+	animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "goldenretreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "tarbuffalo_runB", "tarbuffalo_runA", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyLow", "vulture", "raven", "blackWidow", "Arm", "bison", "wolf", "goat", "gator", "Emerge", "sickle", "scorp"  ],
 
 
 	// init frame times and indices
@@ -539,7 +537,7 @@ ROME.AnimalAnimationData = {
 	
 			// create normals for each morph target
 	
-/*			var m, ml;
+	/*		var m, ml;
 			var n, nl, normal, normals, face, faces, vertices;
 			var f, fl;
 			var AB = new THREE.Vector3();
@@ -608,7 +606,7 @@ ROME.AnimalAnimationData = {
 						      	
 							break;   
 
-						} 
+						}
 
 					}
 
@@ -669,9 +667,9 @@ ROME.AnimalAnimationData = {
 				
 				attributes.colorAnimalB.value = attributes.colorAnimalA.value;
 
-				for( a = 0, al = availableAnimals; a < al; a++ ) {
+				for( a = 0, al = availableAnimals.length; a < al; a++ ) {
 					
-					attributes[ availableAnimals[ a ]] = { type: "c", boundTo: "faces", value: attributes.colorAnimalA.value };
+					attributes[ availableAnimals[ a ].toLowerCase() ] = { type: "c", boundTo: "faces", value: attributes.colorAnimalA.value };
 					
 				}
 	
