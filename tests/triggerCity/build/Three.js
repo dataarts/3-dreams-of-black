@@ -5313,8 +5313,19 @@ THREE.Scene.prototype.removeChildRecurse = function( child ) {
 		if( i !== -1 ) {
 
 			this.objects.splice( i, 1 );
-			this.__objectsRemoved.push( child );
-
+			
+			i  = this.__objectsAdded.indexOf( child );		// if added and removed same update, just remove from add list
+			
+			if( i !== -1 ) {
+				
+				this.__objectsAdded.splice( i, 1 );
+				
+			} else {
+				
+				this.__objectsRemoved.push( child );
+				
+			}
+			
 		}
 
 	}
