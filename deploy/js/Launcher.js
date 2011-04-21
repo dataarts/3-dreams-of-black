@@ -42,8 +42,17 @@ var Launcher = function ( shared ) {
 	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
 	titleOverlay.addEventListener( 'click', function () {
 
+		document.body.style.cursor = 'none';
+
 		shared.signals.showfilm.dispatch();
-		shared.signals.startfilm.dispatch( 0 );
+
+		// Start in 1 second.
+
+		setTimeout( function () {
+
+			shared.signals.startfilm.dispatch( 0 );
+
+		}, 1000 );
 
 	}, false );
 	domElement.appendChild( titleOverlay );
@@ -57,7 +66,6 @@ var Launcher = function ( shared ) {
 
 	domElement.appendChild( loading.getDomElement() );
 
-	shared.signals.loadBegin.add( loading.loadBegin );
 	shared.signals.loadItemAdded.add( loading.addItem );
 	shared.signals.loadItemCompleted.add( loading.completeItem );
 

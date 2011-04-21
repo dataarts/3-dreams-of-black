@@ -44,6 +44,8 @@ var TransitionToCity = function ( shared ) {
 		video.currentTime = progress * video.duration;
 		video.play();
 
+		document.body.style.cursor = 'url("files/pointer.png"), auto';
+
 	};
 
 	this.hide = function () {
