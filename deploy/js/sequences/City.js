@@ -4,7 +4,7 @@ var City = function ( shared ) {
 
 	var camera, startCamera, switchCamera, world, soup,
 	renderer = shared.renderer, renderTarget = shared.renderTarget,
-	waypointsA = [], waypointsB = [], delta, time, oldTime;
+	waypointsA = [], waypointsB = [];
 	var switchedCamera = false;
 
 	// temp debug, start with ?debug=true
@@ -80,14 +80,11 @@ var City = function ( shared ) {
 		*/
 	};
 
-	this.show = function ( f ) {
+	this.show = function ( progress ) {
 
-		oldTime = new Date().getTime();
-		
 		//camera.animation.play( false, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
-		
 		renderer.setStencilShadowDarkness( 0.7 );
 
 		shared.started.city = true;
@@ -100,18 +97,13 @@ var City = function ( shared ) {
 
 	};
 
-	this.update = function ( f ) {
-
-		time = new Date().getTime();
-		delta = time - oldTime;
-		oldTime = time;
-
+	this.update = function ( progress, delta, time ) {
 
 		THREE.AnimationHandler.update( delta );
 
 		soup.update( delta );
-	
-		camera.position.z -= delta/10;
+
+		camera.position.z -= delta / 10;
 
 		if (camera.position.z < -3300) {
 			camera.position.z = 0;
@@ -119,7 +111,7 @@ var City = function ( shared ) {
 
 		// choose path
 		/*var camz = camera.matrixWorld.n34;
-	
+
 		if (camz < -1200 && !switchedCamera ) {
 
 			waypointsB = [ [ 0, 20, camz ], [ 0, 20, -3350 ] ];
