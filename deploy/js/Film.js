@@ -48,7 +48,8 @@ var Film = function ( shared ) {
 
 	// effects
 	
-	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
+	//var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
+	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
 	
 	// sequence
 
