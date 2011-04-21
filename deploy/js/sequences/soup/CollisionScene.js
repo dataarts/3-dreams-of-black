@@ -35,8 +35,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FFFF, opacity: 0.4 } ) );
 
-	//that.emitter.visible = false;
-	//that.emitterFollow.visible = false;
+	that.emitter.visible = false;
+	that.emitterFollow.visible = false;
 
 	// collision boxes
 
@@ -138,15 +138,15 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 			var distance = c.distance*that.settings.scale;
 			
-			if ( c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top || c.mesh == bottom ) {
+			/*if ( c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top || c.mesh == bottom ) {
 				distance = c.distance;
-			}
+			}*/
 
-			/*if ( distance > that.settings.collisionDistance ) {
+			if ( distance > that.settings.collisionDistance ) {
 
 				distance = that.settings.collisionDistance;
 
-			}*/
+			}
 			//console.log(c.mesh == front);
 			positionVector.copy( ray.origin );
 			positionVector.addSelf( ray.direction.multiplyScalar( distance ) );
@@ -380,7 +380,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 		if ( that.settings.keepEmitterFollowDown ) {
 
-			/*that.emitterFollow.position.y = that.emitter.position.y + that.settings.collisionDistance;
+			that.emitterFollow.position.y = that.emitter.position.y + that.settings.collisionDistance;
 
 			ray.origin.copy( that.emitterFollow.position )//.normalize();
 			ray.direction.set( 0, -1, 0 );
@@ -396,10 +396,10 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 				//console.log(c.distance);
 
-			}*/
+			}
 
 			// test
-
+/*
 			that.emitterFollow.position.x += that.currentNormal.x*1;
 			that.emitterFollow.position.y += that.currentNormal.y*1;
 			that.emitterFollow.position.z += that.currentNormal.z*1;
@@ -422,7 +422,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 				//console.log(c.distance);
 
 			}
-
+*/
 
 		}
 

@@ -19,9 +19,10 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -1210 ] ];
+		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -1210 ] ];
+		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -3350 ] ];
 
-		startCamera = new THREE.PathCamera( {
+		/*startCamera = new THREE.PathCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			waypoints: waypointsA, duration: 9.2, 
@@ -31,13 +32,25 @@ var City = function ( shared ) {
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
 
-		 } );
+		 } );*/
 
+
+		/*startCamera = new THREE.PathCamera( {
+
+			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+			waypoints: waypointsA, duration: 26, 
+			useConstantSpeed: true, resamplingCoef: 30,
+			createDebugPath: shared.debug, createDebugDummy: shared.debug,
+			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
+			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
+
+		 } );
 
 		startCamera.position.set( 0, 0, 0 );
 		startCamera.lon = 90;
 
-		camera = startCamera;
+		camera = startCamera;*/
 
 		/*camera = new THREE.QuakeCamera( {
 		fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
@@ -49,28 +62,33 @@ var City = function ( shared ) {
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
 
+		camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+		camera.position.set(0,20,0);
+
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
 		
 		shared.worlds.city = world;
 		 
-		if ( shared.debug ) {
+		/*if ( shared.debug ) {
 
 			world.scene.addObject( camera.debugPath );
 
 		}
 
 		world.scene.addObject( camera.animationParent );
-
+		*/
 	};
 
 	this.show = function ( f ) {
 
 		oldTime = new Date().getTime();
 		
-		camera.animation.play( false, 0 );
+		//camera.animation.play( false, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
+		
+		renderer.setStencilShadowDarkness( 0.7 );
 
 		shared.started.city = true;
 
@@ -92,10 +110,15 @@ var City = function ( shared ) {
 		THREE.AnimationHandler.update( delta );
 
 		soup.update( delta );
+	
+		camera.position.z -= delta/10;
 
+		if (camera.position.z < -3300) {
+			camera.position.z = 0;
+		}
 
 		// choose path
-		var camz = camera.matrixWorld.n34;
+		/*var camz = camera.matrixWorld.n34;
 	
 		if (camz < -1200 && !switchedCamera ) {
 
@@ -136,7 +159,7 @@ var City = function ( shared ) {
 			//console.log("switched camera");
 			switchedCamera = true;
 
-		}
+		}*/
 
 
 		// slight camera roll

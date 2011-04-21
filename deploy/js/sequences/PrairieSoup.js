@@ -4,7 +4,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// init
 
-	camPos = new THREE.Vector3( 0, 0, 0 );
+	camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -37,8 +37,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// vector trail
 
 	vectors = new Vectors();
-	vectors.settings.normaldivider = 10;
-	vectors.settings.divider = 2;
+	vectors.settings.normaldivider = 5;
+	vectors.settings.divider = 3;
 
 	// ribbons
 
@@ -73,10 +73,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// running animals
 	runningAnimals = new AnimalSwarm( 40, scene, vectors.array );
-	runningAnimals.settings.xPositionMultiplier = 30;
-	runningAnimals.settings.zPositionMultiplier = 15;
+	runningAnimals.settings.xPositionMultiplier = 22;
+	runningAnimals.settings.zPositionMultiplier = 10;
 	//runningAnimals.settings.shootRayDown = true;
-	runningAnimals.settings.constantSpeed = 2.0
+	runningAnimals.settings.constantSpeed = 1.7
+	//runningAnimals.settings.adaptiveSpeed = true;
 	runningAnimals.settings.divider = 1;
 
 	// preoccupy slots for specific animals - hack...
@@ -108,28 +109,28 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	function animalsLoadedProxy( geometry ) {
 		var morphArray = [0,0,1,2,1,2,0,2,3];
-		runningAnimals.addAnimal( geometry, "animal", 0.4, morphArray, 2 );
+		runningAnimals.addAnimal( geometry, "animal", 0.35, morphArray, 3 );
 	}
 
 	function taruffaloLoadedProxy( geometry ) {
 		var morphArray = [0,1,0,1];
-		runningAnimals.addAnimal( geometry, null, 0.33, morphArray, 2 );
+		runningAnimals.addAnimal( geometry, null, 0.3, morphArray, 3 );
 	}
 
 	function gatorLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "gator", 0.4, null, 2 );
+		runningAnimals.addAnimal( geometry, "gator", 0.35, null, 3 );
 	}
 
 	function goatLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "goat", 0.5, null, 2 );
+		runningAnimals.addAnimal( geometry, "goat", 0.45, null, 3 );
 	}
 
 	function armLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2 );
+		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 3 );
 	}
 	function octoLoadedProxy( geometry ) {
 		var morphArray = [0,0,0,2];
-		runningAnimals.addAnimal( geometry, "octo", 0.7, morphArray, 2 );
+		runningAnimals.addAnimal( geometry, "octo", 0.65, morphArray, 3 );
 	}
 
 

@@ -309,7 +309,8 @@ ROME.AnimalAnimationData_old = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "golden", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "tarbuffalo_runB", "tarbuffalo_runA", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyLow", "vulture", "raven", "blackWidow", "Arm", "bison", "wolf", "goat", "gator", "Emerge", "sickle", "scorp"  ],
+	//animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "golden", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "tarbuffalo_runB", "tarbuffalo_runA", "parrot", "eagle", "owl", "hummingBird", "flamingo", "storkFly", "butterflyA", "butterflyLow", "vulture", "raven", "blackWidow", "Arm", "bison", "wolf", "goat", "gator", "Emerge", "sickle", "scorp"  ],
+	animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elkRun", "mooseGallop", "shdw2", "blackWidow", "crab", "scorpSkitter", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "storkFly", "butterflyA", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
 
 
 	// init frame times and indices

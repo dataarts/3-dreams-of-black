@@ -24,7 +24,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 		for ( var i = 0; i < that.initSettings.numOfAnimals; ++i ) {
 
-			var animal = ROME.Animal_old( geometry, false );
+			var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
 
 			var scale = 0.02+(Math.random()/8);
@@ -58,7 +58,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 		animalContainer.position = position;
 
-		animalContainer.position.x += Math.cos( theta )*-70;
+		animalContainer.position.x -= Math.cos( theta )*70;
 		animalContainer.position.z -= Math.sin( theta )*70;
 
 		if (isNaN(delta) || delta > 1000 ) {

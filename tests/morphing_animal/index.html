@@ -62,21 +62,21 @@
 				var light = new THREE.AmbientLight( 0x888888 );
 				scene.addLight( light );
 				
-				animal = new ROME.Animal( geometry, true );
+				animal = new Animal( geometry, true );
 				animal.mesh.rotation.y = 90 * Math.PI / 180;
 				animal.mesh.position.x = -200;
 				animal.mesh.position.z = -200;
 				animal.play( "horse", "deer" );
 				scene.addChild( animal.mesh );
 
-				animal2 = new ROME.Animal( geometry, true );
+				animal2 = new Animal( geometry, true );
 				animal2.mesh.rotation.y = 65 * Math.PI / 180;
 				animal2.mesh.position.x = 0;
 				animal2.mesh.position.z = -200;
 				animal2.play( "seal", "bear" );
 				scene.addChild( animal2.mesh );
 
-				animal3 = new ROME.Animal( geometry, true );
+				animal3 = new Animal( geometry, true );
 				animal3.mesh.rotation.y = 75 * Math.PI / 180;
 				animal3.mesh.position.x = 200;
 				animal3.mesh.position.z = -200;

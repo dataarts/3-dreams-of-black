@@ -11,6 +11,9 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
+
+	var shake = 0;
+
 /*	var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
@@ -23,9 +26,9 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// collision scene
 
-	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 400 );
-	collisionScene.settings.maxSpeedDivider = 3;
-	collisionScene.settings.capBottom = -2;
+	var collisionScene = new CollisionScene2( that.camera, 0.1, shared, 500, scene );
+	collisionScene.settings.maxSpeedDivider = 6;
+	collisionScene.settings.capBottom = 3;
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 3;
@@ -33,24 +36,66 @@ var CitySoup = function ( camera, scene, shared ) {
 	//collisionScene.settings.minDistance = 30;
 	collisionScene.settings.keepEmitterFollowDown = true;
 
+	loader.load( { model: "files/models/city/collision/City.Collision_Big.js", callback: mesh0LoadedProxy } );
+	loader.load( { model: "files/models/city/collision/City.Collision_Big.001.js", callback: mesh1LoadedProxy } );
+	loader.load( { model: "files/models/city/collision/City.Collision_Big.002.js", callback: mesh2LoadedProxy } );
+	loader.load( { model: "files/models/city/collision/City.Collision_Big.003.js", callback: mesh3LoadedProxy } );
+
+	camera.target = collisionScene.cameraTarget;
+
+	function mesh0LoadedProxy( geometry ) {
+		var scale = 0.1;
+		var rotation = new THREE.Vector3(-1.570796,0,3.141591);
+		var position = new THREE.Vector3();
+		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+	}
+
+	function mesh1LoadedProxy( geometry ) {
+		var scale = 0.1;
+		var rotation = new THREE.Vector3(-1.570796,0,0);
+		var position = new THREE.Vector3();
+		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+	}
+
+	function mesh2LoadedProxy( geometry ) {
+		var scale = 0.1;
+		var rotation = new THREE.Vector3(-1.570796,0,0);
+		var position = new THREE.Vector3();
+		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+	}
+
+	function mesh3LoadedProxy( geometry ) {
+		var scale = 0.1;
+		var rotation = new THREE.Vector3(-1.570796,0,1.570797);
+		var position = new THREE.Vector3();
+		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+	}
+
+
 	// vector trail
 
 	var vectors = new Vectors();
-	vectors.settings.normaldivider = 8;
-	vectors.settings.absoluteTrail = true;
+	vectors.settings.divider = 4;
+	vectors.settings.normaldivider = 4;
+	//vectors.settings.absoluteTrail = true;
 
 	// ribbons
 
 	var ribbonMaterials = [
-			new THREE.MeshLambertMaterial( { color:0xf89010 } ),
-			new THREE.MeshLambertMaterial( { color:0x98f800 } ),
-			new THREE.MeshLambertMaterial( { color:0x5189bb } ),
-			new THREE.MeshLambertMaterial( { color:0xe850e8 } ),
-			new THREE.MeshLambertMaterial( { color:0xf1f1f1 } ),
+			new THREE.MeshLambertMaterial( { color:0x29ae08 } ),
+			new THREE.MeshLambertMaterial( { color:0x309018 } ),
+			new THREE.MeshLambertMaterial( { color:0x267213 } ),
+			new THREE.MeshLambertMaterial( { color:0x5ab543 } ),
+			new THREE.MeshLambertMaterial( { color:0x2e6f1e } ),
 			new THREE.MeshLambertMaterial( { color:0x08a620 } )
 	];
 
-	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
+	var ribbons = new Ribbons(5, vectors.array, scene, ribbonMaterials);
+
+	//ribbons.settings.ribbonPulseMultiplier_1 = 5.5;
+	//ribbons.settings.ribbonPulseMultiplier_2 = 5.5;
+	ribbons.settings.ribbonMin = 0.1;
+	ribbons.settings.ribbonMax = 0.3;
 
 	// particles
 
@@ -68,6 +113,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
 	runningAnimals.settings.addaptiveSpeed = true;
+	runningAnimals.settings.capy = 0;
 
 	// preoccupy slots for specific animals - hack...
 
@@ -136,9 +182,9 @@ var CitySoup = function ( camera, scene, shared ) {
 
 */
 	// butterflys
-	/*var butterflys = new AnimalInFrontOfCamera(30, scene);
-	loader.load( { model: "files/models/soup/butterfly_hiA.js", callback: butterflys.addAnimal } );
-	*/
+	var butterflys = new AnimalInFrontOfCamera(30, scene);
+	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflys.addAnimal } );
+	
 	// trail - of grass/trees/etc
 	var trail = new Trail(100, scene);
 	// preoccupy for differnt grass
@@ -214,24 +260,39 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.z = that.camera.matrixWorld.n34;
 
 		// temp reset
-		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
+		if (camPos.z <= -3290 || camPos.x > 1640 || camPos.x < -1640) {
 			reset();
 		}
 		
+
+		// camera roll hack...
+		var dx = camera.position.x-collisionScene.cameraTarget.position.x;
+		var dz = camera.position.z-collisionScene.cameraTarget.position.z;
+
+		var angleRad = Math.atan2(dz, dx);
+		camera.up.x = ((angleRad-Math.PI/2)/4)*-1;
+
+		// camera shake hack...
+		++shake;
+		if (shake%4 == 0) {
+			camera.position.x = 0+(Math.random()-0.5)*0.5;
+		}
+		if (shake%2 == 0) {
+			camera.position.y = 15+(Math.random()-0.5)*0.5;
+		}
+
 		// update the soup parts	
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		ribbons.update(collisionScene.emitterFollow.position);
-		//vectors.update(collisionScene.emitter.position, collisionScene.currentNormal);
-		//ribbons.update(collisionScene.emitter.position);
 
-		//particles.update(delta, vectors.array[0].position);
-		//runningAnimals.update();
-		//flyingAnimals.update();
+		particles.update(delta, vectors.array[0].position);
+		runningAnimals.update(delta);
+		flyingAnimals.update(delta);
 		//flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
-		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
-		
+		butterflys.update(camPos, angleRad, delta);
+		trail.update(collisionScene.emitterFollow.position, collisionScene.currentNormal, camPos, delta);
 		TWEEN.update();
 
 		// pointlight
