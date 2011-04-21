@@ -47,9 +47,10 @@ var Film = function ( shared ) {
 	shared.signals.windowresized.add( updateViewportSize );
 
 	// effects
-
-	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
-
+	
+	//var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
+	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
+	
 	// sequence
 
 	sequencer = new Sequencer();
