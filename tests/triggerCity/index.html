@@ -37,7 +37,6 @@
 			var loadedSceneResult;
 
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-			document.addEventListener( 'click', onDocumentMouseClick, false );
 
 			var loader = new THREE.SceneLoader();
 			loader.load( "assets/city/City.js", init );
@@ -91,54 +90,8 @@
 				
 				TriggerUtils.setupCityTriggers( loadedSceneResult );
 				
-				// load triggers
-				
-//				var triggerLoader = new THREE.JSONLoader();
-//				triggerLoader.load( { model: "assets/city/City.TriggerMesh_Bus_.js", callback: function( geo ) { onTriggerLoaded( geo, "Bus" ); } } );
-//				triggerLoader.load( { model: "assets/triggers/Car_.js", callback: function( geo ) { onTriggerLoaded( geo, "Car_" ); } } );
-//				triggerLoader.load( { model: "assets/triggers/CarNiss_.js", callback: function( geo ) { onTriggerLoaded( geo, "CarNiss_" ); } } );
-//				triggerLoader.load( { model: "assets/triggers/CarPile_.js", callback: function( geo ) { onTriggerLoaded( geo, "CarPile_" ); } } );
-/*				triggerLoader.load( { model: "assets/triggers/Console_11_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_11_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_14_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_14_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_15_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_15_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_2_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_2_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_3_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_3_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_5_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_5_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_6_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_6_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_8_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_8_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/LampPost_.js", callback: function( geo ) { onTriggerLoaded( geo, "LampPost_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/RailTrain_.js", callback: function( geo ) { onTriggerLoaded( geo, "RailTrain_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/SignBroken_.js", callback: function( geo ) { onTriggerLoaded( geo, "SignBroken_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/SignMany_.js", callback: function( geo ) { onTriggerLoaded( geo, "SignMany_" ); } } );
-*/
 			}
 
-			function onTriggerLoaded( geo, geoName ) {
-				
-				var objects = loadedSceneResult.objects;
-				
-				for( var name in objects ) {
-					
-					if( name.indexOf( geoName ) !== -1 ) {
-						
-						if( objects[ name ].matrixWorld.getPosition().y < 500 ) {
-							
-							var trigger = new TriggerBig( geo );
-							trigger.mesh.rotation.x = 90 * Math.PI / 180;
-							trigger.mesh.position.x = -100;
-							objects[ name ].addChild( trigger.mesh );
-							
-						}
-						
-					}
-					
-				}
-				
-			}
-
-			function onDocumentMouseClick( event ) {
-				
-			}
 
 			function onDocumentMouseMove(event) {
 
@@ -150,10 +103,6 @@
 
 			function loop() {
 
-/*				camera.position.x = Math.sin( mouseX * 2 * Math.PI ) * 10000;
-				camera.position.z = -10000 + Math.cos( mouseX * 2 * Math.PI ) * 10000;
-				camera.position.y = -mouseY * 12000 + 4000;
-*/
 				camera.position.z = -12000 + Math.cos( t ) * 12000;
 				camera.position.y = 200;
 				camera.rotation.y = -mouseX;
@@ -161,22 +110,17 @@
 				
 				t += 0.005;
 
-
-
-				TriggerBigShader.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
-				TriggerBigShader.effectors[ 1 ] = camera.position.y;
-				TriggerBigShader.effectors[ 2 ] = camera.position.z - 2500;
-				 
-
-
-/*				effector.position.x = TriggerBigShader.effectors[ 0 ] = Math.sin( t ) * 3000;
-				effector.position.y = TriggerBigShader.effectors[ 1 ];
-				effector.position.z = TriggerBigShader.effectors[ 2 ] = 1500;//TriggerBigShader.effectors[ 2 ] = Math.cos( t ) * 1000 + 1000;
-
-				t += 0.015;
-
-				THREE.AnimationHandler.update( 1000 / 60 );*/
 				renderer.render( scene, camera );
+
+
+				TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
+				TriggerUtils.effectors[ 1 ] = camera.position.y;
+				TriggerUtils.effectors[ 2 ] = camera.position.z - 2500;
+				 
+				TriggerUtils.update();
+				
+
+				THREE.AnimationHandler.update( 1000 / 60 );
 
 			}
 
