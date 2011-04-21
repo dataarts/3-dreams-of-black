@@ -132,7 +132,7 @@ var TriggerBig = function( geometry, wantedParent ) {
 	var material = new THREE.MeshShaderMaterial( {
 		
 		uniforms: TriggerBigShader.uniforms(),
-		vertexShader: TriggerBigShader.vertexShader,
+		vertexShader: TriggerBigShader.vertexShader(),
 		fragmentShader: TriggerBigShader.fragmentShader, 
 		
 		shading: THREE.FlatShading,
@@ -494,7 +494,7 @@ TriggerBigShader = {
 	},
 
 
-	vertexShader: [
+	vertexShader: function() { return [
 
 		"const 		int		NUMEFFECTORS = " + (TriggerUtils.effectors.length / 3) + ";",
 		"uniform 	vec3 	effectors[ NUMEFFECTORS ];",
@@ -555,7 +555,7 @@ TriggerBigShader = {
 		"}",
 		
 		
-	].join("\n"),
+	].join("\n") },
 
 	fragmentShader: [
 
