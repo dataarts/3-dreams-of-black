@@ -68,7 +68,7 @@ var Exploration = function ( shared ) {
 
 			world.update( delta, camera );
 
-			clearEffect.update( progress, time );
+			clearEffect.update( progress, delta, time );
 
 			renderer.setClearColor( world.scene.fog.color );
 			renderer.render( world.scene, camera, renderTarget );
@@ -76,9 +76,9 @@ var Exploration = function ( shared ) {
 			shared.logger.log( "vertices: " + renderer.data.vertices );
 			shared.logger.log( 'faces: ' + renderer.data.faces );
 
-			heatEffect.update( progress, time );
-			noiseEffect.update( progress, time );
-			renderEffect.update( progress, time );
+			heatEffect.update( progress, delta, time );
+			noiseEffect.update( progress, delta, time );
+			renderEffect.update( progress, delta, time );
 
 		}
 
