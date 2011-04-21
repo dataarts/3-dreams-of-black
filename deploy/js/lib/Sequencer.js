@@ -105,7 +105,7 @@ var Sequencer = function () {
 		for ( var i = 0, l = _itemsActive.length; i < l; i ++ ) {
 
 			_item = _itemsActive[ i ];
-			_item.update( ( time - _item.__start ) / _item.__duration, time, _item.__start, _item.__end );
+			_item.update( ( time - _item.__start ) / _item.__duration, time - _time, time );
 
 		}
 
@@ -139,6 +139,6 @@ SequencerItem.prototype = {
 	load: function () {},
 	show: function ( progress ) {},
 	hide: function () {},
-	update: function ( progress, time, start, end ) {}
+	update: function ( progress, delta, time ) {}
 
 }

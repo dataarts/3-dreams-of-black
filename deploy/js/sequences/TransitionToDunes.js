@@ -39,9 +39,9 @@ var TransitionToDunes = function ( shared ) {
 
 	};
 
-	this.show = function ( f ) {
+	this.show = function ( progress ) {
 
-		video.currentTime = f * video.duration;
+		video.currentTime = progress * video.duration;
 		video.play();
 
 	};
@@ -52,7 +52,7 @@ var TransitionToDunes = function ( shared ) {
 
 	};
 
-	this.update = function ( f ) {
+	this.update = function ( progress, delta, time ) {
 
 		texture.needsUpdate = true;
 

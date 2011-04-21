@@ -21,9 +21,9 @@ var FadeOutEffect = function ( hex, shared ) {
 
 	};
 
-	this.update = function ( f ) {
+	this.update = function ( progress, delta, time ) {
 
-		material.opacity = f;
+		material.opacity = progress;
 		renderer.render( scene, camera, renderTarget );
 
 	};

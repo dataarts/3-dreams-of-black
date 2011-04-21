@@ -4,8 +4,7 @@ var Prairie = function ( shared ) {
 
 	var camera, world, soup,
 	renderer = shared.renderer, renderTarget = shared.renderTarget,
-	cameraPath, waypoints = [],
-	delta, currentTime, oldTime = -1;
+	cameraPath, waypoints = [];
 
 	this.init = function () {
 /*
@@ -53,15 +52,15 @@ var Prairie = function ( shared ) {
 		[ 1085.890, -240.610, -66.939 ],
 		[ 1094.090, -246.713, -99.358 ]
 		];
-		
+
 		var i, x, y, z, t, d = 6;
-		
+
 		for( var i = 0; i < waypoints.length; i++ ) {
-			
+
 			t = waypoints[ i ][ 1 ];
 			waypoints[ i ][ 1 ] = waypoints[ i ][ 2 ] + d;
 			waypoints[ i ][ 2 ] = -t;
-			
+
 		}
 
 		/*camera = new THREE.QuakeCamera( {
@@ -102,29 +101,21 @@ var Prairie = function ( shared ) {
 
 	};
 
-	this.show = function ( f ) {
+	this.show = function ( progress ) {
 
-		oldTime = new Date().getTime();
 		cameraPath.animation.play( true, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
 
 		shared.started.prairie = true;
-		
+
 	};
 
 	this.hide = function () {
 
 	};
 
-	this.update = function ( progress, time, start, end ) {
-
-		currentTime = new Date().getTime();
-		
-		if ( oldTime == -1 ) oldTime = currentTime;
-		
-		delta = currentTime - oldTime;
-		oldTime = currentTime;
+	this.update = function ( progress, delta, time ) {
 
 		THREE.AnimationHandler.update( delta );
 
@@ -136,10 +127,10 @@ var Prairie = function ( shared ) {
 
 		}
 
-		
+
 		// slightly bumpy camera, since we're on a train
 		camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
-		
+
 
 		// make it darker towards the end
 		/*var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );

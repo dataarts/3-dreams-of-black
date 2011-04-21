@@ -34,7 +34,7 @@ var HeatEffect = function ( shared ) {
 
 	};
 
-	this.update = function ( progress, time ) {
+	this.update = function ( progress, delta, time ) {
 
 		uniforms.time.value = time * 0.01;
 		renderer.render( scene, camera, renderTarget, false );

@@ -3,19 +3,21 @@ var City = function ( shared ) {
 	SequencerItem.call( this );
 
 	var camera, world, soup,
-	renderer = shared.renderer, renderTarget = shared.renderTarget,
-
-	delta, time, oldTime;
+	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	// temp debug, start with ?debug=true
 	shared.debug = false;
-	if (getParameterByName("debug") == "true") {
+
+	if ( getParameterByName( "debug" ) == "true" ) {
+
 		shared.debug = true;
+
 	}
 
 	this.init = function () {
 
-		/*waypoints = [ [ 0, 10, 0 ], [ 0, 10, -3300 ] ];
+		/*
+		waypoints = [ [ 0, 10, 0 ], [ 0, 10, -3300 ] ];
 
 		camera = new THREE.PathCamera( {
 
@@ -31,34 +33,36 @@ var City = function ( shared ) {
 
 
 		camera.position.set( 0, 10, 0 );
-		camera.lon = 90;*/
+		camera.lon = 90;
+		*/
 
 		camera = new THREE.Camera(50, shared.viewportWidth / shared.viewportHeight, 1, 100000);
 		camera.position.set(0,150,-550)
 
 		world = new SoupWorld( shared );
 		soup = new Soup( camera, world.scene, shared );
-		
-/*		if (shared.debug) {
+
+		/*
+		if (shared.debug) {
 			world.scene.addObject( camera.debugPath );
 		}
 		world.scene.addObject( camera.animationParent );
-*/
-/*
+		*/
+
+		/*
 		shared.signals.cameraFov.add( function ( value ) {
 
 			camera.fov = value;
 			camera.updateProjectionMatrix();
 
-		} );*/
+		} );
+		*/
 
 	};
 
-	this.show = function ( f ) {
+	this.show = function ( progress ) {
 
-		oldTime = new Date().getTime();
-/*		camera.animation.play( true, 0 );
-*/
+		// camera.animation.play( true, 0 );
 		renderer.setClearColor( world.scene.fog.color );
 
 	};
@@ -69,11 +73,7 @@ var City = function ( shared ) {
 
 	};
 
-	this.update = function ( f ) {
-
-		time = new Date().getTime();
-		delta = time - oldTime;
-		oldTime = time;
+	this.update = function ( progress, delta, time ) {
 
 		THREE.AnimationHandler.update( delta );
 
@@ -85,7 +85,7 @@ var City = function ( shared ) {
 		}*/
 
 		renderer.render( world.scene, camera, renderTarget );
-		
+
 	};
 
 	function getParameterByName(name) {

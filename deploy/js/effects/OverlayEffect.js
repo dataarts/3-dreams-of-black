@@ -21,9 +21,9 @@ var OverlayEffect = function ( shared, texture ) {
 
 	};
 
-	this.update = function ( f ) {
+	this.update = function ( progress, delta, time ) {
 
-		material.opacity = 1 - f;
+		material.opacity = 1 - progress;
 		renderer.render( scene, camera, renderTarget );
 
 	};
