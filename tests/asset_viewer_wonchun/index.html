@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+
+
+<head>
+
+  <title>three.js webgl - flamingo</title>
+  <script type="text/javascript" src="gui-dat/gui.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/slider.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.boolean.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.function.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.number.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.string.js"></script>
+  <script type="text/javascript" src="js/Three.js"></script>
+  <script type="text/javascript" src="js/Animal.js"></script>
+  <script type="text/javascript" src="js/Detector.js"></script>
+  <script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+  <style type="text/css">
+    @import url("style.css");
+    @import url("gui-dat/gui.css");
+  </style>
+</head>
+
+<body>
+<div id="wrapper">
+    <div id="canvasHolder"></div>
+    <div id="viewerConsole">
+      <div id="viewerModels">
+      </div>
+      <div id="viewerSettings">
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+</div>
+<script>
+
+if (! Detector.webgl) Detector.addGetWebGLMessage();
+
+var params, gui;
+
+var delta, time, oldTime = new Date().getTime();
+
+var container, loader;
+
+var camera, scene, renderer;
+var cameraDistance = 300;
+var cameraTarget = new THREE.Vector3(0, 0, 0);
+
+var light = [];
+
+var rootY, rootZ, plane, mat, mesh;
+var animals = [];
+var width = 960;
+var height = 360;
+
+var drag = false;
+var mouseX = 0;
+var mouseY = 0;
+var offsetX = 0.5;
+var offsetY = 0;
+var zoom = 0;
+var orbitY = 0.5;
+var orbitZ = 0;
+var riseY = 0;
+var centerY = 0;
+var gridSpeed = 1;
+
+init();
+
+function init() {
+  container = document.createElement('div');
+  container.id = "viewerCanvas";
+  
+  document.addEventListener('mouseup', mouseUp, false);
+  document.addEventListener('mousemove', mouseMove, false);
+  document.addEventListener('mousewheel', mouseWheel, false);
+  document.getElementById('canvasHolder').appendChild(container);
+  document.getElementById('canvasHolder').addEventListener('mousedown', mouseDown, false);
+  document.getElementById('canvasHolder').addEventListener('mouseout', mouseOut, false);
+
+  params = {"speed": 0.3, "morph": 0};
+  gui = new GUI({domElement:  document.getElementById('viewerSettings')});
+  gui.add(params, "speed", 0, 1);
+  gui.add(params, "morph", 0, 1);
+
+  camera = new THREE.Camera(45, width / height, 1, 2000);
+
+  camera.position = new THREE.Vector3(-cameraDistance, 0, 0);
+  camera.target.position = cameraTarget;
+
+  renderer = new THREE.WebGLRenderer({ antialias: true, clearColor: 0x000000, clearAlpha: 0 });
+  renderer.setSize(width, height);
+  container.appendChild(renderer.domElement);
+
+
+  light[0] = new THREE.AmbientLight(0x202535);
+  light[1] = new THREE.DirectionalLight(0xffeedd, 0.9);
+  light[1].position.set(-1, 0.5, 0.2);
+  light[2] = new THREE.DirectionalLight(0x99ffaa, 0.2);
+  light[2].position.set(0, -1, 0);
+  light[3] = new THREE.DirectionalLight(0xccddff, 0.8);
+  light[3].position.set(1, 1, -0.3);
+
+  //gound plane
+  mat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xb65024, opacity:0.1, wireframe: true });
+  plane = new THREE.Mesh(new THREE.Plane(1000, 1000, 10, 10), mat);
+  plane.rotation.x = -Math.PI / 2;
+
+  animals = [];
+  //BLACK SOUP
+  animals.push({"file": './newModels/gator_runB.js', "name": 'gator', "centerY": 40, "riseY" : 0, "speed": 0.4});
+  animals.push({"file": './newModels/raven_flyA.js', "name": 'raven', "centerY": 0, "riseY" : 300, "speed": 0.6});
+  animals.push({"file": './newModels/vulture_A.js', "name": 'vulture', "centerY": 0, "riseY" : 500, "speed": 0.6});
+  animals.push({"file": './newModels/centipede_walkA.js', "name": 'centipede', "centerY": 20, "riseY" : 0, "speed": 0.5});
+  animals.push({"file": './newModels/goat_chargeA.js', "name": 'goat', "centerY": 50, "riseY" : 0, "speed": 0.5});
+  animals.push({"file": './newModels/black_widow.js', "name": 'blackwidow', "centerY": 40, "riseY" : 0, "speed": 0.2});
+  animals.push({"file": './newModels/crab.js', "name": 'crab', "centerY": 40, "riseY" : 0, "speed": 0.2});
+  animals.push({"file": './newModels/scorpion.js', "name": 'scorpion', "centerY": 40, "riseY" : 0, "speed": 0.2});
+  animals.push({"file": './newModels/bear.js', "name": 'bear', "centerY": 90, "riseY" : 0, "speed": 0.9});
+  animals.push({"file": './newModels/bison.js', "name": 'bison', "centerY": 90, "riseY" : 0, "speed": 0.7});
+  animals.push({"file": './newModels/cow.js', "name": 'cow', "centerY": 80, "riseY" : 0, "speed": 0});
+  animals.push({"file": './newModels/panther.js', "name": 'panther', "centerY": 50, "riseY" : 0, "speed": 1});
+  animals.push({"file": './newModels/toad.js', "name": 'toad', "centerY": 30, "riseY" : 0, "speed": 0.33});
+  animals.push({"file": './newModels/wolf.js', "name": 'wolf', "centerY": 50, "riseY" : 0, "speed": 0.6});
+  //LIFE SOUP
+  animals.push({"file": './newModels/eagle.js', "name": 'eagle', "centerY": 0, "riseY" : 80, "speed": 0.8});
+  animals.push({"file": './newModels/hummingbird.js', "name": 'hummingbird', "centerY": 10, "riseY" : 20, "speed": 0});
+  animals.push({"file": './newModels/owl.js', "name": 'owl', "centerY": 0, "riseY" : 60, "speed": 0.5});
+  animals.push({"file": './newModels/parrot.js', "name": 'parrot', "centerY": 0, "riseY" : 60, "speed": 0.5});
+  animals.push({"file": './newModels/flamingo.js', "name": 'flamingo', "centerY": 0, "riseY" : 60, "speed": 0.4});
+  animals.push({"file": './newModels/stork.js', "name": 'stork', "centerY": 0, "riseY" : 60, "speed": 0.4});
+  animals.push({"file": './newModels/elk.js', "name": 'elk', "centerY": 70, "riseY" : 0, "speed": 0.4});
+  animals.push({"file": './newModels/fish1.js', "name": 'fish1', "centerY": 100, "riseY" : -130, "speed": 0.1});
+  animals.push({"file": './newModels/fish2.js', "name": 'fish2', "centerY": 100, "riseY" : -130, "speed": 0.1});
+  animals.push({"file": './newModels/fish3.js', "name": 'fish3', "centerY": 100, "riseY" : -130, "speed": 0.1});
+  animals.push({"file": './newModels/fish4.js', "name": 'fish4', "centerY": 100, "riseY" : -130, "speed": 0.1});
+  animals.push({"file": './newModels/moose.js', "name": 'moose', "centerY": 140, "riseY" : 0, "speed": 0.8});
+  animals.push({"file": './newModels/chowchow.js', "name": 'chowchow', "centerY": 60, "riseY" : 0, "speed": 0.45});
+  animals.push({"file": './newModels/deer.js', "name": 'deer', "centerY": 70, "riseY" : 0, "speed": 0.6});
+  animals.push({"file": './newModels/fox.js', "name": 'fox', "centerY": 30, "riseY" : 0, "speed": 0.45});
+  animals.push({"file": './newModels/retreiver.js', "name": 'retreiver', "centerY": 50, "riseY" : 0, "speed": 0.6});
+  animals.push({"file": './newModels/horse.js', "name": 'horse', "centerY": 140, "riseY" : 0, "speed": 0.7});
+  animals.push({"file": './newModels/mountainlion.js', "name": 'mountainlion', "centerY": 60, "riseY" : 0, "speed": 0.8});
+  animals.push({"file": './newModels/rabbit.js', "name": 'rabbit', "centerY": 30, "riseY" : 0, "speed": 0.6});
+  animals.push({"file": './newModels/racoon.js', "name": 'racoon', "centerY": 30, "riseY" : 0, "speed": 0.4});
+  animals.push({"file": './newModels/sealRun.js', "name": 'sealRun', "centerY": 20, "riseY" : 0, "speed": 0.05});
+  animals.push({"file": './newModels/sealSwim.js', "name": 'sealSwim', "centerY": 20, "riseY" : -80, "speed": 0.2});
+  animals.push({"file": './newModels/treeFrog.js', "name": 'treeFrog', "centerY": 30, "riseY" : 0, "speed": 0.47});
+
+  //MORPHS
+  animals.push({"file": './morphModels/tarbuffalo.js', "name": 'tarbuffalo', "centerY": 40, "riseY" : 0, "speed": 0.4});
+
+  animalLoader(0);
+
+}
+
+function animalLoader(id) {
+    loader = new THREE.JSONLoader();
+    loader.load({ model: animals[id].file, callback: function(g) {
+    addAnimal(g, id);
+  } });
+}
+
+function addAnimal(geometry, id) {
+  animals[id].geometry = geometry;
+
+  link = document.createElement('a');
+  link.setAttribute('class', 'modelLink');
+  link.setAttribute('href', 'javascript:switchModel('+id+')');
+  link.innerHTML = animals[id].name;
+  document.getElementById('viewerModels').appendChild(link);
+
+  if (id == 0){
+    switchModel(0);
+    animate();
+  }
+  if (id < animals.length-1) {
+    animalLoader(id+1);
+  }
+}
+
+var morphObject
+function switchModel(id) {
+
+  morphObject = new ROME.Animal(animals[id].geometry, true);
+  morphObject.mesh.updateMatrix();
+  morphObject.mesh.update();
+
+  nameA = morphObject.availableAnimals[ 0 ];
+  nameB = morphObject.availableAnimals[ (morphObject.availableAnimals.length > 1) ? 1 : 0 ];
+
+  scene = new THREE.Scene();
+  rootY = new THREE.Object3D();
+  rootZ = new THREE.Object3D();
+  scene.addObject(rootZ);
+  rootZ.addChild(rootY);
+
+  rootY.addChild(light[0]);
+  rootY.addChild(light[1]);
+  rootY.addChild(light[2]);
+  rootY.addChild(light[3]);
+  rootY.addChild(plane);
+  rootY.addChild(morphObject.mesh);
+
+  morphObject.play(nameA, nameB, 0, 0, 0);
+
+
+  centerY = animals[id].centerY;
+  riseY = animals[id].riseY;
+  gridSpeed = animals[id].speed;
+  cameraDistance = 200 + morphObject.mesh.boundRadius;
+}
+
+function mouseOut(e) {
+}
+function mouseDown(e) {
+  drag = true;
+}
+function mouseUp(e) {
+  drag = false;
+}
+function mouseMove(e) {
+  var currentX = (event.clientX - container.offsetLeft - width / 2) / width * 2
+  var currentY = (event.clientY - container.offsetTop - height / 2) / height * 2
+  var deltaX = mouseX - currentX;
+  var deltaY = mouseY - currentY;
+  if (drag) {
+    offsetX -= deltaX;
+    offsetY -= deltaY;
+  }
+  mouseX = currentX;
+  mouseY = currentY;
+}
+function mouseWheel(e) {
+  firstDraw = true;
+  var steps = e.wheelDeltaY ? e.wheelDeltaY : -e.detail * 13;
+
+  maxZ = 800;
+  minZ = -200;
+
+  zoom -= steps;
+  if (zoom < minZ) {
+    zoom = minZ;
+  } else if (zoom > maxZ) {
+    zoom = maxZ;
+  }
+}
+
+function animate() {
+  time = new Date().getTime();
+  delta = time - oldTime;
+  oldTime = time;
+
+  orbitY += (offsetX - orbitY) / 10;
+  orbitZ += (offsetY - orbitZ) / 30;
+  orbitZ = Math.max(-0.16,Math.min(0.16,orbitZ));
+
+  rootY.rotation.y = orbitY * Math.PI - Math.PI/2;
+  rootZ.rotation.z = orbitZ * Math.PI + Math.PI/6;
+
+  rootY.position.y = -centerY;
+
+  plane.position.z -= delta * params.speed * gridSpeed;
+  plane.position.z = plane.position.z % 100;
+  plane.position.y = -riseY;
+
+  camera.position.x -= ( cameraDistance + zoom + camera.position.x) / 20;
+
+  THREE.AnimationHandler.update(delta * params.speed);
+  morphObject.morph = params.morph;
+
+  renderer.render(scene, camera);
+
+  requestAnimationFrame(animate);
+}
+
+</script>
+</body>
+
+<html> 
