@@ -494,7 +494,7 @@ TriggerBigShader = {
 
 	vertexShader: [
 
-		"const 		int		NUMEFFECTORS = 2;",
+		"const 		int		NUMEFFECTORS = " + (TriggerUtils.effectors.length / 3) + ";",
 		"uniform 	vec3 	effectors[ NUMEFFECTORS ];",
 		"uniform 	float	morph;",
 		
