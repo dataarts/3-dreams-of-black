@@ -37,7 +37,7 @@ var NoiseEffect = function ( shared, nIntensity, sIntensity, sCount ) {
 
 	};
 
-	this.update = function ( progress, time ) {
+	this.update = function ( progress, delta, time ) {
 
 		uniforms.time.value = ( time * 0.01 ) % 10000;
 		renderer.render( scene, camera, renderTarget, false );

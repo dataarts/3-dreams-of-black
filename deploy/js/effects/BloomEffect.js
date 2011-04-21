@@ -66,7 +66,7 @@ var BloomEffect = function ( shared, strength ) {
 
 	};
 
-	this.update = function ( progress, time ) {
+	this.update = function ( progress, delta, time ) {
 
 		// Render quad with blured scene into texture (convolution pass 1)
 

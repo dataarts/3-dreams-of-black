@@ -203,7 +203,6 @@ var CitySoup = function ( camera, scene, shared ) {
 		trail.array[4].maxHeight = 5;
 	}
 
-	
 	this.update = function ( delta ) {
 
 		//console.log(ribbons.settings.ribbonMin);
@@ -214,11 +213,11 @@ var CitySoup = function ( camera, scene, shared ) {
 		camPos.z = that.camera.matrixWorld.n34;
 
 		// temp reset
-		if (camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640) {
+		if ( camPos.z <= -3260 || camPos.x > 1640 || camPos.x < -1640 ) {
 			reset();
 		}
-		
-		// update the soup parts	
+
+		// update the soup parts
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		//ribbons.update(collisionScene.emitterFollow.position);
@@ -228,7 +227,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		flyingAnimals2.update();
 		butterflys.update(camPos, that.camera.theta, delta);
 		trail.update(collisionScene.emitter.position, collisionScene.currentNormal, camPos, delta);
-		
+
 		TWEEN.update();
 
 		// pointlight

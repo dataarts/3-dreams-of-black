@@ -16,10 +16,10 @@ var ClearEffect = function ( shared ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( progress, delta, time ) {
 
 		renderer.clear();
-		
+
 		var gl = renderer.getContext();
 
 		gl.bindFramebuffer( gl.FRAMEBUFFER, renderTarget.__webglFramebuffer );

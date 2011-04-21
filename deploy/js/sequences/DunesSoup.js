@@ -83,7 +83,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 		camPos.y = camera.matrixWorld.n24;
 		camPos.z = camera.matrixWorld.n34;
 
-		// update the soup parts	
+		// update the soup parts
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		ribbons.update(collisionScene.emitterFollow.position);

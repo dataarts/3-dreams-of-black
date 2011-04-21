@@ -5,16 +5,13 @@ var Dunes = function ( shared ) {
 	var camera, world, soup,
 	renderer = shared.renderer, 
 	renderTarget = shared.renderTarget;
-	
+
 	var ray = new THREE.Ray();
 	ray.origin.y = 100;
 	ray.direction = new THREE.Vector3(0, -1, 0);
 	var positionVector = new THREE.Vector3();
 
-	var delta, deltaSec, currentTime, oldTime = -1;
-
-	var speedStart = 150,
-		speedEnd = 300;
+	var speedStart = 150, speedEnd = 300;
 
 	var frontCube;
 
@@ -33,7 +30,7 @@ var Dunes = function ( shared ) {
 	domElement.style.textAlign = "right";
 	domElement.style.display = "none";
 	document.body.appendChild( domElement )
-	
+
 	this.init = function () {
 
 		/*
@@ -46,7 +43,7 @@ var Dunes = function ( shared ) {
 			heightSpeed: true, heightMin: 150, heightMax: 5000, heightCoef: 0.1
 
 		};
-		
+
 		var testCameraPars = {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
@@ -55,24 +52,24 @@ var Dunes = function ( shared ) {
 			autoForward: false
 
 		};
-		
+
 		//camera = new THREE.QuakeCamera( autoCameraPars );
 		//camera = new THREE.QuakeCamera( testCameraPars );
 		//camera.lon = 90;
 		*/
-		
+
 		camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 		camera.movementSpeed = speedStart;
 		camera.lookSpeed = 3;
 		camera.constrainVertical = [ -0.4, 0.4 ];
 		camera.autoForward = true;
-		//camera.mouseLook = false;	
-		
+		//camera.mouseLook = false;
+
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
 
 		shared.worlds.dunes = world;
-		
+
 		//frontCube = new THREE.Mesh( new THREE.Cube( 1, 1, 1 ), new THREE.MeshLambertMaterial( { color:0xff0000 } ) );
 		frontCube = new THREE.Object3D();
 		frontCube.position.set( 0, 0, -5 );
@@ -83,39 +80,39 @@ var Dunes = function ( shared ) {
 		// RollCamera must be added to scene
 
 		world.scene.addChild( camera );
-		
+
 		shared.frontCube = frontCube;
 
 	};
-	
+
 	function setRollCameraPosTarget( camera, cameraPosition, targetPosition ) {
 
 		var dirVec = new THREE.Vector3(),
 			cameraGround = new THREE.Vector3(),
 			targetGround = new THREE.Vector3();
-		
+
 		cameraGround.copy( cameraPosition );
 		cameraGround.y = 0;
-		
+
 		targetGround.copy( targetPosition );
 		targetGround.y = 0;
 
 		dirVec.sub( cameraGround, targetGround );
 		dirVec.normalize();
-		
+
 		camera.forward.copy( dirVec );
 		camera.update();
 
 	};
 
-	this.show = function ( f ) {
+	this.show = function ( progress ) {
 
 		// look at prairie island
 
 		setRollCameraPosTarget( camera, new THREE.Vector3( 0, 150, -1600 ), shared.influenceSpheres[ 0 ].center );
 
 		renderer.setClearColor( world.scene.fog.color );
-		
+
 		shared.started.dunes = true;
 
 	};
@@ -124,33 +121,24 @@ var Dunes = function ( shared ) {
 
 	};
 
-	
-	this.update = function ( progress, time, start, end ) {
 
-		currentTime = new Date().getTime();
-		
-		if ( oldTime == -1 ) oldTime = currentTime;
-		
-		delta = currentTime - oldTime;
-		oldTime = currentTime;
-
-		deltaSec = delta / 1000;
+	this.update = function ( progress, delta, time ) {
 
 		THREE.AnimationHandler.update( delta );
-		
+
 		// not too low
 
-		//camera.position.y = cap_bottom( camera.position.y, 150 );
+		// camera.position.y = cap_bottom( camera.position.y, 150 );
 
 		// some sort of ground collision
 		ray.origin.x = frontCube.matrixWorld.n14;
-		ray.origin.y = frontCube.matrixWorld.n24+400;
+		ray.origin.y = frontCube.matrixWorld.n24 + 400;
 		ray.origin.z = frontCube.matrixWorld.n34;
 
-		if (ray.origin.y < 1000) {
+		if ( ray.origin.y < 1000 ) {
 
 			var c = world.scene.collisions.rayCastNearest( ray );
-			if (c) {
+			if ( c ) {
 				positionVector.copy( ray.origin );
 				positionVector.addSelf( ray.direction.multiplyScalar( c.distance*0.15 ) );
 				positionVector.y += 50;
@@ -159,7 +147,7 @@ var Dunes = function ( shared ) {
 					camera.position.y = positionVector.y;
 				}
 			}
-		
+
 		}
 
 		// not too high
@@ -167,14 +155,14 @@ var Dunes = function ( shared ) {
 		camera.position.y = cap_top( camera.position.y, 5000 );
 
 		// not too high before lift-off
-		
+
 		if ( progress < world.startLift ) {
 
 			camera.position.y = cap_top( camera.position.y, 150 );
 
 			// small bump
 
-			camera.position.y += Math.sin( time / 100 )*0.5;
+			camera.position.y += Math.sin( time / 100 ) * 0.5;
 
 			// small roll
 
@@ -193,7 +181,7 @@ var Dunes = function ( shared ) {
 
 		if ( progress > world.startLift && progress < world.endLift ) {
 
-			camera.position.y += world.liftSpeed * deltaSec;
+			camera.position.y += world.liftSpeed * ( delta / 1000 );
 			//camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
 
 			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
