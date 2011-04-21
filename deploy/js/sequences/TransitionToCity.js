@@ -2,7 +2,7 @@ var TransitionToCity = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var video, camera, scene, geometry, texture, mesh,
+	var interval, video, camera, scene, geometry, texture, mesh,
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	var mouseX = 0, mouseY = 0;
@@ -44,6 +44,16 @@ var TransitionToCity = function ( shared ) {
 		video.currentTime = progress * video.duration;
 		video.play();
 
+		interval = setInterval( function () {
+
+			if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+
+				texture.needsUpdate = true;
+
+			}
+
+		}, 1000 / 24 );
+
 		document.body.style.cursor = 'url("files/pointer.png"), auto';
 
 	};
@@ -52,11 +62,11 @@ var TransitionToCity = function ( shared ) {
 
 		video.pause();
 
+		clearInterval( interval );
+
 	};
 
 	this.update = function ( progress, delta, time ) {
-
-		texture.needsUpdate = true;
 
 		camera.position.x = ( mouseX - camera.position.x ) * 0.05;
 		camera.position.y = ( - mouseY - camera.position.y ) * 0.05;
