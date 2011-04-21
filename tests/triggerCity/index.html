@@ -17,7 +17,6 @@
 	<body>
 		<script type="text/javascript" src="build/Three.js"></script>
 		<script type="text/javascript" src="ROME/Trigger.js"></script>
-		<script type="text/javascript" src="ROME/TriggerBig.js"></script>
 
 		<script type="text/javascript">
 
@@ -88,12 +87,18 @@
 				setInterval( loop, 1000 / 60 );
 					
 				
+				// assign triggers
+				
+				TriggerUtils.setupCityTriggers( loadedSceneResult );
+				
 				// load triggers
 				
-				var triggerLoader = new THREE.JSONLoader();
-				triggerLoader.load( { model: "assets/triggers/Bus.js", callback: function( geo ) { onTriggerLoaded( geo, "Bus" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_10_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_10_" ); } } );
-				triggerLoader.load( { model: "assets/triggers/Console_11_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_11_" ); } } );
+//				var triggerLoader = new THREE.JSONLoader();
+//				triggerLoader.load( { model: "assets/city/City.TriggerMesh_Bus_.js", callback: function( geo ) { onTriggerLoaded( geo, "Bus" ); } } );
+//				triggerLoader.load( { model: "assets/triggers/Car_.js", callback: function( geo ) { onTriggerLoaded( geo, "Car_" ); } } );
+//				triggerLoader.load( { model: "assets/triggers/CarNiss_.js", callback: function( geo ) { onTriggerLoaded( geo, "CarNiss_" ); } } );
+//				triggerLoader.load( { model: "assets/triggers/CarPile_.js", callback: function( geo ) { onTriggerLoaded( geo, "CarPile_" ); } } );
+/*				triggerLoader.load( { model: "assets/triggers/Console_11_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_11_" ); } } );
 				triggerLoader.load( { model: "assets/triggers/Console_14_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_14_" ); } } );
 				triggerLoader.load( { model: "assets/triggers/Console_15_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_15_" ); } } );
 				triggerLoader.load( { model: "assets/triggers/Console_2_.js", callback: function( geo ) { onTriggerLoaded( geo, "Console_2_" ); } } );
@@ -105,7 +110,7 @@
 				triggerLoader.load( { model: "assets/triggers/RailTrain_.js", callback: function( geo ) { onTriggerLoaded( geo, "RailTrain_" ); } } );
 				triggerLoader.load( { model: "assets/triggers/SignBroken_.js", callback: function( geo ) { onTriggerLoaded( geo, "SignBroken_" ); } } );
 				triggerLoader.load( { model: "assets/triggers/SignMany_.js", callback: function( geo ) { onTriggerLoaded( geo, "SignMany_" ); } } );
-
+*/
 			}
 
 			function onTriggerLoaded( geo, geoName ) {
@@ -120,6 +125,7 @@
 							
 							var trigger = new TriggerBig( geo );
 							trigger.mesh.rotation.x = 90 * Math.PI / 180;
+							trigger.mesh.position.x = -100;
 							objects[ name ].addChild( trigger.mesh );
 							
 						}
@@ -157,7 +163,7 @@
 
 
 
-				TriggerBigShader.effectors[ 0 ] = Math.sin( t * 2 ) * 2000;
+				TriggerBigShader.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
 				TriggerBigShader.effectors[ 1 ] = camera.position.y;
 				TriggerBigShader.effectors[ 2 ] = camera.position.z - 2500;
 				 
