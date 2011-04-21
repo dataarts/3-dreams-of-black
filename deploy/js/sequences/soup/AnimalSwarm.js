@@ -19,6 +19,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		visible : true,
 		shootRayDown : false,
 		addaptiveSpeed : false,
+		capy : null,
 	}
 	
 	var r = 0;
@@ -84,15 +85,19 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 	}
 
-	this.update = function () {
+	this.update = function (delta) {
 
 		r += 0.1
 
-		var dx = vectorArray[0].lastposition.x - vectorArray[0].position.x, dy = vectorArray[0].lastposition.y - vectorArray[0].position.y, dz = vectorArray[0].lastposition.z - vectorArray[0].position.z;
+		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
+			delta = 1000/60;
+		}
+
+		/*var dx = vectorArray[0].lastposition.x - vectorArray[0].position.x, dy = vectorArray[0].lastposition.y - vectorArray[0].position.y, dz = vectorArray[0].lastposition.z - vectorArray[0].position.z;
 		var distance =  dx * dx + dy * dy + dz * dz;
 		
 		var speed = Math.max(distance/100, 1.0);
-		speed = Math.min(speed, 1.5);
+		speed = Math.min(speed, 1.5);*/
 
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj =  that.array[i];
@@ -123,9 +128,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				toy = vectorArray[f].position.y - 6*1.75;
 			}
 
-			/*if (toy < 0) {
-				toy = 0;
-			}*/
+			if (that.settings.capy != null && toy < that.settings.capy) {
+				toy = that.settings.capy;
+			}
 
 			// flying
 			if (that.settings.flying) {
@@ -160,9 +165,11 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				that.array[i].a.animalB.timeScale = that.settings.constantSpeed;
 			}
 
-			var moveX = (tox-animal.position.x)/that.settings.divider;
-			var moveY = (toy-animal.position.y)/that.settings.divider;
-			var moveZ = (toz-animal.position.z)/that.settings.divider;
+			var divider = delta/10;
+
+			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
+			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
+			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
 
 			var zvec = new THREE.Vector3(tox,toy,toz);
 			zvec.subSelf( animal.position ).normalize();
@@ -182,7 +189,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
 				var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 
-				var speed = Math.max(distance/40, 0.8);
+				var speed = Math.max(distance/delta, 0.8);
 				speed = Math.min(speed, 2.0);
 				
 				that.array[i].a.animalA.timeScale = speed;

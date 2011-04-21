@@ -15,7 +15,6 @@
   <script type="text/javascript" src="js/Animal.js"></script>
   <script type="text/javascript" src="js/Detector.js"></script>
   <script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
-  
   <style type="text/css">
     @import url("style.css");
     @import url("gui-dat/gui.css");
@@ -128,7 +127,7 @@ function init() {
   //camera.useTarget = true;
   camera.target.position = cameraTarget;
 
-  renderer = new THREE.WebGLRenderer({ antialias: true, clearColor: 0x999999, clearAlpha: 1 });
+  renderer = new THREE.WebGLRenderer({ antialias: true, clearColor: 0x000000, clearAlpha: 0 });
   renderer.setSize(width, height);
   container.appendChild(renderer.domElement);
 

@@ -12,6 +12,7 @@ var Vectors = function ( length, divider, normaldivider ) {
 	that.settings = {
 		divider : divider || 4,
 		normaldivider : normaldivider || 10,
+		absoluteTrail : false,
 	}	
 
 	// vectors
@@ -19,7 +20,7 @@ var Vectors = function ( length, divider, normaldivider ) {
 
 		var position = new THREE.Vector3(0,0,0);
 
-		var obj = { position: position, lastposition: position, normal: new THREE.Vector3(0,1,0), scale: 1 };
+		var obj = { position: position, lastposition: new THREE.Vector3(0,0,0), normal: new THREE.Vector3(0,1,0), scale: 1 };
 		that.array.push(obj);
 
 	}
@@ -51,21 +52,41 @@ var Vectors = function ( length, divider, normaldivider ) {
 
 			}
 
-			var moveX = (tox-obj.position.x)/that.settings.divider;
-			var moveY = (toy-obj.position.y)/that.settings.divider;
-			var moveZ = (toz-obj.position.z)/that.settings.divider;
+			that.array[i].lastposition.x = obj.position.x;
+			that.array[i].lastposition.y = obj.position.y;
+			that.array[i].lastposition.z = obj.position.z;
 
-			obj.position.x += moveX;
-			obj.position.y += moveY;
-			obj.position.z += moveZ;
+			if (that.settings.absoluteTrail) {
 
-			var moveNormalX = (tonormalx-obj.normal.x)/that.settings.normaldivider;
-			var moveNormalY = (tonormaly-obj.normal.y)/that.settings.normaldivider;
-			var moveNormalZ = (tonormalz-obj.normal.z)/that.settings.normaldivider;
+				obj.position.x = tox;
+				obj.position.y = toy;
+				obj.position.z = toz;
 
-			obj.normal.x += moveNormalX;
-			obj.normal.y += moveNormalY;
-			obj.normal.z += moveNormalZ;
+				obj.normal.x = tonormalx;
+				obj.normal.y = tonormaly;
+				obj.normal.z = tonormalz;
+
+			} else {
+
+				var moveX = (tox-obj.position.x)/that.settings.divider;
+				var moveY = (toy-obj.position.y)/that.settings.divider;
+				var moveZ = (toz-obj.position.z)/that.settings.divider;
+
+				obj.position.x += moveX;
+				obj.position.y += moveY;
+				obj.position.z += moveZ;
+
+				var moveNormalX = (tonormalx-obj.normal.x)/that.settings.normaldivider;
+				var moveNormalY = (tonormaly-obj.normal.y)/that.settings.normaldivider;
+				var moveNormalZ = (tonormalz-obj.normal.z)/that.settings.normaldivider;
+
+				obj.normal.x += moveNormalX;
+				obj.normal.y += moveNormalY;
+				obj.normal.z += moveNormalZ;
+
+			}
+
+			//console.log(obj.position.z);
 
 		}
 
