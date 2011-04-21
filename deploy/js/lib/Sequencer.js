@@ -38,6 +38,7 @@ var Sequencer = function () {
 		if ( time < _time ) {
 
 			this.clear();
+			_time = time;
 
 		}
 

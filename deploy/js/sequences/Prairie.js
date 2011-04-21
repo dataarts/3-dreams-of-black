@@ -128,8 +128,8 @@ var Prairie = function ( shared ) {
 		}
 
 
-		// slightly bumpy camera, since we're on a train
-		camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
+		// slightly bumpy camera, since we're on a train // this feels like a horse or something...
+		// camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
 
 
 		// make it darker towards the end

@@ -58,7 +58,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 		animalContainer.position = position;
 
-		animalContainer.position.x += Math.cos( theta )*-70;
+		animalContainer.position.x -= Math.cos( theta )*70;
 		animalContainer.position.z -= Math.sin( theta )*70;
 
 		if (isNaN(delta) || delta > 1000 ) {

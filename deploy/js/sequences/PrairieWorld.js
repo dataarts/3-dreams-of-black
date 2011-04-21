@@ -69,7 +69,7 @@ var PrairieWorld = function ( shared, camera ) {
 		var train  = result.objects[ "Train" ],
 			cargo1 = result.objects[ "cargo1" ],
 			cargo2 = result.objects[ "cargo2" ];
-		 
+
 		//train.materials[ 0 ].wireframe = true;
 
 		train.position.set( -0.5, -6, 11 );
@@ -87,7 +87,7 @@ var PrairieWorld = function ( shared, camera ) {
 		cargo2.updateMatrix();
 		camera.animationParent.addChild( cargo2 );
 
-	};	
+	};
 
 	loader.load( "files/models/prairie/Prairie.js", prairieLoaded );
 

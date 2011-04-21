@@ -428,7 +428,7 @@ ROME.AnimalAnimationData = {
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
 	//animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "parrot", "eagle", "vulture", "raven" ],
-	animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elkRun", "mooseGallop", "shdw2", "blackWidow", "crab", "scorpSkitter", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "storkFly", "butterflyA", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elkRun", "mooseGallop", "shdw2", "blackWidow", "crab", "scorpSkitter", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "storkFly", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
 
 
 	// init frame times and indices
