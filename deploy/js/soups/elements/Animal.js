@@ -410,7 +410,8 @@ ROME.AnimalShader = {
 
 			// below: mix( color overlayed by ( contour map * influence constant ), directional light color, envlight above * influence constant )
 
-			"gl_FragColor  = mix( vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 0.7 + 1.0 ), 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.9 );",
+			//"gl_FragColor  = mix( vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 0.7 + 1.0 ), 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.9 );",
+			"gl_FragColor  = mix( vec4( vColor * (( 0.45 ) * 0.7 + 1.0 ), 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.9 );",
 			"gl_FragColor *= gl_FragColor;",
 
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
