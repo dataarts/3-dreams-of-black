@@ -35,6 +35,8 @@
 			mousemoved : new Signal(),
 			windowresized : new Signal(),
 
+			load : new Signal(),
+
 			showlauncher : new Signal(),
 			showfilm : new Signal(),
 			showrelauncher : new Signal(),
@@ -60,28 +62,32 @@
 	launcher = new Launcher( shared );
 	document.body.appendChild( launcher.getDomElement() );
 
-	film = new Film( shared );
-	document.body.appendChild( film.getDomElement() );
+	shared.signals.load.add( function () {
 
-	relauncher = new Relauncher( shared );
-	document.body.appendChild( relauncher.getDomElement() );
+		film = new Film( shared );
+		document.body.appendChild( film.getDomElement() );
 
-	exploration = new Exploration( shared );
-	document.body.appendChild( exploration.getDomElement() );
+		relauncher = new Relauncher( shared );
+		document.body.appendChild( relauncher.getDomElement() );
 
-	tool = new Tool( shared );
-	document.body.appendChild( tool.getDomElement() );
+		exploration = new Exploration( shared );
+		document.body.appendChild( exploration.getDomElement() );
 
-	shortcuts = new Shortcuts( shared );
-	document.body.appendChild( shortcuts.getDomElement() );
+		tool = new Tool( shared );
+		document.body.appendChild( tool.getDomElement() );
 
-	// signals
+		shortcuts = new Shortcuts( shared );
+		document.body.appendChild( shortcuts.getDomElement() );
 
-	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
-	shared.signals.showfilm.add( function () { setSection( film ); } );
-	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
-	shared.signals.showexploration.add( function () { setSection( exploration ); } );
-	shared.signals.showtool.add( function () { setSection( tool ); } );
+		// signals
+
+		shared.signals.showlauncher.add( function () { setSection( launcher ); } );
+		shared.signals.showfilm.add( function () { setSection( film ); } );
+		shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
+		shared.signals.showexploration.add( function () { setSection( exploration ); } );
+		shared.signals.showtool.add( function () { setSection( tool ); } );
+
+	} );
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
@@ -90,7 +96,8 @@
 
 	shared.signals.loadBegin.dispatch();
 
-	shared.signals.showlauncher.dispatch();
+	// shared.signals.showlauncher.dispatch();
+	setSection( launcher );
 	animate();
 
 	//
