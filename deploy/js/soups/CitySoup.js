@@ -120,6 +120,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	runningAnimals.settings.addaptiveSpeed = true;
 	runningAnimals.settings.capy = 0;
 	runningAnimals.settings.startPosition = startPosition;
+	runningAnimals.settings.switchPosition = true;
 
 	// preoccupy slots for specific animals - hack...
 
@@ -135,7 +136,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
-		var morphArray = [0,0,4,3,2,1,0,5,6,7,8,9,10,0,0,3,3,5,2,3];
+		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
 		runningAnimals.addAnimal( geometry, null, 1.4, morphArray );
 	}
 
@@ -150,6 +151,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	// flying animals
 	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
 	flyingAnimals.settings.flying = true;
+	flyingAnimals.settings.flyingDistance = 45;
+
 	for (var i=0; i<10; ++i ) {
 		var odd = i%2;
 		if (odd == 0) {

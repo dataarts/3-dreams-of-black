@@ -318,7 +318,7 @@ ROME.TrailShader = {
 			"mixValue += texture2D( trailMap, vTrailUV + uvOffsetB ).r;",
 			"mixValue += texture2D( trailMap, vTrailUV - uvOffsetB ).r;",
 			"mixValue /= 4.0;",
-			"mixValue = smoothstep( 0.0, 0.5, mixValue );",
+			"mixValue = smoothstep( 0.0, 1.0, mixValue );",
 			
 			"if( mixValue != 0.0 ) {",
 
