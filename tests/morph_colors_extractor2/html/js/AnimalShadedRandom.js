@@ -49,7 +49,13 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		g = c.g;
 		b = c.b;
 		
-		c.setRGB( cap( r + Math.random() * dr * r, 0, 1 ), cap( g + Math.random() * dg * g, 0, 1 ), cap( b + Math.random() * db * b, 0, 1 ) );
+		c.getHSV();
+
+		c.h = cap( c.h + 0.1 * Math.random(), 0, 1 );
+		c.s = cap( c.s + 0.3 * Math.random(), 0, 1 );
+		c.setHSV( c.h, c.s, c.v );
+		
+		//c.setRGB( cap( r + Math.random() * dr * r, 0, 1 ), cap( g + Math.random() * dg * g, 0, 1 ), cap( b + Math.random() * db * b, 0, 1 ) );
 		
 	}
 	
@@ -341,8 +347,8 @@ ROME.AnimalShader = {
 
 			"gl_FragColor = gl_FragColor * vec4( diffuse, opacity );",
 
-			"vec3 diffuseTex = texture2D( tDiffuse, vUv ).xyz;",
-			"gl_FragColor = gl_FragColor * vec4( diffuseTex * diffuseTex, 1.0 );",
+			//"vec3 diffuseTex = texture2D( tDiffuse, vUv ).xyz;",
+			//"gl_FragColor = gl_FragColor * vec4( diffuseTex * diffuseTex, 1.0 );",
 
 			THREE.ShaderChunk[ "map_fragment" ],
 			THREE.ShaderChunk[ "lightmap_fragment" ],
