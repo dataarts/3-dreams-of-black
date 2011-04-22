@@ -1,7 +1,7 @@
 var Launcher = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
-	domElement.style.display = 'none';
+	// domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#4584b4';
 	domElement.style.textAlign = 'center';
@@ -36,11 +36,20 @@ var Launcher = function ( shared ) {
 	titleOverlay.style.top = '-488px';
 	titleOverlay.style.width = '358px';
 	titleOverlay.style.margin = '0 auto';
-	titleOverlay.style.display = 'none';
 	titleOverlay.style.cursor = 'pointer';
 	//titleOverlay.style.border = 'solid 1px red';
 	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
 	titleOverlay.addEventListener( 'click', function () {
+
+		loading.getDomElement().style.display = 'block';
+		titleOverlay.style.display = 'none';
+
+		shared.signals.load.dispatch();
+
+	}, false );
+	domElement.appendChild( titleOverlay );
+
+	var loading = new LoadingBar( function () {
 
 		document.body.style.cursor = 'none';
 
@@ -54,15 +63,8 @@ var Launcher = function ( shared ) {
 
 		}, 1000 );
 
-	}, false );
-	domElement.appendChild( titleOverlay );
-
-	var loading = new LoadingBar( function () {
-
-		loading.getDomElement().style.display = 'none';
-		titleOverlay.style.display = 'block';
-
 	} );
+	loading.getDomElement().style.display = 'none';
 
 	domElement.appendChild( loading.getDomElement() );
 
