@@ -57,7 +57,7 @@ var CityWorld = function ( shared ) {
 	//directionalLight1.color.setHSV( 0.08823529411764706,  0.17058823529411765,  0.788235294117647 );		
 	directionalLight1.position.set( 0.3653150890069558,  0.7392613273917799, -0.5657186363969139 );
 	directionalLight1.color.setHSV( 0.07647058823529412, 0.058823529411764705,  0.7235294117647059 );		
-	directionalLight1.castShadow = true;
+	directionalLight1.castShadow = false;
 	this.scene.addLight( directionalLight1 );
 
 	var directionalLight2 = new THREE.DirectionalLight( 0xffffff );
