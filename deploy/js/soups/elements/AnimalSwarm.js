@@ -215,33 +215,23 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 		var maxSpeed = 8;
 
-		if ( moveY > maxSpeed ) {
-			moveY = maxSpeed;
-		}
-		if ( moveY < -maxSpeed ) {
-			moveY = -maxSpeed;
-		}
+		if ( moveY > maxSpeed )	moveY = maxSpeed;
+		if ( moveY < -maxSpeed ) moveY = -maxSpeed;
 
-		if ( moveX > maxSpeed ) {
-			moveX = maxSpeed;
-		}
-		if ( moveX < -maxSpeed ) {
-			moveX = -maxSpeed;
-		}
+		if ( moveX > maxSpeed )	moveX = maxSpeed;
+		if ( moveX < -maxSpeed ) moveX = -maxSpeed;
 
-		if ( moveZ > maxSpeed ) {
-			moveZ = maxSpeed;
-		}
-		if ( moveZ < -maxSpeed ) {
-			moveZ = -maxSpeed;
-		}
+		if ( moveZ > maxSpeed )	moveZ = maxSpeed;
+		if ( moveZ < -maxSpeed )moveZ = -maxSpeed;
 
 			var zvec = new THREE.Vector3(tox,toy,toz);
 			zvec.subSelf( animal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
 			var yvec = new THREE.Vector3(vectorArray[f].normal.x*-1, vectorArray[f].normal.y*-1, vectorArray[f].normal.z*-1);
-			//var yvec = new THREE.Vector3(0, -1, 0);
+			if (that.settings.flying) {
+				yvec = new THREE.Vector3(0, -1, 0);
+			}
 
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);

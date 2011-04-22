@@ -145,13 +145,13 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.zPositionMultiplier = 12;
 	flyingAnimals.settings.constantSpeed = 2.0;
 	flyingAnimals.settings.divider = 4;
-	flyingAnimals.settings.flyingDistance = 6;
+	flyingAnimals.settings.flyingDistance = 10;
 
 	loader.load( { model: "files/models/soup/birds_A_black.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 0.5, morphArray, 0.4 );
+		flyingAnimals.addAnimal( geometry, null, 0.4, morphArray, 0.6 );
 	}
 	
 	// trail - of grass/trees/etc
