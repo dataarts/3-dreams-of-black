@@ -79,7 +79,7 @@ function init() {
   document.getElementById('canvasHolder').addEventListener('mousedown', mouseDown, false);
   document.getElementById('canvasHolder').addEventListener('mouseout', mouseOut, false);
 
-  params = {"speed": 0.3, "morph": 0};
+  params = {"speed": 0.3, "morph": 1};
   gui = new GUI({domElement:  document.getElementById('viewerSettings')});
   gui.add(params, "speed", 0, 1);
   gui.add(params, "morph", 0, 1);
@@ -96,11 +96,7 @@ function init() {
 
   light[0] = new THREE.AmbientLight(0x202535);
   light[1] = new THREE.DirectionalLight(0xffeedd, 0.9);
-  light[1].position.set(-1, 0.5, 0.2);
-  light[2] = new THREE.DirectionalLight(0x99ffaa, 0.2);
-  light[2].position.set(0, -1, 0);
-  light[3] = new THREE.DirectionalLight(0xccddff, 0.8);
-  light[3].position.set(1, 1, -0.3);
+  light[1].position.set(-1, 10.5, 0.2);
 
   //gound plane
   mat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xb65024, opacity:0.1, wireframe: true });
@@ -108,48 +104,33 @@ function init() {
   plane.rotation.x = -Math.PI / 2;
 
   animals = [];
-  //BLACK SOUP
-  animals.push({"file": './newModels/gator_runB.js', "name": 'gator', "centerY": 40, "riseY" : 0, "speed": 0.4});
-  animals.push({"file": './newModels/raven_flyA.js', "name": 'raven', "centerY": 0, "riseY" : 300, "speed": 0.6});
-  animals.push({"file": './newModels/vulture_A.js', "name": 'vulture', "centerY": 0, "riseY" : 500, "speed": 0.6});
-  animals.push({"file": './newModels/centipede_walkA.js', "name": 'centipede', "centerY": 20, "riseY" : 0, "speed": 0.5});
-  animals.push({"file": './newModels/goat_chargeA.js', "name": 'goat', "centerY": 50, "riseY" : 0, "speed": 0.5});
-  animals.push({"file": './newModels/black_widow.js', "name": 'blackwidow', "centerY": 40, "riseY" : 0, "speed": 0.2});
-  animals.push({"file": './newModels/crab.js', "name": 'crab', "centerY": 40, "riseY" : 0, "speed": 0.2});
-  animals.push({"file": './newModels/scorpion.js', "name": 'scorpion', "centerY": 40, "riseY" : 0, "speed": 0.2});
-  animals.push({"file": './newModels/bear.js', "name": 'bear', "centerY": 90, "riseY" : 0, "speed": 0.9});
-  animals.push({"file": './newModels/bison.js', "name": 'bison', "centerY": 90, "riseY" : 0, "speed": 0.7});
-  animals.push({"file": './newModels/cow.js', "name": 'cow', "centerY": 80, "riseY" : 0, "speed": 0});
-  animals.push({"file": './newModels/panther.js', "name": 'panther', "centerY": 50, "riseY" : 0, "speed": 1});
-  animals.push({"file": './newModels/toad.js', "name": 'toad', "centerY": 30, "riseY" : 0, "speed": 0.33});
-  animals.push({"file": './newModels/wolf.js', "name": 'wolf', "centerY": 50, "riseY" : 0, "speed": 0.6});
-  //LIFE SOUP
-  animals.push({"file": './newModels/eagle.js', "name": 'eagle', "centerY": 0, "riseY" : 80, "speed": 0.8});
-  animals.push({"file": './newModels/hummingbird.js', "name": 'hummingbird', "centerY": 10, "riseY" : 20, "speed": 0});
-  animals.push({"file": './newModels/owl.js', "name": 'owl', "centerY": 0, "riseY" : 60, "speed": 0.5});
-  animals.push({"file": './newModels/parrot.js', "name": 'parrot', "centerY": 0, "riseY" : 60, "speed": 0.5});
-  animals.push({"file": './newModels/flamingo.js', "name": 'flamingo', "centerY": 0, "riseY" : 60, "speed": 0.4});
-  animals.push({"file": './newModels/stork.js', "name": 'stork', "centerY": 0, "riseY" : 60, "speed": 0.4});
-  animals.push({"file": './newModels/elk.js', "name": 'elk', "centerY": 70, "riseY" : 0, "speed": 0.4});
-  animals.push({"file": './newModels/fish1.js', "name": 'fish1', "centerY": 100, "riseY" : -130, "speed": 0.1});
-  animals.push({"file": './newModels/fish2.js', "name": 'fish2', "centerY": 100, "riseY" : -130, "speed": 0.1});
-  animals.push({"file": './newModels/fish3.js', "name": 'fish3', "centerY": 100, "riseY" : -130, "speed": 0.1});
-  animals.push({"file": './newModels/fish4.js', "name": 'fish4', "centerY": 100, "riseY" : -130, "speed": 0.1});
-  animals.push({"file": './newModels/moose.js', "name": 'moose', "centerY": 140, "riseY" : 0, "speed": 0.8});
-  animals.push({"file": './newModels/chowchow.js', "name": 'chowchow', "centerY": 60, "riseY" : 0, "speed": 0.45});
-  animals.push({"file": './newModels/deer.js', "name": 'deer', "centerY": 70, "riseY" : 0, "speed": 0.6});
-  animals.push({"file": './newModels/fox.js', "name": 'fox', "centerY": 30, "riseY" : 0, "speed": 0.45});
-  animals.push({"file": './newModels/retreiver.js', "name": 'retreiver', "centerY": 50, "riseY" : 0, "speed": 0.6});
-  animals.push({"file": './newModels/horse.js', "name": 'horse', "centerY": 140, "riseY" : 0, "speed": 0.7});
-  animals.push({"file": './newModels/mountainlion.js', "name": 'mountainlion', "centerY": 60, "riseY" : 0, "speed": 0.8});
-  animals.push({"file": './newModels/rabbit.js', "name": 'rabbit', "centerY": 30, "riseY" : 0, "speed": 0.6});
-  animals.push({"file": './newModels/racoon.js', "name": 'racoon', "centerY": 30, "riseY" : 0, "speed": 0.4});
-  animals.push({"file": './newModels/sealRun.js', "name": 'sealRun', "centerY": 20, "riseY" : 0, "speed": 0.05});
-  animals.push({"file": './newModels/sealSwim.js', "name": 'sealSwim', "centerY": 20, "riseY" : -80, "speed": 0.2});
-  animals.push({"file": './newModels/treeFrog.js', "name": 'treeFrog', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  //animals.push({"file": './morphModels/carPile.js', "name": 'carPile', "centerY": 60, "riseY" : 0, "speed": 0});
 
   //MORPHS
-  animals.push({"file": './morphModels/tarbuffalo.js', "name": 'tarbuffalo', "centerY": 40, "riseY" : 0, "speed": 0.4});
+  animals.push({"file": './morphModels/raven_eagle.js', "name": 'raven_eagle', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/vulture_hummingbird.js', "name": 'vulture_hummingbird', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/owl_parrot.js', "name": 'owl_parrot', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/stork_flamingo.js', "name": 'stork_flamingo', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/black_widow_scorpion.js', "name": 'black_widow_scorpion', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/wolf_fox.js', "name": 'wolf_fox', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/fish1_fish2.js', "name": 'fish1_fish2', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/toad_treeFrog.js', "name": 'toad_treeFrog', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/chowchow_retreiver.js', "name": 'chowchow_retreiver', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/sealRun_bearBrown.js', "name": 'sealRun_bearBrown', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/horse_bear.js', "name": 'horse_bear', "centerY": 30, "riseY" : 0, "speed": 0.47});
+  animals.push({"file": './morphModels/tarbuffaloA_tarbuffaloB.js', "name": 'tarbuffaloA_tarbuffaloB', "centerY": 30, "riseY" : 0, "speed": 0.47});
+
+  //BLACK SOUP
+  animals.push({"file": './newModels/gator.js', "name": 'gator', "centerY": 40, "riseY" : 0, "speed": 0.4});
+  animals.push({"file": './newModels/centipede.js', "name": 'centipede', "centerY": 20, "riseY" : 0, "speed": 0.5});
+  animals.push({"file": './newModels/goat.js', "name": 'goat', "centerY": 50, "riseY" : 0, "speed": 0.5});
+  animals.push({"file": './newModels/crab.js', "name": 'crab', "centerY": 40, "riseY" : 0, "speed": 0.2});
+  animals.push({"file": './newModels/cow.js', "name": 'cow', "centerY": 80, "riseY" : 0, "speed": 0});
+
+  //LIFE SOUP
+  animals.push({"file": './newModels/eagle.js', "name": 'eagle', "centerY": 0, "riseY" : 80, "speed": 0.8});
+  animals.push({"file": './newModels/elk.js', "name": 'elk', "centerY": 70, "riseY" : 0, "speed": 0.4});
+  animals.push({"file": './newModels/moose.js', "name": 'moose', "centerY": 140, "riseY" : 0, "speed": 0.8});
 
   animalLoader(0);
 
@@ -168,7 +149,7 @@ function addAnimal(geometry, id) {
   link = document.createElement('a');
   link.setAttribute('class', 'modelLink');
   link.setAttribute('href', 'javascript:switchModel('+id+')');
-  link.innerHTML = animals[id].name;
+  link.innerHTML = animals[id].name.replace("_", "<br />");
   document.getElementById('viewerModels').appendChild(link);
 
   if (id == 0){
@@ -177,10 +158,9 @@ function addAnimal(geometry, id) {
   }
   if (id < animals.length-1) {
     animalLoader(id+1);
-  } else {
-
   }
 }
+
 var morphObject
 function switchModel(id) {
 
@@ -199,8 +179,6 @@ function switchModel(id) {
 
   rootY.addChild(light[0]);
   rootY.addChild(light[1]);
-  rootY.addChild(light[2]);
-  rootY.addChild(light[3]);
   rootY.addChild(plane);
   rootY.addChild(morphObject.mesh);
 
@@ -269,7 +247,7 @@ function animate() {
   camera.position.x -= ( cameraDistance + zoom + camera.position.x) / 20;
 
   THREE.AnimationHandler.update(delta * params.speed);
-  morphObject.morph = params.morph;
+  morphObject.morph = params.morph*2-0.5;
 
   renderer.render(scene, camera);
 
