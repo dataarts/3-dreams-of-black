@@ -45,38 +45,43 @@ var HeatEffect = function ( shared ) {
 
 					"vec4 color, tmp, add;",
 
-					"vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
-					// "vec2 uv = vUv;",
+					// "vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
+					"vec2 uv = vUv;",
 
 					"color = texture2D( map, uv );",
 
-					"add = tmp = texture2D( map, uv + vec2( 0.0008, 0.0008 ));", 
+					"float param1 = 0.0009;",
+					"float param2 = 0.001;",
+
+					"add = tmp = texture2D( map, uv + vec2( param1, param1 ));", 
 					"if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( -0.0008, 0.0008 ));",
+					"add += tmp = texture2D( map, uv + vec2( -param1, param1 ));",
 					"if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( -0.0008, -0.0008 ));",
+					"add += tmp = texture2D( map, uv + vec2( -param1, -param1 ));",
 					"if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0.0008, -0.0008 ));",
+					"add += tmp = texture2D( map, uv + vec2( param1, -param1 ));",
 					"if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0.001, 0.0 ));",
+					"add += tmp = texture2D( map, uv + vec2( param2, 0.0 ));",
 					"if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( -0.001, 0.0 ));",
+					"add += tmp = texture2D( map, uv + vec2( -param2, 0.0 ));",
 					"if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0, 0.001 ));",
+					"add += tmp = texture2D( map, uv + vec2( 0, param2 ));",
 					"if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0, -0.001 ));",
+					"add += tmp = texture2D( map, uv + vec2( 0, -param2 ));",
 					"if( tmp.r < color.r ) color = tmp;",
 
 
 					"gl_FragColor = color * color + add * 0.5 / 8.0;",
+
 					// "gl_FragColor = texture2D( map, uv );",
+
 				"}"
 
 				].join("\n")
