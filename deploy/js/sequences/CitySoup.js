@@ -270,12 +270,13 @@ var CitySoup = function ( camera, scene, shared ) {
 		var dz = camera.position.z-collisionScene.cameraTarget.position.z;
 
 		var angleRad = Math.atan2(dz, dx);
-		camera.up.x = ((angleRad-Math.PI/2)/4)*-1;
+		camera.up.x = ( ((angleRad-Math.PI/2)/4)*-1 );
 
 		// camera shake hack...
 		++shake;
 		if (shake%4 == 0) {
 			camera.position.x = 0+(Math.random()-0.5)*0.5;
+			camera.up.x += (Math.random()-0.5)*0.01;
 		}
 		if (shake%2 == 0) {
 			camera.position.y = 15+(Math.random()-0.5)*0.5;
