@@ -281,7 +281,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 		if ( intersects.length > 0 ) {
 			for ( var i = 0; i < intersects.length; ++i ) {
-				if ( intersects[i].object != that.emitter ) {
+				if ( intersects[i].object != that.emitter && intersects[i].object != top ) {
 					if (intersects[i].distance < shortestDistance) {
 						shortestDistance = intersects[i].distance;
 						shortestPoint = intersects[i].point;
@@ -349,14 +349,26 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 		var toy = that.emitterFollow.position.y;
 		var moveY = ( toy - that.cameraTarget.position.y ) / that.settings.cameraTargetDivider;
-		that.cameraTarget.position.y += moveY;
 
 		var tox = that.emitterFollow.position.x;
 		var moveX = ( tox - that.cameraTarget.position.x ) / that.settings.cameraTargetDivider;
-		that.cameraTarget.position.x += moveX;
 
 		var toz = that.emitterFollow.position.z;
 		var moveZ = ( toz - that.cameraTarget.position.z ) / that.settings.cameraTargetDivider;
+
+		var maxSpeed = 6;
+
+		if ( moveY > maxSpeed )	moveY = maxSpeed;
+		if ( moveY < -maxSpeed ) moveY = -maxSpeed;
+
+		if ( moveX > maxSpeed )	moveX = maxSpeed;
+		if ( moveX < -maxSpeed ) moveX = -maxSpeed;
+
+		if ( moveZ > maxSpeed )	moveZ = maxSpeed;
+		if ( moveZ < -maxSpeed )moveZ = -maxSpeed;
+
+		that.cameraTarget.position.x += moveX;
+		that.cameraTarget.position.y += moveY;
 		that.cameraTarget.position.z += moveZ;
 
 		// hack for now...
@@ -393,7 +405,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 		that.emitter.position.set( x, y, z );
 		that.emitterFollow.position.set( x, y, z );
-
+		that.cameraTarget.position.set( x, y, z );
 	};
 
 };

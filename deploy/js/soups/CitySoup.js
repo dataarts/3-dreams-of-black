@@ -36,6 +36,11 @@ var CitySoup = function ( camera, scene, shared ) {
 	//collisionScene.settings.minDistance = 30;
 	collisionScene.settings.keepEmitterFollowDown = true;
 
+	collisionScene.emitter.position.z = -100;
+	collisionScene.emitterFollow.position.z = -100;
+	collisionScene.cameraTarget.position.z = -100;
+
+
 	loader.load( { model: "files/models/city/collision/City.Collision_Big.js", callback: mesh0LoadedProxy } );
 	loader.load( { model: "files/models/city/collision/City.Collision_Big.001.js", callback: mesh1LoadedProxy } );
 	loader.load( { model: "files/models/city/collision/City.Collision_Big.002.js", callback: mesh2LoadedProxy } );
@@ -73,10 +78,10 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	// vector trail
-
-	var vectors = new Vectors();
-	vectors.settings.divider = 4;
-	vectors.settings.normaldivider = 4;
+	var startPosition = new THREE.Vector3(0,0,100);
+	var vectors = new Vectors(50,4,4,startPosition);
+	//vectors.settings.divider = 4;
+	//vectors.settings.normaldivider = 4;
 	//vectors.settings.absoluteTrail = true;
 
 	// ribbons
@@ -114,23 +119,32 @@ var CitySoup = function ( camera, scene, shared ) {
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
 	runningAnimals.settings.addaptiveSpeed = true;
 	runningAnimals.settings.capy = 0;
+	runningAnimals.settings.startPosition = startPosition;
+	runningAnimals.settings.switchPosition = true;
 
 	// preoccupy slots for specific animals - hack...
 
 	runningAnimals.array[0] = "elk";
+	runningAnimals.array[10] = "elk";
+	runningAnimals.array[20] = "elk";
 	runningAnimals.array[1] = "moose";
 	runningAnimals.array[4] = "moose";
-	runningAnimals.array[10] = "elk";
 	runningAnimals.array[14] = "moose";
-	runningAnimals.array[20] = "elk";
+	runningAnimals.array[8] = "fish";
+	runningAnimals.array[16] = "fish";
+	runningAnimals.array[24] = "fish";
+	//runningAnimals.array[15] = "sock";
+
 
 	loader.load( { model: "files/models/soup/animals_A_life.js", callback: animalLoadedProxy } );
 	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoadedProxy } );
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
+	loader.load( { model: "files/models/soup/fish_life.js", callback: fishLoadedProxy } );
+	//loader.load( { model: "files/models/soup/sock_jump_life.js", callback: sockLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
-		var morphArray = [0,0,4,3,2,1,0,5,6,7,8,9,10,0,0,3,3,5,2,3];
-		runningAnimals.addAnimal( geometry, null, 1.4, morphArray );
+		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
+		runningAnimals.addAnimal( geometry, null, 1.5, morphArray );
 	}
 
 	function elkLoadedProxy( geometry ) {
@@ -141,9 +155,20 @@ var CitySoup = function ( camera, scene, shared ) {
 		runningAnimals.addAnimal( geometry, "moose", 1.1, null );
 	}
 
+	function fishLoadedProxy( geometry ) {
+		var morphArray = [0,1,2,3];
+		runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray );
+	}
+
+	/*function sockLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "sock", 1.5, null );
+	}*/
+
 	// flying animals
 	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
 	flyingAnimals.settings.flying = true;
+	flyingAnimals.settings.flyingDistance = 45;
+
 	for (var i=0; i<10; ++i ) {
 		var odd = i%2;
 		if (odd == 0) {
@@ -247,7 +272,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	function ligthhouseLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "light", true, [new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } )] );
+		trail.addInstance( geometry, "light", false, true );
 		trail.array[4].maxHeight = 5;
 	}
 
@@ -270,16 +295,21 @@ var CitySoup = function ( camera, scene, shared ) {
 		var dz = camera.position.z-collisionScene.cameraTarget.position.z;
 
 		var angleRad = Math.atan2(dz, dx);
-		camera.up.x = ((angleRad-Math.PI/2)/4)*-1;
+		camera.up.x = ( ((angleRad-Math.PI/2)/4)*-1 );
 
 		// camera shake hack...
 		++shake;
+		var xshake = 0;
 		if (shake%4 == 0) {
-			camera.position.x = 0+(Math.random()-0.5)*0.5;
+			xshake = (Math.random()-0.5)*0.5;
+			camera.up.x += (Math.random()-0.5)*0.01;
 		}
 		if (shake%2 == 0) {
-			camera.position.y = 15+(Math.random()-0.5)*0.5;
+			camera.position.y = 18+(Math.random()-0.5)*0.5;
 		}
+
+		camera.position.x = 0+xshake+( ((angleRad-Math.PI/2)*40)*-1 );
+
 
 		// update the soup parts	
 		collisionScene.update(camPos, delta);

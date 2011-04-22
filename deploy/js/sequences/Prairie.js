@@ -82,7 +82,7 @@ var Prairie = function ( shared ) {
 		 } );
 
 		cameraPath.position.set( 0, 0, 0 );
-		cameraPath.lon = 160;
+		cameraPath.lon = 360;
 
 		camera = cameraPath;
 
@@ -117,6 +117,10 @@ var Prairie = function ( shared ) {
 
 	this.update = function ( progress, delta, time ) {
 
+		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
+			delta = 1000/60;
+		}
+
 		THREE.AnimationHandler.update( delta );
 
 		// slight camera roll
@@ -126,7 +130,6 @@ var Prairie = function ( shared ) {
 			camera.animationParent.rotation.z = camera.target.position.x / 600;
 
 		}
-
 
 		// slightly bumpy camera, since we're on a train // this feels like a horse or something...
 		// camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
