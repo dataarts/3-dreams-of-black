@@ -20,6 +20,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		shootRayDown : false,
 		addaptiveSpeed : false,
 		capy : null,
+		startPosition : new THREE.Vector3(0,0,0),
 	}
 	
 	var r = 0;
@@ -46,6 +47,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			var animal = ROME.Animal( geometry, false, col );
 			var mesh = animal.mesh;
+			mesh.position.copy(that.settings.startPosition);
 			mesh.doubleSided = doubleSided;
 
 			var followIndex = Math.floor(i/followDivider);

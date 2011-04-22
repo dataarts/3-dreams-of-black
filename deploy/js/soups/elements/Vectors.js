@@ -1,4 +1,4 @@
-var Vectors = function ( length, divider, normaldivider ) {
+var Vectors = function ( length, divider, normaldivider, startPos ) {
 	
 	var that = this;
 
@@ -13,12 +13,14 @@ var Vectors = function ( length, divider, normaldivider ) {
 		divider : divider || 4,
 		normaldivider : normaldivider || 10,
 		absoluteTrail : false,
+		startPosition : startPos || new THREE.Vector3(0,0,0),
 	}	
 
 	// vectors
 	for ( i = 0; i < that.initSettings.length; ++i ) {
 
 		var position = new THREE.Vector3(0,0,0);
+		position.copy(that.settings.startPosition);
 
 		var obj = { position: position, lastposition: new THREE.Vector3(0,0,0), normal: new THREE.Vector3(0,1,0), scale: 1 };
 		that.array.push(obj);
