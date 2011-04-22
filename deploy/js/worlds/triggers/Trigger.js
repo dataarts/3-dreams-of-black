@@ -254,7 +254,7 @@ var TriggerUtils = (function() {
 				trigger = triggers[ name ];
 				trigger.name = name.slice( name.indexOf( "_" ) + 1 );
 				trigger.geometry = loadedSceneResult.geometries[ trigger.object.geometry ];
-								
+
 				triggerGeometries.push( trigger );
 				
 				loadedSceneResult.objects[ name ].parent.removeChild( loadedSceneResult.objects[ name ] );
@@ -264,7 +264,6 @@ var TriggerUtils = (function() {
 			}
 		
 		}
-		
 		
 		// assign originals to marked objects
 		
