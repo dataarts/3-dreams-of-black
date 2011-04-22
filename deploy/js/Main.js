@@ -2,7 +2,7 @@
 
 	var logger, stats, shared,
 	Signal = signals.Signal, currentSection,
-	launcher, demo, relauncher, exploration, tool,
+	launcher, film, relauncher, exploration, tool,
 	shortcuts;
 
 	// debug
@@ -35,8 +35,10 @@
 			mousemoved : new Signal(),
 			windowresized : new Signal(),
 
+			load : new Signal(),
+
 			showlauncher : new Signal(),
-			showdemo : new Signal(),
+			showfilm : new Signal(),
 			showrelauncher : new Signal(),
 			showexploration : new Signal(),
 			showtool : new Signal(),
@@ -45,42 +47,47 @@
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
-			startdemo : new Signal(),
-			stopdemo : new Signal(),
+			startfilm : new Signal(),
+			stopfilm : new Signal(),
 
 			startexploration: new Signal()
 
 		},
 
-		worlds: { }
+		worlds: {},
+		started: { "city": false, "prairie": false, "dunes" : false }
 
 	};
 
 	launcher = new Launcher( shared );
 	document.body.appendChild( launcher.getDomElement() );
 
-	demo = new Demo( shared );
-	document.body.appendChild( demo.getDomElement() );
+	shared.signals.load.add( function () {
 
-	relauncher = new Relauncher( shared );
-	document.body.appendChild( relauncher.getDomElement() );
+		film = new Film( shared );
+		document.body.appendChild( film.getDomElement() );
 
-	exploration = new Exploration( shared );
-	document.body.appendChild( exploration.getDomElement() );
+		relauncher = new Relauncher( shared );
+		document.body.appendChild( relauncher.getDomElement() );
 
-	tool = new Tool( shared );
-	document.body.appendChild( tool.getDomElement() );
+		exploration = new Exploration( shared );
+		document.body.appendChild( exploration.getDomElement() );
 
-	shortcuts = new Shortcuts( shared );
-	document.body.appendChild( shortcuts.getDomElement() );
+		tool = new Tool( shared );
+		document.body.appendChild( tool.getDomElement() );
 
-	// signals
+		shortcuts = new Shortcuts( shared );
+		document.body.appendChild( shortcuts.getDomElement() );
 
-	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
-	shared.signals.showdemo.add( function () { setSection( demo ); } );
-	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
-	shared.signals.showexploration.add( function () { setSection( exploration ); } );
-	shared.signals.showtool.add( function () { setSection( tool ); } );
+		// signals
+
+		shared.signals.showlauncher.add( function () { setSection( launcher ); } );
+		shared.signals.showfilm.add( function () { setSection( film ); } );
+		shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
+		shared.signals.showexploration.add( function () { setSection( exploration ); } );
+		shared.signals.showtool.add( function () { setSection( tool ); } );
+
+	} );
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
@@ -89,7 +96,8 @@
 
 	shared.signals.loadBegin.dispatch();
 
-	shared.signals.showlauncher.dispatch();
+	// shared.signals.showlauncher.dispatch();
+	setSection( launcher );
 	animate();
 
 	//
@@ -98,7 +106,7 @@
 
 		if ( currentSection ) {
 
-			if ( currentSection == demo ) shared.signals.stopdemo.dispatch();
+			if ( currentSection == film ) shared.signals.stopfilm.dispatch();
 			currentSection.getDomElement().style.display = 'none';
 
 		}

@@ -6,15 +6,32 @@ var Exploration = function ( shared ) {
 	var renderer = shared.renderer,
 	renderTarget = shared.renderTarget;
 
-	var camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-	camera.movementSpeed = 200;
-	camera.lookSpeed = 3;
-	camera.constrainVertical = [ -0.4, 0.4 ];
-	camera.autoForward = true;
+	var camera, cameras = {};
+
+	cameras.dunes = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+	cameras.dunes.movementSpeed = 200;
+	cameras.dunes.lookSpeed = 3;
+	cameras.dunes.constrainVertical = [ -0.4, 0.4 ];
+	cameras.dunes.autoForward = true;
+	cameras.dunes.position.set( 0, 0, 0 );
+
+	cameras.prairie = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+	cameras.prairie.movementSpeed = 50;
+	cameras.prairie.lookSpeed = 3;
+	cameras.prairie.constrainVertical = [ -0.4, 0.4 ];
+	cameras.prairie.autoForward = true;
+	cameras.prairie.position.set( 0, 0, 0 );
+
+	cameras.city = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+	cameras.city.movementSpeed = 100;
+	cameras.city.lookSpeed = 3;
+	cameras.city.constrainVertical = [ -0.4, 0.4 ];
+	cameras.city.autoForward = true;
+	cameras.city.position.set( 0, 0, 0 );
 
 	var world, scene,
 	clearEffect, heatEffect, noiseEffect, renderEffect;
-
+	
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
 
@@ -27,7 +44,7 @@ var Exploration = function ( shared ) {
 	renderEffect = new RenderEffect( shared );
 	renderEffect.init();
 
-	var progress = 0, time = 0;
+	var progress = 0, start = 0, lastTime = 0;
 
 	// signals
 
@@ -45,21 +62,23 @@ var Exploration = function ( shared ) {
 
 		if ( world ) {
 
-			world.update( 0, camera );
+			time = new Date().getTime() - start;
+			delta = time - lastTime;
+			lastTime = time;
 
-			clearEffect.update( progress, time );
-			//console.log( world.scene );
+			world.update( delta, camera );
 
-			//renderer.clear();
+			clearEffect.update( progress, delta, time );
+
 			renderer.setClearColor( world.scene.fog.color );
 			renderer.render( world.scene, camera, renderTarget );
 
 			shared.logger.log( "vertices: " + renderer.data.vertices );
 			shared.logger.log( 'faces: ' + renderer.data.faces );
 
-			heatEffect.update( progress, time );
-			noiseEffect.update( progress, time );
-			renderEffect.update( progress, time );
+			heatEffect.update( progress, delta, time );
+			noiseEffect.update( progress, delta, time );
+			renderEffect.update( progress, delta, time );
 
 		}
 
@@ -67,25 +86,48 @@ var Exploration = function ( shared ) {
 
 	function startExplore ( worldId ) {
 
+		if ( renderer.domElement.parentElement ) {
+			
+			renderer.domElement.parentElement.removeChild( renderer.domElement );
+			
+		}
+		
 		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();
 
 		world = shared.worlds[ worldId ];
 		scene = world.scene;
-
+		camera = cameras[ worldId ];		
+		
 		scene.addChild( camera );
 
-		THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
+		camera.position.set( 0, 0, 0 );
+		
+		// hide soup (if it wasn't yet activated)
 
-			if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
-				|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
+		if ( !shared.started[ worldId ] ) {
+		
+			THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
 
-				node.visible = false; 
+				if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
+					|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
 
-			}
+					var name = node.name.toLowerCase();
+					
+					if ( ! ( name && name.indexOf( "portal" ) >= 0 ) ) {
+						
+						node.visible = false;					
+						
+					}
 
-		} );
+				}
+
+			} );
+
+		}
+		
+		start = lastTime = new Date().getTime();
 
 	};
 

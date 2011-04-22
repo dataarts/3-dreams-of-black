@@ -80,8 +80,8 @@ var Shortcuts = function ( shared ) {
 
 		addLink( text, function () {
 
-			shared.signals.showdemo.dispatch();
-			shared.signals.startdemo.dispatch( pattern );
+			shared.signals.showfilm.dispatch();
+			shared.signals.startfilm.dispatch( pattern );
 
 		} );
 

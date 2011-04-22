@@ -16,10 +16,17 @@ var ClearEffect = function ( shared ) {
 
 	};
 
-	this.update = function ( i ) {
+	this.update = function ( progress, delta, time ) {
 
 		renderer.clear();
-		renderer.render( scene, camera, renderTarget, true );
+
+		var gl = renderer.getContext();
+
+		gl.bindFramebuffer( gl.FRAMEBUFFER, renderTarget.__webglFramebuffer );
+		gl.viewport( 0, 0, renderTarget.width, renderTarget.height );
+		gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT );
+
+		//renderer.render( scene, camera, renderTarget, true );
 
 	};
 

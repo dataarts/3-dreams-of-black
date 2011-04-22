@@ -4,7 +4,7 @@ var Signal = signals.Signal;
 
 var audio, sequencer,
 camera, camera2, scene, renderer, renderTarget,
-container, loading, shared;
+container, shared;
 
 var tune, time, stats, gui;
 
@@ -53,6 +53,7 @@ function init() {
 		},
 
 		worlds: { },
+		started: { "city": false, "prairie": false, "dunes" : false },
 
 		renderer: renderer,
 		renderTarget: renderTarget
@@ -65,12 +66,6 @@ function init() {
 	tune = new Tune( audio );
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
-
-	loading = new LoadingBar();
-	shared.signals.loadBegin.add( loading.loadBegin );
-	shared.signals.loadItemAdded.add( loading.addItem );
-	shared.signals.loadItemCompleted.add( loading.completeItem );
-	document.getElementById( 'launcher' ).appendChild( loading.getDomElement() );
 
 	sequencer = new Sequencer();
 

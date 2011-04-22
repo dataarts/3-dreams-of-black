@@ -2,7 +2,7 @@ var Intro = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var video, camera, scene, geometry, texture, mesh,
+	var interval, video, camera, scene, geometry, texture, mesh,
 	renderer = shared.renderer, renderTarget = shared.renderTarget;
 
 	var mouseX = 0, mouseY = 0;
@@ -41,10 +41,20 @@ var Intro = function ( shared ) {
 
 	};
 
-	this.show = function ( f ) {
+	this.show = function ( progress ) {
 
-		video.currentTime = f * video.duration;
+		video.currentTime = progress * video.duration;
 		video.play();
+
+		interval = setInterval( function () {
+
+			if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+
+				texture.needsUpdate = true;
+
+			}
+
+		}, 1000 / 30 );
 
 	};
 
@@ -52,15 +62,11 @@ var Intro = function ( shared ) {
 
 		video.pause();
 
+		clearInterval( interval );
+
 	};
 
-	this.update = function ( f ) {
-
-		if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
-
-			texture.needsUpdate = true;
-
-		}
+	this.update = function ( progress, delta, time ) {
 
 		camera.position.x = ( mouseX - camera.position.x ) * 0.05;
 		camera.position.y = ( - mouseY - camera.position.y ) * 0.05;

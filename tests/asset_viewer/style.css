@@ -11,7 +11,11 @@ html {
 
 body {
   font-family: Times;
+<<<<<<< HEAD:tests/model_viewer_simple/style.css
+  background-color: #999999;
+=======
   background-color: #333;
+>>>>>>> ed1fa0154557e60b819e09d1fc97cfbea27333a7:tests/asset_viewer/style.css
 }
 
 #wrapper {

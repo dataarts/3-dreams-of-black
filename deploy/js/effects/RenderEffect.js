@@ -23,7 +23,7 @@ var RenderEffect = function ( shared ) {
 
 	};
 
-	this.update = function ( f ) {
+	this.update = function ( progress, delta, time ) {
 
 		renderer.render( scene, camera );
 

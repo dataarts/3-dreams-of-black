@@ -1,0 +1,365 @@
+<!DOCTYPE HTML>
+
+
+<head>
+
+  <title>three.js webgl - flamingo</title>
+  <script type="text/javascript" src="gui-dat/gui.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/slider.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.boolean.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.function.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.number.js"></script>
+  <script type="text/javascript" src="gui-dat/controllers/controller.string.js"></script>
+  <script type="text/javascript" src="js/Three.js"></script>
+  <script type="text/javascript" src="js/Animal.js"></script>
+  <script type="text/javascript" src="js/Detector.js"></script>
+  <script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
+  <style type="text/css">
+    @import url("style.css");
+    @import url("gui-dat/gui.css");
+  </style>
+</head>
+
+<body>
+<div id="wrapper">
+  <div id="container">
+    <!--<h1>ROME: Model Viewer</h1>-->
+    <div id="canvasHolder"></div>
+    <div id="viewerConsole">
+      <div id="viewerModels">
+<a href="javascript:switchModel(0)"> 0</a>,
+<a href="javascript:switchModel(1)"> 1</a>,
+<a href="javascript:switchModel(2)"> 2</a>,
+<a href="javascript:switchModel(3)"> 3</a>,
+<a href="javascript:switchModel(4)"> 4</a>,
+<a href="javascript:switchModel(5)"> 5</a>,
+<a href="javascript:switchModel(6)"> 6</a>,
+<a href="javascript:switchModel(7)"> 7</a>,
+<a href="javascript:switchModel(8)"> 8</a>,
+<a href="javascript:switchModel(9)"> 9</a>,
+<a href="javascript:switchModel(10)"> 10</a>,
+<a href="javascript:switchModel(11)"> 11</a>,
+<a href="javascript:switchModel(12)"> 12</a>,
+<a href="javascript:switchModel(13)"> 13</a>,
+<a href="javascript:switchModel(14)"> 14</a>,
+<a href="javascript:switchModel(15)"> 15</a>,
+<a href="javascript:switchModel(16)"> 16</a>,
+<a href="javascript:switchModel(17)"> 17</a>,
+<a href="javascript:switchModel(18)"> 18</a>,
+<a href="javascript:switchModel(19)"> 19</a>,
+<a href="javascript:switchModel(20)"> 20</a>,
+<a href="javascript:switchModel(21)"> 21</a>,
+<a href="javascript:switchModel(22)"> 22</a>,
+<a href="javascript:switchModel(23)"> 23</a>,
+<a href="javascript:switchModel(24)"> 24</a>,
+<a href="javascript:switchModel(25)"> 25</a>,
+<a href="javascript:switchModel(26)"> 26</a>,
+<a href="javascript:switchModel(27)"> 27</a>,
+<a href="javascript:switchModel(28)"> 28</a>,
+<a href="javascript:switchModel(29)"> 29</a>,
+<a href="javascript:switchModel(30)"> 30</a>,
+<a href="javascript:switchModel(31)"> 31</a>,
+<a href="javascript:switchModel(32)"> 32</a>,
+<a href="javascript:switchModel(33)"> 33</a>,
+<a href="javascript:switchModel(34)"> 34</a>,
+<a href="javascript:switchModel(35)"> 35</a>,
+<a href="javascript:switchModel(36)"> 36</a>,
+<a href="javascript:switchModel(37)"> 37</a>,
+<a href="javascript:switchModel(38)"> 38</a>,
+<a href="javascript:switchModel(39)"> 39</a>,
+<a href="javascript:switchModel(40)"> 40</a>
+      </div>
+      <div id="viewerSettings">
+        <div></div>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+  </div>
+</div>
+<script>
+
+if (! Detector.webgl) Detector.addGetWebGLMessage();
+
+var viewerParams, gui;
+
+var container;
+var loader;
+
+var camera, scene, renderer;
+var cameraPosition = new THREE.Vector3(100, 0, 0);
+var cameraTarget = new THREE.Vector3(0, 0, 0);
+
+var light = [];
+
+var rootY, rootZ, plane, mat, mesh;
+var animals = [];
+var currentAnimal;
+var width = 640;
+var height = 360;
+
+init();
+
+function init() {
+
+
+  container = document.createElement('div');
+  container.id = "viewerCanvas";
+  
+  document.addEventListener('mouseup', mouseUp, false);
+  document.addEventListener('mousemove', mouseMove, false);
+  document.addEventListener('mousewheel', mouseWheel, false);
+
+  document.getElementById('canvasHolder').appendChild(container);
+  document.getElementById('canvasHolder').addEventListener('mousedown', mouseDown, false);
+  document.getElementById('canvasHolder').addEventListener('mouseout', mouseOut, false);
+  
+
+  viewerParams = new viewerParams();
+  gui = new GUI({domElement:  document.getElementById('viewerSettings')});
+  gui.add(viewerParams, "speed", 0, 1);
+  gui.add(viewerParams, "morph", 0, 1);
+
+  camera = new THREE.Camera(45, width / height, 0.01, 2000);
+
+  camera.position = cameraPosition;
+  //camera.useTarget = true;
+  camera.target.position = cameraTarget;
+
+  renderer = new THREE.WebGLRenderer({ antialias: true, clearColor: 0x000000, clearAlpha: 0 });
+  renderer.setSize(width, height);
+  container.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  rootY = new THREE.Object3D();
+  rootZ = new THREE.Object3D();
+  scene.addObject(rootZ);
+  rootZ.addChild(rootY);
+
+  light[0] = new THREE.AmbientLight(0x202535);
+  rootY.addChild(light[0]);
+  light[1] = new THREE.DirectionalLight(0xffeedd, 0.9);
+  light[1].position.set(-1, 0.5, 0.2);
+  rootY.addChild(light[1]);
+  light[2] = new THREE.DirectionalLight(0x99ffaa, 0.2);
+  light[2].position.set(0, -1, 0);
+  rootY.addChild(light[2]);
+  light[3] = new THREE.DirectionalLight(0xccddff, 0.8);
+  light[3].position.set(1, 1, -0.3);
+  rootY.addChild(light[3]);
+
+
+  //gound plane
+  mat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xb65024, opacity:0.1, wireframe: true });
+  plane = new THREE.Mesh(new THREE.Plane(1000, 1000, 10, 10), mat);
+  plane.rotation.x = -Math.PI / 2;
+  rootY.addChild(plane);
+
+  animals.list = [];
+  animals.birds = [];
+
+  //BLACK SOUP
+
+  animals.list.push(['./newModels/gator_runB.js', 'gator']);
+  animals.list.push(['./newModels/raven_flyA.js', 'raven']); animals.birds.push('raven');
+  animals.list.push(['./newModels/vulture_A.js', 'vulture']); animals.birds.push('vulture');
+  animals.list.push(['./newModels/vulture_raven_A.js', 'vulture_raven']); animals.birds.push('vulture_raven');
+  animals.list.push(['./newModels/centipede_walkA.js', 'centipede']);
+  animals.list.push(['./newModels/goat_chargeA.js', 'goat']);
+  animals.list.push(['./newModels/black_widow.js', 'blackwidow']);
+  animals.list.push(['./newModels/crab.js', 'crab']);
+  animals.list.push(['./newModels/scorpion.js', 'scorpion']);
+  animals.list.push(['./newModels/bear.js', 'bear']);
+  animals.list.push(['./newModels/bison.js', 'bison']);
+  animals.list.push(['./newModels/cow.js', 'cow']);
+  animals.list.push(['./newModels/panther.js', 'panther']);
+  animals.list.push(['./newModels/toad.js', 'toad']);
+  animals.list.push(['./newModels/wolf.js', 'wolf']);
+  animals.list.push(['./newModels/tarbuffaloA.js', 'tarbuffalo']);
+
+  //LIFE SOUP
+
+  animals.list.push(['./newModels/eagle.js', 'eagle']); animals.birds.push('eagle');
+  animals.list.push(['./newModels/hummingbird.js', 'hummingbird']); animals.birds.push('hummingbird');
+  animals.list.push(['./newModels/owl.js', 'owl']); animals.birds.push('owl');
+  animals.list.push(['./newModels/parrot.js', 'parrot']); animals.birds.push('parrot');
+  animals.list.push(['./newModels/flamingo.js', 'flamingo']); animals.birds.push('flamingo');
+  animals.list.push(['./newModels/stork.js', 'stork']); animals.birds.push('stork');
+  animals.list.push(['./newModels/butterfly.js', 'butterfly']); animals.birds.push('butterfly');
+  animals.list.push(['./newModels/elk.js', 'elk']);
+
+  animals.list.push(['./newModels/fish1.js', 'fish1']);
+  animals.list.push(['./newModels/fish2.js', 'fish2']);
+  animals.list.push(['./newModels/fish3.js', 'fish3']);
+  animals.list.push(['./newModels/fish4.js', 'fish4']);
+
+  animals.list.push(['./newModels/moose.js', 'moose']);
+  animals.list.push(['./newModels/bear.js', 'bear']);
+  animals.list.push(['./newModels/chowchow.js', 'chowchow']);
+  animals.list.push(['./newModels/deer.js', 'deer']);
+  animals.list.push(['./newModels/fox.js', 'fox']);
+  animals.list.push(['./newModels/retreiver.js', 'retreiver']);
+  animals.list.push(['./newModels/horse.js', 'horse']);
+  animals.list.push(['./newModels/mountainlion.js', 'mountainlion']);
+  animals.list.push(['./newModels/rabbit.js', 'rabbit']);
+  animals.list.push(['./newModels/racoon.js', 'racoon']);
+  animals.list.push(['./newModels/sealRun.js', 'sealRun']);
+  animals.list.push(['./newModels/sealSwim.js', 'sealSwim']);
+  animals.list.push(['./newModels/treeFrog.js', 'treeFrog']);
+
+  animalLoader(animals.list[0][0],animals.list[0][1],0);
+}
+
+function animalLoader(filename, name, id) {
+  loader = new THREE.JSONLoader();
+  loader.load({ model: filename, callback: function(g) {
+    addAnimal(g, name, id);
+  } });
+}
+function addAnimal(geometry, name, id) {
+  var morphObject = ROME.Animal(geometry, true);
+  var morphable = (morphObject.availableAnimals.length > 1) ? 1 : 0;
+  var offset = 0;
+  //for (i in animals.birds) if (name == animals.birds[i]) offset = 100;
+  animals[id] = {
+    "name": name,
+    "morphObject": morphObject,
+    "morphable": morphable,
+    "mesh": morphObject.mesh,
+    "position": new THREE.Vector3(0, 0, 0),
+    "target": new THREE.Vector3(0, 0, 0),
+    "eye": new THREE.Vector3(-morphObject.mesh.boundRadius - 300, 0, 0)
+  };
+  if (id < animals.list.length-1) animalLoader(animals.list[id+1][0], animals.list[id+1][1], id+1);
+  else makeScene();
+}
+
+function switchModel(id) {
+  for (var i = 0; i < animals.list.length; i++) {
+    animals[i].mesh.visible = 0;
+  }
+  animals[id].mesh.visible = 1;
+  cameraPosition = animals[id].eye;
+  cameraTarget = animals[id].target;
+  currentAnimal = id;
+}
+
+function makeScene() {
+
+  for (var i = 0; i < animals.list.length; i++) {
+    mesh = animals[i].mesh;
+    mesh.position = animals[i].position;
+
+    mesh.matrixAutoUpdate = false;
+    mesh.updateMatrix();
+    mesh.update();
+    mesh.visible = 1;
+
+    rootY.addChild(mesh);
+
+    animals[i].nameA = animals[i].morphObject.availableAnimals[ 0 ];
+    animals[i].nameB = animals[i].morphObject.availableAnimals[ animals[i].morphable ];
+    animals[i].morphObject.play(animals[i].nameA, animals[i].nameB);
+    animals[i].morphObject.morph = viewerParams.morph;  
+  }
+
+  switchModel(0);//default animal
+
+  animate();
+
+}
+
+var delta, time, oldTime = new Date().getTime();
+var drag = false;
+var mouseX = 0.5;
+var mouseY = 0;
+var offsetX = 0.5;
+var offsetY = 0;
+var zoom = 0;
+var orbitY = 0;
+var orbitZ = 0;
+
+function mouseOut(e) {
+}
+function mouseDown(e) {
+  drag = true;
+}
+function mouseUp(e) {
+  drag = false;
+}
+function mouseMove(e) {
+  var deltaX = mouseX - (event.clientX - container.offsetLeft - width / 2) / width * 2;
+  var deltaY = mouseY - (event.clientY - container.offsetTop - height / 2) / height * 2;
+  if (drag) {
+    offsetX -= deltaX;
+    offsetY -= deltaY;
+  }
+  mouseX = (event.clientX - container.offsetLeft - width / 2) / width * 2;
+  mouseY = (event.clientY - container.offsetTop - height / 2) / height * 2;
+}
+function mouseWheel(e) {
+  firstDraw = true;
+  var steps = e.wheelDeltaY ? e.wheelDeltaY : -e.detail * 13;
+
+  //if (disable) return;
+  maxZ = 800;
+  minZ = -300;
+
+  zoom -= steps * 1;
+  if (zoom < minZ) {
+    zoom = minZ;
+  } else if (zoom > maxZ) {
+    zoom = maxZ;
+  }
+}
+
+function animate() {
+  time = new Date().getTime();
+  delta = time - oldTime;
+  oldTime = time;
+
+  orbitY += (offsetX - orbitY) / 10;
+  orbitZ += (offsetY - orbitZ) / 30;
+  orbitZ = Math.max(-0.16,Math.min(0.16,orbitZ));
+
+  rootY.rotation.y = orbitY * Math.PI - Math.PI/2;
+  rootZ.rotation.z = orbitZ * Math.PI + Math.PI/6;
+
+  plane.position.z -= (delta / 2 * viewerParams.speed);
+  plane.position.z = (plane.position.z % 100);
+
+  camera.position.x += (Math.min(50, cameraPosition.x - zoom) - camera.position.x) / 10;
+  camera.position.y += (cameraPosition.y - camera.position.y) / 10;
+  camera.position.z += (cameraPosition.z - camera.position.z) / 20;
+  camera.rotation.y = Math.PI / 2;
+  camera.target.position.x += (cameraTarget.x - camera.target.position.x) / 10;
+  camera.target.position.y += (cameraTarget.y - camera.target.position.y) / 10;
+  camera.target.position.z += (cameraTarget.z - camera.target.position.z) / 10;
+
+
+  THREE.AnimationHandler.update(delta * viewerParams.speed);
+
+  for (var i = 0; i < animals.list.length; i++) {
+    animals[i].morphObject.morph = viewerParams.morph;
+  }
+
+  render();
+
+  requestAnimationFrame(animate);
+
+}
+
+function render() {
+  renderer.render(scene, camera);
+}
+
+function viewerParams() {
+  this.speed = 0.25;
+  this.morph = 0;
+}
+
+</script>
+</body>
+
+<html> 

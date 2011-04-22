@@ -19,9 +19,9 @@ var TweenEffect = function ( object, properties_start, properties_end, easingFun
 
 	};
 
-	this.update = function ( k ) {
+	this.update = function ( progress, delta, time ) {
 
-		_value = _easingFunction( k );
+		_value = _easingFunction( progress );
 
 		for ( property in _valuesDelta ) {
 
