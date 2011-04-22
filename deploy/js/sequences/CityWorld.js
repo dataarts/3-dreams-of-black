@@ -89,7 +89,7 @@ var CityWorld = function ( shared ) {
 		this.lensFlare.add( this.lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
 
 		this.lensFlare.customUpdateCallback = lensFlareUpdateCallback;
-		this.lensFlare.position.set( 0, 0, -99000 );
+		this.lensFlare.position.set( 0, 0, -5000 );
 
 		this.lensFlareRotate = new THREE.Object3D();
 		this.lensFlareRotate.addChild( this.lensFlare );
