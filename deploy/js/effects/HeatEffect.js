@@ -13,16 +13,74 @@ var HeatEffect = function ( shared ) {
 
 		scene = new THREE.Scene();
 
-		uniforms = HeatEffectShader.uniforms;
-		uniforms.map.texture = renderTarget;
-		uniforms.sampleDistance.value = 1 / shared.baseWidth; 
+		uniforms = {
+
+			"time": { type: "f", value:0 },
+			"map": { type: "t", value:0, texture: renderTarget },
+			"sampleDistance": { type: "f", value: 1 / shared.baseWidth }
+
+		};
 
 		material = new THREE.MeshShaderMaterial( {
-		
+
 			uniforms: uniforms,
-			vertexShader: HeatEffectShader.vertexShader,
-			fragmentShader: HeatEffectShader.fragmentShader
-		
+			vertexShader: [
+
+				"varying vec2 vUv;",
+
+				"void main() {",
+
+					"vUv = vec2( uv.x, 1.0 - uv.y );",
+					"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
+				"}"
+
+			].join("\n"),
+			fragmentShader: [
+
+				"uniform sampler2D map;",
+				"varying vec2 vUv;",
+
+				"void main() {",
+
+					"vec4 color, tmp, add;",
+
+					"vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
+					// "vec2 uv = vUv;",
+
+					"color = texture2D( map, uv );",
+
+					"add = tmp = texture2D( map, uv + vec2( 0.0008, 0.0008 ));", 
+					"if( tmp.r < color.r ) color = tmp;",
+
+					"add += tmp = texture2D( map, uv + vec2( -0.0008, 0.0008 ));",
+					"if( tmp.r < color.r ) color = tmp;",
+
+					"add += tmp = texture2D( map, uv + vec2( -0.0008, -0.0008 ));",
+					"if( tmp.r < color.r ) color = tmp;",
+
+					"add += tmp = texture2D( map, uv + vec2( 0.0008, -0.0008 ));",
+					"if( tmp.r < color.r ) color = tmp;",
+
+					"add += tmp = texture2D( map, uv + vec2( 0.001, 0.0 ));",
+					"if( tmp.r < color.r ) color = tmp;",
+
+					"add += tmp = texture2D( map, uv + vec2( -0.001, 0.0 ));",
+					"if( tmp.r < color.r ) color = tmp;",
+
+					"add += tmp = texture2D( map, uv + vec2( 0, 0.001 ));",
+					"if( tmp.r < color.r ) color = tmp;",
+
+					"add += tmp = texture2D( map, uv + vec2( 0, -0.001 ));",
+					"if( tmp.r < color.r ) color = tmp;",
+
+
+					"gl_FragColor = color * color + add * 0.5 / 8.0;",
+					// "gl_FragColor = texture2D( map, uv );",
+				"}"
+
+				].join("\n")
+
 		} );
 
 
@@ -45,72 +103,3 @@ var HeatEffect = function ( shared ) {
 
 HeatEffect.prototype = new SequencerItem();
 HeatEffect.prototype.constructor = HeatEffect;
-
-HeatEffectShader = {
-
-	uniforms: {
-
-		"map": { type: "t", value:0, texture: null },
-		"time": { type: "f", value:0 },
-		"sampleDistance": { type: "f", value:0.005 }
-
-	},
-
-	vertexShader: [
-
-		"varying vec2 vUv;",
-
-		"void main() {",
-
-			"vUv = vec2( uv.x, 1.0 - uv.y );",
-			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-
-		"}"
-
-	].join("\n"),
-
-	fragmentShader: [
-
-						"uniform sampler2D map;",
-						"varying vec2 vUv;",
-
-						"void main() {",
-
-							"vec4 color, tmp, add;",
-							
-							"vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
-							
-							"color = texture2D( map, uv );",
-
-							"add = tmp = texture2D( map, uv + vec2( 0.0008, 0.0008 ));", 
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( -0.0008, 0.0008 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( -0.0008, -0.0008 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( 0.0008, -0.0008 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( 0.001, 0.0 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( -0.001, 0.0 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( 0, 0.001 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( 0, -0.001 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-
-							"gl_FragColor = color * color + add * 0.5 / 8.0;",
-//							"gl_FragColor = texture2D( map, uv );",
-						"}"
-
-	].join("\n")
-
-}

@@ -137,13 +137,15 @@ var CityWorld = function ( shared ) {
 			that.scene.collisions.merge( scene.collisions );
 			
 		}
+		
+		TriggerUtils.setupCityTriggers( result );
 	
 	};
 
 
 	if ( !shared.debug ) {
 
-		loader.load( "files/models/city/City.js", sceneLoaded );
+		loader.load( "files/models/city_triggers/City.js", sceneLoaded );
 
 	}
 
@@ -177,6 +179,15 @@ var CityWorld = function ( shared ) {
 	
 	
 	this.update = function ( delta, camera ) {
+		
+		var position = camera.matrixWorld.getPosition();
+		
+		TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
+		TriggerUtils.effectors[ 1 ] = position.y;
+		TriggerUtils.effectors[ 2 ] = position.z - 2500;
+		
+		TriggerUtils.update();
+		
 	};
 
 /*	function partLoaded ( geometry ) {
