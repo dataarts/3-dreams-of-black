@@ -4148,7 +4148,7 @@ var scene = {
 "materials" :
 {
     "Backdrop_City" : {
-        "type": "MeshLambertMaterial",
+        "type": "MeshBasicMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "Backdrop_City.jpg" }
     },
 
