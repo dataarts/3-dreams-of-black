@@ -138,7 +138,7 @@ var CloudsWorld = function ( shared ) {
 
 	this.update = function () {
 
-		position = 0; // ( ( new Date().getTime() - start_time ) * 0.03 ) % 4000;
+		position = ( ( new Date().getTime() - start_time ) * 0.03 ) % 4000;
 
 		camera.position.x += ( mouse.x - camera.target.position.x ) * 0.01;
 		camera.position.y += ( - mouse.y - camera.target.position.y ) * 0.01;
