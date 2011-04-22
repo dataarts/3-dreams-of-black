@@ -20,7 +20,7 @@ var CloudsWorld = function ( shared ) {
 	// Clouds
 
 	var domElement;
-	var camera, cameraLogo, scene, sceneLogo, renderer, sky, mesh, geometry, material,
+	var camera, scene, renderer, sky, mesh, geometry, material,
 	i, h, color, colors = [], sprite, size, x, y, z;
 
 	var mouse = { x: 0, y: 0 };
@@ -36,11 +36,7 @@ var CloudsWorld = function ( shared ) {
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
 
-	cameraLogo = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
-	cameraLogo.position.z = 100;
-
 	scene = new THREE.Scene();
-	sceneLogo = new THREE.Scene();
 
 	geometry = new THREE.Geometry();
 
@@ -115,15 +111,11 @@ var CloudsWorld = function ( shared ) {
 	mesh = new THREE.Mesh( geometry, material );
 	scene.addObject( mesh );
 
-	var material = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'files/title_heart.png' ), transparent: true/*, depthTest: false*/ } );
-
-	var title = new THREE.Mesh( new THREE.Plane( 358, 639 ), material );
-	title.scale.x = title.scale.y = title.scale.z = 0.065;
-	sceneLogo.addObject( title );
-
+	mesh = new THREE.Mesh( geometry, material );
+	mesh.position.z = - 4000;
+	scene.addObject( mesh );
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.autoClear = false;
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	domElement.appendChild( renderer.domElement );
 
@@ -146,7 +138,6 @@ var CloudsWorld = function ( shared ) {
 
 	this.update = function () {
 
-		// position = 0;
 		position = ( ( new Date().getTime() - start_time ) * 0.03 ) % 4000;
 
 		camera.position.x += ( mouse.x - camera.target.position.x ) * 0.01;
@@ -155,17 +146,9 @@ var CloudsWorld = function ( shared ) {
 
 		camera.target.position.x = camera.position.x;
 		camera.target.position.y = camera.position.y;
-		camera.target.position.z = camera.position.z - 50;
+		camera.target.position.z = camera.position.z - 1000;
 
-		// cameraLogo.position.x += ( ( - mouse.x * 2 ) - cameraLogo.position.x ) * 0.01;
-		// cameraLogo.position.y += ( ( mouse.y * 2 ) - cameraLogo.position.y ) * 0.01;
-
-
-		renderer.clear();
-		renderer.enableDepthBufferWrite( false );
 		renderer.render( scene, camera );
-		// renderer.enableDepthBufferWrite( true );
-		// renderer.render( sceneLogo, cameraLogo );
 
 	}
 
