@@ -125,19 +125,26 @@ var CitySoup = function ( camera, scene, shared ) {
 	// preoccupy slots for specific animals - hack...
 
 	runningAnimals.array[0] = "elk";
+	runningAnimals.array[10] = "elk";
+	runningAnimals.array[20] = "elk";
 	runningAnimals.array[1] = "moose";
 	runningAnimals.array[4] = "moose";
-	runningAnimals.array[10] = "elk";
 	runningAnimals.array[14] = "moose";
-	runningAnimals.array[20] = "elk";
+	runningAnimals.array[8] = "fish";
+	runningAnimals.array[16] = "fish";
+	runningAnimals.array[24] = "fish";
+	//runningAnimals.array[15] = "sock";
+
 
 	loader.load( { model: "files/models/soup/animals_A_life.js", callback: animalLoadedProxy } );
 	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoadedProxy } );
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
+	loader.load( { model: "files/models/soup/fish_life.js", callback: fishLoadedProxy } );
+	//loader.load( { model: "files/models/soup/sock_jump_life.js", callback: sockLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
 		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
-		runningAnimals.addAnimal( geometry, null, 1.4, morphArray );
+		runningAnimals.addAnimal( geometry, null, 1.5, morphArray );
 	}
 
 	function elkLoadedProxy( geometry ) {
@@ -147,6 +154,15 @@ var CitySoup = function ( camera, scene, shared ) {
 	function mooseLoadedProxy( geometry ) {
 		runningAnimals.addAnimal( geometry, "moose", 1.1, null );
 	}
+
+	function fishLoadedProxy( geometry ) {
+		var morphArray = [0,1,2,3];
+		runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray );
+	}
+
+	/*function sockLoadedProxy( geometry ) {
+		runningAnimals.addAnimal( geometry, "sock", 1.5, null );
+	}*/
 
 	// flying animals
 	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
@@ -256,7 +272,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	function ligthhouseLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "light", true, [new THREE.MeshLambertMaterial( { color: 0xffffff, shading: THREE.FlatShading } )] );
+		trail.addInstance( geometry, "light", false, true );
 		trail.array[4].maxHeight = 5;
 	}
 
