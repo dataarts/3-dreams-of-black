@@ -12,9 +12,9 @@ var OverlayEffect = function ( shared, texture ) {
 
 		scene = new THREE.Scene();
 
-		material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture, transparent: true } );
+		this.material = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture, transparent: true } );
 
-		object = new THREE.Mesh( new THREE.Plane( 3, 3 ), material );
+		object = new THREE.Mesh( new THREE.Plane( 3, 3 ), this.material );
 		scene.addObject( object );
 
 		// renderer.initMaterial( material, scene.lights, scene.fog, object );
@@ -23,7 +23,8 @@ var OverlayEffect = function ( shared, texture ) {
 
 	this.update = function ( progress, delta, time ) {
 
-		material.opacity = 1 - progress;
+		//material.opacity = 1 - progress;
+		this.material.opacity = 0.25;
 		renderer.render( scene, camera, renderTarget );
 
 	};
