@@ -1,7 +1,6 @@
 var Launcher = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
-	// domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#4584b4';
 	domElement.style.textAlign = 'center';
@@ -15,7 +14,7 @@ var Launcher = function ( shared ) {
 	var context = canvas.getContext( '2d' );
 
 	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-	gradient.addColorStop( 0, "#1e4877" );
+	gradient.addColorStop( 0, "#0e223a" );
 	gradient.addColorStop( 0.5, "#4584b4" );
 
 	context.fillStyle = gradient;
@@ -24,20 +23,26 @@ var Launcher = function ( shared ) {
 	domElement.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
 	domElement.style.backgroundRepeat = 'repeat-x';
 
+	// Clouds
+
+	var clouds = new CloudsWorld( shared );
+	clouds.getDomElement().style.position = 'absolute';
+	domElement.appendChild( clouds.getDomElement() );
+
 	// UI
 
 	var title = document.createElement( 'div' );
-	title.style.paddingTop = '60px';
+	title.style.position = 'absolute';
+	title.style.top = '60px';
+	title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
 	title.innerHTML = '<img src="files/title_heart_loading.png">';
 	domElement.appendChild( title );
 
 	var titleOverlay = document.createElement( 'div' );
-	titleOverlay.style.position = 'relative';
-	titleOverlay.style.top = '-488px';
-	titleOverlay.style.width = '358px';
-	titleOverlay.style.margin = '0 auto';
+	titleOverlay.style.position = 'absolute';
+	titleOverlay.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+	titleOverlay.style.top = '210px';
 	titleOverlay.style.cursor = 'pointer';
-	//titleOverlay.style.border = 'solid 1px red';
 	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
 	titleOverlay.addEventListener( 'click', function () {
 
@@ -64,6 +69,9 @@ var Launcher = function ( shared ) {
 		}, 1000 );
 
 	} );
+	loading.getDomElement().style.position = 'absolute';
+	loading.getDomElement().style.left = ( window.innerWidth - 180 ) / 2 + 'px';
+	loading.getDomElement().style.top = '215px';
 	loading.getDomElement().style.display = 'none';
 
 	domElement.appendChild( loading.getDomElement() );
@@ -77,6 +85,19 @@ var Launcher = function ( shared ) {
 	footer.style.bottom = '10px';
 	footer.innerHTML = '<img src="files/footer.png">';
 	domElement.appendChild( footer );
+
+	/*
+	shared.signals.mousemoved.add( function () {
+
+		shared.signals.mousemoved.add( function () {
+
+			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 200 - 100;
+			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 200 - 100;
+
+		} );
+
+	} );
+	*/
 
 	shared.signals.windowresized.add( function () {
 
@@ -93,6 +114,8 @@ var Launcher = function ( shared ) {
 	};
 
 	this.update = function () {
+
+		clouds.update();
 
 	};
 

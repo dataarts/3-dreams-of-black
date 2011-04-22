@@ -59,9 +59,9 @@ var PrairieWorld = function ( shared, camera ) {
 		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
 
 		that.scene.addChild( scene );
-		
+
 		if ( scene.collisions ) {
-		
+
 			that.scene.collisions.merge( scene.collisions );
 
 		}

@@ -6,11 +6,7 @@ var LoadingBar = function ( callback ) {
 	domElement = document.createElement( 'div' );
 
 	loadBar = document.createElement( 'div' );
-	loadBar.style.position = 'relative';
-	loadBar.style.top = '-480px';
-	loadBar.style.height = '10px';
 	loadBar.style.width = '180px';
-	loadBar.style.margin = '0 auto';
 	loadBar.style.background = '#fff';
 	loadBar.style.borderRadius = '5px';
 	loadBar.style.display = 'block';
