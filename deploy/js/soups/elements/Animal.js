@@ -410,7 +410,8 @@ ROME.AnimalShader = {
 
 			// below: mix( color overlayed by ( contour map * influence constant ), directional light color, envlight above * influence constant )
 
-			"gl_FragColor  = mix( vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 0.7 + 1.0 ), 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.9 );",
+			//"gl_FragColor  = mix( vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 0.7 + 1.0 ), 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.9 );",
+			"gl_FragColor  = mix( vec4( vColor * (( 0.45 ) * 0.7 + 1.0 ), 1.0 ), vec4( directionalLightColor[ 0 ], 1.0 ), envLight * 0.9 );",
 			"gl_FragColor *= gl_FragColor;",
 
 			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
@@ -428,7 +429,7 @@ ROME.AnimalAnimationData = {
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
 	//animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "parrot", "eagle", "vulture", "raven" ],
-	animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elkRun", "mooseGallop", "shdw2", "blackWidow", "crab", "scorpSkitter", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "storkFly", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elkRun", "mooseGallop", "fishA", "fishB", "fishC", "fishD", "sockPuppet_jump", "sockPuppet_popUp", "shdw2", "blackWidow", "crab", "scorpSkitter", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "storkFly", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
 
 
 	// init frame times and indices

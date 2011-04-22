@@ -4,6 +4,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 	that.array = [];
 	var scene = scene;
+	var maxFollowIndex = 0;
+	var followCount = 0;
+	var lastFollowCount = 0;
 
 	that.initSettings = {
 		numOfAnimals : numOfAnimals || 30,
@@ -20,6 +23,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		shootRayDown : false,
 		addaptiveSpeed : false,
 		capy : null,
+		startPosition : new THREE.Vector3(0,0,0),
+		switchPosition : false,
 	}
 	
 	var r = 0;
@@ -46,6 +51,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			var animal = ROME.Animal( geometry, false, col );
 			var mesh = animal.mesh;
+			mesh.position.copy(that.settings.startPosition);
 			mesh.doubleSided = doubleSided;
 
 			var followIndex = Math.floor(i/followDivider);
@@ -55,6 +61,11 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				scale = 0.15;
 				followIndex = i;
 			}
+
+			if (followIndex > maxFollowIndex) {
+				maxFollowIndex = followIndex;
+			}
+
 			scale = Math.max(scale, 0.1);
 
 			mesh.matrixAutoUpdate = false;
@@ -73,11 +84,13 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			if (i<2) {
 				count = 0;
 			}
+	
+			var clockwise = i%2 == 0;
 
 			ray = new THREE.Ray();
 			ray.direction = new THREE.Vector3(0, -1, 0);
 
-			var obj = { c: mesh, a: animal, f: followIndex, count: count, scale: scale * scaleMultiplier, ray: ray  };
+			var obj = { c: mesh, a: animal, f: followIndex, count: count, clockwise: clockwise, scale: scale * scaleMultiplier, ray: ray  };
 
 			that.array[i] = obj;
 
@@ -99,14 +112,36 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		var speed = Math.max(distance/100, 1.0);
 		speed = Math.min(speed, 1.5);*/
 
+		followCount = Math.round(r/4);
+
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj =  that.array[i];
 			var animal = obj.c;
 			var f = obj.f;
 			var anim = obj.a;
 			var scale = obj.scale;
+			var clockwise = obj.clockwise;
 
 			//var pulse = Math.cos((i-r*10)/35)*(35-(i*1.5));
+
+			// change follow index
+			if (followCount != lastFollowCount && that.settings.switchPosition) {
+				if (clockwise) {
+					++that.array[i].f;
+				} else {
+					--that.array[i].f;				
+				}
+				if (that.array[i].f > maxFollowIndex) {
+					that.array[i].clockwise = false;
+					that.array[i].f = maxFollowIndex;
+				}
+				if (that.array[i].f <= 0) {
+					that.array[i].clockwise = true;
+					that.array[i].f = 0;
+				}
+
+				f = that.array[i].f;
+			}
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
@@ -124,6 +159,12 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			var toy = vectorArray[f].position.y+(offsety*amounty);
 			var toz = vectorArray[f].position.z+(offsetz*amountz);
 
+			if (!clockwise) {
+				tox = vectorArray[f].position.x-(offsetx*amountx);
+				toy = vectorArray[f].position.y-(offsety*amounty);
+				toz = vectorArray[f].position.z-(offsetz*amountz);
+			}
+
 			if (cNormal.y > 0.5) {
 				toy = vectorArray[f].position.y - 6*1.75;
 			}
@@ -135,7 +176,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			// flying
 			if (that.settings.flying) {
 				var pulse = Math.cos((i-r*10)/15)*10
-				var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/30)*40);			
+				var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/100)*40);			
 
 				if (cNormal.x < -0.8) {
 					tox -= flyAmount;
@@ -165,18 +206,32 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				that.array[i].a.animalB.timeScale = that.settings.constantSpeed;
 			}
 
-			var divider = delta/10;
+			//var divider = delta/10;
+			var divider = 8;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
 			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
+
+		var maxSpeed = 8;
+
+		if ( moveY > maxSpeed )	moveY = maxSpeed;
+		if ( moveY < -maxSpeed ) moveY = -maxSpeed;
+
+		if ( moveX > maxSpeed )	moveX = maxSpeed;
+		if ( moveX < -maxSpeed ) moveX = -maxSpeed;
+
+		if ( moveZ > maxSpeed )	moveZ = maxSpeed;
+		if ( moveZ < -maxSpeed )moveZ = -maxSpeed;
 
 			var zvec = new THREE.Vector3(tox,toy,toz);
 			zvec.subSelf( animal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
 			var yvec = new THREE.Vector3(vectorArray[f].normal.x*-1, vectorArray[f].normal.y*-1, vectorArray[f].normal.z*-1);
-			//var yvec = new THREE.Vector3(0, -1, 0);
+			if (that.settings.flying) {
+				yvec = new THREE.Vector3(0, -1, 0);
+			}
 
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);
@@ -227,6 +282,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			animal.visible = that.settings.visible;
 		}
+
+		lastFollowCount = followCount;
 
 	}
 

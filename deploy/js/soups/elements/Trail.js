@@ -19,10 +19,11 @@ var Trail = function ( numOfInstances, scene ) {
 
 	var i;
 
-	this.addInstance = function( geometry, predefined, tree ) {
+	this.addInstance = function( geometry, predefined, tree, lightHouse ) {
 		
 		var predefined = predefined || null;
 		var tree = tree || false;
+		var lightHouse = lightHouse || false;
 
 		for ( i = 0; i < that.initSettings.numOfInstances; ++i ) {
 			
@@ -34,7 +35,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
 			
-			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree};
+			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree, lightHouse:lightHouse};
 			
 			scene.addObject(c);
 			that.array[i] = obj;
@@ -58,6 +59,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 			var alivetime = obj.alivetime;
 			var tree = obj.tree;
+			var lightHouse = obj.lightHouse;
 			var maxHeight = obj.maxHeight;
 			
 			alivetime += multiplier;
@@ -181,7 +183,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 				c.scale.x = c.scale.y= c.scale.z = 0.001*that.settings.scale;
 				var xscale = zscale = yscale = 0.1*that.settings.scale;
-				if (!tree) {
+				if (!tree && !lightHouse) {
 					yscale = 0.3*that.settings.scale;
 					xscale = zscale = 0.4*that.settings.scale;
 				}
@@ -192,6 +194,19 @@ var Trail = function ( numOfInstances, scene ) {
 							.delay(300);
 				growTween.start();				
 
+				if (lightHouse) {
+					
+					var posx = c.position.x+((normal.x*-1)*50);
+					var posy = c.position.y+((normal.y*-1)*50);
+					var posz = c.position.z+((normal.z*-1)*50);
+
+					var lightHouseDownTween = new TWEEN.Tween(c.position)
+								.to({x: posx, y: posy, z: posz}, 1000)
+								.easing(TWEEN.Easing.Elastic.EaseIn)
+								.delay(that.settings.tweenTime/2);
+					lightHouseDownTween.start();
+
+				}
 
 				alivetime = 0;
 			}

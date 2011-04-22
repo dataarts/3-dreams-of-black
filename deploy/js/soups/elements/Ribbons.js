@@ -23,7 +23,7 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 
 	for ( i = 0; i < that.initSettings.numOfRibbons; ++i ) {
 
-		var ribbon = new Ribbon( 15, 6, vectorArray.length - 20 );
+		var ribbon = new Ribbon( 15, 6, vectorArray.length - 35 );
 		var ribbonMesh = new THREE.Mesh( ribbon, ribbonMaterials[ i % ribbonMaterials.length ] );
 		ribbonMesh.doubleSided = true;
 		scene.addObject( ribbonMesh );

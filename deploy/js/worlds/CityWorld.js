@@ -57,7 +57,7 @@ var CityWorld = function ( shared ) {
 	//directionalLight1.color.setHSV( 0.08823529411764706,  0.17058823529411765,  0.788235294117647 );		
 	directionalLight1.position.set( 0.3653150890069558,  0.7392613273917799, -0.5657186363969139 );
 	directionalLight1.color.setHSV( 0.07647058823529412, 0.058823529411764705,  0.7235294117647059 );		
-	directionalLight1.castShadow = true;
+	directionalLight1.castShadow = false;
 	this.scene.addLight( directionalLight1 );
 
 	var directionalLight2 = new THREE.DirectionalLight( 0xffffff );
@@ -70,6 +70,20 @@ var CityWorld = function ( shared ) {
 	this.scene.addLight( directionalLight2 );
 
    
+   	//var settings = { "fogDensity": 0.00005, "fogColor": {  "h": 0,  "s": 0.3235294117647059,  "v": 0.34705882352941175 }, "ambientLight": {  "h": 0.4647058823529412,  "s": 0.49411764705882355,  "v": 0 }, "directionalLight1": {  "h": 0.5647058823529412,  "s": 0.32941176470588235,  "v": 0.5411764705882353,  "x": 0.7648718326037581,  "y": -0.5885011172553458,  "z": 0.2619876231400604,  "phi": 0.7757647058823531,  "theta": -0.7388235294117651 }, "directionalLight2": {  "h": 0,  "s": 0,  "v": 0.18235294117647058,  "x": -0.4535568600884794,  "y": 0.8775825618903728,  "z": -0.1553545034191468,  "phi": -1.9948235294117649,  "theta": 0.4063529411764706 }, "effectEnabled": true, "effectType": "noise", "postprocessingNoise": {  "nIntensity": 0.2411764705882353,  "sIntensity": 0,  "sCount": 4096 }, "postprocessingBloom": {  "opacity": 1 }, "flarex": 23.558823529411764, "flarey": 358, "flyCamera": {  "position": {   "x": 240.7055633435974,   "y": 725.5500557827488,   "z": -13226.735514435717  },  "target": {   "x": 188.88986375390533,   "y": 744.8835980526541,   "z": -13310.050263546114  } }, "sceneScale": 1};
+	var settings = { "fogDensity": 0.00005, "fogColor": {  "h": 0.6,  "s": 0.3235294117647059,  "v": 0.34705882352941175 }, "ambientLight": {  "h": 0,  "s": 0,  "v": 0.09411764705882353 }, "directionalLight1": {  "h": 0.5588235294117647,  "s": 0.17647058823529413,  "v": 0.3941176470588235,  "x": 0.7078535314198388,  "y": 0.12972382335149782,  "z": -0.6943450926675673,  "phi": 1.4407058823529408,  "theta": -0.7757647058823531 }, "directionalLight2": {  "h": 0,  "s": 0,  "v": 0.40588235294117647,  "x": -0.7501274841811427,  "y": -0.630824564234077,  "z": 0.19841654828908922,  "phi": -2.2534117647058824,  "theta": -0.25858823529411756 }, "effectEnabled": true, "effectType": "noise", "postprocessingNoise": {  "nIntensity": 0.3176470588235294,  "sIntensity": 0.05,  "sCount": 4096 }, "postprocessingBloom": {  "opacity": 1 }, "flarex": 18.52941176470588, "flarey": 355.7647058823529, "flyCamera": {  "position": {   "x": -5.8280070122002305,   "y": 495.9422341803853,   "z": -7391.557312943377  },  "target": {   "x": -2.8500586327436173,   "y": 494.8123320660599,   "z": -7491.506575795393  } }, "sceneScale": 1};
+
+	this.scene.fog.color.setHSV( settings.fogColor.h,  settings.fogColor.s, settings.fogColor.v );
+	this.scene.fog.density = settings.fogDensity;
+
+	ambientLight.color.setHSV( settings.ambientLight.h, settings.ambientLight.s, settings.ambientLight.v );
+	directionalLight1.color.setHSV( settings.directionalLight1.h, settings.directionalLight1.s, settings.directionalLight1.v );
+	directionalLight2.color.setHSV( settings.directionalLight2.h, settings.directionalLight2.s, settings.directionalLight2.v );
+
+	directionalLight1.position.set( settings.directionalLight1.x, settings.directionalLight1.y, settings.directionalLight1.z );
+	directionalLight2.position.set( settings.directionalLight2.x, settings.directionalLight2.y, settings.directionalLight2.z );
+	
+	
 	/*gui.add( directionalLight.position, 'x', -10, 20 ).name( 'x' );
 	gui.add( directionalLight.position, 'y', -10, 20 ).name( 'y' );
 	gui.add( directionalLight.position, 'z', -10, 20 ).name( 'z' );
@@ -89,12 +103,12 @@ var CityWorld = function ( shared ) {
 		this.lensFlare.add( this.lensFlare.lensFlares[ 4 ].texture, 70, 1.0, THREE.AdditiveBlending );
 
 		this.lensFlare.customUpdateCallback = lensFlareUpdateCallback;
-		this.lensFlare.position.set( 0, 0, -99000 );
+		this.lensFlare.position.set( 0, 0, -5000 );
 
 		this.lensFlareRotate = new THREE.Object3D();
 		this.lensFlareRotate.addChild( this.lensFlare );
 
-		this.lensFlareRotate.rotation.x =   15 * Math.PI / 180;
+		this.lensFlareRotate.rotation.x = 20 * Math.PI / 180;
 		this.lensFlareRotate.rotation.y = 358 * Math.PI / 180;
 
 		that.scene.addChild( this.lensFlareRotate );
@@ -138,6 +152,8 @@ var CityWorld = function ( shared ) {
 			
 		}
 		
+		console.log( result );
+		
 		TriggerUtils.setupCityTriggers( result );
 	
 	};
@@ -145,7 +161,8 @@ var CityWorld = function ( shared ) {
 
 	if ( !shared.debug ) {
 
-		loader.load( "files/models/city_triggers/City.js", sceneLoaded );
+		//loader.load( "files/models/city_triggers/City.js", sceneLoaded );
+		loader.load( "files/models/city/City.js", sceneLoaded );
 
 	}
 
@@ -182,9 +199,9 @@ var CityWorld = function ( shared ) {
 		
 		var position = camera.matrixWorld.getPosition();
 		
-		TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
-		TriggerUtils.effectors[ 1 ] = position.y;
-		TriggerUtils.effectors[ 2 ] = position.z - 2500;
+		TriggerUtils.effectors[ 0 ] = 0.1 * -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
+		TriggerUtils.effectors[ 1 ] = 0.1 * position.y;
+		TriggerUtils.effectors[ 2 ] = 0.1 * ( position.z - 2500 );
 		
 		TriggerUtils.update();
 		

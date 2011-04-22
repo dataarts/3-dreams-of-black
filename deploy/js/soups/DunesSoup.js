@@ -23,18 +23,18 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// ribbons
 	var ribbonMaterials = [
-			new THREE.MeshBasicMaterial( { color:0xf89010 } ),
-			new THREE.MeshBasicMaterial( { color:0x98f800 } ),
-			new THREE.MeshBasicMaterial( { color:0x5189bb } ),
-			new THREE.MeshBasicMaterial( { color:0xe850e8 } ),
-			new THREE.MeshBasicMaterial( { color:0xf1f1f1 } ),
-			new THREE.MeshBasicMaterial( { color:0x08a620 } )
+			new THREE.MeshBasicMaterial( { color:0xd9f3fb, opacity: 0.25 } ),
+			new THREE.MeshBasicMaterial( { color:0xe4f1f5, opacity: 0.25 } ),
+			new THREE.MeshBasicMaterial( { color:0xffffff, opacity: 0.25 } ),
+			new THREE.MeshBasicMaterial( { color:0xeeeeee, opacity: 0.25 } ),
+			new THREE.MeshBasicMaterial( { color:0xdcf3fa, opacity: 0.25 } ),
+			new THREE.MeshBasicMaterial( { color:0xd2f3fc, opacity: 0.25 } )
 	];
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
-	ribbons.settings.ribbonPulseMultiplier_1 = 6;
-	ribbons.settings.ribbonPulseMultiplier_2 = 2;
-	ribbons.settings.ribbonMin = 0.5;
-	ribbons.settings.ribbonMax = 1.0;
+	ribbons.settings.ribbonPulseMultiplier_1 = 20;
+	ribbons.settings.ribbonPulseMultiplier_2 = 0.01;
+	ribbons.settings.ribbonMin = 0.3;
+	ribbons.settings.ribbonMax = 0.4;
 
 	// particles
 /*	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );

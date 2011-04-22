@@ -61,16 +61,16 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		
 			if ( uv.length == 3 ) {
 				
-				uv[ 0 ].set( 0, 0 );
-				uv[ 1 ].set( 1, 0 );
-				uv[ 2 ].set( 1, 1 );
+				uv[ 0 ].set( 0.2, 0.2 );
+				uv[ 1 ].set( 0.8, 0.2 );
+				uv[ 2 ].set( 0.8, 0.8 );
 				
 			} else if ( uv.length == 4 ) {
 				
-				uv[ 0 ].set( 0, 0 );
-				uv[ 1 ].set( 1, 0 );
-				uv[ 2 ].set( 1, 1 );
-				uv[ 3 ].set( 0, 1 );
+				uv[ 0 ].set( 0.2, 0.2 );
+				uv[ 1 ].set( 0.8, 0.2 );
+				uv[ 2 ].set( 0.8, 0.8 );
+				uv[ 3 ].set( 0.2, 0.8 );
 
 			}
 
