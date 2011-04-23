@@ -53,11 +53,11 @@ function init() {
 
     var light;
 
-    light = new THREE.DirectionalLight( 0xffffff, 2 );
+    light = new THREE.DirectionalLight( 0xffffff, 1.25 );
     light.position.set( 0, 1, 1 );
     scene.addLight( light );
 
-    renderer = new THREE.WebGLRenderer( { antialias: false, clearColor: 0x111111, clearAlpha: 1 } );
+    renderer = new THREE.WebGLRenderer( { antialias: false, clearColor: 0x545454, clearAlpha: 1 } );
     renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.autoClear = false;
 
@@ -76,7 +76,7 @@ function addAnimal( geometry ) {
     
     var mesh = morphObject.mesh;
 
-    mesh.rotation.set( 0, -0.5, 0 );
+    mesh.rotation.set( 0, -0.95, 0 );
 
     mesh.matrixAutoUpdate = false;
     mesh.updateMatrix();
@@ -94,6 +94,7 @@ function addAnimal( geometry ) {
         nameB = morphObject.availableAnimals[ 0 ];
 
     morphObject.play( nameA, nameB );
+	morphObject.animalA.timeScale = morphObject.animalB.timeScale = 0.3;
 
 };
 
