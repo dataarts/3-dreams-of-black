@@ -229,8 +229,8 @@ var TriggerBig = function( geometry, wantedParent ) {
 var TriggerUtils = (function() {
 	
 	var that = {};
-	that.effectors = [ 0, 200, 0 ];		// xyz xyz for each effector (remeber to change const in shader, too)
-	that.effectorRadius = 2000;
+	that.effectors = [ 0, 20, 0 ];		// xyz xyz for each effector (remeber to change const in shader, too)
+	that.effectorRadius = 500;
 
 	var smallTriggers = [];
 	var bigTriggers = [];
