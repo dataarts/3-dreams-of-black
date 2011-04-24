@@ -90,11 +90,14 @@ var CloudsWorld = function ( shared ) {
 
 			"}"
 
-		].join("\n")
+		].join("\n"),
+
+		depthTest: false
 
 	} );
 
 	var plane = new THREE.Mesh( new THREE.Plane( 64, 64 ) );
+
 
 	for ( i = 0; i < 4000; i++ ) {
 
