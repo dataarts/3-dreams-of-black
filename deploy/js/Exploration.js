@@ -30,7 +30,7 @@ var Exploration = function ( shared ) {
 	cameras.city.position.set( 0, 0, 0 );
 
 	var world, scene,
-	clearEffect, heatEffect, noiseEffect, renderEffect;
+	clearEffect, heatEffect, noiseEffect, renderEffect, overlayEffect;
 	
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -40,7 +40,10 @@ var Exploration = function ( shared ) {
 
 	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
 	noiseEffect.init();
-
+	
+	overlayEffect = new OverlayEffect( shared, THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" ) );
+	overlayEffect.init();
+	
 	renderEffect = new RenderEffect( shared );
 	renderEffect.init();
 
@@ -78,6 +81,7 @@ var Exploration = function ( shared ) {
 
 			heatEffect.update( progress, delta, time );
 			noiseEffect.update( progress, delta, time );
+			//overlayEffect.update( progress, delta, time );
 			renderEffect.update( progress, delta, time );
 
 		}
