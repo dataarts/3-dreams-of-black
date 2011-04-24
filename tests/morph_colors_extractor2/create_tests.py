@@ -22,7 +22,7 @@ TEMPLATE_HTML = """\
 <style type="text/css">
 body {
     font-family: Monospace;
-    background-color: #000;
+    background-color: #545454;
     margin: 0px;
     overflow: hidden;
 }
@@ -94,8 +94,8 @@ function addAnimal( geometry ) {
     
     var mesh = morphObject.mesh;
 
-    mesh.rotation.set( 0, -0.5, 0 );
-    //mesh.position.set( 0, -0.5 * mesh.geometry.boundingSphere.radius, 0 );
+    mesh.rotation.set( 0, -0.75, 0 );
+    //mesh.position.set( 0, -100, 0 );
 
     mesh.matrixAutoUpdate = false;
     mesh.updateMatrix();
@@ -103,8 +103,11 @@ function addAnimal( geometry ) {
     
     scene.addChild( mesh );
 
+    cameraDistance = 500;
+    cameraHeight = 100;
+
     cameraDistance = mesh.boundRadius * 3;
-    cameraHeight = mesh.boundRadius * 0.1;
+    //cameraHeight = mesh.boundRadius * 0.1;    
 
     camera.position.set( 0, cameraHeight, cameraDistance );
     camera.target.position.set( 0, 0, 0 );
@@ -140,8 +143,8 @@ function animate() {
 
     if ( morphObject ) {
     
-        morphObject.mesh.rotation.y += -0.01;
-        morphObject.mesh.updateMatrix();
+        //morphObject.mesh.rotation.y += -0.01;
+        //morphObject.mesh.updateMatrix();
 
     }
 
@@ -152,123 +155,123 @@ function animate() {
 };
 
 function initPostprocessingNoise( effect ) {
-	
-	effect.type = "noise";
-	
-	effect.scene = new THREE.Scene();
-	
-	effect.camera = new THREE.Camera();
-	effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
-	effect.camera.position.z = 100;
-	
-	effect.texture = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
-	effect.texture2 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+    
+    effect.type = "noise";
+    
+    effect.scene = new THREE.Scene();
+    
+    effect.camera = new THREE.Camera();
+    effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( SCREEN_WIDTH / - 2, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / - 2, -10000, 10000 );
+    effect.camera.position.z = 100;
+    
+    effect.texture = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
+    effect.texture2 = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter } );
 
-	var film_shader = THREE.ShaderUtils.lib["film"];
-	var film_uniforms = THREE.UniformsUtils.clone( film_shader.uniforms );
-	
-	film_uniforms["tDiffuse"].texture = effect.texture;
-	
-	effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
-	effect.materialFilm.uniforms.grayscale.value = 0;
-	
-	
-	var heatUniforms = {
+    var film_shader = THREE.ShaderUtils.lib["film"];
+    var film_uniforms = THREE.UniformsUtils.clone( film_shader.uniforms );
+    
+    film_uniforms["tDiffuse"].texture = effect.texture;
+    
+    effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
+    effect.materialFilm.uniforms.grayscale.value = 0;
+    
+    
+    var heatUniforms = {
 
-	"time": { type: "f", value: 0 },
-	"map": { type: "t", value: 0, texture: effect.texture },
-	"sampleDistance": { type: "f", value: 1 / SCREEN_WIDTH }
+    "time": { type: "f", value: 0 },
+    "map": { type: "t", value: 0, texture: effect.texture },
+    "sampleDistance": { type: "f", value: 1 / SCREEN_WIDTH }
 
-	};
+    };
 
-	effect.materialHeat = new THREE.MeshShaderMaterial( {
+    effect.materialHeat = new THREE.MeshShaderMaterial( {
 
-		uniforms: heatUniforms,
-		vertexShader: [
+        uniforms: heatUniforms,
+        vertexShader: [
 
-			"varying vec2 vUv;",
+            "varying vec2 vUv;",
 
-			"void main() {",
+            "void main() {",
 
-				"vUv = vec2( uv.x, 1.0 - uv.y );",
-				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                "vUv = vec2( uv.x, 1.0 - uv.y );",
+                "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
-			"}"
+            "}"
 
-		].join("\\n"),
-		
-		fragmentShader: [
+        ].join("\\n"),
+        
+        fragmentShader: [
 
-			"uniform sampler2D map;",
-			"varying vec2 vUv;",
+            "uniform sampler2D map;",
+            "varying vec2 vUv;",
 
-			"void main() {",
+            "void main() {",
 
-				"vec4 color, tmp, add;",
+                "vec4 color, tmp, add;",
 
-				"vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
-				// "vec2 uv = vUv;",
+                "vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
+                // "vec2 uv = vUv;",
 
-				"color = texture2D( map, uv );",
+                "color = texture2D( map, uv );",
 
-				"add = tmp = texture2D( map, uv + vec2( 0.0008, 0.0008 ));", 
-				"if( tmp.r < color.r ) color = tmp;",
+                "add = tmp = texture2D( map, uv + vec2( 0.0008, 0.0008 ));", 
+                "if( tmp.r < color.r ) color = tmp;",
 
-				"add += tmp = texture2D( map, uv + vec2( -0.0008, 0.0008 ));",
-				"if( tmp.r < color.r ) color = tmp;",
+                "add += tmp = texture2D( map, uv + vec2( -0.0008, 0.0008 ));",
+                "if( tmp.r < color.r ) color = tmp;",
 
-				"add += tmp = texture2D( map, uv + vec2( -0.0008, -0.0008 ));",
-				"if( tmp.r < color.r ) color = tmp;",
+                "add += tmp = texture2D( map, uv + vec2( -0.0008, -0.0008 ));",
+                "if( tmp.r < color.r ) color = tmp;",
 
-				"add += tmp = texture2D( map, uv + vec2( 0.0008, -0.0008 ));",
-				"if( tmp.r < color.r ) color = tmp;",
+                "add += tmp = texture2D( map, uv + vec2( 0.0008, -0.0008 ));",
+                "if( tmp.r < color.r ) color = tmp;",
 
-				"add += tmp = texture2D( map, uv + vec2( 0.001, 0.0 ));",
-				"if( tmp.r < color.r ) color = tmp;",
+                "add += tmp = texture2D( map, uv + vec2( 0.001, 0.0 ));",
+                "if( tmp.r < color.r ) color = tmp;",
 
-				"add += tmp = texture2D( map, uv + vec2( -0.001, 0.0 ));",
-				"if( tmp.r < color.r ) color = tmp;",
+                "add += tmp = texture2D( map, uv + vec2( -0.001, 0.0 ));",
+                "if( tmp.r < color.r ) color = tmp;",
 
-				"add += tmp = texture2D( map, uv + vec2( 0, 0.001 ));",
-				"if( tmp.r < color.r ) color = tmp;",
+                "add += tmp = texture2D( map, uv + vec2( 0, 0.001 ));",
+                "if( tmp.r < color.r ) color = tmp;",
 
-				"add += tmp = texture2D( map, uv + vec2( 0, -0.001 ));",
-				"if( tmp.r < color.r ) color = tmp;",
+                "add += tmp = texture2D( map, uv + vec2( 0, -0.001 ));",
+                "if( tmp.r < color.r ) color = tmp;",
 
 
-				"gl_FragColor = color * color + add * 0.5 / 8.0;",
-				// "gl_FragColor = texture2D( map, uv );",
-			"}"
+                "gl_FragColor = color * color + add * 0.5 / 8.0;",
+                // "gl_FragColor = texture2D( map, uv );",
+            "}"
 
-			].join("\\n")
+            ].join("\\n")
 
-	} );
-	
-	effect.quad = new THREE.Mesh( new THREE.Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialFilm );
-	effect.quad.position.z = -500;
-	effect.scene.addObject( effect.quad );
+    } );
+    
+    effect.quad = new THREE.Mesh( new THREE.Plane( SCREEN_WIDTH, SCREEN_HEIGHT ), effect.materialFilm );
+    effect.quad.position.z = -500;
+    effect.scene.addObject( effect.quad );
 
 }
 
 function render() {
 
-	renderer.clear();
+    renderer.clear();
 
-	renderer.render( scene, camera, postprocessing.texture, true );
+    renderer.render( scene, camera, postprocessing.texture, true );
 
-	postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
-	postprocessing.materialHeat.uniforms.time.value += 0.01 * delta;
+    postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
+    postprocessing.materialHeat.uniforms.time.value += 0.01 * delta;
 
-	// HEAT => NOISE
-	
-	postprocessing.quad.materials[ 0 ] = postprocessing.materialHeat;
-	postprocessing.materialHeat.uniforms.map.texture = postprocessing.texture;
+    // HEAT => NOISE
+    
+    postprocessing.quad.materials[ 0 ] = postprocessing.materialHeat;
+    postprocessing.materialHeat.uniforms.map.texture = postprocessing.texture;
 
-	renderer.render( postprocessing.scene, postprocessing.camera );
-	//renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.texture2 );
-	
-	postprocessing.quad.materials[ 0 ] = postprocessing.materialFilm;
-	postprocessing.materialFilm.uniforms.tDiffuse.texture = postprocessing.texture2;
+    renderer.render( postprocessing.scene, postprocessing.camera );
+    //renderer.render( postprocessing.scene, postprocessing.camera, postprocessing.texture2 );
+    
+    postprocessing.quad.materials[ 0 ] = postprocessing.materialFilm;
+    postprocessing.materialFilm.uniforms.tDiffuse.texture = postprocessing.texture2;
 
 }
 
@@ -291,24 +294,31 @@ body {
     background-color: #545454;
     margin: 0px;
     padding: 1em;
-    text-align:center;
-    overflow: hidden;
+    text-align:left;
+
 }
-a { color:#fff; font-size:1.5em; text-decoration:none }
+a { color:#fff; font-size:1.25em; text-decoration:none }
+
+#links { float:left; width:9%% }
+#animals { border: 0; float:left; width:90%%; height:95%%; background:#545454 }
 </style>
 
 </head>
 
 <body>
 
+<div id="links">
 %(links)s
+</div>
+
+<iframe id="animals"></iframe>
 
 </body>
 
 </html>
 """
 
-TEMPLATE_LINK = """<a href="%s.html">%s</a>"""
+TEMPLATE_LINK = """<a href="#" onclick="document.getElementById('animals').src = '%s.html';">%s</a>"""
 
 # ##################################################################
 # Utils
