@@ -34,11 +34,12 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	"shdw2": { hRange:  0.00, sRange:  0.00, vRange:  0.025,
 		       hOffset: 0.00, sOffset: 0.00, vOffset: -0.03 },
 			   
-	"horse": { hRange:  0.00,  sRange:   0.00, vRange:  0.00,
-		       hOffset: 0.001, sOffset: -0.10, vOffset: 0.00 },
+	"horse": { hRange:  0.01, sRange:   0.00, vRange:  0.05,
+		       hOffset: 0.02, sOffset: -0.10, vOffset: 0.00,
+			   lScale: 0.75, lOffset: [ 0.5, 0.5, 0.5 ]	},
 
 	"moose": { hRange:  0.07, sRange:  0.00, vRange:  0.05,
-		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00 },
+		       hOffset: 0.00, sOffset: -0.20, vOffset: 0.00 },
 
 	"tarbuffalo": { hRange:  0.04, sRange:  0.00, vRange:  0.05,
 		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00 },
@@ -46,7 +47,27 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	"chow": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
 			  hOffset: 0.00, sOffset:  -0.10, vOffset: -0.10,
 			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+
+	"deer": { hRange:  0.01, sRange:   0.00, vRange:  0.20,
+			  hOffset: 0.00, sOffset:  -0.10, vOffset: -0.10,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
 			  
+	"vulture": { hRange:  0.01, sRange:   0.10, vRange:  0.12,
+			  hOffset: 0.0, sOffset:  0.00, vOffset: -0.10,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+			  
+	"bunny": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
+			  hOffset: 0.00, sOffset:  -0.10, vOffset: 0.00,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+
+	"seal": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
+			  hOffset: 0.00, sOffset:  0.05, vOffset: 0.00,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+			  
+	"eagle": { hRange:  0.05, sRange:  0.00, vRange:  0.25,
+			  hOffset: 0.00, sOffset:  -0.10, vOffset: 0.10,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+
 	"sat":  { hRange:  0.00, sRange:  0.00, vRange:  0.00,
 		      hOffset: 0.00, sOffset: 0.10, vOffset: 0.00 },
 
@@ -67,7 +88,24 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		"tarbuffalo": "tarbuffalo",
 		"goat"		: "shdw2",
 		"chow"		: "chow",
-		"bear"		: "zero",
+		"deer"		: "deer",
+		"fox"		: "deer",
+		"goldenRetreiver": "horse",
+		"bunny" 	: "bunny",
+		"seal"		: "seal",
+		"elk"		: "seal",
+		"eagle"		: "eagle",
+		"parrot"	: "eagle",
+		"hummingBird": "seal",
+		"raven"		: "deer",
+		"vulture"   : "vulture",
+		"centipede" : "tarbuffalo",
+		"scorp"		: "tarbuffalo",
+		"bison"		: "tarbuffalo",
+		"sickle"    : "tarbuffalo",
+		
+		"crab"		: "zero",
+		"bear"		   : "zero",
 		"mountainlion" : "zero",
 
 	};
@@ -108,34 +146,19 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	
 	
 	var isPlaying = false;
-	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
-
-
+	var morphTargetOrder = that.mesh.morphTargetForcedOrder;	
 	
-	
-	var c, r, g, b, dr = 0.5, dg = 0.5, db = 0.5;
-
-	function cap( x, a, b ) { return x < a ? a : ( x > b ? b : x ); }
+	var c, r, g, b, hd, sd, vd, dr = 0.5, dg = 0.5, db = 0.5;
 
 	for( var i = 0; i < geometry.faces.length; i++ ) {
 		
 		c = geometry.faces[ i ].color;
 		
-		
-		c.updateHSV();
+		hd = variations.hRange * Math.random() + variations.hOffset;
+		sd = variations.sRange * Math.random() + variations.sOffset;
+		vd = variations.vRange * Math.random() + variations.vOffset;
 
-		c.h = cap( c.h + variations.hRange * Math.random() + variations.hOffset, 0, 1 );
-		c.s = cap( c.s + variations.sRange * Math.random() + variations.sOffset, 0, 1 );
-		c.v = cap( c.v + variations.vRange * Math.random() + variations.vOffset, 0, 1 );
-
-		//c.h = cap( c.h + 0.05 * Math.random(), 0, 1 );
-		//c.s = cap( c.s + 0.05 * Math.random(), 0, 1 );
-
-		//c.h = c.h + 0.0125;
-		//c.s = c.s - 0.1;
-		//c.v = cap( c.v + 0.15 * Math.random() + 0.05, 0, 1 );
-		
-		c.setHSV( c.h, c.s, c.v );
+		THREE.ColorUtils.adjustHSV( c, hd, sd, vd );		
 
 		/*
 		r = c.r;
@@ -432,7 +455,7 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "chow", "goat", "tarbuffalo", "flamingo", "moose", "shdw2", "gator", "bear", "horse", "mountainlion", "wolf", "fox", "deer", "bison", "tarbuffalo_runB", "tarbuffalo_runA", "parrot", "eagle", "vulture", "raven", "blackWidow" ],
+	animalNames: [ "sickle", "scorp", "crab", "centipede", "hummingBird", "elk", "seal", "bunny", "goldenRetreiver", "chow", "goat", "tarbuffalo", "flamingo", "moose", "shdw2", "gator", "bear", "horse", "mountainlion", "wolf", "fox", "deer", "bison", "tarbuffalo_runB", "tarbuffalo_runA", "parrot", "eagle", "vulture", "raven", "blackWidow" ],
 
 
 	// init frame times and indices
