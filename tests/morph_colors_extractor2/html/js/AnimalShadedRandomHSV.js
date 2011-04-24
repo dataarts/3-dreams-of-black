@@ -10,10 +10,13 @@ ROME = {};
 
 ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 
-	// construct
+	// constructor
 
 	var vertexColors = geometry.materials[ 0 ][ 0 ].vertexColors;
-	
+
+	var that = {};
+	that.availableAnimals = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
+
 	var pars = { uniforms:       ROME.AnimalShader.uniforms, 
 				 vertexShader:   ROME.AnimalShader.vertex, 
 				 fragmentShader: ROME.AnimalShader.fragment,
@@ -21,20 +24,95 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 				 vertexColors:   vertexColors,
 				 lights:         true };
 
+	// colors
+
+	var colorVariations = {
+		
+	"flamingo": { hRange:  0.05, sRange:  0.05, vRange:  0.00,
+				  hOffset: 0.00, sOffset: 0.00, vOffset: 0.00 },
+
+	"shdw2": { hRange:  0.00, sRange:  0.00, vRange:  0.025,
+		       hOffset: 0.00, sOffset: 0.00, vOffset: -0.03 },
+			   
+	"horse": { hRange:  0.00,  sRange:   0.00, vRange:  0.00,
+		       hOffset: 0.001, sOffset: -0.10, vOffset: 0.00 },
+
+	"moose": { hRange:  0.07, sRange:  0.00, vRange:  0.05,
+		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00 },
+
+	"tarbuffalo": { hRange:  0.04, sRange:  0.00, vRange:  0.05,
+		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00 },
+			   
+	"chow": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
+			  hOffset: 0.00, sOffset:  -0.10, vOffset: -0.10,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+			  
+	"sat":  { hRange:  0.00, sRange:  0.00, vRange:  0.00,
+		      hOffset: 0.00, sOffset: 0.10, vOffset: 0.00 },
+
+	"zero": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
+			  hOffset: 0.00, sOffset:  0.00, vOffset: 0.00 },
+
+	"dark": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
+			  hOffset: 0.00, sOffset:  0.00, vOffset: -0.50 }
+			  
+	};
+	
+	var animalVariationMap = {
+	
+		"flamingo"	: "flamingo",
+		"horse"		: "horse",
+		"shdw2" 	: "shdw2",
+		"moose"		: "moose",
+		"tarbuffalo": "tarbuffalo",
+		"goat"		: "shdw2",
+		"chow"		: "chow",
+		"bear"		: "zero",
+		"mountainlion" : "zero",
+
+	};
+
+	var name = that.availableAnimals[ 0 ];
+
+	var variations = colorVariations[ "zero" ];
+	
+	if ( animalVariationMap[ name ] !== undefined ) {
+		
+		variations = colorVariations[  animalVariationMap[ name ] ];
+		
+	}
+	
+	if ( variations.lScale ) {
+	
+		pars.uniforms.lightScale.value = variations.lScale;
+		
+	}	
+
+	if ( variations.lOffset ) {
+	
+		pars.uniforms.lightOffset.value.set( variations.lOffset[ 0 ], variations.lOffset[ 1 ], variations.lOffset[ 2 ] );
+		
+	} else {
+		
+		pars.uniforms.lightOffset.value.set( 0.0, 0.0, 0.0 );
+
+	}		
+	
+
 	var material = new THREE.MeshShaderMaterial( pars );
 
-	var that = {};
 	that.mesh = new THREE.Mesh( geometry, material );
 	that.morph = 0.0;
 	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
 	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0 };
-	that.availableAnimals = ROME.AnimalAnimationData.init( geometry, parseMorphTargetsNames );
 	
 	
 	var isPlaying = false;
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 
 
+	
+	
 	var c, r, g, b, dr = 0.5, dg = 0.5, db = 0.5;
 
 	function cap( x, a, b ) { return x < a ? a : ( x > b ? b : x ); }
@@ -46,8 +124,17 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		
 		c.updateHSV();
 
-		c.h = cap( c.h + 0.05 * Math.random(), 0, 1 );
-		c.s = cap( c.s + 0.05 * Math.random(), 0, 1 );
+		c.h = cap( c.h + variations.hRange * Math.random() + variations.hOffset, 0, 1 );
+		c.s = cap( c.s + variations.sRange * Math.random() + variations.sOffset, 0, 1 );
+		c.v = cap( c.v + variations.vRange * Math.random() + variations.vOffset, 0, 1 );
+
+		//c.h = cap( c.h + 0.05 * Math.random(), 0, 1 );
+		//c.s = cap( c.s + 0.05 * Math.random(), 0, 1 );
+
+		//c.h = c.h + 0.0125;
+		//c.s = c.s - 0.1;
+		//c.v = cap( c.v + 0.15 * Math.random() + 0.05, 0, 1 );
+		
 		c.setHSV( c.h, c.s, c.v );
 
 		/*
@@ -104,6 +191,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		that.animalB.currentTime = startTimeAnimalB ? startTimeAnimalB : 0;
 		
 		that.update( 0 );
+
 	} 
 
 
@@ -271,7 +359,10 @@ ROME.AnimalShader = {
 								{
 									"animalAInterpolation": { type: "f", value: 0.0 },
 									"animalBInterpolation": { type: "f", value: 0.0 },
-									"animalMorphValue" :    { type: "f", value: 0.0 }
+									"animalMorphValue" :    { type: "f", value: 0.0 },
+									
+									"lightScale"  :    { type: "f", value: 1.0 },
+									"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) },
 								} ] ),
 
 	vertex: [
@@ -280,6 +371,9 @@ ROME.AnimalShader = {
 		"uniform float	animalBInterpolation;",
 		"uniform float	animalMorphValue;",
 		"varying vec3 	vLightWeighting;",
+
+		"uniform float lightScale;",
+		"uniform vec3 lightOffset;",
 
 		THREE.ShaderChunk[ "lights_pars_vertex" ],
 		THREE.ShaderChunk[ "color_pars_vertex" ],
@@ -293,6 +387,8 @@ ROME.AnimalShader = {
 			"vec3 transformedNormal = normalize( normalMatrix * normal );",
 
 			THREE.ShaderChunk[ "lights_vertex" ],
+			
+			"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
 			
 			"vec3 animalA = mix( morphTarget0, morphTarget1, animalAInterpolation );",
 			"vec3 animalB = mix( morphTarget2, morphTarget3, animalBInterpolation );",
@@ -336,7 +432,7 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "horse", "mountainlion", "wolf", "fox", "deer", "bison", "tarbuffalo_runB", "tarbuffalo_runA", "parrot", "eagle", "vulture", "raven", "blackWidow" ],
+	animalNames: [ "chow", "goat", "tarbuffalo", "flamingo", "moose", "shdw2", "gator", "bear", "horse", "mountainlion", "wolf", "fox", "deer", "bison", "tarbuffalo_runB", "tarbuffalo_runA", "parrot", "eagle", "vulture", "raven", "blackWidow" ],
 
 
 	// init frame times and indices

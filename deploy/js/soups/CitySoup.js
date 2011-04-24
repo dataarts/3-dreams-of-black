@@ -138,7 +138,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	loader.load( { model: "files/models/soup/animals_A_life.js", callback: animalLoadedProxy } );
 	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoadedProxy } );
-	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
+	loader.load( { model: "files/models/soup/moose_hackfix.js", callback: mooseLoadedProxy } );
 	loader.load( { model: "files/models/soup/fish_life.js", callback: fishLoadedProxy } );
 	//loader.load( { model: "files/models/soup/sock_jump_life.js", callback: sockLoadedProxy } );
 

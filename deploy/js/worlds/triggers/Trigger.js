@@ -38,7 +38,10 @@ Trigger = function( geometry, wantedParent ) {
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 	var lengthInMS = ( geometry.morphTargets.length - 1 ) * 1000;
 
-	console.log( that.mesh );
+	//console.log( that.mesh );
+	
+	// morphTargetOrder is sometimes undefined
+	// exception here
 	
 	morphTargetOrder[ 0 ] = 0;
 	morphTargetOrder[ 1 ] = 1;
