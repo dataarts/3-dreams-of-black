@@ -18,9 +18,9 @@ Notes:
         -d invert|normal		invert transparency
         -b						bake material colors into face colors
         -e						export edges
-        -x 10.0                 scale and truncate
 
     - by default:
+        converted model will be centered (middle of bounding box goes to 0,0,0)
         use smooth shading (if there were vertex normals in the original model)
         will be in ASCII format
         original model is assumed to use non-inverted transparency / dissolve (0.0 fully transparent, 1.0 fully opaque)
@@ -138,17 +138,15 @@ import sys
 import struct
 import math
 import glob
+import json
 
 # #####################################################
 # Configuration
 # #####################################################
-ALIGN = "none"        	# center centerxz bottom top none
+ALIGN = "center"        # center centerxz bottom top none
 SHADING = "smooth"      # smooth flat 
 TYPE = "ascii"          # ascii binary
 TRANSPARENCY = "normal" # normal invert
-
-TRUNCATE = False
-SCALE = 1.0
 
 BAKE_COLORS = False
 EXPORT_EDGES = False
@@ -178,8 +176,6 @@ var model = {
 
     "version" : 2,
     
-    "scale" : %(scale)f,
-
     "materials": [%(materials)s],
 
     "vertices": [%(vertices)s],
@@ -229,7 +225,6 @@ close();
 """
 
 TEMPLATE_VERTEX = "%f,%f,%f"
-TEMPLATE_VERTEX_TRUNCATE = "%d,%d,%d"
 
 TEMPLATE_N = "%f,%f,%f"
 TEMPLATE_UV = "%f,%f"
@@ -675,7 +670,11 @@ def generate_face(f, fc):
             faceData.append(index)
             
     if hasFaceColors:
-        index = fc['material']
+        if 'color_index' in fc:
+            index = fc['color_index']
+        else:
+            index = fc['material']
+
         faceData.append(index)        
 
     return ",".join( map(str, faceData) )
@@ -686,11 +685,8 @@ def generate_face(f, fc):
 def hexcolor(c):
     return ( int(c[0] * 255) << 16  ) + ( int(c[1] * 255) << 8 ) + int(c[2] * 255)
 
-def generate_vertex(v, option_vertices_truncate, scale):
-    if not option_vertices_truncate:
-        return TEMPLATE_VERTEX % (v[0], v[1], v[2])
-    else:
-        return TEMPLATE_VERTEX_TRUNCATE % (scale * v[0], scale * v[1], scale * v[2])
+def generate_vertex(v):
+    return TEMPLATE_VERTEX % (v[0], v[1], v[2])
 
 def generate_normal(n):
     return TEMPLATE_N % (n[0], n[1], n[2])
@@ -711,7 +707,7 @@ def generate_edge(e):
 # Morphs
 # #####################################################
 def generate_morph_vertex(name, vertices):
-    vertex_string = ",".join(generate_vertex(v, TRUNCATE, SCALE) for v in vertices)
+    vertex_string = ",".join(generate_vertex(v) for v in vertices)
     return TEMPLATE_MORPH_VERTICES % (name, vertex_string)
     
 def generate_morph_color(name, colors):
@@ -727,17 +723,21 @@ def extract_material_colors(materials, mtlfilename, basename):
 
     mtl = create_materials(materials, mtlfilename, basename)
     
+    idMap = {}
+    
     mtlColorArraySrt = []
     for m in mtl:
         if m in materials:
             index = materials[m]
             color = mtl[m].get("colorDiffuse", [1,0,0])
             mtlColorArraySrt.append([index, color])
+            
+            idMap[index] = m
        
     mtlColorArraySrt.sort()
     mtlColorArray = [x[1] for x in mtlColorArraySrt]
 
-    return mtlColorArray
+    return mtlColorArray, mtl, idMap
 
 def extract_face_colors(faces, material_colors):
     """Extract colors from materials and assign them to faces
@@ -750,6 +750,33 @@ def extract_face_colors(faces, material_colors):
         faceColors.append(material_colors[material_index])
 
     return faceColors
+
+def extract_face_colors_ranges(faces, material_colors, color_ranges, mtl, idMap):
+    """Extract colors from materials and assign them to faces
+    """
+    
+    faceColors = []
+    
+    uniqueColors = {}
+    counter = 0
+
+    for face in faces:
+        material_index = face['material']
+        diffuse = material_colors[material_index]
+        
+        id = idMap.get(material_index, "unknown")
+        color_range = color_ranges["materials"].get(id, [diffuse])
+        color = random.choice(color_range)
+
+        key = veckey3(color)
+        if key not in uniqueColors:
+            uniqueColors[key] = counter
+            counter += 1
+            
+        face["color_index"] = uniqueColors[key]
+        faceColors.append(color)
+
+    return faceColors, uniqueColors
 
 def generate_morph_targets(morphfiles, n_vertices, infile):
     skipOriginalMorph = False
@@ -802,7 +829,8 @@ def generate_morph_colors(colorfiles, n_vertices, n_faces):
     morphColorData = []
     colorFaces = []
     materialColors = []
-    
+    rangeColors = {}
+
     for mfilepattern in colorfiles.split():
 
         matches = glob.glob(mfilepattern)
@@ -826,23 +854,47 @@ def generate_morph_colors(colorfiles, n_vertices, n_faces):
 
             else:
 
-                morphMaterialColors = extract_material_colors(morphMaterials, morphMtllib, normpath)  
+                morphMaterialColors, mtl, idMap = extract_material_colors(morphMaterials, morphMtllib, normpath)
+                
+                # by default take colors from materials
                 morphFaceColors = extract_face_colors(morphFaces, morphMaterialColors)
-                morphColorData.append((get_name(name), morphFaceColors))
+
+                print "adding [%s] with %d face colors" % (name, len(morphFaceColors))
+
+                # load color ranges
+                
+                uniqueColors = None
+
+                colorMapFile = "%s.txt" % os.path.splitext(morphMtllib)[0]
+                colorMapPath = os.path.join(os.path.dirname(normpath), colorMapFile)
+                
+                if file_exists(colorMapPath):
+                    
+                    f = open(colorMapPath, "r")
+                    color_ranges = json.load(f)
+                    
+                    # if color ranges found, take colors instead from ranges
+
+                    if color_ranges:
+                        print "using color ranges [%s]" % colorMapFile
+
+                        morphFaceColors, uniqueColors = extract_face_colors_ranges(morphFaces, morphMaterialColors, color_ranges, mtl, idMap)
+                        
+                colorData = (get_name(name), morphFaceColors)
+                morphColorData.append(colorData)
 
                 # take first color map for baking into face colors
 
                 if len(colorFaces) == 0:
                     colorFaces = morphFaces
                     materialColors = morphMaterialColors
-
-                print "adding [%s] with %d face colors" % (name, len(morphFaceColors))
+                    rangeColors = uniqueColors
 
     morphColors = ""
     if len(morphColorData):
         morphColors = "\n%s\n\t" % ",\n".join(generate_morph_color(name, colors) for name, colors in morphColorData)
     
-    return morphColors, colorFaces, materialColors
+    return morphColors, colorFaces, materialColors, rangeColors
 
 # #####################################################
 # Edges
@@ -1131,7 +1183,7 @@ def convert_ascii(infile, morphfiles, colorfiles, outfile):
     
     # extract morph colors
 
-    morphColors, colorFaces, materialColors = generate_morph_colors(colorfiles, n_vertices, n_faces)    
+    morphColors, colorFaces, materialColors, rangeColors = generate_morph_colors(colorfiles, n_vertices, n_faces)    
 
     # generate colors string
 
@@ -1140,11 +1192,21 @@ def convert_ascii(infile, morphfiles, colorfiles, outfile):
 
     if len(colorFaces) < len(faces):
         colorFaces = faces
-        materialColors = extract_material_colors(materials, mtllib, infile)
+        materialColors, mtl, idMap = extract_material_colors(materials, mtllib, infile)
     
     if BAKE_COLORS:
-        colors_string = ",".join(generate_color_decimal(c) for c in materialColors)
-        ncolor = len(materialColors)
+        
+        if rangeColors:
+            chunks = []
+            for key, index in sorted(rangeColors.items(), key = operator.itemgetter(1)):
+                chunks.append(key)
+            
+            colors_string = ",".join(generate_color_decimal(c) for c in chunks)
+            ncolor = len(rangeColors)
+        
+        else:
+            colors_string = ",".join(generate_color_decimal(c) for c in materialColors)
+            ncolor = len(materialColors)
         
     # generate edges string
     
@@ -1174,16 +1236,14 @@ def convert_ascii(infile, morphfiles, colorfiles, outfile):
     "normals"       : normals_string,
     "colors"        : colors_string,
     "uvs"           : ",".join(generate_uv(uv) for uv in uvs),
-    "vertices"      : ",".join(generate_vertex(v, TRUNCATE, SCALE) for v in vertices),
+    "vertices"      : ",".join(generate_vertex(v) for v in vertices),
     
     "morphTargets"  : morphTargets,
     "morphColors"   : morphColors,
     
     "faces"     : ",".join(generate_face(f, fc) for f, fc in zip(faces, colorFaces)),
         
-    "edges"    : edges_string,
-    
-    "scale"    : SCALE
+    "edges"    : edges_string
     }
     
     out = open(outfile, "w")
@@ -1518,7 +1578,7 @@ if __name__ == "__main__":
     
     # get parameters from the command line
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hbei:m:c:b:o:a:s:t:d:x:", ["help", "bakecolors", "edges", "input=", "morphs=", "colors=", "output=", "align=", "shading=", "type=", "dissolve=", "truncatescale="])
+        opts, args = getopt.getopt(sys.argv[1:], "hbei:m:c:b:o:a:s:t:d:", ["help", "bakecolors", "edges", "input=", "morphs=", "colors=", "output=", "align=", "shading=", "type=", "dissolve="])
     
     except getopt.GetoptError:
         usage()
@@ -1566,10 +1626,6 @@ if __name__ == "__main__":
 
         elif o in ("-e", "--edges"):
             EXPORT_EDGES = True
-
-        elif o in ("-x", "--truncatescale"):
-            TRUNCATE = True
-            SCALE = float(a)
 
     if infile == "" or outfile == "":
         usage()

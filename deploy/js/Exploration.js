@@ -12,21 +12,21 @@ var Exploration = function ( shared ) {
 	cameras.dunes.movementSpeed = 200;
 	cameras.dunes.lookSpeed = 3;
 	cameras.dunes.constrainVertical = [ -0.4, 0.4 ];
-	cameras.dunes.autoForward = true;
+	cameras.dunes.autoForward = false;
 	cameras.dunes.position.set( 0, 0, 0 );
 
 	cameras.prairie = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 	cameras.prairie.movementSpeed = 50;
 	cameras.prairie.lookSpeed = 3;
 	cameras.prairie.constrainVertical = [ -0.4, 0.4 ];
-	cameras.prairie.autoForward = true;
+	cameras.prairie.autoForward = false;
 	cameras.prairie.position.set( 0, 0, 0 );
 
 	cameras.city = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 	cameras.city.movementSpeed = 100;
 	cameras.city.lookSpeed = 3;
 	cameras.city.constrainVertical = [ -0.4, 0.4 ];
-	cameras.city.autoForward = true;
+	cameras.city.autoForward = false;
 	cameras.city.position.set( 0, 0, 0 );
 
 	var world, scene,
