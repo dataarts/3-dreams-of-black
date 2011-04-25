@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<cronentries>
-  <cron>
-    <url>/services/cron/</url>
-    <description>Repopulate the toplist every night at 1</description>    
-    <schedule>every day 01:00</schedule>
-    <timezone>Europe/Zurich</timezone>
-  </cron> 
-</cronentries>
