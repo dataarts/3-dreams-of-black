@@ -48,7 +48,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		
 		that.update( 0 );
 
-	} 
+	};
 
 
 	//--- update ---
@@ -70,7 +70,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			
 			for( d = 0, dl = dataNames.length, morphTarget = 0; d < dl; d++ ) {
 				
-				data = that[ dataNames[ d ]];
+				data = that[ dataNames[ d ] ];
 				
 				unloopedTime = data.currentTime;
 				data.currentTime = ( data.currentTime + deltaTimeMS * data.timeScale ) % data.lengthInMS;
@@ -132,7 +132,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			
 		}
 		
-	}
+	};
 
 
 	//--- set new target animal ---
@@ -157,14 +157,13 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			setFrame( that.animalB );
 			that.morph = 0;
 			
-		}
-		else {
+		} else {
 			
 			console.log( "Error: Cannot change animal target if morph != 1. Skipping." );
 
 		}
 		
-	}
+	};
 
 
 	//--- set animal data ---
@@ -185,7 +184,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			
 		}
 		
-	}
+	};
 	
 	
 	//--- set frame ---
@@ -207,21 +206,21 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 			
 		}
 		
-	}
+	};
 
 
 	//--- set current frame ---
 	
 	var setCurrentFrame = function( data ) {
 
-	}
+	};
 
 	
 	//--- return public ---
 	
 	return that;
 
-}
+};
 
 
 
@@ -247,8 +246,8 @@ ROME.AnimalShader = {
 		
 		return {
 			
-			"colorAnimalA": 	{ type: "c", boundTo: "faces", value:[] },
-			"colorAnimalB": 	{ type: "c", boundTo: "faces", value:[] }
+			"colorAnimalA": 	{ type: "c", boundTo: "faces", value: [] },
+			"colorAnimalB": 	{ type: "c", boundTo: "faces", value: [] }
 			
 		}
 		
@@ -286,11 +285,14 @@ ROME.AnimalShader = {
 			
 			// separate lights for animals
 			// ( ambient + one directional )
+
 			"vLightWeighting = vec3( 0.2 );",
 
 			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
 			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
 			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
+			
+			// tweak lighting
 			
 			"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
 
@@ -333,7 +335,7 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "tarbuffalo", "shdw2", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elkRun", "mooseGallop", "fishA", "fishB", "fishC", "fishD", "sockPuppet_jump", "sockPuppet_popUp", "shdw2", "blackWidow", "crab", "scorpSkitter", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "storkFly", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
 
 	colorVariations: {
 		
@@ -343,11 +345,12 @@ ROME.AnimalAnimationData = {
 	"shdw2": { hRange:  0.00, sRange:  0.00, vRange:  0.025,
 		       hOffset: 0.00, sOffset: 0.00, vOffset: -0.03 },
 			   
-	"horse": { hRange:  0.00,  sRange:   0.00, vRange:  0.00,
-		       hOffset: 0.001, sOffset: -0.10, vOffset: 0.00 },
+	"horse": { hRange:  0.01, sRange:   0.00, vRange:  0.05,
+		       hOffset: 0.02, sOffset: -0.10, vOffset: 0.00,
+			   lScale: 0.75, lOffset: [ 0.5, 0.5, 0.5 ]	},
 
 	"moose": { hRange:  0.07, sRange:  0.00, vRange:  0.05,
-		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00 },
+		       hOffset: 0.00, sOffset: -0.20, vOffset: 0.00 },
 
 	"tarbuffalo": { hRange:  0.04, sRange:  0.00, vRange:  0.05,
 		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00 },
@@ -355,7 +358,27 @@ ROME.AnimalAnimationData = {
 	"chow": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
 			  hOffset: 0.00, sOffset:  -0.10, vOffset: -0.10,
 			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+
+	"deer": { hRange:  0.01, sRange:   0.00, vRange:  0.20,
+			  hOffset: 0.00, sOffset:  -0.10, vOffset: -0.10,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
 			  
+	"vulture": { hRange:  0.01, sRange:   0.10, vRange:  0.12,
+			  hOffset: 0.0, sOffset:  0.00, vOffset: -0.10,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+			  
+	"bunny": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
+			  hOffset: 0.00, sOffset:  -0.10, vOffset: 0.00,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+
+	"seal": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
+			  hOffset: 0.00, sOffset:  0.05, vOffset: 0.00,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+			  
+	"eagle": { hRange:  0.05, sRange:  0.00, vRange:  0.25,
+			  hOffset: 0.00, sOffset:  -0.10, vOffset: 0.10,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+
 	"sat":  { hRange:  0.00, sRange:  0.00, vRange:  0.00,
 		      hOffset: 0.00, sOffset: 0.10, vOffset: 0.00 },
 
@@ -376,8 +399,25 @@ ROME.AnimalAnimationData = {
 		"tarbuffalo": "tarbuffalo",
 		"goat"		: "shdw2",
 		"chow"		: "chow",
-		"bear"		: "zero",
-		"mountainlion" : "zero",
+		"deer"		: "deer",
+		"fox"		: "deer",
+		"goldenRetreiver": "horse",
+		"bunny" 	: "bunny",
+		"seal"		: "seal",
+		"elk"		: "seal",
+		"eagle"		: "eagle",
+		"parrot"	: "eagle",
+		"hummingBird": "seal",
+		"raven"		: "deer",
+		"vulture"   : "vulture",
+		"centipede" : "tarbuffalo",
+		"scorp"		: "tarbuffalo",
+		"bison"		: "tarbuffalo",
+		"sickle"    : "tarbuffalo",
+		
+		"crab"		   : "zero",
+		"bear"		   : "zero",
+		"mountainlion" : "zero"
 
 	},
 
@@ -620,28 +660,25 @@ ROME.AnimalAnimationData = {
 
 			randomizeColors( attributes.colorAnimalA.value, variations );
 			randomizeColors( attributes.colorAnimalB.value, variations );
-			
-			function cap( x, a, b ) { return x < a ? a : ( x > b ? b : x ); };
+
 
 			function randomizeColors( colors, variations ) {
 				
-				var i, il, c;
+				var i, il, c, hd, sd, vd;
 				
-				for( i = 0, il = colors.length ; i < il; i++ ) {
+				for( i = 0, il = colors.length; i < il; i++ ) {
 					
 					c = colors[ i ];
-					
-					c.updateHSV();
 
-					c.h = cap( c.h + variations.hRange * Math.random() + variations.hOffset, 0, 1 );
-					c.s = cap( c.s + variations.sRange * Math.random() + variations.sOffset, 0, 1 );
-					c.v = cap( c.v + variations.vRange * Math.random() + variations.vOffset, 0, 1 );
+					hd = variations.hRange * Math.random() + variations.hOffset;
+					sd = variations.sRange * Math.random() + variations.sOffset;
+					vd = variations.vRange * Math.random() + variations.vOffset;
 
-					c.setHSV( c.h, c.s, c.v );
+					THREE.ColorUtils.adjustHSV( c, hd, sd, vd );							
 					
 				}
 
-			};
+			}
 			
 			// set return values
 	
@@ -703,6 +740,7 @@ ROME.AnimalAnimationData = {
 			material: material
 			
 		};
+
 	}
-		
-}
+
+};
