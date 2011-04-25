@@ -594,7 +594,9 @@ ROME.AnimalAnimationData = {
 					}
 
 					morphTargetName = morphTargetName.slice( 0, a ).toLowerCase();
-					attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors }
+					attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors };
+					
+					randomizeColors( attributes[ morphTargetName ].value, variations );
 					
 				}
 				
@@ -658,8 +660,8 @@ ROME.AnimalAnimationData = {
 	
 			}	
 
-			randomizeColors( attributes.colorAnimalA.value, variations );
-			randomizeColors( attributes.colorAnimalB.value, variations );
+			//randomizeColors( attributes.colorAnimalA.value, variations );
+			//randomizeColors( attributes.colorAnimalB.value, variations );
 
 
 			function randomizeColors( colors, variations ) {
