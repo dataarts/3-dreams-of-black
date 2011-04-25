@@ -1,7 +1,7 @@
 var Film = function ( shared ) {
 
 	var WIDTH = 1024, HEIGHT = 436,
-	domElement, audio, tune,
+	domElement, audio, tune, playing = false,
 	sequencer, renderer, renderTarget;
 
 	// init
@@ -59,8 +59,10 @@ var Film = function ( shared ) {
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 
 	sequencer.add( new VideoEffect( shared, 'files/videos/intro.webm' ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 
 	sequencer.add( new VideoEffect( shared, 'files/videos/transition_city.webm' ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
+	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
@@ -102,6 +104,8 @@ var Film = function ( shared ) {
 
 		updateViewportSize();
 
+		playing = true;
+
 		audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 		audio.play();
 
@@ -111,7 +115,10 @@ var Film = function ( shared ) {
 
 	function stop() {
 
+		playing = false;
+
 		audio.pause();
+
 		document.removeEventListener( 'keydown', onDocumentKeyDown, false );
 
 	};
@@ -197,11 +204,12 @@ var Film = function ( shared ) {
 
 			shared.signals.showrelauncher.dispatch();
 			stop();
+
 			return;
 
 		}
 
-		sequencer.update( audio.currentTime * 1000 );
+		playing && sequencer.update( audio.currentTime * 1000 );
 
 	};
 
