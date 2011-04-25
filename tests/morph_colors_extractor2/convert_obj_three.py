@@ -739,17 +739,64 @@ def extract_material_colors(materials, mtlfilename, basename):
 
     return mtlColorArray
 
-def extract_face_colors(faces, material_colors):
+def find_common_color(colors):    
+    for c in colors[0]:
+        
+        if len(colors) == 3 :
+            if c in colors[1] and c in colors[2]:
+                #print "found common color: %d" % c
+                return c
+        
+        elif len(colors) == 4 :
+            if c in colors[1] and c in colors[2] and c in colors[3]:
+                #print "found common color: %d" % c
+                return c
+        
+    print "didn't find common color, using fallback color heuristics", colors
+
+    colorCounts = {}
+    for vertex_colors in colors:
+        for vc in vertex_colors:
+            if vc not in colorCounts:
+                colorCounts[vc] = 1
+            else:
+                colorCounts[vc] += 1
+                
+    colorOrder = sorted(colorCounts.items(), key = operator.itemgetter(1), reverse = False)
+    print colorOrder
+
+    return colorOrder[0][0]
+    #return colors[0][0]
+
+def extract_face_colors(faces, material_colors, original_faces):
     """Extract colors from materials and assign them to faces
     """
     
     faceColors = []
+    faceColorsFixed = []
+    vertexColors = {}
 
     for face in faces:
         material_index = face['material']
         faceColors.append(material_colors[material_index])
+        
+        for vertex in face["vertex"]:
+            vi = vertex - 1
+            if vi not in vertexColors:
+                vertexColors[vi] = [material_index]
+            else:
+                vertexColors[vi].append(material_index)
 
-    return faceColors
+    for original_face in original_faces:
+        fc = []
+        for vertex in original_face["vertex"]:
+            vi = vertex - 1
+            fc.append(vertexColors[vi])
+
+        fixed_color = find_common_color(fc)
+        faceColorsFixed.append(material_colors[fixed_color])
+
+    return faceColorsFixed
 
 def generate_morph_targets(morphfiles, n_vertices, infile):
     skipOriginalMorph = False
@@ -798,7 +845,7 @@ def generate_morph_targets(morphfiles, n_vertices, infile):
 
     return morphTargets
     
-def generate_morph_colors(colorfiles, n_vertices, n_faces):
+def generate_morph_colors(colorfiles, n_vertices, n_faces, original_faces):
     morphColorData = []
     colorFaces = []
     materialColors = []
@@ -827,7 +874,7 @@ def generate_morph_colors(colorfiles, n_vertices, n_faces):
             else:
 
                 morphMaterialColors = extract_material_colors(morphMaterials, morphMtllib, normpath)  
-                morphFaceColors = extract_face_colors(morphFaces, morphMaterialColors)
+                morphFaceColors = extract_face_colors(morphFaces, morphMaterialColors, original_faces)
                 morphColorData.append((get_name(name), morphFaceColors))
 
                 # take first color map for baking into face colors
@@ -1131,7 +1178,7 @@ def convert_ascii(infile, morphfiles, colorfiles, outfile):
     
     # extract morph colors
 
-    morphColors, colorFaces, materialColors = generate_morph_colors(colorfiles, n_vertices, n_faces)    
+    morphColors, colorFaces, materialColors = generate_morph_colors(colorfiles, n_vertices, n_faces, faces)    
 
     # generate colors string
 
