@@ -29,7 +29,7 @@ body {
 </style>
 
 <script type="text/javascript" src="js/Three.js"></script>
-<script type="text/javascript" src="js/AnimalShadedRandomHSV.js"></script>
+<script type="text/javascript" src="js/AnimalRandomSoup.js"></script>
 <script type="text/javascript" src="js/Detector.js"></script>
 <script type="text/javascript" src="js/RequestAnimationFrame.js"></script>
 
