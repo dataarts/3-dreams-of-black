@@ -14,12 +14,12 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var shake = 0;
 
-/*	var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
+	/*var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
-*/
+	*/
 	// refactoring
 
 	// setup the different parts of the soup
@@ -193,24 +193,30 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	// flying animals 2
-/*	var flyingAnimals2 = new AnimalSwarm(80, scene, vectors.array);
+	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
 	flyingAnimals2.settings.flying = true;
-	flyingAnimals2.settings.divider = 8;
-	flyingAnimals2.settings.flyingDistance = 10;
-	flyingAnimals2.settings.xPositionMultiplier = 30;
-	flyingAnimals2.settings.zPositionMultiplier = 30;
-	//flyingAnimals2.settings.constantSpeed = 0.5;
+	flyingAnimals2.settings.divider = 1;
+	flyingAnimals2.settings.flyingDistance = 30;
+	flyingAnimals2.settings.xPositionMultiplier = 20;
+	flyingAnimals2.settings.zPositionMultiplier = 20;
+	flyingAnimals2.settings.constantSpeed = 2.0;
+	flyingAnimals2.settings.butterfly = true;
+	//flyingAnimals2.settings.switchPosition = true;
 
-	loader.load( { model: "files/models/soup/butterfly_lowA.js", callback: flying2LoadedProxy } );
+
+	loader.load( { model: "files/models/soup/butterfly_low.js", callback: flying2LoadedProxy } );
 	
 	function flying2LoadedProxy( geometry ) {
-		flyingAnimals2.addAnimal( geometry, null, 5, null, 6, null, true );
+		var morphArray = [0,1,2,3];
+		flyingAnimals2.addAnimal( geometry, null, 5, morphArray, 5, null, true );
 	}
-*/
+
 
 	// butterflys
-	var butterflys = new AnimalInFrontOfCamera(30, scene);
-	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflys.addAnimal } );
+	var butterflysD = new AnimalInFrontOfCamera(15, scene);
+	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflysD.addAnimal } );
+	var butterflysC = new AnimalInFrontOfCamera(15, scene);
+	loader.load( { model: "files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
 	
 	// trail - of grass/trees/etc
 	var trail = new Trail(100, scene);
@@ -326,16 +332,17 @@ var CitySoup = function ( camera, scene, shared ) {
 		particles.update(delta, vectors.array[0].position, camPos);
 		runningAnimals.update(delta);
 		flyingAnimals.update(delta);
-		//flyingAnimals2.update();
+		flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
-		butterflys.update(camPos, angleRad, delta);
+		butterflysC.update(camPos, angleRad, delta);
+		butterflysD.update(camPos, angleRad, delta, true);
 		trail.update(collisionScene.emitterFollow.position, collisionScene.currentNormal, camPos, delta);
 		TWEEN.update();
 
 		// pointlight
-		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;
-		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*20;
-		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*20;
+		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*100;
+		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*100;
+		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*100;
 		*/
 	}
 
@@ -352,6 +359,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		vectors.reset(camPos.x,camPos.y,camPos.z);
 		runningAnimals.reset(camPos.x,camPos.y,camPos.z);
 		flyingAnimals.reset(camPos.x,camPos.y,camPos.z);
+		flyingAnimals2.reset(camPos.x,camPos.y,camPos.z);
 		particles.reset(camPos.x,camPos.y,camPos.z);
 
 	}

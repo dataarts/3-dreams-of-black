@@ -25,6 +25,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		capy : null,
 		startPosition : new THREE.Vector3(0,0,0),
 		switchPosition : false,
+		butterfly : false,
 	}
 	
 	var r = 0;
@@ -78,7 +79,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
 			}
 
-			animal.play( animal.availableAnimals[ startMorph ], animal.availableAnimals[ endMorph ], 0, Math.random() );
+			animal.play( animal.availableAnimals[ startMorph ], animal.availableAnimals[ endMorph ], 0, Math.random(), Math.random() );
 
 			var count = Math.random();
 			if (i<2) {
@@ -174,7 +175,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// flying
-			if (that.settings.flying) {
+			if (that.settings.flying && !that.settings.butterfly) {
 				var pulse = Math.cos((i-r*10)/15)*10
 				var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/100)*40);			
 
@@ -193,6 +194,15 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				if (cNormal.z > 0.8) {
 					toz += flyAmount;
 				}
+			}
+
+			if (that.settings.butterfly) {
+				var flyAmount = that.settings.flyingDistance-Math.sin((i+r))*20;			
+
+				tox += cNormal.x*flyAmount;
+				toy += cNormal.y*flyAmount;
+				toz += cNormal.z*flyAmount;
+
 			}
 
 			// morph
@@ -229,7 +239,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			var xvec = new THREE.Vector3();
 			var yvec = new THREE.Vector3(vectorArray[f].normal.x*-1, vectorArray[f].normal.y*-1, vectorArray[f].normal.z*-1);
-			if (that.settings.flying) {
+			if (that.settings.flying && !that.settings.butterfly) {
 				yvec = new THREE.Vector3(0, -1, 0);
 			}
 
