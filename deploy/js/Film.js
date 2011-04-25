@@ -10,7 +10,7 @@ var Film = function ( shared ) {
 	domElement.style.display = 'none';
 
 	audio = document.createElement( 'audio' );
-	audio.preload = true;
+	audio.autobuffer = true;
 	domElement.appendChild( audio );
 
 	source = document.createElement( 'source' );
@@ -25,9 +25,10 @@ var Film = function ( shared ) {
 	renderer.setSize( WIDTH, HEIGHT );
 	renderer.autoClear = false;
 	renderer.sortObjects = false;
-	renderer.domElement.style.position = 'absolute';
 
 	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+	renderTarget.minFilter = THREE.LinearFilter;
+	renderTarget.magFilter = THREE.LinearFilter;
 
 	// shared adds
 
@@ -35,8 +36,6 @@ var Film = function ( shared ) {
 	shared.baseHeight = HEIGHT;
 	shared.viewportWidth = WIDTH;
 	shared.viewportHeight = HEIGHT;
-
-	shared.film = { domElement : domElement };
 
 	shared.renderer = renderer;
 	shared.renderTarget = renderTarget;
@@ -50,7 +49,7 @@ var Film = function ( shared ) {
 	// effects
 
 	//var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
-	var overlayTexture = THREE.ImageUtils.loadTexture( 'files/textures/fingerprints.png' );
+	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
 
 	// sequence
 
@@ -58,24 +57,22 @@ var Film = function ( shared ) {
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 
-	sequencer.add( new VideoEffect( shared, 'files/videos/intro.webm' ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-
-	sequencer.add( new VideoEffect( shared, 'files/videos/transition_city.webm' ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
-	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
+	sequencer.add( new Intro( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	
+	sequencer.add( new TransitionToCity( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
-	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
+	sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 	//sequencer.add( new OverlayEffect( shared, overlayTexture ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 
-	sequencer.add( new VideoEffect( shared, 'files/videos/transition_prairie.webm' ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
+	sequencer.add( new TransitionToPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.18, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 	sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 4 );
 
-	sequencer.add( new VideoEffect( shared, 'files/videos/transition_dunes.webm' ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
+	sequencer.add( new TransitionToDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
 
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.094, 0.0, 4096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
@@ -161,28 +158,14 @@ var Film = function ( shared ) {
 
 		// TODO: Hacky...
 
-		renderTarget.width = nextPowerOf2( shared.viewportWidth );
-		renderTarget.height = nextPowerOf2( shared.viewportHeight );
+		renderTarget.width = shared.viewportWidth;
+		renderTarget.height = shared.viewportHeight;
 		delete renderTarget.__webglFramebuffer;
 
-		renderer.domElement.style.left = '0px';
+		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
 
 	};
-
-	function nextPowerOf2( n ) {
-
-		n--;
-		n |= n >> 1;
-		n |= n >> 2;
-		n |= n >> 4;
-		n |= n >> 8;
-		n |= n >> 16;
-		n++;
-
-		return n;
-
-	}
 
 	this.getDomElement = function () {
 
