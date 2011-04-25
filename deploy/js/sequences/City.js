@@ -103,7 +103,7 @@ var City = function ( shared ) {
 
 		soup.update( delta );
 
-		camera.position.z -= delta / 10;
+		camera.position.z -= delta / 9;
 
 		if (camera.position.z < -3300) {
 			camera.position.z = 0;

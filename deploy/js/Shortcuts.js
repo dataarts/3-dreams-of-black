@@ -43,7 +43,7 @@ var Shortcuts = function ( shared ) {
 
 	// Tool
 
-	addToolShortcut( 'Tool' );
+	addUgcShortcut( 'Ugc' );
 
 	function addSeparator() {
 
@@ -108,11 +108,11 @@ var Shortcuts = function ( shared ) {
 
 	}
 
-	function addToolShortcut( text ) {
+	function addUgcShortcut( text ) {
 
 		addLink( text, function () {
 
-			shared.signals.showtool.dispatch();
+			shared.signals.showugc.dispatch();
 
 		} );
 

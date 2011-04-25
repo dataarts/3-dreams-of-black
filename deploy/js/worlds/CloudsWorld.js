@@ -40,83 +40,86 @@ var CloudsWorld = function ( shared ) {
 
 	geometry = new THREE.Geometry();
 
-	var texture = THREE.ImageUtils.loadTexture( 'files/cloud256.png' );
-	texture.magFilter = THREE.LinearMipMapLinearFilter;
-	texture.minFilter = THREE.LinearMipMapLinearFilter;
+	var texture = THREE.ImageUtils.loadTexture( 'files/cloud256.png', null, function () {
 
-	var fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
+		var fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
 
-	material = new THREE.MeshShaderMaterial( {
+		material = new THREE.MeshShaderMaterial( {
 
-		uniforms: {
+			uniforms: {
 
-			"map": { type: "t", value:2, texture: texture },
-			"fogColor" : { type: "c", value: fog.color },
-			"fogNear" : { type: "f", value: fog.near },
-			"fogFar" : { type: "f", value: fog.far },
+				"map": { type: "t", value:2, texture: texture },
+				"fogColor" : { type: "c", value: fog.color },
+				"fogNear" : { type: "f", value: fog.near },
+				"fogFar" : { type: "f", value: fog.far },
 
-		},
-		vertexShader: [
+			},
+			vertexShader: [
 
-			"varying vec2 vUv;",
- 
-			"void main() {",
- 
-				"vUv = uv;",
-				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"varying vec2 vUv;",
 
-			"}"
+				"void main() {",
 
-		].join("\n"),
+					"vUv = uv;",
+					"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
-		fragmentShader: [
+				"}"
 
-			"uniform sampler2D map;",
- 
-			"uniform vec3 fogColor;",
-			"uniform float fogNear;",
-			"uniform float fogFar;",
- 
-			"varying vec2 vUv;",
- 
-			"void main() {",
- 
-				"float depth = gl_FragCoord.z / gl_FragCoord.w;",
-				"float fogFactor = smoothstep( fogNear, fogFar, depth );",
- 
-				"gl_FragColor = texture2D( map, vUv );",
-				"gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );",
-				"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+			].join("\n"),
 
-			"}"
+			fragmentShader: [
 
-		].join("\n"),
+				"uniform sampler2D map;",
 
-		depthTest: false
+				"uniform vec3 fogColor;",
+				"uniform float fogNear;",
+				"uniform float fogFar;",
+
+				"varying vec2 vUv;",
+
+				"void main() {",
+
+					"float depth = gl_FragCoord.z / gl_FragCoord.w;",
+					"float fogFactor = smoothstep( fogNear, fogFar, depth );",
+
+					"gl_FragColor = texture2D( map, vUv );",
+					"gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );",
+					"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+
+				"}"
+
+			].join("\n"),
+
+			depthTest: false
+
+		} );
+
+		var plane = new THREE.Mesh( new THREE.Plane( 64, 64 ) );
+
+		for ( i = 0; i < 4000; i++ ) {
+
+			plane.position.x = Math.random() * 1000 - 500;
+			plane.position.y = - Math.random() * Math.random() * 200 - 15;
+			plane.position.z = i;
+			plane.rotation.z = Math.random() * Math.PI;
+			plane.scale.x = plane.scale.y = Math.random() * Math.random() * 1.5 + 0.5;
+
+			GeometryUtils.merge( geometry, plane );
+
+		}
+
+		mesh = new THREE.Mesh( geometry, material );
+		scene.addObject( mesh );
+
+		mesh = new THREE.Mesh( geometry, material );
+		mesh.position.z = - 4000;
+		scene.addObject( mesh );
 
 	} );
 
-	var plane = new THREE.Mesh( new THREE.Plane( 64, 64 ) );
+	texture.magFilter = THREE.LinearMipMapLinearFilter;
+	texture.minFilter = THREE.LinearMipMapLinearFilter;
 
-
-	for ( i = 0; i < 4000; i++ ) {
-
-		plane.position.x = Math.random() * 1000 - 500;
-		plane.position.y = - Math.random() * Math.random() * 200 - 15;
-		plane.position.z = i;
-		plane.rotation.z = Math.random() * Math.PI;
-		plane.scale.x = plane.scale.y = Math.random() * Math.random() * 1.5 + 0.5;
-
-		GeometryUtils.merge( geometry, plane );
-
-	}
-
-	mesh = new THREE.Mesh( geometry, material );
-	scene.addObject( mesh );
-
-	mesh = new THREE.Mesh( geometry, material );
-	mesh.position.z = - 4000;
-	scene.addObject( mesh );
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );

@@ -92,14 +92,6 @@ var Film = function ( shared ) {
 
 	function start( pattern ) {
 
-		/*
-		if ( renderer.domElement.parentElement ) {
-
-			renderer.domElement.parentElement.removeChild( renderer.domElement );
-
-		}
-		*/
-
 		domElement.appendChild( renderer.domElement );
 
 		updateViewportSize();
@@ -162,8 +154,8 @@ var Film = function ( shared ) {
 
 		var scale = window.innerWidth / WIDTH;
 
-		shared.viewportWidth = WIDTH * scale;
-		shared.viewportHeight = HEIGHT * scale
+		shared.viewportWidth = shared.baseWidth * scale;
+		shared.viewportHeight = shared.baseHeight * scale
 
 		renderer.setSize( shared.viewportWidth, shared.viewportHeight );
 
