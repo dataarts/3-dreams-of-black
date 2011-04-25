@@ -217,13 +217,13 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			//var divider = delta/10;
-			var divider = 8;
+			var divider = 6;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
 			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
 
-		var maxSpeed = 8;
+		var maxSpeed = 12;
 
 		if ( moveY > maxSpeed )	moveY = maxSpeed;
 		if ( moveY < -maxSpeed ) moveY = -maxSpeed;

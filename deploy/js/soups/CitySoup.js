@@ -27,7 +27,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 
 	var collisionScene = new CollisionScene2( that.camera, 0.1, shared, 500, scene );
-	collisionScene.settings.maxSpeedDivider = 5;
+	collisionScene.settings.maxSpeedDivider = 4;
 	collisionScene.settings.capBottom = 3;
 	collisionScene.settings.capTop = 1000;
 	collisionScene.settings.shootRayDown = false;
