@@ -3,7 +3,7 @@ var Exploration = function ( shared ) {
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
-	var renderer = shared.renderer,
+	var renderer = shared.renderer;
 	renderTarget = shared.renderTarget;
 
 	var camera, cameras = {};
@@ -31,7 +31,7 @@ var Exploration = function ( shared ) {
 
 	var world, scene,
 	clearEffect, heatEffect, noiseEffect, renderEffect, overlayEffect;
-	
+
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
 
@@ -40,10 +40,10 @@ var Exploration = function ( shared ) {
 
 	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
 	noiseEffect.init();
-	
+
 	overlayEffect = new OverlayEffect( shared, THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" ) );
 	overlayEffect.init();
-	
+
 	renderEffect = new RenderEffect( shared );
 	renderEffect.init();
 
@@ -88,41 +88,35 @@ var Exploration = function ( shared ) {
 
 	};
 
-	function startExplore ( worldId ) {
+	function startExplore( worldId ) {
 
-		if ( renderer.domElement.parentElement ) {
-			
-			renderer.domElement.parentElement.removeChild( renderer.domElement );
-			
-		}
-		
 		domElement.appendChild( renderer.domElement );
 
-		updateViewportSize();
+		// updateViewportSize();
 
 		world = shared.worlds[ worldId ];
 		scene = world.scene;
-		camera = cameras[ worldId ];		
-		
+		camera = cameras[ worldId ];
+
 		scene.addChild( camera );
 
 		camera.position.set( 0, 0, 0 );
-		
+
 		// hide soup (if it wasn't yet activated)
 
 		if ( !shared.started[ worldId ] ) {
-		
+
 			THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
 
 				if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
 					|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
 
 					var name = node.name.toLowerCase();
-					
+
 					if ( ! ( name && name.indexOf( "portal" ) >= 0 ) ) {
-						
-						node.visible = false;					
-						
+
+						node.visible = false;
+
 					}
 
 				}
@@ -130,21 +124,21 @@ var Exploration = function ( shared ) {
 			} );
 
 		}
-		
+
 		start = lastTime = new Date().getTime();
 
 	};
 
-	function stop () {
+	function stop() {
 
 	};
 
-	function updateViewportSize () {
+	function updateViewportSize() {
 
-		var scale = window.innerWidth / shared.viewportWidth;
+		var scale = window.innerWidth / shared.baseWidth;
 
-		shared.viewportWidth = shared.viewportWidth * scale;
-		shared.viewportHeight = shared.viewportHeight * scale
+		shared.viewportWidth = shared.baseWidth * scale;
+		shared.viewportHeight = shared.baseHeight * scale
 
 		renderer.setSize( shared.viewportWidth, shared.viewportHeight );
 
@@ -154,7 +148,7 @@ var Exploration = function ( shared ) {
 		renderTarget.height = shared.viewportHeight;
 		delete renderTarget.__webglFramebuffer;
 
-		renderer.domElement.style.position = 'absolute';
+		renderer.domElement.style.left = '0px';
 		renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
 
 	};
