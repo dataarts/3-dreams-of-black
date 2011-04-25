@@ -8,7 +8,7 @@ var Dunes = function ( shared ) {
 
 	var ray = new THREE.Ray();
 	ray.origin.y = 100;
-	ray.direction = new THREE.Vector3(0, -1, 0);
+	ray.direction = new THREE.Vector3( 0, -1, 0 );
 	var positionVector = new THREE.Vector3();
 
 	var speedStart = 150, speedEnd = 300;
@@ -190,7 +190,7 @@ var Dunes = function ( shared ) {
 
 		}
 
-		world.update( delta, camera );
+		world.update( delta, camera, false );
 		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );

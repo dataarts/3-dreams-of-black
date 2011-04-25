@@ -1,43 +1,16 @@
 var DunesWorld = function ( shared ) {
 
-	var that = this,
-	scale = 0.15,
-	TILE_SIZE = 30000 * scale;
+	var that = this;
 
-	// camera front facing direction vector
-
-	var dirVec = new THREE.Vector3();
-	
-	// camera roll parameters
-	
-	var startRoll = Math.PI, deltaRoll = 0, rollAngle = Math.PI, rollSpeed = Math.PI,
-		startSpeed, deltaSpeed = 0, speedInside = -90, speedOutside = 90;
-	
-	this.liftSpeed = 250;
-	this.startLift = 0.29,
-	this.endLift   = 0.375;
-
-	// debug
-
-	var colorHighlight = new THREE.Color( 0xffaa00 );
-	var colorNormal = new THREE.Color( 0x666666 );
-
-	// tiles
-
-	var randomAdded = 0;
-	var tiles = [ [], [], [] ]; // 9x9 grid
-	var lastx, lastz;
-
-	// static tiles
-
-	var walkPosition, prairiePosition, cityPosition;
-	var sceneWalk, scenePrairie, sceneCity;
+	var ENABLE_LENSFLARES = true;
 
 	this.scene = new THREE.Scene();
 	this.scene.collisions = new THREE.CollisionSystem();
 
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0002529411764705882 );
-	this.scene.fog.color.setHSV( 0.5764705882352941,  0.38235294117647056,  1  );
+	// Fog
+
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000275 );
+	this.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
 
 	// Lights
 
@@ -54,6 +27,49 @@ var DunesWorld = function ( shared ) {
 	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
 	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
 	this.scene.addLight( directionalLight2 );
+	
+	// Lens flares
+
+	if ( ENABLE_LENSFLARES ) {
+
+		this.lensFlare = null;
+		this.lensFlareRotate = null;
+
+		var flaresPosition = new THREE.Vector3( 0, 0, -15000 );
+		var sx = 70, sy = 292;
+		initLensFlares( that, flaresPosition, sx, sy );		
+
+	}
+	
+	// Dunes specific settings
+
+	var	scale = 0.15;
+	var TILE_SIZE = 30000 * scale;
+	
+	// Camera front facing direction vector
+
+	var dirVec = new THREE.Vector3();
+	
+	// Camera roll parameters
+	
+	var startRoll = Math.PI, deltaRoll = 0, rollAngle = Math.PI, rollSpeed = Math.PI,
+		startSpeed, deltaSpeed = 0, speedInside = -90, speedOutside = 90;
+	
+	this.liftSpeed = 250;
+	this.startLift = 0.29,
+	this.endLift   = 0.375;
+
+	// Tiles
+
+	var randomAdded = 0;
+	var tiles = [ [], [], [] ]; // 9x9 grid
+	var lastx, lastz;
+
+	// static tiles
+
+	var walkPosition, prairiePosition, cityPosition;
+	var sceneWalk, scenePrairie, sceneCity;
+
 
 	// reference cube
 
@@ -64,6 +80,9 @@ var DunesWorld = function ( shared ) {
 	that.scene.addObject( that.refCube );
 
 	// islands influence spheres
+
+	var colorHighlight = new THREE.Color( 0xffaa00 );
+	var colorNormal = new THREE.Color( 0x666666 );
 
 	shared.influenceSpheres = [ 
 		
@@ -80,7 +99,6 @@ var DunesWorld = function ( shared ) {
 	if ( showSpheres ) {
 	
 		var sphere = new THREE.Sphere( 1, 64, 32 );
-		//var sphere = new THREE.Icosahedron( 4 );
 		var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
 
 		for ( var i = 0; i < shared.influenceSpheres.length; i ++ ) {
@@ -127,14 +145,7 @@ var DunesWorld = function ( shared ) {
 		scene.position = position;
 		scene.updateMatrix();
 
-		for ( var i = 0, l = scene.objects.length; i < l; i ++ ) {
-
-			var object = scene.objects[ i ];
-			object.matrixAutoUpdate = false;
-			object.updateMatrix();
-
-		}
-		
+		makeSceneStatic( scene );
 		markColliders( scene );
 		
 		that.scene.addChild( scene );
@@ -177,7 +188,7 @@ var DunesWorld = function ( shared ) {
 
 		var x = ( randomAdded % 3 );
 		var z = Math.floor( randomAdded / 3 );
-		//console.log(x+" - "+z);
+		//console.log( x + " - " + z );
 
 		result.scene.rotation.z = getRandomRotation();
 
@@ -421,7 +432,7 @@ var DunesWorld = function ( shared ) {
 
 	};
 
-	function checkInfluenceSpheres( camera, deltaSec ) {
+	function checkInfluenceSpheres( camera, deltaSec, portalsActive ) {
 
 		var i, d, influenceSphere;
 		
@@ -467,7 +478,11 @@ var DunesWorld = function ( shared ) {
 					
 					console.log( "entered portal [" + influenceSphere.name + "]" );
 					
-					shared.signals.startexploration.dispatch( influenceSphere.destination );
+					if ( portalsActive ) {
+					
+						shared.signals.startexploration.dispatch( influenceSphere.destination );
+						
+					}
 
 				}
 				
@@ -516,11 +531,11 @@ var DunesWorld = function ( shared ) {
 
 	};
 	
-	this.update = function ( delta, camera ) {
+	this.update = function ( delta, camera, portalsActive ) {
 
 		// check if we are close to islands
 		
-		checkInfluenceSpheres( camera, delta / 1000 );
+		checkInfluenceSpheres( camera, delta / 1000, portalsActive );
 		
 		// for the moment RollCamera doesn't have straightforward way to get orientation yet
 		// so we attach child in front of it to get direction vector

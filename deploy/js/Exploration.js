@@ -69,7 +69,7 @@ var Exploration = function ( shared ) {
 			delta = time - lastTime;
 			lastTime = time;
 
-			world.update( delta, camera );
+			world.update( delta, camera, true );
 
 			clearEffect.update( progress, delta, time );
 

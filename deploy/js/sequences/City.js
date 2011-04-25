@@ -164,7 +164,7 @@ var City = function ( shared ) {
 
 		renderer.render( world.scene, camera, renderTarget );
 
-		world.update( delta, camera );
+		world.update( delta, camera, false );
 		
 		shared.logger.log( "vertices: " + renderer.data.vertices );
 		shared.logger.log( 'faces: ' + renderer.data.faces );
