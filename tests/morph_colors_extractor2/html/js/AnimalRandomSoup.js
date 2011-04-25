@@ -335,8 +335,9 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
-
+	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "vulture", "raven", "bison", "sickle" ],
+	
 	colorVariations: {
 		
 	"flamingo": { hRange:  0.05, sRange:  0.05, vRange:  0.00,
@@ -401,13 +402,13 @@ ROME.AnimalAnimationData = {
 		"chow"		: "chow",
 		"deer"		: "deer",
 		"fox"		: "deer",
-		"goldenRetreiver": "horse",
+		"goldenretreiver": "horse",
 		"bunny" 	: "bunny",
 		"seal"		: "seal",
 		"elk"		: "seal",
 		"eagle"		: "eagle",
 		"parrot"	: "eagle",
-		"hummingBird": "seal",
+		"hummingbird": "seal",
 		"raven"		: "deer",
 		"vulture"   : "vulture",
 		"centipede" : "tarbuffalo",
@@ -548,25 +549,7 @@ ROME.AnimalAnimationData = {
 			// set animal-specific light params
 
 			//console.log( attributes.colorAnimalA.value );
-			console.log( availableAnimals );
-			
-			var variations = this.colorVariations[ "zero" ];
-			
-			if ( variations.lScale ) {
-			
-				material.uniforms.lightScale.value = variations.lScale;
-				
-			}	
-
-			if ( variations.lOffset ) {
-			
-				material.uniforms.lightOffset.value.set( variations.lOffset[ 0 ], variations.lOffset[ 1 ], variations.lOffset[ 2 ] );
-				
-			} else {
-				
-				material.uniforms.lightOffset.value.set( 0.0, 0.0, 0.0 );
-
-			}		
+			//console.log( availableAnimals );			
 
 			// init custom attributes
 			
@@ -595,6 +578,38 @@ ROME.AnimalAnimationData = {
 
 					morphTargetName = morphTargetName.slice( 0, a ).toLowerCase();
 					attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors };
+					
+					// color variations per morph color
+
+					var variations = this.colorVariations[ "zero" ];
+					
+					if ( this.animalVariationMap[ morphTargetName ] !== undefined ) {
+						
+						variations = this.colorVariations[  this.animalVariationMap[ morphTargetName ] ];
+						console.log( morphColor.name, morphTargetName );
+
+					}
+					
+					if ( variations.lScale ) {
+					
+						material.uniforms.lightScale.value = variations.lScale;
+						
+					} else {
+						
+						material.uniforms.lightScale.value = 0.5;
+
+					}
+
+					if ( variations.lOffset ) {
+					
+						material.uniforms.lightOffset.value.set( variations.lOffset[ 0 ], variations.lOffset[ 1 ], variations.lOffset[ 2 ] );
+						
+					} else {
+						
+						material.uniforms.lightOffset.value.set( 0.6, 0.6, 0.6 );
+
+					}		
+					
 					
 					randomizeColors( attributes[ morphTargetName ].value, variations );
 					

@@ -401,13 +401,13 @@ ROME.AnimalAnimationData = {
 		"chow"		: "chow",
 		"deer"		: "deer",
 		"fox"		: "deer",
-		"goldenRetreiver": "horse",
+		"goldenretreiver": "horse",
 		"bunny" 	: "bunny",
 		"seal"		: "seal",
 		"elk"		: "seal",
 		"eagle"		: "eagle",
 		"parrot"	: "eagle",
-		"hummingBird": "seal",
+		"hummingbird": "seal",
 		"raven"		: "deer",
 		"vulture"   : "vulture",
 		"centipede" : "tarbuffalo",
@@ -548,25 +548,7 @@ ROME.AnimalAnimationData = {
 			// set animal-specific light params
 
 			//console.log( attributes.colorAnimalA.value );
-			console.log( availableAnimals );
-			
-			var variations = this.colorVariations[ "zero" ];
-			
-			if ( variations.lScale ) {
-			
-				material.uniforms.lightScale.value = variations.lScale;
-				
-			}	
-
-			if ( variations.lOffset ) {
-			
-				material.uniforms.lightOffset.value.set( variations.lOffset[ 0 ], variations.lOffset[ 1 ], variations.lOffset[ 2 ] );
-				
-			} else {
-				
-				material.uniforms.lightOffset.value.set( 0.0, 0.0, 0.0 );
-
-			}		
+			//console.log( availableAnimals );			
 
 			// init custom attributes
 			
@@ -594,7 +576,41 @@ ROME.AnimalAnimationData = {
 					}
 
 					morphTargetName = morphTargetName.slice( 0, a ).toLowerCase();
-					attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors }
+					attributes[ morphTargetName ] = { type: "c", boundTo: "faces", value: morphColor.colors };
+					
+					// color variations per morph color
+
+					var variations = this.colorVariations[ "zero" ];
+					
+					if ( this.animalVariationMap[ morphTargetName ] !== undefined ) {
+						
+						variations = this.colorVariations[  this.animalVariationMap[ morphTargetName ] ];
+						console.log( morphColor.name, morphTargetName );
+
+					}
+					
+					if ( variations.lScale ) {
+					
+						material.uniforms.lightScale.value = variations.lScale;
+						
+					} else {
+						
+						material.uniforms.lightScale.value = 0.5;
+
+					}
+
+					if ( variations.lOffset ) {
+					
+						material.uniforms.lightOffset.value.set( variations.lOffset[ 0 ], variations.lOffset[ 1 ], variations.lOffset[ 2 ] );
+						
+					} else {
+						
+						material.uniforms.lightOffset.value.set( 0.6, 0.6, 0.6 );
+
+					}		
+					
+					
+					randomizeColors( attributes[ morphTargetName ].value, variations );
 					
 				}
 				
@@ -658,8 +674,8 @@ ROME.AnimalAnimationData = {
 	
 			}	
 
-			randomizeColors( attributes.colorAnimalA.value, variations );
-			randomizeColors( attributes.colorAnimalB.value, variations );
+			//randomizeColors( attributes.colorAnimalA.value, variations );
+			//randomizeColors( attributes.colorAnimalB.value, variations );
 
 
 			function randomizeColors( colors, variations ) {

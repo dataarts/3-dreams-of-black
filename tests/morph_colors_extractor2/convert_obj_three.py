@@ -762,7 +762,7 @@ def find_common_color(colors):
             else:
                 colorCounts[vc] += 1
                 
-    colorOrder = sorted(colorCounts.items(), key = operator.itemgetter(1), reverse = False)
+    colorOrder = sorted(colorCounts.items(), key = operator.itemgetter(1), reverse = True)
     print colorOrder
 
     return colorOrder[0][0]
