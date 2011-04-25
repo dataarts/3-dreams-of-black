@@ -3,7 +3,7 @@
  * @author Mikael Emtinger
  */
 
-Trigger = function( geometry, wantedParent ) {
+Trigger = function( geometry, wantedDarkness ) {
 	
 	// setup materials
 	
@@ -18,23 +18,23 @@ Trigger = function( geometry, wantedParent ) {
 		lights: true,
 		fog: true,
 		morphTargets: true,
-		vertexColors: 1
+		vertexColors: 1,
+		map: geometry.materials[ 0 ].map
 		
 	} );
+
 
 
 	// create mesh and hide
 
 	that.mesh = new THREE.Mesh( geometry, material );
-	that.mesh.visible = false;
-	that.parent = wantedParent;
 
 
 	// setup internals
 
-	var wantedParent = wantedParent;
 	var timeScale = 1;
 	var currentTime = 0;
+	var wantedDarkness = wantedDarkness !== undefined ? wantedDarkness : 0;
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 	var lengthInMS = ( geometry.morphTargets.length - 1 ) * 1000;
 
@@ -50,8 +50,6 @@ Trigger = function( geometry, wantedParent ) {
 		currentTime = 0;
 
 		that.mesh.visible = true;
-		wantedParent && wantedParent.addChild( that.mesh );
-
 
 		THREE.AnimationHandler.addToUpdate( that );
 		that.update( 0 );
@@ -70,6 +68,7 @@ Trigger = function( geometry, wantedParent ) {
 			morphTargetOrder[ 1 ] = that.mesh.geometry.morphTargets.length - 1;
 			
 			material.uniforms.morph.value = 1;
+			material.uniforms.darkness.value = wantedDarkness;
 			
 			THREE.AnimationHandler.removeFromUpdate( that );
 			
@@ -92,6 +91,7 @@ Trigger = function( geometry, wantedParent ) {
 			}
 
 			material.uniforms.morph.value = elasticTime / lengthInMS;
+			material.uniforms.darkness.value = wantedDarkness * currentTime / lengthInMS;
 			
 		}
 		
@@ -124,7 +124,7 @@ Trigger = function( geometry, wantedParent ) {
  * @author Mikael Emtinger
  */
 
-var TriggerBig = function( geometry, wantedParent ) {
+var TriggerBig = function( geometry ) {
 	
 	// setup materials
 	
@@ -228,7 +228,7 @@ var TriggerUtils = (function() {
 	
 	var that = {};
 	that.effectors = [ 0, 200, 0 ];		// xyz xyz for each effector (remeber to change const in shader, too)
-	that.effectorRadius = 2000;
+	that.effectorRadius = 200;
 
 	var smallTriggers = [];
 	var bigTriggers = [];
@@ -266,6 +266,9 @@ var TriggerUtils = (function() {
 		
 		// assign originals to marked objects
 		
+		smallTriggers = [];
+		bigTriggers = [];
+		
 		for( name in triggers ) {
 			
 			for( t = 0, tl = triggerGeometries.length; t < tl; t++ ) {
@@ -274,7 +277,10 @@ var TriggerUtils = (function() {
 					
 					if( triggers[ name ].type === "Small" ) {
 						
-						trigger = new Trigger( triggerGeometries[ t ].geometry, loadedSceneResult.objects[ name ] );
+						trigger = new Trigger( triggerGeometries[ t ].geometry );
+						loadedSceneResult.objects[ name ].addChild( trigger.mesh );
+						trigger.mesh.visible = false;
+						
 						smallTriggers.push( trigger );
 						
 					} else {
@@ -301,7 +307,66 @@ var TriggerUtils = (function() {
 	
 	that.setupPrairieTriggers = function( loadedSceneResult ) {
 		
+		var name, geometry, geometries = loadedSceneResult.geometries;
+		var m, ml;
+		var v, vl, vertices;
+		var pos, tmp;
 		
+		
+		// switch morph target y and z (as morph targets been copy-pasted from OBJ and not exported from Blender)
+		
+		for( name in geometries ) {
+			
+			geometry = geometries[ name ];
+			
+			if( geometry.morphTargets.length ) {
+				
+				for( m = 0, ml = geometry.morphTargets.length; m < ml; m++ ) {
+					
+					vertices = geometry.morphTargets[ m ].vertices;
+					
+					for( v = 0, vl = vertices.length; v < vl; v++ ) {
+						
+						pos = vertices[ v ].position;
+						
+						tmp = pos.y;
+						pos.y = -pos.z;
+						pos.z = tmp;
+						
+					}
+					
+				}
+				
+			}
+			
+		}	
+		
+		
+		
+		
+		// setup triggers
+
+		var trigger, triggers = loadedSceneResult.triggers;
+		var objects = loadedSceneResult.objects;
+
+		smallTriggers = [];
+		bigTriggers = [];
+
+		for( name in triggers ) {
+			
+			if( objects[ name ].geometry.morphTargets.length ) {
+				
+				trigger = new Trigger( objects[ name ].geometry, 0.9 );
+				
+				objects[ name ].addChild( trigger.mesh );			
+				objects[ name ].visible = false;
+				
+				smallTriggers.push( trigger );
+				
+			}
+			
+		}
+
 	}
 	
 	
@@ -316,7 +381,7 @@ var TriggerUtils = (function() {
 		
 		for( s = 0, sl = smallTriggers.length; s < sl; s++ ) {
 			
-			pos = smallTriggers[ s ].parent.matrixWorld.getPosition();
+			pos = smallTriggers[ s ].mesh.matrixWorld.getPosition();
 			
 			for( e = 0, el = effectors.length; e < el; e += 3 ) {
 				
@@ -476,6 +541,7 @@ TriggerBigShader = {
 
 				"effectors": 					{ type: "fv", value: TriggerUtils.effectors },
 				"morph": 						{ type: "f", value: 0.0 },
+				"darkness": 					{ type: "f", value: 0.0 },
 
 				"diffuse":                      { type: "c", value: new THREE.Color( 0xffffff ) },
 
