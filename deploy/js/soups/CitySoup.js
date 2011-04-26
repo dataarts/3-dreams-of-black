@@ -116,6 +116,19 @@ var CitySoup = function ( camera, scene, shared ) {
 	var particles = new Particles(22, scene, 5, particleSprites, 15, 50, THREE.AdditiveBlending);
 	particles.settings.gravitateTowardsCamera = true;
 
+	// stragglers
+	var stragglers = new Stragglers(4, scene, vectors.array);
+	stragglers.settings.constantSpeed = 0.7;
+	stragglers.settings.capy = 0;
+
+/*	loader.load( { model: "files/models/soup/animals_A_life.js", callback: stragglerLoadedProxy } );
+	
+	function stragglerLoadedProxy( geometry ) {
+		var morphArray = [5,6,9,2];
+		stragglers.addAnimal( geometry, null, 1.7, morphArray );
+	}*/
+
+
 	// running animals
 
 	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
@@ -145,8 +158,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	//loader.load( { model: "files/models/soup/sock_jump_life.js", callback: sockLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
+		// regular
 		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
 		runningAnimals.addAnimal( geometry, null, 1.5, morphArray );
+		// stragglers
+		morphArray = [5,6,9,2];
+		stragglers.addAnimal( geometry, null, 1.7, morphArray );
 	}
 
 	function elkLoadedProxy( geometry ) {
@@ -165,6 +182,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	/*function sockLoadedProxy( geometry ) {
 		runningAnimals.addAnimal( geometry, "sock", 1.5, null );
 	}*/
+
 
 	// flying animals
 	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
@@ -297,6 +315,10 @@ var CitySoup = function ( camera, scene, shared ) {
 			reset();
 		}
 		
+		// straggler test
+		if (shake%50 == 49) {
+			stragglers.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position);
+		}
 
 		// camera roll hack...
 		var dx = camera.position.x-collisionScene.cameraTarget.position.x;
@@ -324,13 +346,14 @@ var CitySoup = function ( camera, scene, shared ) {
 		camera.fov = 50-zoom;
 		camera.updateProjectionMatrix();
 
-		// update the soup parts	
+		// update the soup parts
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		ribbons.update(collisionScene.emitterFollow.position);
 
 		particles.update(delta, vectors.array[0].position, camPos);
 		runningAnimals.update(delta);
+		stragglers.update(delta, camPos);
 		flyingAnimals.update(delta);
 		//flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
@@ -361,6 +384,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		flyingAnimals.reset(camPos.x,camPos.y,camPos.z);
 		//flyingAnimals2.reset(camPos.x,camPos.y,camPos.z);
 		particles.reset(camPos.x,camPos.y,camPos.z);
+		stragglers.reset(camPos.x,camPos.y,camPos.z);
 
 	}
 
