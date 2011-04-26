@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>007 - video layers</title>
+		<title>007 - rotation</title>
 		<meta charset="utf-8">
 		<style type="text/css">
 			body {
@@ -16,7 +16,7 @@
 			
 			#options {
 				padding: 10px;
-				text-align: left;
+				text-aligh: left;
 				font-family: Georgia, serif;
 			}
 			
@@ -28,9 +28,8 @@
 		<script type="text/javascript" src="build/Three.js"></script>
 		<script type="text/javascript" src="src/Animation2d.js"></script>
 		<script type="text/javascript" src="src/HalfAlphaShader.js"></script>
-		<script type="text/javascript" src="src/Layer3Shader.js"></script>
 
-		<script type="text/javascript" src="shots/s01/s01.js"></script>
+		<script type="text/javascript" src="shots/rot/rot.js"></script>
 		
 		<script type="text/javascript">	
 			var viewWidth =  window.innerWidth;
@@ -43,9 +42,9 @@
 			
 			var startTime = new Date().getTime();
 			
-			//loop();
+			loop();
 				
-			setInterval(loop, 1000/20);
+			setInterval(loop, 1000/60);
 
 			function init() {
 
@@ -60,8 +59,8 @@
 				animation = new THREE.Animation2D();
 				animation.mode = THREE.Animation2D.PINGPONG;
 
-				animation.texturePath = "shots/s01/";
-				animation.parse(comp_2, scene, camera, THREE.Animation2D.SHADER);
+				animation.texturePath = "shots/rot/";
+				animation.parse(comp_2, scene, camera);
 				
 				try {
 					webglRenderer = new THREE.WebGLRenderer( scene );
