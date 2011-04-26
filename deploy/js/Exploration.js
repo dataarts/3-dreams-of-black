@@ -83,7 +83,7 @@ var Exploration = function ( shared ) {
 			shared.logger.log( 'faces: ' + renderer.data.faces );
 
 			//paintEffect.update( progress, delta, time );
-			heatEffect.update( progress, delta, time );
+			//heatEffect.update( progress, delta, time );
 			//noiseEffect.update( progress, delta, time );
 			//overlayEffect.update( progress, delta, time );
 			renderEffect.update( progress, delta, time );
