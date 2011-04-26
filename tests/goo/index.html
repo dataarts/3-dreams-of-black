@@ -86,36 +86,42 @@
 
 							"vec4 color, tmp, add;",
 							
-							"vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
+							"vec2 uv = vUv + vec2( 0.5 / 1228.0, 0.5 / 665.0 );//vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
 							
 							"color = texture2D( map, uv );",
+							
 
-							"add = tmp = texture2D( map, uv + vec2( 0.0015, 0.0015 ));", 
-							"if( tmp.r > color.r ) color = tmp;",
+							"vec2 diaPlus = vec2( 1.0 / 1228.0, 1.0 / 665.0 );",
+							"vec2 diaMin  = vec2( -1.0 / 1228.0, 1.0 / 665.0 );",
+							"vec2 hori    = vec2( 1.0 / 1228.0, 0 );",
+							"vec2 vert    = vec2( 0, 1.0 / 665.0 );",
 
-							"add += tmp = texture2D( map, uv + vec2( -0.0015, 0.0015 ));",
-							"if( tmp.r > color.r ) color = tmp;",
+							"tmp = texture2D( map, uv + diaPlus );", 
+							"if( tmp.b < color.b ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( -0.0015, -0.0015 ));",
-							"if( tmp.r > color.r ) color = tmp;",
+							"tmp = texture2D( map, uv + diaMin );",
+							"if( tmp.b < color.b ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( 0.0015, -0.0015 ));",
-							"if( tmp.r > color.r ) color = tmp;",
+							"tmp = texture2D( map, uv - diaPlus );",
+							"if( tmp.b < color.b ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( 0.002, 0.0 ));",
-							"if( tmp.r < color.r ) color = tmp;",
+							"tmp = texture2D( map, uv - diaMin );",
+							"if( tmp.b < color.b ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( -0.002, 0.0 ));",
-							"if( tmp.r < color.r ) color = tmp;",
+							"tmp = texture2D( map, uv + hori );",
+							"if( tmp.b < color.b ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( 0, 0.002 ));",
-							"if( tmp.r > color.r ) color = tmp;",
+							"tmp = texture2D( map, uv - hori );",
+							"if( tmp.b < color.b ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( 0, -0.002 ));",
-							"if( tmp.r > color.r ) color = tmp;",
+							"tmp = texture2D( map, uv + vert );",
+							"if( tmp.b < color.b ) color = tmp;",
+
+							"tmp = texture2D( map, uv - vert );",
+							"if( tmp.b < color.b ) color = tmp;",
 
 							"uv = (uv - vec2(0.5)) * vec2(0.7);",
-							"gl_FragColor = vec4(mix(color.rgb * color.rgb * vec3(1.8), color.ggg * color.ggg - vec3(0.4), vec3(dot(uv, uv))), 1.0);",
+							"gl_FragColor = vec4( mix( color.rgb * color.rgb * vec3(1.8), color.ggg * color.ggg - vec3(0.4), vec3(dot(uv, uv))), 1.0);",
 
 						"}"
 
@@ -340,7 +346,7 @@
 				
 				var shadow = new THREE.ShadowVolume( mesh );
 				shadow.position.set( -250, 350, -500 );
-				scene.addChild( shadow );
+				//scene.addChild( shadow );
 
 
 				var geom = new Sphere( 5, 5, 5 );
