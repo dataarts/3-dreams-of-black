@@ -166,9 +166,9 @@ var DunesWorld = function ( shared ) {
 		for( i = 0; i < n; i ++ ) {
 		
 			cloudMesh = new THREE.Mesh( geo, cloudMaterial );
-			x = 20000 * ( 0.5 - Math.random() );
+			x = 25000 * ( 0.5 - Math.random() );
 			y = 4000 + 3000 * ( 0.5 - Math.random() );
-			z = 20000 * ( 0.5 - Math.random() );
+			z = 25000 * ( 0.5 - Math.random() );
 			cloudMesh.position.set( x, y, z );
 			
 			cs = scale * ( 1 + 0.5 * Math.random() );
@@ -291,8 +291,8 @@ var DunesWorld = function ( shared ) {
 	jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	jloader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 	
-	jloader.load( { model: 'files/models/Cloud1_.js', callback: function( geo ) { addClouds( geo, 150 ); } } );
-	jloader.load( { model: 'files/models/Cloud2_.js', callback: function( geo ) { addClouds( geo, 150 ); } } );
+	jloader.load( { model: 'files/models/Cloud1_.js', callback: function( geo ) { addClouds( geo, 50 ); } } );
+	jloader.load( { model: 'files/models/Cloud2_.js', callback: function( geo ) { addClouds( geo, 50 ); } } );
 	
 	function getRandomRotation () {
 
