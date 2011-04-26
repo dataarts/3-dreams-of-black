@@ -101,6 +101,7 @@ var Film = function ( shared ) {
 
 		audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 		audio.play();
+		//audio.volume = 0;
 
 		document.addEventListener( 'keydown', onDocumentKeyDown, false );
 
@@ -145,6 +146,16 @@ var Film = function ( shared ) {
 			case 40:
 
 				audio.playbackRate -= 0.1;
+				break;
+
+			/* m */
+			case 77: 
+				
+				if ( audio.volume == 0 )
+					audio.volume = 1; 
+				else
+					audio.volume = 0; 
+
 				break;
 
 		}
