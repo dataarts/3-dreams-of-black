@@ -55,6 +55,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			mesh.position.copy(that.settings.startPosition);
 			mesh.doubleSided = doubleSided;
 
+			// test shadow
+			//mesh.addChild( new THREE.ShadowVolume( new THREE.Sphere( 60, 5, 5 )));
+
 			var followIndex = Math.floor(i/followDivider);
 
 			var scale = 0.02+(Math.random()/8);
@@ -221,13 +224,13 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			//var divider = delta/10;
-			var divider = 6;
+			var divider = 10;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
 			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
 
-			var maxSpeed = delta/2.5;//12;
+			var maxSpeed = delta/3;//12;
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
