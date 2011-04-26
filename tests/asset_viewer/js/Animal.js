@@ -12,15 +12,16 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	var result = AnimalAnimationData.init( geometry, parseMorphTargetsNames );
 
 	var that = {};
+  that.material = result.material;
 	that.morph = 0.0;
 	that.animalA = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0, name: "" };
 	that.animalB = { frames: undefined, currentFrame: 0, lengthInFrames: 0, currentTime: 0, lengthInMS: 0, timeScale: 1.0, name: "" };
 	that.availableAnimals = result.availableAnimals;
-	that.mesh = new THREE.Mesh( geometry, result.material );
+	that.mesh = new THREE.Mesh( geometry, that.material );
 
 	var isPlaying = false;
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
-	var material = result.material;
+
 
 
 	/*
@@ -180,21 +181,21 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 				
 				scale = ( data.currentTime - time ) / ( nextTime - time ) ;
 				
-				material.uniforms[ dataNames[ d ] + "Interpolation" ].value = scale;
+				that.material.uniforms[ dataNames[ d ] + "Interpolation" ].value = scale;
 	
 			}
 	
-			material.uniforms.animalMorphValue.value = that.morph;
+			that.material.uniforms.animalMorphValue.value = that.morph;
 			
-			if( material.attributes[ that.animalA.name ] === undefined ) {
+			if( that.material.attributes[ that.animalA.name ] === undefined ) {
 				
 				console.error( "Couldn't find attribute for " + that.animalA.name );
 				return;
 				
 			}
 			
-			material.attributes.colorAnimalA.buffer = material.attributes[ that.animalA.name ].buffer;
-			material.attributes.colorAnimalB.buffer = material.attributes[ that.animalB.name ].buffer;
+			that.material.attributes.colorAnimalA.buffer = that.material.attributes[ that.animalA.name ].buffer;
+			that.material.attributes.colorAnimalB.buffer = that.material.attributes[ that.animalB.name ].buffer;
 			
 		}
 		
@@ -297,8 +298,8 @@ AnimalShader = {
 	
 	textures: {
 		
-		contour: THREE.ImageUtils.loadTexture( 'textures/faceContour.jpg' ),
-		faceLight: THREE.ImageUtils.loadTexture( 'textures/faceLight.jpg' )
+		contour: THREE.ImageUtils.loadTexture( 'files/textures/faceContour.jpg' ),
+		faceLight: THREE.ImageUtils.loadTexture( 'files/textures/faceLight.jpg' )
 		
 	},
 	
@@ -553,7 +554,8 @@ AnimalAnimationData = {
 				
 				fog: true,
 				lights: true,
-				morphTargets: true
+				morphTargets: true,
+        wireframe: true
 				
 			} );
 			

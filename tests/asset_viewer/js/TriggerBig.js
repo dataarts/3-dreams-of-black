@@ -7,7 +7,7 @@ TriggerBig = function( geometry, wantedParent ) {
 	// setup materials
 	
 	var that = {};
-	var material = new THREE.MeshShaderMaterial( {
+	that.material = new THREE.MeshShaderMaterial( {
 		
 		uniforms: TriggerBigShader.uniforms(),
 		vertexShader: TriggerBigShader.vertexShader,
@@ -17,7 +17,8 @@ TriggerBig = function( geometry, wantedParent ) {
 		lights: true,
 		fog: true,
 		morphTargets: true,
-		vertexColors: 1
+		vertexColors: 1,
+    wireframe: false
 		
 	} );
 
@@ -35,9 +36,8 @@ TriggerBig = function( geometry, wantedParent ) {
 
 	// setup mesh
 
-	that.mesh = new THREE.Mesh( geometry, material );
+	that.mesh = new THREE.Mesh( geometry, that.material );
 	that.mesh.doubleSided = true;
-
 
 	// setup interal
 
@@ -56,7 +56,7 @@ TriggerBig = function( geometry, wantedParent ) {
 
 TriggerBigShader = {
 
-	effectors: [ 0, 200, 0, 0, 0, 0 ],		// xyz xyz for each effector (remeber to change const in shader, too)
+	effectors: [ 0, 200, 0, 0, 100000, 0 ],		// xyz xyz for each effector (remeber to change const in shader, too)
 	
 	uniforms: function () {
 
@@ -70,6 +70,7 @@ TriggerBigShader = {
 				"fogDensity": 					{ type: "f", value: 0 },
 
 				"enableLighting": 				{ type: "i", value: 1 },
+        "enableTexture": 				{ type: "i", value: 1. },
 				"ambientLightColor": 			{ type: "fv", value: [] },
 				"directionalLightDirection": 	{ type: "fv", value: [] },
 				"directionalLightColor": 		{ type: "fv", value: [] },
@@ -83,7 +84,7 @@ TriggerBigShader = {
 
 	vertexShader: [
 
-		"const 		int		NUMEFFECTORS = 2;",
+		"const 		int		NUMEFFECTORS = 1;",
 		"uniform 	vec3 	effectors[ NUMEFFECTORS ];",
 		
 		THREE.ShaderChunk[ "map_pars_vertex" ],
@@ -130,7 +131,7 @@ TriggerBigShader = {
 
 			"gl_Position = projectionMatrix * mvPosition;",
 
-		"}",
+		"}"
 		
 		
 	].join("\n"),
@@ -140,6 +141,7 @@ TriggerBigShader = {
 		"uniform float  darkness;",
 		"uniform vec3 	diffuse;",
 		"uniform float 	opacity;",
+    "uniform float 	enableTexture;",
 
 		"varying vec3 vLightWeighting;",
 
@@ -156,7 +158,6 @@ TriggerBigShader = {
 			THREE.ShaderChunk[ "color_fragment" ],
 
 			"gl_FragColor = vec4( gl_FragColor.rgb * ( 1.0 - darkness ), 1.0 );",
-
 			THREE.ShaderChunk[ "fog_fragment" ],
 
 		"}"
