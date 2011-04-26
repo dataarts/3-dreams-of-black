@@ -193,7 +193,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	// flying animals 2
-	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
+/*	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
 	flyingAnimals2.settings.flying = true;
 	flyingAnimals2.settings.divider = 1;
 	flyingAnimals2.settings.flyingDistance = 30;
@@ -210,7 +210,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		var morphArray = [0,1,2,3];
 		flyingAnimals2.addAnimal( geometry, null, 5, morphArray, 5, null, true );
 	}
-
+*/
 
 	// butterflys
 	var butterflysD = new AnimalInFrontOfCamera(15, scene);
@@ -332,7 +332,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		particles.update(delta, vectors.array[0].position, camPos);
 		runningAnimals.update(delta);
 		flyingAnimals.update(delta);
-		flyingAnimals2.update();
+		//flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
 		butterflysC.update(camPos, angleRad, delta);
 		butterflysD.update(camPos, angleRad, delta, true);
@@ -359,7 +359,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		vectors.reset(camPos.x,camPos.y,camPos.z);
 		runningAnimals.reset(camPos.x,camPos.y,camPos.z);
 		flyingAnimals.reset(camPos.x,camPos.y,camPos.z);
-		flyingAnimals2.reset(camPos.x,camPos.y,camPos.z);
+		//flyingAnimals2.reset(camPos.x,camPos.y,camPos.z);
 		particles.reset(camPos.x,camPos.y,camPos.z);
 
 	}

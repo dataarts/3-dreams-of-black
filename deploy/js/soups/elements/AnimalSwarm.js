@@ -25,7 +25,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		capy : null,
 		startPosition : new THREE.Vector3(0,0,0),
 		switchPosition : false,
-		butterfly : false,
+		//butterfly : false,
 	}
 	
 	var r = 0;
@@ -149,6 +149,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			var offsetx = Math.cos(thisinc+((i-r*2)/8))*that.settings.xPositionMultiplier;
 			var offsetz = Math.sin(thisinc+((i-r*2)/8))*that.settings.zPositionMultiplier;
 			var offsety = offsetz;
+			
+			if (f >= vectorArray.length-1) {
+				f = vectorArray.length-1;
+			}
 
 			var cNormal = vectorArray[f].normal;
 
@@ -175,9 +179,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// flying
-			if (that.settings.flying && !that.settings.butterfly) {
+			if (that.settings.flying) {
 				var pulse = Math.cos((i-r*10)/15)*10
-				var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/100)*40);			
+				var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/10)*30);			
 
 				if (cNormal.x < -0.8) {
 					tox -= flyAmount;
@@ -196,14 +200,14 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				}
 			}
 
-			if (that.settings.butterfly) {
+			/*if (that.settings.butterfly) {
 				var flyAmount = that.settings.flyingDistance-Math.sin((i+r))*20;			
 
 				tox += cNormal.x*flyAmount;
 				toy += cNormal.y*flyAmount;
 				toz += cNormal.z*flyAmount;
 
-			}
+			}*/
 
 			// morph
 			that.array[i].count += 0.01;
@@ -265,7 +269,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			animal.position.y += moveY;
 			animal.position.z += moveZ;
 
-			if (that.settings.shootRayDown) {
+			/*if (that.settings.shootRayDown) {
 
 				var ray = obj.ray;
 				ray.origin.y = animal.position.y-100;
@@ -288,7 +292,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 					//info.innerHTML = "No intersection";
 				}
 
-			}
+			}*/
 
 			animal.visible = that.settings.visible;
 		}
