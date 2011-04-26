@@ -1,3 +1,39 @@
+var HalfAlphaShaderSource = {
+
+	'halfAlpha' : {
+
+		uniforms: {
+			"map": { type: "t", value: 0, texture: null },
+		},
+
+		vertexShader: [
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec4 c = texture2D( map, vec2( vUv.x * 0.5, vUv.y ) );",
+				"vec4 a = texture2D( map, vec2( 0.5 + vUv.x * 0.5, vUv.y ) );",
+				"gl_FragColor = vec4(c.rgb, a.r);",
+			"}"
+
+		].join("\n")
+
+	}
+
+};
+
 var TransitionToPrairie = function ( shared ) {
 
 	SequencerItem.call( this );
@@ -19,7 +55,8 @@ var TransitionToPrairie = function ( shared ) {
 		// video
 
 		video = document.createElement( 'video' );
-		video.src = 'files/videos/transition_prairie.webm';
+		//video.src = 'files/videos/transition_prairie.webm';
+		video.src = 'files/videos/s06.webm';
 
 		// 3d
 
@@ -33,8 +70,20 @@ var TransitionToPrairie = function ( shared ) {
 		texture = new THREE.Texture( video );
 		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
+		
+		var shader = HalfAlphaShaderSource['halfAlpha'];
+		
+        var uniforms = THREE.UniformsUtils.clone(shader.uniforms);	   
+        uniforms['map'].texture = texture;
 
-		mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture, depthTest: false } ) );
+        var mat = new THREE.MeshShaderMaterial({
+			uniforms: uniforms,
+            vertexShader: shader.vertexShader,
+            fragmentShader: shader.fragmentShader,
+            blending: THREE.BillboardBlending
+        });
+
+		mesh = new THREE.Mesh( geometry, mat );
 		scene.addChild( mesh );
 
 	};
