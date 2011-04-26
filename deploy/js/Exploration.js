@@ -30,13 +30,16 @@ var Exploration = function ( shared ) {
 	cameras.city.position.set( 0, 0, 0 );
 
 	var world, scene,
-	clearEffect, heatEffect, noiseEffect, renderEffect, overlayEffect;
+	clearEffect, heatEffect, paintEffect, noiseEffect, renderEffect, overlayEffect;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
 
 	heatEffect = new HeatEffect( shared );
 	heatEffect.init();
+
+	paintEffect = new PaintEffect( shared );
+	paintEffect.init();
 
 	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
 	noiseEffect.init();
@@ -79,7 +82,8 @@ var Exploration = function ( shared ) {
 			shared.logger.log( "vertices: " + renderer.data.vertices );
 			shared.logger.log( 'faces: ' + renderer.data.faces );
 
-			heatEffect.update( progress, delta, time );
+			paintEffect.update( progress, delta, time );
+			//heatEffect.update( progress, delta, time );
 			//noiseEffect.update( progress, delta, time );
 			//overlayEffect.update( progress, delta, time );
 			renderEffect.update( progress, delta, time );
