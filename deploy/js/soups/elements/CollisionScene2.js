@@ -26,12 +26,12 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 	};
 
-	var mouse2d = new THREE.Vector3( 0, 0, 1 );
+	//var mouse2d = new THREE.Vector3( 0, 0, 1 );
 
-	var ray = new THREE.Ray();
-	var matrix = new THREE.Matrix4();
-	var matrix2 = new THREE.Matrix4();
-	var positionVector = new THREE.Vector3();
+	//var ray = new THREE.Ray();
+	//var matrix = new THREE.Matrix4();
+	//var matrix2 = new THREE.Matrix4();
+	//var positionVector = new THREE.Vector3();
 	var projector = new THREE.Projector();
 
 	var cube = new THREE.Cube( 5, 5, 5 );
@@ -39,6 +39,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFF3333, opacity: 0.4 } ) );
 	that.cameraTarget = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FF33, opacity: 0.4 } ) );
+
 
 	//that.emitter.visible = false;
 	//that.emitterFollow.visible = false;
@@ -141,9 +142,9 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		}
 
 
-		mouse2d.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
+		/*mouse2d.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
 		mouse2d.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
-		mouse2d.z = 1;
+		mouse2d.z = 1;*/
 
 
 		// emitter
@@ -340,6 +341,8 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		that.emitterFollow.position.y += that.currentNormal.y*amount;
 		that.emitterFollow.position.z += that.currentNormal.z*amount;
 		*/
+
+
 
 		var toy = that.emitterFollow.position.y;
 		var moveY = ( toy - that.cameraTarget.position.y ) / that.settings.cameraTargetDivider;

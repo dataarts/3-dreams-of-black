@@ -80,7 +80,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// vector trail
 	var startPosition = new THREE.Vector3(0,0,100);
-	var vectors = new Vectors(50,2.5,3,startPosition);
+	var vectors = new Vectors(50,2,3,startPosition);
 	//vectors.settings.divider = 4;
 	//vectors.settings.normaldivider = 4;
 	//vectors.settings.absoluteTrail = true;
@@ -304,6 +304,14 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	
 	this.update = function ( delta ) {
+
+		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
+			//delta = 1000/60;
+			return;
+		}
+		//var optimal = 1000/60;
+		//var percent = delta/optimal;
+		//console.log(optimal+" | "+delta+" | "+percent);
 
 		// update to reflect _real_ camera position
 		camPos.x = that.camera.matrixWorld.n14;

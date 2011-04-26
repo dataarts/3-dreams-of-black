@@ -82,7 +82,7 @@ var CityWorld = function ( shared ) {
 			
 		}
 		
-		TriggerUtils.setupCityTriggers( result );
+		//TriggerUtils.setupCityTriggers( result );
 	
 	};
 
@@ -97,11 +97,11 @@ var CityWorld = function ( shared ) {
 		
 		var position = camera.matrixWorld.getPosition();
 		
-		TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
+		/*TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
 		TriggerUtils.effectors[ 1 ] = position.y;
 		TriggerUtils.effectors[ 2 ] = position.z - 100;
 		
-		TriggerUtils.update();
+		TriggerUtils.update();*/
 		
 		if ( portalsActive ) {
 			
