@@ -76,6 +76,8 @@ var PrairieWorld = function ( shared, camera ) {
 
 		that.scene.addChild( scene );
 
+		preInitScene( result, shared.renderer );
+		
 		if ( scene.collisions ) {
 
 			that.scene.collisions.merge( scene.collisions );
@@ -108,7 +110,7 @@ var PrairieWorld = function ( shared, camera ) {
 		jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 		jloader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 		
-		//jloader.load( { model: 'files/models/Smoke.js', callback: function( geo ) { addSmoke( geo, 100 ); } } );
+		//jloader.load( { model: 'files/models/Smoke.js', callback: function( geo ) { addSmoke( geo, 10 ); } } );
 		
 
 	};
@@ -116,15 +118,15 @@ var PrairieWorld = function ( shared, camera ) {
 	function addSmoke( geo, n ) {
 		
 		var i, x, y, z, cs,
-			scale = 1,
+			scale = 3,
 			cloudMesh, cloudMaterial = new THREE.MeshFaceMaterial();
 		
 		for( i = 0; i < n; i ++ ) {
 		
 			cloudMesh = new THREE.Mesh( geo, cloudMaterial );
-			x = 200 * ( 0.5 - Math.random() );
+			x = 20 * ( 0.5 - Math.random() );
 			y = 0 + 0 * ( 0.5 - Math.random() );
-			z = 200 * ( 0.5 - Math.random() );
+			z = 20 * ( 0.5 - Math.random() );
 			cloudMesh.position.set( x, y, z );
 			
 			cs = scale * ( 1 + 0.5 * Math.random() );

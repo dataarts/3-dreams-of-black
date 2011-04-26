@@ -34,6 +34,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
 		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: blendMode } );
+		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: true, blending: THREE.NormalBlending } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 

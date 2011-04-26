@@ -18,7 +18,9 @@ function preInitModel( geometry, renderer, scene, object ) {
 
 			if( !material.program ) {
 
-				//renderer.initMaterial( material, scene.lights, scene.fog, object );
+				// dirty hack, otherwise some textures stay black
+				
+				setTimeout( function() { renderer.initMaterial( material, scene.lights, scene.fog, object ); }, 100 );
 				
 			}
 
@@ -26,6 +28,31 @@ function preInitModel( geometry, renderer, scene, object ) {
 
 	}
 
+
+};
+
+function preInitScene( result, renderer ) {
+
+	renderer.initWebGLObjects( result.scene );
+	
+	var m, material;
+
+	for ( m in result.materials ) {
+
+		material = result.materials[ m ];
+		if ( ! ( material instanceof THREE.MeshFaceMaterial ) ) {
+
+			if( !material.program ) {
+
+				// dirty hack, otherwise some textures stay black
+
+				setTimeout( function() { renderer.initMaterial( material, result.scene.lights, result.scene.fog ); }, 100 );
+
+			}
+
+		}
+
+	}
 
 };
 
