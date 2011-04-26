@@ -158,6 +158,33 @@ var DunesWorld = function ( shared ) {
 
 	};
 
+	function addClouds( geo, n ) {
+		
+		var i, x, y, z, cs,
+			cloudMesh, cloudMaterial = new THREE.MeshFaceMaterial();
+		
+		for( i = 0; i < n; i ++ ) {
+		
+			cloudMesh = new THREE.Mesh( geo, cloudMaterial );
+			x = 20000 * ( 0.5 - Math.random() );
+			y = 4000 + 3000 * ( 0.5 - Math.random() );
+			z = 20000 * ( 0.5 - Math.random() );
+			cloudMesh.position.set( x, y, z );
+			
+			cs = scale * ( 1 + 0.5 * Math.random() );
+			cloudMesh.scale.set( cs, cs, cs );
+			
+			cloudMesh.rotation.y = 0.5 * Math.random();
+			
+			cloudMesh.matrixAutoUpdate = false;
+			cloudMesh.updateMatrix();
+			
+			that.scene.addChild( cloudMesh );
+
+		}
+		
+	};
+	
 	function walkLoaded( result ) {
 
 		sceneWalk = result.scene;
@@ -192,7 +219,7 @@ var DunesWorld = function ( shared ) {
 
 		result.scene.rotation.z = getRandomRotation();
 
-		if (x == 1 && ( z == 1 || z == 2 ) ) {
+		if ( x == 1 && ( z == 1 || z == 2 ) ) {
 
 			showHierarchyNotColliders( result.scene, false );
 
@@ -257,11 +284,21 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_4.js", randomLoaded );
 	loader.load( "files/models/dunes/D_tile_1.js", randomLoaded );
 
+	// clouds
+	
+	var jloader = new THREE.JSONLoader();
+	
+	jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+	jloader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
+	
+	jloader.load( { model: 'files/models/Cloud1_.js', callback: function( geo ) { addClouds( geo, 150 ); } } );
+	jloader.load( { model: 'files/models/Cloud2_.js', callback: function( geo ) { addClouds( geo, 150 ); } } );
+	
 	function getRandomRotation () {
 
 		return Math.round( Math.random() * 4 ) * ( Math.PI / 2 );
 
-	}
+	};
 
 	function updateTiles ( z, x ) {
 	
