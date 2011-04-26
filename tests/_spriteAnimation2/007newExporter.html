@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>007 - export using new scripts</title>
+		<title>007 - video layers</title>
 		<meta charset="utf-8">
 		<style type="text/css">
 			body {
@@ -16,7 +16,7 @@
 			
 			#options {
 				padding: 10px;
-				text-aligh: left;
+				text-align: left;
 				font-family: Georgia, serif;
 			}
 			
@@ -25,30 +25,27 @@
 	</head>
 	
 	<body>
-
 		<script type="text/javascript" src="build/Three.js"></script>
 		<script type="text/javascript" src="src/Animation2d.js"></script>
 		<script type="text/javascript" src="src/HalfAlphaShader.js"></script>
-		
-		<script type="text/javascript" src="shots/sample.js"></script>
+		<script type="text/javascript" src="src/Layer3Shader.js"></script>
+
+		<script type="text/javascript" src="shots/s01/s01.js"></script>
 		
 		<script type="text/javascript">	
 			var viewWidth =  window.innerWidth;
 			var aspect = 2.35;
-			var container, camera, scene, webglRenderer, sky;			
-
-			var layers;
 			
-			var animation = sampleanim; // from JSON
-			animation.texturePath = "shots/";
+			var container, camera, scene, webglRenderer;			
+			var animation;
 
 			init();	
 			
 			var startTime = new Date().getTime();
 			
-			loop();
+			//loop();
 				
-			setInterval(loop, 1000/60);
+			setInterval(loop, 1000/20);
 
 			function init() {
 
@@ -58,9 +55,13 @@
 				scene = new THREE.Scene();
 				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
 
-				camera = new THREE.Camera( 60, aspect, 1, 2000 );
-	
-				layers = parseAEJSON(animation, scene, camera);
+				camera = new THREE.Camera( 0, aspect, 1, 1000000 );
+				
+				animation = new THREE.Animation2D();
+				animation.mode = THREE.Animation2D.PINGPONG;
+
+				animation.texturePath = "shots/s01/";
+				animation.parse(comp_2, scene, camera, THREE.Animation2D.SHADER);
 				
 				try {
 					webglRenderer = new THREE.WebGLRenderer( scene );
@@ -73,17 +74,7 @@
 
 			function loop() {
 				time = ((new Date().getTime() - startTime) / 1000);
-
-				time = time % (animation.duration * 2);
-				if(time > animation.duration) time = animation.duration - (time - animation.duration);
-				
-				for(var ln in layers) {
-					var ly = layers[ln];
-					
-					if(ly.keyframes) {			
-						animate(time, ly.keyframes, ly);
-					}
-				}
+				animation.draw(time);
 
 				webglRenderer.render( scene, camera );
 			}
