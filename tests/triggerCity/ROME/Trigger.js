@@ -356,7 +356,7 @@ var TriggerUtils = (function() {
 			
 			if( objects[ name ].geometry.morphTargets.length ) {
 				
-				trigger = new Trigger( objects[ name ].geometry, 0.9 );
+				trigger = new Trigger( objects[ name ].geometry, 0.75 );
 				
 				objects[ name ].addChild( trigger.mesh );			
 				objects[ name ].visible = false;

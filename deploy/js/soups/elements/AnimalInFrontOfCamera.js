@@ -52,15 +52,16 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 	}
 
-	this.update = function (position, theta, delta) {
+	this.update = function (position, theta, delta, skipPosition) {
 
 		r += 0.1;
 
-		animalContainer.position = position;
+			animalContainer.position = position;
 
-		animalContainer.position.x -= Math.cos( theta )*70;
-		animalContainer.position.z -= Math.sin( theta )*70;
-
+		if (!skipPosition) {
+			animalContainer.position.x -= Math.cos( theta )*70;
+			animalContainer.position.z -= Math.sin( theta )*70;
+		}
 		if (isNaN(delta) || delta > 1000 ) {
 			delta = 1000/60;
 		}

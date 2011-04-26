@@ -140,7 +140,7 @@ var Prairie = function ( shared ) {
 		world.scene.lights[1].color.setRGB(a,a,a);
 		world.scene.lights[2].color.setRGB(a,a,a);*/
 
-		world.update( delta );
+		world.update( delta, camera, false );
 		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );

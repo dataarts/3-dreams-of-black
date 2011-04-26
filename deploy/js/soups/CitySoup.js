@@ -4,7 +4,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	that.camera = camera;
 
 	// init
-	
+	var noiseCount = 0;
 	camPos = new THREE.Vector3( 0, 0, 0 );
 	
 	var loader = new THREE.JSONLoader();
@@ -14,12 +14,12 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var shake = 0;
 
-/*	var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
+	/*var pointLight = new THREE.PointLight( 0xeeffee, 3, 200 );
 	pointLight.position.x = camPos.x;
 	pointLight.position.y = camPos.y;
 	pointLight.position.z = camPos.z;
 	scene.addLight( pointLight, 1.0 );
-*/
+	*/
 	// refactoring
 
 	// setup the different parts of the soup
@@ -27,8 +27,9 @@ var CitySoup = function ( camera, scene, shared ) {
 	// collision scene
 
 	var collisionScene = new CollisionScene2( that.camera, 0.1, shared, 500, scene );
-	collisionScene.settings.maxSpeedDivider = 6;
+	collisionScene.settings.maxSpeedDivider = 4;
 	collisionScene.settings.capBottom = 3;
+	collisionScene.settings.capTop = 1000;
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 3;
@@ -79,7 +80,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// vector trail
 	var startPosition = new THREE.Vector3(0,0,100);
-	var vectors = new Vectors(50,4,4,startPosition);
+	var vectors = new Vectors(50,2,3,startPosition);
 	//vectors.settings.divider = 4;
 	//vectors.settings.normaldivider = 4;
 	//vectors.settings.absoluteTrail = true;
@@ -87,20 +88,20 @@ var CitySoup = function ( camera, scene, shared ) {
 	// ribbons
 
 	var ribbonMaterials = [
-			new THREE.MeshLambertMaterial( { color:0x29ae08 } ),
-			new THREE.MeshLambertMaterial( { color:0x309018 } ),
-			new THREE.MeshLambertMaterial( { color:0x267213 } ),
-			new THREE.MeshLambertMaterial( { color:0x5ab543 } ),
-			new THREE.MeshLambertMaterial( { color:0x2e6f1e } ),
-			new THREE.MeshLambertMaterial( { color:0x08a620 } )
+			new THREE.MeshLambertMaterial( { color:0x29ae08, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x309018, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x267213, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x5ab543, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x2e6f1e, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x08a620, opacity: 0.1 } )
 	];
 
-	var ribbons = new Ribbons(5, vectors.array, scene, ribbonMaterials);
+	var ribbons = new Ribbons(4, vectors.array, scene, ribbonMaterials);
 
-	//ribbons.settings.ribbonPulseMultiplier_1 = 5.5;
-	//ribbons.settings.ribbonPulseMultiplier_2 = 5.5;
-	ribbons.settings.ribbonMin = 0.1;
-	ribbons.settings.ribbonMax = 0.3;
+	ribbons.settings.ribbonPulseMultiplier_1 = 15;
+	ribbons.settings.ribbonPulseMultiplier_2 = 0;
+	ribbons.settings.ribbonMin = 0.4;
+	ribbons.settings.ribbonMax = 0.4;
 
 	// particles
 
@@ -112,7 +113,21 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
-	var particles = new Particles(25, scene, 4, particleSprites, 35, 50, THREE.AdditiveBlending);
+	var particles = new Particles(22, scene, 5, particleSprites, 15, 50, THREE.AdditiveBlending);
+	particles.settings.gravitateTowardsCamera = true;
+
+	// stragglers
+	var stragglers = new Stragglers(4, scene, vectors.array);
+	stragglers.settings.constantSpeed = 0.7;
+	stragglers.settings.capy = 0;
+
+/*	loader.load( { model: "files/models/soup/animals_A_life.js", callback: stragglerLoadedProxy } );
+	
+	function stragglerLoadedProxy( geometry ) {
+		var morphArray = [5,6,9,2];
+		stragglers.addAnimal( geometry, null, 1.7, morphArray );
+	}*/
+
 
 	// running animals
 
@@ -143,8 +158,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	//loader.load( { model: "files/models/soup/sock_jump_life.js", callback: sockLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
+		// regular
 		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
 		runningAnimals.addAnimal( geometry, null, 1.5, morphArray );
+		// stragglers
+		morphArray = [5,6,9,2];
+		stragglers.addAnimal( geometry, null, 1.7, morphArray );
 	}
 
 	function elkLoadedProxy( geometry ) {
@@ -163,6 +182,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	/*function sockLoadedProxy( geometry ) {
 		runningAnimals.addAnimal( geometry, "sock", 1.5, null );
 	}*/
+
 
 	// flying animals
 	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
@@ -189,37 +209,43 @@ var CitySoup = function ( camera, scene, shared ) {
 		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 1 );
 	}
 
-/*
-	// flying animals 2
-	var flyingAnimals2 = new AnimalSwarm(100, scene, vectors.array);
-	flyingAnimals2.settings.flying = true;
-	flyingAnimals2.settings.divider = 8;
-	flyingAnimals2.settings.flyingDistance = 10;
-	flyingAnimals2.settings.xPositionMultiplier = 30;
-	flyingAnimals2.settings.zPositionMultiplier = 30;
-	//flyingAnimals2.settings.constantSpeed = 0.5;
 
-	loader.load( { model: "files/models/soup/butterfly_lowA.js", callback: flying2LoadedProxy } );
+	// flying animals 2
+/*	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
+	flyingAnimals2.settings.flying = true;
+	flyingAnimals2.settings.divider = 1;
+	flyingAnimals2.settings.flyingDistance = 30;
+	flyingAnimals2.settings.xPositionMultiplier = 20;
+	flyingAnimals2.settings.zPositionMultiplier = 20;
+	flyingAnimals2.settings.constantSpeed = 2.0;
+	flyingAnimals2.settings.butterfly = true;
+	//flyingAnimals2.settings.switchPosition = true;
+
+
+	loader.load( { model: "files/models/soup/butterfly_low.js", callback: flying2LoadedProxy } );
 	
 	function flying2LoadedProxy( geometry ) {
-		flyingAnimals2.addAnimal( geometry, null, 5, null, 6, null, true );
+		var morphArray = [0,1,2,3];
+		flyingAnimals2.addAnimal( geometry, null, 5, morphArray, 5, null, true );
 	}
-
 */
+
 	// butterflys
-	var butterflys = new AnimalInFrontOfCamera(30, scene);
-	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflys.addAnimal } );
+	var butterflysD = new AnimalInFrontOfCamera(15, scene);
+	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflysD.addAnimal } );
+	var butterflysC = new AnimalInFrontOfCamera(15, scene);
+	loader.load( { model: "files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
 	
 	// trail - of grass/trees/etc
-	var trail = new Trail(100, scene);
+	var trail = new Trail(80, scene);
 	// preoccupy for differnt grass
-	for (i=0; i<100; ++i ) {
-		var type = i%5;
+	for (i=0; i<80; ++i ) {
+		var type = i%4;
 		trail.array[i] = "0"+(type+1);
 	}
 	// preoccupy slots for trees and lighthouse
-	for (i=0; i<100; i+=10 ) {
-		var type = (i/10)%5;
+	for (i=0; i<80; i+=8 ) {
+		var type = (i/8)%4;
 		trail.array[i] = "tree"+(type+1);
 	}
 	trail.array[4] = "light";
@@ -279,6 +305,14 @@ var CitySoup = function ( camera, scene, shared ) {
 	
 	this.update = function ( delta ) {
 
+		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
+			//delta = 1000/60;
+			return;
+		}
+		//var optimal = 1000/60;
+		//var percent = delta/optimal;
+		//console.log(optimal+" | "+delta+" | "+percent);
+
 		// update to reflect _real_ camera position
 		camPos.x = that.camera.matrixWorld.n14;
 		camPos.y = that.camera.matrixWorld.n24;
@@ -289,6 +323,10 @@ var CitySoup = function ( camera, scene, shared ) {
 			reset();
 		}
 		
+		// straggler test
+		if (shake%50 == 49) {
+			stragglers.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position);
+		}
 
 		// camera roll hack...
 		var dx = camera.position.x-collisionScene.cameraTarget.position.x;
@@ -301,34 +339,41 @@ var CitySoup = function ( camera, scene, shared ) {
 		++shake;
 		var xshake = 0;
 		if (shake%4 == 0) {
-			xshake = (Math.random()-0.5)*0.5;
-			camera.up.x += (Math.random()-0.5)*0.01;
+			xshake = (Math.random()-0.5)*0.7;
+			camera.up.x += (Math.random()-0.5)*0.02;
 		}
 		if (shake%2 == 0) {
-			camera.position.y = 18+(Math.random()-0.5)*0.5;
+			camera.position.y = 18+(Math.random()-0.5)*0.7;
 		}
 
-		camera.position.x = 0+xshake+( ((angleRad-Math.PI/2)*40)*-1 );
+		noiseCount += Math.random();
+		var noise = Math.sin(noiseCount/15)*30;
+		camera.position.x = 0+noise+xshake+( ((angleRad-Math.PI/2)*30)*-1 );
 
+		var zoom = collisionScene.cameraTarget.position.y/25;
+		camera.fov = 50-zoom;
+		camera.updateProjectionMatrix();
 
-		// update the soup parts	
+		// update the soup parts
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		ribbons.update(collisionScene.emitterFollow.position);
 
-		particles.update(delta, vectors.array[0].position);
+		particles.update(delta, vectors.array[0].position, camPos);
 		runningAnimals.update(delta);
+		stragglers.update(delta, camPos);
 		flyingAnimals.update(delta);
 		//flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
-		butterflys.update(camPos, angleRad, delta);
+		butterflysC.update(camPos, angleRad, delta);
+		butterflysD.update(camPos, angleRad, delta, true);
 		trail.update(collisionScene.emitterFollow.position, collisionScene.currentNormal, camPos, delta);
 		TWEEN.update();
 
 		// pointlight
-		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*20;
-		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*20;
-		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*20;
+		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*100;
+		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*100;
+		pointLight.position.z = collisionScene.emitterFollow.position.z + collisionScene.currentNormal.z*100;
 		*/
 	}
 
@@ -345,7 +390,9 @@ var CitySoup = function ( camera, scene, shared ) {
 		vectors.reset(camPos.x,camPos.y,camPos.z);
 		runningAnimals.reset(camPos.x,camPos.y,camPos.z);
 		flyingAnimals.reset(camPos.x,camPos.y,camPos.z);
+		//flyingAnimals2.reset(camPos.x,camPos.y,camPos.z);
 		particles.reset(camPos.x,camPos.y,camPos.z);
+		stragglers.reset(camPos.x,camPos.y,camPos.z);
 
 	}
 
