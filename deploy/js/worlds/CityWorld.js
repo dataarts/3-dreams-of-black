@@ -32,7 +32,8 @@ var CityWorld = function ( shared ) {
    
    	//var settings = { "fogDensity": 0.00005, "fogColor": {  "h": 0,  "s": 0.3235294117647059,  "v": 0.34705882352941175 }, "ambientLight": {  "h": 0.4647058823529412,  "s": 0.49411764705882355,  "v": 0 }, "directionalLight1": {  "h": 0.5647058823529412,  "s": 0.32941176470588235,  "v": 0.5411764705882353,  "x": 0.7648718326037581,  "y": -0.5885011172553458,  "z": 0.2619876231400604,  "phi": 0.7757647058823531,  "theta": -0.7388235294117651 }, "directionalLight2": {  "h": 0,  "s": 0,  "v": 0.18235294117647058,  "x": -0.4535568600884794,  "y": 0.8775825618903728,  "z": -0.1553545034191468,  "phi": -1.9948235294117649,  "theta": 0.4063529411764706 }, "effectEnabled": true, "effectType": "noise", "postprocessingNoise": {  "nIntensity": 0.2411764705882353,  "sIntensity": 0,  "sCount": 4096 }, "postprocessingBloom": {  "opacity": 1 }, "flarex": 23.558823529411764, "flarey": 358, "flyCamera": {  "position": {   "x": 240.7055633435974,   "y": 725.5500557827488,   "z": -13226.735514435717  },  "target": {   "x": 188.88986375390533,   "y": 744.8835980526541,   "z": -13310.050263546114  } }, "sceneScale": 1};
 	//var settings = { "fogDensity": 0.00005, "fogColor": {  "h": 0.6,  "s": 0.3235294117647059,  "v": 0.34705882352941175 }, "ambientLight": {  "h": 0,  "s": 0,  "v": 0.09411764705882353 }, "directionalLight1": {  "h": 0.5588235294117647,  "s": 0.17647058823529413,  "v": 0.3941176470588235,  "x": 0.7078535314198388,  "y": 0.12972382335149782,  "z": -0.6943450926675673,  "phi": 1.4407058823529408,  "theta": -0.7757647058823531 }, "directionalLight2": {  "h": 0,  "s": 0,  "v": 0.40588235294117647,  "x": -0.7501274841811427,  "y": -0.630824564234077,  "z": 0.19841654828908922,  "phi": -2.2534117647058824,  "theta": -0.25858823529411756 }, "effectEnabled": true, "effectType": "noise", "postprocessingNoise": {  "nIntensity": 0.3176470588235294,  "sIntensity": 0.05,  "sCount": 4096 }, "postprocessingBloom": {  "opacity": 1 }, "flarex": 18.52941176470588, "flarey": 355.7647058823529, "flyCamera": {  "position": {   "x": -5.8280070122002305,   "y": 495.9422341803853,   "z": -7391.557312943377  },  "target": {   "x": -2.8500586327436173,   "y": 494.8123320660599,   "z": -7491.506575795393  } }, "sceneScale": 1};
-	var settings = { "fogDensity": 0.0000264, "fogColor": {  "h": 0,  "s": 0.3235,  "v": 0.347 }, "ambientLight": {  "h": 0.465,  "s": 0.494,  "v": 0 }, "directionalLight1": {  "h": 0.565,  "s": 0.329,  "v": 0.541,  "x": 0.5176767580772196,  "y": 0.7138857482214859,  "z": -0.4715696264952919,  "phi": 0.7757647058823531,  "theta": -0.7388235294117651 }, "directionalLight2": {  "h": 0,  "s": 0,  "v": 0.18235294117647058,  "x": -0.8372195027957865,  "y": -0.4114343306911316,  "z": -0.3602572631705248,  "phi": -1.9948235294117649,  "theta": 0.4063529411764706 }, "effectEnabled": true, "effectType": "noise", "postprocessingNoise": {  "nIntensity": 0.2411764705882353,  "sIntensity": 0,  "sCount": 4096 }, "postprocessingBloom": {  "opacity": 1 }, "flarex": 18.52941176470588, "flarey": 358, "flyCamera": {  "position": {   "x": 16.574202591686277,   "y": 462.26953453589,   "z": -10184.707948888321  },  "target": {   "x": 13.49395371115724,   "y": 486.5924391778843,   "z": -10281.655916255411  } }, "sceneScale": 1};
+	//var settings = { "fogDensity": 0.0000264, "fogColor": {  "h": 0,  "s": 0.3235,  "v": 0.347 }, "ambientLight": {  "h": 0.465,  "s": 0.494,  "v": 0 }, "directionalLight1": {  "h": 0.565,  "s": 0.329,  "v": 0.541,  "x": 0.5176767580772196,  "y": 0.7138857482214859,  "z": -0.4715696264952919,  "phi": 0.7757647058823531,  "theta": -0.7388235294117651 }, "directionalLight2": {  "h": 0,  "s": 0,  "v": 0.18235294117647058,  "x": -0.8372195027957865,  "y": -0.4114343306911316,  "z": -0.3602572631705248,  "phi": -1.9948235294117649,  "theta": 0.4063529411764706 }, "effectEnabled": true, "effectType": "noise", "postprocessingNoise": {  "nIntensity": 0.2411764705882353,  "sIntensity": 0,  "sCount": 4096 }, "postprocessingBloom": {  "opacity": 1 }, "flarex": 18.52941176470588, "flarey": 358, "flyCamera": {  "position": {   "x": 16.574202591686277,   "y": 462.26953453589,   "z": -10184.707948888321  },  "target": {   "x": 13.49395371115724,   "y": 486.5924391778843,   "z": -10281.655916255411  } }, "sceneScale": 1};
+	var settings = { "fogDensity": 0.0000264, "fogColor": {  "h": 0,  "s": 0.3235,  "v": 0.347 }, "ambientLight": {  "h": 0.465,  "s": 0.494,  "v": 0 }, "directionalLight1": {  "h": 0.565,  "s": 0.329,  "v": 0.841,  "x": 0.5176767580772196,  "y": 0.7138857482214859,  "z": -0.4715696264952919,  "phi": 0.7757647058823531,  "theta": -0.7388235294117651 }, "directionalLight2": {  "h": 0,  "s": 0,  "v": 0.18235294117647058,  "x": -0.8372195027957865,  "y": -0.4114343306911316,  "z": -0.3602572631705248,  "phi": -1.9948235294117649,  "theta": 0.4063529411764706 }, "effectEnabled": true, "effectType": "noise", "postprocessingNoise": {  "nIntensity": 0.2411764705882353,  "sIntensity": 0,  "sCount": 4096 }, "postprocessingBloom": {  "opacity": 1 }, "flarex": 18.52941176470588, "flarey": 358, "flyCamera": {  "position": {   "x": 16.574202591686277,   "y": 462.26953453589,   "z": -10184.707948888321  },  "target": {   "x": 13.49395371115724,   "y": 486.5924391778843,   "z": -10281.655916255411  } }, "sceneScale": 1};
 	
 	this.scene.fog.color.setHSV( settings.fogColor.h,  settings.fogColor.s, settings.fogColor.v );
 	this.scene.fog.density = settings.fogDensity;
@@ -81,7 +82,7 @@ var CityWorld = function ( shared ) {
 			
 		}
 		
-		//TriggerUtils.setupCityTriggers( result );
+		TriggerUtils.setupCityTriggers( result );
 	
 	};
 
@@ -96,11 +97,11 @@ var CityWorld = function ( shared ) {
 		
 		var position = camera.matrixWorld.getPosition();
 		
-		/*TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
+		TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
 		TriggerUtils.effectors[ 1 ] = position.y;
 		TriggerUtils.effectors[ 2 ] = position.z - 100;
 		
-		TriggerUtils.update();*/
+		TriggerUtils.update();
 		
 		if ( portalsActive ) {
 			
