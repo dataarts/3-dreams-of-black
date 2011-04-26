@@ -102,9 +102,45 @@ var PrairieWorld = function ( shared, camera ) {
 		cargo2.rotation.set( -1.57, 0, 3.14  );
 		cargo2.updateMatrix();
 		camera.animationParent.addChild( cargo2 );
+		
+		var jloader = new THREE.JSONLoader();
+		
+		jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+		jloader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
+		
+		//jloader.load( { model: 'files/models/Smoke.js', callback: function( geo ) { addSmoke( geo, 100 ); } } );
+		
 
 	};
 
+	function addSmoke( geo, n ) {
+		
+		var i, x, y, z, cs,
+			scale = 1,
+			cloudMesh, cloudMaterial = new THREE.MeshFaceMaterial();
+		
+		for( i = 0; i < n; i ++ ) {
+		
+			cloudMesh = new THREE.Mesh( geo, cloudMaterial );
+			x = 200 * ( 0.5 - Math.random() );
+			y = 0 + 0 * ( 0.5 - Math.random() );
+			z = 200 * ( 0.5 - Math.random() );
+			cloudMesh.position.set( x, y, z );
+			
+			cs = scale * ( 1 + 0.5 * Math.random() );
+			cloudMesh.scale.set( cs, cs, cs );
+			
+			cloudMesh.rotation.y = 0.5 * Math.random();
+			
+			cloudMesh.matrixAutoUpdate = false;
+			cloudMesh.updateMatrix();
+			
+			that.scene.addChild( cloudMesh );
+
+		}
+		
+	};
+	
 	loader.load( "files/models/prairie/Prairie.js", prairieLoaded );
 
 	this.update = function ( delta, camera, portalsActive ) {
