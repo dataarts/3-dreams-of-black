@@ -1,4 +1,40 @@
-var TransitionToDunes = function ( shared ) {
+var HalfAlphaShaderSource = {
+
+	'halfAlpha' : {
+
+		uniforms: {
+			"map": { type: "t", value: 0, texture: null },
+		},
+
+		vertexShader: [
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec4 c = texture2D( map, vec2( vUv.x * 0.5, vUv.y ) );",
+				"vec4 a = texture2D( map, vec2( 0.5 + vUv.x * 0.5, vUv.y ) );",
+				"gl_FragColor = vec4(c.rgb, a.r);",
+			"}"
+
+		].join("\n")
+
+	}
+
+};
+
+var VideoSequence = function ( shared, videoPath, hasAlpha ) {
 
 	SequencerItem.call( this );
 
@@ -19,7 +55,7 @@ var TransitionToDunes = function ( shared ) {
 		// video
 
 		video = document.createElement( 'video' );
-		video.src = 'files/videos/transition_dunes.webm';
+		video.src = videoPath;
 
 		// 3d
 
@@ -33,8 +69,30 @@ var TransitionToDunes = function ( shared ) {
 		texture = new THREE.Texture( video );
 		texture.minFilter = THREE.LinearFilter;
 		texture.magFilter = THREE.LinearFilter;
-
-		mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture, depthTest: false } ) );
+		
+		if (hasAlpha) {
+			var shader = HalfAlphaShaderSource['halfAlpha'];
+			
+			var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+			uniforms['map'].texture = texture;
+			
+			var mat = new THREE.MeshShaderMaterial({
+				uniforms: uniforms,
+				vertexShader: shader.vertexShader,
+				fragmentShader: shader.fragmentShader,
+				blending: THREE.BillboardBlending,
+				depthTest: false
+			});
+			
+			mesh = new THREE.Mesh(geometry, mat);
+		}
+		else {
+			mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture, depthTest: false }));
+		}
+		
+		//mesh.scale.x = -1;
+		//mesh.doubleSided = true;
+		
 		scene.addChild( mesh );
 
 	};
@@ -77,5 +135,5 @@ var TransitionToDunes = function ( shared ) {
 
 };
 
-TransitionToDunes.prototype = new SequencerItem();
-TransitionToDunes.prototype.constructor = TransitionToDunes;
+VideoSequence.prototype = new SequencerItem();
+VideoSequence.prototype.constructor = VideoSequence;
