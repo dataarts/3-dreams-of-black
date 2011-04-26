@@ -53,15 +53,14 @@ var Film = function ( shared ) {
 
 	// sequence
     
-    var intro = new VideoSequence(shared, "files/videos/intro.webm", false);
+    var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false );
 	
-    var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false);
+    var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
 	
-    var prairieAnimation = new VideoSequence(shared, "files/videos/transition_prairie.webm", false);
-    var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true);
+    var prairieAnimation = new VideoSequence(shared, "files/videos/transition_prairie.webm", false, true );
+    var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
 	
-    var dunesAnimation = new VideoSequence(shared, "files/videos/transition_dunes.webm", false);
-	
+    var dunesAnimation = new VideoSequence(shared, "files/videos/transition_dunes.webm", false, false );
 
 	sequencer = new Sequencer();
 
