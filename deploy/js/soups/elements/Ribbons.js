@@ -28,7 +28,7 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 		ribbonMesh.doubleSided = true;
 		scene.addObject( ribbonMesh );
 
-		var offset = Math.floor( Math.random()*10 );
+		var offset = 3+Math.floor( Math.random()*10 );
 
 		var obj = {r:ribbon, rm:ribbonMesh, offset:offset}
 

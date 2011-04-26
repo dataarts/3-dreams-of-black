@@ -87,22 +87,22 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// ribbons
 
-/*	var ribbonMaterials = [
-			new THREE.MeshLambertMaterial( { color:0x29ae08 } ),
-			new THREE.MeshLambertMaterial( { color:0x309018 } ),
-			new THREE.MeshLambertMaterial( { color:0x267213 } ),
-			new THREE.MeshLambertMaterial( { color:0x5ab543 } ),
-			new THREE.MeshLambertMaterial( { color:0x2e6f1e } ),
-			new THREE.MeshLambertMaterial( { color:0x08a620 } )
+	var ribbonMaterials = [
+			new THREE.MeshLambertMaterial( { color:0x29ae08, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x309018, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x267213, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x5ab543, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x2e6f1e, opacity: 0.1 } ),
+			new THREE.MeshLambertMaterial( { color:0x08a620, opacity: 0.1 } )
 	];
 
-	var ribbons = new Ribbons(5, vectors.array, scene, ribbonMaterials);
+	var ribbons = new Ribbons(4, vectors.array, scene, ribbonMaterials);
 
-	//ribbons.settings.ribbonPulseMultiplier_1 = 5.5;
-	//ribbons.settings.ribbonPulseMultiplier_2 = 5.5;
-	ribbons.settings.ribbonMin = 0.1;
-	ribbons.settings.ribbonMax = 0.3;
-*/
+	ribbons.settings.ribbonPulseMultiplier_1 = 15;
+	ribbons.settings.ribbonPulseMultiplier_2 = 0;
+	ribbons.settings.ribbonMin = 0.4;
+	ribbons.settings.ribbonMax = 0.4;
+
 	// particles
 
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -219,15 +219,15 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
 	
 	// trail - of grass/trees/etc
-	var trail = new Trail(100, scene);
+	var trail = new Trail(80, scene);
 	// preoccupy for differnt grass
-	for (i=0; i<100; ++i ) {
-		var type = i%5;
+	for (i=0; i<80; ++i ) {
+		var type = i%4;
 		trail.array[i] = "0"+(type+1);
 	}
 	// preoccupy slots for trees and lighthouse
-	for (i=0; i<100; i+=10 ) {
-		var type = (i/10)%5;
+	for (i=0; i<80; i+=8 ) {
+		var type = (i/8)%4;
 		trail.array[i] = "tree"+(type+1);
 	}
 	trail.array[4] = "light";
@@ -327,7 +327,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		// update the soup parts	
 		collisionScene.update(camPos, delta);
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		//ribbons.update(collisionScene.emitterFollow.position);
+		ribbons.update(collisionScene.emitterFollow.position);
 
 		particles.update(delta, vectors.array[0].position, camPos);
 		runningAnimals.update(delta);

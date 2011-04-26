@@ -78,16 +78,18 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 					particleArray[i].c.tox = position.x-extrax//camPos.x+extrax;
 					particleArray[i].c.toy = 0;
-					particleArray[i].c.toz = position.z;//camPos.z-400; // hack for in front of camera
+					particleArray[i].c.toz = position.z-100;//camPos.z-400; // hack for in front of camera
 
 					var dx = particles.position.x - particleArray[i].c.tox, dy = particles.position.y - particleArray[i].c.toy, dz = particles.position.z - particleArray[i].c.toz;
 					var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 
-					var time = 1000+(distance/30);
+					var time = 1000+(distance/25);
+					
+					particles.position.y = position.y+50;
 
-					particles.rotation.x = Math.random() * Math.PI;
+					particles.rotation.x = Math.random() * Math.PI + (Math.PI/2);
 					particles.rotation.y = Math.random() * Math.PI;
-					particles.rotation.z = Math.random() * Math.PI;
+					particles.rotation.z = Math.random() * Math.PI + (Math.PI/2);
 
 					particles.scale.x = particles.scale.y = particles.scale.z = 0.8;
 
@@ -98,25 +100,19 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 					var rotationTween = new TWEEN.Tween(particles.rotation)
 								.to({x: 0, z: 0}, time)
-								.easing(TWEEN.Easing.Exponential.EaseOut);
+								.easing(TWEEN.Easing.Linear.EaseNone);
 					rotationTween.start();
 	
 					var scaleTween = new TWEEN.Tween(particles.scale)
-								.to({x: 4, z: 4}, time)
+								.to({x: 4, y: 0.05, z: 4}, time)
 								.easing(TWEEN.Easing.Linear.EaseNone);
 					scaleTween.start();
 	
-					var flattenTween = new TWEEN.Tween(particles.scale)
-								.to({y: 0.05}, time+1000)
-								.easing(TWEEN.Easing.Linear.EaseNone)
-					flattenTween.start();
-
 					/*var flattenTween = new TWEEN.Tween(particles.scale)
-								.to({y: 0.0001}, 500)
-								.easing(TWEEN.Easing.Elastic.EaseOut)
-								.delay(time);
+								.to({y: 0.05}, time+500)
+								.easing(TWEEN.Easing.Linear.EaseNone)
 					flattenTween.start();*/
-					
+	
 
 				}
 

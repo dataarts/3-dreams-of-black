@@ -163,8 +163,8 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 					that.emitter.position = intersects[i].point;
 
 					// hack for now...
-					if (that.emitter.position.z > camPos.z-100) {
-						that.emitter.position.z = camPos.z-100;
+					if (that.emitter.position.z > camPos.z-125) {
+						that.emitter.position.z = camPos.z-125;
 					}
 
 					/*var face = intersects[i].face;
