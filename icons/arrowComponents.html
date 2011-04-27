@@ -175,9 +175,19 @@
           };
 
           this.scale = function(s) {
+            
+            this.width *= s;
+            this.height *= s;
+            this.spacing *= s;
+            this.indent *= s;
+            
             for(var i = 0; i < arrowHeads.length; i++) {
               var arrowHead = arrowHeads[i];
-              
+                  arrowHead.width *= s;
+                  arrowHead.height *= s;
+                  var yOffset = Math.floor(i - arrowHeads.length / 2.0) * this.spacing;
+                  arrowHead.y = yOffset;
+                  arrowHead.indent = this.indent;
             }
           };
           this.resize();
@@ -250,12 +260,8 @@
             bow.height *= this.scaleFactor;
             bow.y = this.height / 2.0;
 
-            stern.width *= this.scaleFactor;
-            stern.height *= this.scaleFactor;
-            stern.spacing *= this.scaleFactor;
-            stern.indent *= this.scaleFactor;
             stern.y = -this.height / 2.0;
-            stern.scale();
+            stern.scale(this.scaleFactor);
           };
 
         }
