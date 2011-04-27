@@ -233,7 +233,7 @@ var TriggerUtils = (function() {
 	
 	var that = {};
 	that.effectors = [ 0, 20, 0 ];		// xyz xyz for each effector (remeber to change const in shader, too)
-	that.effectorRadius = 500;
+	that.effectorRadius = 200;
 
 	var smallTriggers = [];
 	var bigTriggers = [];
