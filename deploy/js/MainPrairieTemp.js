@@ -73,7 +73,7 @@ function init() {
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 75 ), 1 );
 	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 2 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.1647, 0.005, 2096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
+	//sequencer.add( new NoiseEffect( shared, 0.1647, 0.005, 2096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 
 }
