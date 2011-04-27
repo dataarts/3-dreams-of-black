@@ -70,7 +70,8 @@ var CityWorld = function ( shared ) {
 		var i, l, scene = result.scene;
 
 		hideColliders( scene );
-		makeSceneStatic( scene );		
+		makeSceneStatic( scene );
+		preInitScene( result, shared.renderer );
 
 		scene.scale.set( 0.1, 0.1, 0.1 );
 		scene.updateMatrix();

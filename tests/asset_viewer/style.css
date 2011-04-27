@@ -11,11 +11,7 @@ html {
 
 body {
   font-family: Times;
-<<<<<<< HEAD:tests/model_viewer_simple/style.css
-  background-color: #999999;
-=======
   background-color: #333;
->>>>>>> ed1fa0154557e60b819e09d1fc97cfbea27333a7:tests/asset_viewer/style.css
 }
 
 #wrapper {
@@ -43,7 +39,7 @@ body {
 #viewerModels {
   float: left;
   width: 960px;
-  height:145px;
+  height:100px;
 }
 
 a.modelLink{
@@ -55,11 +51,13 @@ a.modelLink{
   border:1px solid #b65024;
   float:left;
   margin:2px;
+  overflow:hidden;
 }
 
 #viewerSettings {
   float:left;
   width:960px;
+  height:auto;
 }
 
 h1, h2, h3, h4, h5 {

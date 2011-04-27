@@ -1,0 +1,105 @@
+<!doctype html>
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+  <script type="text/javascript" src="js/prettify.js"></script>
+  <script type="text/javascript" src="js/encoder.js"></script>
+  <script type="text/javascript">
+
+    var theCode, openLink, pre, open = false;
+    $(function() {
+
+      var hashNum = window.location.hash[1];
+      $('iframe').attr('src', 'demos/'+hashNum+'/index.html');
+
+      pre = $('#the-code');
+      openLink = $('#see-the-code');
+
+      // Grab the source
+      window.frames[0].onload = function() {
+        theCode = Encoder.htmlEncode($.trim(window.frames[0].document
+            .getElementById('main-code')
+            .innerHTML));
+        $('#the-code .wrapper').html(theCode);
+        prettyPrint();
+      };
+
+
+      // Add resize listener
+      window.addEventListener('resize', onResize, false);
+      onResize();
+
+    });
+
+    var onResize = function() {
+      pre.height(window.innerHeight - 37);
+      if (open) resizePre();
+    }
+
+    var resizePre = function() {
+      pre.width(window.innerWidth * 0.5);
+    }
+
+    function toggleCode() {
+      if (!open) {
+        openLink.html('Hide the code');
+        //pre.css('overflow', 'scroll');
+        resizePre();
+      } else {
+        openLink.html('Show the code');
+        //pre.css('overflow-x', 'hidden');
+        pre.width(0);
+      }
+      open = !open;
+
+    }
+
+  </script>
+
+</head>
+
+<body class="demo">
+
+<pre id="the-code" class="prettyprint linenums:1"><div class="wrapper">
+
+</div>
+</pre>
+
+<!-- Top bar -->
+<div id="top">
+
+  <div class="inner">
+    <a href="javascript:toggleCode()" id="see-the-code">
+      Show the code
+    </a>
+
+    <a href="index.html" id="back-to-landing">
+      <span class="title">"3 Dreams of Black"</span>
+      <span class="bull">&bull;</span>
+      <span class="subtitle">The Technology</span>
+    </a>
+  </div>
+
+</div>
+
+
+<!-- iframe -->
+<div id="iframe-container">
+  <iframe src="demos/1/index.html" >
+
+  </iframe>
+</div>
+
+</body>
+</html>

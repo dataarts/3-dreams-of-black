@@ -139,7 +139,7 @@ var DunesWorld = function ( shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	function addDunesPart( scene, position ) {
+	function addDunesPart( scene, position, result ) {
 
 		scene.scale.x = scene.scale.y = scene.scale.z = scale;
 		scene.position = position;
@@ -147,6 +147,7 @@ var DunesWorld = function ( shared ) {
 
 		makeSceneStatic( scene );
 		markColliders( scene );
+		preInitScene( result, shared.renderer );
 		
 		that.scene.addChild( scene );
 		
@@ -190,7 +191,7 @@ var DunesWorld = function ( shared ) {
 		sceneWalk = result.scene;
 		walkPosition = new THREE.Vector3( 0, 0, 0 * TILE_SIZE );
 		sceneWalk.rotation.z = Math.PI;
-		addDunesPart( sceneWalk, walkPosition );
+		addDunesPart( sceneWalk, walkPosition, result );
 
 	};
 
@@ -198,7 +199,7 @@ var DunesWorld = function ( shared ) {
 
 		scenePrairie = result.scene;
 		prairiePosition = new THREE.Vector3( 0, 0, 1 * TILE_SIZE );
-		addDunesPart( scenePrairie, prairiePosition );
+		addDunesPart( scenePrairie, prairiePosition, result );
 
 	};
 
@@ -207,7 +208,7 @@ var DunesWorld = function ( shared ) {
 		sceneCity = result.scene;
 		cityPosition = new THREE.Vector3( 0, 0, 2 * TILE_SIZE );
 		showHierarchyNotColliders( sceneCity, false );
-		addDunesPart( sceneCity, cityPosition );
+		addDunesPart( sceneCity, cityPosition, result );
 
 	};
 
@@ -225,7 +226,7 @@ var DunesWorld = function ( shared ) {
 
 		}
 
-		addDunesPart( result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE) );
+		addDunesPart( result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE), result );
 
 		tiles[z][x] = result.scene;
 		++randomAdded;

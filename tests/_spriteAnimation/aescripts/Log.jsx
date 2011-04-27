@@ -1,0 +1,1 @@
+﻿function Logger() {    this.file = new File("/Users/bartekd/afterEffects/_export/aelog.txt");    this.file.encoding = "ASCII";    this.file.lineFeed = "Unix";    this.file.open ("a:");}Logger.prototype.info = function(s) {    this.file.writeln(s);}Logger.prototype.close = function() {    this.file.close();}var Log = new Logger();

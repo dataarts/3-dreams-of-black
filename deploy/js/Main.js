@@ -1,6 +1,6 @@
 ( function () {
 
-	var logger, stats, shared,
+	var logger, stats, renderer, renderTarget, shared,
 	Signal = signals.Signal, currentSection,
 	launcher, film, relauncher, exploration, ugc,
 	shortcuts;
@@ -18,8 +18,6 @@
 	stats.domElement.style.right = '0px';
 	stats.domElement.style.top = '0px';
 	document.body.appendChild( stats.domElement );
-
-	// init
 
 	shared = {
 
@@ -59,21 +57,23 @@
 
 	};
 
-	launcher = new Launcher( shared );
+	launcher = new LauncherSection( shared );
 	document.body.appendChild( launcher.getDomElement() );
 
 	shared.signals.load.add( function () {
 
-		film = new Film( shared );
+		shared.signals.loadBegin.dispatch();
+
+		film = new FilmSection( shared );
 		document.body.appendChild( film.getDomElement() );
 
-		relauncher = new Relauncher( shared );
+		relauncher = new RelauncherSection( shared );
 		document.body.appendChild( relauncher.getDomElement() );
 
-		exploration = new Exploration( shared );
+		exploration = new ExplorationSection( shared );
 		document.body.appendChild( exploration.getDomElement() );
 
-		ugc = new Ugc( shared );
+		ugc = new UgcSection( shared );
 		document.body.appendChild( ugc.getDomElement() );
 
 		shortcuts = new Shortcuts( shared );
@@ -94,9 +94,6 @@
 
 	//
 
-	shared.signals.loadBegin.dispatch();
-
-	// shared.signals.showlauncher.dispatch();
 	setSection( launcher );
 	animate();
 
@@ -104,15 +101,12 @@
 
 	function setSection( section ) {
 
-		if ( currentSection ) {
-
-			if ( currentSection == film ) shared.signals.stopfilm.dispatch();
-			currentSection.getDomElement().style.display = 'none';
-
-		}
+		if ( currentSection ) currentSection.hide();
 
 		currentSection = section;
-		currentSection.getDomElement().style.display = 'block';
+
+		currentSection.resize( window.innerWidth, window.innerHeight );
+		currentSection.show();
 
 	};
 
@@ -126,6 +120,8 @@
 	};
 
 	function onWindowResize( event ) {
+
+		currentSection.resize( window.innerWidth, window.innerHeight );
 
 		shared.screenWidth = window.innerWidth;
 		shared.screenHeight = window.innerHeight;
