@@ -112,30 +112,61 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/octo_black.js", callback: octoLoadedProxy } );
 
 	function animalsLoadedProxy( geometry ) {
-		var morphArray = [0,0,1,2,1,2,0,2,3];
-		runningAnimals.addAnimal( geometry, "animal", 0.35, morphArray, 2.5 );
-	}
+
+		var animal, 
+			morphArray = [0,0,1,2,1,2,0,2,3];
+
+		animal = runningAnimals.addAnimal( geometry, "animal", 0.35, morphArray, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function taruffaloLoadedProxy( geometry ) {
-		var morphArray = [0,1,0,1];
-		runningAnimals.addAnimal( geometry, null, 0.3, morphArray, 2.5 );
-	}
+		
+		var animal,
+			morphArray = [0,1,0,1];
+		
+		animal = runningAnimals.addAnimal( geometry, null, 0.3, morphArray, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function gatorLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "gator", 0.35, null, 2.5 );
-	}
+
+		var animal;
+
+		animal = runningAnimals.addAnimal( geometry, "gator", 0.35, null, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function goatLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "goat", 0.45, null, 2.5 );
-	}
+		
+		var animal;
+		
+		animal = runningAnimals.addAnimal( geometry, "goat", 0.45, null, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function armLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2.5 );
-	}
+		
+		var animal;
+
+		animal = runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
+
 	function octoLoadedProxy( geometry ) {
-		var morphArray = [0,0,0,2];
-		runningAnimals.addAnimal( geometry, "octo", 0.65, morphArray, 2.5 );
-	}
+
+		var animal,
+			morphArray = [0,0,0,2];
+
+		animal = runningAnimals.addAnimal( geometry, "octo", 0.65, morphArray, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 
 	// flying animals
@@ -151,9 +182,14 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/birds_A_black.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 0.4, morphArray, 0.6 );
-	}
+		
+		var animal,
+			morphArray = [1,1,0,0,1,0,0,1,0,0];
+
+		animal = flyingAnimals.addAnimal( geometry, null, 0.4, morphArray, 0.6 );
+		preinitAnimal( animal, shared.renderer, scene );
+		
+	};
 	
 	// trail - of grass/trees/etc
 	/*var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } ),

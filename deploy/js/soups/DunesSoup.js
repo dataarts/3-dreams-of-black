@@ -11,6 +11,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
+	
 	var collisionScene = new CollisionScene( camera, scene, 0.15, shared, 3000 );
 	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.maxSpeedDivider = 2;
@@ -19,19 +20,25 @@ var DunesSoup = function ( camera, scene, shared ) {
 	collisionScene.settings.normalOffsetAmount = 50;
 
 	// vector trail
+
 	var vectors = new Vectors();
 	vectors.settings.divider = 4;
 
 	// ribbons
+	
 	var ribbonMaterials = [
-			new THREE.MeshBasicMaterial( { color:0xd9f3fb, opacity: 0.25 } ),
-			new THREE.MeshBasicMaterial( { color:0xe4f1f5, opacity: 0.25 } ),
-			new THREE.MeshBasicMaterial( { color:0xffffff, opacity: 0.25 } ),
-			new THREE.MeshBasicMaterial( { color:0xeeeeee, opacity: 0.25 } ),
-			new THREE.MeshBasicMaterial( { color:0xdcf3fa, opacity: 0.25 } ),
-			new THREE.MeshBasicMaterial( { color:0xd2f3fc, opacity: 0.25 } )
+	
+		new THREE.MeshBasicMaterial( { color:0xd9f3fb, opacity: 0.25 } ),
+		new THREE.MeshBasicMaterial( { color:0xe4f1f5, opacity: 0.25 } ),
+		new THREE.MeshBasicMaterial( { color:0xffffff, opacity: 0.25 } ),
+		new THREE.MeshBasicMaterial( { color:0xeeeeee, opacity: 0.25 } ),
+		new THREE.MeshBasicMaterial( { color:0xdcf3fa, opacity: 0.25 } ),
+		new THREE.MeshBasicMaterial( { color:0xd2f3fc, opacity: 0.25 } )
+
 	];
+
 	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
+
 	ribbons.settings.ribbonPulseMultiplier_1 = 20;
 	ribbons.settings.ribbonPulseMultiplier_2 = 0.01;
 	ribbons.settings.ribbonMin = 0.3;
@@ -52,30 +59,44 @@ var DunesSoup = function ( camera, scene, shared ) {
 */
 
 	// flying animals
+
 	var flyingAnimals = new AnimalSwarm(20, scene, vectors.array);
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 10;
 	flyingAnimals.settings.divider = 10;
 	flyingAnimals.settings.constantSpeed = 0.8;
+	
 	for (var i=0; i<20; ++i ) {
+
 		var odd = i%2;
 		if (odd == 0) {
 			flyingAnimals.array[i] = "b";
 		}
+
 	}
 
 	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 1.8, morphArray, 0.8 );
-	}
+
+		var animal,
+			morphArray = [1,1,0,0,1,0,0,1,0,0];
+
+		animal = flyingAnimals.addAnimal( geometry, null, 1.8, morphArray, 0.8 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function birdsBLoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, "b", 1.8, morphArray, 0.8 );
-	}
+		
+		var animal,
+			morphArray = [1,1,0,0,1,0,0,1,0,0];
+		
+		animal = flyingAnimals.addAnimal( geometry, "b", 1.8, morphArray, 0.8 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	this.update = function ( delta ) {
 
@@ -98,4 +119,4 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	}
 
-}
+};
