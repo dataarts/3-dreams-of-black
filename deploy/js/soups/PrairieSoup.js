@@ -4,15 +4,16 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// init
 
-	camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
+	shared.camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
+	
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	var pointLight = new THREE.PointLight( 0x999999, -2.25, 400 );
-	pointLight.position.x = camPos.x;
-	pointLight.position.y = camPos.y;
-	pointLight.position.z = camPos.z;
+	pointLight.position.x = shared.camPos.x;
+	pointLight.position.y = shared.camPos.y;
+	pointLight.position.z = shared.camPos.z;
 	scene.addLight( pointLight, 1.0 );
 
 	// setup the different parts of the soup
@@ -35,12 +36,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	collisionScene.settings.normalOffsetAmount = 7;
 	collisionScene.settings.minDistance = 0;
 
-	collisionScene.emitter.position.set(camPos.x+40, camPos.y, camPos.z+20);
-	collisionScene.emitterFollow.position.set(camPos.x+40, camPos.y, camPos.z+20);
+	collisionScene.emitter.position.set( shared.camPos.x + 40, shared.camPos.y, shared.camPos.z + 20 );
+	collisionScene.emitterFollow.position.set( shared.camPos.x + 40, shared.camPos.y, shared.camPos.z + 20 );
 
 	// vector trail
-	var startPosition = new THREE.Vector3(camPos.x-10, camPos.y, camPos.z+30);
-	vectors = new Vectors(50, 2, 2, startPosition);
+	var startPosition = new THREE.Vector3( shared.camPos.x - 10, shared.camPos.y, shared.camPos.z + 30 );
+	vectors = new Vectors( 50, 2, 2, startPosition );
 
 	// ribbons
 
@@ -183,13 +184,13 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		// update to reflect _real_ camera position
 
-		camPos.x = camera.matrixWorld.n14;
-		camPos.y = camera.matrixWorld.n24;
-		camPos.z = camera.matrixWorld.n34;
+		shared.camPos.x = camera.matrixWorld.n14;
+		shared.camPos.y = camera.matrixWorld.n24;
+		shared.camPos.z = camera.matrixWorld.n34;
 
 		// temp reset
 
-		if ( camPos.x > 1090 ) {
+		if ( shared.camPos.x > 1090 ) {
 
 			reset();
 
@@ -197,13 +198,13 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		// update the soup parts	
 
-		collisionScene.update( camPos, delta );
+		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
 		//ribbons.update( collisionScene.emitterFollow.position );
 		particles.update( delta, vectors.array[5].position );
 		runningAnimals.update();
 		flyingAnimals.update();
-		//trail.update(vectors.array[5].position, collisionScene.currentNormal, camPos, delta);
+		//trail.update(vectors.array[5].position, collisionScene.currentNormal, shared.camPos, delta);
 		
 		TWEEN.update();
 
@@ -217,24 +218,24 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		shared.lavatrailx = vectors.array[20].position.x;
 		shared.lavatrailz = vectors.array[20].position.z;
 
-	}
+	};
 
 
 
 	function reset () {
 
-		camPos.set( 302.182, -9.045, -105.662 );
+		shared.camPos.set( 302.182, -9.045, -105.662 );
 
-		collisionScene.reset( camPos.x, camPos.y, camPos.z );
-		vectors.reset( camPos.x, camPos.y, camPos.z );
-		runningAnimals.reset( camPos.x, camPos.y, camPos.z );
-		flyingAnimals.reset( camPos.x, camPos.y, camPos.z );
-		particles.reset( camPos.x, camPos.y, camPos.z );
+		collisionScene.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		vectors.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		runningAnimals.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		flyingAnimals.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		particles.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
 
-	}
+	};
 
 	this.destruct = function () {
 
-	}
+	};
 
-}
+};
