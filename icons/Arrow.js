@@ -67,7 +67,7 @@ ArrowHead.prototype.radians = function(n) {
   return (n / 360.0) * Math.PI * 2;
 };
 
-// TODO: Is made up of 3 ArrowHeads
+// Is made up of 3 ArrowHeads
 function ArrowTail(gee, x, y, w, h, l) {
 
   var that = this;
@@ -155,7 +155,7 @@ ArrowTail.prototype.radians = function(n) {
   return (n / 360.0) * Math.PI * 2;
 };
 
-// TODO: Contains 1 ArrowHead, 1 ArrowTail, + 1 body (a line segment)
+// Contains 1 ArrowHead, 1 ArrowTail, + 1 body (a line segment)
 function Arrow(gee, x, y, w, h) {
 
   var that = this;
@@ -187,6 +187,7 @@ function Arrow(gee, x, y, w, h) {
   var bow = new ArrowHead(gee, 0, this.height / 2.0);
   var stern = new ArrowTail(gee, 0, -this.height / 2.0);
   var angle = this.angle;
+  var ratio = 14.0 / 280.0;
 
   this.update = function() {
     angle = this.radians(this.angle);
@@ -234,7 +235,7 @@ Arrow.prototype.radians = function(n) {
 function ArcArrow(gee, x, y, w, h) {
   
   var that = this;
-  var g = gee.ctx; // Pulls an error now
+  var g = gee.ctx;
 
   // Public vars
   this.x = x;
@@ -255,7 +256,7 @@ function ArcArrow(gee, x, y, w, h) {
     this.height = 280;
   }
 
-  this.angle = 0.0;
+  this.angle = 180;
   this.scaleFactor = 1.0;
 
   this.clockwise = true;
