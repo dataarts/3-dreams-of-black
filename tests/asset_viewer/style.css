@@ -1,0 +1,99 @@
+* {
+  padding: 0px;
+  margin: 0px;
+  color: #333;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: Times;
+  background-color: #333;
+}
+
+#wrapper {
+  width: 960px;
+  height: auto;
+  margin: auto;
+  background: #f0efe4;
+  border: 20px solid #fff;
+  margin-top: 20px;
+}
+
+#viewerCanvas {
+  display: block;
+  width: 960px;
+  height: 360px;
+  float:left;
+  z-index: 10000;
+  cursor: move;
+}
+
+#viewerConsole {
+
+}
+
+#viewerModels {
+  float: left;
+  width: 960px;
+  height:100px;
+}
+
+a.modelLink{
+  display:block;
+  font-size:10px;
+  width:42px;
+  height:42px;
+  background:#fff;
+  border:1px solid #b65024;
+  float:left;
+  margin:2px;
+  overflow:hidden;
+}
+
+#viewerSettings {
+  float:left;
+  width:960px;
+  height:auto;
+}
+
+h1, h2, h3, h4, h5 {
+  color: #b65024;
+  font-weight: normal;
+}
+
+h1 {
+  text-align: center;
+  padding: 20px;
+}
+
+p {
+  font-family: arial, sans-serif;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+a, a:hover, a:visited {
+  color: #b65024;
+  font-weight: normal;
+  text-decoration: underline;
+}
+
+#viewerModels img {
+  width: 42px;
+  height: 42px;
+  opacity: 0.4;
+  filter: alpha(opacity = 40);
+}
+
+#viewerModels img:hover {
+  opacity: 1;
+  filter: alpha(opacity = 100)
+}
+
+div.clear {
+  clear: both;
+}
