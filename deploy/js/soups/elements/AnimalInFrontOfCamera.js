@@ -29,9 +29,9 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 
 			var scale = 0.02+(Math.random()/8);
 
-			var x = (Math.random()*80)-40;
-			var y = (i*(110/30))-10;
-			var z = (Math.random()*80)-40;
+			var x = (Math.random()*120)-60;
+			var y = (i*(150/15))-10;
+			var z = (Math.random()*120)-60;
 
 			mesh.position.x = x;
 			mesh.position.y = y;
@@ -59,8 +59,8 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 			animalContainer.position = position;
 
 		if (!skipPosition) {
-			animalContainer.position.x -= Math.cos( theta )*70;
-			animalContainer.position.z -= Math.sin( theta )*70;
+			animalContainer.position.x -= Math.cos( theta )*110;
+			animalContainer.position.z -= Math.sin( theta )*110;
 		}
 		if (isNaN(delta) || delta > 1000 ) {
 			delta = 1000/60;
@@ -81,7 +81,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 			y += 0.5*(delta/20);
 			z += offsetz;
 
-			if (y > 100 ) {
+			if (y > 140 ) {
 				y = -10;
 			}
 
