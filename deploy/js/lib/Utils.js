@@ -56,6 +56,19 @@ function preInitScene( result, renderer ) {
 
 };
 
+function preinitAnimal( animal, renderer, scene ) {
+	
+	//console.log( animal );
+	
+	renderer.initWebGLObjects( scene );
+	
+	// this makes weird things
+	
+	//var material = animal.mesh.materials[ 0 ];
+	//setTimeout( function() { renderer.initMaterial( material, scene.lights, scene.fog, animal.mesh ); }, 100 );
+
+};
+
 function initLensFlares( where, position, sx, sy ) {
 
 	var texture0 = THREE.ImageUtils.loadTexture( "files/textures/lensflare0.png" );

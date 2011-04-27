@@ -3774,7 +3774,7 @@ var scene = {
 
     "geo_Trigger_SignBroke" : {
         "type" : "ascii_mesh",
-        "url"  : "City.Trigger_SignBroke.js"
+        "url"  : "City.TriggerMesh_SignBroke.js"
     },
 
     "geo_TriggerMesh_Car_" : {

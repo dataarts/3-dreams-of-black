@@ -65,6 +65,11 @@ var CityWorld = function ( shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
+	var sphere;
+	
+	//sphere = new THREE.Mesh( new THREE.Sphere( 200, 32, 16 ), new THREE.MeshLambertMaterial( { color: 0xffaa00, wireframe: true } ) );
+	//this.scene.addChild( sphere );
+	
 	function sceneLoaded( result ) {
 
 		var i, l, scene = result.scene;
@@ -83,8 +88,10 @@ var CityWorld = function ( shared ) {
 			
 		}
 		
-		//TriggerUtils.setupCityTriggers( result );
-	
+		TriggerUtils.setupCityTriggers( result );
+		
+		//that.scene.update( undefined, true );
+		
 	};
 
 
@@ -98,11 +105,21 @@ var CityWorld = function ( shared ) {
 		
 		var position = camera.matrixWorld.getPosition();
 		
-		/*TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
+		TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
 		TriggerUtils.effectors[ 1 ] = position.y;
 		TriggerUtils.effectors[ 2 ] = position.z - 100;
 		
-		TriggerUtils.update();*/
+		var t = TriggerUtils.effectors;
+		
+		if ( sphere ) {
+
+			sphere.position.set( t[0], t[1], t[2] );
+			//sphere.position.copy( position );
+			sphere.updateMatrix();
+
+		}
+		
+		TriggerUtils.update();
 		
 		if ( portalsActive ) {
 			

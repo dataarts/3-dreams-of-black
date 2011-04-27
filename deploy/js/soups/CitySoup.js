@@ -51,32 +51,40 @@ var CitySoup = function ( camera, scene, shared ) {
 	camera.target = collisionScene.cameraTarget;
 
 	function mesh0LoadedProxy( geometry ) {
+
 		var scale = 0.1;
 		var rotation = new THREE.Vector3(-1.570796,0,3.141591);
 		var position = new THREE.Vector3();
 		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
-	}
+
+	};
 
 	function mesh1LoadedProxy( geometry ) {
+
 		var scale = 0.1;
 		var rotation = new THREE.Vector3(-1.570796,0,0);
 		var position = new THREE.Vector3();
 		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
-	}
+
+	};
 
 	function mesh2LoadedProxy( geometry ) {
+
 		var scale = 0.1;
 		var rotation = new THREE.Vector3(-1.570796,0,0);
 		var position = new THREE.Vector3();
 		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
-	}
+
+	};
 
 	function mesh3LoadedProxy( geometry ) {
+
 		var scale = 0.1;
 		var rotation = new THREE.Vector3(-1.570796,0,1.570797);
 		var position = new THREE.Vector3();
 		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
-	}
+
+	};
 
 
 	// vector trail
@@ -89,12 +97,14 @@ var CitySoup = function ( camera, scene, shared ) {
 	// ribbons
 
 	var ribbonMaterials = [
-			new THREE.MeshLambertMaterial( { color:0x29ae08, opacity: 0.1 } ),
-			new THREE.MeshLambertMaterial( { color:0x309018, opacity: 0.1 } ),
-			new THREE.MeshLambertMaterial( { color:0x267213, opacity: 0.1 } ),
-			new THREE.MeshLambertMaterial( { color:0x5ab543, opacity: 0.1 } ),
-			new THREE.MeshLambertMaterial( { color:0x2e6f1e, opacity: 0.1 } ),
-			new THREE.MeshLambertMaterial( { color:0x08a620, opacity: 0.1 } )
+	
+		new THREE.MeshLambertMaterial( { color:0x29ae08, opacity: 0.1 } ),
+		new THREE.MeshLambertMaterial( { color:0x309018, opacity: 0.1 } ),
+		new THREE.MeshLambertMaterial( { color:0x267213, opacity: 0.1 } ),
+		new THREE.MeshLambertMaterial( { color:0x5ab543, opacity: 0.1 } ),
+		new THREE.MeshLambertMaterial( { color:0x2e6f1e, opacity: 0.1 } ),
+		new THREE.MeshLambertMaterial( { color:0x08a620, opacity: 0.1 } )
+
 	];
 
 	var ribbons = new Ribbons(4, vectors.array, scene, ribbonMaterials);
@@ -114,11 +124,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
-	var particles = new Particles(22, scene, 5, particleSprites, 15, 50, THREE.AdditiveBlending);
+	var particles = new Particles( 22, scene, 5, particleSprites, 15, 50, THREE.AdditiveBlending );
 	particles.settings.gravitateTowardsCamera = true;
 
 	// stragglers
-	var stragglers = new Stragglers(4, scene, vectors.array);
+	var stragglers = new Stragglers( 4, scene, vectors.array );
 	stragglers.settings.constantSpeed = 0.7;
 	stragglers.settings.capy = 0;
 
@@ -165,7 +175,9 @@ var CitySoup = function ( camera, scene, shared ) {
 		// regular
 
 		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
+		
 		animal = runningAnimals.addAnimal( geometry, null, 1.5, morphArray );
+		preinitAnimal( animal, shared.renderer, scene );
 		
 		// stragglers
 
@@ -179,6 +191,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		var animal;
 		
 		animal = runningAnimals.addAnimal( geometry, "elk", 2.2, null );
+		preinitAnimal( animal, shared.renderer, scene );
 
 	};
 
@@ -187,6 +200,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		var animal;
 		
 		animal = runningAnimals.addAnimal( geometry, "moose", 1.1, null );
+		preinitAnimal( animal, shared.renderer, scene );
 
 	};
 
@@ -196,6 +210,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			morphArray = [ 0, 1, 2, 3 ];
 		
 		animal = runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray );
+		preinitAnimal( animal, shared.renderer, scene );
 
 	};
 
@@ -230,6 +245,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			morphArray = [0,1,2,3,0,1,2,3,0,1];
 
 		animal = flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, 1 );
+		preinitAnimal( animal, shared.renderer, scene );
 
 	};
 
@@ -239,6 +255,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			morphArray = [1,1,0,0,1,0,0,1,0,0];
 
 		animal = flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, 1 );
+		preinitAnimal( animal, shared.renderer, scene );
 
 	};
 
