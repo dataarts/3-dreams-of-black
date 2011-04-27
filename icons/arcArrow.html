@@ -19,13 +19,9 @@
         var gee = new GEE({ fullscreen : true });
         var g = gee.ctx;
 
-        var arrowHead = new ArrowHead(gee, gee.width * .75);
-        var arrowTail = new ArrowTail(gee, gee.width * .25);
-        var arrow = new Arrow(gee);
+        var arrow = new ArcArrow(gee);
 
         var gui = new DAT.GUI();
-            gui.add(arrowHead);
-            gui.add(arrowTail);
             gui.add(arrow);
 
             // ro.me styles are default
@@ -35,8 +31,6 @@
         gee.draw = function() {
 
           g.clearRect(0, 0, gee.width, gee.height);
-          arrowHead.update().render();
-          arrowTail.update().render();
           arrow.update().render();
         };
 
