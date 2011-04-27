@@ -112,7 +112,7 @@ var FilmSection = function ( shared ) {
 
 	function start( pattern ) {
 
-		console.log( renderer.domElement );
+		//console.log( renderer.domElement );
 
 		domElement.appendChild( renderer.domElement );
 

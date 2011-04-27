@@ -36,9 +36,9 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 	var cube = new THREE.Cube( 5, 5, 5 );
 
-	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF, opacity: 0.4 } ) );
-	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFF3333, opacity: 0.4 } ) );
-	that.cameraTarget = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FF33, opacity: 0.4 } ) );
+	that.emitter = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF, opacity: 0.4 } ) );
+	that.emitterFollow = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFF3333, opacity: 0.4 } ) );
+	that.cameraTarget = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FF33, opacity: 0.4 } ) );
 
 
 	//that.emitter.visible = false;
@@ -104,6 +104,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 	};
 
 	this.update = function ( camPos, delta ) {
+
 		right.position.x = camPos.x + that.settings.collisionDistance;
 		left.position.x  = camPos.x - that.settings.collisionDistance;
 		right.position.z = camPos.z;
@@ -164,8 +165,10 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 					that.emitter.position = intersects[i].point;
 
 					// hack for now...
-					if (that.emitter.position.z > camPos.z-125) {
+					if ( that.emitter.position.z > camPos.z-125 ) {
+
 						that.emitter.position.z = camPos.z-125;
+
 					}
 
 					/*var face = intersects[i].face;
