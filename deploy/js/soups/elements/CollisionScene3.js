@@ -355,9 +355,10 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		var moveZ = ( toz - that.cameraTarget.position.z ) / that.settings.cameraTargetDivider;
 
 		var maxSpeed = 8;
+		var maxSpeedY = 4;
 
-		if ( moveY > maxSpeed )	moveY = maxSpeed;
-		if ( moveY < -maxSpeed ) moveY = -maxSpeed;
+		if ( moveY > maxSpeedY )	moveY = maxSpeedY;
+		if ( moveY < -maxSpeedY ) moveY = -maxSpeedY;
 
 		if ( moveX > maxSpeed )	moveX = maxSpeed;
 		if ( moveX < -maxSpeed ) moveX = -maxSpeed;
