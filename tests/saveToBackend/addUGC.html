@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>index</title>
+	<meta name="generator" content="Studio 3 http://aptana.com/">
+	<meta name="author" content="Mikael Emtinger">
+	<!-- Date: 2011-04-27 -->
+</head>
+<body>
+	<script type="text/javascript" src="javascripts/jxs.js"></script>
+	<script type="text/javascript" src="javascripts/Backend.js"></script>
+	<script>
+		
+		// save UGC
+		
+		UGCData = {};
+		UGCData.width = 100;
+		UGCData.height = 100;
+		UGCData.depth = 100;
+		UGCData.data = [ Math.random() * 10, Math.random() * 10, Math.random() * 12, Math.random() * 12 ];
+		
+		saveThis = {};
+		saveThis.data = UGCData;
+		saveThis.title = "Title plus random number which is " + Math.random();
+		saveThis.email = "my.self@email.com";
+		saveThis.type = "1";							// "0" = relic, "1" = cloud
+		saveThis.image = "data:png;base64,45454545";
+		
+		Backend.addUGC( saveThis, success, fail );
+		
+		function success( result ) {
+			
+			alert( result );
+		}
+		
+		function fail( result ) {
+			
+			alert( result );
+		}
+		
+	</script>
+</body>
+</html>
