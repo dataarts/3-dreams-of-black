@@ -346,8 +346,8 @@ ROME.AnimalAnimationData = {
 	"shdw2": { hRange:  0.00, sRange:  0.00, vRange:  0.025,
 		       hOffset: 0.00, sOffset: 0.00, vOffset: -0.03 },
 			   
-	"horse": { hRange:  0.01, sRange:   0.00, vRange:  0.05,
-		       hOffset: 0.02, sOffset: -0.10, vOffset: 0.00,
+	"horse": { hRange:  0.01, sRange:   0.00, vRange:  0.15,
+		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00,
 			   lScale: 0.75, lOffset: [ 0.5, 0.5, 0.5 ]	},
 
 	"moose": { hRange:  0.07, sRange:  0.00, vRange:  0.05,
@@ -415,6 +415,7 @@ ROME.AnimalAnimationData = {
 		"scorp"		: "tarbuffalo",
 		"bison"		: "tarbuffalo",
 		"sickle"    : "tarbuffalo",
+		"owl"		: "horse",
 		
 		"crab"		   : "zero",
 		"bear"		   : "zero",
