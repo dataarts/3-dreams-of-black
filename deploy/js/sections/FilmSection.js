@@ -62,7 +62,14 @@ var FilmSection = function ( shared ) {
 
 	var prairieAnimation = new VideoSequence(shared, "files/videos/transition_prairie.webm", false, true );
 	var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
+
 	var dunesAnimation = new VideoSequence(shared, "files/videos/transition_dunes.webm", false, false );
+	
+	// 705.88 * 4 = 2823.52
+	
+	// 67.764
+	// 90.352
+	// 22.588
 
 	sequencer = new Sequencer();
 
