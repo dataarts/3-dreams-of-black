@@ -202,45 +202,51 @@ function initPostprocessingNoise( effect ) {
         
         fragmentShader: [
 
-				"uniform sampler2D map;",
-				"varying vec2 vUv;",
+                "uniform sampler2D map;",
+                "varying vec2 vUv;",
 
-				"void main() {",
+                "void main() {",
 
-					"vec4 color, tmp, add;",
-					
-					"vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
-					
-					"color = texture2D( map, uv );",
+                    "vec4 color, tmp, add;",
 
-					"add = tmp = texture2D( map, uv + vec2( 0.0015, 0.0015 ));", 
-					"if( tmp.r > color.r ) color = tmp;",
+                    // "vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
+                    "vec2 uv = vUv;",
 
-					"add += tmp = texture2D( map, uv + vec2( -0.0015, 0.0015 ));",
-					"if( tmp.r > color.r ) color = tmp;",
+                    "color = texture2D( map, uv );",
 
-					"add += tmp = texture2D( map, uv + vec2( -0.0015, -0.0015 ));",
-					"if( tmp.r > color.r ) color = tmp;",
+                    "float param1 = 0.0009;",
+                    "float param2 = 0.001;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0.0015, -0.0015 ));",
-					"if( tmp.r > color.r ) color = tmp;",
+                    "add = tmp = texture2D( map, uv + vec2( param1, param1 ));", 
+                    "if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0.002, 0.0 ));",
-					"if( tmp.r > color.r ) color = tmp;",
+                    "add += tmp = texture2D( map, uv + vec2( -param1, param1 ));",
+                    "if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( -0.002, 0.0 ));",
-					"if( tmp.r > color.r ) color = tmp;",
+                    "add += tmp = texture2D( map, uv + vec2( -param1, -param1 ));",
+                    "if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0, 0.002 ));",
-					"if( tmp.r > color.r ) color = tmp;",
+                    "add += tmp = texture2D( map, uv + vec2( param1, -param1 ));",
+                    "if( tmp.r < color.r ) color = tmp;",
 
-					"add += tmp = texture2D( map, uv + vec2( 0, -0.002 ));",
-					"if( tmp.r > color.r ) color = tmp;",
+                    "add += tmp = texture2D( map, uv + vec2( param2, 0.0 ));",
+                    "if( tmp.r < color.r ) color = tmp;",
 
-					"uv = (uv - vec2(0.5)) * vec2(0.7);",
-					"gl_FragColor = vec4(mix(color.rgb * color.rgb * vec3(1.8), color.ggg * color.ggg - vec3(0.4), vec3(dot(uv, uv))), 1.0);",
-					
-				"}"
+                    "add += tmp = texture2D( map, uv + vec2( -param2, 0.0 ));",
+                    "if( tmp.r < color.r ) color = tmp;",
+
+                    "add += tmp = texture2D( map, uv + vec2( 0, param2 ));",
+                    "if( tmp.r < color.r ) color = tmp;",
+
+                    "add += tmp = texture2D( map, uv + vec2( 0, -param2 ));",
+                    "if( tmp.r < color.r ) color = tmp;",
+
+
+                    "gl_FragColor = color * color + add * 0.5 / 8.0;",
+
+                    // "gl_FragColor = texture2D( map, uv );",
+
+                "}"
 
             ].join("\\n")
 
@@ -255,6 +261,8 @@ function initPostprocessingNoise( effect ) {
 function render() {
 
     renderer.clear();
+
+    //renderer.render( scene, camera );
 
     renderer.render( scene, camera, postprocessing.texture, true );
 
@@ -271,6 +279,7 @@ function render() {
     
     postprocessing.quad.materials[ 0 ] = postprocessing.materialFilm;
     postprocessing.materialFilm.uniforms.tDiffuse.texture = postprocessing.texture2;
+    
 
 }
 
