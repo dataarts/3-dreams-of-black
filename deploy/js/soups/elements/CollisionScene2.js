@@ -14,6 +14,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		emitterDivider : 5,
 		cameraTargetDivider : 12,
 		capBottom : null,
+		capTop : null,
 		allowFlying : false,
 		collisionDistance : collisionDistance || 400,
 		scale : scale || 1.0,
@@ -25,12 +26,12 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 	};
 
-	var mouse2d = new THREE.Vector3( 0, 0, 1 );
+	//var mouse2d = new THREE.Vector3( 0, 0, 1 );
 
-	var ray = new THREE.Ray();
-	var matrix = new THREE.Matrix4();
-	var matrix2 = new THREE.Matrix4();
-	var positionVector = new THREE.Vector3();
+	//var ray = new THREE.Ray();
+	//var matrix = new THREE.Matrix4();
+	//var matrix2 = new THREE.Matrix4();
+	//var positionVector = new THREE.Vector3();
 	var projector = new THREE.Projector();
 
 	var cube = new THREE.Cube( 5, 5, 5 );
@@ -38,6 +39,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 	that.emitter = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x3333FF, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFF3333, opacity: 0.4 } ) );
 	that.cameraTarget = addMesh( cube, 1, camPos.x, camPos.y, camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FF33, opacity: 0.4 } ) );
+
 
 	//that.emitter.visible = false;
 	//that.emitterFollow.visible = false;
@@ -131,10 +133,18 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 		}
 
+		if ( that.settings.capTop != null ) {
 
-		mouse2d.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
+			if ( top.position.y < that.settings.capTop ) {
+				 top.position.y = that.settings.capTop;
+			}
+
+		}
+
+
+		/*mouse2d.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
 		mouse2d.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
-		mouse2d.z = 1;
+		mouse2d.z = 1;*/
 
 
 		// emitter
@@ -154,15 +164,13 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 					that.emitter.position = intersects[i].point;
 
 					// hack for now...
-					if (that.emitter.position.z > camPos.z-100) {
-						that.emitter.position.z = camPos.z-100;
+					if (that.emitter.position.z > camPos.z-125) {
+						that.emitter.position.z = camPos.z-125;
 					}
 
 					/*var face = intersects[i].face;
 					var object = intersects[i].object;
-
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
-
 					that.currentNormal = normal;*/
 
 					// walls
@@ -186,45 +194,32 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 		var maxSpeed = delta / that.settings.maxSpeedDivider;
 
-		var toy = that.emitter.position.y;
-		var moveY = ( toy - that.emitterFollow.position.y ) / that.settings.emitterDivider;
-
-		if ( moveY > maxSpeed ) {
-			moveY = maxSpeed;
-		}
-		if ( moveY < -maxSpeed ) {
-			moveY = -maxSpeed;
-		}
-
-		that.emitterFollow.position.y += moveY;
-
-
 		var tox = that.emitter.position.x;
 		var moveX = ( tox - that.emitterFollow.position.x ) / that.settings.emitterDivider;
 
-		if ( moveX > maxSpeed ) {
-			moveX = maxSpeed;
-		}
-		if ( moveX < -maxSpeed ) {
-			moveX = -maxSpeed;
-		}
-
-		that.emitterFollow.position.x += moveX;
-
+		var toy = that.emitter.position.y;
+		var moveY = ( toy - that.emitterFollow.position.y ) / that.settings.emitterDivider;
 
 		var toz = that.emitter.position.z;
 		var moveZ = ( toz - that.emitterFollow.position.z ) / that.settings.emitterDivider;
 
-		if ( moveZ > maxSpeed ) {
-			moveZ = maxSpeed;
-		}
+		//var nowVector = new THREE.Vector3(that.emitterFollow.position.x,that.emitterFollow.position.y,that.emitterFollow.position.z).normalize();
+		//var toVector = new THREE.Vector3(tox,toy,toz).normalize();
 
-		if ( moveZ < -maxSpeed ) {
-			moveZ = -maxSpeed;
-		}
+		//console.log(nowVector.x+" | "+toVector.x);
 
+		if ( moveY > maxSpeed ) moveY = maxSpeed;
+		if ( moveY < -maxSpeed ) moveY = -maxSpeed;
+
+		if ( moveX > maxSpeed ) moveX = maxSpeed;
+		if ( moveX < -maxSpeed ) moveX = -maxSpeed;
+
+		if ( moveZ > maxSpeed )	moveZ = maxSpeed;
+		if ( moveZ < -maxSpeed ) moveZ = -maxSpeed;
+
+		that.emitterFollow.position.x += moveX;
+		that.emitterFollow.position.y += moveY;
 		that.emitterFollow.position.z += moveZ;
-
 
 
 		// shoot rays in all directions from emitterFollow, clamp in the direction of the shortest distance
@@ -346,6 +341,8 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		that.emitterFollow.position.y += that.currentNormal.y*amount;
 		that.emitterFollow.position.z += that.currentNormal.z*amount;
 		*/
+
+
 
 		var toy = that.emitterFollow.position.y;
 		var moveY = ( toy - that.cameraTarget.position.y ) / that.settings.cameraTargetDivider;

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - webgl</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="ROME/Trigger.js"></script>
+
+		<script type="text/javascript">
+
+			var container, stats;
+
+			var camera, scene, renderer;
+
+			var geometry, objects;
+			var skin;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+			var animation;
+			var trigger;
+			var effector;
+			var loadedSceneResult;
+
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+			var loader = new THREE.SceneLoader();
+			loader.load( "assets/city/City.js", init );
+
+			function init( result ) {
+
+				loadedSceneResult = result;
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x535758, 0.00004705882352941177 );
+				scene.fog.color.setHSV( 0.08235294117647059,  0.08823529411764706,  0.7764705882352941 );
+
+				scene.addChild( result.scene );
+
+				renderer = new THREE.WebGLRenderer( { stencil: false } );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColor( scene.fog.color, 1.0 );
+				renderer.sortObjects = false;
+				container.appendChild( renderer.domElement );
+
+
+				var ambientLight = new THREE.AmbientLight( 0xffffff );
+				ambientLight.color.setHSV( 0.6352941176470588,  0.36470588235294116, 0.25882352941176473 );
+				scene.addLight( ambientLight );
+			
+				var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
+				directionalLight1.position.set( 0.3653150890069558,  0.7392613273917799, -0.5657186363969139 );
+				directionalLight1.color.setHSV( 0.07647058823529412, 0.058823529411764705,  0.7235294117647059 );		
+				directionalLight1.castShadow = true;
+				scene.addLight( directionalLight1 );
+			
+				var directionalLight2 = new THREE.DirectionalLight( 0xffffff );
+				directionalLight2.position.set( -0.8304706750947658,  -0.47758995481714017,  0.2867512735201115 );
+				directionalLight2.color.setHSV( 0,  0, 0.5058823529411764 );
+				directionalLight2.castShadow = false;
+				scene.addLight( directionalLight2 );
+
+
+				camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 100000 );
+				camera.position.set( 0, 1500, 0 );
+				camera.useTarget = false;
+				camera.target.position.set( 0, 500, -10000 );
+
+				setInterval( loop, 1000 / 60 );
+					
+				
+				// assign triggers
+				
+				TriggerUtils.setupCityTriggers( loadedSceneResult );
+				
+			}
+
+
+			function onDocumentMouseMove(event) {
+
+				mouseX = ( event.clientX - windowHalfX ) / window.innerWidth;
+				mouseY = ( event.clientY - windowHalfY ) / window.innerHeight;
+			}
+
+			var t = 0;
+
+			function loop() {
+
+				camera.position.z = -12000 + Math.cos( t ) * 12000;
+				camera.position.y = 200;
+				camera.rotation.y = -mouseX;
+				camera.rotation.x = -mouseY;
+				
+				t += 0.005;
+
+				renderer.render( scene, camera );
+
+
+				TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
+				TriggerUtils.effectors[ 1 ] = camera.position.y;
+				TriggerUtils.effectors[ 2 ] = camera.position.z - 2500;
+				 
+				TriggerUtils.update();
+				
+
+				THREE.AnimationHandler.update( 1000 / 60 );
+
+			}
+
+			function log( text ) {
+
+				var e = document.getElementById("log");
+				e.innerHTML = text + "<br/>" + e.innerHTML;
+
+			}
+
+		</script>
+
+	</body>
+</html>

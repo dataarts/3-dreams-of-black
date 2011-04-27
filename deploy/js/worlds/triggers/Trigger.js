@@ -38,7 +38,10 @@ Trigger = function( geometry, wantedParent ) {
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 	var lengthInMS = ( geometry.morphTargets.length - 1 ) * 1000;
 
-	console.log( that.mesh );
+	//console.log( that.mesh );
+	
+	// morphTargetOrder is sometimes undefined
+	// exception here
 	
 	morphTargetOrder[ 0 ] = 0;
 	morphTargetOrder[ 1 ] = 1;
@@ -229,8 +232,8 @@ var TriggerBig = function( geometry, wantedParent ) {
 var TriggerUtils = (function() {
 	
 	var that = {};
-	that.effectors = [ 0, 200, 0 ];		// xyz xyz for each effector (remeber to change const in shader, too)
-	that.effectorRadius = 2000;
+	that.effectors = [ 0, 20, 0 ];		// xyz xyz for each effector (remeber to change const in shader, too)
+	that.effectorRadius = 500;
 
 	var smallTriggers = [];
 	var bigTriggers = [];

@@ -103,7 +103,7 @@ var City = function ( shared ) {
 
 		soup.update( delta );
 
-		camera.position.z -= delta / 10;
+		camera.position.z -= delta / 8.5;
 
 		if (camera.position.z < -3300) {
 			camera.position.z = 0;
@@ -164,7 +164,7 @@ var City = function ( shared ) {
 
 		renderer.render( world.scene, camera, renderTarget );
 
-		world.update( delta, camera );
+		world.update( delta, camera, false );
 		
 		shared.logger.log( "vertices: " + renderer.data.vertices );
 		shared.logger.log( 'faces: ' + renderer.data.faces );

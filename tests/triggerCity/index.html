@@ -39,7 +39,7 @@
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 			var loader = new THREE.SceneLoader();
-			loader.load( "assets/city/City.js", init );
+			loader.load( "assets/prairie/Prairie.js", init );
 
 			function init( result ) {
 
@@ -56,7 +56,7 @@
 
 				renderer = new THREE.WebGLRenderer( { stencil: false } );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setClearColor( scene.fog.color, 1.0 );
+				renderer.setClearColorHex( 0x444444, 1.0 );
 				renderer.sortObjects = false;
 				container.appendChild( renderer.domElement );
 
@@ -85,10 +85,12 @@
 
 				setInterval( loop, 1000 / 60 );
 					
+				effector = new THREE.Mesh( new THREE.Sphere( 200, 10, 10 ), new THREE.MeshLambertMaterial( { color: 0xff00ff, wireframe: true } ));
+				scene.addChild( effector );
 				
 				// assign triggers
 				
-				TriggerUtils.setupCityTriggers( loadedSceneResult );
+				TriggerUtils.setupPrairieTriggers( loadedSceneResult, 0.9 );
 				
 			}
 
@@ -103,19 +105,21 @@
 
 			function loop() {
 
-				camera.position.z = -12000 + Math.cos( t ) * 12000;
-				camera.position.y = 200;
-				camera.rotation.y = -mouseX;
-				camera.rotation.x = -mouseY;
+				camera.position.x = 500 + Math.cos( t ) * 400;
+				camera.position.y = 0;
+				//camera.rotation.x = -mouseY;
+				camera.rotation.y = Math.PI * 0.5 - mouseX;
 				
-				t += 0.005;
+				t += 0.003;
 
 				renderer.render( scene, camera );
 
 
-				TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 1000 ).x;
+				TriggerUtils.effectors[ 0 ] = camera.position.x;
 				TriggerUtils.effectors[ 1 ] = camera.position.y;
-				TriggerUtils.effectors[ 2 ] = camera.position.z - 2500;
+				TriggerUtils.effectors[ 2 ] = camera.position.z;
+				 
+				effector.position.set( TriggerUtils.effectors[ 0 ], TriggerUtils.effectors[ 1 ], TriggerUtils.effectors[ 2 ] );  
 				 
 				TriggerUtils.update();
 				

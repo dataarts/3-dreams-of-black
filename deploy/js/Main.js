@@ -2,7 +2,7 @@
 
 	var logger, stats, shared,
 	Signal = signals.Signal, currentSection,
-	launcher, film, relauncher, exploration, tool,
+	launcher, film, relauncher, exploration, ugc,
 	shortcuts;
 
 	// debug
@@ -41,7 +41,7 @@
 			showfilm : new Signal(),
 			showrelauncher : new Signal(),
 			showexploration : new Signal(),
-			showtool : new Signal(),
+			showugc : new Signal(),
 
 			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
@@ -73,8 +73,8 @@
 		exploration = new Exploration( shared );
 		document.body.appendChild( exploration.getDomElement() );
 
-		tool = new Tool( shared );
-		document.body.appendChild( tool.getDomElement() );
+		ugc = new Ugc( shared );
+		document.body.appendChild( ugc.getDomElement() );
 
 		shortcuts = new Shortcuts( shared );
 		document.body.appendChild( shortcuts.getDomElement() );
@@ -85,7 +85,7 @@
 		shared.signals.showfilm.add( function () { setSection( film ); } );
 		shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
 		shared.signals.showexploration.add( function () { setSection( exploration ); } );
-		shared.signals.showtool.add( function () { setSection( tool ); } );
+		shared.signals.showugc.add( function () { setSection( ugc ); } );
 
 	} );
 

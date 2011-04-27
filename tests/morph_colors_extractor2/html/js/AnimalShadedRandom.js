@@ -21,7 +21,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 				 vertexColors:   vertexColors,
 				 lights:         true };
 
-	pars.uniforms.tDiffuse.texture = THREE.ImageUtils.loadTexture( 'textures/faceContour.jpg' );
+	//pars.uniforms.tDiffuse.texture = THREE.ImageUtils.loadTexture( 'textures/faceContour.jpg' );
 
 	var material = new THREE.MeshShaderMaterial( pars );
 
@@ -45,11 +45,20 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		
 		c = geometry.faces[ i ].color;
 		
+		
+		c.updateHSV();
+
+		c.h = cap( c.h + 0.05 * Math.random(), 0, 1 );
+		c.s = cap( c.s + 0.175 * Math.random(), 0, 1 );
+		c.setHSV( c.h, c.s, c.v );
+
+		/*
 		r = c.r;
 		g = c.g;
 		b = c.b;
 		
 		c.setRGB( cap( r + Math.random() * dr * r, 0, 1 ), cap( g + Math.random() * dg * g, 0, 1 ), cap( b + Math.random() * db * b, 0, 1 ) );
+		*/
 		
 	}
 	
@@ -270,22 +279,22 @@ ROME.AnimalShader = {
 									"animalAInterpolation": { type: "f", value: 0.0 },
 									"animalBInterpolation": { type: "f", value: 0.0 },
 									"animalMorphValue" :    { type: "f", value: 0.0 },
-									"tDiffuse" : 		    { type: "t", value: 0, texture: null }
+									//"tDiffuse" : 		    { type: "t", value: 0, texture: null }
 								} ] ),
 
 	vertex: [
 
-		"#define PHONG",
+		//"#define PHONG",
 
 		"uniform float	animalAInterpolation;",
 		"uniform float	animalBInterpolation;",
 		"uniform float	animalMorphValue;",
 		"varying vec3 	vLightWeighting;",
-		"varying vec2 	vUv;",
+		//"varying vec2 	vUv;",
 
-		THREE.ShaderChunk[ "map_pars_vertex" ],
-		THREE.ShaderChunk[ "lightmap_pars_vertex" ],
-		THREE.ShaderChunk[ "envmap_pars_vertex" ],
+		//THREE.ShaderChunk[ "map_pars_vertex" ],
+		//THREE.ShaderChunk[ "lightmap_pars_vertex" ],
+		//THREE.ShaderChunk[ "envmap_pars_vertex" ],
 		THREE.ShaderChunk[ "lights_pars_vertex" ],
 		THREE.ShaderChunk[ "color_pars_vertex" ],
 
@@ -293,9 +302,9 @@ ROME.AnimalShader = {
 
 			"vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );",
 
-			THREE.ShaderChunk[ "map_vertex" ],
-			THREE.ShaderChunk[ "lightmap_vertex" ],
-			THREE.ShaderChunk[ "envmap_vertex" ],
+			//THREE.ShaderChunk[ "map_vertex" ],
+			//THREE.ShaderChunk[ "lightmap_vertex" ],
+			//THREE.ShaderChunk[ "envmap_vertex" ],
 			THREE.ShaderChunk[ "color_vertex" ],
 
 			"vec3 transformedNormal = normalize( normalMatrix * normal );",
@@ -306,7 +315,7 @@ ROME.AnimalShader = {
 			"vec3 animalB = mix( morphTarget2, morphTarget3, animalBInterpolation );",
 			"vec3 morphed = mix( animalA,      animalB,      animalMorphValue );",
 			
-			"vUv = uv;",
+			//"vUv = uv;",
 
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 		"}"
@@ -322,35 +331,35 @@ ROME.AnimalShader = {
 		"uniform vec3 specular;",
 		"uniform float shininess;",
 
-		"uniform sampler2D tDiffuse;",
+		//"uniform sampler2D tDiffuse;",
 
 		"varying vec3 vLightWeighting;",
-		"varying vec2 vUv;",
+		//"varying vec2 vUv;",
 		
 		THREE.ShaderChunk[ "color_pars_fragment" ],
-		THREE.ShaderChunk[ "map_pars_fragment" ],
-		THREE.ShaderChunk[ "lightmap_pars_fragment" ],
-		THREE.ShaderChunk[ "envmap_pars_fragment" ],
-		THREE.ShaderChunk[ "fog_pars_fragment" ],
+		//THREE.ShaderChunk[ "map_pars_fragment" ],
+		//THREE.ShaderChunk[ "lightmap_pars_fragment" ],
+		//THREE.ShaderChunk[ "envmap_pars_fragment" ],
+		//THREE.ShaderChunk[ "fog_pars_fragment" ],
 		THREE.ShaderChunk[ "lights_pars_fragment" ],
 
 		"void main() {",
 
 			"gl_FragColor = vec4( vLightWeighting, 1.0 );",
-			THREE.ShaderChunk[ "lights_fragment" ],
+			//THREE.ShaderChunk[ "lights_fragment" ],
 
 			"gl_FragColor = gl_FragColor * vec4( diffuse, opacity );",
 
-			"vec3 diffuseTex = texture2D( tDiffuse, vUv ).xyz;",
-			"gl_FragColor = gl_FragColor * vec4( diffuseTex * diffuseTex, 1.0 );",
+			//"vec3 diffuseTex = texture2D( tDiffuse, vUv ).xyz;",
+			//"gl_FragColor = gl_FragColor * vec4( diffuseTex * diffuseTex, 1.0 );",
 
-			THREE.ShaderChunk[ "map_fragment" ],
-			THREE.ShaderChunk[ "lightmap_fragment" ],
+			//THREE.ShaderChunk[ "map_fragment" ],
+			//THREE.ShaderChunk[ "lightmap_fragment" ],
 			THREE.ShaderChunk[ "color_fragment" ],
-			THREE.ShaderChunk[ "envmap_fragment" ],
-			THREE.ShaderChunk[ "fog_fragment" ],
+			//THREE.ShaderChunk[ "envmap_fragment" ],
+			//THREE.ShaderChunk[ "fog_fragment" ],
 			
-			"gl_FragColor = mix( gl_FragColor, vec4( 1.0 * vColor, 1.0 ), 0.15 );",			 
+			//"gl_FragColor = mix( gl_FragColor, vec4( 1.0 * vColor, 1.0 ), 0.15 );",			 
 
 		"}"
 

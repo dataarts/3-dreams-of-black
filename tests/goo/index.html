@@ -90,33 +90,33 @@
 							
 							"color = texture2D( map, uv );",
 
-							"add = tmp = texture2D( map, uv + vec2( 0.0008, 0.0008 ));", 
+							"add = tmp = texture2D( map, uv + vec2( 0.0015, 0.0015 ));", 
+							"if( tmp.r > color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( -0.0015, 0.0015 ));",
+							"if( tmp.r > color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( -0.0015, -0.0015 ));",
+							"if( tmp.r > color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( 0.0015, -0.0015 ));",
+							"if( tmp.r > color.r ) color = tmp;",
+
+							"add += tmp = texture2D( map, uv + vec2( 0.002, 0.0 ));",
 							"if( tmp.r < color.r ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( -0.0008, 0.0008 ));",
+							"add += tmp = texture2D( map, uv + vec2( -0.002, 0.0 ));",
 							"if( tmp.r < color.r ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( -0.0008, -0.0008 ));",
-							"if( tmp.r < color.r ) color = tmp;",
+							"add += tmp = texture2D( map, uv + vec2( 0, 0.002 ));",
+							"if( tmp.r > color.r ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( 0.0008, -0.0008 ));",
-							"if( tmp.r < color.r ) color = tmp;",
+							"add += tmp = texture2D( map, uv + vec2( 0, -0.002 ));",
+							"if( tmp.r > color.r ) color = tmp;",
 
-							"add += tmp = texture2D( map, uv + vec2( 0.001, 0.0 ));",
-							"if( tmp.r < color.r ) color = tmp;",
+							"uv = (uv - vec2(0.5)) * vec2(0.7);",
+							"gl_FragColor = vec4(mix(color.rgb * color.rgb * vec3(1.8), color.ggg * color.ggg - vec3(0.4), vec3(dot(uv, uv))), 1.0);",
 
-							"add += tmp = texture2D( map, uv + vec2( -0.001, 0.0 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( 0, 0.001 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-							"add += tmp = texture2D( map, uv + vec2( 0, -0.001 ));",
-							"if( tmp.r < color.r ) color = tmp;",
-
-
-							"gl_FragColor = color * color + add * 0.5 / 8.0;",
-//							"gl_FragColor = texture2D( map, uv );",
 						"}"
 
 					].join("\n")
@@ -133,6 +133,10 @@
 						"grassImage": { type: "t", value: 0, texture: null },
 						"surfaceImage": { type: "t", value: 1, texture: null },
 						"map": { type: "t", value:2, texture:null },
+						"map2": { type: "t", value:3, texture:null },
+						"map3": { type: "t", value:4, texture:null },
+
+						"time": { type: "f", value:0.0},
 
 						"targetStart": { type: "v3", value: new THREE.Vector3() },
 						"targetEnd": { type: "v3", value: new THREE.Vector3() },
@@ -155,17 +159,21 @@
 						"uniform vec3 ambientLightColor;",
 						"uniform vec3 directionalLightColor[ MAX_DIR_LIGHTS ];",
 						"uniform vec3 directionalLightDirection[ MAX_DIR_LIGHTS ];",
+
+						"uniform vec3 targetStart;",
+						"uniform vec3 targetEnd;",
 						
 						"varying vec3 vWorldPosition;",
-						"varying vec3 vNormal;",
 						"varying vec2 vUv;",
+						"varying vec3 vNormal;",
+						"varying vec3 vNormalsquare;",
 						"varying vec3 vLightWeighting;",
 
 
-						"void main() {",
-
+						"void main() {",			
 							"vec3 transformedNormal = normalize( normalMatrix * normal );",
-							"vNormal = transformedNormal * transformedNormal;",
+							"vNormalsquare = normal * normal;",
+							"vNormal = transformedNormal;",
 							
 							"vUv = uv;",
 
@@ -174,6 +182,7 @@
 							"vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ 0 ], 0.0 );",
 							"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
 							"vLightWeighting += directionalLightColor[ 0 ] * directionalLightWeighting;",
+							"vLightWeighting = vLightWeighting * vec3(0.5, 0.55, 0.45) + vec3(0.5, 0.45, 0.55);",
 
 							"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
 							"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
@@ -187,16 +196,22 @@
 						"uniform sampler2D grassImage;",
 						"uniform sampler2D surfaceImage;",
 						"uniform sampler2D map;",
+						"uniform sampler2D map2;",
+						"uniform sampler2D map3;",
 						"uniform vec3 targetStart;",
 						"uniform vec3 targetEnd;",
+
+						"uniform float time;",
 
 						"uniform vec3 fogColor;",
 						"uniform float fogDensity;",
 
 						"varying vec3 vWorldPosition;",
-						"varying vec3 vNormal;",
 						"varying vec2 vUv;",
+						"varying vec3 vNormal;",
+						"varying vec3 vNormalsquare;",
 						"varying vec3 vLightWeighting;",
+
 
 						"void main() {",
 
@@ -209,34 +224,28 @@
 
 							"vec3 pointStart = vWorldPosition - targetStart;",
 							"vec3 endStart = targetEnd - targetStart;",
-							"float endStartLength2 = pow( length( endStart ), 2.0 );",
+							"float endStartLength2 = dot(endStart, endStart);",
 							"float pointOnLine = clamp( dot( endStart, pointStart ) / endStartLength2, 0.0, 1.0 );",
-
-							"distance  = 1.0 - length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * 0.0075;",
-							"distance += texture2D( grassImage, worldPosition.xz ).g - 0.5;",
+							"distance = length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * -0.0075;",
 							
-							"surface = texture2D( surfaceImage, worldPosition.yz ) * vNormal.x + ",
-							          "texture2D( surfaceImage, worldPosition.xz ) * vNormal.y + ",
-							          "texture2D( surfaceImage, worldPosition.xy ) * vNormal.z;",
+							"grass = texture2D( grassImage, worldPosition.yz) * vNormalsquare.xxxx + ",
+							        "texture2D( grassImage, worldPosition.xz) * vNormalsquare.yyyy + ",
+							        "texture2D( grassImage, worldPosition.xy) * vNormalsquare.zzzz;",
+							"distance *= texture2D(surfaceImage, worldPosition.zx * vec2(0.2)).g;",
+							"distance += grass.g;",
+							"surface = vec4(0.7, 0.7, 0.7, 1.0);",
 
-							"if( distance >= 0.0 ) {",
-
-								"grass = texture2D( grassImage, worldPosition.yz ) * vNormal.x + ",
-								        "texture2D( grassImage, worldPosition.xz ) * vNormal.y + ",
-								        "texture2D( grassImage, worldPosition.xy ) * vNormal.z;",
-	
+							"if(distance > 0.0)",
 								"surface = mix( surface, grass, smoothstep( 0.0, 0.2, distance ));",
-	
-							"}",
 
 							"float depth = gl_FragCoord.z / gl_FragCoord.w;",
 							"const float LOG2 = 1.442695;",
-							
-							"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
+							"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 ) * 0.5;",
 							"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
-	
-							"gl_FragColor = surface * texture2D( map, vUv );",
-							"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+
+							"surface *= vec4(0.5, 0.5, 0.5, 1.0) + vec4(0.55, 0.6, 0.7, 1.0) * texture2D(surfaceImage, worldPosition.zx * vec2(0.03) + vec2(time));",
+							"gl_FragColor = surface * texture2D( map, vUv ) * vec4(1.2) - vec4(0.6, 0.57, 0.54, 0.0);",
+							"gl_FragColor = mix( gl_FragColor, vec4(vec3(0.49, 0.56, 0.56), gl_FragColor.w), fogFactor);",	
 							"gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
 						"}"
 
@@ -277,7 +286,7 @@
 			
 
 			init();
-			animate();
+			
 
 
 			function init() {
@@ -374,9 +383,18 @@
 					uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
 					uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
 
-					uniforms[ 'surfaceImage' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Pavement.jpg' );
+//					uniforms[ 'surfaceImage' ].texture = ImageUtils.loadTexture( 'opengl/Texture_Pavement.jpg' );
+					uniforms[ 'surfaceImage' ].texture = ImageUtils.loadTexture( 'opengl/clouds2.jpg' );
 					uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
 					uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
+
+					uniforms[ 'map2' ].texture = ImageUtils.loadTexture( 'opengl/paint.jpg' );
+					uniforms[ 'map2' ].texture.wrapS = THREE.RepeatWrapping;
+					uniforms[ 'map2' ].texture.wrapT = THREE.RepeatWrapping;
+
+					uniforms[ 'map3' ].texture = ImageUtils.loadTexture( 'opengl/clouds2.jpg' );
+					uniforms[ 'map3' ].texture.wrapS = THREE.RepeatWrapping;
+					uniforms[ 'map3' ].texture.wrapT = THREE.RepeatWrapping;
 
 					var baseMaterialParams = {
 
@@ -422,18 +440,24 @@
 					mesh.position.z = 1000;
 					
 					scene.addObject( mesh );
-
+					last_time = new Date().getTime();
+					animate();
 				};
 
-
+				
 				loader.load( { model: "obj/max/street.js", callback: callbackScene } );
 
 			}
-
+			var time = 0;
+			var last_time;
 			function animate() {
-
+				time += (new Date().getTime() - last_time) / 50000.0;
+				last_time = new Date().getTime();
+				if(time > 1.0)
+					time -= 1.0;
 				requestAnimationFrame( animate );
-
+				for( var i = 0; i < materials.length; i++ )
+					materials[ i ].uniforms[ 'time'  ].value = time;				
 
 				render();
 				stats.update();
@@ -479,6 +503,7 @@
 			}
 			
 			function onMouseMove(event) {
+
 
 				mouseX = ( event.clientX - SCREEN_WIDTH * 0.5 ) / SCREEN_HEIGHT;
 				mouseY = ( event.clientY - SCREEN_HEIGHT * 0.5 ) / SCREEN_WIDTH;
