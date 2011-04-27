@@ -13,7 +13,7 @@ var FilmSection = function ( shared ) {
 	// audio
 
 	audio = document.createElement( 'audio' );
-	audio.autobuffer = true;
+	audio.preload = true;
 	domElement.appendChild( audio );
 
 	source = document.createElement( 'source' );
@@ -76,8 +76,10 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 
 	sequencer.add( cityAnimation, tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
+	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
@@ -112,7 +114,7 @@ var FilmSection = function ( shared ) {
 
 	function start( pattern ) {
 
-		console.log( renderer.domElement );
+		//console.log( renderer.domElement );
 
 		domElement.appendChild( renderer.domElement );
 

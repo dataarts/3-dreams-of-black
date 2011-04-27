@@ -71,7 +71,7 @@ function init() {
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 75 ), 1 );
 	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 2 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
-	sequencer.add( new NoiseEffect( shared, 0.096, 0.0, 4096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
+	//sequencer.add( new NoiseEffect( shared, 0.096, 0.0, 4096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 5 );
 
 }
