@@ -52,17 +52,9 @@
 
 <center>
   <div id="oldie">
-    Sorry, your browser doesn't support <a
-      href="hxxp://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</a>
-    and <a href="hxxp://www.whatwg.org/specs/web-workers/current-work/">Web
-    Workers</a>.<br/>
-    <br/>
-    Please try in
-    <a href="hxxp://www.chromium.org/getting-involved/dev-channel">Chrome 9+</a>
-    /
-    <a href="hxxp://www.mozilla.com/en-US/firefox/all-beta.html">Firefox 4+</a>
-    /
-    <a href="hxxp://nightly.webkit.org/">Safari OSX 10.6+</a>
+    Sorry, your browser doesn't support <a href="hxxp://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</a> and <a href="hxxp://www.whatwg.org/specs/web-workers/current-work/">Web Workers</a>.
+    <br/><br/>
+    Please try in <a href="hxxp://www.chromium.org/getting-involved/dev-channel">Chrome 9+</a>/<a href="hxxp://www.mozilla.com/en-US/firefox/all-beta.html">Firefox 4+</a>/<a href="hxxp://nightly.webkit.org/">Safari OSX 10.6+</a>
   </div>
 </center>
 
@@ -89,13 +81,13 @@
   uniform float cKernel[KERNEL_SIZE];
 
   void main(void) {
-  vec2 imageCoord = vUv;
-  vec4 sum = vec4( 0.0, 0.0, 0.0, 0.0 );
-  for( int i=0; i < KERNEL_SIZE; ++i ) {
-  sum += texture2D( tDiffuse, imageCoord ) * cKernel[i];
-  imageCoord += uImageIncrement;
-  }
-  gl_FragColor = sum;
+    vec2 imageCoord = vUv;
+    vec4 sum = vec4( 0.0, 0.0, 0.0, 0.0 );
+    for( int i=0; i < KERNEL_SIZE; ++i ) {
+      sum += texture2D( tDiffuse, imageCoord ) * cKernel[i];
+      imageCoord += uImageIncrement;
+    }
+    gl_FragColor = sum;
   }
 </script>
 
@@ -107,10 +99,10 @@
   #define KERNEL_SIZE 25.0
 
   void main(void) {
-  //vUv = vec2( uv.x, 1.0 - uv.y ) - ((KERNEL_SIZE - 1.0) / 2.0) *
-  uImageIncrement;
-  vUv = uv - ((KERNEL_SIZE - 1.0) / 2.0) * uImageIncrement;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    //vUv = vec2( uv.x, 1.0 - uv.y ) - ((KERNEL_SIZE - 1.0) / 2.0) *
+    uImageIncrement;
+    vUv = uv - ((KERNEL_SIZE - 1.0) / 2.0) * uImageIncrement;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
   }
 </script>
 
@@ -121,10 +113,9 @@
   uniform sampler2D tDiffuse;
   uniform float opacity;
 
-  void main(void)
-  {
-  vec4 texel = texture2D( tDiffuse, vUv );
-  gl_FragColor = opacity * texel;
+  void main(void) {
+    vec4 texel = texture2D( tDiffuse, vUv );
+    gl_FragColor = opacity * texel;
   }
 </script>
 
@@ -132,10 +123,9 @@
 <script id="vs-generic" type="x-shader/x-vertex">
   varying vec2 vUv;
 
-  void main()
-  {
-  vUv = vec2( uv.x, 1.0 - uv.y );
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+  void main() {
+    vUv = vec2( uv.x, 1.0 - uv.y );
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
   }
 </script>
 
@@ -143,9 +133,7 @@
 <script type="text/javascript">
 
 if (!is_browser_compatible()) {
-
   document.getElementById("oldie").style.display = "block";
-
 }
 
 var ShaderTest = {
