@@ -5,6 +5,9 @@ var UgcSection = function ( shared ) {
 	domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#000044';
 
+	var objectCreator = new ObjectCreator( shared );
+	
+
 	this.getDomElement = function () {
 
 		return domElement;
