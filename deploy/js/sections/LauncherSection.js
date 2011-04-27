@@ -1,4 +1,6 @@
-var Launcher = function ( shared ) {
+var LauncherSection = function ( shared ) {
+
+	Section.call( this );
 
 	var domElement = document.createElement( 'div' );
 	domElement.style.height = window.innerHeight + 'px';
@@ -25,7 +27,7 @@ var Launcher = function ( shared ) {
 
 	// Clouds
 
-	var clouds = new CloudsWorld( shared );
+	var clouds = new Clouds( shared );
 	clouds.getDomElement().style.position = 'absolute';
 	domElement.appendChild( clouds.getDomElement() );
 
@@ -56,8 +58,6 @@ var Launcher = function ( shared ) {
 
 	var loading = new LoadingBar( function () {
 
-		document.body.style.cursor = 'none';
-
 		shared.signals.showfilm.dispatch();
 
 		// Start in 1 second.
@@ -86,30 +86,38 @@ var Launcher = function ( shared ) {
 	footer.innerHTML = '<img src="files/footer.png">';
 	domElement.appendChild( footer );
 
-	/*
-	shared.signals.mousemoved.add( function () {
-
-		shared.signals.mousemoved.add( function () {
-
-			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 200 - 100;
-			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 200 - 100;
-
-		} );
-
-	} );
-	*/
-
-	shared.signals.windowresized.add( function () {
-
-		domElement.style.height = window.innerHeight + 'px';
-
-	} );
-
 	//
 
 	this.getDomElement = function () {
 
 		return domElement;
+
+	};
+
+	this.show = function () {
+
+		clouds.show();
+
+		domElement.style.display = 'block';
+
+	};
+
+	this.resize = function ( width, height ) {
+
+		clouds.resize( width, height );
+
+		title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+		titleOverlay.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+		loading.getDomElement().style.left = ( window.innerWidth - 180 ) / 2 + 'px';
+
+		domElement.style.height = height + 'px';
+
+	};
+
+	this.hide = function () {
+
+		clouds.hide();
+		domElement.style.display = 'none';
 
 	};
 
@@ -120,3 +128,6 @@ var Launcher = function ( shared ) {
 	};
 
 };
+
+LauncherSection.prototype = new Section();
+LauncherSection.prototype.constructor = LauncherSection;

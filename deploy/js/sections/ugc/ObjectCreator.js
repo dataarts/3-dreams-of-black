@@ -1,4 +1,4 @@
-var VoxelPainter = function () {
+var ObjectCreator = function () {
 
 	var scene, ground;
 	var voxel_size = 50, voxel_geometry, voxel_material, voxels = [], grid = {};

@@ -1,4 +1,6 @@
-var Exploration = function ( shared ) {
+var ExplorationSection = function ( shared ) {
+
+	Section.call( this );
 
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
@@ -55,42 +57,7 @@ var Exploration = function ( shared ) {
 	// signals
 
 	shared.signals.startexploration.add( startExplore );
-	shared.signals.windowresized.add( updateViewportSize );
-
-
-	this.getDomElement = function () {
-
-		return domElement;
-
-	};
-
-	this.update = function () {
-
-		if ( world ) {
-
-			time = new Date().getTime() - start;
-			delta = time - lastTime;
-			lastTime = time;
-
-			world.update( delta, camera, true );
-
-			clearEffect.update( progress, delta, time );
-
-			renderer.setClearColor( world.scene.fog.color );
-			renderer.render( world.scene, camera, renderTarget );
-
-			shared.logger.log( "vertices: " + renderer.data.vertices );
-			shared.logger.log( 'faces: ' + renderer.data.faces );
-
-			//paintEffect.update( progress, delta, time );
-			//heatEffect.update( progress, delta, time );
-			//noiseEffect.update( progress, delta, time );
-			//overlayEffect.update( progress, delta, time );
-			renderEffect.update( progress, delta, time );
-
-		}
-
-	};
+	// shared.signals.windowresized.add( updateViewportSize );
 
 	function startExplore( worldId ) {
 
@@ -157,4 +124,59 @@ var Exploration = function ( shared ) {
 
 	};
 
+	this.getDomElement = function () {
+
+		return domElement;
+
+	};
+
+	this.show = function () {
+
+		domElement.style.display = 'block';
+
+	};
+
+	this.hide = function () {
+
+		domElement.style.display = 'none';
+
+	};
+
+	this.resize = function ( width, height ) {
+
+		// TODO
+
+	};
+
+	this.update = function () {
+
+		if ( world ) {
+
+			time = new Date().getTime() - start;
+			delta = time - lastTime;
+			lastTime = time;
+
+			world.update( delta, camera, true );
+
+			clearEffect.update( progress, delta, time );
+
+			renderer.setClearColor( world.scene.fog.color );
+			renderer.render( world.scene, camera, renderTarget );
+
+			shared.logger.log( "vertices: " + renderer.data.vertices );
+			shared.logger.log( 'faces: ' + renderer.data.faces );
+
+			//paintEffect.update( progress, delta, time );
+			//heatEffect.update( progress, delta, time );
+			//noiseEffect.update( progress, delta, time );
+			//overlayEffect.update( progress, delta, time );
+			renderEffect.update( progress, delta, time );
+
+		}
+
+	};
+
 };
+
+ExplorationSection.prototype = new Section();
+ExplorationSection.prototype.constructor = ExplorationSection;

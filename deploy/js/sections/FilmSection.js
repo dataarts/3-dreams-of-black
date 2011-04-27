@@ -1,13 +1,16 @@
-var Film = function ( shared ) {
+var FilmSection = function ( shared ) {
 
-	var WIDTH = 1024, HEIGHT = 436,
-	domElement, audio, tune, playing = false,
+	Section.call( this );
+
+	var domElement, audio, tune, playing = false,
 	sequencer, renderer, renderTarget;
 
 	// init
 
 	domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
+
+	// audio
 
 	audio = document.createElement( 'audio' );
 	audio.autobuffer = true;
@@ -21,21 +24,22 @@ var Film = function ( shared ) {
 	tune.setBPM( 85 );
 	tune.setRows( 4 );
 
-	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( WIDTH, HEIGHT );
-	renderer.autoClear = false;
-	renderer.sortObjects = false;
+	// renderer
 
-	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+	shared.baseWidth = 1024;
+	shared.baseHeight = 436;
+	shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
+	shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
+
+	renderer = new THREE.WebGLRenderer();
+	renderer.domElement.style.position = 'absolute';
+	renderer.setSize( shared.viewportWidth, shared.baseHeight );
+	renderer.sortObjects = false;
+	renderer.autoClear = false;
+
+	renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
 	renderTarget.minFilter = THREE.LinearFilter;
 	renderTarget.magFilter = THREE.LinearFilter;
-
-	// shared adds
-
-	shared.baseWidth = WIDTH;
-	shared.baseHeight = HEIGHT;
-	shared.viewportWidth = WIDTH;
-	shared.viewportHeight = HEIGHT;
 
 	shared.renderer = renderer;
 	shared.renderTarget = renderTarget;
@@ -44,7 +48,6 @@ var Film = function ( shared ) {
 
 	shared.signals.startfilm.add( start );
 	shared.signals.stopfilm.add( stop );
-	shared.signals.windowresized.add( updateViewportSize );
 
 	// effects
 
@@ -52,22 +55,21 @@ var Film = function ( shared ) {
 	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
 
 	// sequence
-    
-    var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false );
-	
-    var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
-	
-    var prairieAnimation = new VideoSequence(shared, "files/videos/transition_prairie.webm", false, true );
-    var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
-	
-    var dunesAnimation = new VideoSequence(shared, "files/videos/transition_dunes.webm", false, false );
+
+	var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false );
+
+	var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
+
+	var prairieAnimation = new VideoSequence(shared, "files/videos/transition_prairie.webm", false, true );
+	var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
+	var dunesAnimation = new VideoSequence(shared, "files/videos/transition_dunes.webm", false, false );
 
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	
+
 	sequencer.add( cityAnimation, tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
@@ -103,9 +105,9 @@ var Film = function ( shared ) {
 
 	function start( pattern ) {
 
-		domElement.appendChild( renderer.domElement );
+		console.log( renderer.domElement );
 
-		updateViewportSize();
+		domElement.appendChild( renderer.domElement );
 
 		playing = true;
 
@@ -159,36 +161,13 @@ var Film = function ( shared ) {
 				break;
 
 			/* m */
-			case 77: 
-				
-				if ( audio.volume == 0 )
-					audio.volume = 1; 
-				else
-					audio.volume = 0; 
+			case 77:
+
+				audio.volume = audio.volume ? 0 : 1;
 
 				break;
 
 		}
-
-	};
-
-	function updateViewportSize() {
-
-		var scale = window.innerWidth / WIDTH;
-
-		shared.viewportWidth = shared.baseWidth * scale;
-		shared.viewportHeight = shared.baseHeight * scale
-
-		renderer.setSize( shared.viewportWidth, shared.viewportHeight );
-
-		// TODO: Hacky...
-
-		renderTarget.width = shared.viewportWidth;
-		renderTarget.height = shared.viewportHeight;
-		delete renderTarget.__webglFramebuffer;
-
-		renderer.domElement.style.position = 'absolute';
-		renderer.domElement.style.top = ( ( window.innerHeight - shared.viewportHeight  ) / 2 ) + 'px';
 
 	};
 
@@ -198,7 +177,40 @@ var Film = function ( shared ) {
 
 	};
 
+	this.show = function () {
+
+		domElement.style.display = 'block';
+
+	};
+
+	this.hide = function () {
+
+		domElement.style.display = 'none';
+		stop();
+
+	};
+
+	this.resize = function ( width, height ) {
+
+		shared.viewportWidth = shared.baseWidth * ( width / shared.baseWidth );
+		shared.viewportHeight = shared.baseHeight * ( width / shared.baseWidth );
+
+		renderer.setSize( shared.viewportWidth, shared.viewportHeight );
+
+		// TODO: Hacky...
+
+		renderTarget.width = shared.viewportWidth;
+		renderTarget.height = shared.viewportHeight;
+		delete renderTarget.__webglFramebuffer;
+
+		renderer.domElement.style.left = '0px';
+		renderer.domElement.style.top = ( ( height - shared.viewportHeight  ) / 2 ) + 'px';
+
+	};
+
 	this.update = function () {
+
+		if ( ! playing ) return;
 
 		if ( audio.currentTime == audio.duration ) {
 
@@ -209,8 +221,11 @@ var Film = function ( shared ) {
 
 		}
 
-		playing && sequencer.update( audio.currentTime * 1000 );
+		sequencer.update( audio.currentTime * 1000 );
 
 	};
 
 };
+
+FilmSection.prototype = new Section();
+FilmSection.prototype.constructor = FilmSection;

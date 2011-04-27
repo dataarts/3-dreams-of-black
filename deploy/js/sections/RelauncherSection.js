@@ -1,4 +1,6 @@
-var Relauncher = function ( shared ) {
+var RelauncherSection = function ( shared ) {
+
+	Section.call( this );
 
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
@@ -38,8 +40,29 @@ var Relauncher = function ( shared ) {
 
 	};
 
+	this.show = function () {
+
+		domElement.style.display = 'block';
+
+	};
+
+	this.hide = function () {
+
+		domElement.style.display = 'none';
+
+	};
+
+	this.resize = function ( width, height ) {
+
+		
+
+	};
+
 	this.update = function () {
 
 	};
 
 }
+
+RelauncherSection.prototype = new Section();
+RelauncherSection.prototype.constructor = RelauncherSection;

@@ -1,4 +1,4 @@
-var CloudsWorld = function ( shared ) {
+var Clouds = function ( shared ) {
 
 	/*
 	var canvas = document.createElement( 'canvas' );
@@ -109,10 +109,10 @@ var CloudsWorld = function ( shared ) {
 		}
 
 		mesh = new THREE.Mesh( geometry, material );
+		mesh.position.z = - 4000;
 		scene.addObject( mesh );
 
 		mesh = new THREE.Mesh( geometry, material );
-		mesh.position.z = - 4000;
 		scene.addObject( mesh );
 
 	} );
@@ -120,10 +120,11 @@ var CloudsWorld = function ( shared ) {
 	texture.magFilter = THREE.LinearMipMapLinearFilter;
 	texture.minFilter = THREE.LinearMipMapLinearFilter;
 
-
 	renderer = new THREE.WebGLRenderer();
+	renderer.domElement.style.position = 'absolute';
 	renderer.setSize( window.innerWidth, window.innerHeight );
-	domElement.appendChild( renderer.domElement );
+	renderer.sortObjects = false;
+	renderer.autoClear = false;
 
 	shared.signals.mousemoved.add( function () {
 
@@ -142,6 +143,27 @@ var CloudsWorld = function ( shared ) {
 
 	};
 
+	this.show = function () {
+
+		domElement.appendChild( renderer.domElement );
+
+	};
+
+	this.hide = function () {
+
+
+
+	};
+
+	this.resize = function ( width, height ) {
+
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+
+		renderer.setSize( width, height );
+
+	};
+
 	this.update = function () {
 
 		position = ( ( new Date().getTime() - start_time ) * 0.03 ) % 4000;
@@ -154,6 +176,7 @@ var CloudsWorld = function ( shared ) {
 		camera.target.position.y = camera.position.y;
 		camera.target.position.z = camera.position.z - 1000;
 
+		renderer.clear();
 		renderer.render( scene, camera );
 
 	}
