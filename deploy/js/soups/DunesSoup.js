@@ -2,7 +2,8 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	var that = this;
 
-	camPos = new THREE.Vector3( 0, 150, 0 );
+	shared.camPos = new THREE.Vector3( 0, 150, 0 );
+
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -79,14 +80,14 @@ var DunesSoup = function ( camera, scene, shared ) {
 	this.update = function ( delta ) {
 
 		// update to reflect _real_ camera position
-		camPos.x = camera.matrixWorld.n14;
-		camPos.y = camera.matrixWorld.n24;
-		camPos.z = camera.matrixWorld.n34;
+		shared.camPos.x = camera.matrixWorld.n14;
+		shared.camPos.y = camera.matrixWorld.n24;
+		shared.camPos.z = camera.matrixWorld.n34;
 
 		// update the soup parts
-		collisionScene.update(camPos, delta);
-		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		ribbons.update(collisionScene.emitterFollow.position);
+		collisionScene.update( shared.camPos, delta );
+		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
+		ribbons.update( collisionScene.emitterFollow.position );
 		flyingAnimals.update();
 		//particles.update(delta, vectors.array[0].position);
 		
