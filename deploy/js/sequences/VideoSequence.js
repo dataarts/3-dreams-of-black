@@ -110,6 +110,7 @@ var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
 		// video
 
 		video = document.createElement( 'video' );
+		video.preload = true;
 		video.src = videoPath;
 
 		// 3d
@@ -126,6 +127,7 @@ var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
 		texture.magFilter = THREE.LinearFilter;
 
 		if ( hasAlpha ) {
+
 			var shader = HalfAlphaShaderSource['halfAlpha'];
 
 			var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
