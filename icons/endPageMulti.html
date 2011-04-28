@@ -5,8 +5,46 @@
         margin:  0;
         padding: 0;
       }
-      body {
-        background: url("assets/ro_me_placeholder.jpg") center center no-repeat;
+      #container{
+        width: 1800px;
+        height: 1046px;
+        background: url("assets/ro_me_wo_content.jpg") 0 0 no-repeat;
+        position: relative;
+        margin: 0 auto;
+      }
+      #continue-to-explore {
+        left: 1107px;
+        top: 385px;
+      }
+      #explore-other-dreams {
+        left: 1054px;
+        top: 598px;
+      }
+      #add-to-the-dream {
+        left: 545px;
+        top: 595px;
+      }
+      #technology {
+        left: 483px;
+        top: 385px;
+      }
+      #start-over {
+        left: 798px;
+        top: 216px;
+      }
+      div.after-experience {
+        position: absolute;
+        padding: 25px 50px;
+        border: 1px solid #c9c8c1;
+        text-transform: uppercase;
+        font: 500 12px / 17px "Gotham-Medium", Arial, sans-serif;
+        letter-spacing: 1px;
+        color: #434343;
+        cursor: pointer;
+      }
+      div.after-experience:hover {
+        color: #f15d22;
+        background: #30302e;
       }
     </style>
     <script type = "text/javascript" src = "http://georgealways.github.com/gee/build/gee.min.js"></script>
@@ -18,7 +56,7 @@
 
       window.onload = function() {
 
-        var gee = new GEE({ fullscreen : true });
+        var gee = new GEE({ width: 1800, height: 1046, container: document.getElementById("canvas-container") });
         var g = gee.ctx;
 
         var rome = {};
@@ -28,8 +66,24 @@
               white: "#f4f4ea"
             };
 
-        var arrow = new Arrow(gee);
-            arrow.scale(.7);
+
+        var domElements = [];
+
+        var cont = document.getElementById("continue-to-explore");
+        var exp = document.getElementById("explore-other-dreams");
+        var add = document.getElementById("add-to-the-dream");
+        var tech = document.getElementById("technology");
+        var star = document.getElementById("start-over");
+
+        domElements.push(cont);
+        domElements.push(exp);
+        domElements.push(add);
+        domElements.push(tech);
+        domElements.push(star);
+
+        var heart = new Heart(gee, "assets/heart_small.svg");
+            heart.showDrips = true;
+            heart.showBoils = false;
 
         gee.draw = function() {
 
@@ -58,18 +112,11 @@
           g.fill();
           g.stroke();
           g.restore();
-          
-          var dx = gee.mouseX - gee.width / 2.0;
-          var dy = gee.mouseY - gee.height / 2.0;
-          var theta = Math.atan2(dy, dx);
-          
-          arrow.angle = degrees(theta - Math.PI / 2.0);
-          
-          g.fillStyle = rome.color.red;
-          arrow.x = gee.width / 2.0;
-          arrow.y = gee.height / 2.0;
-          arrow.update().render();
+          heart.update().render();
           g.restore();
+        };
+
+        gee.mousemove = function() {
         };
 
         function degrees(n) {
@@ -107,5 +154,17 @@
     </script>
   </head>
   <body>
+    <div id = "container">
+      <div id = "canvas-container"></div>
+      <div id = "overlay">
+      
+        <div class = "after-experience" id = "start-over">start over</div>
+        <div class = "after-experience" id = "technology">technology</div>
+        <div class = "after-experience" id = "add-to-the-dream">add to the dream</div>
+        <div class = "after-experience" id = "explore-other-dreams">explore other dreams</div>
+        <div class = "after-experience" id = "continue-to-explore">continue to explore</div>
+      
+      </div>
+    </div>
   </body>
 </html>
