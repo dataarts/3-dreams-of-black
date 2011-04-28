@@ -6,7 +6,7 @@ var UgcSection = function ( shared ) {
 	domElement.style.backgroundColor = '#000044';
 
 	var objectCreator = new ObjectCreator( shared );
-	
+	domElement.appendChild( objectCreator.getDomElement() );
 
 	this.getDomElement = function () {
 
@@ -28,11 +28,13 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		
+		objectCreator.resize( width, height );
 
 	};
 
 	this.update = function () {
+
+		objectCreator.update();
 
 	};
 

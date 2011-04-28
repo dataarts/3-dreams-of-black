@@ -1,93 +1,4 @@
-var HalfAlphaShaderSource = {
-
-	'halfAlpha' : {
-
-		uniforms: {
-
-			"map" : { type: "t", value: 0, texture: null },
-			"flip": { type: "i", value: 0 }
-
-		},
-
-		vertexShader: [
-
-			"varying vec2 vUv;",
-			"uniform bool flip;",
-
-			"void main() {",
-
-				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-
-				"if ( flip )",
-					"vUv = vec2( 1.0 - uv.x, uv.y );",
-				"else",
-					"vUv = uv;",
-
-			"}"
-
-		].join("\n"),
-
-		fragmentShader: [
-
-			"uniform sampler2D map;",
-
-			"varying vec2 vUv;",
-
-			"void main() {",
-				"vec4 c = texture2D( map, vec2( vUv.x * 0.5, vUv.y ) );",
-				"vec4 a = texture2D( map, vec2( 0.5 + vUv.x * 0.5, vUv.y ) );",
-				"gl_FragColor = vec4(c.rgb, a.r);",
-			"}"
-
-		].join("\n")
-
-	},
-
-	'opaque' : {
-
-		uniforms: {
-
-			"map" : { type: "t", value: 0, texture: null },
-			"flip": { type: "i", value: 0 }
-
-		},
-
-		vertexShader: [
-
-			"varying vec2 vUv;",
-			"uniform bool flip;",
-
-			"void main() {",
-
-				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-
-				"if ( flip )",
-					"vUv = vec2( 1.0 - uv.x, uv.y );",
-				"else",
-					"vUv = uv;",
-
-			"}"
-
-		].join("\n"),
-
-		fragmentShader: [
-
-			"uniform sampler2D map;",
-
-			"varying vec2 vUv;",
-
-			"void main() {",
-				"vec4 c = texture2D( map, vUv );",
-				"gl_FragColor = c;",
-			"}"
-
-		].join("\n")
-
-	}
-
-};
-
-var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
+var VideoSequence = function ( shared, videoPath, hasAlpha, flip, chromakey ) {
 
 	SequencerItem.call( this );
 
@@ -128,7 +39,7 @@ var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
 
 		if ( hasAlpha ) {
 
-			var shader = HalfAlphaShaderSource['halfAlpha'];
+			var shader = VideoShadersSource['halfAlpha'];
 
 			var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 			uniforms['map'].texture = texture;
@@ -138,15 +49,14 @@ var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
 				uniforms: uniforms,
 				vertexShader: shader.vertexShader,
 				fragmentShader: shader.fragmentShader,
-				blending: THREE.BillboardBlending,
 				depthTest: false
 			});
 
 			mesh = new THREE.Mesh( geometry, mat );
 
-		} else {
+		} else if ( chromakey ) {
 
-			var shader = HalfAlphaShaderSource['opaque'];
+			var shader = VideoShadersSource[ 'chromakey' ];
 
 			var uniforms = THREE.UniformsUtils.clone( shader.uniforms) ;
 			uniforms['map'].texture = texture;
@@ -156,15 +66,30 @@ var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
 				uniforms: uniforms,
 				vertexShader: shader.vertexShader,
 				fragmentShader: shader.fragmentShader,
-				blending: THREE.BillboardBlending,
 				depthTest: false
 			});
 
-			//mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture, depthTest: false }));
+			mesh = new THREE.Mesh( geometry, mat );
+
+		} else {
+
+			var shader = VideoShadersSource['opaque'];
+
+			var uniforms = THREE.UniformsUtils.clone( shader.uniforms) ;
+			uniforms['map'].texture = texture;
+			uniforms['flip'].value = ( flip !== undefined ) ? flip : 0;
+
+			var mat = new THREE.MeshShaderMaterial({
+				uniforms: uniforms,
+				vertexShader: shader.vertexShader,
+				fragmentShader: shader.fragmentShader,
+				depthTest: false
+			});
+
 			mesh = new THREE.Mesh( geometry, mat );
 
 		}
-
+		
 		//mesh.scale.x = -1;
 		//mesh.doubleSided = true;
 

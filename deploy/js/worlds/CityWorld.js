@@ -90,7 +90,7 @@ var CityWorld = function ( shared ) {
 		
 		TriggerUtils.setupCityTriggers( result );
 		
-		//that.scene.update( undefined, true );
+		that.scene.update( undefined, true );
 		
 	};
 
@@ -120,7 +120,7 @@ var CityWorld = function ( shared ) {
 		}
 		
 		TriggerUtils.update();
-		
+	
 		if ( portalsActive ) {
 			
 			var currentPosition = camera.matrixWorld.getPosition();

@@ -19,7 +19,6 @@ var Clouds = function ( shared ) {
 
 	// Clouds
 
-	var domElement;
 	var camera, scene, renderer, sky, mesh, geometry, material,
 	i, h, color, colors = [], sprite, size, x, y, z;
 
@@ -30,8 +29,6 @@ var Clouds = function ( shared ) {
 	var windowHalfY = window.innerHeight / 2;
 
 	//
-
-	domElement = document.createElement( 'div' );
 
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
@@ -126,32 +123,28 @@ var Clouds = function ( shared ) {
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
 
-	shared.signals.mousemoved.add( function () {
+	function onMouseMove () {
 
-		shared.signals.mousemoved.add( function () {
+		mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
+		mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
 
-			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
-			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
-
-		} );
-
-	} );
+	}
 
 	this.getDomElement = function () {
 
-		return domElement;
+		return renderer.domElement;
 
 	};
 
 	this.show = function () {
 
-		domElement.appendChild( renderer.domElement );
+		shared.signals.mousemoved.add( onMouseMove );
 
 	};
 
 	this.hide = function () {
 
-
+		shared.signals.mousemoved.remove( onMouseMove );
 
 	};
 
