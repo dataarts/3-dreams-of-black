@@ -145,23 +145,33 @@ a.guidat-toggle:hover {
     height: 20px;
 }
 
-#guidat-speed,#guidat-morph,#guidat-aperture,#guidat-focus{
+#guidat-speed,#guidat-morph,#guidat-aperture,#guidat-focus,#guidat-radius{
   float:left;
   height:26px;
   width:180px;
   background:#eee;
 }
-#guidat-wireframe,#guidat-texture,#guidat-shader_components,#guidat-lighting,#guidat-depth_of_field{
+#guidat-wireframe,#guidat-texture,#guidat-shader_components,#guidat-lighting,#guidat-grid,#guidat-occlusion,#guidat-depth_of_field{
   float:left;
   height:26px;
-  width:100px;
+  width:80px;
   padding-left:10px;
   background:#eee;
 }
 #guidat-shader_components{
-  width:201px;
-  padding-right:20px;
+  width:195px;
+  padding-right:15px;
+}
+#guidat-grid{
+  width:55px;
 }
 #guidat-depth_of_field{
+  width:140px;
   clear:left;
+}
+#guidat-occlusion{
+  width:120px;
+}
+#guidat-radius{
+  width:200px;
 }
