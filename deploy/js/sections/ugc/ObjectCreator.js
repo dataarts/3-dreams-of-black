@@ -1,18 +1,21 @@
 var ObjectCreator = function ( shared ) {
 
-	var mouse = { x: 0, y: 0 }, loader,
-	camera, light1, light2, scene, renderer,
+	var camera, light1, light2, scene, loader, renderer,
 	intersects, intersectedFace, intersectedObject,
 	isDeleteMode = false, isRotateMode = false,
 	isMouseDown = false, radius = 1500, theta = 45, phi = 60;
 
-	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
-	camera.position.z = 200;
+	var collider, projector, mouse2D, mouse3D, ray;
+
+	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+	camera.target.position.z = 200;
+
+	// Background
 
 	scene = new THREE.Scene();
 
-	scene.fog = new THREE.FogExp2( 0xffffff, 0.000275 );
-	scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
+	scene.fog = new THREE.Fog( 0xffffff, 1000, 10000 );
+	scene.fog.color.setHSV( 0.6, 0.1235, 1 );
 
 	light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
 	light1.position.set( 0.5, 0.75, 1 );
@@ -36,6 +39,13 @@ var ObjectCreator = function ( shared ) {
 
 	} } );
 
+	// Voxel
+
+	projector = new THREE.Projector();
+
+	mouse2D = new THREE.Vector3( 0, 0, 0.5 );
+	ray = new THREE.Ray( camera.position, null );
+
 	renderer = new THREE.WebGLRenderer();
 	renderer.domElement.style.position = 'absolute';
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -55,8 +65,8 @@ var ObjectCreator = function ( shared ) {
 
 	function onMouseMove( event ) {
 
-		mouse.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
-		mouse.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
+		mouse2D.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
+		mouse2D.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
 
 	}
 
@@ -65,6 +75,63 @@ var ObjectCreator = function ( shared ) {
 		radius -= event.wheelDeltaY;
 
 	}
+
+	function onKeyDown( event ) {
+
+		switch ( event.keyCode ) {
+
+			case 16: isRotateMode = true; break;
+			case 17: isDeleteMode = true; break;
+			// case 18: isDeleteMode = true; break;
+
+		}
+
+	}
+
+	function onKeyUp( event ) {
+
+		switch ( event.keyCode ) {
+
+			case 16: isRotateMode = false; break;
+			case 17: isDeleteMode = false; break;
+			// case 18: isDeleteMode = false; break;
+
+		}
+	}
+
+	function draw() {
+
+		if ( !isDeleteMode ) {
+
+			intersects = ray.intersectScene( sceneCollider );
+
+			if ( intersectedFace && intersects.length > 0 ) {
+
+				var face = intersectedFace,
+				point = intersects[ 0 ].point,
+				centroidWorld = face.centroid.clone().addSelf( intersectedObject.position ),
+				distance = centroidWorld.distanceTo( point ),
+				pointInNormal = centroidWorld.addSelf( intersectedObject.matrixRotationWorld.multiplyVector3( face.normal.clone() ).multiplyScalar( distance ) );
+
+				addVoxel( pointInNormal );
+
+			}
+
+		} else {
+
+			intersects = ray.intersectScene( sceneVoxels );
+
+			if ( intersects.length > 0 && intersects[ 0 ].object != ground ) {
+
+				removeVoxel( intersects[ 0 ].object );
+
+			}
+
+		}
+
+	}
+
+	//
 
 	this.getDomElement = function () {
 
@@ -79,6 +146,9 @@ var ObjectCreator = function ( shared ) {
 		shared.signals.mousemoved.add( onMouseMove );
 		shared.signals.mousewheel.add( onMouseWheel );
 
+		shared.signals.keydown.add( onKeyDown );
+		shared.signals.keyup.add( onKeyUp );
+
 	};
 
 	this.hide = function () {
@@ -87,6 +157,9 @@ var ObjectCreator = function ( shared ) {
 		shared.signals.mouseup.remove( onMouseUp );
 		shared.signals.mousemoved.remove( onMouseMove );
 		shared.signals.mousewheel.remove( onMouseWheel );
+
+		shared.signals.keydown.remove( onKeyDown );
+		shared.signals.keyup.remove( onKeyUp );
 
 	};
 
@@ -103,9 +176,9 @@ var ObjectCreator = function ( shared ) {
 
 		if ( isRotateMode ) {
 
-			theta += mouse.x * 5;
+			theta += mouse2D.x * 5;
 
-			phi += mouse.y * 5;
+			phi += mouse2D.y * 5;
 			phi = phi > 180 ? 180 :
 			      phi < - 180 ? - 180 :
 			      phi;
