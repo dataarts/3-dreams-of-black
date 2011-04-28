@@ -1,0 +1,18 @@
+newmtl body_blueSG
+illum 4
+Kd 0.35 0.53 0.75
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_lt_blueSG
+illum 4
+Kd 0.31 0.89 1.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_purpleSG
+illum 4
+Kd 0.42 0.43 0.71
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
