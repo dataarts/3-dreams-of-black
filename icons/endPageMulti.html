@@ -24,6 +24,10 @@
         left: 545px;
         top: 595px;
       }
+      #add-to-the-dream:hover,
+      #continue-to-explore:hover {
+        border: none !important;
+      }
       #technology {
         left: 483px;
         top: 385px;
@@ -32,6 +36,15 @@
         left: 798px;
         top: 216px;
       }
+/*      #checker {
+        position: absolute;
+        z-index: 9999;
+        left: 1242px;
+        top: 420px;
+        width: 10px;
+        height: 10px;
+        background: #f00;
+      }*/
       div.after-experience {
         position: absolute;
         padding: 25px 50px;
@@ -67,6 +80,7 @@
             };
 
 
+        // Get all the elements
         var domElements = [];
 
         var cont = document.getElementById("continue-to-explore");
@@ -75,11 +89,157 @@
         var tech = document.getElementById("technology");
         var star = document.getElementById("start-over");
 
-        domElements.push(cont);
-        domElements.push(exp);
-        domElements.push(add);
-        domElements.push(tech);
-        domElements.push(star);
+        // How to tie these together
+        domElements.push(star);   // ArcArrow
+        domElements.push(tech);   // ???
+        domElements.push(add);    // Boil Up
+        domElements.push(exp);    // Arrow - fly
+        domElements.push(cont);   // Arrow - fly
+
+
+        var startOver = {
+          arrow: new ArcArrow(gee, (798 + 97), (216 + 30)),
+          dom: star,
+          display: true
+        };
+            startOver.arrow.angle = -180;
+            startOver.arrow.scale(.5);
+            startOver.dom.addEventListener("mouseover", function() {
+              startOver.arrow.angle -= 450;
+              startOver.display = true;
+            }, false);
+            startOver.dom.addEventListener("mouseout", function() {
+              startOver.arrow.angle -= 450;
+            }, false);
+
+        var addDream = {
+          boils: [],
+          dom: add,
+          amount: (Math.floor(Math.random() * 15) + 10),
+          display: true
+        };
+
+        for(var i = 0; i < addDream.amount; i++) {
+          addDream.boils.push(new Boil(gee, 686, 625, 0));
+          addDream.boils[i].reflective = false;
+          addDream.boils[i].increment = Math.random() * .3 + .1;
+        }
+
+        addDream.dom.addEventListener("mouseover", function() {
+          for(var i = 0; i < addDream.amount; i++) {
+            var boil = addDream.boils[i];
+                boil.x -= (Math.random() * 243) - 121;
+                boil.y -= (Math.random() * 67) - 33;
+                boil.radius = Math.random() * 50;
+          }
+          addDream.display = true;
+        }, false);
+        addDream.dom.addEventListener("mouseout", function() {
+          for(var i = 0; i < addDream.amount; i++) {
+            var boil = addDream.boils[i];
+                boil.x = 686;
+                boil.y = 625;
+                boil.radius = 0;
+          }
+          addDream.display = false;
+        }, false);
+
+        var technology = {
+          leftArrow: new Arrow(gee, -gee.width * .5, gee.height * 2),
+          rightArrow: new Arrow(gee, gee.width * 1.2, gee.height * 2),
+          dom: tech,
+          display: true
+        };
+
+        technology.leftArrow.scale(.75);
+        technology.leftArrow.increment = .25;
+        technology.rightArrow.scale(.75);
+        technology.rightArrow.increment = .25;
+
+        dx = (590) - technology.leftArrow.x;
+        dy = (410) - technology.leftArrow.y;
+        theta = Math.atan2(dy, dx);
+        technology.leftArrow.angle = degrees(theta - Math.PI / 2.0);
+        
+        dx = (590) - technology.rightArrow.x;
+        dy = (410) - technology.rightArrow.y;
+        theta = Math.atan2(dy, dx);
+        technology.rightArrow.angle = degrees(theta - Math.PI / 2.0);
+
+        technology.dom.addEventListener("mouseover", function() {
+          technology.leftArrow.x = (590);
+          technology.leftArrow.y = (410);
+          technology.rightArrow.x = (590);
+          technology.rightArrow.y = (410);
+          technology.display = true;
+        }, false);
+        technology.dom.addEventListener("mouseout", function() {
+          technology.leftArrow.x = -gee.width * .5;
+          technology.leftArrow.y = gee.height * 2;
+          technology.rightArrow.x = gee.width * 1.25;
+          technology.rightArrow.y = gee.height * 2;
+          technology.display = false;
+        }, false);
+
+        var continueExplore = {
+          drips: [],
+          dom: cont,
+          amount: (Math.floor(Math.random() * 15) + 10),
+          display: false
+        };
+
+        for(var i = 0; i < continueExplore.amount; i++) {
+          continueExplore.drips.push(new Drip(gee, 1127 + Math.random() * 230, 420, Math.random() * 10 + 10, 0));
+          continueExplore.drips[i].reflective = false;
+          continueExplore.drips[i].increment = Math.random() * .3 + .1;
+        }
+
+        continueExplore.dom.addEventListener("mouseover", function() {
+          for(var i = 0; i < continueExplore.amount; i++) {
+            
+            var drip = continueExplore.drips[i];
+                drip.height = Math.random() * 100;
+          }
+          continueExplore.display = true;
+        }, false);
+        continueExplore.dom.addEventListener("mouseout", function() {
+          for(var i = 0; i < continueExplore.amount; i++) {
+            var drip = continueExplore.drips[i];
+                drip.height = 0;
+          }
+          continueExplore.display = false;
+        }, false);
+        
+        
+        var explore = {
+          drips: [],
+          dom: exp,
+          amount: (Math.floor(Math.random() * 15) + 10),
+          display: false
+        };
+
+        for(var i = 0; i < explore.amount; i++) {
+          explore.drips.push(new Drip(gee, 1074 + Math.random() * 230, 630, Math.random() * 10 + 10, 0));
+          explore.drips[i].reflective = false;
+          explore.drips[i].increment = Math.random() * .3 + .1;
+        }
+
+        explore.dom.addEventListener("mouseover", function() {
+          for(var i = 0; i < explore.amount; i++) {
+            
+            var drip = explore.drips[i];
+                drip.height = Math.random() * 100;
+          }
+          explore.display = true;
+        }, false);
+        explore.dom.addEventListener("mouseout", function() {
+          for(var i = 0; i < explore.amount; i++) {
+            var drip = explore.drips[i];
+                drip.height = 0;
+          }
+          explore.display = false;
+        }, false);
+
 
         var heart = new Heart(gee, "assets/heart_small.svg");
             heart.showDrips = true;
@@ -114,9 +274,38 @@
           g.restore();
           heart.update().render();
           g.restore();
-        };
+          
+          if(startOver.display) {
+            g.fillStyle = rome.color.black;
+            startOver.arrow.update().render();
+          }
+          for(var i = 0; i < addDream.boils.length; i++) {
+            g.fillStyle = rome.color.black;
+            var boil = addDream.boils[i];
+                boil.update();
+                if(addDream.display) boil.render();
+          }
+          
+          technology.leftArrow.update();
+          technology.rightArrow.update();
+          if(technology.display) {
+            technology.leftArrow.render();
+            technology.rightArrow.render();
+          }
 
-        gee.mousemove = function() {
+          for(var i = 0; i < continueExplore.drips.length; i++) {
+            g.fillStyle = rome.color.black;
+            var drip = continueExplore.drips[i];
+                drip.update();
+                if(continueExplore.display) drip.render();
+          }
+          
+          for(var i = 0; i < explore.drips.length; i++) {
+            g.fillStyle = rome.color.black;
+            var drip = explore.drips[i];
+                drip.update();
+                if(explore.display) drip.render();
+          }
         };
 
         function degrees(n) {
@@ -157,13 +346,12 @@
     <div id = "container">
       <div id = "canvas-container"></div>
       <div id = "overlay">
-      
         <div class = "after-experience" id = "start-over">start over</div>
         <div class = "after-experience" id = "technology">technology</div>
         <div class = "after-experience" id = "add-to-the-dream">add to the dream</div>
         <div class = "after-experience" id = "explore-other-dreams">explore other dreams</div>
         <div class = "after-experience" id = "continue-to-explore">continue to explore</div>
-      
+        <div id = "checker"></div>
       </div>
     </div>
   </body>
