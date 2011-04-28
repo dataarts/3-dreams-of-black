@@ -32,7 +32,7 @@ var model = {
 	"vertexColors" : false
 	}],
 
-    "vertices": [14.191500,-38.471401,22.560801,14.191600,-38.492699,54.487900,14.099900,-15.932100,77.078796,13.970200,15.994800,77.100098,13.878500,38.585499,54.539299,13.878400,38.606800,22.612200,13.970000,16.046101,0.021271,14.099700,-15.880700,0.000000,-13.878500,-38.585400,22.560801,-13.878400,-38.606701,54.487900,-13.970000,-16.046101,77.078796,-14.099700,15.880800,77.100098,-14.191500,38.471500,54.539299,-14.191500,38.492699,22.612200,-14.099900,15.932100,0.021271,-13.970200,-15.994700,0.000000,-13.925100,-27.095900,27.329000,-13.925100,-27.110901,49.735100,-13.989400,-11.278000,65.589203,-14.080400,11.128000,65.604103,-14.144800,26.982000,49.771099,-14.144800,26.996901,27.365000,-14.080500,11.164000,11.510900,-13.989500,-11.242000,11.496000],
+    "vertices": [],
 
     "morphTargets": [],
 
@@ -48,6 +48,35 @@ var model = {
 
 
 };
+
+var req = new XMLHttpRequest();
+req.open('GET', 'City.Wheel_.txt', false);
+req.send(null);
+if (req.status == 200 || req.status == 0) {
+  var numVertices = 72;
+  var numMorphTargets = model.morphTargets.length;
+  var scale = 0.0188232661133;
+  model.vertices = new Float32Array(numVertices);
+  for (var j = 0; j < numMorphTargets; ++j) {
+    model.morphTargets[j].vertices = new Float32Array(numVertices);
+  }
+
+  for (var i = 0; i < numVertices; ++i) {
+    var word = req.responseText.charCodeAt(i);
+   word = (word >> 1) ^ (-(word & 1));
+    model.vertices[i] = scale * word;
+
+   var prev = word;
+   for (var j = 0; j < numMorphTargets; ++j) {
+     var offset = (j + 1) * numVertices;
+     var delta = req.responseText.charCodeAt(offset + i);
+     delta = (delta >> 1) ^ (-(delta & 1));
+     prev += delta;
+     model.morphTargets[j].vertices[i] = scale * prev;
+   }
+ }
+}
+
 
 postMessage( model );
 close();
