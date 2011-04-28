@@ -1,0 +1,18 @@
+newmtl body_orangeSG
+illum 4
+Kd 1.00 0.73 0.45
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_pinkSG
+illum 4
+Kd 0.75 0.53 0.51
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_yellowSG
+illum 4
+Kd 1.00 0.91 0.57
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
