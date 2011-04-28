@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      body {
+        background: #F3F1E7;
+      }
+    </style>
+    <script type = "text/javascript" src = "http://georgealways.github.com/gee/build/gee.min.js"></script>
+    <script type = "text/javascript" src = "https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
+    <script type = "text/javascript" src = "Arrow.js"></script>
+    <script type = "text/javascript">
+
+      window.onload = function() {
+
+        var gee = new GEE({ fullscreen : true });
+        var g = gee.ctx;
+
+        var rome = {};
+            rome.color = {
+              red: "#f15d22",
+              black: "#30302e",
+              white: "#f4f4ea"
+            };
+
+        gee.draw = function() {
+
+          g.clearRect(0, 0, gee.width, gee.height);
+          
+          // Draw background          
+          g.save();
+          g.translate(gee.width / 2.0, gee.height / 2.0);
+          g.rotate(Math.PI);
+          g.strokeStyle = rome.color.black;
+          g.lineWidth = .5;
+          polygon(g, 0, 0, 236 / 2, 5);
+          g.stroke();
+          polygonLinesFromCenter(g, 0, 0, 236 / 2, 5);
+          g.restore();
+          
+          g.save();
+          g.translate(gee.width / 2.0, gee.height / 2.0);
+          g.rotate(Math.PI);
+          g.fillStyle = rome.color.white;
+          g.strokeStyle = rome.color.black;
+          g.lineWidth = 24;
+          polygon(g, 0, 0, 123 / 2, 5);
+          g.fill();
+          g.stroke();
+          g.restore();
+
+        };
+
+        function polygonLinesFromCenter(g, x, y, a, l) {
+          for(var i = 0; i < l; i++) {
+            var xpos = a * Math.sin(i / l * 2.0 * Math.PI) + x;
+            var ypos = a * Math.cos(i / l * 2.0 * Math.PI) + y;
+            g.beginPath();
+            g.moveTo(x, y);
+            g.lineTo(xpos, ypos);
+            g.closePath();
+            g.stroke();
+          }
+        }
+
+        function polygon(g, x, y, a, l) {
+          g.beginPath();
+          for(var i = 0; i < l; i++) {
+            var xpos = a * Math.sin(i / l * 2.0 * Math.PI) + x;
+            var ypos = a * Math.cos(i / l * 2.0 * Math.PI) + y;
+            if(i == 0) {
+              g.moveTo(xpos, ypos);
+            } else {
+              g.lineTo(xpos, ypos);
+            }
+          }
+          g.closePath();
+        }
+
+      };
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
