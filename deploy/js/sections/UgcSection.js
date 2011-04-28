@@ -28,13 +28,13 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		
+		objectCreator.resize( width, height );
 
 	};
 
 	this.update = function () {
 
-		
+		objectCreator.update();
 
 	};
 
