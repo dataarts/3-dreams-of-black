@@ -10,7 +10,7 @@ var Trail = function ( numOfInstances, scene ) {
 	}
 
 	that.settings = {
-		spread : 50,
+		spread : 70,
 		visible : true,
 		aliveDivider: that.initSettings.numOfInstances,
 		tweenTime: 3000,
@@ -188,9 +188,14 @@ var Trail = function ( numOfInstances, scene ) {
 					xscale = zscale = 0.4*that.settings.scale;
 				}
 
+				var easeType = TWEEN.Easing.Quintic.EaseOut;
+				if (tree) {
+					easeType = TWEEN.Easing.Elastic.EaseOut;
+				}
+
 				var growTween = new TWEEN.Tween(c.scale)
 							.to({x: xscale, y: yscale, z: zscale}, that.settings.tweenTime)
-							.easing(TWEEN.Easing.Elastic.EaseOut);
+							.easing(TWEEN.Easing.Quintic.EaseOut);
 							//.delay(300);
 				growTween.start();				
 

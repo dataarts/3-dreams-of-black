@@ -43,6 +43,8 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 	//that.emitter.visible = false;
 	//that.emitterFollow.visible = false;
 
+	that.emitterFollow.rotationx = 0;
+
 /*	var emitterReal = new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0x3333FF, opacity: 0.4 } ) );
 	var emitterFollowReal = new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0xFF3333, opacity: 0.4 } ) );
 	var cameraTargetReal = new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0x33FF33, opacity: 0.4 } ) );
@@ -152,6 +154,8 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		var ray = new THREE.Ray( camPos, vector.subSelf( camPos ).normalize() );
 		var intersects = ray.intersectScene( scene );
 
+		//var emitterNormal = new THREE.Vector3(0,1,0);
+
 		if ( intersects.length > 0 ) {
 
 			for ( var i = 0; i < intersects.length; ++i ) {
@@ -162,21 +166,28 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 					that.emitter.position = intersects[i].point;
 
+					var dx = camPos.x-that.emitter.position.x;
+					var dz = camPos.z-that.emitter.position.z;
+
+					var angleRad = Math.atan2(dz, dx);
+					that.emitter.position.x -= Math.cos( angleRad )*that.settings.minDistance/10;
+					that.emitter.position.z -= Math.sin( angleRad )*that.settings.minDistance;					
+
 					// hack for now...
-					if (that.emitter.position.z > camPos.z-75) {
-						that.emitter.position.z = camPos.z-75;
+					if (that.emitter.position.z > camPos.z-20) {
+						that.emitter.position.z = camPos.z-20;
 					}
 
 					/*var face = intersects[i].face;
 					var object = intersects[i].object;
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
-					var emitterNormal = normal;*/
-
+					var emitterNormal = normal;
+					*/
 					// walls
 					if (intersects[i].object == right || intersects[i].object == front || intersects[i].object == back || intersects[i].object == left || intersects[i].object == top) {
-						/*that.currentNormal.x = 0;
-						that.currentNormal.y = 1;
-						that.currentNormal.z = 0;*/
+						/*emitterNormal.x = 0;
+						emitterNormal.y = 1;
+						emitterNormal.z = 0;*/
 						// not to be airbourne
 						if (!that.settings.allowFlying) {
 							that.emitter.position.y = bottom.position.y+5;					
@@ -221,7 +232,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 
 		that.emitterFollow.position.x += moveX;
 		that.emitterFollow.position.y += moveY;
-		that.emitterFollow.position.z += moveZ;
+		that.emitterFollow.position.z += moveZ;	
 
 
 
