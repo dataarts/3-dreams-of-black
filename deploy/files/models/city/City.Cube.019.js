@@ -25,7 +25,7 @@ var model = {
 	"vertexColors" : false
 	}],
 
-    "vertices": [3378.993164,2426.337402,-1758.694946,3378.993408,-2232.490479,-1758.694946,-1004.782227,-2232.488770,-1758.694946,-1004.781860,2426.339111,-1758.694946,3378.993652,2426.336914,3673.046387,3378.992676,-2232.491211,3673.046387,-1004.782471,-2232.488770,3673.046387,-1004.782227,2426.338867,3673.046387],
+    "vertices": [],
 
     "morphTargets": [],
 
@@ -41,6 +41,35 @@ var model = {
 
 
 };
+
+var req = new XMLHttpRequest();
+req.open('GET', 'City.Cube.019.txt', false);
+req.send(null);
+if (req.status == 200 || req.status == 0) {
+  var numVertices = 24;
+  var numMorphTargets = model.morphTargets.length;
+  var scale = 0.896739840576;
+  model.vertices = new Float32Array(numVertices);
+  for (var j = 0; j < numMorphTargets; ++j) {
+    model.morphTargets[j].vertices = new Float32Array(numVertices);
+  }
+
+  for (var i = 0; i < numVertices; ++i) {
+    var word = req.responseText.charCodeAt(i);
+   word = (word >> 1) ^ (-(word & 1));
+    model.vertices[i] = scale * word;
+
+   var prev = word;
+   for (var j = 0; j < numMorphTargets; ++j) {
+     var offset = (j + 1) * numVertices;
+     var delta = req.responseText.charCodeAt(offset + i);
+     delta = (delta >> 1) ^ (-(delta & 1));
+     prev += delta;
+     model.morphTargets[j].vertices[i] = scale * prev;
+   }
+ }
+}
+
 
 postMessage( model );
 close();

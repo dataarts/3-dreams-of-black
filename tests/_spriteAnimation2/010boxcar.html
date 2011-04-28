@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>010 - boxcar paralax</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#000000;
+				color:#ffffff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+				font-family:sans-serif;
+				text-align: left;
+			}
+			
+			#options {
+				padding: 10px;
+				text-aligh: left;
+				font-family: Georgia, serif;
+			}
+			
+			canvas { pointer-events:none; z-index:10; }
+		</style>
+	</head>
+	
+	<body>
+		<script type="text/javascript" src="build/Three.js"></script>
+		<script type="text/javascript" src="src/Animation2d.js"></script>
+		<script type="text/javascript" src="src/HalfAlphaShader.js"></script>
+
+		<script type="text/javascript" src="lastr/boxcar.js"></script>
+		
+		<script type="text/javascript">	
+			var viewWidth =  window.innerWidth;
+			var aspect = 2.35;
+			
+			var container, camera, scene, webglRenderer;			
+			var animation;
+
+			init();	
+			
+			var startTime = new Date().getTime();
+			
+			loop();
+				
+			setInterval(loop, 1000/60);
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				scene = new THREE.Scene();
+				scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+
+				camera = new THREE.Camera( 0, aspect, 1, 1000000 );
+				
+				animation = new THREE.Animation2D();
+				animation.mode = THREE.Animation2D.PINGPONG;
+
+				animation.texturePath = "lastr/";
+				animation.parse(paralaxprairiewebgl, scene, camera);
+
+				try {
+					webglRenderer = new THREE.WebGLRenderer( scene );
+					webglRenderer.setSize(viewWidth, viewWidth * 1/aspect);
+					container.appendChild( webglRenderer.domElement );
+				} catch (e) {
+					console.log(e);
+				}
+			}
+
+			function loop() {
+				time = ((new Date().getTime() - startTime) / 1000);
+				animation.draw(time);
+
+				webglRenderer.render( scene, camera );
+			}
+
+		</script>
+
+	</body>
+</html>

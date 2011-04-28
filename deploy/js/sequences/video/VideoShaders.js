@@ -1,5 +1,44 @@
 var VideoShadersSource = {
 
+	'multiVideo3x3' : {
+
+		uniforms: {
+
+			"map" : { type: "t", value: 0, texture: null },
+
+		},
+
+		vertexShader: [
+
+			"varying vec2 vUv;",
+			"uniform bool flip;",
+
+			"void main() {",
+
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+
+			"}"
+
+		].join("\n"),
+
+		fragmentShader: [
+
+			"uniform sampler2D map;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec4 c = texture2D( map, vec2( vUv.x * 0.5, vUv.y * 0.33 ) );",
+				"vec4 a = texture2D( map, vec2( 0.5 + vUv.x * 0.5, vUv.y * 0.33 ) );",
+				//"gl_FragColor = vec4(c.rgb, a.r);",
+				"gl_FragColor = vec4(c.rgb, 1);",
+			"}"
+
+		].join("\n")
+
+	},
+
 	'halfAlpha' : {
 
 		uniforms: {
