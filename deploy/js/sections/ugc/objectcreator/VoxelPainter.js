@@ -1,35 +1,64 @@
 var VoxelPainter = function () {
 
+	var _intersectedFace, _intersectedObject;
+
 	// Scene
 
-	var _scene, _light1, _light2, _ground;
+	var _scene = new THREE.Scene();
 
-	_scene = new THREE.Scene();
-
-	_light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
+	var _light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
 	_light1.position.set( 0.5, 0.75, 1 );
 	_light1.color.setHSV( 0, 0, 1 );
 	_scene.addLight( _light1 );
 
-	_light2 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
+	var _light2 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
 	_light2.position.set( - 0.5, - 0.75, - 1 );
 	_light2.color.setHSV( 0, 0, 0.306 );
 	_scene.addLight( _light2 );
 
-	_ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparency: true, wireframe: true } ) );
+	var _ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparency: true, wireframe: true } ) );
 	_ground.position.x = - 25;
 	_ground.position.y = - 25;
 	_ground.position.z = - 25;
 	_ground.rotation.x = - 90 * Math.PI / 180;
 	_scene.addObject( _ground );
 
+	// Colliders
+
+	var _sceneCollider = new THREE.Scene();
+	_scene.addObject( _sceneCollider );
+
+	var _collider = new THREE.Object3D();
+	_collider.visible = false;
+
+	var _geometry = new THREE.Plane( 2000, 2000, 16, 16 );
+	var _material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparency: true, wireframe: true } );
+
+	_plane = new THREE.Mesh( _geometry, _material );
+	_plane.doubleSided = true;
+	_plane.visible = _collider.visible;
+	_collider.addChild( _plane );
+
+	_plane = new THREE.Mesh( _geometry, _material );
+	_plane.rotation.y = - 90 * Math.PI / 180;
+	_plane.doubleSided = true;
+	_plane.visible = _collider.visible;
+	_collider.addChild( _plane );
+
+	_collider.matrixAutoUpdate = false;
+	_sceneCollider.addObject( _collider );
+
 	// Voxels
 
-	var _size = 50, _geometry, _material, _grid = {},
-	_mode = VoxelPainter.MODE_PREVIEW;
+	var _sceneVoxels = new THREE.Scene();
+	_scene.addObject( _sceneVoxels );
 
-	_geometry = new THREE.Cube( 50, 50, 50 );
-	_material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+	var _mode = VoxelPainter.MODE_IDLE, _size = 50, _grid = {};
+
+	var _geometry = new THREE.Cube( _size, _size, _size );
+	var _material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+
+	//
 
 	addVoxel( new THREE.Vector3() );
 
@@ -48,7 +77,7 @@ var VoxelPainter = function () {
 			voxel.matrixAutoUpdate = false;
 			voxel.updateMatrix();
 			voxel.update();
-			_scene.addObject( voxel );
+			_sceneVoxels.addObject( voxel );
 
 			_grid[ x + "." + y + "." + z ] = voxel;
 
@@ -56,15 +85,16 @@ var VoxelPainter = function () {
 
 	}
 
-	function removeVoxel( vector ) {
+	function removeVoxel( voxel ) {
 
-		var x = Math.round( voxel.position.x / voxel_size );
-		var y = Math.round( voxel.position.y / voxel_size );
-		var z = Math.round( voxel.position.z / voxel_size );
+		var x = Math.round( voxel.position.x / _size );
+		var y = Math.round( voxel.position.y / _size );
+		var z = Math.round( voxel.position.z / _size );
 
 		_grid[ x + "." + y + "." + z ] = null;
 
-		sceneVoxels.removeObject( voxel );
+		_sceneVoxels.removeObject( voxel );
+		_scene.removeObject( voxel ); // This shouldn't be needed :/
 
 	}
 
@@ -78,19 +108,43 @@ var VoxelPainter = function () {
 
 	this.process = function ( ray ) {
 
+		var intersects;
+
 		switch ( _mode ) {
+
+			case VoxelPainter.MODE_IDLE:
+
+				intersects = ray.intersectScene( _sceneVoxels );
+
+				if ( intersects.length > 0 ) {
+
+					_collider.position.copy( intersects[ 0 ].point );
+					_collider.updateMatrix();
+					_collider.update();
+
+					_intersectedObject = intersects[ 0 ].object;
+					_intersectedFace = intersects[ 0 ].face;
+
+				} else {
+
+					_intersectedObject = null;
+					_intersectedFace = null;
+
+				}
+
+			break;
 
 			case VoxelPainter.MODE_DRAW:
 
-				intersects = ray.intersectScene( sceneCollider );
+				intersects = ray.intersectScene( _sceneCollider );
 
-				if ( intersectedFace && intersects.length > 0 ) {
+				if ( _intersectedFace && intersects.length > 0 ) {
 
-					var face = intersectedFace,
+					var face = _intersectedFace,
 					point = intersects[ 0 ].point,
-					centroidWorld = face.centroid.clone().addSelf( intersectedObject.position ),
+					centroidWorld = face.centroid.clone().addSelf( _intersectedObject.position ),
 					distance = centroidWorld.distanceTo( point ),
-					pointInNormal = centroidWorld.addSelf( intersectedObject.matrixRotationWorld.multiplyVector3( face.normal.clone() ).multiplyScalar( distance ) );
+					pointInNormal = centroidWorld.addSelf( _intersectedObject.matrixRotationWorld.multiplyVector3( face.normal.clone() ).multiplyScalar( distance ) );
 
 					addVoxel( pointInNormal );
 
@@ -100,9 +154,9 @@ var VoxelPainter = function () {
 
 			case VoxelPainter.MODE_ERASE:
 
-				intersects = ray.intersectScene( sceneVoxels );
+				intersects = ray.intersectScene( _sceneVoxels );
 
-				if ( intersects.length > 0 && intersects[ 0 ].object != ground ) {
+				if ( intersects.length > 0 && intersects[ 0 ].object != _ground ) {
 
 					removeVoxel( intersects[ 0 ].object );
 

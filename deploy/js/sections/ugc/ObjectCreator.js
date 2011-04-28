@@ -62,11 +62,13 @@ var ObjectCreator = function ( shared ) {
 
 	function onMouseDown( event ) {
 
+		voxelPainter.setMode( !isDeleteMode ? VoxelPainter.MODE_DRAW : VoxelPainter.MODE_ERASE );
 
 	}
 
 	function onMouseUp( event ) {
 
+		voxelPainter.setMode( VoxelPainter.MODE_IDLE );
 
 	}
 
@@ -74,6 +76,9 @@ var ObjectCreator = function ( shared ) {
 
 		mouse2D.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
 		mouse2D.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
+
+		mouse3D = projector.unprojectVector( mouse2D.clone(), camera );
+		ray.direction = mouse3D.subSelf( camera.position ).normalize();
 
 	}
 
@@ -163,6 +168,8 @@ var ObjectCreator = function ( shared ) {
 		camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 		camera.position.y = radius * Math.sin( phi * DEG2RAD );
 		camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+
+		voxelPainter.process( ray );
 
 		renderer.clear();
 		renderer.render( scene, camera );
