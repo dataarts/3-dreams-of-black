@@ -130,8 +130,6 @@ var FilmSection = function ( shared ) {
 		audio.play();
 		//audio.volume = 0;
 
-		document.addEventListener( 'keydown', onDocumentKeyDown, false );
-
 	};
 
 	function stop() {
@@ -139,8 +137,6 @@ var FilmSection = function ( shared ) {
 		playing = false;
 
 		audio.pause();
-
-		document.removeEventListener( 'keydown', onDocumentKeyDown, false );
 
 	};
 
@@ -196,11 +192,16 @@ var FilmSection = function ( shared ) {
 
 		domElement.style.display = 'block';
 
+		shared.signals.keydown.add( onDocumentKeyDown );
+
 	};
 
 	this.hide = function () {
 
 		domElement.style.display = 'none';
+
+		shared.signals.keydown.remove( onDocumentKeyDown );
+
 		stop();
 
 	};

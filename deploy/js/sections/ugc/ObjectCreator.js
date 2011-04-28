@@ -43,10 +43,26 @@ var ObjectCreator = function ( shared ) {
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
 
-	function onMouseMove () {
+	function onMouseDown( event ) {
+
+
+	}
+
+	function onMouseUp( event ) {
+
+
+	}
+
+	function onMouseMove( event ) {
 
 		mouse.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
 		mouse.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
+
+	}
+
+	function onMouseWheel( event ) {
+
+		radius -= event.wheelDeltaY;
 
 	}
 
@@ -58,13 +74,19 @@ var ObjectCreator = function ( shared ) {
 
 	this.show = function () {
 
+		shared.signals.mousedown.add( onMouseDown );
+		shared.signals.mouseup.add( onMouseUp );
 		shared.signals.mousemoved.add( onMouseMove );
+		shared.signals.mousewheel.add( onMouseWheel );
 
 	};
 
 	this.hide = function () {
 
+		shared.signals.mousedown.remove( onMouseDown );
+		shared.signals.mouseup.remove( onMouseUp );
 		shared.signals.mousemoved.remove( onMouseMove );
+		shared.signals.mousewheel.remove( onMouseWheel );
 
 	};
 
