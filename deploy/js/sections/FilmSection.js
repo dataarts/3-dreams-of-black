@@ -57,7 +57,8 @@ var FilmSection = function ( shared ) {
 	// sequence
 
 	var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false, 0 );
-	var intro2 = new VideoSequence( shared, "files/videos/small.webm", false, false, 1 );
+	var intro2 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
+	var intro3 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
 	//var intro3 = new VideoSequence( shared, "files/videos/christest.webm", false, false, 1 );
 
 	//var intro2 = new VideoSequence( shared, "files/videos/trailer.800.webm", false, false, 1 );
@@ -76,6 +77,7 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	sequencer.add( intro2, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( prairieParalax, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
