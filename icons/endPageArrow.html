@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      body {
+        background: url("assets/ro_me_placeholder.jpg") center center no-repeat;
+      }
+    </style>
+    <script type = "text/javascript" src = "http://georgealways.github.com/gee/build/gee.min.js"></script>
+    <script type = "text/javascript" src = "https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
+    <script type = "text/javascript" src = "swell.js"></script>
+    <script type = "text/javascript" src = "Heart.js"></script>
+    <script type = "text/javascript" src = "Arrow.js"></script>
+    <script type = "text/javascript">
+
+      window.onload = function() {
+
+        var gee = new GEE({ fullscreen : true });
+        var g = gee.ctx;
+
+        var rome = {};
+            rome.color = {
+              red: "#f15d22",
+              black: "#30302e",
+              white: "#f4f4ea"
+            };
+
+        var arrow = new Arrow(gee);
+            arrow.scale(.7);
+
+        gee.draw = function() {
+
+          g.clearRect(0, 0, gee.width, gee.height);
+          
+          g.save();
+          g.translate(1, -66);
+          // Draw background          
+          g.save();
+          g.translate(gee.width / 2.0, gee.height / 2.0);
+          g.rotate(Math.PI);
+          g.strokeStyle = rome.color.black;
+          g.lineWidth = .5;
+          polygon(g, 0, 0, 130, 5);
+          g.stroke();
+          polygonLinesFromCenter(g, 0, 0, 130, 5);
+          g.restore();
+          
+          g.save();
+          g.translate(gee.width / 2.0, gee.height / 2.0);
+          g.rotate(Math.PI);
+          g.fillStyle = rome.color.white;
+          g.strokeStyle = rome.color.black;
+          g.lineWidth = 24;
+          polygon(g, 0, 0, 85, 5);
+          g.fill();
+          g.stroke();
+          g.restore();
+          
+          var dx = gee.mouseX - gee.width / 2.0;
+          var dy = gee.mouseY - gee.height / 2.0;
+          var theta = Math.atan2(dy, dx);
+          
+          arrow.angle = degrees(theta - Math.PI / 2.0);
+          
+          g.fillStyle = rome.color.red;
+          arrow.x = gee.width / 2.0;
+          arrow.y = gee.height / 2.0;
+          arrow.update().render();
+          g.restore();
+        };
+
+        function degrees(n) {
+          return n / (Math.PI * 2) * 360;
+        }
+
+        function polygonLinesFromCenter(g, x, y, a, l) {
+          for(var i = 0; i < l; i++) {
+            var xpos = a * Math.sin(i / l * 2.0 * Math.PI) + x;
+            var ypos = a * Math.cos(i / l * 2.0 * Math.PI) + y;
+            g.beginPath();
+            g.moveTo(x, y);
+            g.lineTo(xpos, ypos);
+            g.closePath();
+            g.stroke();
+          }
+        }
+
+        function polygon(g, x, y, a, l) {
+          g.beginPath();
+          for(var i = 0; i < l; i++) {
+            var xpos = a * Math.sin(i / l * 2.0 * Math.PI) + x;
+            var ypos = a * Math.cos(i / l * 2.0 * Math.PI) + y;
+            if(i == 0) {
+              g.moveTo(xpos, ypos);
+            } else {
+              g.lineTo(xpos, ypos);
+            }
+          }
+          g.closePath();
+        }
+
+      };
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

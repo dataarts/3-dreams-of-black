@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      body {
+        background: #F3F1E7;
+      }
+    </style>
+    <script type = "text/javascript" src = "http://georgealways.github.com/gee/build/gee.min.js"></script>
+    <script type = "text/javascript" src = "https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
+    <script type = "text/javascript" src = "Arrow.js"></script>
+    <script type = "text/javascript">
+
+      window.onload = function() {
+
+        var gee = new GEE({ fullscreen : true });
+        var g = gee.ctx;
+
+        var arrow = new ArcArrow(gee);
+
+        var gui = new DAT.GUI();
+            gui.add(arrow);
+
+            // ro.me styles are default
+            // for all classes.
+            g.fillStyle = "#F15D22";
+
+        gee.draw = function() {
+
+          g.clearRect(0, 0, gee.width, gee.height);
+          arrow.update().render();
+        };
+
+      };
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

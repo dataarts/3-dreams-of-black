@@ -6,20 +6,23 @@ var LoadingBar = function ( callback ) {
 	domElement = document.createElement( 'div' );
 
 	loadBar = document.createElement( 'div' );
-	loadBar.style.width = '180px';
-	loadBar.style.background = '#fff';
-	loadBar.style.borderRadius = '5px';
+	loadBar.style.position = 'absolute';
 	loadBar.style.display = 'block';
+	loadBar.style.width = '300px';
+	loadBar.style.height = '8px';
+	loadBar.style.borderStyle = 'solid';
+	loadBar.style.borderColor = 'rgba(255,255,255,0.5)';
+	loadBar.style.borderWidth = '1px';
+	loadBar.style.borderRadius = '5px';
 	domElement.appendChild( loadBar );
 
 	loadVal = document.createElement( 'div' );
-	loadVal.style.position = 'relative';
-	loadVal.style.top = '0px';
+	loadVal.style.position = 'absolute';
 	loadVal.style.height = '10px';
 	loadVal.style.width = '0px';
-	loadVal.style.background = '#000';
+	loadVal.style.background = '#fff';
 	loadVal.style.borderRadius = '5px';
-	loadBar.appendChild( loadVal );
+	domElement.appendChild( loadVal );
 
 	function updateProgress() {
 
@@ -28,7 +31,7 @@ var LoadingBar = function ( callback ) {
 		if ( progress > maxProgress ) {
 
 			maxProgress = progress;
-			loadVal.style.width = progress * 180 + "px";
+			loadVal.style.width = progress * 300 + "px";
 
 		}
 

@@ -375,6 +375,10 @@ ROME.AnimalAnimationData = {
 	"seal": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
 			  hOffset: 0.00, sOffset:  0.05, vOffset: 0.00,
 			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+
+	"hummingbird": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
+			  hOffset: 0.00, sOffset:  0.3, vOffset: 0.00,
+			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
 			  
 	"eagle": { hRange:  0.05, sRange:  0.00, vRange:  0.25,
 			  hOffset: 0.00, sOffset:  -0.10, vOffset: 0.10,
@@ -407,8 +411,8 @@ ROME.AnimalAnimationData = {
 		"seal"		: "seal",
 		"elk"		: "seal",
 		"eagle"		: "eagle",
-		"parrot"	: "eagle",
-		"hummingbird": "seal",
+		"parrot"	: "hummingbird",
+		"hummingbird": "hummingbird",
 		"raven"		: "deer",
 		"vulture"   : "vulture",
 		"centipede" : "tarbuffalo",

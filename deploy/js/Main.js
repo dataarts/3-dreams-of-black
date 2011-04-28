@@ -60,6 +60,15 @@
 	launcher = new LauncherSection( shared );
 	document.body.appendChild( launcher.getDomElement() );
 
+	relauncher = new RelauncherSection( shared );
+	document.body.appendChild( relauncher.getDomElement() );
+
+	ugc = new UgcSection( shared );
+	document.body.appendChild( ugc.getDomElement() );
+
+	shortcuts = new Shortcuts( shared );
+	document.body.appendChild( shortcuts.getDomElement() );
+
 	shared.signals.load.add( function () {
 
 		shared.signals.loadBegin.dispatch();
@@ -67,32 +76,20 @@
 		film = new FilmSection( shared );
 		document.body.appendChild( film.getDomElement() );
 
-		relauncher = new RelauncherSection( shared );
-		document.body.appendChild( relauncher.getDomElement() );
-
 		exploration = new ExplorationSection( shared );
 		document.body.appendChild( exploration.getDomElement() );
 
-		ugc = new UgcSection( shared );
-		document.body.appendChild( ugc.getDomElement() );
-
-		shortcuts = new Shortcuts( shared );
-		document.body.appendChild( shortcuts.getDomElement() );
-
-		// signals
-
-		shared.signals.showlauncher.add( function () { setSection( launcher ); } );
 		shared.signals.showfilm.add( function () { setSection( film ); } );
-		shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
 		shared.signals.showexploration.add( function () { setSection( exploration ); } );
-		shared.signals.showugc.add( function () { setSection( ugc ); } );
 
 	} );
 
+	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
+	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
+	shared.signals.showugc.add( function () { setSection( ugc ); } );
+
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	window.addEventListener( 'resize', onWindowResize, false );
-
-	//
 
 	setSection( launcher );
 	animate();
