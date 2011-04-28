@@ -79,12 +79,13 @@
 		exploration = new ExplorationSection( shared );
 		document.body.appendChild( exploration.getDomElement() );
 
+		shared.signals.showfilm.add( function () { setSection( film ); } );
+		shared.signals.showexploration.add( function () { setSection( exploration ); } );
+
 	} );
 
 	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
-	shared.signals.showfilm.add( function () { setSection( film ); } );
 	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
-	shared.signals.showexploration.add( function () { setSection( exploration ); } );
 	shared.signals.showugc.add( function () { setSection( ugc ); } );
 
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
