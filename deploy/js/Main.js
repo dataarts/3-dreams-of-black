@@ -100,10 +100,17 @@
 
 		if ( currentSection ) currentSection.hide();
 
-		currentSection = section;
+		if ( ! section.__loaded ) {
 
-		currentSection.resize( window.innerWidth, window.innerHeight );
-		currentSection.show();
+			section.load();
+			section.__loaded = true;
+
+		}
+
+		section.resize( window.innerWidth, window.innerHeight );
+		section.show();
+
+		currentSection = section;
 
 	};
 

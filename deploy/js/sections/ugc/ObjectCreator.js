@@ -1,6 +1,7 @@
 var ObjectCreator = function ( shared ) {
 
-	var camera, scene, renderer;
+	var mouse = { x: 0, y: 0 },
+	camera, scene, renderer;
 
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
 	camera.position.z = 200;
@@ -39,6 +40,13 @@ var ObjectCreator = function ( shared ) {
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
 
+	function onMouseMove () {
+
+		mouse.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
+		mouse.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
+
+	}
+
 	this.getDomElement = function () {
 
 		return renderer.domElement;
@@ -47,13 +55,13 @@ var ObjectCreator = function ( shared ) {
 
 	this.show = function () {
 
-		
+		shared.signals.mousemoved.add( onMouseMove );
 
 	};
 
 	this.hide = function () {
 
-
+		shared.signals.mousemoved.remove( onMouseMove );
 
 	};
 
@@ -67,8 +75,6 @@ var ObjectCreator = function ( shared ) {
 	};
 
 	this.update = function () {
-
-		console.log( "rendering") ;
 
 		renderer.clear();
 		renderer.render( scene, camera );

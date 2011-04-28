@@ -2,91 +2,91 @@ var LauncherSection = function ( shared ) {
 
 	Section.call( this );
 
-	var domElement = document.createElement( 'div' );
+	var domElement,
+	canvas, context, gradient,
+	clouds, title, titleOverlay, loading, footer;
+
+	domElement = document.createElement( 'div' );
 	domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#4584b4';
 	domElement.style.textAlign = 'center';
 
-	// Background
+	this.load = function () {
 
-	var canvas = document.createElement( 'canvas' );
-	canvas.width = 32;
-	canvas.height = window.innerHeight;
+		// Background
 
-	var context = canvas.getContext( '2d' );
+		canvas = document.createElement( 'canvas' );
+		canvas.width = 32;
+		canvas.height = window.innerHeight;
 
-	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-	gradient.addColorStop( 0, "#0e223a" );
-	gradient.addColorStop( 0.5, "#4584b4" );
+		context = canvas.getContext( '2d' );
 
-	context.fillStyle = gradient;
-	context.fillRect( 0, 0, canvas.width, canvas.height );
+		gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
+		gradient.addColorStop( 0, "#0e223a" );
+		gradient.addColorStop( 0.5, "#4584b4" );
 
-	domElement.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
-	domElement.style.backgroundRepeat = 'repeat-x';
+		context.fillStyle = gradient;
+		context.fillRect( 0, 0, canvas.width, canvas.height );
 
-	// Clouds
+		domElement.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
+		domElement.style.backgroundRepeat = 'repeat-x';
 
-	var clouds = new Clouds( shared );
-	clouds.getDomElement().style.position = 'absolute';
-	domElement.appendChild( clouds.getDomElement() );
+		// Clouds
 
-	// UI
+		clouds = new Clouds( shared );
+		clouds.getDomElement().style.position = 'absolute';
+		domElement.appendChild( clouds.getDomElement() );
 
-	var title = document.createElement( 'div' );
-	title.style.position = 'absolute';
-	title.innerHTML = '<img src="files/title_heart_loading.png">';
-	domElement.appendChild( title );
+		// UI
 
-	var titleOverlay = document.createElement( 'div' );
-	titleOverlay.style.position = 'absolute';
-	titleOverlay.style.cursor = 'pointer';
-	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
-	titleOverlay.addEventListener( 'click', function () {
+		title = document.createElement( 'div' );
+		title.style.position = 'absolute';
+		title.innerHTML = '<img src="files/title_heart_loading.png">';
+		domElement.appendChild( title );
 
-		loading.getDomElement().style.display = 'block';
-		titleOverlay.style.display = 'none';
+		titleOverlay = document.createElement( 'div' );
+		titleOverlay.style.position = 'absolute';
+		titleOverlay.style.cursor = 'pointer';
+		titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
+		titleOverlay.addEventListener( 'click', function () {
 
-		shared.signals.load.dispatch();
+			loading.getDomElement().style.display = 'block';
+			titleOverlay.style.display = 'none';
 
-	}, false );
-	domElement.appendChild( titleOverlay );
+			shared.signals.load.dispatch();
 
-	var loading = new LoadingBar( function () {
+		}, false );
+		domElement.appendChild( titleOverlay );
 
-		shared.signals.showfilm.dispatch();
+		loading = new LoadingBar( function () {
 
-		// Start in 1 second.
+			shared.signals.showfilm.dispatch();
 
-		setTimeout( function () {
+			// Start in 1 second.
 
-			shared.signals.startfilm.dispatch( 0 );
+			setTimeout( function () {
 
-		}, 1000 );
+				shared.signals.startfilm.dispatch( 0 );
 
-	} );
-	loading.getDomElement().style.position = 'absolute';
-	loading.getDomElement().style.display = 'none';
+			}, 1000 );
 
-	domElement.appendChild( loading.getDomElement() );
+		} );
+		loading.getDomElement().style.position = 'absolute';
+		loading.getDomElement().style.display = 'none';
 
-	shared.signals.loadItemAdded.add( loading.addItem );
-	shared.signals.loadItemCompleted.add( loading.completeItem );
+		domElement.appendChild( loading.getDomElement() );
 
-	var footer = document.createElement( 'div' );
-	footer.style.position = 'absolute';
-	footer.style.left = '20px';
-	footer.style.bottom = '10px';
-	footer.innerHTML = '<img src="files/footer.png">';
-	domElement.appendChild( footer );
+		shared.signals.loadItemAdded.add( loading.addItem );
+		shared.signals.loadItemCompleted.add( loading.completeItem );
 
-	//
+		footer = document.createElement( 'div' );
+		footer.style.position = 'absolute';
+		footer.style.left = '20px';
+		footer.style.bottom = '10px';
+		footer.innerHTML = '<img src="files/footer.png">';
+		domElement.appendChild( footer );
 
-	this.getDomElement = function () {
-
-		return domElement;
-
-	};
+	}
 
 	this.show = function () {
 
@@ -123,6 +123,12 @@ var LauncherSection = function ( shared ) {
 	this.update = function () {
 
 		clouds.update();
+
+	};
+
+	this.getDomElement = function () {
+
+		return domElement;
 
 	};
 
