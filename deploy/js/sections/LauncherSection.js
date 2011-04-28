@@ -35,15 +35,11 @@ var LauncherSection = function ( shared ) {
 
 	var title = document.createElement( 'div' );
 	title.style.position = 'absolute';
-	title.style.top = '60px';
-	title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
 	title.innerHTML = '<img src="files/title_heart_loading.png">';
 	domElement.appendChild( title );
 
 	var titleOverlay = document.createElement( 'div' );
 	titleOverlay.style.position = 'absolute';
-	titleOverlay.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
-	titleOverlay.style.top = '210px';
 	titleOverlay.style.cursor = 'pointer';
 	titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
 	titleOverlay.addEventListener( 'click', function () {
@@ -70,8 +66,6 @@ var LauncherSection = function ( shared ) {
 
 	} );
 	loading.getDomElement().style.position = 'absolute';
-	loading.getDomElement().style.left = ( window.innerWidth - 180 ) / 2 + 'px';
-	loading.getDomElement().style.top = '215px';
 	loading.getDomElement().style.display = 'none';
 
 	domElement.appendChild( loading.getDomElement() );
@@ -106,9 +100,14 @@ var LauncherSection = function ( shared ) {
 
 		clouds.resize( width, height );
 
+		title.style.top = '60px';
 		title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+
+		titleOverlay.style.top = '210px';
 		titleOverlay.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
-		loading.getDomElement().style.left = ( window.innerWidth - 180 ) / 2 + 'px';
+
+		loading.getDomElement().style.top = '215px';
+		loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
 
 		domElement.style.height = height + 'px';
 

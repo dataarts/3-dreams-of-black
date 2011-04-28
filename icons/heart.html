@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      body {
+        background: #F3F1E7;
+      }
+    </style>
+    <script type = "text/javascript" src = "http://georgealways.github.com/gee/build/gee.min.js"></script>
+    <script type = "text/javascript" src = "https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
+    <script type = "text/javascript" src = "swell.js"></script>
+    <script type = "text/javascript" src = "Heart.js"></script>
+    <script type = "text/javascript">
+
+      window.onload = function() {
+
+        var gee = new GEE({ fullscreen : true });
+        var g = gee.ctx;
+
+        var heart = new Heart(gee, "assets/heart.svg");
+        var boil  = new Boil(gee, gee.width * .25, gee.height * .25, 50);
+        var drip  = new Drip(gee, gee.width * .25, gee.height * .75 - 100, 50, 100);
+
+        var gui = new DAT.GUI();
+            gui.add(heart);
+            gui.add(boil);
+            gui.add(drip);
+            
+        var rome = {};
+            rome.color = {
+              red: "#f15d22",
+              black: "#30302e",
+              white: "#f4f4ea"
+            };
+
+        gee.draw = function() {
+          
+          g.clearRect(0, 0, gee.width, gee.height);
+          g.fillStyle = rome.color.red;
+          heart.update().render();
+          g.fillStyle = rome.color.red;
+          boil.update().render();
+          g.fillStyle = rome.color.red;
+          drip.update().render();
+          
+        };
+      };
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
