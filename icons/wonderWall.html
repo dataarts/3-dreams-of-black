@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+  <head>
+    <style>
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      #container{
+        width: 1800px;
+        height: 1046px;
+        background: url("assets/ro_me_wo_content.jpg") 0 0 no-repeat;
+        position: relative;
+        margin: 0 auto;
+      }
+    </style>
+    <script type = "text/javascript" src = "http://georgealways.github.com/gee/build/gee.min.js"></script>
+    <script type = "text/javascript" src = "https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
+    <script type = "text/javascript">
+
+      window.onload = function() {
+
+        var gee = new GEE({ width: 1800, height: 1046, container: document.getElementById("canvas-container") });
+        var g = gee.ctx;
+
+        var inner = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 85);
+        var outer = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 130);
+            outer.showFill = false;
+            outer.insides  = true;
+
+        var gui = new DAT.GUI();
+            gui.add(inner);
+            gui.add(outer);
+
+        // Colors for rome
+        var rome = {};
+            rome.color = {
+              red: "#f15d22",
+              black: "#30302e",
+              white: "#f4f4ea"
+            };
+
+        gee.draw = function() {
+
+          g.clearRect(0, 0, gee.width, gee.height);
+          g.strokeStyle = rome.color.black;
+          g.lineWidth = 1;
+          outer.render();
+          g.fillStyle = rome.color.white;
+          g.lineWidth = 24;
+          inner.render();
+        };
+      };
+
+      var WonderWall = WonderWall || {};
+      WonderWall.Point = function(gee, x, y) {
+
+        // Private variables
+        var that = this;
+        var g = gee.ctx;
+        var ox = x;
+        var oy = y;
+
+        // Public variables
+        this.x = x;
+        this.y = y;
+        this.threshold = 0.1;
+        this.easing = 0.125;
+        this.maxDist = gee.height / 4.0;
+
+        this.update = function() {
+
+          var dx = gee.mouseX - ox;
+          var dy = gee.mouseY - oy;
+          var d = Math.sqrt(dx * dx + dy * dy);
+
+          if(d <= this.maxDist) {
+            var ratio = dy / d;
+            var angle = Math.asin(ratio);
+
+            if(gee.mouseX < ox) angle = Math.PI - angle;
+
+            angle = Math.PI * 1.5 - angle;
+            var s = Math.sin(angle);
+            var c = Math.cos(angle);
+            var r = this.maxDist - ((this.maxDist / (d - 1)) * 10);
+            r = Math.max(this.maxDist * .25, r);
+
+            x = gee.mouseX + (s * r);
+            y = gee.mouseY + (c * r);
+
+            this.easing = .35;
+          } else {
+
+            x = ox;
+            y = oy;
+
+            this.easing = 0.125;
+          }
+
+          this.x = this.ease(this.x, x, this.easing);
+          this.y = this.ease(this.y, y, this.easing);
+        };
+      };
+      WonderWall.Point.prototype.ease = function(cur, tar, inc) {
+        var dif = tar - cur;
+        if(Math.abs(dif) < (inc / 100.0)) cur = tar;
+        else cur += dif * inc;
+        return cur;
+      };
+
+      WonderWall.Pentagon = function(gee, x, y, r) {
+
+        var that = this;
+        var g = gee.ctx;
+
+        this.separate = false;
+        this.showFill = true;
+        this.showStroke = true;
+        this.insides = false;
+
+        this.x = x;
+        this.y = y;
+        if(this.x == undefined || this.x == null || this.x == NaN) {
+          this.x = gee.width / 2.0;
+        }
+        if(this.y == undefined || this.y == null || this.y == NaN) {
+          this.y = gee.height / 2.0;
+        }
+
+        var coords = this.generatePoints(this.x, this.y, r, 5);
+        var points = [];
+
+        for(var i = 0; i < coords.length; i++) {
+          var coord = coords[i];
+          points.push(new WonderWall.Point(gee, coord.x, coord.y));
+        }
+
+        this.update = function() {
+
+          if(!this.separate) this.separate = true;
+          for(var i = 0; i < points.length; i++) {
+            points[i].update();
+          }
+          return this;
+        };
+
+        this.render = function() {
+
+          if(this.insides && this.showStroke) {
+            for(var i = 0; i < points.length; i++) {
+              var point = points[i];
+              if(!this.separate) {
+                point.update();
+              }
+              g.beginPath();
+              g.moveTo(this.x, this.y);
+              g.lineTo(point.x, point.y);
+              g.stroke();
+            }
+          }
+
+          g.beginPath();
+          for(var i = 0; i < points.length; i++) {
+            var point = points[i];
+            if(!this.separate) {
+              point.update();
+            }
+            if(i < 1) {
+              g.moveTo(point.x, point.y);
+            } else {
+              g.lineTo(point.x, point.y);
+            }
+          }
+          g.closePath();
+          if(this.showFill) g.fill();
+          if(this.showStroke) g.stroke();
+        };
+
+      };
+      WonderWall.Pentagon.prototype.generatePoints = function(x, y, a, l) {
+        var points = [];
+        for(var i = 0; i < l; i++) {
+          var xpos = a * Math.sin(i / l * 2.0 * Math.PI) + x;
+          var ypos = -a * Math.cos(i / l * 2.0 * Math.PI) + y;
+          points.push({x: xpos, y: ypos});
+        }
+        return points;
+      };
+
+    </script>
+  </head>
+  <body>
+    <div id = "container">
+      <div id = "canvas-container"></div>
+    </div>
+  </body>
+</html>
