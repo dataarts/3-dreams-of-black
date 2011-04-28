@@ -35,6 +35,9 @@ var Clouds = function ( shared ) {
 	camera.position.z = 6000;
 
 	scene = new THREE.Scene();
+  birdsGroup = new THREE.Object3D();
+  birdsGroup.position.y = 100;
+  scene.addObject( birdsGroup );
 
 	geometry = new THREE.Geometry();
 
@@ -119,7 +122,7 @@ var Clouds = function ( shared ) {
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.domElement.style.position = 'absolute';
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
 
@@ -131,9 +134,7 @@ var Clouds = function ( shared ) {
 	}
 
   function makeScene(geometry){
-    birdsGroup = new THREE.Object3D();
-    birdsGroup.position.y = 100;
-    scene.addObject( birdsGroup );
+
     for ( var i = 0; i < 50; i ++ ) {
       /////Bioids
       boid = boids[ i ] = new Boid();
