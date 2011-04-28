@@ -29,7 +29,7 @@ var Clouds = function ( shared ) {
   //////////////////////////////////////////////////////////////////
 
   var mouse = { x: 0, y: 0 }, delta, time, oldTime = start_time = new Date().getTime(),
-	camera, scene, renderer, sky, mesh, geometry, material;
+	camera, scene, renderer, sky, mesh, mesh2, geometry, material;
 
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
@@ -107,6 +107,7 @@ var Clouds = function ( shared ) {
 		}
 
     mesh = new THREE.Mesh( geometry, material );
+    mesh2 = new THREE.Mesh( geometry, material );
 
     var loader = new THREE.JSONLoader();
     loader.load( { model: "./files/models/soup/birds_B_life.js", callback: makeScene } );
@@ -168,8 +169,8 @@ var Clouds = function ( shared ) {
 		mesh.position.z = - 4000;
 		scene.addObject( mesh );
 
-    mesh.position.z = 0;
-    scene.addObject( mesh );
+    mesh2.position.z = 0;
+    scene.addObject( mesh2 );
   }
 
 	this.getDomElement = function () {
