@@ -56,7 +56,7 @@ function ArrowHead(gee, x, y, w, h) {
 }
 ArrowHead.prototype.ease = function(cur, tar, inc) {
   var dif = tar - cur;
-  if(Math.abs(dif) <= inc) {
+  if(Math.abs(dif) <= (inc / 100.0)) {
     cur = tar;
   } else {
     cur += dif * inc;
@@ -182,6 +182,7 @@ function Arrow(gee, x, y, w, h) {
   
   this.angle = 0.0;
   this.scaleFactor = 1.0;
+  this.increment = 0.125;
 
   // Private vars
   var bow = new ArrowHead(gee, 0, this.height / 2.0);
@@ -214,7 +215,12 @@ function Arrow(gee, x, y, w, h) {
     return this;
   };
 
-  this.scale = function() {
+  this.scale = function(n) {
+    
+    if(n != undefined && n != null && n != NaN) {
+      this.scaleFactor = n;
+    }
+    
     this.width *= this.scaleFactor;
     this.height *= this.scaleFactor;
 
@@ -229,6 +235,15 @@ function Arrow(gee, x, y, w, h) {
 }
 Arrow.prototype.radians = function(n) {
   return (n / 360.0) * Math.PI * 2;
+};
+Arrow.prototype.ease = function(cur, tar, inc) {
+  var dif = tar - cur;
+  if(Math.abs(dif) <= (inc / 100.0)) {
+    cur = tar;
+  } else {
+    cur += dif * inc;
+  }
+  return cur;
 };
 
 
@@ -307,7 +322,12 @@ function ArcArrow(gee, x, y, w, h) {
     return this;
   };
 
-  this.scale = function() {
+  this.scale = function(n) {
+    
+    if(n != undefined && n != null && n != NaN) {
+      this.scaleFactor = n;
+    }
+    
     this.width *= this.scaleFactor;
     this.height *= this.scaleFactor;
 

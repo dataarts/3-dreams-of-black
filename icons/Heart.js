@@ -126,7 +126,7 @@ function Heart(gee, src, x, y) {
       boils.push(new Boil(gee, 0, 0, 0));
       drips.push(new Drip(gee, 0, 0, 0, 0));
     }
-    that.toggle();
+    // that.toggle();
   };
 
   var success = function(s, location) {
@@ -201,7 +201,7 @@ function Boil(gee, x, y, r) {
 }
 Boil.prototype.ease = function(cur, tar, inc) {
   var dif = tar - cur;
-  if(Math.abs(dif) <= inc) {
+  if(Math.abs(dif) <= (inc / 100.0)) {
     cur = tar;
   } else {
     cur += dif * inc;
@@ -278,7 +278,7 @@ function Drip(gee, x, y, w, h) {
 }
 Drip.prototype.ease = function(cur, tar, inc) {
   var dif = tar - cur;
-  if(Math.abs(dif) <= inc) {
+  if(Math.abs(dif) <= (inc / 100.0)) {
     cur = tar;
   } else {
     cur += dif * inc;
