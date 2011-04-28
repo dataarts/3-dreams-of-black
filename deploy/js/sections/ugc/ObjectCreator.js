@@ -5,8 +5,6 @@ var ObjectCreator = function ( shared ) {
 	isDeleteMode = false, isRotateMode = false,
 	isMouseDown = false, radius = 1500, theta = 45, phi = 60;
 
-	var collider, projector, mouse2D, mouse3D, ray;
-
 	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
 	camera.target.position.z = 200;
 
@@ -39,12 +37,20 @@ var ObjectCreator = function ( shared ) {
 
 	} } );
 
-	// Voxel
+	// Mouse projection
+
+	var projector, mouse2D, mouse3D, ray;
 
 	projector = new THREE.Projector();
 
 	mouse2D = new THREE.Vector3( 0, 0, 0.5 );
 	ray = new THREE.Ray( camera.position, null );
+
+	// Painter
+
+	var voxelPainter = new VoxelPainter();
+
+	// Renderer
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.domElement.style.position = 'absolute';
@@ -97,38 +103,6 @@ var ObjectCreator = function ( shared ) {
 			// case 18: isDeleteMode = false; break;
 
 		}
-	}
-
-	function draw() {
-
-		if ( !isDeleteMode ) {
-
-			intersects = ray.intersectScene( sceneCollider );
-
-			if ( intersectedFace && intersects.length > 0 ) {
-
-				var face = intersectedFace,
-				point = intersects[ 0 ].point,
-				centroidWorld = face.centroid.clone().addSelf( intersectedObject.position ),
-				distance = centroidWorld.distanceTo( point ),
-				pointInNormal = centroidWorld.addSelf( intersectedObject.matrixRotationWorld.multiplyVector3( face.normal.clone() ).multiplyScalar( distance ) );
-
-				addVoxel( pointInNormal );
-
-			}
-
-		} else {
-
-			intersects = ray.intersectScene( sceneVoxels );
-
-			if ( intersects.length > 0 && intersects[ 0 ].object != ground ) {
-
-				removeVoxel( intersects[ 0 ].object );
-
-			}
-
-		}
-
 	}
 
 	//
@@ -191,6 +165,7 @@ var ObjectCreator = function ( shared ) {
 
 		renderer.clear();
 		renderer.render( scene, camera );
+		renderer.render( voxelPainter.getScene(), camera );
 
 	};
 
