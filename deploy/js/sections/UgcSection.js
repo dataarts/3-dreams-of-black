@@ -2,11 +2,6 @@ var UgcSection = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
-	domElement.style.height = window.innerHeight + 'px';
-	domElement.style.backgroundColor = '#000044';
-
-	var objectCreator = new ObjectCreator( shared );
-	domElement.appendChild( objectCreator.getDomElement() );
 
 	this.getDomElement = function () {
 
@@ -14,15 +9,24 @@ var UgcSection = function ( shared ) {
 
 	};
 
+	this.load = function () {
+
+		objectCreator = new ObjectCreator( shared );
+		domElement.appendChild( objectCreator.getDomElement() );
+
+	};
+
 	this.show = function () {
 
 		domElement.style.display = 'block';
+		objectCreator.show();
 
 	};
 
 	this.hide = function () {
 
 		domElement.style.display = 'none';
+		objectCreator.hide();
 
 	};
 

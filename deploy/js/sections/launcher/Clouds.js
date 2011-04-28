@@ -19,16 +19,8 @@ var Clouds = function ( shared ) {
 
 	// Clouds
 
-	var camera, scene, renderer, sky, mesh, geometry, material,
-	i, h, color, colors = [], sprite, size, x, y, z;
-
-	var mouse = { x: 0, y: 0 };
-	var start_time = new Date().getTime();
-
-	var windowHalfX = window.innerWidth / 2;
-	var windowHalfY = window.innerHeight / 2;
-
-	//
+	var mouse = { x: 0, y: 0 }, start_time = new Date().getTime(),
+	camera, scene, renderer, sky, mesh, geometry, material;
 
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
@@ -93,7 +85,7 @@ var Clouds = function ( shared ) {
 
 		var plane = new THREE.Mesh( new THREE.Plane( 64, 64 ) );
 
-		for ( i = 0; i < 4000; i++ ) {
+		for ( var i = 0; i < 4000; i++ ) {
 
 			plane.position.x = Math.random() * 1000 - 500;
 			plane.position.y = - Math.random() * Math.random() * 200 - 15;

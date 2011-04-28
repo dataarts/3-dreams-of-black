@@ -30,7 +30,14 @@
 
 		signals : {
 
+			mousedown : new Signal(),
+			mouseup : new Signal(),
 			mousemoved : new Signal(),
+			mousewheel : new Signal(),
+
+			keydown : new Signal(),
+			keyup : new Signal(),
+
 			windowresized : new Signal(),
 
 			load : new Signal(),
@@ -88,7 +95,14 @@
 	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
 	shared.signals.showugc.add( function () { setSection( ugc ); } );
 
+	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+	document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
+
+	document.addEventListener( 'keydown', onDocumentKeyDown, false );
+	document.addEventListener( 'keyup', onDocumentKeyUp, false );
+
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	setSection( launcher );
@@ -100,21 +114,64 @@
 
 		if ( currentSection ) currentSection.hide();
 
+		if ( ! section.__loaded ) {
+
+			section.load();
+			section.__loaded = true;
+
+		}
+
+		section.resize( window.innerWidth, window.innerHeight );
+		section.show();
+
 		currentSection = section;
 
-		currentSection.resize( window.innerWidth, window.innerHeight );
-		currentSection.show();
+	}
 
-	};
+	function onDocumentMouseDown( event ) {
+
+		shared.signals.mousedown.dispatch( event );
+
+		event.preventDefault();
+		event.stopPropagation();
+
+	}
+
+	function onDocumentMouseUp( event ) {
+
+		shared.signals.mouseup.dispatch( event );
+
+		event.preventDefault();
+		event.stopPropagation();
+
+	}
 
 	function onDocumentMouseMove( event ) {
 
 		shared.mouse.x = event.clientX;
 		shared.mouse.y = event.clientY;
 
-		shared.signals.mousemoved.dispatch();
+		shared.signals.mousemoved.dispatch( event );
 
-	};
+	}
+
+	function onDocumentMouseWheel( event ) {
+
+		shared.signals.mousewheel.dispatch( event );
+
+	}
+
+	function onDocumentKeyDown( event ) {
+
+		shared.signals.keydown.dispatch( event );
+
+	}
+
+	function onDocumentKeyUp( event ) {
+
+		shared.signals.keyup.dispatch( event );
+
+	}
 
 	function onWindowResize( event ) {
 
@@ -125,7 +182,7 @@
 
 		shared.signals.windowresized.dispatch();
 
-	};
+	}
 
 	function animate() {
 
@@ -135,6 +192,6 @@
 		currentSection.update();
 		stats.update();
 
-	};
+	}
 
 } )();
