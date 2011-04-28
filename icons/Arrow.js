@@ -189,9 +189,12 @@ function Arrow(gee, x, y, w, h) {
   var stern = new ArrowTail(gee, 0, -this.height / 2.0);
   var angle = this.angle;
   var ratio = 14.0 / 280.0;
+  var x = this.x, y = this.y;
 
   this.update = function() {
     angle = this.radians(this.angle);
+    x = this.ease(x, this.x, this.increment);
+    y = this.ease(y, this.y, this.increment);
     stern.update();
     bow.update();
     return this;
@@ -199,7 +202,7 @@ function Arrow(gee, x, y, w, h) {
   
   this.render = function() {
     g.save();
-    g.translate(this.x, this.y);
+    g.translate(x, y);
     g.rotate(angle);
     stern.render();
     g.beginPath();
@@ -271,8 +274,9 @@ function ArcArrow(gee, x, y, w, h) {
     this.height = 280;
   }
 
-  this.angle = 180;
+  this.angle = 0;
   this.scaleFactor = 1.0;
+  this.increment = 0.125;
 
   this.clockwise = true;
   this.startAngle = 0;  // Angle of head
@@ -282,10 +286,12 @@ function ArcArrow(gee, x, y, w, h) {
   var bow = new ArrowHead(gee);
   var stern = new ArrowTail(gee);
   var angle = this.angle;
+  var startAngle = this.startAngle;
+  var endAngle = this.endAngle;
 
   this.update = function() {
 
-    angle = this.radians(this.angle);
+    angle = this.ease(angle, this.radians(this.angle), this.increment);
     startAngle = this.radians(this.startAngle);
     endAngle = this.radians(this.endAngle);
 
@@ -342,4 +348,13 @@ function ArcArrow(gee, x, y, w, h) {
 }
 ArcArrow.prototype.radians = function(n) {
   return (n / 360.0) * Math.PI * 2;
+};
+ArcArrow.prototype.ease = function(cur, tar, inc) {
+  var dif = tar - cur;
+  if(Math.abs(dif) <= (inc / 100.0)) {
+    cur = tar;
+  } else {
+    cur += dif * inc;
+  }
+  return cur;
 };
