@@ -11,8 +11,8 @@
     </style>
     <script type = "text/javascript" src = "http://georgealways.github.com/gee/build/gee.min.js"></script>
     <script type = "text/javascript" src = "https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
-    <script type = "text/javascript" src = "Arrow.js"></script>
     <script type = "text/javascript" src = "swell.js"></script>
+    <script type = "text/javascript" src = "Heart.js"></script>
     <script type = "text/javascript">
 
       window.onload = function() {
@@ -39,6 +39,7 @@
         gee.draw = function() {
           
           g.clearRect(0, 0, gee.width, gee.height);
+          g.fillStyle = rome.color.red;
           heart.update().render();
           g.fillStyle = rome.color.red;
           boil.update().render();
@@ -46,194 +47,6 @@
           drip.update().render();
           
         };
-
-        // Dependent on swell.js
-        // uses a heart svg
-        function Heart(gee, src, x, y) {
-
-          // Heart can have drips or boils
-
-          var that = this;
-          var g = gee.ctx;
-          var svg;
-          var ready = false;
-
-          // Public variables
-          this.x = x;
-          this.y = y;
-          if(this.x == undefined || this.x == null || this.x || this == NaN) {
-            this.x = gee.width / 2.0;
-          }
-          if(this.y == undefined || this.y == null || this.y || this == NaN) {
-            this.y = gee.height / 2.0;
-          }
-
-          var success = function(s, location) {
-            svg = s;
-            that.source = location;
-            that.width = svg.width;
-            that.height = svg.height;
-            ready = true;
-          }
-          var fail = function() {
-          }
-
-          this.update = function() {
-            return this;
-          }
-
-          this.render = function(){
-            if(ready) {
-              g.save();
-              g.translate(this.x, this.y);
-              g.save();
-              g.translate(-this.width / 2.0, -this.height / 2.0)
-              svg.draw(g);
-              g.restore();
-              g.restore();
-            }
-          }
-          loadSVG(src, success, fail);
-        }
-
-        function Boil(gee, x, y, r) {
-          
-          var that = this;
-          var g = gee.ctx;
-
-          // Public vars
-          this.x = x;
-          this.y = y;
-          if(this.x == undefined || this.x == null || this.x == NaN) {
-            this.x = gee.width / 2.0;
-          }
-          if(this.y == undefined || this.y == null || this.y == NaN) {
-            this.y = gee.height / 2.0;
-          }
-
-          this.reflective = true;
-          this.increment = 0.125; // For animating
-          this.radius = r;
-          if(this.radius == undefined || this.radius == null || this.radius == NaN) {
-            this.radius = gee.width / 10.0;
-          }
-
-          // Private variables
-          var radius = 0;
-
-          this.update = function() {
-            
-            radius = this.ease(radius, this.radius, this.increment);
-            
-            return this;
-          };
-
-          this.render = function() {
-
-            if(radius >= 0) {
-              g.beginPath();
-              g.arc(this.x, this.y, radius, 0, Math.PI * 2, true);
-              g.closePath();
-              g.fill();
-
-              if(this.reflective) {
-                g.fillStyle = "#fff";
-                var rad = radius / 2.5;
-                g.beginPath();
-                g.arc(this.x + rad, this.y - rad, rad / 2.0, 0, Math.PI * 2, true);
-                g.closePath();
-                g.fill();
-              }
-            }
-          };
-        }
-        Boil.prototype.ease = function(cur, tar, inc) {
-          var dif = tar - cur;
-          if(Math.abs(dif) <= inc) {
-            cur = tar;
-          } else {
-            cur += dif * inc;
-          }
-          return cur;
-        };
-
-        function Drip(gee, x, y, w, h) {
-          
-          var that = this;
-          var g = gee.ctx;
-
-          // Public variables
-          this.x = x;
-          this.y = y;
-          if(this.x == undefined || this.x == null || this.x == NaN) {
-            this.x = gee.width / 2.0;
-          }
-          if(this.y == undefined || this.y == null || this.y == NaN) {
-            this.y = gee.height / 2.0;
-          }
-
-          this.reflective = true;
-          this.increment = 0.125; // For animating
-          this.fill = true;
-          this.stroke = false;
-
-          this.width = w;
-          this.height = h;
-          if(this.width == null || this.width == undefined || this.width == NaN) {
-            this.width = 20;
-          }
-          if(this.height == null || this.height == undefined || this.height == NaN) {
-            this.height = gee.width / 4.0;
-          }
-
-          // Private variables
-          var height = 0;
-
-          this.update = function() {
-            
-            height = this.ease(height, this.height, this.increment);
-            return this;
-          };
-
-          this.render = function() {
-
-            var xOffset = this.width / 2.0;
-            // length of drip
-            g.save();
-            g.translate(this.x, this.y);
-            g.beginPath();
-            g.moveTo(xOffset, 0);
-            g.lineTo(xOffset, height);
-            g.lineTo(-xOffset, height);
-            g.lineTo(-xOffset, 0);
-            g.closePath();
-            if(this.fill) g.fill();
-            if(this.stroke) g.stroke();
-            
-            // semi-circle
-            g.beginPath();
-            g.arc(0, height - 1, this.width / 2.0, Math.PI, Math.PI * 2, true);
-            g.closePath();
-            if(this.fill) g.fill();
-            if(this.stroke) g.stroke();
-            g.restore();
-            
-            if(this.reflective) {
-              // TODO
-            }
-          };
-
-        }
-        Drip.prototype.ease = function(cur, tar, inc) {
-          var dif = tar - cur;
-          if(Math.abs(dif) <= inc) {
-            cur = tar;
-          } else {
-            cur += dif * inc;
-          }
-          return cur;
-        };
-
       };
 
     </script>
