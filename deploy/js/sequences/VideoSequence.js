@@ -1,4 +1,4 @@
-var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
+var VideoSequence = function ( shared, videoPath, hasAlpha, flip, chromakey ) {
 
 	SequencerItem.call( this );
 
@@ -49,7 +49,23 @@ var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
 				uniforms: uniforms,
 				vertexShader: shader.vertexShader,
 				fragmentShader: shader.fragmentShader,
-				blending: THREE.BillboardBlending,
+				depthTest: false
+			});
+
+			mesh = new THREE.Mesh( geometry, mat );
+
+		} else if ( chromakey ) {
+
+			var shader = VideoShadersSource[ 'chromakey' ];
+
+			var uniforms = THREE.UniformsUtils.clone( shader.uniforms) ;
+			uniforms['map'].texture = texture;
+			uniforms['flip'].value = ( flip !== undefined ) ? flip : 0;
+
+			var mat = new THREE.MeshShaderMaterial({
+				uniforms: uniforms,
+				vertexShader: shader.vertexShader,
+				fragmentShader: shader.fragmentShader,
 				depthTest: false
 			});
 
@@ -67,15 +83,13 @@ var VideoSequence = function ( shared, videoPath, hasAlpha, flip ) {
 				uniforms: uniforms,
 				vertexShader: shader.vertexShader,
 				fragmentShader: shader.fragmentShader,
-				blending: THREE.BillboardBlending,
 				depthTest: false
 			});
 
-			//mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture, depthTest: false }));
 			mesh = new THREE.Mesh( geometry, mat );
 
 		}
-
+		
 		//mesh.scale.x = -1;
 		//mesh.doubleSided = true;
 
