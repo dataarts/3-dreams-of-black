@@ -12,9 +12,9 @@ function initGui(){
     "shader_components": 1,
     "depth_of_field": false,
     "focus": 0.33,
-    "aperture": 0.025,
+    "aperture": 0.005,
     "occlusion": false,
-    "radius": 0.05
+    "radius": 0.033
   };
   gui = new GUI({domElement:  document.getElementById('viewerSettings')});
   gui.add(params, "speed", 0, 1).listen();
@@ -26,7 +26,7 @@ function initGui(){
   gui.add(params, 'shader_components').options({'Composit': 1, 'Normal': 2, 'Depth': 3}).listen();
   gui.add(params, 'depth_of_field', false).listen();
   gui.add(params, "focus", 0, 1).listen();
-  gui.add(params, "aperture", 0, 0.1).listen();
+  gui.add(params, "aperture", 0, 0.01).listen();
   gui.add(params, "occlusion", false).listen();
   gui.add(params, "radius", 0, 0.1).listen();
 }
