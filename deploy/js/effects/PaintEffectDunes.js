@@ -1,4 +1,4 @@
-var PaintEffectPrairie = function ( shared ) {
+var PaintEffectDunes = function ( shared ) {
 
 	SequencerItem.call( this );
 
@@ -18,13 +18,13 @@ var PaintEffectPrairie = function ( shared ) {
 			"map": { type: "t", value:0, texture: renderTarget },
 			"screenWidth": { type: "f", value:shared.baseWidth },
 			"screenHeight": { type: "f", value:shared.baseHeight },
-			"vingenettingOffset": { type: "f", value: 0.94 },
-			"vingenettingDarkening": { type: "f", value: 0.36 },
+			"vingenettingOffset": { type: "f", value: 1.2 },
+			"vingenettingDarkening": { type: "f", value: 0.7 },
 			"colorOffset": { type: "f", value: 0 },
 			"colorFactor": { type: "f", value: 0 },
 			"colorBrightness": { type: "f", value: 0 },
-			"sampleDistance": { type: "f", value: 0.59 },
-			"waveFactor": { type: "f", value: 0.00167 },
+			"sampleDistance": { type: "f", value: 0.4 },
+			"waveFactor": { type: "f", value: 0.0115 },
 			"colorA": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 			"colorB": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 			"colorC": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) }
@@ -73,38 +73,39 @@ var PaintEffectPrairie = function ( shared ) {
 					
 					"add += color = org = texture2D( map, uv );",
 
-					"vin = (uv - vec2(0.5)) * vec2( 1.4 /*vingenettingOffset * 2.0*/);",
+					"vin = (uv - vec2(0.5)) * vec2(4.0);",
 					"sample_dist =(dot( vin, vin ) * 2.0);",
 					
-					"f = (waveFactor * 100.0 + sample_dist) * sampleDistance * 4.0;",
+					"f = (waveFactor * 100.0 + sample_dist) * sampleDistance * 0.5;",
 	
 					"vec2 sampleSize = vec2(  1.0 / screenWidth, 1.0 / screenHeight ) * vec2(f);",
 	
 					"add += tmp = texture2D( map, uv + vec2(0.111964, 0.993712) * sampleSize);", 
-					"if( tmp.b > color.b ) color = tmp;",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 					"add += tmp = texture2D( map, uv + vec2(0.846724, 0.532032) * sampleSize);",
-					"if( tmp.b > color.b ) color = tmp;",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 					"add += tmp = texture2D( map, uv + vec2(0.943883, -0.330279) * sampleSize);",
-					"if( tmp.b > color.b ) color = tmp;",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 					"add += tmp = texture2D( map, uv + vec2(0.330279, -0.943883) * sampleSize);",
-					"if( tmp.b > color.b ) color = tmp;",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 					"add += tmp = texture2D( map, uv + vec2(-0.532032, -0.846724) * sampleSize);",
-					"if( tmp.b > color.b ) color = tmp;",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 					"add += tmp = texture2D( map, uv + vec2(-0.993712, -0.111964) * sampleSize);",
-					"if( tmp.b > color.b ) color = tmp;",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 					"add += tmp = texture2D( map, uv + vec2(-0.707107, 0.707107) * sampleSize);",
-					"if( tmp.b > color.b ) color = tmp;",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 
-					"uv = (uv - vec2(0.5)) * vec2( vingenettingOffset );",
-					"color = color + (add / vec4(8.0) - color) * (vec4(1.0) - vec4(sample_dist * 0.5));",
-					"gl_FragColor = vec4( mix(color.rgb * color.rgb * vec3(colorOffset) + color.rgb, color.ggg * colorFactor - vec3( vingenettingDarkening ), vec3( dot( uv, uv ))), 1.0 );",
+					"uv = (uv - vec2(0.5)) * vec2( 0.94/* vingenettingOffset*/ );",
+				//	"color = color + (add / vec4(8.0) - color) * (vec4(1.0) - vec4(sample_dist * 0.1));",
+					"color = (add / vec4(8.0));",
+					"gl_FragColor = vec4( mix(color.rgb, color.ggg * colorFactor - vec3( vingenettingDarkening ), vec3( dot( uv, uv ))), 1.0 );",
 					"gl_FragColor = vec4(1.0) - (vec4(1.0) - gl_FragColor) * (vec4(1.0) - gl_FragColor);",
 				"}"
 
@@ -129,5 +130,5 @@ var PaintEffectPrairie = function ( shared ) {
 
 };
 
-PaintEffectPrairie.prototype = new SequencerItem();
-PaintEffectPrairie.prototype.constructor = PaintEffectPrairie;
+PaintEffectDunes.prototype = new SequencerItem();
+PaintEffectDunes.prototype.constructor = PaintEffectDunes;

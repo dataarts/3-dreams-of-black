@@ -5,7 +5,6 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// init
 
 	shared.camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
-	
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -247,15 +246,17 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		TriggerUtils.effectors[ 0 ] = vectors.array[10].position.x;
 		TriggerUtils.effectors[ 1 ] = vectors.array[10].position.y;
 		TriggerUtils.effectors[ 2 ] = vectors.array[10].position.z;
+		
+		ROME.TrailShader.uniforms.lavaHeadPosition.value.set( vectors.array[15].position.x, 0, -vectors.array[15].position.z );
 
 		// pointlight
 
-		pointLight.position.x = vectors.array[8].position.x;
-		pointLight.position.y = vectors.array[8].position.y + 30;
-		pointLight.position.z = vectors.array[8].position.z;
+		pointLight.position.x = vectors.array[0].position.x;
+		pointLight.position.y = vectors.array[0].position.y + 30;
+		pointLight.position.z = vectors.array[0].position.z;
 
-		shared.lavatrailx = vectors.array[20].position.x;
-		shared.lavatrailz = vectors.array[20].position.z;
+		shared.lavatrailx = vectors.array[30].position.x;
+		shared.lavatrailz = vectors.array[30].position.z;
 
 	};
 

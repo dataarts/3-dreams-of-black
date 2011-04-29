@@ -34,7 +34,8 @@ var ExplorationSection = function ( shared ) {
 	cameras.city.position.set( 0, 0, 0 );
 
 	var sequence, world, scene,
-	postEffect, clearEffect, heatEffect, paintEffect, paintEffectPrairie, noiseEffect, renderEffect, overlayEffect;
+	postEffect, clearEffect, heatEffect, paintEffect, paintEffectPrairie, paintEffectDunes,
+	noiseEffect, renderEffect, overlayEffect;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -47,6 +48,9 @@ var ExplorationSection = function ( shared ) {
 
 	paintEffectPrairie = new PaintEffectPrairie( shared );
 	paintEffectPrairie.init();
+	
+	paintEffectDunes = new PaintEffectDunes( shared );
+	paintEffectDunes.init();
 
 	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
 	noiseEffect.init();
@@ -83,6 +87,10 @@ var ExplorationSection = function ( shared ) {
 		} else if ( worldId == "prairie" ) {
 
 			postEffect = paintEffect;
+			
+		} else if ( worldId == "dunes" ) {
+
+			postEffect = paintEffectDunes;
 			
 		} else {
 			

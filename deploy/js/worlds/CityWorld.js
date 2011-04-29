@@ -21,7 +21,7 @@ var CityWorld = function ( shared ) {
 	
 	// Lights
 
-	var ambientLight = new THREE.AmbientLight( 0xffffff );
+	var ambientLight = new THREE.AmbientLight( 0x334433 );
 	this.scene.addLight( ambientLight );
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
@@ -236,7 +236,7 @@ var CityShader = {
 		"map2": { type: "t", value:3, texture:null },
 		"map3": { type: "t", value:4, texture:null },
 
-		"time": { type: "f", value:0.0},
+		"time": { type: "f", value:0.0 },
 
 		"targetStart": { type: "v3", value: new THREE.Vector3() },
 		"targetEnd": { type: "v3", value: new THREE.Vector3() },
