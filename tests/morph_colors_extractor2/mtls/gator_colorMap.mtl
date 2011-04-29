@@ -1,0 +1,24 @@
+newmtl bodySG
+illum 4
+Kd 0.25 0.25 0.18
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl eyeSG
+illum 4
+Kd 1.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl mouthSG
+illum 4
+Kd 0.22 0.11 0.11
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl teethSG
+illum 4
+Kd 0.68 0.68 0.68
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00

@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>index</title>
+	<meta name="generator" content="Studio 3 http://aptana.com/">
+	<meta name="author" content="Mikael Emtinger">
+	<!-- Date: 2011-04-27 -->
+</head>
+<body>
+	<script type="text/javascript" src="javascripts/jxs.js"></script>
+	<script type="text/javascript" src="javascripts/Backend.js"></script>
+	<script>
+		
+		// get single UGC
+		
+		Backend.getUGC( 29003, success, fail );		// 29003 is ID returned from addUGC and should most probably be picked from ro.me?ugc=29003
+		
+		function success( result ) {
+			
+			alert( result );
+		}
+		
+		function fail( result ) {
+			
+			alert( result );
+		}
+		
+	</script>
+</body>
+</html>

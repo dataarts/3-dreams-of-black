@@ -57,8 +57,8 @@ var FilmSection = function ( shared ) {
 	// sequence
 
 	var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false, 0 );
-	var intro2 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
-	var intro3 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
+	//var intro2 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
+	//var intro3 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
 	//var intro3 = new VideoSequence( shared, "files/videos/christest.webm", false, false, 1 );
 
 	//var intro2 = new VideoSequence( shared, "files/videos/trailer.800.webm", false, false, 1 );
@@ -66,7 +66,7 @@ var FilmSection = function ( shared ) {
 
 	var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
 
-	var prairieParalax = new ParalaxSequence(shared, "files/videos/multi.webm" );
+	var prairieParalax = new ParalaxSequence(shared, "files/videos/multi2.webm" );
 	var prairieAnimation = new VideoSequence(shared, "files/videos/s0234.webm", false, false );
 	var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
 
@@ -76,15 +76,13 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( intro2, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( intro2, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( prairieParalax, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 4 );
 
 	sequencer.add( cityAnimation, tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
-	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
@@ -113,6 +111,9 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 39.5 ), tune.getPatternMS( 40 ), 5 );
 
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
+
+	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
 
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 6 );
 

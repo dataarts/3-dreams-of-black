@@ -1,0 +1,43 @@
+newmtl bodySG
+illum 4
+Kd 0.65 0.36 0.22
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_darkSG
+illum 4
+Kd 0.36 0.22 0.21
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl eyesSG
+illum 4
+Kd 0.22 0.11 0.09
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl hoovesSG
+illum 4
+Kd 0.35 0.16 0.10
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd horse_rb_01.jpg
+Ni 1.00
+newmtl light_patchesSG
+illum 4
+Kd 0.75 0.57 0.42
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl tailSG
+illum 4
+Kd 0.24 0.12 0.09
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00

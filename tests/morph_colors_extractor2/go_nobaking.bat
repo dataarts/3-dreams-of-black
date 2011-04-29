@@ -1,10 +1,10 @@
 python convert_obj_three.py -i objs/flamingo/flamingo_flyA_000.obj -o results/flamingo.js -m "objs/flamingo/flamingo_flyA_*.obj" -c "mtls/flamingo_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/stork/storkFly_B_001.obj -o results/stork.js -m "objs/stork/storkFly_B_*.obj" -c "mtls/stork_colorMap.obj" -s flat -a none -x 10
 
-python convert_obj_three.py -i objs/moose/mooseGallop_A_001.obj -o results/moose.js -m "objs/moose/mooseGallop_A_*.obj" -c "mtls/moose_colorMap3.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/moose/mooseGallop_A_001.obj -o results/moose.js -m "objs/moose/mooseGallop_A_*.obj" -c "mtls/moose_colorMap.obj" -s flat -a none -x 10
 
 python convert_obj_three.py -i objs/horse/horse_A_001.obj -o results/horse.js -m "objs/horse/horse_A_*.obj" -c "mtls/horse_colorMap.obj" -s flat -a none -x 10
-python convert_obj_three.py -i objs/bear/bearRun_B_001.obj -o results/bearBrown.js -m "objs/bear/bearRun_B_*.obj" -c "mtls/bear_brown_colorMap.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/bear/bearRun_B_001.obj -o results/bearBrown.js -m "objs/bear/bearRun_B_*.obj" -c "mtls/bearBrown_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/mountainlion/mountainlionRun_A_001.obj -o results/mountainlion.js -m "objs/mountainlion/mountainlionRun_A_*.obj" -c "mtls/mountainlion_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/deer/deerLeap_A_001.obj -o results/deer.js -m "objs/deer/deerLeap_A_*.obj" -c "mtls/deer_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/goldenRetreiver/goldenRetreiver_runA_001.obj -o results/goldenRetreiver.js -m "objs/goldenRetreiver/goldenRetreiver_runA_*.obj" -c "mtls/goldenretreiver_colorMap.obj" -s flat -a none -x 10
@@ -17,12 +17,12 @@ python convert_obj_three.py -i objs/frog/frogLeap_A_001.obj -o results/frog.js -
 
 python convert_obj_three.py -i objs/gator/gator_runB_001.obj -o results/gator.js -m "objs/gator/gator_runB_*.obj" -c "mtls/gator_colorMap.obj" -s flat -a none -x 10
 
-python convert_obj_three.py -i objs/bear/bearRun_B_001.obj -o results/bear.js -m "objs/bear/bearRun_B_*.obj" -c "mtls/bear_black_colorMap.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/bear/bearRun_B_001.obj -o results/bear.js -m "objs/bear/bearRun_B_*.obj" -c "mtls/bearBlack_colorMap.obj" -s flat -a none -x 10
 
 python convert_obj_three.py -i objs/wolf/wolfDash_A_001.obj -o results/wolf.js -m "objs/wolf/wolfDash_A_*.obj" -c "mtls/wolf_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/toad/toadLeap_A_001.obj -o results/toad.js -m "objs/toad/toadLeap_A_*.obj" -c "mtls/toad_colorMap.obj" -s flat -a none -x 10
 
-python convert_obj_three.py -i objs/mountainlion/mountainlionRun_A_001.obj -o results/panther.js -m "objs/mountainlion/mountainlionRun_A_*.obj" -c "mtls/mountainlion_colorMap_black.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/mountainlion/mountainlionRun_A_001.obj -o results/panther.js -m "objs/mountainlion/mountainlionRun_A_*.obj" -c "mtls/mountainlionBlack_colorMap.obj" -s flat -a none -x 10
 
 python convert_obj_three.py -i objs/shdw2/shdw2_crawlE_001.obj -o results/shdw2.js -m "objs/shdw2/shdw2_crawlE_*.obj" -c "mtls/shdw2_noLegs_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/tarbuffalo/tarbuffalo_runA_001.obj -o results/tarbuffalo.js -m "objs/tarbuffalo/tarbuffalo_runA_*.obj" -c "mtls/tarbuffalo_colorMap.obj" -s flat -a none -x 10
@@ -42,8 +42,8 @@ python convert_obj_three.py -i objs/parrot/parrot_A_001.obj -o results/parrot.js
 python convert_obj_three.py -i objs/owl/owl_flyA_000.obj -o results/owl.js -m "objs/owl/owl_flyA_*.obj" -c "mtls/owl_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/hummingbird/hummingBird_hoverA_000.obj -o results/hummingbird.js -m "objs/hummingbird/hummingBird_hoverA_*.obj" -c "mtls/hummingbird_colorMap.obj" -s flat -a none -x 10
 
-python convert_obj_three.py -i objs/butterflyA/butterflyA_flyA_001.obj -o results/butterflyA.js -m "objs/butterflyA/butterflyA_flyA_*.obj" -c "mtls/butterfly01_colorMap.obj" -s flat -a none -x 10
-python convert_obj_three.py -i objs/butterflyB/butterflyB_flyA_001.obj -o results/butterflyB.js -m "objs/butterflyB/butterflyB_flyA_*.obj" -c "mtls/butterfly02_colorMap.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/butterflyA/butterflyA_flyA_001.obj -o results/butterflyA.js -m "objs/butterflyA/butterflyA_flyA_*.obj" -c "mtls/butterflyA.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/butterflyB/butterflyB_flyA_001.obj -o results/butterflyB.js -m "objs/butterflyB/butterflyB_flyA_*.obj" -c "mtls/butterflyB.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/butterflyC/butterflyC_flyA_001.obj -o results/butterflyC.js -m "objs/butterflyC/butterflyC_flyA_*.obj" -c "mtls/butterflyC.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/butterflyD/butterflyD_flyA_001.obj -o results/butterflyD.js -m "objs/butterflyD/butterflyD_flyA_*.obj" -c "mtls/butterflyD.obj" -s flat -a none -x 10
 
@@ -59,7 +59,7 @@ python convert_obj_three.py -i objs/vulture/vulture_A_001.obj -o results/vulture
 
 python convert_obj_three.py -i objs/centipede/centipede_walkA_001.obj -o results/centipede.js -m "objs/centipede/centipede_walkA_*.obj" -c "mtls/centipede_colorMap.obj" -s flat -a none -x 10
 
-python convert_obj_three.py -i objs/cowcarcass/cow_carcass.obj -o results/cowcarcass.js -m "objs/cowcarcass/cow_carcass.obj" -c "mtls/cow_carcass_colorMap.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/cowcarcass/cow_carcass.obj -o results/cowcarcass.js -m "objs/cowcarcass/cow_carcass.obj" -c "mtls/cowCarcass_colorMap.obj" -s flat -a none -x 10
 
 python convert_obj_three.py -i objs/blackwidow/blackWidow_walkA_001.obj -o results/blackwidow.js -m "objs/blackwidow/blackWidow_walkA_*.obj" -c "mtls/blackWidow_colorMap.obj" -s flat -a none -x 10
 python convert_obj_three.py -i objs/crab/crab_walkA_001.obj -o results/crab.js -m "objs/crab/crab_walkA_*.obj" -c "mtls/crab_colorMap.obj" -s flat -a none -x 10
@@ -72,8 +72,8 @@ python convert_obj_three.py -i objs/sickle/sickle_A_001.obj -o results/sickle.js
 
 
 
-python convert_obj_three.py -i objs/horse/horse_A_001.obj -o results/animals_A_life.js -m "objs/horse/horse_A_*.obj objs/bear/bearRun_B_*.obj objs/mountainlion/mountainlionRun_A_*.obj objs/deer/deerLeap_A_*.obj objs/goldenRetreiver/goldenRetreiver_runA_*.obj objs/fox/foxRun_A_*.obj objs/seal/seal_runA_*.obj objs/chow/chowRun_A_*.obj objs/raccoon/raccoonRun_A_*.obj objs/bunny/bunnyScurry_B_*.obj objs/frog/frogLeap_A_*.obj" -c "mtls/horse_colorMap.obj mtls/bear_brown_colorMap.obj mtls/mountainlion_colorMap.obj mtls/deer_colorMap.obj mtls/goldenretreiver_colorMap.obj mtls/fox_colorMap.obj mtls/seal_colorMap.obj mtls/chow_colorMap.obj mtls/raccoon_colorMap.obj mtls/bunny_colorMap.obj mtls/frog_colorMap.obj" -s flat -a none -x 10
-rem python convert_obj_three.py -i objs/flamingo/flamingo_flyA_000.obj -o results/birds_B_life.js -m "objs/flamingo/flamingo_flyA_*.obj objs/stork/storkFly_B_*.obj" -c "mtls/flamingo_colorMap.obj mtls/stork_colorMap.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/horse/horse_A_001.obj -o results/animals_A_life.js -m "objs/horse/horse_A_*.obj objs/bear/bearRun_B_*.obj objs/mountainlion/mountainlionRun_A_*.obj objs/deer/deerLeap_A_*.obj objs/goldenRetreiver/goldenRetreiver_runA_*.obj objs/fox/foxRun_A_*.obj objs/seal/seal_runA_*.obj objs/chow/chowRun_A_*.obj objs/raccoon/raccoonRun_A_*.obj objs/bunny/bunnyScurry_B_*.obj objs/frog/frogLeap_A_*.obj" -c "mtls/horse_colorMap.obj mtls/bearBrown_colorMap.obj mtls/mountainlion_colorMap.obj mtls/deer_colorMap.obj mtls/goldenretreiver_colorMap.obj mtls/fox_colorMap.obj mtls/seal_colorMap.obj mtls/chow_colorMap.obj mtls/raccoon_colorMap.obj mtls/bunny_colorMap.obj mtls/frog_colorMap.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/flamingo/flamingo_flyA_000.obj -o results/birds_B_life.js -m "objs/flamingo/flamingo_flyA_*.obj objs/stork/storkFly_B_*.obj" -c "mtls/flamingo_colorMap.obj mtls/stork_colorMap.obj" -s flat -a none -x 10
 
 rem python convert_obj_three.py -i mtls/stork_colorMap.obj -o results/stork.js -m "mtls/stork_colorMap.obj" -c "mtls/stork_colorMap.obj" -s flat -a none -b
 rem python convert_obj_three.py -i mtls/moose_colorMap.obj -o results/moose.js -m "mtls/moose_colorMap.obj" -c "mtls/moose_colorMap.obj" -s flat -a none -b

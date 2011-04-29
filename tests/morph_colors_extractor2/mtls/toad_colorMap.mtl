@@ -1,0 +1,25 @@
+newmtl bodySG
+illum 4
+Kd 0.33 0.30 0.23
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl eyesSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd toad_rb_01.jpg
+Ni 1.00
+newmtl mouthSG
+illum 4
+Kd 0.72 0.41 0.41
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00

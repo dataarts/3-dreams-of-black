@@ -262,8 +262,9 @@ function render() {
 
     renderer.clear();
 
-    //renderer.render( scene, camera );
+    renderer.render( scene, camera );
 
+	/*
     renderer.render( scene, camera, postprocessing.texture, true );
 
     postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
@@ -279,7 +280,7 @@ function render() {
     
     postprocessing.quad.materials[ 0 ] = postprocessing.materialFilm;
     postprocessing.materialFilm.uniforms.tDiffuse.texture = postprocessing.texture2;
-    
+    */
 
 }
 

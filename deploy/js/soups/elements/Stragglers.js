@@ -18,7 +18,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 	
 	var i;
 
-	this.addAnimal = function( geometry, predefined, scale, morphArray ) {
+	this.addAnimal = function( geometry, predefined, scale, morphArray, speedArray ) {
 		
 		var predefined = predefined || null;
 		var scaleMultiplier = scale || 1.2;
@@ -28,6 +28,10 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			
 			if ((predefined == null && that.array[i] != undefined) || (predefined != that.array[i]) ) {
 				continue;
+			}
+
+			if (speedArray == null) {
+				speedArray = [1];
 			}
 
 			var animal = ROME.Animal( geometry, false );
@@ -44,8 +48,16 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			var endMorph = 0;
 			if (morphArray != null) {
 				startMorph = morphArray[i%morphArray.length]%animal.availableAnimals.length;
-				endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
+				endMorph = startMorph+1;
+				var rnd = Math.round(Math.random());
+				if ((rnd == 1 && startMorph > 0) || endMorph > animal.availableAnimals.length-1) {
+					endMorph = startMorph-1;
+				}
+				//endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
 			}
+
+			var speeda = speedArray[startMorph];
+			var speedb = speedArray[endMorph];
 
 			animal.play( animal.availableAnimals[ startMorph ], animal.availableAnimals[ endMorph ], 0, Math.random(), Math.random() );
 
@@ -54,7 +66,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 				count = 0;
 			}
 	
-			var obj = { c: mesh, a: animal, active: false, startMorph: startMorph, normal: new THREE.Vector3(0,-1,0), position: new THREE.Vector3(0,0,0), toVector: new THREE.Vector3(0,0,0) , count: count, scale: scale * scaleMultiplier };
+			var obj = { c: mesh, a: animal, active: false, startMorph: startMorph, speeda: speeda, speedb: speedb, normal: new THREE.Vector3(0,-1,0), position: new THREE.Vector3(0,0,0), toVector: new THREE.Vector3(0,0,0) , count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier };
 
 			that.array[i] = obj;
 
@@ -73,8 +85,24 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].c.position.copy(position);
 			that.array[i].c.visible = true;
 			that.array[i].toVector = toPosition.subSelf(position).normalize();
-			that.array[i].a.morph = that.array[i].startMorph;
-			//console.log("create straggler - "+that.array[i].toVector.x+" | "+that.array[i].toVector.y+" | "+that.array[i].toVector.y);
+
+			that.array[i].toVector.x *= 1-Math.abs(normal.x);
+			that.array[i].toVector.y *= 1-Math.abs(normal.y);
+			that.array[i].toVector.z *= 1-Math.abs(normal.z);
+			
+			// tween scale
+			that.array[i].scale = 0.01;
+			var scaleTween = new TWEEN.Tween(that.array[i])
+				.to({scale: that.array[i].origscale}, 2500)
+				.easing(TWEEN.Easing.Elastic.EaseOut);
+			scaleTween.start();
+			
+			// tween popup
+			var scale = that.array[i].scale;
+			that.array[i].c.position.x -= (normal.x)*(scale*150);
+			that.array[i].c.position.y -= (normal.y)*(scale*150);
+			that.array[i].c.position.z -= (normal.z)*(scale*150);
+
 			break;
 		}
 	}
@@ -102,6 +130,10 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			var tox = position.x+(toVector.x*10);
 			var toy = position.y+(toVector.y*10);
 			var toz = position.z+(toVector.z*10);
+			
+			if (normal.y > 0.5) {
+				toy -= 10;
+			}
 
 			if (that.settings.capy != null && toy < that.settings.capy) {
 				toy = that.settings.capy;
@@ -109,7 +141,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// morph
-			that.array[i].count += 0.01;
+			that.array[i].count += 0.05;
 			var morph = Math.max(Math.cos(that.array[i].count),0);
 			morph = Math.min(morph, 1)
 			that.array[i].a.morph = morph;
@@ -119,6 +151,11 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 				that.array[i].a.animalB.timeScale = that.settings.constantSpeed;
 			}
 
+			var animalSpeed = obj.speeda;
+			if (Math.round(morph) == 1) {
+				animalSpeed = obj.speedb;
+			}
+
 			//var divider = delta/10;
 			var divider = 5;
 
@@ -126,7 +163,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
 			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
 
-			var maxSpeed = 12;
+			var maxSpeed = animalSpeed//12;
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
@@ -157,7 +194,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].position.copy(animal.position);
 
 			// hack..
-			if (animal.position.z > camPos.z+20) {
+			if (animal.position.z > camPos.z+100) {
 				that.array[i].active = false;
 				that.array[i].c.visible = false;
 			}
@@ -173,6 +210,9 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			obj.position.x = x;
 			obj.position.y = y;
 			obj.position.z = z;
+
+			that.array[i].active = false;
+			that.array[i].c.visible = false;
 		}
 
 	}

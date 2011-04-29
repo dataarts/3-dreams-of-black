@@ -62,7 +62,7 @@ var City = function ( shared ) {
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
 
-		camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+		camera = new THREE.Camera( 54, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 		camera.position.set(0,20,0);
 
 		world = new CityWorld( shared );
@@ -103,7 +103,7 @@ var City = function ( shared ) {
 
 		soup.update( delta );
 
-		camera.position.z -= delta / 8.5;
+		camera.position.z -= delta / 8;
 
 		if (camera.position.z < -3300) {
 			camera.position.z = 0;

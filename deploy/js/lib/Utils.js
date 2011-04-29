@@ -20,7 +20,7 @@ function preInitModel( geometry, renderer, scene, object ) {
 
 				// dirty hack, otherwise some textures stay black
 				
-				setTimeout( function() { renderer.initMaterial( material, scene.lights, scene.fog, object ); }, 100 );
+				//setTimeout( function() { renderer.initMaterial( material, scene.lights, scene.fog, object ); }, 200 );
 				
 			}
 
@@ -46,7 +46,7 @@ function preInitScene( result, renderer ) {
 
 				// dirty hack, otherwise some textures stay black
 
-				setTimeout( function() { renderer.initMaterial( material, result.scene.lights, result.scene.fog ); }, 100 );
+				//setTimeout( function() { renderer.initMaterial( material, result.scene.lights, result.scene.fog ); }, 200 );
 
 			}
 
