@@ -73,7 +73,7 @@ python convert_obj_three.py -i objs/sickle/sickle_A_001.obj -o results/sickle.js
 
 
 python convert_obj_three.py -i objs/horse/horse_A_001.obj -o results/animals_A_life.js -m "objs/horse/horse_A_*.obj objs/bear/bearRun_B_*.obj objs/mountainlion/mountainlionRun_A_*.obj objs/deer/deerLeap_A_*.obj objs/goldenRetreiver/goldenRetreiver_runA_*.obj objs/fox/foxRun_A_*.obj objs/seal/seal_runA_*.obj objs/chow/chowRun_A_*.obj objs/raccoon/raccoonRun_A_*.obj objs/bunny/bunnyScurry_B_*.obj objs/frog/frogLeap_A_*.obj" -c "mtls/horse_colorMap.obj mtls/bearBrown_colorMap.obj mtls/mountainlion_colorMap.obj mtls/deer_colorMap.obj mtls/goldenretreiver_colorMap.obj mtls/fox_colorMap.obj mtls/seal_colorMap.obj mtls/chow_colorMap.obj mtls/raccoon_colorMap.obj mtls/bunny_colorMap.obj mtls/frog_colorMap.obj" -s flat -a none -x 10
-rem python convert_obj_three.py -i objs/flamingo/flamingo_flyA_000.obj -o results/birds_B_life.js -m "objs/flamingo/flamingo_flyA_*.obj objs/stork/storkFly_B_*.obj" -c "mtls/flamingo_colorMap.obj mtls/stork_colorMap.obj" -s flat -a none -x 10
+python convert_obj_three.py -i objs/flamingo/flamingo_flyA_000.obj -o results/birds_B_life.js -m "objs/flamingo/flamingo_flyA_*.obj objs/stork/storkFly_B_*.obj" -c "mtls/flamingo_colorMap.obj mtls/stork_colorMap.obj" -s flat -a none -x 10
 
 rem python convert_obj_three.py -i mtls/stork_colorMap.obj -o results/stork.js -m "mtls/stork_colorMap.obj" -c "mtls/stork_colorMap.obj" -s flat -a none -b
 rem python convert_obj_three.py -i mtls/moose_colorMap.obj -o results/moose.js -m "mtls/moose_colorMap.obj" -c "mtls/moose_colorMap.obj" -s flat -a none -b
