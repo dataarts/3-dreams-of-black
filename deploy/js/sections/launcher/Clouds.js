@@ -135,12 +135,12 @@ var Clouds = function ( shared ) {
 
   function makeScene(geometry){
 
-    for ( var i = 0; i < 8; i ++ ) {
+    for ( var i = 0; i < 4; i ++ ) {
       /////Bioids
       boid = boids[ i ] = new Boid();
-      boid.position.x = (Math.ceil(Math.random()-0.5)-0.5)*500;
+      boid.position.x = 240;
       boid.position.y = 90 + Math.random() * 10;
-      boid.position.z = 500 + Math.random() * 100;
+      boid.position.z = 550 + Math.random();
       boid.velocity.x = Math.random() * 2 - 1;
       boid.velocity.y = Math.random() * 2 - 1;
       boid.velocity.z = Math.random() * 2 - 1;
