@@ -1,0 +1,87 @@
+div.object-title {
+  font: 9.5px/29px "Gotham Medium", sans-serif;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  float: left;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+body {
+  background-color: #f4f1e8;
+  padding-top: 100px;
+  color: #404040;
+}
+
+.clear {
+  clear: both;
+}
+
+div#gallery {
+  max-width: 1621px;
+  margin: 0 auto;
+}
+
+div#gallery .inner {
+  border: 1px solid #c3c0b7;
+  border-top: 0;
+  border-left: 0;
+  margin: 0 auto;
+}
+
+div.object img {
+  width: 300px;
+  height: 180px;
+  background-color: #c3c0b7;
+  margin-bottom: 10px;
+}
+
+div.object {
+  padding: 12px;
+  width: 299px;
+  height: 215px;
+  border: 1px solid #c3c0b7;
+  border-bottom: 0;
+  border-right: 0;
+  float: left;
+}
+
+
+div.vote-box {
+  float: right;
+}
+
+a.vote {
+  display: block;
+  width: 27px;
+  height: 27px;
+  background: url(images/vote-sprites.gif);
+  background-repeat: no-repeat;
+  float: left;
+  margin-left: 6px;
+}
+
+a.upvote {
+  background-position: bottom left;
+}
+a.upvote:hover {
+  background-position: center left;
+}
+a.upvote.selected {
+  background-position: top left;
+}
+
+a.downvote {
+  background-position: bottom right;
+}
+a.downvote:hover {
+  background-position: center right;
+}
+a.downvote.selected {
+  background-position: top right;
+}
