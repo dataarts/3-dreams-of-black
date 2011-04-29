@@ -140,12 +140,12 @@ var Clouds = function ( shared ) {
       boid = boids[ i ] = new Boid();
       boid.position.x = 240;
       boid.position.y = 90 + Math.random() * 10;
-      boid.position.z = 550 + Math.random();
+      boid.position.z = 200 + Math.random();
       boid.velocity.x = Math.random() * 2 - 1;
       boid.velocity.y = Math.random() * 2 - 1;
       boid.velocity.z = Math.random() * 2 - 1;
       boid.setAvoidWalls( true );
-      boid.setWorldSize( 1000, 200, 1000 );
+      boid.setWorldSize( 1000, 200, 400 );
 
       /////Birds
       morphObject[i] = new ROME.Animal( geometry, true );
@@ -164,7 +164,7 @@ var Clouds = function ( shared ) {
       bird.position = boids[ i ].position;
 
       bird.doubleSided = true;
-      bird.scale.x = bird.scale.y = bird.scale.z = Math.random()*0.3;
+      bird.scale.x = bird.scale.y = bird.scale.z = 0.2;
       birdsGroup.addChild( bird );
     }
 
@@ -213,7 +213,7 @@ var Clouds = function ( shared ) {
 		camera.position.x += ( mouse.x - camera.target.position.x ) * 0.01;
 		camera.position.y += ( - mouse.y - camera.target.position.y ) * 0.01;
 		camera.position.z = - position + 4000;
-    birdsGroup.position.z = camera.position.z - 1000;
+    birdsGroup.position.z = camera.position.z - 500;
 
 		camera.target.position.x =  camera.position.x;
 		camera.target.position.y = camera.position.y;
@@ -246,8 +246,8 @@ var Clouds = function ( shared ) {
 var Boid = function() {
 
   var vector = new THREE.Vector3(),
-  _acceleration, _width = 500, _height = 500, _depth = 200, _goal, _neighborhoodRadius = 100,
-  _maxSpeed = 1, _maxSteerForce = 0.1, _avoidWalls = false;
+  _acceleration, _width = 500, _height = 500, _depth = 200, _goal, _neighborhoodRadius = 3000,
+  _maxSpeed = 1, _maxSteerForce = 0.03, _avoidWalls = false;
 
   this.position = new THREE.Vector3();
   this.velocity = new THREE.Vector3();

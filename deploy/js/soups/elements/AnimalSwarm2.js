@@ -17,8 +17,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		divider : 2,
 		flying : false,
 		flyingDistance : 35,
-		xPositionMultiplier : 25,
-		zPositionMultiplier : 25,
+		xPositionMultiplier : 40,
+		zPositionMultiplier : 40,
 		constantSpeed : null,
 		visible : true,
 		shootRayDown : false,
@@ -66,13 +66,19 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			mesh.matrixAutoUpdate = false;
 
 			mesh.visible = false;
+			//mesh.scale.x = mesh.scale.y = mesh.scale.z = scale * scaleMultiplier;
 
 			scene.addChild( mesh );
 			var startMorph = 0;
 			var endMorph = 0;
 			if (morphArray != null) {
 				startMorph = morphArray[i%morphArray.length]%animal.availableAnimals.length;
-				endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
+				endMorph = startMorph+1;
+				var rnd = Math.round(Math.random());
+				if ((rnd == 1 && startMorph > 0) || endMorph > animal.availableAnimals.length-1) {
+					endMorph = startMorph-1;
+				}
+				//endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
 			}
 
 			var speeda = speedArray[startMorph];
@@ -103,13 +109,13 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			that.array[i].active = true;
-			that.array[i].c.position.copy(position);
+			that.array[i].c.position.copy(lastFollowPos);
 			that.array[i].toNormal.copy(toNormal);
+			that.array[i].normal.copy(toNormal);
 			that.array[i].c.visible = true;
-			that.array[i].toPosition.copy(toPosition);
-			that.array[i].scale = 0.01;
-			that.array[i].positionArray = [toPosition];
-			that.array[i].normalArray = [toNormal];
+			that.array[i].toPosition.copy(position);
+			that.array[i].positionArray = [];
+			that.array[i].normalArray = [];
 
 			if (that.settings.flying) {
 				that.array[i].toNormal.set(0,1,0);
@@ -117,11 +123,25 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// tween scale
+			that.array[i].scale = 0.01;
 			var scaleTween = new TWEEN.Tween(that.array[i])
-				.to({scale: that.array[i].origscale}, 650)
-				.easing(TWEEN.Easing.Linear.EaseNone);
+				.to({scale: that.array[i].origscale}, 2500)
+				.easing(TWEEN.Easing.Elastic.EaseOut);
 			scaleTween.start();
-			//that.array[i].a.morph = that.array[i].startMorph;
+			
+			// tween popup
+			var scale = that.array[i].scale;
+			that.array[i].c.position.x -= (toNormal.x)*(scale*150);
+			that.array[i].c.position.y -= (toNormal.y)*(scale*150);
+			that.array[i].c.position.z -= (toNormal.z)*(scale*150);
+
+			//console.log(scale*200);
+/*			var popupTween = new TWEEN.Tween(that.array[i].c.position)
+				.to({x: position.x, y: position.y, z: position.z}, 3000)
+				.easing(TWEEN.Easing.Elastic.EaseOut);
+			popupTween.start();
+*/
+
 			//console.log("created animal- "+that.array[i].toVector.x+" | "+that.array[i].toVector.y+" | "+that.array[i].toVector.y);
 			break;
 		}
@@ -136,11 +156,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		var addFollow = false;
 		var dx = lastFollowPos.x - followPos.x, dy = lastFollowPos.y - followPos.y, dz = lastFollowPos.z - followPos.z;
 		var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
-		if (distance > 5) {
+		if (distance > 100) {
 			addFollow = true;
+			lastFollowPos.copy(followPos);
 		}
-
-		lastFollowPos.copy(followPos);
 
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj =  that.array[i];
@@ -150,8 +169,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			if (addFollow) {
-				that.array[i].positionArray.push(followPos);
-				that.array[i].normalArray.push(followNormal);
+				var a = new THREE.Vector3();
+				var b = new THREE.Vector3();
+				that.array[i].positionArray.push(a.copy(followPos));
+				that.array[i].normalArray.push(b.copy(followNormal));
 			}
 
 			var positionArray = that.array[i].positionArray;
@@ -162,14 +183,14 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			var normal = obj.normal;
 			var toPosition = obj.toPosition;
 
-			/*var tox = animal.position.x+(toVector.x*10);
-			var toy = animal.position.y+(toVector.y*10);
-			var toz = animal.position.z+(toVector.z*10);*/
 
 /*			var tox = toPosition.x;
 			var toy = toPosition.y;
 			var toz = toPosition.z;
 */
+
+
+
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
 			var offsetx = Math.cos(thisinc+((i-r*2)/8))*that.settings.xPositionMultiplier;
@@ -215,7 +236,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// morph
-			that.array[i].count += 0.01;
+			that.array[i].count += 0.05;
 			var morph = Math.max(Math.cos(that.array[i].count),0);
 			morph = Math.min(morph, 1)
 			that.array[i].a.morph = morph;
@@ -228,11 +249,11 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			//var divider = delta/10;
 			var animalSpeed = obj.speeda;
-			if (morph == 1) {
+			if (Math.round(morph) == 1) {
 				animalSpeed = obj.speedb;
 			}
 
-			var divider = 3;//15-animalSpeed;
+			var divider = 4//1.5;//15-animalSpeed;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
@@ -250,10 +271,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			normal.y += moveNormalY;
 			normal.z += moveNormalZ;
 
-			obj.normal = normal;
+			that.array[i].normal = normal;
 
-
-			var maxSpeed = animalSpeed;
+			var maxSpeed = animalSpeed//Math.round(animalSpeed/3);
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
@@ -264,7 +284,14 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			if ( moveZ > maxSpeed )	moveZ = maxSpeed;
 			if ( moveZ < -maxSpeed )moveZ = -maxSpeed;
 
-			var zvec = new THREE.Vector3(animal.position.x+moveX,animal.position.y+moveY,animal.position.z+moveZ);
+//console.log(moveX+" | "+moveY+" | "+moveZ);
+
+			//var bajs = new THREE.Vector3(moveX,moveY,moveZ).normalize();	
+			
+			//animal.lookAt( new THREE.Vector3(animal.position.x+bajs.x,animal.position.y+bajs.y,animal.position.z+bajs.z) );
+
+			//var zvec = new THREE.Vector3(animal.position.x+moveX,animal.position.y+moveY,animal.position.z+moveZ);
+			var zvec = new THREE.Vector3(tox,toy,toz);
 			zvec.subSelf( animal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
@@ -276,39 +303,57 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			xvec.cross(zvec, yvec);
 			yvec.cross(zvec, xvec);
 
-			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = animal.position.x;
-			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = animal.position.y;
-			animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = animal.position.z;
+			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = animal.position.x+moveX;
+			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = animal.position.y+moveY;
+			animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = animal.position.z+moveZ;
 
-			var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
-			//var dx = animal.position.x - tox, dy = animal.position.y - toy, dz = animal.position.z - toz;
+			//var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
+			var dx = (animal.position.x+moveX) - tox, dy = (animal.position.y+moveY) - toy, dz = (animal.position.z+moveZ) - toz;
+			//var dx = (animal.position.x+moveX) - toPosition.x, dy = (animal.position.y+moveY) - toPosition.y, dz = (animal.position.z+moveZ) - toPosition.z;
 			var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 
-			if (distance < maxSpeed && positionArray != null) {
+//console.log(distance);
+
+
+			if (distance < 15) {
 				if (positionArray.length > 0) {
 					var toPos = that.array[i].positionArray.shift();
 					var toNor = that.array[i].normalArray.shift();
 
-					obj.toPosition.copy(toPos);
-					obj.toNormal.copy(toNor);
+					that.array[i].toPosition.copy(toPos);
+					that.array[i].toNormal.copy(toNor);
+
+					//obj.toPosition = toPos;
+					//obj.toNormal = toNor;
+
+					//console.log("changing vector");
+					//console.log(moveX+" | "+moveY+" | "+moveZ);
+				} else {
+					console.log("should change but..");
+					//obj.toPosition = followPos;
+					//obj.toNormal = followNormal;
 				}
 			}
 
 			animal.position.x += moveX;
 			animal.position.y += moveY;
 			animal.position.z += moveZ;
+			
 
-			if (animal.position.x < camPos.x+30 && animal.position.x > camPos.x-30 && animal.position.z < camPos.z+30 && animal.position.z > camPos.z-30) {
+			if (animal.position.x < camPos.x+30 && animal.position.x > camPos.x-30 && animal.position.z < camPos.z+50 && animal.position.z > camPos.z-50) {
 				if (animal.position.x < camPos.x) {
-					obj.toPosition.x = camPos.x-30;
+					//obj.toPosition.x = camPos.x-30;
+					that.array[i].toPosition.x -= 3;
 				}
 				if (animal.position.x > camPos.x) {
-					obj.toPosition.x = camPos.x+30;
+					//obj.toPosition.x = camPos.x+30;
+					that.array[i].toPosition.x += 3;
+
 				}
 			}
 
 			// hack..
-			if (animal.position.z > camPos.z+75) {
+			if (animal.position.z > camPos.z+100) {
 				that.array[i].active = false;
 				that.array[i].c.visible = false;
 			}
@@ -481,7 +526,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 	this.reset = function ( x,y,z ) {
 
-		for (var i=0; i<that.array.length; ++i ) {
+		for (var i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj = that.array[i].c;
 			obj.position.x = x;
 			obj.position.y = y;
