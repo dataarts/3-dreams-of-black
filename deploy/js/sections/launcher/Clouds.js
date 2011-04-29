@@ -28,15 +28,15 @@ var Clouds = function ( shared ) {
   var morphObject = [];
   //////////////////////////////////////////////////////////////////
 
-  var mouse = { x: 0, y: 0 }, delta, time, oldTime = start_time = new Date().getTime(),
-	camera, scene, renderer, sky, mesh, mesh2, geometry, material;
+  var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
+	camera, scene, renderer, mesh, mesh2, geometry, material;
 
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
 
 	scene = new THREE.Scene();
   birdsGroup = new THREE.Object3D();
-  birdsGroup.position.y = 100;
+  birdsGroup.position.y = 0;
   scene.addObject( birdsGroup );
 
 	geometry = new THREE.Geometry();
@@ -122,7 +122,7 @@ var Clouds = function ( shared ) {
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.domElement.style.position = 'absolute';
-	renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
+	renderer.setSize( window.innerWidth, window.innerHeight);
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
 
@@ -130,27 +130,28 @@ var Clouds = function ( shared ) {
 
 		mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
 		mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
-
+    vector = new THREE.Vector3( shared.mouse.x - shared.screenWidth/2, - shared.mouse.y + shared.screenHeight/2, 0 );
 	}
 
   function makeScene(geometry){
 
-    for ( var i = 0; i < 50; i ++ ) {
+    for ( var i = 0; i < 4; i ++ ) {
       /////Bioids
       boid = boids[ i ] = new Boid();
-      boid.position.x = Math.random() * 1000 - 500;
-      boid.position.y = Math.random() * 200 - 100;
-      boid.position.z = i*20;
+      boid.position.x = 240;
+      boid.position.y = 90 + Math.random() * 10;
+      boid.position.z = 550 + Math.random();
       boid.velocity.x = Math.random() * 2 - 1;
       boid.velocity.y = Math.random() * 2 - 1;
       boid.velocity.z = Math.random() * 2 - 1;
       boid.setAvoidWalls( true );
       boid.setWorldSize( 1000, 200, 1000 );
 
-
       /////Birds
       morphObject[i] = new ROME.Animal( geometry, true );
+      morphObject[i].timeOffset = Math.random()*100;
       bird = birds[i] = morphObject[i].mesh;
+      bird.phase = Math.floor( Math.random() * 62.8);
       bird.rotation.set( 0, -0.5, 0 );
       bird.updateMatrix();
       bird.update();
@@ -167,6 +168,7 @@ var Clouds = function ( shared ) {
       birdsGroup.addChild( bird );
     }
 
+    //Adding clouds
 		mesh.position.z = - 4000;
 		scene.addObject( mesh );
 
@@ -220,15 +222,11 @@ var Clouds = function ( shared ) {
 		renderer.clear();
 		renderer.render( scene, camera );
 
-    //TODO THIS VECTOR DOESENT MAKE ANY SENSE
-		var vector = new THREE.Vector3( mouse.x - window.innerWidth/2, - mouse.y + window.innerWidth/2, 0 );
-    //console.log(vector.x+" "+vector.y+' '+vector.z);
-    
     for ( var i = 0, il = birds.length; i < il; i++ ) {
       boid = boids[ i ];
       
-      //TODO THIS DOESENT WORK PROPERTLY.
 			vector.z = boid.position.z;
+
 			boid.repulse( vector );
 
       boid.run( boids );
@@ -237,12 +235,14 @@ var Clouds = function ( shared ) {
       bird.rotation.y += (Math.atan2( - boid.velocity.z, boid.velocity.x )+Math.PI/2 - bird.rotation.y)/30;
       bird.rotation.z += (Math.asin( boid.velocity.y / boid.velocity.length()) - bird.rotation.z)/30;
 
-      morphObject[i].update(Math.random()*delta);
+		  bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
+
+      morphObject[i].update(delta*bird.phase/50);
     }
 	};
 
 };
-/////////////////////////////////////// BIOID
+
 var Boid = function() {
 
   var vector = new THREE.Vector3(),
@@ -287,7 +287,7 @@ var Boid = function() {
       vector.multiplyScalar( 5 );
       _acceleration.addSelf( vector );
 
-      vector.set( this.position.x, - _height, this.position.z );
+      vector.set( this.position.x, 0, this.position.z );
       vector = this.avoid( vector );
       vector.multiplyScalar( 5 );
       _acceleration.addSelf( vector );
