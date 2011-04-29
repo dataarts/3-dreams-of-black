@@ -1,0 +1,103 @@
+<!doctype html>
+  <head>
+    <!--[if lt IE 9]>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+    <![endif]-->
+    <script type = "text/javascript">
+
+      // TODO's:
+      // Hook in typography, 
+
+      // Holds the error handling for conditions for ro.me
+      Errors = [
+        "We are really sorry, but it appears your computer&#39;s graphics card does not support the hardware acceleration required for &#147;3 Dreams of Black&#148; experience. You can find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience.",
+        "We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX'>download Google Chrome</a> and try launching this site again. If you are unable to install a new web browser, you can try downloading the <a href = 'http://www.google.com/chromeframe'>Google Chrome Frame</a> plugin instead.",
+        "We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX'>download Google Chrome</a> and try launching this site again.",
+        "We are deeply sorry, but it appears your computer&#39;s graphics card and your browser do not support the &#147;3 Dreams of Black&#148; experience. You can find more details for troubleshooting WebGL issues <a href = 'http://get.webgl.org/troubleshooting/'>here<a> and obtain a list of recommended graphics cards and browsers. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience.",
+        "We are deeply sorry, but the &#147;3 Dreams of Black&#148; experience is not yet available on mobile devices and tablets as it is built on WebGL. Please try launching this site again on a computer with up-to-date graphics drivers and a web browser that supports WebGL. You can find more details for troubleshooting WebGL here and obtain a list of recommended graphics cards. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience."
+      ];
+
+      // scrape everything navigator.userAgent;
+      Detector = {
+          webgl : ( function () { try { return !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); } catch( e ) { return false; } } )(),
+          conditions : [],
+          errorMessage: Errors[0]
+      };
+
+      window.onload = function() {
+        if(Detector.webgl) {
+          // We're good!
+        } else {
+          // run other conditions
+          for(var i = 0; i < Detector.conditions.length; i++) {
+            if(Detector.conditions[i]) {
+              // Then we've found what we're looking for!
+              Detector.errorMessage = Errors[i];
+              var error = document.createElement("div");
+                  error.setAttribute("id", "error");
+                  error.innerHTML = Detector.errorMessage;
+              break;
+            }
+          }
+        }
+        // Just for testing purposes - remove for deploy
+        var error = document.getElementById("error");
+            error.innerHTML = Detector.errorMessage;
+      };
+      
+    </script>
+    <style type = "text/css">
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      body {
+/*        background: #1d62af url("images/clouds.jpg") center center no-repeat;*/
+        background: url("images/clouds.jpg") center 0 no-repeat;
+        color: #fff;
+        font: 500 12px/18px "Futura", Arial, sans-serif;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+      #content {
+        width: 400px;
+        margin: 0 auto;
+      }
+      #header {
+        width: 100%;
+        height: 119px;
+        margin: 50px 0;
+        text-align: center;
+        overflow: hidden;
+        background: url("images/header-trans.png") center center no-repeat;
+      }
+      #error {
+        width: 330px;
+        padding: 50px 35px;
+        background: url("images/bg-trans.png");
+      }
+      .background-image {
+        margin-left: -9000px;
+      }
+      a:link, a:visited {
+        color: #fff;
+      }
+      a:hover, a:active {
+        
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id = "content">
+      <div id = "header">
+        <h1 class = "background-image">Rome</h1>
+        <h2 class = "background-image">&#147;Three Dreams of Black&#148;</h2>
+      </div>
+      <div id = "error">
+        <!-- Any errors fall here -->
+      </div>
+    </div>
+    
+  </body>
+</html>
