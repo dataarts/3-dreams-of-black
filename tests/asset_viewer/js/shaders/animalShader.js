@@ -119,8 +119,8 @@ AnimalShader = {
     "gl_FragColor = vec4(1.0,1.0,1.0,1.0);",
     "if (enableTexture > 0.0) gl_FragColor = vec4( vColor * (( texture2D( contour, vContourUV ).r - 0.5 ) * 1.5 + 1.0 ), 1.0);",
     "gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
-    "if (shaderDebug == 2.0) gl_FragColor = vec4( vNormal, 1.0 );",
-    "if (shaderDebug == 3.0) gl_FragColor = vec4( depth, depth, depth, 1.0 );",
+    "if (shaderDebug == 2.0) gl_FragColor = vec4( vNormal*0.5 + vec3(0.5), 1.0 );",
+    "if (shaderDebug == 3.0) gl_FragColor = vec4( (depth*3.), (depth*3.-1.), (depth*3.-2.), 1.0 );",
 
     "}"
 

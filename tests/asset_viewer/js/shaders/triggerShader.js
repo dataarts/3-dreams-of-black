@@ -115,8 +115,8 @@ var triggerShaderSource = {
 
       "gl_FragColor = vec4( gl_FragColor.rgb * ( 1.0 - darkness ), 1.0 );",
       THREE.ShaderChunk[ "fog_fragment" ],
-      "if (shaderDebug == 2.0) gl_FragColor = vec4( vNormal, 1.0 );",
-      "if (shaderDebug == 3.0) gl_FragColor = vec4( depth, depth, depth, 1.0 );",
+      "if (shaderDebug == 2.0) gl_FragColor = vec4( vNormal*0.5 + vec3(0.5), 1.0 );",
+      "if (shaderDebug == 3.0) gl_FragColor = vec4( (depth*3.), (depth*3.-1.), (depth*3.-2.), 1.0 );",
 
       "}"
 

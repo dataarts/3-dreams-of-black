@@ -22,7 +22,7 @@ function initRenderer() {
   renderer.setSize(width, height);
 
   renderer.autoClear = false;
-  
+
   container.appendChild(renderer.domElement);
 
   initPostprocessingNoise(postprocessing);
@@ -37,8 +37,9 @@ function initPostprocessingNoise( effect ) {
     effect.camera = new THREE.Camera();
     effect.camera.projectionMatrix = THREE.Matrix4.makeOrtho( width / - 2, width / 2, height / 2, height / - 2, -10000, 10000 );
     effect.textureColor = new THREE.WebGLRenderTarget( width*2, height*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
-    effect.textureDepth = new THREE.WebGLRenderTarget( width*2, height*2, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter } );
-    effect.textureNoise = THREE.ImageUtils.loadTexture( 'files/textures/noise.png', { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter });
+    effect.textureDepth = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter } );
+    effect.textureNormal = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter } );
+    effect.textureNoise = THREE.ImageUtils.loadTexture( 'files/textures/noise.png', { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
     effect.textureNoise.minFilter = THREE.NearestFilter;
     effect.textureNoise.wrapS = THREE.RepeatWrapping;
      effect.textureNoise.wrapT = THREE.RepeatWrapping;
@@ -48,6 +49,7 @@ function initPostprocessingNoise( effect ) {
     "tColor": { type: "t", value: 0, texture: effect.textureColor },
     "tDepth": { type: "t", value: 1, texture: effect.textureDepth },
     "tNoise": { type: "t", value: 2, texture: effect.textureNoise },
+    "tNormal": { type: "t", value: 3, texture: effect.textureNormal },
     "dof":    { type: "f", value: 0.0 },
     "ssao":    { type: "f", value: 0.0 },
     "ssaoRad":    { type: "f", value: 0.0 },
@@ -79,6 +81,7 @@ function initPostprocessingNoise( effect ) {
         "uniform sampler2D tColor;",
         "uniform sampler2D tDepth;",
         "uniform sampler2D tNoise;",
+        "uniform sampler2D tNormal;",
 
         "uniform float maxblur;",  	// max blur amount
         "uniform float aperture;",	// aperture - bigger values for shallower depth of field
@@ -93,97 +96,66 @@ function initPostprocessingNoise( effect ) {
 
 				"void main() {",
 
-          "vec4 col = vec4( 0.0 );",
-          "float ao = 1.0;",
+          "vec4 col = texture2D( tColor, vUv.xy );",
+
+          "vec4 normal = texture2D(tNormal, vUv);",
+          "if(normal.a == 0.0) normal.xyz = vec3(0.,0.,1.);",
+          "else normal.xyz = normal.xyz*2. - vec3(1.);",
+
+          "vec4 depthRGB = texture2D(tDepth, vUv);",
+          "float depth = depthRGB.r/3.+depthRGB.g/3.+depthRGB.b/3.;",
+          "if(depthRGB.a == 0.0) depth = 1.;",
+
+          //"vec4 rndVec = texture2D( tNoise, vUv*vec2(3.0,2.0));",
+          //"rndVec = rndVec*2.0 - vec4(1.0);",
+
+          "vec4 ao = vec4(1.0);",
+          "vec3 rndUv = vec3(0.0);",
 
           "if (ssao == 1.0) {",
-            "float ez = texture2D(tDepth, vUv).r;",
-
-            "vec4 pl = texture2D( tNoise, vUv*vec2(30.0,30.0)*vec2(ez,-ez));",
-
-            "vec3 df = vec3(0.0);",
-
+            "ao = vec4(0.0);",
             "for( int i=1; i<42; i++ ){",
+              "rndUv = vec3(vUv,depth) + ssaoRad*reflect(sphere[i].xyz,normal.xyz);",
+              //"vec3 rndUv = vec3(vUv,depth) + ssaoRad*sphere[i].xyz;",
 
-              "vec3 se = vec3(vUv,ez) + ssaoRad*reflect(sphere[i].xyz,pl.xyz);",
+              "vec3 rndDepthRGB = texture2D(tDepth,rndUv.xy).rgb;",
+              "float rndDepth = rndDepthRGB.r/3.+rndDepthRGB.g/3.+rndDepthRGB.b/3.;",
 
-              "float sz = texture2D(tDepth,se.xy).r;",
-              "float zd = (se.z-sz);",
-              "zd = max(min(zd-0.06,0.22-zd), 0.0);",
-              "ao += 1.0/(1.0+7000.0*zd*zd);",
+              "float zd = (rndUv.z-rndDepth);",
+              "zd = max(min(zd-0.05,0.1-zd), 0.0);",
+              "ao += 1.0/(1.0+20000.0*zd*zd);",
             "}",
-
-            "ao = ao/42.0;",
+            "ao = vec4(ao/42.0);",
           "}",
 
           "if (dof == 1.0) {",
-            "vec2 aspectcorrect = vec2( 1.0, aspect );",
 
-            "vec4 depth1 = texture2D( tDepth, vUv );",
+            "vec3 aspectcorrect = vec3( 1.0, aspect, 1.0);",
+            "float factor = depth - focus;",
+            "vec3 dofblur = vec3( clamp( factor * aperture, -maxblur, maxblur ) );",
 
-            "float factor = depth1.x - focus;",
+            "for( int i=1; i<42; i++ ){",
+              "rndUv = vec3(vUv,depth) + (dofblur*sphere[i].xyz*aspectcorrect);",
 
-            "vec2 dofblur = vec2 ( clamp( factor * aperture, -maxblur, maxblur ) );",
+              "vec3 rndDepthRGB = texture2D(tDepth,rndUv.xy).rgb;",
+              "float rndDepth = rndDepthRGB.r/3.+rndDepthRGB.g/3.+rndDepthRGB.b/3.;",
 
-            "vec2 dofblur9 = dofblur * 0.9;",
-            "vec2 dofblur7 = dofblur * 0.7;",
-            "vec2 dofblur4 = dofblur * 0.4;",
+              "float zd = (depth-rndDepth);",
+              "if (zd > 0.0) col += texture2D( tColor, rndUv.xy );",
+              "else col += texture2D( tColor, vUv.xy );",
+            "}",
+            "col = col / 43.0;",
 
-            "col += texture2D( tColor, vUv.xy );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.15,  0.37 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.37,  0.15 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.40,  0.0  ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.37, -0.15 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.15, -0.37 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.15,  0.37 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.37,  0.15 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.37, -0.15 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.15, -0.37 ) * aspectcorrect ) * dofblur );",
-
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.15,  0.37 ) * aspectcorrect ) * dofblur9 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.37,  0.15 ) * aspectcorrect ) * dofblur9 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.37, -0.15 ) * aspectcorrect ) * dofblur9 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.15, -0.37 ) * aspectcorrect ) * dofblur9 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.15,  0.37 ) * aspectcorrect ) * dofblur9 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.37,  0.15 ) * aspectcorrect ) * dofblur9 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.37, -0.15 ) * aspectcorrect ) * dofblur9 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.15, -0.37 ) * aspectcorrect ) * dofblur9 );",
-
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur7 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.40,  0.0  ) * aspectcorrect ) * dofblur7 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur7 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur7 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur7 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur7 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur7 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur7 );",
-
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.29,  0.29 ) * aspectcorrect ) * dofblur4 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.4,   0.0  ) * aspectcorrect ) * dofblur4 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.29, -0.29 ) * aspectcorrect ) * dofblur4 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.0,  -0.4  ) * aspectcorrect ) * dofblur4 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.29,  0.29 ) * aspectcorrect ) * dofblur4 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.4,   0.0  ) * aspectcorrect ) * dofblur4 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2( -0.29, -0.29 ) * aspectcorrect ) * dofblur4 );",
-            "col += texture2D( tColor, vUv.xy + ( vec2(  0.0,   0.4  ) * aspectcorrect ) * dofblur4 );",
-
-            "col = col / 41.0;",
           "} else {",
             //ANTIALIASING
             "col = texture2D( tColor, vUv );",
+            // frame buffer resolution is hard coded here
             "col += texture2D( tColor, vUv+vec2(.5/960.,0.) );",
             "col += texture2D( tColor, vUv+vec2(.0,.5/360.) );",
             "col += texture2D( tColor, vUv+vec2(.5/960.,.5/360.) );",
             "col *= 0.25;",
           "}",
-          "gl_FragColor = col*vec4(ao,ao,ao,1.0);",
+          "gl_FragColor = col*vec4(ao.rgb,1.0);",
 				"}"
 
             ].join("\n")
@@ -198,21 +170,23 @@ function initPostprocessingNoise( effect ) {
 function render(){
     renderer.clear();
 
-    wireMat.opacity = params.grid;
     lightmapShader.uniforms['shaderDebug'].value = params.shader_components;
     triggerShader.uniforms['shaderDebug'].value = params.shader_components;
     animalShader.uniforms['shaderDebug'].value = params.shader_components;
-
-
+    wireMat.opacity = params.grid;
     renderer.render( scene, camera, postprocessing.textureColor, true );
 
     lightmapShader.uniforms['shaderDebug'].value = 3;
     triggerShader.uniforms['shaderDebug'].value = 3;
     animalShader.uniforms['shaderDebug'].value = 3;   
     wireMat.opacity = 0.0;
-
     renderer.render( scene, camera, postprocessing.textureDepth, true );
 
+    lightmapShader.uniforms['shaderDebug'].value = 2;
+    triggerShader.uniforms['shaderDebug'].value = 2;
+    animalShader.uniforms['shaderDebug'].value = 2;
+    wireMat.opacity = 0.0;
+    renderer.render( scene, camera, postprocessing.textureNormal, true );
 
     postprocessing.materialHeat.uniforms.ssao.value = params.occlusion;
     postprocessing.materialHeat.uniforms.ssaoRad.value = params.radius;
@@ -225,6 +199,7 @@ function render(){
     postprocessing.materialHeat.uniforms.tColor.texture = postprocessing.textureColor;
     postprocessing.materialHeat.uniforms.tDepth.texture = postprocessing.textureDepth;
     postprocessing.materialHeat.uniforms.tNoise.texture = postprocessing.textureNoise;
+    postprocessing.materialHeat.uniforms.tNormal.texture = postprocessing.textureNormal;
     renderer.render( postprocessing.scene, postprocessing.camera );
 
 
@@ -232,7 +207,9 @@ function render(){
 }
 
 function updateCamera(){
-    near = Math.max(0.1,(-camera.position.x) - Math.max(meshRadius+100, 300));
-    far = (-camera.position.x) + Math.max(meshRadius+100, 300);
+    near = (-camera.position.x) - Math.max(meshRadius+100, 650);
+    var negNear = Math.min(0,near);
+    near = Math.max(1,near);
+    far = (-camera.position.x) + Math.max(meshRadius+100, 650)+negNear;
     camera.projectionMatrix = THREE.Matrix4.makePerspective(45, aspect, near, far);
 }

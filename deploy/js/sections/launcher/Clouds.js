@@ -135,7 +135,7 @@ var Clouds = function ( shared ) {
 
   function makeScene(geometry){
 
-    for ( var i = 0; i < 4; i ++ ) {
+    for ( var i = 0; i < 2; i ++ ) {
       /////Bioids
       boid = boids[ i ] = new Boid();
       boid.position.x = 240;
@@ -227,17 +227,17 @@ var Clouds = function ( shared ) {
       
 			vector.z = boid.position.z;
 
-			boid.repulse( vector );
+			//boid.repulse( vector );
 
       boid.run( boids );
       bird = birds[ i ];
 
-      bird.rotation.y += (Math.atan2( - boid.velocity.z, boid.velocity.x )+Math.PI/2 - bird.rotation.y)/30;
-      bird.rotation.z += (Math.asin( boid.velocity.y / boid.velocity.length()) - bird.rotation.z)/30;
+      bird.rotation.y = (Math.atan2( - boid.velocity.z, boid.velocity.x )+Math.PI/2);
+      bird.rotation.z = (Math.asin( boid.velocity.y / boid.velocity.length()));
 
 		  bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
 
-      morphObject[i].update(delta*bird.phase/50);
+      morphObject[i].update(delta*bird.phase/100);
     }
 	};
 
