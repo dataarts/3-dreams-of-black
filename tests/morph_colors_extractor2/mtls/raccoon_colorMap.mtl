@@ -1,0 +1,36 @@
+newmtl bodySG
+illum 4
+Kd 0.49 0.46 0.46
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl eyesSG
+illum 4
+Kd 0.01 0.00 0.05
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl face_darkSG
+illum 4
+Kd 0.02 0.04 0.04
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl face_lightSG
+illum 4
+Kd 0.68 0.67 0.69
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl mouthSG
+illum 4
+Kd 0.72 0.41 0.41
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl noseSG
+illum 4
+Kd 0.08 0.09 0.09
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00

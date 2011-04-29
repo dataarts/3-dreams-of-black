@@ -1,0 +1,24 @@
+newmtl butterfly1_colormap2_0002_body_lt_orangeSG
+illum 4
+Kd 1.00 0.55 0.33
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 18.00
+newmtl butterfly1_colormap2_0002_body_orangeSG
+illum 4
+Kd 1.00 0.33 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 18.00
+newmtl butterfly1_colormap2_0002_body_redSG
+illum 4
+Kd 1.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 18.00

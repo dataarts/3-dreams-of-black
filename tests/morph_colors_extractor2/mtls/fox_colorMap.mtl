@@ -1,0 +1,31 @@
+newmtl bodySG
+illum 4
+Kd 0.93 0.41 0.23
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_darkSG
+illum 4
+Kd 0.35 0.16 0.10
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_lightSG
+illum 4
+Kd 1.00 0.69 0.51
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl eyesSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl lambert3SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd fox_rb_01.jpg
+Ni 1.00

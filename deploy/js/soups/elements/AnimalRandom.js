@@ -286,11 +286,11 @@ ROME.AnimalShader = {
 			// separate lights for animals
 			// ( ambient + one directional )
 
-			"vLightWeighting = vec3( 0.2 );",
+			"vLightWeighting = vec3( 0.2 );", 
 
 			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
-			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
-			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
+			"float directionalLightWeighting = dot( transformedNormal, normalize( lDirection.xyz ) ) * 0.5 + 0.5;",
+			"vLightWeighting += vec3( 0.7 ) * directionalLightWeighting;",
 			
 			// tweak lighting
 			
@@ -335,89 +335,201 @@ ROME.AnimalAnimationData = {
 
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
-	animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "vulture", "raven", "bison", "sickle" ],
-
+	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "vulture", "raven", "bison", "sickle" ],
+	
 	colorVariations: {
 		
-	"flamingo": { hRange:  0.05, sRange:  0.05, vRange:  0.00,
-				  hOffset: 0.00, sOffset: 0.00, vOffset: 0.00 },
-
-	"shdw2": { hRange:  0.00, sRange:  0.00, vRange:  0.025,
-		       hOffset: 0.00, sOffset: 0.00, vOffset: -0.03 },
-			   
-	"horse": { hRange:  0.01, sRange:   0.00, vRange:  0.05,
-		       hOffset: 0.02, sOffset: -0.10, vOffset: 0.00,
-			   lScale: 0.75, lOffset: [ 0.5, 0.5, 0.5 ]	},
-
-	"moose": { hRange:  0.07, sRange:  0.00, vRange:  0.05,
-		       hOffset: 0.00, sOffset: -0.20, vOffset: 0.00 },
-
-	"tarbuffalo": { hRange:  0.04, sRange:  0.00, vRange:  0.05,
-		       hOffset: 0.00, sOffset: -0.10, vOffset: 0.00 },
-			   
-	"chow": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
-			  hOffset: 0.00, sOffset:  -0.10, vOffset: -0.10,
-			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
-
-	"deer": { hRange:  0.01, sRange:   0.00, vRange:  0.20,
-			  hOffset: 0.00, sOffset:  -0.10, vOffset: -0.10,
-			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+	"armhand": { hRange:  0.02, sRange:  0.10,  vRange: 0.05,
+			     hOffset: 0.00, sOffset: 0.0,   vOffset: -0.1 },
 			  
-	"vulture": { hRange:  0.01, sRange:   0.10, vRange:  0.12,
-			  hOffset: 0.0, sOffset:  0.00, vOffset: -0.10,
-			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+	   
+	"bearBlack": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
+			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+				  
+	"bearBrown": { hRange:  0.02, sRange:   0.15, vRange:  0.25,
+			       hOffset: -0.01, sOffset:  0.05, vOffset: -0.15 },				  
+			
+	"bunny": { hRange:  0.05, sRange:  0.125, vRange:  0.20,
+			  hOffset: 0.00, sOffset:  -0.05, vOffset: 0.00 },				   
 			  
-	"bunny": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
-			  hOffset: 0.00, sOffset:  -0.10, vOffset: 0.00,
-			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+	"butterflyA": { hRange:  0.02, sRange:  0.10, vRange:  0.15,
+			        hOffset: 0.00, sOffset: 0.00, vOffset: 0.0 },
 
+	"butterflyB": { hRange:  0.02, sRange:  0.10, vRange:  0.15,
+			        hOffset: 0.00, sOffset: 0.00, vOffset: 0.0 },
+
+	"butterflyC": { hRange:  0.02, sRange:  0.10, vRange:  0.15,
+			        hOffset: 0.00, sOffset: 0.00, vOffset: 0.0 },
+
+	"butterflyD": { hRange:  0.02, sRange:  0.10, vRange:  0.15,
+			        hOffset: 0.00, sOffset: 0.00, vOffset: 0.0 },
+
+	"centipede": { hRange: 0.05, sRange:  0.00, vRange:  0.55,
+		           hOffset: 0.00, sOffset: 0.10, vOffset: -0.40 },
+					
+	"chow": { hRange:  0.025, sRange:   0.15, vRange:  0.10,
+			  hOffset: 0.00, sOffset:  -0.1, vOffset: 0.10 },
+
+	"cow": { hRange:  0.00, sRange:   0.00, vRange:  0.20,
+			 hOffset: 0.00, sOffset:  0.05, vOffset: 0.00 },
+
+	"cowCarcass": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
+			        hOffset: 0.00, sOffset:  -0.10, vOffset: 0.00 },
+			  
+	"crab": { hRange: 0.07, sRange:  0.00, vRange:  0.15,
+			  hOffset: -0.025, sOffset: 0.15, vOffset: -0.16 },
+			   
+	"deer": { hRange:  0.03, sRange:   0.15, vRange:  0.25,
+			  hOffset: -0.012, sOffset:  0.05, vOffset: 0.00 },
+
+	"eagle": { hRange: 0.075, sRange:  0.10, vRange:  0.25,
+			   hOffset: 0.00, sOffset:  0.1, vOffset: -0.05 },
+			  
+	"elk": { hRange:  0.03, sRange:   0.10, vRange:  0.30,
+			 hOffset: -0.0075, sOffset:  0.00, vOffset: -0.2 },
+			   
+	"fish": { hRange:  0.00, sRange:   0.00, vRange:  0.20,
+			  hOffset: 0.00, sOffset:  0.00, vOffset: 0.00 },
+			 
+	"flamingo": { hRange:  0.1, sRange:  0.15, vRange:  0.25,
+				  hOffset: -0.03, sOffset: 0.1, vOffset: -0.15 },
+
+	"fox": { hRange:  0.03, sRange:   0.15, vRange:  0.25,
+			 hOffset: -0.012, sOffset:  0.05, vOffset: 0.00 },
+				  
+	"frog": { hRange:  0.00, sRange:   0.10, vRange:  0.20,
+			  hOffset: 0.01, sOffset:  0.00, vOffset: 0.00 },
+			  
+	"gator": { hRange:  0.05, sRange:   0.00, vRange:  0.20,
+			   hOffset: -0.05, sOffset:  0.00, vOffset: -0.21 },
+			  
+	"goat": { hRange:  0.02, sRange:   0.07, vRange:  0.1,
+			  hOffset: 0.00, sOffset:  0.00, vOffset: -0.20 },			  
+
+	"goldenRetreiver": { hRange:  0.025, sRange:   0.2, vRange:  0.05,
+						 hOffset: 0.00, sOffset:  -0.1, vOffset: 0.015 },
+
+	"horse": { hRange:   0.025, sRange:  0.1, vRange:  0.25,
+		       hOffset: -0.005, sOffset:  0.00, vOffset: -0.10	},
+						 
+	"hummingbird": { hRange:  0.05, sRange:   0.10, vRange:  0.3,
+			         hOffset: -0.02, sOffset:  0.1, vOffset: -0.30 },
+
+	"moose": { hRange:  0.07, sRange:  0.05, vRange:  0.1,
+		       hOffset: 0.00, sOffset: -0.0, vOffset: -0.2 },
+
+	"mountainlion": { hRange:  0.02, sRange:  0.10,  vRange: 0.15,
+			          hOffset: 0.00, sOffset:  0.10, vOffset: -0.05 },
+			   
+	"owl": { hRange:   0.025, sRange:  0.4, vRange:  0.15,
+			 hOffset: -0.005, sOffset:  -0.3, vOffset: -0.10 },
+
+	"panther": { hRange:  0.00, sRange:  0.10, vRange:  0.075,
+			     hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+
+			 
+	"parrot": { hRange:  0.05, sRange:   0.10, vRange:  0.3,
+			    hOffset: -0.025, sOffset:  0.1, vOffset: -0.10 },
+
+	"raccoon": { hRange:  0.00, sRange:   0.00, vRange:  0.25,
+			     hOffset: 0.00, sOffset:  -0.20, vOffset: -0.15 },			  
+
+	"raven": { hRange:  0.02, sRange:  0.10,  vRange: 0.1,
+			  hOffset: 0.00, sOffset:  0.0, vOffset: -0.1 },
+
+	"scorp": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
+			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+			   
 	"seal": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
-			  hOffset: 0.00, sOffset:  0.05, vOffset: 0.00,
-			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
-			  
-	"eagle": { hRange:  0.05, sRange:  0.00, vRange:  0.25,
-			  hOffset: 0.00, sOffset:  -0.10, vOffset: 0.10,
-			  lScale: 0.5, lOffset: [ 0.5, 0.5, 0.5 ] },
+			  hOffset: 0.00, sOffset:  0.05, vOffset: 0.00 },
+	
+	"shdw2": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
+			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+			   
+	"sickle": { hRange:  0.04, sRange:  0.00, vRange:  0.05,
+		       hOffset: 0.00, sOffset: -0.20, vOffset: -0.10 },
 
-	"sat":  { hRange:  0.00, sRange:  0.00, vRange:  0.00,
-		      hOffset: 0.00, sOffset: 0.10, vOffset: 0.00 },
+	"stork": { hRange:  0.00, sRange:   0.10, vRange:  0.20,
+			   hOffset: 0.02, sOffset:  -0.05, vOffset: -0.05 },
+			   
+	"tarbuffalo": { hRange:  0.04, sRange:  0.10,  vRange:  0.1,
+		            hOffset: -0.015, sOffset: 0.0, vOffset: -0.15 },
+			  
+	"toad": { hRange:  0.07, sRange:   0.00, vRange:  0.20,
+			  hOffset: -0.02,  sOffset:  0.0, vOffset: -0.25 },			  
+			  
+	"vulture": { hRange:  0.01, sRange:   0.25, vRange:  0.12,
+			     hOffset: 0.0, sOffset:  -0.10, vOffset: -0.135 },
+
+	"wolf": { hRange:  0.00,  sRange:   0.2, vRange:  0.125,
+			  hOffset: -0.05, sOffset:  -0.15, vOffset: -0.10 },
 
 	"zero": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
-			  hOffset: 0.00, sOffset:  0.00, vOffset: 0.00 },
+			  hOffset: 0.00, sOffset:  0.00, vOffset: 0.00 }		  
 
-	"dark": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
-			  hOffset: 0.00, sOffset:  0.00, vOffset: -0.50 }
-	
 	},
 	
 	animalVariationMap: {
-	
-		"flamingo"	: "flamingo",
-		"horse"		: "horse",
-		"shdw2" 	: "shdw2",
-		"moose"		: "moose",
-		"tarbuffalo": "tarbuffalo",
-		"goat"		: "shdw2",
-		"chow"		: "chow",
-		"deer"		: "deer",
-		"fox"		: "deer",
-		"goldenretreiver": "horse",
+
+		"armhand" : "armhand",
+
+		"bearbrown"   : "bearBrown",
+		"bearblack"   : "bearBlack",
+
 		"bunny" 	: "bunny",
-		"seal"		: "seal",
-		"elk"		: "seal",
-		"eagle"		: "eagle",
-		"parrot"	: "eagle",
-		"hummingbird": "seal",
-		"raven"		: "deer",
-		"vulture"   : "vulture",
-		"centipede" : "tarbuffalo",
-		"scorp"		: "tarbuffalo",
-		"bison"		: "tarbuffalo",
-		"sickle"    : "tarbuffalo",
 		
-		"crab"		   : "zero",
-		"bear"		   : "zero",
-		"mountainlion" : "zero"
+		"butterflya" : "butterflyA",
+		"butterflyb" : "butterflyB",
+		"butterflyc" : "butterflyC",
+		"butterflyd" : "butterflyD",
+		
+		"centipede" : "centipede",
+		"chow"		: "chow",
+		
+		"cow" : "cow",
+		"cowcarcass" : "cowCarcass",
+		
+		"crab"		: "crab",
+		"deer"		: "deer",
+		"eagle"		: "eagle",
+		"elk"		: "elk",
+
+		"fisha" : "fish",
+		"fishb" : "fish",
+		"fishc" : "fish",
+		"fishd" : "fish",
+
+		"flamingo"	: "flamingo",
+		"fox"		: "fox",
+		"frog" 		: "frog",
+		"gator" 	: "gator",
+		"goat"		: "goat",
+		"goldenretreiver": "goldenRetreiver",
+		"horse"		: "horse",
+		"hummingbird": "hummingbird",
+		"moose"		: "moose",
+		
+		"mountainlion" 		: "mountainlion",
+		"mountainlionblack" : "panther",
+		
+		"owl"		: "owl",
+		"parrot"	: "parrot",
+		"raccoon"   : "raccoon",
+		"raven"		: "raven",
+		"scorpion"	: "scorp",
+		"seal"		: "seal",
+		
+		"shdw" 	 : "shdw2",		
+		"sickle" : "sickle",		
+		"stork"  : "stork",
+		
+		"tarbuffalo": "tarbuffalo",	
+		"toad" 		: "toad",
+		"vulture"   : "vulture",
+		"wolf" 		: "wolf",
+		
+		"bison"		: "tarbuffalo"
 
 	},
 
@@ -609,7 +721,8 @@ ROME.AnimalAnimationData = {
 
 					}		
 					
-					
+					console.log( morphTargetName );
+
 					randomizeColors( attributes[ morphTargetName ].value, variations );
 					
 				}
@@ -677,24 +790,6 @@ ROME.AnimalAnimationData = {
 			//randomizeColors( attributes.colorAnimalA.value, variations );
 			//randomizeColors( attributes.colorAnimalB.value, variations );
 
-
-			function randomizeColors( colors, variations ) {
-				
-				var i, il, c, hd, sd, vd;
-				
-				for( i = 0, il = colors.length; i < il; i++ ) {
-					
-					c = colors[ i ];
-
-					hd = variations.hRange * Math.random() + variations.hOffset;
-					sd = variations.sRange * Math.random() + variations.sOffset;
-					vd = variations.vRange * Math.random() + variations.vOffset;
-
-					THREE.ColorUtils.adjustHSV( c, hd, sd, vd );							
-					
-				}
-
-			}
 			
 			// set return values
 	
@@ -760,3 +855,22 @@ ROME.AnimalAnimationData = {
 	}
 
 };
+
+function randomizeColors( colors, variations ) {
+	
+	var i, il, c, hd, sd, vd;
+	
+	for( i = 0, il = colors.length; i < il; i++ ) {
+		
+		c = colors[ i ];
+
+		hd = variations.hRange * Math.random() + variations.hOffset;
+		sd = variations.sRange * Math.random() + variations.sOffset;
+		vd = variations.vRange * Math.random() + variations.vOffset;
+
+		THREE.ColorUtils.adjustHSV( c, hd, sd, vd );
+		
+	}
+
+};
+

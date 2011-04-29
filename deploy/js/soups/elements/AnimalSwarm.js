@@ -3,16 +3,20 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 	var that = this;
 
 	that.array = [];
+
 	var scene = scene;
 	var maxFollowIndex = 0;
 	var followCount = 0;
 	var lastFollowCount = 0;
 
 	that.initSettings = {
-		numOfAnimals : numOfAnimals || 30,
-	}
+
+		numOfAnimals : numOfAnimals || 30
+
+	};
 
 	that.settings = {
+
 		divider : 2,
 		flying : false,
 		flyingDistance : 35,
@@ -23,10 +27,11 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		shootRayDown : false,
 		addaptiveSpeed : false,
 		capy : null,
-		startPosition : new THREE.Vector3(0,0,0),
+		startPosition : new THREE.Vector3( 0, 0, 0 ),
 		switchPosition : false,
 		//butterfly : false,
-	}
+
+	};
 	
 	var r = 0;
 	var i;
@@ -99,8 +104,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i] = obj;
 
 		}
+		
+		return animal;
 
-	}
+	};
 
 	this.update = function (delta) {
 
@@ -302,17 +309,19 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 		lastFollowCount = followCount;
 
-	}
+	};
 
 	this.reset = function ( x,y,z ) {
 
 		for (var i=0; i<that.array.length; ++i ) {
+
 			var obj = that.array[i].c;
 			obj.position.x = x;
 			obj.position.y = y;
 			obj.position.z = z;
+
 		}
 
-	}
+	};
 
-}
+};

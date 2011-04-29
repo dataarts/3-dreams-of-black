@@ -4,8 +4,6 @@ var distortingShaderWireSource = {
 
 		uniforms: {
             "aspect": { type: "f", value: 0 },
-            "near": { type: "f", value: 0 },
-            "far": { type: "f", value: 0 },
 			"sheet": { type: "t", value: 0, texture: null },
             "mouseXY": { type: "v2", value: new THREE.Vector2() },
             "tileOffsetX": { type: "v2", value: new THREE.Vector2() }

@@ -33,7 +33,8 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 	for (var i = 0; i < that.initSettings.numOfParticleSystems; i++) {
 
 		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
-		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: blendMode } );
+		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: true, blending: blendMode } );
+		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: true, blending: THREE.NormalBlending } );
 
 		var particles = new THREE.ParticleSystem( geometry, particleMaterial );
 
@@ -91,7 +92,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 					particles.rotation.y = Math.random() * Math.PI;
 					particles.rotation.z = Math.random() * Math.PI + (Math.PI/2);
 
-					particles.scale.x = particles.scale.y = particles.scale.z = 0.8;
+					particles.scale.x = particles.scale.y = particles.scale.z = 1.25;
 
 					var fallTween = new TWEEN.Tween(particles.position)
 								.to({x: particleArray[i].c.tox, y: particleArray[i].c.toy, z: particleArray[i].c.toz}, time)
@@ -100,11 +101,11 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 					var rotationTween = new TWEEN.Tween(particles.rotation)
 								.to({x: 0, z: 0}, time)
-								.easing(TWEEN.Easing.Linear.EaseNone);
+								.easing(TWEEN.Easing.Quadratic.EaseIn);
 					rotationTween.start();
 	
 					var scaleTween = new TWEEN.Tween(particles.scale)
-								.to({x: 4, y: 0.05, z: 4}, time)
+								.to({x: 5, y: 0.05, z: 5}, time)
 								.easing(TWEEN.Easing.Linear.EaseNone);
 					scaleTween.start();
 	

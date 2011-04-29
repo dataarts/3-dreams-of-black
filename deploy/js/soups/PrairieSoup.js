@@ -4,15 +4,15 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// init
 
-	camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
+	shared.camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	var pointLight = new THREE.PointLight( 0x999999, -2.25, 400 );
-	pointLight.position.x = camPos.x;
-	pointLight.position.y = camPos.y;
-	pointLight.position.z = camPos.z;
+	pointLight.position.x = shared.camPos.x;
+	pointLight.position.y = shared.camPos.y;
+	pointLight.position.z = shared.camPos.z;
 	scene.addLight( pointLight, 1.0 );
 
 	// setup the different parts of the soup
@@ -35,12 +35,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	collisionScene.settings.normalOffsetAmount = 7;
 	collisionScene.settings.minDistance = 0;
 
-	collisionScene.emitter.position.set(camPos.x+40, camPos.y, camPos.z+20);
-	collisionScene.emitterFollow.position.set(camPos.x+40, camPos.y, camPos.z+20);
+	collisionScene.emitter.position.set( shared.camPos.x + 40, shared.camPos.y, shared.camPos.z + 20 );
+	collisionScene.emitterFollow.position.set( shared.camPos.x + 40, shared.camPos.y, shared.camPos.z + 20 );
 
 	// vector trail
-	var startPosition = new THREE.Vector3(camPos.x-10, camPos.y, camPos.z+30);
-	vectors = new Vectors(50, 2, 2, startPosition);
+	var startPosition = new THREE.Vector3( shared.camPos.x - 10, shared.camPos.y, shared.camPos.z + 30 );
+	vectors = new Vectors( 50, 2, 2, startPosition );
 
 	// ribbons
 
@@ -111,30 +111,61 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/octo_black.js", callback: octoLoadedProxy } );
 
 	function animalsLoadedProxy( geometry ) {
-		var morphArray = [0,0,1,2,1,2,0,2,3];
-		runningAnimals.addAnimal( geometry, "animal", 0.35, morphArray, 2.5 );
-	}
+
+		var animal, 
+			morphArray = [0,0,1,2,1,2,0,2,3];
+
+		animal = runningAnimals.addAnimal( geometry, "animal", 0.35, morphArray, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function taruffaloLoadedProxy( geometry ) {
-		var morphArray = [0,1,0,1];
-		runningAnimals.addAnimal( geometry, null, 0.3, morphArray, 2.5 );
-	}
+		
+		var animal,
+			morphArray = [0,1,0,1];
+		
+		animal = runningAnimals.addAnimal( geometry, null, 0.3, morphArray, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function gatorLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "gator", 0.35, null, 2.5 );
-	}
+
+		var animal;
+
+		animal = runningAnimals.addAnimal( geometry, "gator", 0.35, null, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function goatLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "goat", 0.45, null, 2.5 );
-	}
+		
+		var animal;
+		
+		animal = runningAnimals.addAnimal( geometry, "goat", 0.45, null, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 	function armLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2.5 );
-	}
+		
+		var animal;
+
+		animal = runningAnimals.addAnimal( geometry, "arm", 1.0, null, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
+
 	function octoLoadedProxy( geometry ) {
-		var morphArray = [0,0,0,2];
-		runningAnimals.addAnimal( geometry, "octo", 0.65, morphArray, 2.5 );
-	}
+
+		var animal,
+			morphArray = [0,0,0,2];
+
+		animal = runningAnimals.addAnimal( geometry, "octo", 0.65, morphArray, 2.5 );
+		preinitAnimal( animal, shared.renderer, scene );
+
+	};
 
 
 	// flying animals
@@ -150,9 +181,14 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/birds_A_black.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		flyingAnimals.addAnimal( geometry, null, 0.4, morphArray, 0.6 );
-	}
+		
+		var animal,
+			morphArray = [1,1,0,0,1,0,0,1,0,0];
+
+		animal = flyingAnimals.addAnimal( geometry, null, 0.4, morphArray, 0.6 );
+		preinitAnimal( animal, shared.renderer, scene );
+		
+	};
 	
 	// trail - of grass/trees/etc
 	/*var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } ),
@@ -183,13 +219,13 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		// update to reflect _real_ camera position
 
-		camPos.x = camera.matrixWorld.n14;
-		camPos.y = camera.matrixWorld.n24;
-		camPos.z = camera.matrixWorld.n34;
+		shared.camPos.x = camera.matrixWorld.n14;
+		shared.camPos.y = camera.matrixWorld.n24;
+		shared.camPos.z = camera.matrixWorld.n34;
 
 		// temp reset
 
-		if ( camPos.x > 1090 ) {
+		if ( shared.camPos.x > 1090 ) {
 
 			reset();
 
@@ -197,44 +233,49 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		// update the soup parts	
 
-		collisionScene.update( camPos, delta );
+		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
 		//ribbons.update( collisionScene.emitterFollow.position );
 		particles.update( delta, vectors.array[5].position );
 		runningAnimals.update();
 		flyingAnimals.update();
-		//trail.update(vectors.array[5].position, collisionScene.currentNormal, camPos, delta);
+		//trail.update(vectors.array[5].position, collisionScene.currentNormal, shared.camPos, delta);
 		
 		TWEEN.update();
 
+		TriggerUtils.effectors[ 0 ] = vectors.array[10].position.x;
+		TriggerUtils.effectors[ 1 ] = vectors.array[10].position.y;
+		TriggerUtils.effectors[ 2 ] = vectors.array[10].position.z;
+		
+		ROME.TrailShader.uniforms.lavaHeadPosition.value.set( vectors.array[15].position.x, 0, -vectors.array[15].position.z );
 
 		// pointlight
 
-		pointLight.position.x = vectors.array[8].position.x;
-		pointLight.position.y = vectors.array[8].position.y + 30;
-		pointLight.position.z = vectors.array[8].position.z;
+		pointLight.position.x = vectors.array[0].position.x;
+		pointLight.position.y = vectors.array[0].position.y + 30;
+		pointLight.position.z = vectors.array[0].position.z;
 
-		shared.lavatrailx = vectors.array[20].position.x;
-		shared.lavatrailz = vectors.array[20].position.z;
+		shared.lavatrailx = vectors.array[30].position.x;
+		shared.lavatrailz = vectors.array[30].position.z;
 
-	}
+	};
 
 
 
 	function reset () {
 
-		camPos.set( 302.182, -9.045, -105.662 );
+		shared.camPos.set( 302.182, -9.045, -105.662 );
 
-		collisionScene.reset( camPos.x, camPos.y, camPos.z );
-		vectors.reset( camPos.x, camPos.y, camPos.z );
-		runningAnimals.reset( camPos.x, camPos.y, camPos.z );
-		flyingAnimals.reset( camPos.x, camPos.y, camPos.z );
-		particles.reset( camPos.x, camPos.y, camPos.z );
+		collisionScene.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		vectors.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		runningAnimals.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		flyingAnimals.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
+		particles.reset( shared.camPos.x, shared.camPos.y, shared.camPos.z );
 
-	}
+	};
 
 	this.destruct = function () {
 
-	}
+	};
 
-}
+};

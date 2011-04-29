@@ -1,0 +1,82 @@
+<html>
+	<body>
+		<script>
+
+			// LOAD
+
+			var button = document.createElement('button');
+			button.addEventListener( 'click', function () {
+
+				var url = 'http://2.radicalvid.appspot.com/services/latest/';
+
+				var request = new XMLHttpRequest();
+				request.open( 'GET', url, true );
+
+				request.onreadystatechange = function () {
+
+					if ( request.readyState == 4 ) {
+
+						if ( request.status == 200 ) {
+
+							console.log( request.responseText );
+
+							var json = eval( request.responseText );
+							console.log( json );
+
+						} else {
+
+							alert( 'An error has occured making the request' );
+
+						}
+					}
+				}
+
+				request.send( null );
+
+			}, false );
+			button.innerHTML = 'LATEST';
+			document.body.appendChild( button ); 
+
+			// SAVE
+
+			var button = document.createElement('button');
+			button.addEventListener( 'click', function () {
+
+				var url = 'http://2.radicalvid.appspot.com/services/add';
+
+				var data = 'object=test&type=1&title=test&email=test&image=test';
+
+				var request = new XMLHttpRequest();
+				request.open( 'POST', url );
+				request.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
+				request.setRequestHeader( 'Content-length', data.length );
+				request.setRequestHeader( 'Connection', 'close' );
+
+				request.onreadystatechange = function () {
+
+					if ( request.readyState == 4 ) {
+
+						if ( request.status == 200 ) {
+
+							console.log( request.responseText );
+
+							var json = eval( "(" + request.responseText + ")" );
+							console.log( json );
+
+						} else {
+
+							alert( 'An error has occured making the request' );
+
+						}
+					}
+				}
+
+				request.send( data );
+
+			}, false );
+			button.innerHTML = 'SAVE';
+			document.body.appendChild( button ); 
+
+		</script>
+	</body>
+</html>

@@ -2,6 +2,10 @@ var CityWorld = function ( shared ) {
 
 	var that = this;
 
+	var cityMaterials = [];
+	var cityMaterialGrassStart = new THREE.Vector3();
+	var cityMaterialGrassEnd = new THREE.Vector3();
+
 	var ENABLE_LENSFLARES = true;
 
 	this.scene = new THREE.Scene();
@@ -17,7 +21,7 @@ var CityWorld = function ( shared ) {
 	
 	// Lights
 
-	var ambientLight = new THREE.AmbientLight( 0xffffff );
+	var ambientLight = new THREE.AmbientLight( 0x334433 );
 	this.scene.addLight( ambientLight );
 
 	var directionalLight1 = new THREE.DirectionalLight( 0xffffff );
@@ -38,7 +42,7 @@ var CityWorld = function ( shared ) {
 	this.scene.fog.color.setHSV( settings.fogColor.h,  settings.fogColor.s, settings.fogColor.v );
 	this.scene.fog.density = settings.fogDensity;
 
-	ambientLight.color.setHSV( settings.ambientLight.h, settings.ambientLight.s, settings.ambientLight.v );
+	//ambientLight.color.setHSV( settings.ambientLight.h, settings.ambientLight.s, settings.ambientLight.v );
 	directionalLight1.color.setHSV( settings.directionalLight1.h, settings.directionalLight1.s, settings.directionalLight1.v );
 	directionalLight2.color.setHSV( settings.directionalLight2.h, settings.directionalLight2.s, settings.directionalLight2.v );
 
@@ -70,7 +74,8 @@ var CityWorld = function ( shared ) {
 		var i, l, scene = result.scene;
 
 		hideColliders( scene );
-		makeSceneStatic( scene );		
+		makeSceneStatic( scene );
+		preInitScene( result, shared.renderer );
 
 		scene.scale.set( 0.1, 0.1, 0.1 );
 		scene.updateMatrix();
@@ -82,8 +87,75 @@ var CityWorld = function ( shared ) {
 			
 		}
 		
-		//TriggerUtils.setupCityTriggers( result );
-	
+		TriggerUtils.setupCityTriggers( result );
+		
+		// setup custom material
+		
+		var baseMaterialParams = {
+
+			uniforms: CityShader.uniforms,
+			vertexShader: CityShader.vertexShader,
+			fragmentShader: CityShader.fragmentShader,
+			
+			shading: THREE.FlatShading,
+			lights: true,
+			fog: true,
+			vertexColors: 2,
+
+		};
+
+		CityShader.uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
+		CityShader.uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
+		CityShader.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
+		CityShader.uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
+
+		var baseMaterial = new THREE.MeshShaderMaterial( baseMaterialParams );
+
+		// fix texture wrapping for skydome
+		
+		result.objects[ "Backdrop_City" ].materials[ 0 ].map.wrapS = THREE.RepeatWrapping;
+		result.objects[ "Backdrop_City" ].materials[ 0 ].map.wrapT = THREE.RepeatWrapping;
+		
+		// copy materials to all geo chunks and add AO-texture
+
+		for( var name in result.objects ) {
+
+			var obj = result.objects[ name ];
+			
+			if ( name == "Backdrop_City" ) continue;
+
+			if( obj.geometry && obj.geometry.morphTargets.length === 0 ) {
+				
+				var geometry = obj.geometry;
+				
+				for( var i = 0; i < geometry.materials.length; i++ ) {
+					
+					var mat = new THREE.MeshShaderMaterial( baseMaterialParams );
+
+					mat.uniforms = THREE.UniformsUtils.clone( CityShader.uniforms );
+					
+					mat.uniforms[ 'targetStart'  ].value   = cityMaterialGrassStart;
+					mat.uniforms[ 'targetEnd'    ].value   = cityMaterialGrassEnd;
+					mat.uniforms[ 'grassImage'   ].texture = CityShader.uniforms[ 'grassImage'   ].texture;
+					mat.uniforms[ 'surfaceImage' ].texture = CityShader.uniforms[ 'surfaceImage' ].texture;
+
+					mat.uniforms.colorA.value = CityShader.colors.colorA;
+					mat.uniforms.colorB.value = CityShader.colors.colorB;
+					mat.uniforms.colorC.value = CityShader.colors.colorC;
+		
+					//geometry.materials[ i ][ 0 ] = cityMaterials[ i ];
+					
+					obj.materials[ 0 ] = mat;
+					cityMaterials.push( mat );
+
+				}
+				
+			}
+			
+		}		
+
+		that.scene.update( undefined, true );
+		
 	};
 
 
@@ -93,15 +165,37 @@ var CityWorld = function ( shared ) {
 
 	}
 	
+	var time = 0;
+	var last_time = 0;
+
 	this.update = function ( delta, camera, portalsActive ) {
 		
 		var position = camera.matrixWorld.getPosition();
 		
-		/*TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
-		TriggerUtils.effectors[ 1 ] = position.y;
-		TriggerUtils.effectors[ 2 ] = position.z - 100;
+		cityMaterialGrassEnd.copy( cityMaterialGrassStart );
+
+		cityMaterialGrassStart.x = TriggerUtils.effectors[ 0 ] = Math.sin( position.z / 500 ) * 200;
+		cityMaterialGrassStart.y = TriggerUtils.effectors[ 1 ] = position.y;
+		cityMaterialGrassStart.z = TriggerUtils.effectors[ 2 ] = position.z - 300;
+
+		cityMaterialGrassEnd.subSelf( cityMaterialGrassStart );
+		cityMaterialGrassEnd.multiplyScalar( 200 );
+		cityMaterialGrassEnd.addSelf( cityMaterialGrassStart );
 		
-		TriggerUtils.update();*/
+		
+		TriggerUtils.effectorRadius = 300;
+		TriggerUtils.update();
+		
+		
+		time += (new Date().getTime() - last_time) / 50000.0;
+		last_time = new Date().getTime();
+		if(time > 1.0)
+			time = 0.0;
+
+		for( var i = 0; i < cityMaterials.length; i++ )
+			cityMaterials[ i ].uniforms[ 'time'  ].value = time;				
+
+		
 		
 		if ( portalsActive ) {
 			
@@ -119,207 +213,162 @@ var CityWorld = function ( shared ) {
 		
 	};
 
-/*	function partLoaded ( geometry ) {
-
-		// setup base material
-
-		var shader = Shaders[ 'soup' ];
-		var uniforms = shader.uniforms;
-
-		uniforms[ 'grassImage' ].texture = THREE.ImageUtils.loadTexture( "files/textures/Texture_Grass3.jpg" );
-		uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
-		uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
-
-		uniforms[ 'surfaceImage' ].texture = THREE.ImageUtils.loadTexture( "files/textures/Texture_Pavement3.jpg" );
-		uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
-		uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
-
-		var baseMaterialParams = {
-
-			uniforms: uniforms,
-			vertexShader: shader.vertexShader,
-			fragmentShader: shader.fragmentShader
-
-		};
-		var baseMaterial = new THREE.MeshShaderMaterial( baseMaterialParams );
-		renderer.initMaterial( baseMaterial, that.scene.lights, that.scene.fog );
-
-		// copy materials to all geo chunks and add AO-texture
-
-		var materials = [];
-
-		for( var i = 0; i < geometry.materials.length; i++ ) {
-
-			materials[ i ] = new THREE.MeshShaderMaterial( baseMaterialParams );
-
-			materials[ i ].program = baseMaterial.program;
-			materials[ i ].uniforms = THREE.UniformsUtils.clone( uniforms );
-
-			materials[ i ].uniforms[ 'targetStart'  ].value   = shared.targetStart;
-			materials[ i ].uniforms[ 'targetEnd'    ].value   = shared.targetEnd;
-			materials[ i ].uniforms[ 'map'          ].texture = geometry.materials[ i ][ 0 ].map;  
-			materials[ i ].uniforms[ 'grassImage'   ].texture = uniforms[ 'grassImage'   ].texture;
-			materials[ i ].uniforms[ 'surfaceImage' ].texture = uniforms[ 'surfaceImage' ].texture;
-
-			materials[ i ].fog = true;
-			materials[ i ].lights = true;
-
-			geometry.materials[ i ][ 0 ] = materials[ i ];
-
-		}
-
-		var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.1;
-
-		that.scene.addObject( mesh );
-
-		preInitModel( geometry, shared.renderer, that.scene, mesh );
-
-	} 
+};
 
 
-	// Shadow
 
-	loader.load( { model: 'files/models/city/City_Shadow.js', callback: function( geometry ) {
+var CityShader = {
 
-		var shadowMesh = new THREE.Mesh( geometry );
+	colors:{
+	
+		colorA: new THREE.Vector3( 1, 1, 1 ),
+		colorB: new THREE.Vector3( 1, 1, 1 ),
+		colorC: new THREE.Vector3( 1, 1, 1 )
+			
 
-		if (shared.debug) {
-			shadowMesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color:0xCCCCCC } ) );
-			shadowMesh.scale.x = shadowMesh.scale.y = shadowMesh.scale.z = 0.1;
-			that.scene.addObject( shadowMesh );
-		}
+	},
+	
+	uniforms: {
 
-		var shadow = new THREE.ShadowVolume( shadowMesh );
-		shadow.scale.x = shadow.scale.y = shadow.scale.z = 0.1;
+		"grassImage": { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' ) },
+		"surfaceImage": { type: "t", value: 1, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' ) },
+		"map": { type: "t", value:2, texture:null },
+		"map2": { type: "t", value:3, texture:null },
+		"map3": { type: "t", value:4, texture:null },
+
+		"time": { type: "f", value:0.0 },
+
+		"targetStart": { type: "v3", value: new THREE.Vector3() },
+		"targetEnd": { type: "v3", value: new THREE.Vector3() },
 		
-		that.scene.addObject( shadow, true );
+		"fogColor": { type: "c", value: new THREE.Color() },
+		"fogDensity": { type: "f", value: 0 },
 
-		preInitModel( geometry, shared.renderer, that.scene, shadowMesh );
+		"enableLighting" : { type: "i", value: 1 },
+		"ambientLightColor" : { type: "fv", value: [] },
+		"directionalLightDirection" : { type: "fv", value: [] },
+		"directionalLightColor" : { type: "fv", value: [] },
+		"pointLightColor" : { type: "fv", value: [] },
+		"pointLightPosition" : { type: "fv", value: [] },
+		"pointLightDistance" : { type: "fv1", value: [] },
 
-	} } );
+		"colorA": { type: "v3", value: new THREE.Vector3() },
+		"colorB": { type: "v3", value: new THREE.Vector3() },
+		"colorC": { type: "v3", value: new THREE.Vector3() }
 
+	},
 
-	var Shaders = {
+	vertexShader: [
+
+		"uniform vec3 ambientLightColor;",
+		"uniform vec3 directionalLightColor[ MAX_DIR_LIGHTS ];",
+		"uniform vec3 directionalLightDirection[ MAX_DIR_LIGHTS ];",
+
+		"uniform vec3 targetStart;",
+		"uniform vec3 targetEnd;",
 		
-		/////////// WORLD SHADER ////////////////
-		
-		'soup' : {
-
-			uniforms: {
-
-				"grassImage": { type: "t", value: 0, texture: null },
-				"surfaceImage": { type: "t", value: 1, texture: null },
-				"map": { type: "t", value:2, texture:null },
-
-				"targetStart": { type: "v3", value: new THREE.Vector3() },
-				"targetEnd": { type: "v3", value: new THREE.Vector3() },
-				
-				"fogColor": { type: "c", value: new THREE.Color() },
-				"fogDensity": { type: "f", value: 0 },
-
-				"enableLighting" : { type: "i", value: 1 },
-				"ambientLightColor" : { type: "fv", value: [] },
-				"directionalLightDirection" : { type: "fv", value: [] },
-				"directionalLightColor" : { type: "fv", value: [] },
-				"pointLightColor" : { type: "fv", value: [] },
-				"pointLightPosition" : { type: "fv", value: [] },
-				"pointLightDistance" : { type: "fv1", value: [] }
-
-			},
-
-			vertexShader: [
-
-				"uniform vec3 ambientLightColor;",
-				"uniform vec3 directionalLightColor[ MAX_DIR_LIGHTS ];",
-				"uniform vec3 directionalLightDirection[ MAX_DIR_LIGHTS ];",
-				
-				"varying vec3 vWorldPosition;",
-				"varying vec3 vNormal;",
-				"varying vec2 vUv;",
-				"varying vec3 vLightWeighting;",
+		"varying vec3 vWorldPosition;",
+		"varying vec3 vColor;",
+		"varying vec3 vNormal;",
+		"varying vec3 vNormalsquare;",
+		"varying vec3 vLightWeighting;",
 
 
-				"void main() {",
+		"void main() {",			
+			"vec3 transformedNormal = normalize( normalMatrix * normal );",
+			"vNormalsquare = transformedNormal * transformedNormal;",
+			"vNormal = transformedNormal;",
+			
+			"vColor = color;",
 
-					"vec3 transformedNormal = normalize( normalMatrix * normal );",
-					"vNormal = transformedNormal * transformedNormal;",
-					
-					"vUv = uv;",
+			"vLightWeighting = ambientLightColor;",
 
-					"vLightWeighting = ambientLightColor;",
+/*			"vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ 0 ], 0.0 );",
+			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
+			"vLightWeighting += directionalLightColor[ 0 ] * directionalLightWeighting;",
+			"vLightWeighting = vLightWeighting * vec3(0.5, 0.55, 0.45) + vec3(0.5, 0.45, 0.55);",
+*/
+			"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
+			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
-					"vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ 0 ], 0.0 );",
-					"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
-					"vLightWeighting += directionalLightColor[ 0 ] * directionalLightWeighting;",
+		"}"
 
-					"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
-					"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+	].join("\n"),
 
-				"}"
+	fragmentShader: [
 
-			].join("\n"),
+		"uniform sampler2D grassImage;",
+		"uniform sampler2D surfaceImage;",
+		"uniform sampler2D map;",
+		"uniform sampler2D map2;",
+		"uniform sampler2D map3;",
+		"uniform vec3 targetStart;",
+		"uniform vec3 targetEnd;",
 
-			fragmentShader: [
+		"uniform float time;",
 
-				"uniform sampler2D grassImage;",
-				"uniform sampler2D surfaceImage;",
-				"uniform sampler2D map;",
-				"uniform vec3 targetStart;",
-				"uniform vec3 targetEnd;",
+		"uniform vec3 fogColor;",
+		"uniform float fogDensity;",
 
-				"uniform vec3 fogColor;",
-				"uniform float fogDensity;",
+		"varying vec3 vWorldPosition;",
+		"varying vec3 vColor;",
+		"varying vec3 vNormal;",
+		"varying vec3 vNormalsquare;",
+		"varying vec3 vLightWeighting;",
+		"uniform vec3 colorA;",
+		"uniform vec3 colorB;",
+		"uniform vec3 colorC;",
 
-				"varying vec3 vWorldPosition;",
-				"varying vec3 vNormal;",
-				"varying vec2 vUv;",
-				"varying vec3 vLightWeighting;",
 
-				"void main() {",
+		"void main() {",
 
-					"float distance;",
-					"vec3 normal;",
-					"vec4 surface;",
-					"vec4 grass;",
+			"float distance;",
+			"vec3 normal;",
+			"vec4 surface;",
+			"vec4 grass;",
+			"float fog_density = 0.0001;",
 
-					"vec3 worldPosition = vWorldPosition * 0.0145;",
+			"vec3 worldPosition = vWorldPosition * 0.0005;",
 
-					"vec3 pointStart = vWorldPosition - targetStart;",
-					"vec3 endStart = targetEnd - targetStart;",
-					"float endStartLength2 = pow( length( endStart ), 2.0 );",
-					"float pointOnLine = clamp( dot( endStart, pointStart ) / endStartLength2, 0.0, 1.0 );",
+			"vec3 pointStart = vWorldPosition - targetStart;",
+			"vec3 endStart = targetEnd - targetStart;",
+			"float endStartLength2 = dot(endStart, endStart);",
+			"float pointOnLine = clamp( dot( endStart, pointStart ) / endStartLength2, 0.0, 1.0 );",
+			"distance = length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * -0.01;",
+			
+			"grass = texture2D( grassImage, worldPosition.yz * vec2(10.0)) * vNormalsquare.xxxx + ",
+			        "texture2D( grassImage, worldPosition.xz * vec2(10.0)) * vNormalsquare.yyyy + ",
+			        "texture2D( grassImage, worldPosition.xy * vec2(10.0)) * vNormalsquare.zzzz;",
+			"distance += (0.5 + grass.g) * texture2D(surfaceImage, worldPosition.zx * vec2(3.0)).g;",
+			//"distance += grass.g;",
+			"surface = vec4(vec3(0.15, 0.18, 0.2)/*colorA*/ * vec3(2.0), 1.0);",
 
-					"distance  = 1.0 - length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * 0.0080;",
-					"distance += texture2D( grassImage, worldPosition.xz ).g - 0.5;",
-					
-					"surface = texture2D( surfaceImage, worldPosition.yz ) * vNormal.x + ",
-							  "texture2D( surfaceImage, worldPosition.xz ) * vNormal.y + ",
-							  "texture2D( surfaceImage, worldPosition.xy ) * vNormal.z;",
+			"if(distance > 0.0)",
+				"surface = grass;",
+				//"surface = mix( surface, grass, smoothstep( 0.0, 0.1, distance ));",
 
-					"if( distance >= 0.0 ) {",
+			"float depth = gl_FragCoord.z / gl_FragCoord.w;",
+			"depth *= 0.0001;",
 
-						"grass = texture2D( grassImage, worldPosition.yz ) * vNormal.x + ",
-								"texture2D( grassImage, worldPosition.xz ) * vNormal.y + ",
-								"texture2D( grassImage, worldPosition.xy ) * vNormal.z;",
+			"gl_FragColor = surface * vec4( vColor, 1.0 ) * vec4(2.0);",
+			"gl_FragColor = mix(gl_FragColor * texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time)), gl_FragColor, vec4(colorC.rgb, 0.1));",
+			"gl_FragColor = mix(vec4(gl_FragColor.rgb, 1.0), vec4(/*colorB*/0.64, 0.88, 1, 1.0), vec4(depth));",	
 
-						"surface = mix( surface, grass, smoothstep( 0.0, 0.9, distance ));",
 
-					"}",
+			//"gl_FragColor = vec4(distance, distance, distance, 1.0);",
+			//"gl_FragColor *= vec4( 0.0, 1.0, 0.0, 1.0 );",
 
-					"float depth = gl_FragCoord.z / gl_FragCoord.w;",
-					"const float LOG2 = 1.442695;",
-					
-					"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
-					"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
+			/*time laps only*/
+			//"gl_FragColor = texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time));",
 
-					"gl_FragColor = surface * texture2D( map, vUv );",
-					"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
-					"gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
-				"}"
+			/*grass only*/
+			//"gl_FragColor = grass;",
 
-			].join("\n")
+			/*grass only*/
+			//"gl_FragColor = texture2D( grassImage, worldPosition.zx * vec2(10.0));",
+			//"gl_FragColor = vec4(vNormalsquare.yyy, 1.0);", 
+		"}"
 
-		}
-	}*/
+	].join("\n")
+
 };

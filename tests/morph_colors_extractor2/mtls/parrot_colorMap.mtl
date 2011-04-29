@@ -1,0 +1,49 @@
+newmtl beak_darkSG
+illum 4
+Kd 0.09 0.03 0.03
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl bodySG
+illum 4
+Kd 0.84 0.16 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_blueSG
+illum 4
+Kd 0.25 0.49 0.64
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_greenSG
+illum 4
+Kd 0.53 0.71 0.29
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl eyesSG
+illum 4
+Kd 0.01 0.00 0.05
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl face_lightSG
+illum 4
+Kd 1.00 0.88 0.82
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd parrot_rb_01.jpg
+Ni 1.00
+newmtl legsSG
+illum 4
+Kd 0.40 0.31 0.38
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00

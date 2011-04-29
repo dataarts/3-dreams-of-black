@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>ROME</title>
+		<style>
+			body {
+
+				font-family: Helvetica, Arial;
+				font-size: 14px;
+				background-color: #000000;
+				color: #808080;
+				margin: 0px;
+				overflow: hidden;
+
+			}
+
+			a {
+
+				color: #A0A0A0;
+				text-decoration: none;
+
+			}
+
+			a:hover {
+
+				text-decoration: underline;
+
+			}
+			#ctrl {
+				position: absolute;
+				top: 16px;
+				left: 0px;
+				color: #ffffff;
+				padding: 2px;
+				font-family: Monospace;
+				font-size: 10px;
+				z-index:100;
+			}
+			
+		</style>
+	</head>
+	<body>
+		
+		<button onclick="hideCtrl();">HIDE</button>
+		<button onclick="showCtrl();">SHOW</button><br/>
+		<div id="ctrl">
+			Color Offset: <input id="colorOffseti" type="range" value="100" min="0" max="100" onchange="updateValue( 'colorOffset', this.value/100 );" /><span id="colorOffset">1</span>
+			Color Factor: <input id="colorFactori" type="range" value="0" min="0" max="100" onchange="updateValue( 'colorFactor', this.value/100 );" /><span id="colorFactor">0</span>
+			Color Brightness: <input id="colorBrightnessi" type="range" value="0" min="0" max="100" onchange="updateValue( 'colorBrightness', this.value/100 );" /><span id="colorBrightness">0</span><br/>
+			Vignette Offset: <input id="vingenettingOffseti" type="range" value="70" min="0" max="100" onchange="updateValue( 'vingenettingOffset', this.value/100 );" /><span id="vingenettingOffset">0.7</span>
+			Vignette Darken: <input id="vingenettingDarkeningi" type="range" value="40" min="0" max="100" onchange="updateValue( 'vingenettingDarkening', this.value/100 );" /><span id="vingenettingDarkening">0.4</span><br/>
+			Sample Distance: <input id="sampleDistancei" type="range" value="100" min="0" max="200" onchange="updateValue( 'sampleDistance', this.value/100 );" /><span id="sampleDistance">1.0</span>
+			Wave Factor: <input id="waveFactori" type="range" value="1" min="0" max="1000" onchange="updateValue( 'waveFactor', this.value/100000 );" /><span id="waveFactor">0.001</span><br/>
+			
+			Ambient R: <input id="ambienti.r" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'ambient', 'r', this.value/100 );" /><span id="ambient.r">1.0</span> G:<input id="ambienti.g" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'ambient', 'g', this.value/100 );" /><span id="ambient.g">1.0</span> B:<input id="ambienti.b" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'ambient', 'b', this.value/100 );" /><span id="ambient.b">1.0</span><br/>
+			
+			Direct1 X: <input id="directionalLight1i.x" type="range" value="100" min="-100" max="100" onchange="updateLightPos( 'directionalLight1', 'x', this.value/100 );" /><span id="directionalLight1.x">1.0</span> Y:<input id="directionalLight1i.y" type="range" value="100" min="-100" max="100" onchange="updateLightPos( 'directionalLight1', 'y', this.value/100 );" /><span id="directionalLight1.y">1.0</span> Z:<input id="directionalLight1i.z" type="range" value="100" min="-100" max="100" onchange="updateLightPos( 'directionalLight1', 'z', this.value/100 );" /><span id="directionalLight1.z">1.0</span><br/>
+			Direct1 R: <input id="directionalLight1i.r" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'directionalLight1', 'r', this.value/100 );" /><span id="directionalLight1.r">1.0</span> G:<input id="directionalLight1i.g" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'directionalLight1', 'g', this.value/100 );" /><span id="directionalLight1.g">1.0</span> B:<input id="directionalLight1i.b" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'directionalLight1', 'b', this.value/100 );" /><span id="directionalLight1.b">1.0</span><br/>
+
+			Direct2 X: <input id="directionalLight2i.x" type="range" value="100" min="-100" max="100" onchange="updateLightPos( 'directionalLight2', 'x', this.value/100 );" /><span id="directionalLight2.x">1.0</span> Y:<input id="directionalLight2i.y" type="range" value="100" min="-100" max="100" onchange="updateLightPos( 'directionalLight2', 'y', this.value/100 );" /><span id="directionalLight2.y">1.0</span> Z:<input id="directionalLight2i.z" type="range" value="100" min="-100" max="100" onchange="updateLightPos( 'directionalLight2', 'z', this.value/100 );" /><span id="directionalLight2.z">1.0</span><br/>
+			Direct2 R: <input id="directionalLight2i.r" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'directionalLight2', 'r', this.value/100 );" /><span id="directionalLight2.r">1.0</span> G:<input id="directionalLight2i.g" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'directionalLight2', 'g', this.value/100 );" /><span id="directionalLight2.g">1.0</span> B:<input id="directionalLight2i.b" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'directionalLight2', 'b', this.value/100 );" /><span id="directionalLight2.b">1.0</span><br/>
+		</div>
+
+
+
+		<audio id="audio" autobuffer>
+			<source src="files/Black.ogg">
+		</audio>
+
+		<div id="experience"></div>
+		
+		<script>
+		
+			function print() {
+				
+				var canvas = document.createElement( 'canvas' );
+				canvas.width = 100;
+				canvas.height = 100;
+				var context2D = canvas.getContext( '2d' );
+				
+				var context3D = shared.renderer.getContext();
+				
+				context2D.drawImage( context3D.canvas, 0, 0 );
+				
+				var string = canvas.toDataURL();
+				
+			}
+		
+			function updateAnimal( name, part, value ) {
+				
+				ROME.AnimalShader.globals[ name ][ part ] = value;
+				
+				var element = document.getElementById( name + "." + part );
+				if( element ) {
+					
+					element.innerHTML = value;
+				}
+			};
+
+			function hideCtrl() {
+				
+				document.getElementById( 'ctrl' ).style.visibility = 'hidden';				
+			}
+			function showCtrl() {
+				
+				document.getElementById( 'ctrl' ).style.visibility = 'visible';				
+			}
+			function updateValue( name, value ) {
+				
+				painterEffect.uniforms[ name ].value = value;
+
+				var element = document.getElementById( name );
+				if( element ) {
+					
+					element.innerHTML = value;
+				}
+				
+			}
+			
+			function updateValueColor( name, part, value ) {
+				
+				painterEffect.uniforms[ name ].value[ part ] = value;
+
+				var element = document.getElementById( name + "." + part );
+				if( element ) {
+					
+					element.innerHTML = value;
+				}
+			}
+			
+			function updateLightCol( name, part, value ) {
+				
+				shared.worlds.prairie[ name ].color[ part ] = value;
+				
+				var element = document.getElementById( name + "." + part );
+				if( element ) {
+					
+					element.innerHTML = value;
+				}
+			}
+			
+			function updateLightPos( name, part, value ) {
+				
+				shared.worlds.prairie[ name ].position[ part ] = value;
+				
+				var element = document.getElementById( name + "." + part );
+				if( element ) {
+					
+					element.innerHTML = value;
+				}
+			}
+			
+			function setSlider( name, part, value ) {
+				
+				var slider = document.getElementById( name + "i" + ( part !== "" ? "." + part : "" ));
+				if( slider ) {
+					
+					slider.value = value * 100;
+
+					var element = document.getElementById( name + ( part !== "" ? "." + part : "" ) );
+					if( element ) {
+						
+						element.innerHTML = value;
+					}
+
+					
+				}
+				
+				
+			}
+		</script>
+
+		<script src="js/lib/Logger.js"></script>
+		<script src="js/lib/Stats.js"></script>
+		<script src="js/lib/Tween.js"></script>
+
+		<script src="js/lib/js-signals.min.js"></script>
+		<script src="js/lib/gui.min.js"></script>
+
+		<script src="js/lib/Three.js"></script>
+
+		<script src="js/lib/LoadingBar.js"></script>
+		<script src="js/lib/RequestAnimationFrame.js"></script>
+		<script src="js/lib/Sequencer.js"></script>
+		<script src="js/lib/Tune.js"></script>
+		<script src="js/lib/Utils.js"></script>
+
+		<script src="js/effects/ClearEffect.js"></script>
+		<script src="js/effects/FadeInEffect.js"></script>
+		<script src="js/effects/FadeOutEffect.js"></script>
+		<script src="js/effects/RenderEffect.js"></script>
+		<script src="js/effects/BloomEffect.js"></script>
+		<script src="js/effects/NoiseEffect.js"></script>
+		<script src="js/effects/HeatEffect.js"></script>
+		<script src="js/effects/PaintEffect.js"></script>
+		<script src="js/effects/PaintEffectPrairie.js"></script>
+
+		<script src="js/worlds/PrairieWorld.js"></script>
+		<script src="js/worlds/triggers/Trigger.js"></script>
+
+		<script src="js/soups/PrairieSoup.js"></script>
+		<script src="js/soups/elements/Ribbon.js"></script>
+		<script src="js/soups/elements/Animal.js"></script>
+		<script src="js/soups/elements/Ribbons.js"></script>
+		<script src="js/soups/elements/Vectors.js"></script>
+		<script src="js/soups/elements/Particles.js"></script>
+		<script src="js/soups/elements/AnimalSwarm.js"></script>
+		<script src="js/soups/elements/AnimalInFrontOfCamera.js"></script>
+		<script src="js/soups/elements/Trail.js"></script>
+		<script src="js/soups/elements/CollisionScene.js"></script>
+		<script src="js/soups/elements/TrailShader.js"></script>
+
+		<script src="js/sequences/Prairie.js"></script>
+
+		<script src="js/MainPrairieTemp.js"></script>
+
+	</body>
+</html> 

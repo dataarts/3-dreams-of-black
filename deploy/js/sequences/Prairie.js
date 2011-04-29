@@ -90,6 +90,7 @@ var Prairie = function ( shared ) {
 		soup = new PrairieSoup( camera, world.scene, shared );
 
 		shared.worlds.prairie = world;
+		shared.sequences.prairie = this;
 
 		//world.scene.addObject( cameraPath.debugPath );
 		world.scene.addObject( cameraPath.animationParent );
@@ -103,9 +104,7 @@ var Prairie = function ( shared ) {
 
 	this.show = function ( progress ) {
 
-		cameraPath.animation.play( true, 0 );
-
-		renderer.setClearColor( world.scene.fog.color );
+		this.resetCamera();
 
 		shared.started.prairie = true;
 
@@ -115,10 +114,23 @@ var Prairie = function ( shared ) {
 
 	};
 
+	this.resetCamera = function() {
+		
+		camera.position.set( 0, 0, 0 );
+		camera.lon = 360;
+
+		camera.animation.play( true, 0 );
+
+		renderer.setClearColor( world.scene.fog.color );
+
+	};
+	
 	this.update = function ( progress, delta, time ) {
 
-		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
-			delta = 1000/60;
+		if ( isNaN(delta) || delta > 1000 || delta == 0 ) {
+
+			delta = 1000 / 60;
+
 		}
 
 		THREE.AnimationHandler.update( delta );

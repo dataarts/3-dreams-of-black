@@ -307,6 +307,7 @@ var GUI = function(parameters) {
 
         // Success.
         controllerContainer.appendChild(controllerObject.domElement);
+        controllerObject.domElement.setAttribute('id', 'guidat-'+propertyName);
         controllers.push(controllerObject);
         GUI.allControllers.push(controllerObject);
 
@@ -380,7 +381,7 @@ var GUI = function(parameters) {
 
     this.show = function() {
         toggleButton.innerHTML = name || "Hide Controls";
-        resizeTo = openHeight;
+        resizeTo = 68;
         clearTimeout(resizeTimeout);
         beginResize();
         open = true;
