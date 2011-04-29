@@ -2,10 +2,12 @@ var Section = function () {};
 
 Section.prototype = {
 
-	getDomElement: function () {},
+	load: function () {},
 	show: function () {},
 	hide: function () {},
 	resize: function ( width, height ) {},
-	update: function () {}
+	update: function () {},
+
+	getDomElement: function () {}
 
 }

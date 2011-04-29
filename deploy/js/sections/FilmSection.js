@@ -56,7 +56,13 @@ var FilmSection = function ( shared ) {
 
 	// sequence
 
-	var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false );
+	var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false, 0 );
+	//var intro2 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
+	//var intro3 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
+	//var intro3 = new VideoSequence( shared, "files/videos/christest.webm", false, false, 1 );
+
+	//var intro2 = new VideoSequence( shared, "files/videos/trailer.800.webm", false, false, 1 );
+	
 
 	var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
 
@@ -70,10 +76,13 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( intro2, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( prairieParalax, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 4 );
 
 	sequencer.add( cityAnimation, tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
-	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
@@ -103,6 +112,9 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
 
+	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
+
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 6 );
 
 	//
@@ -119,8 +131,6 @@ var FilmSection = function ( shared ) {
 		audio.play();
 		//audio.volume = 0;
 
-		document.addEventListener( 'keydown', onDocumentKeyDown, false );
-
 	};
 
 	function stop() {
@@ -128,8 +138,6 @@ var FilmSection = function ( shared ) {
 		playing = false;
 
 		audio.pause();
-
-		document.removeEventListener( 'keydown', onDocumentKeyDown, false );
 
 	};
 
@@ -185,11 +193,16 @@ var FilmSection = function ( shared ) {
 
 		domElement.style.display = 'block';
 
+		shared.signals.keydown.add( onDocumentKeyDown );
+
 	};
 
 	this.hide = function () {
 
 		domElement.style.display = 'none';
+
+		shared.signals.keydown.remove( onDocumentKeyDown );
+
 		stop();
 
 	};

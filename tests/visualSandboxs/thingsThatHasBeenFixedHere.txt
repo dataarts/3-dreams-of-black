@@ -1,0 +1,3 @@
+- TrailShader.js : Small bug fix to TrailShader 
+- Trigger.js : checking so there's actually morphtargets in trigger before creating it (it was failing if there wasn't)
+- CityWorld : added custom shader, added time update

@@ -1,0 +1,13 @@
+newmtl bodySG
+illum 4
+Kd 0.15 0.13 0.13
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl initialShadingGroup
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd scorpion_rb_01.jpg
+Ni 1.00

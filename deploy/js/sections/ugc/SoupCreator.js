@@ -9,13 +9,12 @@ var SoupCreator = function ( shared ) {
 
 	this.getDomElement = function () {
 
-		return domElement;
+		return renderer.domElement;
 
 	};
 
 	this.show = function () {
 
-		domElement.appendChild( renderer.domElement );
 
 	};
 
@@ -35,16 +34,6 @@ var SoupCreator = function ( shared ) {
 	};
 
 	this.update = function () {
-
-		position = ( ( new Date().getTime() - start_time ) * 0.03 ) % 4000;
-
-		camera.position.x += ( mouse.x - camera.target.position.x ) * 0.01;
-		camera.position.y += ( - mouse.y - camera.target.position.y ) * 0.01;
-		camera.position.z = - position + 4000;
-
-		camera.target.position.x = camera.position.x;
-		camera.target.position.y = camera.position.y;
-		camera.target.position.z = camera.position.z - 1000;
 
 		renderer.clear();
 		renderer.render( scene, camera );

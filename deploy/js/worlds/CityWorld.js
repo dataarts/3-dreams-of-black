@@ -90,7 +90,7 @@ var CityWorld = function ( shared ) {
 		
 		//TriggerUtils.setupCityTriggers( result );
 		
-		//that.scene.update( undefined, true );
+		that.scene.update( undefined, true );
 		
 	};
 
@@ -108,7 +108,11 @@ var CityWorld = function ( shared ) {
 /*		TriggerUtils.effectors[ 0 ] = -camera.matrixWorld.getColumnZ().multiplyScalar( 100 ).x;
 		TriggerUtils.effectors[ 1 ] = position.y;
 		TriggerUtils.effectors[ 2 ] = position.z - 100;
-		
+*/
+/*		TriggerUtils.effectors[ 0 ] = shared.trigger.x;
+		TriggerUtils.effectors[ 1 ] = shared.trigger.y;
+		TriggerUtils.effectors[ 2 ] = shared.trigger.z;
+
 		var t = TriggerUtils.effectors;
 		
 		if ( sphere ) {
@@ -120,7 +124,7 @@ var CityWorld = function ( shared ) {
 		}
 		
 		TriggerUtils.update();
-*/		
+*/	
 		if ( portalsActive ) {
 			
 			var currentPosition = camera.matrixWorld.getPosition();
