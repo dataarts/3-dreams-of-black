@@ -286,21 +286,15 @@ ROME.AnimalShader = {
 			// separate lights for animals
 			// ( ambient + one directional )
 
-			"vLightWeighting = vec3( 0.2 );",
+			"vLightWeighting = vec3( 0.2 );", 
 
 			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
 			"float directionalLightWeighting = dot( transformedNormal, normalize( lDirection.xyz ) ) * 0.5 + 0.5;",
-			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
-			
-			/*
-			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
-			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
-			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
-			*/
+			"vLightWeighting += vec3( 0.7 ) * directionalLightWeighting;",
 			
 			// tweak lighting
 			
-			//"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
+			"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
 
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 
