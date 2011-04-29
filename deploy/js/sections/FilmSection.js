@@ -66,7 +66,7 @@ var FilmSection = function ( shared ) {
 
 	var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
 
-	var prairieParalax = new ParalaxSequence(shared, "files/videos/multi.webm" );
+	var prairieParalax = new ParalaxSequence(shared, "files/videos/multi2.webm" );
 	var prairieAnimation = new VideoSequence(shared, "files/videos/s0234.webm", false, false );
 	var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
 
