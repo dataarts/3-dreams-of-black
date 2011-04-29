@@ -140,12 +140,12 @@ var Clouds = function ( shared ) {
       boid = boids[ i ] = new Boid();
       boid.position.x = 240;
       boid.position.y = 90 + Math.random() * 10;
-      boid.position.z = 550 + Math.random();
+      boid.position.z = 200 + Math.random();
       boid.velocity.x = Math.random() * 2 - 1;
       boid.velocity.y = Math.random() * 2 - 1;
       boid.velocity.z = Math.random() * 2 - 1;
       boid.setAvoidWalls( true );
-      boid.setWorldSize( 1000, 200, 1000 );
+      boid.setWorldSize( 1000, 200, 400 );
 
       /////Birds
       morphObject[i] = new ROME.Animal( geometry, true );
@@ -213,7 +213,7 @@ var Clouds = function ( shared ) {
 		camera.position.x += ( mouse.x - camera.target.position.x ) * 0.01;
 		camera.position.y += ( - mouse.y - camera.target.position.y ) * 0.01;
 		camera.position.z = - position + 4000;
-    birdsGroup.position.z = camera.position.z - 1000;
+    birdsGroup.position.z = camera.position.z - 500;
 
 		camera.target.position.x =  camera.position.x;
 		camera.target.position.y = camera.position.y;
