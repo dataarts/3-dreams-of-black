@@ -163,12 +163,16 @@ var CityWorld = function ( shared ) {
 		
 		var position = camera.matrixWorld.getPosition();
 		
+		cityMaterialGrassEnd.copy( cityMaterialGrassStart );
+
 		cityMaterialGrassStart.x = TriggerUtils.effectors[ 0 ] = Math.sin( position.z / 500 ) * 200;
 		cityMaterialGrassStart.y = TriggerUtils.effectors[ 1 ] = position.y;
 		cityMaterialGrassStart.z = TriggerUtils.effectors[ 2 ] = position.z - 300;
+
+		cityMaterialGrassEnd.subSelf( cityMaterialGrassStart );
+		cityMaterialGrassEnd.multiplyScalar( 200 );
+		cityMaterialGrassEnd.addSelf( cityMaterialGrassStart );
 		
-		cityMaterialGrassEnd.copy( cityMaterialGrassStart );
-		cityMaterialGrassEnd.z += 500;
 		
 		TriggerUtils.update();
 		
@@ -319,29 +323,32 @@ var CityShader = {
 			"vec3 endStart = targetEnd - targetStart;",
 			"float endStartLength2 = dot(endStart, endStart);",
 			"float pointOnLine = clamp( dot( endStart, pointStart ) / endStartLength2, 0.0, 1.0 );",
-			"distance = length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * -0.75;",
+			"distance = length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * -0.01;",
 			
 			"grass = texture2D( grassImage, worldPosition.yz * vec2(10.0)) * vNormalsquare.xxxx + ",
 			        "texture2D( grassImage, worldPosition.xz * vec2(10.0)) * vNormalsquare.yyyy + ",
 			        "texture2D( grassImage, worldPosition.xy * vec2(10.0)) * vNormalsquare.zzzz;",
-			"distance *= texture2D(surfaceImage, worldPosition.zx * vec2(2)).g;",
-			"distance += grass.g;",
-			"surface = vec4(colorA * vec3(2.0), 1.0);",
+			"distance += (0.5 + grass.g) * texture2D(surfaceImage, worldPosition.zx * vec2(3.0)).g;",
+			//"distance += grass.g;",
+			"surface = vec4(vec3(0.15, 0.18, 0.2)/*colorA*/ * vec3(2.0), 1.0);",
 
 			"if(distance > 0.0)",
-				"surface = mix( surface, grass, smoothstep( 0.0, 0.2, distance ));",
+				"surface = grass;",
+				//"surface = mix( surface, grass, smoothstep( 0.0, 0.1, distance ));",
 
 			"float depth = gl_FragCoord.z / gl_FragCoord.w;",
 			"depth *= 0.0001;",
 
-			"gl_FragColor = surface * vec4( vColor, 1.0 );",
+			"gl_FragColor = surface * vec4( vColor, 1.0 ) * vec4(2.0);",
 			"gl_FragColor = mix(gl_FragColor * texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time)), gl_FragColor, vec4(colorC.rgb, 0.1));",
-			"gl_FragColor = mix(vec4(gl_FragColor.rgb, 1.0), vec4(colorB, 1.0), vec4(depth));",	
+			"gl_FragColor = mix(vec4(gl_FragColor.rgb, 1.0), vec4(/*colorB*/0.64, 0.88, 1, 1.0), vec4(depth));",	
 
+
+			//"gl_FragColor = vec4(distance, distance, distance, 1.0);",
 			//"gl_FragColor *= vec4( 0.0, 1.0, 0.0, 1.0 );",
 
 			/*time laps only*/
-			"gl_FragColor = texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time));",
+			//"gl_FragColor = texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time));",
 
 			/*grass only*/
 			//"gl_FragColor = grass;",
