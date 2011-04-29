@@ -81,7 +81,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// vector trail
 	var startPosition = new THREE.Vector3(0,0,100);
-	var vectors = new Vectors(50,2,3,startPosition);
+	var vectors = new Vectors(50,2,2,startPosition);
 	//vectors.settings.divider = 4;
 	//vectors.settings.normaldivider = 4;
 	//vectors.settings.absoluteTrail = true;

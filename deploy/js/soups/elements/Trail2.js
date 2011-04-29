@@ -13,7 +13,7 @@ var Trail = function ( numOfInstances, scene ) {
 		spread : 70,
 		visible : true,
 		aliveDivider: that.initSettings.numOfInstances,
-		tweenTime: 3000,
+		tweenTime: 2500,
 		scale: 1,
 	}
 
