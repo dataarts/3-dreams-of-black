@@ -4,10 +4,278 @@
  * George Michael Brower - http://georgemichaelbrower.com
  * Jono Brandel - http://jonobr1.com
  */
-window.GEE=function(d){d||(d={});if(document.createElement("canvas").getContext){var c=this,i={},b={ctx:undefined,domElement:undefined,width:undefined,height:undefined,desiredFrameTime:1E3/60,frameCount:0,key:undefined,keyCode:undefined,mouseX:0,mouseY:0,pmouseX:undefined,pmouseY:undefined,mousePressed:false,offset:{x:0,y:0}},j=undefined,f,g=function(){for(var a=f,h=0,m=0;a;){m+=a.offsetTop;h+=a.offsetLeft;a=a.offsetParent}b.offset.x=h;b.offset.y=m};d.context||(d.context="2d");f=b.domElement=document.createElement("canvas");
-b.ctx=f.getContext(d.context);if(b.ctx==null)d.fallback&&d.fallback();else{if(d.fullscreen){var e=function(){g();b.width=d.width?f.width=d.width:f.width=window.innerWidth;b.height=d.height?f.height=d.height:f.height=window.innerHeight;c.loop||c.draw&&c.draw()};window.addEventListener("resize",e,false);e();if(!d.container){document.body.style.margin="0px";document.body.style.padding="0px";document.body.style.overflow="hidden"}d.container=d.container||document.body}else{d.width||(d.width=500);d.height||
-(d.height=500);window.addEventListener("resize",g,false);g();c.__defineSetter__("width",function(a){b.width=f.width=a});c.__defineSetter__("height",function(a){b.height=f.height=a});c.width=d.width;c.height=d.height}if(d.container){d.container.appendChild(f);g()}e=function(a){c.__defineGetter__(a,function(){return b[a]})};e("ctx");e("domElement");e("width");e("height");e("frameCount");e("key");e("keyCode");e("mouseX");e("mouseY");e("pmouseX");e("pmouseY");e("mousePressed");e=function(){};c.loop=true;
-c.keyup=e;c.keydown=e;c.draw=e;c.mousedown=e;c.mouseup=e;c.mousemove=e;c.mousedrag=e;c.mouseover=e;c.mouseout=e;c.__defineGetter__("frameRate",function(){return 1E3/j});c.__defineGetter__("frameTime",function(){return j});c.__defineGetter__("keyPressed",function(){for(var a in i)if(i[a])return true;return false});c.__defineSetter__("frameTime",function(a){b.desiredFrameTime=a});c.__defineSetter__("frameRate",function(a){b.desiredFrameTime=k/a});f.addEventListener("mouseover",function(){g();c.mouseover()},
-false);f.addEventListener("mouseout",function(){g();c.mouseout()},false);var l=function(){c.mousemove()};f.addEventListener("mousemove",function(a){var h=a.pageX-b.offset.x;a=a.pageY-b.offset.y;if(b.pmouseX==undefined){b.pmouseX=h;b.pmouseY=a}else{b.pmouseX=b.mouseX;b.pmouseY=b.mouseY}b.mouseX=h;b.mouseY=a},false);f.addEventListener("mousemove",l,false);f.addEventListener("mousedown",function(){b.mousePressed=true;c.mousedown();f.addEventListener("mousemove",c.mousedrag,false);f.removeEventListener("mousemove",
-l,false)},false);f.addEventListener("mouseup",function(){b.mousePressed=false;c.mouseup();f.removeEventListener("mousemove",c.mousedrag,false);f.addEventListener("mousemove",l,false)},false);window.addEventListener("keydown",function(a){a=a.keyCode;b.key=String.fromCharCode(a);b.keyCode=a;i[a]=true;c.keydown()},false);window.addEventListener("keyup",function(a){a=a.keyCode;b.key=String.fromCharCode(a);b.keyCode=a;i[a]=false;c.keyup()},false);var n=function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||
-window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||function(a){window.setTimeout(a,j)}}();b._idraw=function(){b.frameCount++;var a=(new Date).getTime();c.draw();a=(new Date).getTime()-a;j=a>b.desiredFrameTime?a:b.desiredFrameTime;c.loop&&n(b._idraw)};b._idraw()}}else d.fallback&&d.fallback()};
+ // ==ClosureCompiler==
+ // @output_file_name gee.min.js
+ // @compilation_level ADVANCED_OPTIMIZATIONS
+ // ==/ClosureCompiler==
+ window['GEE'] = function(params) {
+
+ 	if ( !params ) {
+ 		params = {};
+ 	}
+
+ 	// Do we support canvas?
+ 	if ( !document.createElement('canvas').getContext ) {
+ 		if ( params.fallback ) { 
+ 			params.fallback();
+ 		}
+ 		return;
+ 	}	
+
+ 	var _this = this,
+ 		_keysDown = {},
+ 		_privateParts = 
+ 		 {
+ 			'ctx':		    undefined,
+ 			'domElement':   undefined,
+ 			'width':	    undefined,
+ 			'height':	    undefined,
+ 			'desiredFrameTime':    1E3/60,
+ 			'frameCount':   0,
+ 			'key':	        undefined,
+ 			'keyCode':      undefined,
+ 			'mouseX':       0,
+ 			'mouseY':       0,
+ 			'pmouseX':	    undefined,
+ 			'pmouseY':	    undefined,
+ 			'mousePressed': false
+ 		},
+ 		_actualFrameTime = undefined,
+ 		d; // shorthand for the dom element
+
+ 	var getOffset = function() {
+ 		var obj = d;
+ 		var x = 0, y = 0;
+ 		while (obj) {
+ 			y += obj.offsetTop;
+ 			x += obj.offsetLeft;
+ 			obj = obj.offsetParent;
+ 		}
+ 		offset = { x:x, y:y };
+ 	};
+
+ 	// Default parameters
+
+ 	if ( !params['context'] ) {
+ 		params['context'] = '2d';
+ 	}
+
+ 	if ( !params['width'] ) {
+ 		params['width'] = 500;
+ 	}
+
+ 	if ( !params['height'] ) {
+ 		params['height'] = 500;
+ 	}
+
+ 	// Create domElement, grab context
+
+ 	d = _privateParts['domElement'] = document.createElement('canvas');
+ 	_privateParts['ctx'] = d.getContext( params['context'] );
+
+ 	// Are we capable of this context?
+
+ 	if ( _privateParts['ctx'] == null) {
+ 		if ( params.fallback ) { 
+ 			params.fallback();
+ 		}
+ 		return;
+ 	}
+
+ 	// Set up width and height setters / listeners
+
+ 	if ( params['fullscreen'] ) {
+
+ 		var onResize = function() {
+ 			getOffset();
+ 			_privateParts['width'] = d['width'] = window.innerWidth;
+ 			_privateParts['height'] = d['height'] = window.innerHeight-4;
+ 		};
+ 		window.addEventListener( 'resize', onResize, false );
+ 		onResize();
+
+ 		if ( !params['container'] ) {
+ 			params['container'] = document['body'];
+ 		}
+ 		document.body.style.margin = '0px';
+ 		document.body.style.padding = '0px';
+
+ 	} else { 
+
+ 		getOffset();
+ 		_this.__defineSetter__('width', function(v) {
+ 			_privateParts['width'] = d['width'] = v;
+ 		});
+
+ 		_this.__defineSetter__('height', function(v) {
+ 			_privateParts['height'] = d['height'] = v;
+ 		});
+
+ 		_this['width'] = params['width'];
+ 		_this['height'] = params['height'];
+
+ 	}
+
+ 	// Put it where we talked about (if we talked about it).
+
+ 	if ( params['container'] ) {
+ 		params['container'].appendChild(d);
+ 		getOffset();
+ 	}	
+
+
+ 	var getter = function(n) {
+ 		_this.__defineGetter__(n, function() {
+ 			return _privateParts[n];
+ 		});
+ 	};
+
+ 	// Would love to reduce this to params.
+
+ 	getter('ctx');
+ 	getter('width');
+ 	getter('height');
+ 	getter('frameCount');
+ 	getter('key');
+ 	getter('keyCode');
+ 	getter('mouseX');
+ 	getter('mouseY');
+ 	getter('pmouseX');
+ 	getter('pmouseY');
+ 	getter('mousePressed');
+
+ 	var n = function() {};
+
+ 	// TODO: Ensure data type
+ 	_this['loop'] = true;
+
+ 	// TODO: Ensure data type
+ 	_this['keyup'] = n;
+ 	_this['keydown'] = n;
+ 	_this['draw'] = n;
+ 	_this['mousedown'] = n;
+ 	_this['mouseup'] = n;
+ 	_this['mousemove'] = n;
+ 	_this['mousedrag'] = n;
+
+ 	// Custom Getters & Setters
+
+ 	_this.__defineGetter__('frameRate', function(v) {
+ 		return 1E3/_actualFrameTime;
+ 	});
+
+ 	_this.__defineGetter__('frameTime', function(v) {
+ 		return _actualFrameTime;
+ 	});
+
+ 	_this.__defineGetter__('keyPressed', function(v) {
+ 		for (var i in _keysDown) {
+ 			if (_keysDown[i]) {
+ 				return true;
+ 			}
+ 		}
+ 		return false;
+ 	});
+
+ 	_this.__defineSetter__('frameTime', function(v) {
+ 		_privateParts['desiredFrameTime'] = v;
+ 	});
+
+ 	_this.__defineSetter__('frameRate', function(v) {
+ 		_privateParts['desiredFrameTime'] = k/v;
+ 	});
+
+ 	// Listeners
+
+ 	d.addEventListener('mouseenter', function(e) {
+ 		getOffset();
+ 	}, false);
+
+ 	var fireMouseMove = function(e) {
+ 		_this['mousemove']();
+ 	};
+
+ 	var updateMousePosition = function(e) {
+ 		var x = e.pageX - offset.x;
+ 		var y = e.pageY - offset.y;
+ 		if (_privateParts['pmouseX'] == undefined) {
+ 			_privateParts['pmouseX'] = x;
+ 			_privateParts['pmouseY'] = y;
+ 		} else { 
+ 			_privateParts['pmouseX'] = _privateParts['mouseX'];
+ 			_privateParts['pmouseY'] = _privateParts['mouseY'];
+ 		}
+ 		_privateParts['mouseX'] = x;
+ 		_privateParts['mouseY'] = y;
+ 	}
+
+ 	window.addEventListener('mousemove', updateMousePosition, false);
+ 	window.addEventListener('mousemove', fireMouseMove, false);
+
+ 	d.addEventListener('mousedown', function() {
+ 		_privateParts['mousePressed'] = true;
+ 		_this['mousedown']();
+ 		d.addEventListener('mousemove', _this['mousedrag'], false);
+ 		d.removeEventListener('mousemove', fireMouseMove, false);
+ 	}, false);
+
+ 	d.addEventListener('mouseup', function() {
+ 		_privateParts['mousePressed'] = false;
+ 		_this['mouseup']();
+ 		d['removeEventListener']('mousemove', _this['mousedrag'], false);
+ 		d.addEventListener('mousemove', fireMouseMove, false);
+ 	}, false);
+
+ 	window.addEventListener('keydown', function(e) {
+ 		var kc = e.keyCode;
+ 		_privateParts['key'] = String.fromCharCode(kc); // Kinda busted.
+ 		_privateParts['keyCode'] = kc;
+ 		_keysDown[kc] = true;
+ 		_this['keydown']();
+ 	}, false);
+
+ 	window.addEventListener('keyup', function(e) {
+ 		var kc = e.keyCode;
+ 		_privateParts['key'] = String.fromCharCode(kc); // Kinda busted.
+ 		_privateParts['keyCode'] = kc;
+ 		_keysDown[kc] = false;
+ 		_this['keyup']();
+ 	}, false);
+
+ 	// Internal loop.
+
+ 	var requestAnimationFrame = (function() {
+       return  window.requestAnimationFrame       || 
+               window.webkitRequestAnimationFrame || 
+               window.mozRequestAnimationFrame    || 
+               window.oRequestAnimationFrame      || 
+               window.msRequestAnimationFrame     || 
+               function (callback) {
+                 window.setTimeout(callback, _actualFrameTime);
+               };
+     })();
+
+ 	_idraw = function() {
+
+ 		if ( _this['loop'] ) {
+ 			requestAnimationFrame( _idraw );
+ 		}
+
+ 		_privateParts['frameCount']++;
+ 		var prev = new Date().getTime();
+
+ 		_this['draw']();
+
+ 		var delta = new Date().getTime() - prev;
+
+ 		if (delta > _privateParts['desiredFrameTime']) { 
+ 			_actualFrameTime = delta;
+ 		} else {
+ 			_actualFrameTime = _privateParts['desiredFrameTime'];
+ 		}
+
+ 	};
+
+ 	_idraw();
+
+ }
