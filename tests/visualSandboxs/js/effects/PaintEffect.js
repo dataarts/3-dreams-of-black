@@ -18,13 +18,13 @@ var PaintEffect = function ( shared ) {
 			"map": { type: "t", value:0, texture: renderTarget },
 			"screenWidth": { type: "f", value:shared.baseWidth },
 			"screenHeight": { type: "f", value:shared.baseHeight },
-			"vingenettingOffset": { type: "f", value: 0.7 },
-			"vingenettingDarkening": { type: "f", value: 0.4 },
+			"vingenettingOffset": { type: "f", value: 0.87 },
+			"vingenettingDarkening": { type: "f", value: 0.61 },
 			"colorOffset": { type: "f", value: 1 },
 			"colorFactor": { type: "f", value: 0 },
 			"colorBrightness": { type: "f", value: 0 },
-			"sampleDistance": { type: "f", value: 1 },
-			"waveFactor": { type: "f", value: 0.001 },
+			"sampleDistance": { type: "f", value: 0.47 },
+			"waveFactor": { type: "f", value: 0.00068 },
 			"colorA": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 			"colorB": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 			"colorC": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) }
@@ -66,45 +66,46 @@ var PaintEffect = function ( shared ) {
 	
 				"void main() {",
 	
-					"vec4 color, tmp, add;",
+					"vec4 color, org, tmp, add;",
+					"float sample_dist, f;",
+					"vec2 vin;",				
+					"vec2 uv = vUv;",
 					
-					"vec2 uv = vUv + vec2( sin( vUv.y * 10.0 ), sin( vUv.x * 10.0 )) * waveFactor;",
+					"add += color = org = texture2D( map, uv );",
+
+					"vin = (uv - vec2(0.5)) * vec2( 1.4 /*vingenettingOffset * 2.0*/);",
+					"sample_dist =(dot( vin, vin ) * 2.0);",
 					
-					"color = texture2D( map, uv );",
-					
+					"f = (waveFactor * 100.0 + sample_dist) * sampleDistance * 4.0;",
 	
-					"vec2 diaPlus = vec2(  1.0 / screenWidth, 1.0 / screenHeight ) * sampleDistance;",
-					"vec2 diaMin  = vec2( -1.0 / screenWidth, 1.0 / screenHeight ) * sampleDistance;",
-					"vec2 hori    = vec2( 1.0 / screenWidth, 0 ) * sampleDistance;",
-					"vec2 vert    = vec2( 0, 1.0 / screenHeight ) * sampleDistance;",
+					"vec2 sampleSize = vec2(  1.0 / screenWidth, 1.0 / screenHeight ) * vec2(f);",
 	
-					"tmp = texture2D( map, uv + diaPlus );", 
-					"if( tmp.b > color.b ) color = tmp;",
+					"add += tmp = texture2D( map, uv + vec2(0.111964, 0.993712) * sampleSize);", 
+					"if( tmp.b < color.b ) color = tmp;",
 	
-					"tmp = texture2D( map, uv + diaMin );",
-					"if( tmp.b > color.b ) color = tmp;",
+					"add += tmp = texture2D( map, uv + vec2(0.846724, 0.532032) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
 	
-					"tmp = texture2D( map, uv - diaPlus );",
-					"if( tmp.b > color.b ) color = tmp;",
+					"add += tmp = texture2D( map, uv + vec2(0.943883, -0.330279) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
 	
-					"tmp = texture2D( map, uv - diaMin );",
-					"if( tmp.b > color.b ) color = tmp;",
+					"add += tmp = texture2D( map, uv + vec2(0.330279, -0.943883) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
 	
-					"tmp = texture2D( map, uv + hori );",
-					"if( tmp.b > color.b ) color = tmp;",
+					"add += tmp = texture2D( map, uv + vec2(-0.532032, -0.846724) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
 	
-					"tmp = texture2D( map, uv - hori );",
-					"if( tmp.b > color.b ) color = tmp;",
+					"add += tmp = texture2D( map, uv + vec2(-0.993712, -0.111964) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
 	
-					"tmp = texture2D( map, uv + vert );",
-					"if( tmp.b > color.b ) color = tmp;",
-	
-					"tmp = texture2D( map, uv - vert );",
-					"if( tmp.b > color.b ) color = tmp;",
+					"add += tmp = texture2D( map, uv + vec2(-0.707107, 0.707107) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
 	
 					"uv = (uv - vec2(0.5)) * vec2( vingenettingOffset );",
-					"gl_FragColor = vec4( mix( color.rgb * ( vec3( colorOffset ) + color.rgb * colorFactor ) + vec3( colorBrightness ), color.ggg * ( vec3( colorOffset ) + color.ggg * colorFactor ) - vec3( vingenettingDarkening ), vec3( dot( uv, uv ))), 1.0 );",
-	
+					"color = color * vec4(2.0) - (add / vec4(8.0));",
+					"color = color + (add / vec4(8.0) - color) * (vec4(1.0) - vec4(sample_dist * 0.5));",
+					//"color = color + (add / vec4(8.0) - color) * (-vec4(sample_dist * 0.5));",
+					"gl_FragColor = vec4( mix(color.rgb * color.rgb * vec3(colorOffset) + color.rgb, color.ggg * colorFactor - vec3( vingenettingDarkening ), vec3( dot( uv, uv ))), 1.0 );",
 				"}"
 
 				].join("\n")

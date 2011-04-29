@@ -19,8 +19,6 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		console.log( "INIT CITY");
-
 		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -1210 ] ];
 		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -3350 ] ];
 
@@ -101,8 +99,6 @@ var City = function ( shared ) {
 	};
 
 	this.update = function ( progress, delta, time ) {
-
-//		console.log( "update" );
 
 		THREE.AnimationHandler.update( delta );
 

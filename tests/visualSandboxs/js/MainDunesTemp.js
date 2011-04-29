@@ -120,7 +120,7 @@ function start( pattern ) {
 
 	container = document.getElementById( 'experience' );
 	container.appendChild( renderer.domElement );
-	document.body.appendChild( container );
+	//document.body.appendChild( container );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';

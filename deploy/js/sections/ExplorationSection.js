@@ -34,7 +34,7 @@ var ExplorationSection = function ( shared ) {
 	cameras.city.position.set( 0, 0, 0 );
 
 	var sequence, world, scene,
-	clearEffect, heatEffect, paintEffect, noiseEffect, renderEffect, overlayEffect;
+	postEffect, clearEffect, heatEffect, paintEffect, paintEffectPrairie, noiseEffect, renderEffect, overlayEffect;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -44,6 +44,9 @@ var ExplorationSection = function ( shared ) {
 
 	paintEffect = new PaintEffect( shared );
 	paintEffect.init();
+
+	paintEffectPrairie = new PaintEffectPrairie( shared );
+	paintEffectPrairie.init();
 
 	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
 	noiseEffect.init();
@@ -72,6 +75,20 @@ var ExplorationSection = function ( shared ) {
 		
 		scene = world.scene;
 		camera = cameras[ worldId ];
+		
+		if ( worldId == "city" ) {
+			
+			postEffect = paintEffect;
+		
+		} else if ( worldId == "prairie" ) {
+
+			postEffect = paintEffect;
+			
+		} else {
+			
+			postEffect = renderEffect;
+
+		}
 		
 		if ( EXPLORE_FREE ) {
 
@@ -181,11 +198,12 @@ var ExplorationSection = function ( shared ) {
 				shared.logger.log( "vertices: " + renderer.data.vertices );
 				shared.logger.log( 'faces: ' + renderer.data.faces );
 
-				//paintEffect.update( progress, delta, time );
+				postEffect.update( progress, delta, time );
+			
 				//heatEffect.update( progress, delta, time );
 				//noiseEffect.update( progress, delta, time );
 				//overlayEffect.update( progress, delta, time );
-				renderEffect.update( progress, delta, time );
+				//renderEffect.update( progress, delta, time );
 
 			}
 

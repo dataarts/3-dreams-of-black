@@ -244,6 +244,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		
 		TWEEN.update();
 
+		TriggerUtils.effectors[ 0 ] = vectors.array[10].position.x;
+		TriggerUtils.effectors[ 1 ] = vectors.array[10].position.y;
+		TriggerUtils.effectors[ 2 ] = vectors.array[10].position.z;
 
 		// pointlight
 
