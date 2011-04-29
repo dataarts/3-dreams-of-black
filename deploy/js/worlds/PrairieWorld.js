@@ -85,6 +85,9 @@ var PrairieWorld = function ( shared, camera ) {
 
 		that.scene.addChild( scene );
 
+		result.objects[ "Backdrop" ].materials[ 0 ].map.wrapS = THREE.RepeatWrapping;
+		result.objects[ "Backdrop" ].materials[ 0 ].map.wrapT = THREE.RepeatWrapping;
+
 		preInitScene( result, shared.renderer );
 		
 		if ( scene.collisions ) {
