@@ -97,8 +97,11 @@
 
 				var adj = Math.tan( fov * Math.PI / 360 ) * 2;
 
-				addLayer("video/s01_prairie.webm", 1.104, 1.24, -3000, adj, 1, 0, distortingShaderChromaKey, false);
-				addLayer("video/s01_boxcar.webm", 1.104, 1.24, -900, adj, 2, 0, opaqueShader, true);
+				addLayer("video/cts.webm", 1.104, 1.24, -3000, adj, 1, 0, distortingShaderChromaKey, false);
+				addLayer("video/dus.webm", 1.104, 1.24, -1100, adj, 2, 0, opaqueShader, true);
+				addLayer("video/prs.webm", 1.104, 1.24, -900, adj, 2, 0, opaqueShader, true);
+				//addLayer("video/s01_boxcar.webm", 1.104, 1.24, -700, adj, 2, 0, opaqueShader, true);
+				//addLayer("video/s01_prairie.webm", 1.104, 1.24, -500, adj, 2, 0, opaqueShader, true);
 
 				try {
 					webglRenderer = new THREE.WebGLRenderer( scene );

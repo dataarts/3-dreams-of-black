@@ -1,15 +1,72 @@
-var distortingShaderSource = {
+var VideoShaderSource = {
+	opaque: {
 
-	'distortingShader' : {
+		uniforms: {
+			"map" : { type: "t", value: 0, texture: null },
+		},
+
+		vertexShader: [
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+			"varying vec2 vUv;",
+			
+			"void main() {",				
+				"vec4 c = texture2D( map, vUv );",				
+				"gl_FragColor = c;",
+			"}"
+		].join("\n")
+
+	},
+	
+	keyed: {
+
+		uniforms: {
+			"map" : { type: "t", value: 0, texture: null },
+			"colorScale": { type: "f", value: 1 }
+		},
+
+		vertexShader: [
+			"varying vec2 vUv;",
+			"uniform bool flip;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+			"uniform float colorScale;",
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec3 cd = vec3(1.0 - colorScale);",
+				"vec3 cs = vec3(colorScale);",				
+				"vec4 c = texture2D( map, vUv );",
+				"float t = c.x + c.y + c.z;",
+				"float alpha = 1.0;",
+				"if( t < 0.5 )",
+					"alpha = t;",
+				"gl_FragColor = vec4( (c.xyz - cd) * cs, alpha );",
+			"}"
+		].join("\n")
+	},
+	
+	distortOpaque: {
 
 		uniforms: {
             "aspect": { type: "f", value: 0 },
-			"sheet": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() },
-            "trail1": { type: "v2", value: new THREE.Vector2() },
-            "trail2": { type: "v2", value: new THREE.Vector2() },
-            "trail3": { type: "v2", value: new THREE.Vector2() },
-            "tileOffsetX": { type: "v2", value: new THREE.Vector2() }
+			"map": { type: "t", value: 0, texture: null },
+            "mouseXY": { type: "v2", value: new THREE.Vector2() }
 		},
 
 		vertexShader: [
@@ -56,8 +113,7 @@ var distortingShaderSource = {
 		].join("\n"),
 
 		fragmentShader: [
-            "uniform sampler2D sheet;",
-            "uniform vec2 tileOffsetX;",
+            "uniform sampler2D map;",
 
             "uniform vec2 mouseXY;",
             "varying vec2 vUv;",
@@ -73,10 +129,10 @@ var distortingShaderSource = {
             "varying float distancePoly;",
 
 			"void main() {",
-				"vec4 c = texture2D( sheet, vec2( vUv.x, vUv.y ) );",
-                "vec4 cPoly = texture2D( sheet, vec2( vUvPoly.x, vUvPoly.y ) );",
+				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
+                "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
                 "if ((distancePoly)>0.7) c = cPoly; ",
-                //"if (c.a<=0.1) discard;",
+                "if (c.a<=0.1) discard;",
                 "else gl_FragColor = c;",
 			"}"
 
@@ -84,16 +140,12 @@ var distortingShaderSource = {
 
 	},
 	
-	'distortingShaderChromakey' : {
+	distortKeyed : {
 
 		uniforms: {
             "aspect": { type: "f", value: 0 },
-			"sheet": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() },
-            "trail1": { type: "v2", value: new THREE.Vector2() },
-            "trail2": { type: "v2", value: new THREE.Vector2() },
-            "trail3": { type: "v2", value: new THREE.Vector2() },
-            "tileOffsetX": { type: "v2", value: new THREE.Vector2() }
+			"map": { type: "t", value: 0, texture: null },
+            "mouseXY": { type: "v2", value: new THREE.Vector2() }
 		},
 
 		vertexShader: [
@@ -140,8 +192,7 @@ var distortingShaderSource = {
 		].join("\n"),
 
 		fragmentShader: [
-            "uniform sampler2D sheet;",
-            "uniform vec2 tileOffsetX;",
+            "uniform sampler2D map;",
 
             "uniform vec2 mouseXY;",
             "varying vec2 vUv;",
@@ -157,8 +208,8 @@ var distortingShaderSource = {
             "varying float distancePoly;",
 
 			"void main() {",
-				"vec4 c = texture2D( sheet, vec2( vUv.x, vUv.y ) );",
-                "vec4 cPoly = texture2D( sheet, vec2( vUvPoly.x, vUvPoly.y ) );",
+				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
+                "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
                 "if ((distancePoly)>0.7) c = cPoly; ",
                 "if (c.a<=0.1) {",
 				"	discard;",
@@ -174,6 +225,81 @@ var distortingShaderSource = {
 
 		].join("\n")
 
-	}
+	},
+	
+	distortWire : {
 
+		uniforms: {
+            "aspect": { type: "f", value: 0 },
+			"map": { type: "t", value: 0, texture: null },
+            "mouseXY": { type: "v2", value: new THREE.Vector2() },
+		},
+
+		vertexShader: [
+
+            "uniform vec2 mouseXY;",
+            "uniform float aspect;",
+
+            "varying vec2 vUv;",
+            "varying vec2 vUvPoly;",
+            "varying vec3 pos;",
+            "varying vec3 posPoly;",
+            "varying vec4 viewPos;",
+            "varying vec4 viewPosPoly;",
+            "varying vec2 projPos;",
+            "varying vec2 projPosPoly;",
+            "varying float distance;",
+            "varying float distancePoly;",
+
+
+			"void main() {",
+				"vUv = uv;",
+				"vUv = uv;",
+                "vUvPoly = uv+vec2(normal.x,normal.y);",
+
+                "viewPos = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                "viewPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
+
+                "projPos = vec2(aspect,1.)*vec2(viewPos.x/viewPos.z,viewPos.y/viewPos.z);",
+                "projPosPoly = vec2(aspect,1.)*vec2(viewPosPoly.x/viewPosPoly.z,viewPosPoly.y/viewPosPoly.z);",
+
+                "distance = max(0.,1.0-length(projPos-vec2(mouseXY.x, mouseXY.y)));",
+
+                "float distFade = normal.z*0.8+0.8;",
+
+                "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
+
+                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
+                "gl_Position = viewPos;",
+			"}"
+
+		].join("\n"),
+
+		fragmentShader: [
+            "uniform sampler2D map;",
+            "uniform vec2 tileOffsetX;",
+
+            "uniform vec2 mouseXY;",
+            "varying vec2 vUv;",
+            "varying vec2 vUvPoly;",
+            "varying vec3 pos;",
+            "varying vec3 posPoly;",
+            "varying vec4 viewPos;",
+            "varying vec4 viewPosPoly;",
+            "varying vec2 projPos;",
+            "varying vec2 projPosPoly;",
+
+            "varying float distance;",
+            "varying float distancePoly;",
+
+			"void main() {",
+                "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
+                "if ((distancePoly)>0.8 && cPoly.a>0.) cPoly = vec4(1.,1.,1.,distancePoly/16.); ",
+                "else cPoly = vec4(1.,1.,1.,0.); ",
+                "gl_FragColor = cPoly;",
+			"}"
+
+		].join("\n")
+
+	}
 };
