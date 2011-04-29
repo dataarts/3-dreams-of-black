@@ -1,19 +1,18 @@
-newmtl asset_bisonGallop_B:blinn9SG
-illum 4
-Kd 0.42 0.57 0.45
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 1.00 0.43 0.36
 newmtl bodySG
 illum 4
-Kd 0.16 0.15 0.14
+Kd 0.22 0.17 0.13
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
 newmtl body_darkSG
 illum 4
 Kd 0.10 0.10 0.10
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl body_darkSG2SG
+illum 4
+Kd 0.05 0.05 0.05
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
@@ -29,16 +28,15 @@ Kd 0.45 0.44 0.43
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
-newmtl initialShadingGroup
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd tarantula_rb_01.jpg
-Ni 1.00
 newmtl legsSG
 illum 4
 Kd 0.31 0.24 0.15
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl legs_bottomSG2SG
+illum 4
+Kd 0.15 0.11 0.07
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00

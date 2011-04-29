@@ -102,6 +102,55 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 	}
 
+	// switch animal test
+	this.switchAnimal = function (geometry, scale, index) {
+		console.log("switch");
+		var scaleMultiplier = scale || 1.2;
+		var arrayIndex = index || 0;
+
+		/*if (speedArray == null) {
+			speedArray = [1];
+		}*/
+
+		var animal = ROME.Animal( geometry, false );
+		var mesh = animal.mesh;
+
+		var scale = 0.02+(Math.random()/8);
+		if (i<2) {
+			scale = 0.15;
+		}
+
+		scale = Math.max(scale, 0.1);
+
+		mesh.matrixAutoUpdate = false;
+
+		scene.removeChild( that.array[arrayIndex].c );
+		scene.addChild( mesh );
+		
+		var startMorph = 0;
+		var endMorph = 0;
+/*		if (morphArray != null) {
+			startMorph = morphArray[i%morphArray.length]%animal.availableAnimals.length;
+			endMorph = startMorph+1;
+			var rnd = Math.round(Math.random());
+			if ((rnd == 1 && startMorph > 0) || endMorph > animal.availableAnimals.length-1) {
+				endMorph = startMorph-1;
+			}
+			//endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
+		}
+
+		var speeda = speedArray[startMorph];
+		var speedb = speedArray[endMorph];
+*/
+		animal.play( animal.availableAnimals[ startMorph ], animal.availableAnimals[ endMorph ], 0, Math.random(), Math.random() );
+
+		//var obj = { c: mesh, a: animal, f: 0, time: 0, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
+
+		that.array[arrayIndex].c = mesh;
+		that.array[arrayIndex].a = animal;
+		that.array[arrayIndex].scale = scale * scaleMultiplier;
+	}
+
 	this.create = function (position, normal) {
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			if (that.array[i].active) {
@@ -112,7 +161,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].c.position.copy(position);
 			that.array[i].normal.copy(normal);
 			that.array[i].c.visible = true;
-			that.array[i].f = 1;
+			that.array[i].f = 0;
 			that.array[i].time = 0;
 			
 			/*if (that.settings.flying) {
@@ -120,18 +169,18 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}*/
 
 			// tween scale
-			that.array[i].scale = 0.01;
+			that.array[i].scale *= 0.25;
 			var scaleTween = new TWEEN.Tween(that.array[i])
-				.to({scale: that.array[i].origscale}, 2500)
+				.to({scale: that.array[i].origscale}, 2000)
 				.easing(TWEEN.Easing.Elastic.EaseOut)
-				.delay(50);
+				.delay(200);
 			scaleTween.start();
 			
 			// tween popup
 			var scale = that.array[i].scale;
-			that.array[i].c.position.x -= (normal.x)*(scale*150);
-			that.array[i].c.position.y -= (normal.y)*(scale*150);
-			that.array[i].c.position.z -= (normal.z)*(scale*150);
+			that.array[i].c.position.x -= (normal.x)*(scale*180);
+			that.array[i].c.position.y -= (normal.y)*(scale*180);
+			that.array[i].c.position.z -= (normal.z)*(scale*180);
 
 			//console.log(scale*200);
 /*			var popupTween = new TWEEN.Tween(that.array[i].c.position)
@@ -180,21 +229,21 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// change follow index
-			//var changeTime = Math.max(animalSpeed*25, 90);
-			//var changeTime = Math.max(animalSpeed*30, 100);
-			var changeTime = Math.max(animalSpeed*30, 110);
+			//var changeTime = Math.max(animalSpeed*10, 80);
+			var changeTime = Math.max(animalSpeed*25, 80);
+			//var changeTime = Math.max(animalSpeed*30, 110);
 
 			//var dx = animal.position.x - vectorArray[f].position.x, dy = animal.position.y - vectorArray[f].position.y, dz = animal.position.z - vectorArray[f].position.z;
 			//var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 
 			if (that.array[i].time > changeTime) {
 			//if (distance > 200 && that.array[i].time > 200) {
-				++that.array[i].f;				
+				++that.array[i].f;
 				
-				if (that.array[i].f >= 45) {
-					that.array[i].f = 45;
-					that.array[i].active = false;
-					that.array[i].c.visible = false;
+				if (that.array[i].f >= 35) {
+					that.array[i].f = 35;
+					//that.array[i].active = false;
+					//that.array[i].c.visible = false;
 				}
 
 				f = that.array[i].f;
@@ -214,10 +263,6 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			var offsetz = Math.sin(thisinc+((i-r*2)/8))*that.settings.zPositionMultiplier;
 			var offsety = offsetz;
 			
-			if (f >= vectorArray.length-1) {
-				f = vectorArray.length-1;
-			}
-
 			var cNormal = vectorArray[f].normal;
 
 			var amountx = 1-Math.abs(cNormal.x);
@@ -234,6 +279,11 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			if (that.settings.capy != null && toy < that.settings.capy) {
 				toy = that.settings.capy;
+			}
+
+			// test
+			if (toz > animal.position.z) {
+				toz = animal.position.z;
 			}
 
 			// flying
@@ -265,7 +315,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 
-			var divider = 10;
+			var divider = 8;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
@@ -282,7 +332,10 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			obj.normal = normal;*/
 
-			var maxSpeed = animalSpeed/3//delta/3;//12;
+			var falloffDivider = 2+(f/10);
+
+			var maxSpeed = animalSpeed/falloffDivider//3//delta/3;//12;
+
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;

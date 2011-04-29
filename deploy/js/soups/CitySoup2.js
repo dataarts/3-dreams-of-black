@@ -81,7 +81,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// vector trail
 	var startPosition = new THREE.Vector3(0,0,100);
-	var vectors = new Vectors(50,2,3,startPosition);
+	var vectors = new Vectors(50,2,2,startPosition);
 	//vectors.settings.divider = 4;
 	//vectors.settings.normaldivider = 4;
 	//vectors.settings.absoluteTrail = true;
@@ -360,9 +360,9 @@ var CitySoup = function ( camera, scene, shared ) {
 		// spawn animal test
 		if (shake%3 == 2) {
 			//runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
-			runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal);
+			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			//flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
-			flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal);
+			flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 		}
 
 		// update the soup parts

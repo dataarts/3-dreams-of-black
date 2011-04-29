@@ -156,7 +156,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		var addFollow = false;
 		var dx = lastFollowPos.x - followPos.x, dy = lastFollowPos.y - followPos.y, dz = lastFollowPos.z - followPos.z;
 		var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
-		if (distance > 100) {
+		if (distance > 50) {
 			addFollow = true;
 			lastFollowPos.copy(followPos);
 		}
@@ -253,7 +253,19 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				animalSpeed = obj.speedb;
 			}
 
-			var divider = 4//1.5;//15-animalSpeed;
+// test to tween position
+			
+if (positionArray.length > 0) {
+			var movePosX = (that.array[i].positionArray[0].x-that.array[i].toPosition.x)/3;
+			var movePosY = (that.array[i].positionArray[0].y-that.array[i].toPosition.y)/3;
+			var movePosZ = (that.array[i].positionArray[0].z-that.array[i].toPosition.z)/3;
+
+			that.array[i].toPosition.x += movePosX;
+			that.array[i].toPosition.y += movePosY;
+			that.array[i].toPosition.z += movePosZ;
+}
+
+			var divider = 3//1.5;//15-animalSpeed;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
@@ -273,7 +285,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			that.array[i].normal = normal;
 
-			var maxSpeed = animalSpeed//Math.round(animalSpeed/3);
+			var maxSpeed = animalSpeed/2//Math.round(animalSpeed/3);
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
@@ -315,7 +327,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 //console.log(distance);
 
 
-			if (distance < 15) {
+			if (distance < 100) {
 				if (positionArray.length > 0) {
 					var toPos = that.array[i].positionArray.shift();
 					var toNor = that.array[i].normalArray.shift();
