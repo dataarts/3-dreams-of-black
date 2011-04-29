@@ -164,7 +164,7 @@ var Clouds = function ( shared ) {
       bird.position = boids[ i ].position;
 
       bird.doubleSided = true;
-      bird.scale.x = bird.scale.y = bird.scale.z = Math.random()*0.3;
+      bird.scale.x = bird.scale.y = bird.scale.z = 0.2;
       birdsGroup.addChild( bird );
     }
 
@@ -246,8 +246,8 @@ var Clouds = function ( shared ) {
 var Boid = function() {
 
   var vector = new THREE.Vector3(),
-  _acceleration, _width = 500, _height = 500, _depth = 200, _goal, _neighborhoodRadius = 100,
-  _maxSpeed = 1, _maxSteerForce = 0.1, _avoidWalls = false;
+  _acceleration, _width = 500, _height = 500, _depth = 200, _goal, _neighborhoodRadius = 3000,
+  _maxSpeed = 1, _maxSteerForce = 0.03, _avoidWalls = false;
 
   this.position = new THREE.Vector3();
   this.velocity = new THREE.Vector3();
