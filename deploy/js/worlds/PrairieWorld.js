@@ -158,8 +158,8 @@ var PrairieWorld = function ( shared, camera ) {
 	loader.load( "files/models/prairie/Prairie.js", prairieLoaded );
 
 	this.update = function ( delta, camera, portalsActive ) {
-
-		ROME.TrailShaderUtils.updateLava( delta, shared.lavatrailx, -shared.lavatrailz );
+		
+		ROME.TrailShaderUtils.updateLava( delta / 30000, shared.lavatrailx, -shared.lavatrailz );
 		ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
 		
 		TriggerUtils.effectorRadius = 30;

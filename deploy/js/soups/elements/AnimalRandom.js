@@ -790,24 +790,6 @@ ROME.AnimalAnimationData = {
 			//randomizeColors( attributes.colorAnimalA.value, variations );
 			//randomizeColors( attributes.colorAnimalB.value, variations );
 
-
-			function randomizeColors( colors, variations ) {
-				
-				var i, il, c, hd, sd, vd;
-				
-				for( i = 0, il = colors.length; i < il; i++ ) {
-					
-					c = colors[ i ];
-
-					hd = variations.hRange * Math.random() + variations.hOffset;
-					sd = variations.sRange * Math.random() + variations.sOffset;
-					vd = variations.vRange * Math.random() + variations.vOffset;
-
-					THREE.ColorUtils.adjustHSV( c, hd, sd, vd );							
-					
-				}
-
-			}
 			
 			// set return values
 	
@@ -873,3 +855,22 @@ ROME.AnimalAnimationData = {
 	}
 
 };
+
+function randomizeColors( colors, variations ) {
+	
+	var i, il, c, hd, sd, vd;
+	
+	for( i = 0, il = colors.length; i < il; i++ ) {
+		
+		c = colors[ i ];
+
+		hd = variations.hRange * Math.random() + variations.hOffset;
+		sd = variations.sRange * Math.random() + variations.sOffset;
+		vd = variations.vRange * Math.random() + variations.vOffset;
+
+		THREE.ColorUtils.adjustHSV( c, hd, sd, vd );
+		
+	}
+
+};
+
