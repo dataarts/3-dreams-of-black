@@ -1,0 +1,78 @@
+newmtl butterfly_temp:butterfly1_colormap1_0003_body_hot_pinkSG
+illum 4
+Kd 1.00 0.00 0.60
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap1_0003_body_pinkSG
+illum 4
+Kd 1.00 0.51 0.79
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap1_0003_body_purpleSG
+illum 4
+Kd 0.95 0.56 1.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap2_0002_body_lt_orangeSG
+illum 4
+Kd 1.00 0.65 0.21
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap2_0002_body_orangeSG
+illum 4
+Kd 1.00 0.39 0.20
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap2_0002_body_redSG
+illum 4
+Kd 0.80 0.32 0.32
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap3_0002_body_orangeSG
+illum 4
+Kd 1.00 0.73 0.45
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap3_0002_body_pinkSG
+illum 4
+Kd 0.75 0.53 0.51
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap3_0002_body_yellowSG
+illum 4
+Kd 1.00 0.91 0.57
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap4_0002_body_blueSG
+illum 4
+Kd 0.35 0.53 0.75
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap4_0002_body_lt_blueSG
+illum 4
+Kd 0.31 0.89 1.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl butterfly_temp:butterfly1_colormap4_0002_body_purpleSG
+illum 4
+Kd 0.42 0.43 0.71
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl initialShadingGroup
+illum 4
+Kd 0.50 0.50 0.50
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
