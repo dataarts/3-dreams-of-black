@@ -119,7 +119,7 @@ var FilmSection = function ( shared ) {
 
 	//
 
-	function start( pattern ) {
+	function start( pattern, volume ) {
 
 		//console.log( renderer.domElement );
 
@@ -129,7 +129,7 @@ var FilmSection = function ( shared ) {
 
 		audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 		audio.play();
-		//audio.volume = 0;
+		audio.volume = volume;
 
 	};
 
@@ -145,6 +145,7 @@ var FilmSection = function ( shared ) {
 
 		switch ( event.keyCode ) {
 
+			/* space */
 			case 32:
 
 				audio.paused ? audio.play() : audio.pause();
@@ -176,7 +177,6 @@ var FilmSection = function ( shared ) {
 			case 77:
 
 				audio.volume = audio.volume ? 0 : 1;
-
 				break;
 
 		}

@@ -2,6 +2,8 @@ var ExplorationSection = function ( shared ) {
 
 	Section.call( this );
 
+	var EXPLORE_FREE = true;
+
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
@@ -31,7 +33,7 @@ var ExplorationSection = function ( shared ) {
 	cameras.city.autoForward = false;
 	cameras.city.position.set( 0, 0, 0 );
 
-	var world, scene,
+	var sequence, world, scene,
 	clearEffect, heatEffect, paintEffect, noiseEffect, renderEffect, overlayEffect;
 
 	clearEffect = new ClearEffect( shared );
@@ -66,12 +68,21 @@ var ExplorationSection = function ( shared ) {
 		// updateViewportSize();
 
 		world = shared.worlds[ worldId ];
+		sequence = shared.sequences[ worldId ];
+		
 		scene = world.scene;
 		camera = cameras[ worldId ];
+		
+		if ( EXPLORE_FREE ) {
 
-		scene.addChild( camera );
+			scene.addChild( camera );			
+			camera.position.set( 0, 0, 0 );
 
-		camera.position.set( 0, 0, 0 );
+		} else {
+			
+			sequence.resetCamera();
+			
+		}
 
 		// hide soup (if it wasn't yet activated)
 
@@ -150,27 +161,49 @@ var ExplorationSection = function ( shared ) {
 
 	this.update = function () {
 
-		if ( world ) {
+		// just flying around worlds using new RollCamera
+		
+		if ( EXPLORE_FREE ) {
 
-			time = new Date().getTime() - start;
-			delta = time - lastTime;
-			lastTime = time;
+			if ( world ) {
 
-			world.update( delta, camera, true );
+				time = new Date().getTime() - start;
+				delta = time - lastTime;
+				lastTime = time;
 
-			clearEffect.update( progress, delta, time );
+				world.update( delta, camera, true );
 
-			renderer.setClearColor( world.scene.fog.color );
-			renderer.render( world.scene, camera, renderTarget );
+				clearEffect.update( progress, delta, time );
 
-			shared.logger.log( "vertices: " + renderer.data.vertices );
-			shared.logger.log( 'faces: ' + renderer.data.faces );
+				renderer.setClearColor( world.scene.fog.color );
+				renderer.render( world.scene, camera, renderTarget );
 
-			//paintEffect.update( progress, delta, time );
-			//heatEffect.update( progress, delta, time );
-			//noiseEffect.update( progress, delta, time );
-			//overlayEffect.update( progress, delta, time );
-			renderEffect.update( progress, delta, time );
+				shared.logger.log( "vertices: " + renderer.data.vertices );
+				shared.logger.log( 'faces: ' + renderer.data.faces );
+
+				//paintEffect.update( progress, delta, time );
+				//heatEffect.update( progress, delta, time );
+				//noiseEffect.update( progress, delta, time );
+				//overlayEffect.update( progress, delta, time );
+				renderEffect.update( progress, delta, time );
+
+			}
+
+		// replay sequences
+
+		} else {			
+		
+			if ( sequence ) {
+
+				time = new Date().getTime() - start;
+				delta = time - lastTime;
+				lastTime = time;
+
+				clearEffect.update( progress, delta, time );
+				sequence.update( progress, delta, time );
+				renderEffect.update( progress, delta, time );
+
+			}
 
 		}
 
