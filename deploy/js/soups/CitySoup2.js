@@ -360,9 +360,9 @@ var CitySoup = function ( camera, scene, shared ) {
 		// spawn animal test
 		if (shake%3 == 2) {
 			//runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
-			runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal);
+			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			//flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
-			flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal);
+			flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 		}
 
 		// update the soup parts
