@@ -22,6 +22,12 @@ Kd 0.68 0.67 0.69
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
+newmtl mouthSG
+illum 4
+Kd 0.72 0.41 0.41
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
 newmtl noseSG
 illum 4
 Kd 0.08 0.09 0.09
