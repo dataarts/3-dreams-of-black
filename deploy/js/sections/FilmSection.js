@@ -86,6 +86,7 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
+	//sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 
 	//sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
@@ -98,6 +99,7 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
+	//sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
 
 	//sequencer.add( new NoiseEffect( shared, 0.18, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 4 );
