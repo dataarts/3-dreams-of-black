@@ -1,4 +1,4 @@
-var SoupCreator = function ( shared ) {
+var UgcSoupCreator = function ( shared ) {
 
 	var camera, scene, renderer;
 

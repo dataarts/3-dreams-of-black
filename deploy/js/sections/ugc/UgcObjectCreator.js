@@ -1,4 +1,6 @@
-var ObjectCreator = function ( shared ) {
+var UgcObjectCreator = function ( shared ) {
+
+	var domElement = document.createElement( 'div' );
 
 	var DEG2RAD = Math.PI / 180,
 	camera, light1, light2, scene, loader, renderer,
@@ -38,19 +40,6 @@ var ObjectCreator = function ( shared ) {
 
 	} } );
 
-	// Mouse projection
-
-	var projector, mouse2D, mouse3D, ray;
-
-	projector = new THREE.Projector();
-
-	mouse2D = new THREE.Vector3( 0, 0, 0.5 );
-	ray = new THREE.Ray( camera.position, null );
-
-	// Painter
-
-	var voxelPainter = new VoxelPainter();
-
 	// Renderer
 
 	renderer = new THREE.WebGLRenderer();
@@ -59,26 +48,28 @@ var ObjectCreator = function ( shared ) {
 	renderer.setClearColor( scene.fog.color );
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
+	domElement.appendChild( renderer.domElement );
+
+	// Painter
+
+	var painter = new VoxelPainter( camera );
+
 
 	function onMouseDown( event ) {
 
-		voxelPainter.setMode( !isDeleteMode ? VoxelPainter.MODE_DRAW : VoxelPainter.MODE_ERASE );
+		painter.setMode( !isDeleteMode ? VoxelPainter.MODE_DRAW : VoxelPainter.MODE_ERASE );
 
 	}
 
 	function onMouseUp( event ) {
 
-		voxelPainter.setMode( VoxelPainter.MODE_IDLE );
+		painter.setMode( VoxelPainter.MODE_IDLE );
 
 	}
 
 	function onMouseMove( event ) {
 
-		mouse2D.x = ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
-		mouse2D.y = - ( shared.mouse.y / shared.screenHeight ) * 2 + 1;
-
-		mouse3D = projector.unprojectVector( mouse2D.clone(), camera );
-		ray.direction = mouse3D.subSelf( camera.position ).normalize();
+		painter.moveMouse( shared.mouse.x / shared.screenWidth, shared.mouse.y / shared.screenHeight );
 
 	}
 
@@ -115,7 +106,7 @@ var ObjectCreator = function ( shared ) {
 
 	this.getDomElement = function () {
 
-		return renderer.domElement;
+		return domElement;
 
 	};
 
@@ -156,9 +147,9 @@ var ObjectCreator = function ( shared ) {
 
 		if ( isRotateMode ) {
 
-			theta += mouse2D.x * 2;
+			theta += ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
 
-			phi += mouse2D.y * 2;
+			phi -= ( shared.mouse.y / shared.screenHeight ) * 2 - 1;
 			phi = phi > 90 ? 90 :
 			      phi < - 90 ? - 90 :
 			      phi;
@@ -169,11 +160,11 @@ var ObjectCreator = function ( shared ) {
 		camera.position.y = radius * Math.sin( phi * DEG2RAD );
 		camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 
-		voxelPainter.process( ray );
+		painter.update();
 
 		renderer.clear();
 		renderer.render( scene, camera );
-		renderer.render( voxelPainter.getScene(), camera );
+		renderer.render( painter.getScene(), camera );
 
 	};
 
