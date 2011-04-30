@@ -4,7 +4,7 @@ var VoxelPainter = function ( camera ) {
 
 	// Scene
 
-	var _scene = new THREE.Scene();https://github.com/mrdoob/three.js/network
+	var _scene = new THREE.Scene();
 
 	var _light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
 	_light1.position.set( 0.5, 0.75, 1 );
@@ -55,7 +55,7 @@ var VoxelPainter = function ( camera ) {
 	var _sceneVoxels = new THREE.Scene();
 	_scene.addObject( _sceneVoxels );
 
-	var _ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparency: true, wireframe: true } ) );
+	var _ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparency: true, wireframe: true } ) );
 	_ground.position.x = - 25;
 	_ground.position.y = - 25;
 	_ground.position.z = - 25;

@@ -2,6 +2,8 @@ var UgcObjectCreator = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 
+	var USE_POSTPROCESS = true;
+	
 	var DEG2RAD = Math.PI / 180,
 	camera, light1, light2, scene, loader, renderer,
 	intersects, intersectedFace, intersectedObject,
@@ -14,9 +16,12 @@ var UgcObjectCreator = function ( shared ) {
 	// Background
 
 	scene = new THREE.Scene();
+	
+	scene.fog = new THREE.FogExp2( 0xffffff, 0.000175 );
+	scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
 
-	scene.fog = new THREE.Fog( 0xffffff, 1000, 10000 );
-	scene.fog.color.setHSV( 0.6, 0.1235, 1 );
+	//scene.fog = new THREE.Fog( 0xffffff, 1000, 10000 );
+	//scene.fog.color.setHSV( 0.6, 0.1235, 1 );
 
 	light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
 	light1.position.set( 0.5, 0.75, 1 );
@@ -27,6 +32,7 @@ var UgcObjectCreator = function ( shared ) {
 	light2.position.set( - 0.5, - 0.75, - 1 );
 	light2.color.setHSV( 0, 0, 0.306 );
 	scene.addLight( light2 );
+
 
 	loader = new THREE.JSONLoader();
 	loader.load( { model: "files/models/ugc/D_tile_1.D_tile_1.js", callback: function ( geometry ) {
@@ -40,6 +46,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	} } );
 
+
 	// Renderer
 
 	renderer = new THREE.WebGLRenderer();
@@ -50,6 +57,41 @@ var UgcObjectCreator = function ( shared ) {
 	renderer.autoClear = false;
 	domElement.appendChild( renderer.domElement );
 
+	// Postprocess
+
+	if ( USE_POSTPROCESS ) {
+		
+		var offset = 0;
+
+		if ( !shared.renderer ) {
+
+			shared.renderer = renderer;
+			
+			shared.baseWidth = 1024;
+			shared.baseHeight = 436;
+			shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
+			shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
+			
+			renderer.setSize( shared.viewportWidth, shared.baseHeight );
+
+		}
+		
+		if ( !shared.renderTarget ) {
+		
+
+			var renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
+			renderTarget.minFilter = THREE.LinearFilter;
+			renderTarget.magFilter = THREE.LinearFilter;
+
+			shared.renderTarget = renderTarget;
+			
+		}
+
+		var paintEffectDunes = new PaintEffectDunes( shared );
+		paintEffectDunes.init();
+
+	}	
+	
 	// Painter
 
 	var painter = new VoxelPainter( camera );
@@ -92,7 +134,15 @@ var UgcObjectCreator = function ( shared ) {
 
 	function onMouseMove( event ) {
 
-		painter.moveMouse( shared.mouse.x / shared.screenWidth, shared.mouse.y / shared.screenHeight );
+		if ( USE_POSTPROCESS ) {
+			
+			painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
+
+		} else {
+
+			painter.moveMouse( shared.mouse.x / shared.screenWidth, shared.mouse.y / shared.screenHeight );
+
+		}
 
 	}
 
@@ -159,11 +209,36 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
+		if ( USE_POSTPROCESS ) {
 
-		renderer.setSize( width, height );
+			camera.aspect = shared.viewportWidth / shared.viewportHeight;
+			camera.updateProjectionMatrix();
+			
+			shared.viewportWidth = shared.baseWidth * ( width / shared.baseWidth );
+			shared.viewportHeight = shared.baseHeight * ( width / shared.baseWidth );
 
+			shared.renderer.setSize( shared.viewportWidth, shared.viewportHeight );
+
+			// TODO: Hacky...
+
+			shared.renderTarget.width = shared.viewportWidth;
+			shared.renderTarget.height = shared.viewportHeight;
+			delete shared.renderTarget.__webglFramebuffer;
+
+			offset = ( ( height - shared.viewportHeight  ) / 2 );
+
+			shared.renderer.domElement.style.left = '0px';
+			shared.renderer.domElement.style.top = offset + 'px';
+			
+		} else {
+			
+			camera.aspect = width / height;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize( width, height );
+
+		}
+		
 	};
 
 	this.update = function () {
@@ -186,8 +261,19 @@ var UgcObjectCreator = function ( shared ) {
 		painter.update();
 
 		renderer.clear();
-		renderer.render( scene, camera );
-		renderer.render( painter.getScene(), camera );
+		
+		if ( USE_POSTPROCESS ) {
+
+			renderer.render( scene, camera, renderTarget, true );
+			renderer.render( painter.getScene(), camera, renderTarget );
+			paintEffectDunes.update( 0, 0, 0 );
+
+		} else {
+			
+			renderer.render( scene, camera );
+			renderer.render( painter.getScene(), camera );
+
+		}
 
 	};
 
