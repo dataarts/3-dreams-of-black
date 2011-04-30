@@ -93,7 +93,8 @@ var CityWorld = function ( shared ) {
 		
 		// setup custom materials
 
-		setupCityShader( result, [ "Backdrop_City" ], cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, CityShader );
+		var excludeIds = [ "Backdrop_City" ];
+		applyCityShader( result, excludeIds, cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, CityShader );
 
 		that.scene.update( undefined, true );
 		
@@ -140,94 +141,3 @@ var CityWorld = function ( shared ) {
 
 };
 
-function updateCityShader( start, end, materials, position, time ) {
-	
-	end.copy( start );
-
-	start.x = Math.sin( position.z / 500 ) * 200;
-	start.y = position.y;
-	start.z = position.z - 300;
-
-	end.subSelf( start );
-	end.multiplyScalar( 200 );
-	end.addSelf( start );
-	
-	var i, l = materials.length;
-	
-	for( i = 0; i < l; i++ ) {
-
-		materials[ i ].uniforms[ 'time'  ].value = time;
-		
-	}
-
-};
-
-function setupCityShader( result, exclude, start, end, materials, shader ) {
-	
-	var i, name, geometry, obj, mat;
-
-	var excludeMap = {};
-	
-	for ( i = 0; i < exclude.length; i++ ) {
-		
-		excludeMap[ exclude[ i ] ] = true;
-		
-	}
-
-	var shaderParams = {
-
-		uniforms: shader.uniforms,
-		vertexShader: shader.vertexShader,
-		fragmentShader: shader.fragmentShader,
-		
-		shading: THREE.FlatShading,
-		lights: true,
-		fog: true,
-		vertexColors: THREE.VertexColors
-
-	};
-
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
-	
-	// copy materials to all geo chunks and add AO-texture
-
-	for( name in result.objects ) {
-
-		obj = result.objects[ name ];
-		
-		if ( excludeMap[ name ] ) continue;
-
-		if( obj.geometry && obj.geometry.morphTargets.length === 0 ) {
-			
-			geometry = obj.geometry;
-			
-			for( i = 0; i < geometry.materials.length; i++ ) {
-				
-				mat = new THREE.MeshShaderMaterial( shaderParams );
-
-				mat.uniforms = THREE.UniformsUtils.clone( shaderParams.uniforms );
-				
-				mat.uniforms[ 'targetStart'  ].value   = start;
-				mat.uniforms[ 'targetEnd'    ].value   = end;
-				mat.uniforms[ 'grassImage'   ].texture = shaderParams.uniforms[ 'grassImage'   ].texture;
-				mat.uniforms[ 'surfaceImage' ].texture = shaderParams.uniforms[ 'surfaceImage' ].texture;
-
-				mat.uniforms.colorA.value = shader.colors.colorA;
-				mat.uniforms.colorB.value = shader.colors.colorB;
-				mat.uniforms.colorC.value = shader.colors.colorC;
-	
-				//geometry.materials[ i ][ 0 ] = cityMaterials[ i ];
-				
-				obj.materials[ 0 ] = mat;
-				materials.push( mat );
-
-			}
-			
-		}
-		
-	}
-	
-};
