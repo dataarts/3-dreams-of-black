@@ -23,8 +23,8 @@ function init() {
 	renderer.sortObjects = false;
 
 	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, { depthBuffer: true, stencilBuffer: true } );
-	renderTarget.minFilter = THREE.NearestFilter;
-	renderTarget.magFilter = THREE.NearestFilter;
+	renderTarget.minFilter = THREE.LinearFilter;
+	renderTarget.magFilter = THREE.LinearFilter;
 
 	shared = {
 
@@ -62,6 +62,7 @@ function init() {
 
 	window.addEventListener( 'resize', onWindowResize, false );
 	onWindowResize();
+
 
 	tune = new Tune( audio );
 	tune.setBPM( 85 );
@@ -103,6 +104,19 @@ function init() {
 	setSlider( "directionalLight2", "x", shared.worlds.dunes.directionalLight2.position.x );
 	setSlider( "directionalLight2", "y", shared.worlds.dunes.directionalLight2.position.y );
 	setSlider( "directionalLight2", "z", shared.worlds.dunes.directionalLight2.position.z );
+
+	setSlider( "vectorA", "x", DunesShaderColors.vectorA.x );
+	setSlider( "vectorA", "y", DunesShaderColors.vectorA.y );
+	setSlider( "vectorA", "z", DunesShaderColors.vectorA.z );
+
+	setSlider( "vectorB", "x", DunesShaderColors.vectorB.x );
+	setSlider( "vectorB", "y", DunesShaderColors.vectorB.y );
+	setSlider( "vectorB", "z", DunesShaderColors.vectorB.z );
+
+	setSlider( "vectorC", "x", DunesShaderColors.vectorC.x );
+	setSlider( "vectorC", "y", DunesShaderColors.vectorC.y );
+	setSlider( "vectorC", "z", DunesShaderColors.vectorC.z );
+
 	shared.signals.loadItemCompleted.add( doStart )
 	
 }
@@ -120,7 +134,7 @@ function start( pattern ) {
 
 	container = document.getElementById( 'experience' );
 	container.appendChild( renderer.domElement );
-	//document.body.appendChild( container );
+//	document.body.appendChild( container );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
@@ -144,6 +158,7 @@ function start( pattern ) {
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
+	document.addEventListener( 'keyup', function() { shared.forward = false; }, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
 	animate();
@@ -188,6 +203,11 @@ function onDocumentKeyDown( event ) {
 
 			audio.currentTime += 1;
 			break;
+			
+		case 87:
+		case 38:
+			
+			shared.forward = true;
 
 	}
 
