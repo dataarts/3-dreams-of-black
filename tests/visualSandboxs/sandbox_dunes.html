@@ -34,7 +34,8 @@
 				color: #ffffff;
 				padding: 2px;
 				font-family: Monospace;
-				z-index:1000;
+				font-size: 10px;
+				z-index:100;
 			}
 			
 		</style>
@@ -51,6 +52,9 @@
 			Vignette Darken: <input id="vingenettingDarkeningi" type="range" value="40" min="0" max="100" onchange="updateValue( 'vingenettingDarkening', this.value/100 );" /><span id="vingenettingDarkening">0.4</span><br/>
 			Sample Distance: <input id="sampleDistancei" type="range" value="100" min="0" max="200" onchange="updateValue( 'sampleDistance', this.value/100 );" /><span id="sampleDistance">1.0</span>
 			Wave Factor: <input id="waveFactori" type="range" value="1" min="0" max="1000" onchange="updateValue( 'waveFactor', this.value/100000 );" /><span id="waveFactor">0.001</span><br/>
+			vectorA X:<input id="vectorAi.x" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorA', 'x', this.value/100 );" /><span id="vectorA.x">1.0</span> Y:<input id="vectorAi.x" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorA', 'y', this.value/100 );" /><span id="vectorA.y">1.0</span> Z:<input id="vectorAi.x" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorA', 'z', this.value/100 );" /><span id="vectorA.z">1.0</span><br/>
+			vectorB Y:<input id="vectorBi.x" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorB', 'x', this.value/100 );" /><span id="vectorB.x">1.0</span> Y:<input id="vectorAi.y" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorB', 'y', this.value/100 );" /><span id="vectorB.y">1.0</span> Z:<input id="vectorBi.x" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorB', 'z', this.value/100 );" /><span id="vectorB.z">1.0</span><br/>
+			vectorC Z:<input id="vectorBi.x" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorC', 'x', this.value/100 );" /><span id="vectorC.x">1.0</span> Y:<input id="vectorAi.z" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorC', 'y', this.value/100 );" /><span id="vectorC.y">1.0</span> Z:<input id="vectorCi.x" type="range" value="100" min="-100" max="100" onchange="updateAnimal( 'vectorC', 'z', this.value/100 );" /><span id="vectorC.z">1.0</span><br/>
 			
 			Ambient R: <input id="ambienti.r" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'ambient', 'r', this.value/100 );" /><span id="ambient.r">1.0</span> G:<input id="ambienti.g" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'ambient', 'g', this.value/100 );" /><span id="ambient.g">1.0</span> B:<input id="ambienti.b" type="range" value="100" min="0" max="100" onchange="updateLightCol( 'ambient', 'b', this.value/100 );" /><span id="ambient.b">1.0</span><br/>
 			
@@ -72,7 +76,7 @@
 		<script>
 			function updateAnimal( name, part, value ) {
 				
-				ROME.AnimalShader.globals[ name ][ part ] = value;
+				DunesShaderColors[ name ][ part ] = value;
 				
 				var element = document.getElementById( name + "." + part );
 				if( element ) {
@@ -181,6 +185,7 @@
 		<script src="js/effects/PaintEffectDunes.js"></script>
 
 		<script src="js/worlds/DunesWorld.js"></script>
+		<script src="js/worlds/shaders/DunesShader.js"></script>
 
 		<script src="js/soups/DunesSoup.js"></script>
 		<script src="js/soups/PrairieSoup.js"></script>
