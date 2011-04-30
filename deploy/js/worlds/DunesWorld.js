@@ -3,6 +3,7 @@ var DunesWorld = function ( shared ) {
 	var that = this;
 
 	var ENABLE_LENSFLARES = true;
+	var ENABLE_CUSTOM_MATERIAL = false;
 
 	this.scene = new THREE.Scene();
 	this.scene.collisions = new THREE.CollisionSystem();
@@ -197,7 +198,8 @@ var DunesWorld = function ( shared ) {
 		sceneWalk.rotation.z = Math.PI;
 		addDunesPart( sceneWalk, walkPosition, result );
 		
-		//result.objects[ "D_tile_walk" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
+		if ( ENABLE_CUSTOM_MATERIAL ) 
+			applyMaterial( result, [ [ "D_tile_walk", 0 ] ], testMaterial );
 
 	};
 
@@ -207,7 +209,8 @@ var DunesWorld = function ( shared ) {
 		prairiePosition = new THREE.Vector3( 0, 0, 1 * TILE_SIZE );
 		addDunesPart( scenePrairie, prairiePosition, result );
 
-		//result.objects[ "D_tile_prairie" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
+		if ( ENABLE_CUSTOM_MATERIAL ) 
+			applyMaterial( result, [ [ "D_tile_prairie", 0 ] ], testMaterial );
 
 		/*
 		that.scene.update( undefined, true );
@@ -233,8 +236,9 @@ var DunesWorld = function ( shared ) {
 		cityPosition = new THREE.Vector3( 0, 0, 2 * TILE_SIZE );
 		showHierarchyNotColliders( sceneCity, false );
 		addDunesPart( sceneCity, cityPosition, result );
-		
-		//result.objects[ "D_tile_city" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
+
+		if ( ENABLE_CUSTOM_MATERIAL ) 
+			applyMaterial( result, [ [ "D_tile_city", 0 ] ], testMaterial );
 
 		var centerObj = result.objects[ "City_Center" ];
 		var portalObj = result.objects[ "City_Portal" ];
@@ -279,25 +283,8 @@ var DunesWorld = function ( shared ) {
 
 		addDunesPart( result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE), result );
 
-		/*
-		if ( result.objects[ "D_tile_1" ] !== undefined ) {
-		
-			result.objects[ "D_tile_1" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
-
-		} else if ( result.objects[ "D_tile_2" ] !== undefined ) {
-		
-			result.objects[ "D_tile_2" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
-
-		} else if ( result.objects[ "D_tile_3" ] !== undefined ) {
-		
-			result.objects[ "D_tile_3" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
-
-		} else if ( result.objects[ "D_tile_4" ] !== undefined ) {
-		
-			result.objects[ "D_tile_4" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
-
-		}
-		*/
+		if ( ENABLE_CUSTOM_MATERIAL )
+			applyMaterial( result, [ [ "D_tile_1", 1 ], [ "D_tile_2", 1 ], [ "D_tile_3", 1 ], [ "D_tile_4", 1 ] ], testMaterial );
 		
 		tiles[z][x] = result.scene;
 		++randomAdded;
@@ -905,4 +892,4 @@ var DunesWorld = function ( shared ) {
 
 	}*/
 
-}
+};
