@@ -216,26 +216,26 @@ iframe {
   text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
 }
 #top .inner {
-  padding: 0px 20px;
+  padding: 5px 5px;
 }
 a#see-the-code {
-  padding: 13px 13px 12px 13px;
-  color: #f4f4ec;
-  margin-top: 5px;
-  line-height: 2px;
+  width: 166px;
+  height: 27px;
+  float: right;
   display: block;
-  float: left;
-  background-color: rgba(0,0,0,0);
+  background: url(images/demo-sprites.png) right bottom;
 }
 a#see-the-code:hover {
-  text-decoration: none;
-  background-color: rgba(0,0,0,0.3);
+  background-position: right top;
 }
 a#back-to-landing {
-  padding: 13px 13px 12px 13px;
+  width: 357px;
+  height: 27px;
+  display: block;
+  background: url(images/demo-sprites.png) left bottom;
 }
 a#back-to-landing:hover {
-  text-decoration: none;
+  background-position: left top;
 }
 span.bull {
   font-size: 8px;
