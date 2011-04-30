@@ -2,6 +2,8 @@ var ExplorationSection = function ( shared ) {
 
 	Section.call( this );
 
+	var EXPLORE_FREE = true;
+
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
@@ -31,8 +33,9 @@ var ExplorationSection = function ( shared ) {
 	cameras.city.autoForward = false;
 	cameras.city.position.set( 0, 0, 0 );
 
-	var world, scene,
-	clearEffect, heatEffect, paintEffect, noiseEffect, renderEffect, overlayEffect;
+	var sequence, world, scene,
+	postEffect, clearEffect, heatEffect, paintEffect, paintEffectPrairie, paintEffectDunes,
+	noiseEffect, renderEffect, overlayEffect;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -42,6 +45,12 @@ var ExplorationSection = function ( shared ) {
 
 	paintEffect = new PaintEffect( shared );
 	paintEffect.init();
+
+	paintEffectPrairie = new PaintEffectPrairie( shared );
+	paintEffectPrairie.init();
+	
+	paintEffectDunes = new PaintEffectDunes( shared );
+	paintEffectDunes.init();
 
 	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
 	noiseEffect.init();
@@ -66,12 +75,40 @@ var ExplorationSection = function ( shared ) {
 		// updateViewportSize();
 
 		world = shared.worlds[ worldId ];
+		sequence = shared.sequences[ worldId ];
+		
 		scene = world.scene;
 		camera = cameras[ worldId ];
+		
+		if ( worldId == "city" ) {
+			
+			postEffect = paintEffect;
+			//postEffect = paintEffectDunes;
+		
+		} else if ( worldId == "prairie" ) {
 
-		scene.addChild( camera );
+			postEffect = paintEffect;
+			
+		} else if ( worldId == "dunes" ) {
 
-		camera.position.set( 0, 0, 0 );
+			postEffect = paintEffectDunes;
+			
+		} else {
+			
+			postEffect = renderEffect;
+
+		}
+		
+		if ( EXPLORE_FREE ) {
+
+			scene.addChild( camera );			
+			camera.position.set( 0, 0, 0 );
+
+		} else {
+			
+			sequence.resetCamera();
+			
+		}
 
 		// hide soup (if it wasn't yet activated)
 
@@ -150,27 +187,50 @@ var ExplorationSection = function ( shared ) {
 
 	this.update = function () {
 
-		if ( world ) {
+		// just flying around worlds using new RollCamera
+		
+		if ( EXPLORE_FREE ) {
 
-			time = new Date().getTime() - start;
-			delta = time - lastTime;
-			lastTime = time;
+			if ( world ) {
 
-			world.update( delta, camera, true );
+				time = new Date().getTime() - start;
+				delta = time - lastTime;
+				lastTime = time;
 
-			clearEffect.update( progress, delta, time );
+				world.update( delta, camera, true );
 
-			renderer.setClearColor( world.scene.fog.color );
-			renderer.render( world.scene, camera, renderTarget );
+				clearEffect.update( progress, delta, time );
 
-			shared.logger.log( "vertices: " + renderer.data.vertices );
-			shared.logger.log( 'faces: ' + renderer.data.faces );
+				renderer.setClearColor( world.scene.fog.color );
+				renderer.render( world.scene, camera, renderTarget );
 
-			//paintEffect.update( progress, delta, time );
-			//heatEffect.update( progress, delta, time );
-			//noiseEffect.update( progress, delta, time );
-			//overlayEffect.update( progress, delta, time );
-			renderEffect.update( progress, delta, time );
+				shared.logger.log( "vertices: " + renderer.data.vertices );
+				shared.logger.log( 'faces: ' + renderer.data.faces );
+
+				postEffect.update( progress, delta, time );
+			
+				//heatEffect.update( progress, delta, time );
+				//noiseEffect.update( progress, delta, time );
+				//overlayEffect.update( progress, delta, time );
+				//renderEffect.update( progress, delta, time );
+
+			}
+
+		// replay sequences
+
+		} else {			
+		
+			if ( sequence ) {
+
+				time = new Date().getTime() - start;
+				delta = time - lastTime;
+				lastTime = time;
+
+				clearEffect.update( progress, delta, time );
+				sequence.update( progress, delta, time );
+				renderEffect.update( progress, delta, time );
+
+			}
 
 		}
 

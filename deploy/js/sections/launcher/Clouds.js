@@ -135,7 +135,7 @@ var Clouds = function ( shared ) {
 
   function makeScene(geometry){
 
-    for ( var i = 0; i < 4; i ++ ) {
+    for ( var i = 0; i < 2; i ++ ) {
       /////Bioids
       boid = boids[ i ] = new Boid();
       boid.position.x = 240;
@@ -148,24 +148,24 @@ var Clouds = function ( shared ) {
       boid.setWorldSize( 1000, 200, 400 );
 
       /////Birds
-      morphObject[i] = new ROME.Animal( geometry, true );
-      morphObject[i].timeOffset = Math.random()*100;
-      bird = birds[i] = morphObject[i].mesh;
-      bird.phase = Math.floor( Math.random() * 62.8);
-      bird.rotation.set( 0, -0.5, 0 );
-      bird.updateMatrix();
-      bird.update();
-
-      var nameA = morphObject[i].availableAnimals[ 0 ],
-          nameB = morphObject[i].availableAnimals[ 0 ];
-
-      morphObject[i].play( nameA, nameB );
-
-      bird.position = boids[ i ].position;
-
-      bird.doubleSided = true;
-      bird.scale.x = bird.scale.y = bird.scale.z = 0.2;
-      birdsGroup.addChild( bird );
+      // morphObject[i] = new ROME.Animal( geometry, true );
+      // morphObject[i].timeOffset = Math.random()*100;
+      // bird = birds[i] = morphObject[i].mesh;
+      // bird.phase = Math.floor( Math.random() * 62.8);
+      // bird.rotation.set( 0, -0.5, 0 );
+      // bird.updateMatrix();
+      // bird.update();
+      // 
+      // var nameA = morphObject[i].availableAnimals[ 0 ],
+      //     nameB = morphObject[i].availableAnimals[ 0 ];
+      // 
+      // morphObject[i].play( nameA, nameB );
+      // 
+      // bird.position = boids[ i ].position;
+      // 
+      // bird.doubleSided = true;
+      // bird.scale.x = bird.scale.y = bird.scale.z = 0.2;
+      // birdsGroup.addChild( bird );
     }
 
     //Adding clouds
@@ -227,17 +227,17 @@ var Clouds = function ( shared ) {
       
 			vector.z = boid.position.z;
 
-			boid.repulse( vector );
+			//boid.repulse( vector );
 
       boid.run( boids );
       bird = birds[ i ];
 
-      bird.rotation.y += (Math.atan2( - boid.velocity.z, boid.velocity.x )+Math.PI/2 - bird.rotation.y)/30;
-      bird.rotation.z += (Math.asin( boid.velocity.y / boid.velocity.length()) - bird.rotation.z)/30;
+      bird.rotation.y = (Math.atan2( - boid.velocity.z, boid.velocity.x )+Math.PI/2);
+      bird.rotation.z = (Math.asin( boid.velocity.y / boid.velocity.length()));
 
 		  bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
 
-      morphObject[i].update(delta*bird.phase/50);
+      morphObject[i].update(delta*bird.phase/100);
     }
 	};
 

@@ -29,7 +29,7 @@ var Dunes = function ( shared ) {
 	domElement.style.width = "100%";
 	domElement.style.textAlign = "right";
 	domElement.style.display = "none";
-	document.body.appendChild( domElement )
+	//document.body.appendChild( domElement )
 
 	this.init = function () {
 

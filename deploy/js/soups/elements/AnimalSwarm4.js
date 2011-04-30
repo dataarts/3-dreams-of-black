@@ -1,4 +1,4 @@
-var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
+var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 	
 	var that = this;
 
@@ -172,18 +172,18 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}*/
 
 			// tween scale
-/*			that.array[i].scale *= 0.25;
+			/*that.array[i].scale *= 0.25;
 			var scaleTween = new TWEEN.Tween(that.array[i])
-				.to({scale: that.array[i].origscale}, 2000)
+				.to({scale: that.array[i].origscale}, 1500)
 				.easing(TWEEN.Easing.Elastic.EaseOut)
 				//.delay(200);
 			scaleTween.start();
-*/			
+			*/
 			// tween popup
 			var scale = that.array[i].scale;
-			that.array[i].c.position.x -= (normal.x)*(scale*400);
-			that.array[i].c.position.y -= (normal.y)*(scale*400);
-			that.array[i].c.position.z -= (normal.z)*(scale*400);
+			that.array[i].c.position.x -= (normal.x)*(scale*350);
+			that.array[i].c.position.y -= (normal.y)*(scale*350);
+			that.array[i].c.position.z -= (normal.z)*(scale*350);
 
 			//console.log(scale*200);
 /*			var popupTween = new TWEEN.Tween(that.array[i].c.position)
@@ -242,7 +242,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			// change follow index
 			//var changeTime = Math.max(animalSpeed*18, 80);
-			var changeTime = Math.max(animalSpeed*15, 70);
+			var changeTime = Math.max(animalSpeed*25, 100);
 			//var changeTime = Math.max(animalSpeed*30, 110);
 
 			//var dx = animal.position.x - vectorArray[f].position.x, dy = animal.position.y - vectorArray[f].position.y, dz = animal.position.z - vectorArray[f].position.z;
@@ -361,7 +361,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			}
 
-			var divider = 8;
+			var divider = 4;
 
 			if (that.array[i].dead && !wasDead) {
 				// tween scale
@@ -372,7 +372,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
-			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
+			var moveY = (toy-animal.position.y)/2;//that.settings.divider;
 			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
 
 			if (that.array[i].dead && scale <= 0.01) {

@@ -63,12 +63,13 @@ var City = function ( shared ) {
 		*/
 
 		camera = new THREE.Camera( 60, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-		camera.position.set(0,20,0);
+		camera.position.set( 0, 20, 0 );
 
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
 		
 		shared.worlds.city = world;
+		shared.sequences.city = this;
 		 
 		/*if ( shared.debug ) {
 
@@ -80,20 +81,25 @@ var City = function ( shared ) {
 		*/
 	};
 
-	this.show = function ( progress ) {
-
+	this.resetCamera = function() {
+		
+		camera.position.set( 0, 20, 0 );
 		//camera.animation.play( false, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
 		renderer.setStencilShadowDarkness( 0.7 );
+
+	};
+	
+	this.show = function ( progress ) {
+
+		this.resetCamera();
 
 		shared.started.city = true;
 
 	};
 
 	this.hide = function () {
-
-
 
 	};
 
@@ -105,8 +111,10 @@ var City = function ( shared ) {
 
 		camera.position.z -= delta / 8;
 
-		if (camera.position.z < -3300) {
+		if ( camera.position.z < -3300 ) {
+
 			camera.position.z = 0;
+
 		}
 
 		// choose path

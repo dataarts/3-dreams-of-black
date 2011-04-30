@@ -3,6 +3,7 @@ ROME.TrailShaderUtils = ( function() {
 	var that = {};
 	var trailTexture;
 	var markTexture;
+	var trailTextureSize;
 	var GL;
 	var renderer;
 	var maxX = -9999999, maxZ = -9999999, minX = 9999999, minZ = 9999999;
@@ -132,12 +133,19 @@ ROME.TrailShaderUtils = ( function() {
 
 	//--- update lava ---
 
-	that.updateLava = function( deltaTime ) {
+	that.updateLava = function( deltaTime, x, z ) {
 		
 		deltaTime = deltaTime !== undefined ? deltaTime : 1;
 		
-		ROME.TrailShader.uniforms.lavaTime.value += 0.000001 * deltaTime;
-		
+		ROME.TrailShader.uniforms.lavaHeadPosition.value.set( x !== undefined ? x : 0, 0, z != undefined ? z : 0 );
+
+	//	ROME.TrailShader.uniforms.lavaTime.value += 0.000001 * deltaTime;
+		ROME.TrailShader.uniforms.lavaTime.value += deltaTime;
+		if(ROME.TrailShader.uniforms.lavaTime.value > 1.0)	
+			ROME.TrailShader.uniforms.lavaTime.value = 0.0;	
+		if(ROME.TrailShader.uniforms.lavaTime.value < 0.0)	
+			ROME.TrailShader.uniforms.lavaTime.value = 0.0;	
+
 	}
 	
 	
@@ -145,17 +153,23 @@ ROME.TrailShaderUtils = ( function() {
 	
 	that.setMarkAtWorldPosition = function( worldX, worldZ ) {
 
-		var u = (( worldX - minX ) / width ) * trailTextureSize;
-		var v = (( worldZ - minZ ) / depth ) * trailTextureSize;
-		
-		if( u >= 0 && u < trailTextureSize - markTexture.image.width && 
-			v >= 0 && v < trailTextureSize - markTexture.image.height ) {
-				
-			GL.bindTexture( GL.TEXTURE_2D, trailTexture );
-			GL.texSubImage2D( GL.TEXTURE_2D, 0, u, v, GL.RGB, GL.UNSIGNED_BYTE, markTexture.image );
-				
+		if( trailTextureSize ) {
+			
+			var u = (( worldX - minX ) / width ) * trailTextureSize;
+			var v = (( worldZ - minZ ) / depth ) * trailTextureSize;
+			
+			if( u >= 0 && u < trailTextureSize - markTexture.image.width && 
+				v >= 0 && v < trailTextureSize - markTexture.image.height ) {
+					
+				GL.bindTexture( GL.TEXTURE_2D, trailTexture );
+				GL.texSubImage2D( GL.TEXTURE_2D, 0, u, v, GL.RGB, GL.UNSIGNED_BYTE, markTexture.image );
+					
+			}
+			
+
+
 		}
-		
+
 	}
 
 	return that;	
@@ -169,8 +183,9 @@ ROME.TrailShader = {
 		
 		trailMap: undefined,		// set by code
 		faceMap: THREE.ImageUtils.loadTexture( "files/textures/Closeup_PaintDubs.jpg" ),
-		lavaMap: THREE.ImageUtils.loadTexture( "files/textures/lava_grey.jpg" ),
-		lavaNoiseMap: THREE.ImageUtils.loadTexture( "files/textures/lavaNoise.png" )
+		lavaMap: THREE.ImageUtils.loadTexture( "files/textures/lava.jpg" ),
+		/*lavaNoiseMap: THREE.ImageUtils.loadTexture( "files/textures/lavaNoise.png" )*/
+		lavaNoiseMap: THREE.ImageUtils.loadTexture( "files/textures/Color_noise.jpg" )
 		
 	},
 	
@@ -180,7 +195,7 @@ ROME.TrailShader = {
 		"faceMap": 					 	{ type: "t", value: 1, texture: undefined },
 		"lavaMap": 					 	{ type: "t", value: 2, texture: undefined },
 		"lavaNoiseMap": 			 	{ type: "t", value: 3, texture: undefined },
-
+		"lavaHeadPosition":				{ type: "v3", value: new THREE.Vector3( 0, 0, 0 ) },
 		"lavaTime": 					{ type: "f", value: 0 },
 		"lavaUvScale": 					{ type: "v2", value: new THREE.Vector2( 50.0, 50.0 ) },
 
@@ -222,6 +237,7 @@ ROME.TrailShader = {
 		"attribute	vec2	trailUV;",
 
 		"varying 	vec2	vUV;",
+		"varying 	vec2	vPos;",
 		"varying 	vec2	vTrailUV;",
 		"varying	vec3	vColor;",
 		"varying  	vec4	vLightWeighting;",
@@ -247,7 +263,7 @@ ROME.TrailShader = {
 	
 			"#if MAX_POINT_LIGHTS > 0",
 	
-				"for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {",
+				/*"for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {",
 	
 					"vec4 lPosition = viewMatrix * vec4( pointLightPosition[ i ], 1.0 );",
 					"vec3 lVector = lPosition.xyz - mvPosition.xyz;",
@@ -261,14 +277,14 @@ ROME.TrailShader = {
 					"float pointLightWeighting = max( dot( transformedNormal, lVector ), 0.0 );",
 					"vLightWeighting.xyz += pointLightColor[ i ] * pointLightWeighting * lDistance;",
 	
-				"}",
+				"}",*/
 	
 			"#endif",
 
 			"vUV = uv;",
 			"vTrailUV = trailUV;",
 			"vColor = color;",
-			
+			"vPos = position.xy;",
 			"gl_Position = projectionMatrix * mvPosition;",
 		"}"
 
@@ -284,10 +300,12 @@ ROME.TrailShader = {
 		"uniform  	vec2		lavaUvScale;",
 		"uniform  	float		lavaTime;",
 
+		"uniform 	vec3 		lavaHeadPosition;",
 		"uniform 	vec3 		fogColor;",
 		"uniform 	float 		fogDensity;",
 
 		"varying 	vec2		vUV;",
+		"varying 	vec2		vPos;",
 		"varying 	vec2		vTrailUV;",
 		"varying	vec3		vColor;",
 		"varying 	vec4 		vLightWeighting;",
@@ -312,33 +330,53 @@ ROME.TrailShader = {
 			"float offsetV = cos( lavaTime * 11.0 ) * 0.002;",
 			"vec2 uvOffsetA = vec2( offsetU, offsetV );",
 			"vec2 uvOffsetB = vec2( -offsetU, offsetV );",
+			"vec2 lookup;",
 			
-			"mixValue  = texture2D( trailMap, vTrailUV + uvOffsetA ).r;",
-			"mixValue += texture2D( trailMap, vTrailUV - uvOffsetA ).r;",
-			"mixValue += texture2D( trailMap, vTrailUV + uvOffsetB ).r;",
-			"mixValue += texture2D( trailMap, vTrailUV - uvOffsetB ).r;",
-			"mixValue /= 4.0;",
-			"mixValue = smoothstep( 0.0, 1.0, mixValue );",
+			/*"mixValue  = texture2D( trailMap, vTrailUV + uvOffsetA ).r;",
+
+			"mixValue = smoothstep( 0.0, 1.0, mixValue );",*/
 			
-			"if( mixValue != 0.0 ) {",
+			/*"if( mixValue != 0.0 ) {",
 
 				"vec2 movement = vec2( lavaTime );",
 				"vec4 noise = texture2D( lavaNoiseMap, ( vTrailUV - movement ) * lavaUvScale * 3.0 + vec2( sin( lavaTime * 100.0 ) * 0.05, cos( lavaTime * 150.0 ) * 0.05 ));",
 				"vec4 color = texture2D( lavaMap, ( vTrailUV + movement ) * lavaUvScale + vec2( sin( noise.a ) * 0.03, cos( noise.a * 1.1 ) * 0.03 ));",
 
 				"lavaColor = color * color * mixValue * noise.a;",
-			"}",
+			"}",*/
 
 
 			// grass
 			
-			"vec4 grassColor = vec4( vColor, 1.0 ) * texture2D( faceMap, vUV );",
-			
-			
+			"gl_FragColor = vec4( vColor, 1.0 ) * texture2D(faceMap, vUV);",
+			"lookup = texture2D(lavaNoiseMap, vTrailUV * vec2(65.0) + vec2( lavaTime )).rg;",
+			"mixValue = texture2D(trailMap, vTrailUV + vec2(0.01) * lookup).r;",
+			"mixValue += max(1.0 - length(vec2(0.015) * vec2(vPos.xy - lavaHeadPosition.xz) + lookup * vec2(0.4)), 0.0);",
+			//"mixValue = dot(vPos - lavaHeadPosition.xz,  vPos - lavaHeadPosition.xz);",
+			"if(mixValue > 0.5)",
+			"{",
+				"gl_FragColor = gl_FragColor.gggg * vec4(0.27, 0.25, 0.3, 1.0) - vec4(0.1, 0.1, 0.1, 1.0);",
+				"mixValue = max((texture2D(lavaNoiseMap, vTrailUV * vec2(80.0) + vec2( lavaTime )).rrrr * vec4(16.0) - vec4(12.0)).r, 0.0);",
+				"gl_FragColor += vec4(mixValue) * texture2D( lavaMap, vTrailUV * vec2(200.0)) * texture2D(lavaNoiseMap, vTrailUV * vec2(10.0) + vec2( lavaTime )).rrrr * vec4(2.0);",
+			"}",
+
+
+
 			// add up
 			
-			"gl_FragColor = mix( grassColor, lavaColor, mixValue ) * vLightWeighting;", 
-			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+			"gl_FragColor = gl_FragColor * vLightWeighting;", 
+			//"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+
+			//"gl_FragColor = vec4(mixValue);//texture2D(trailMap, vTrailUV);",
+
+			//"lookup = vec2(0.01) * texture2D(lavaNoiseMap, vTrailUV * vec2(100.0) + vec2( lavaTime )).rg;",
+			//"gl_FragColor = texture2D(trailMap, vTrailUV + lookup);",
+
+			//"gl_FragColor = texture2D(lavaNoiseMap, vTrailUV * vec2(40.0) + vec2( lavaTime )).rrrr * vec4(2.0) - vec4(1.0);",
+
+			//"mixValue = max((texture2D(lavaNoiseMap, vTrailUV * vec2(40.0) + vec2( lavaTime )).rrrr * vec4(16.0) - vec4(12.0)).r, 0.0);",
+			//"gl_FragColor = vec4(mixValue);",
+			//"gl_FragColor = vec4();",
 			"gl_FragColor.a = 1.0;",
 
 		"}"

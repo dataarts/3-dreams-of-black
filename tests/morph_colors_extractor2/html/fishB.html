@@ -160,12 +160,21 @@ function initPostprocessingNoise( effect ) {
     effect.materialFilm = new THREE.MeshShaderMaterial( { uniforms: film_uniforms, vertexShader: film_shader.vertexShader, fragmentShader: film_shader.fragmentShader } );
     effect.materialFilm.uniforms.grayscale.value = 0;
     
-    
     var heatUniforms = {
 
-    "time": { type: "f", value: 0 },
-    "map": { type: "t", value: 0, texture: effect.texture },
-    "sampleDistance": { type: "f", value: 1 / SCREEN_WIDTH }
+		"map": { type: "t", value:0, texture: effect.texture },
+		"screenWidth": { type: "f", value: SCREEN_WIDTH },
+		"screenHeight": { type: "f", value: SCREEN_HEIGHT },
+		"vingenettingOffset": { type: "f", value: 0.87 },
+		"vingenettingDarkening": { type: "f", value: 0.61 },
+		"colorOffset": { type: "f", value: 1 },
+		"colorFactor": { type: "f", value: 0 },
+		"colorBrightness": { type: "f", value: 0 },
+		"sampleDistance": { type: "f", value: 0.47 },
+		"waveFactor": { type: "f", value: 0.00068 },
+		"colorA": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
+		"colorB": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
+		"colorC": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) }
 
     };
 
@@ -187,51 +196,65 @@ function initPostprocessingNoise( effect ) {
         
         fragmentShader: [
 
-                "uniform sampler2D map;",
-                "varying vec2 vUv;",
+				"uniform float screenWidth;",
+				"uniform float screenHeight;",
+				"uniform float vingenettingOffset;",
+				"uniform float vingenettingDarkening;",
+				"uniform float colorOffset;",
+				"uniform float colorFactor;",
+				"uniform float sampleDistance;",
+				"uniform float colorBrightness;",
+				"uniform float waveFactor;",
+				"uniform vec3 colorA;",
+				
+				
+				"uniform sampler2D map;",
+				"varying vec2 vUv;",
+	
+				"void main() {",
+	
+					"vec4 color, org, tmp, add;",
+					"float sample_dist, f;",
+					"vec2 vin;",				
+					"vec2 uv = vUv;",
+					
+					"add += color = org = texture2D( map, uv );",
 
-                "void main() {",
+					"vin = (uv - vec2(0.5)) * vec2( 1.4 /*vingenettingOffset * 2.0*/);",
+					"sample_dist =(dot( vin, vin ) * 2.0);",
+					
+					"f = (waveFactor * 100.0 + sample_dist) * sampleDistance * 4.0;",
+	
+					"vec2 sampleSize = vec2(  1.0 / screenWidth, 1.0 / screenHeight ) * vec2(f);",
+	
+					"add += tmp = texture2D( map, uv + vec2(0.111964, 0.993712) * sampleSize);", 
+					"if( tmp.b < color.b ) color = tmp;",
+	
+					"add += tmp = texture2D( map, uv + vec2(0.846724, 0.532032) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
+	
+					"add += tmp = texture2D( map, uv + vec2(0.943883, -0.330279) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
+	
+					"add += tmp = texture2D( map, uv + vec2(0.330279, -0.943883) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
+	
+					"add += tmp = texture2D( map, uv + vec2(-0.532032, -0.846724) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
+	
+					"add += tmp = texture2D( map, uv + vec2(-0.993712, -0.111964) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
+	
+					"add += tmp = texture2D( map, uv + vec2(-0.707107, 0.707107) * sampleSize);",
+					"if( tmp.b < color.b ) color = tmp;",
+	
+					"uv = (uv - vec2(0.5)) * vec2( vingenettingOffset );",
+					"color = color * vec4(2.0) - (add / vec4(8.0));",
+					"color = color + (add / vec4(8.0) - color) * (vec4(1.0) - vec4(sample_dist * 0.5));",
+					//"color = color + (add / vec4(8.0) - color) * (-vec4(sample_dist * 0.5));",
+					"gl_FragColor = vec4( mix(color.rgb * color.rgb * vec3(colorOffset) + color.rgb, color.ggg * colorFactor - vec3( vingenettingDarkening ), vec3( dot( uv, uv ))), 1.0 );",
+				"}"
 
-                    "vec4 color, tmp, add;",
-
-                    // "vec2 uv = vUv + vec2( sin( vUv.y * 100.0 ), sin( vUv.x * 100.0 )) * 0.0005;",
-                    "vec2 uv = vUv;",
-
-                    "color = texture2D( map, uv );",
-
-                    "float param1 = 0.0009;",
-                    "float param2 = 0.001;",
-
-                    "add = tmp = texture2D( map, uv + vec2( param1, param1 ));", 
-                    "if( tmp.r < color.r ) color = tmp;",
-
-                    "add += tmp = texture2D( map, uv + vec2( -param1, param1 ));",
-                    "if( tmp.r < color.r ) color = tmp;",
-
-                    "add += tmp = texture2D( map, uv + vec2( -param1, -param1 ));",
-                    "if( tmp.r < color.r ) color = tmp;",
-
-                    "add += tmp = texture2D( map, uv + vec2( param1, -param1 ));",
-                    "if( tmp.r < color.r ) color = tmp;",
-
-                    "add += tmp = texture2D( map, uv + vec2( param2, 0.0 ));",
-                    "if( tmp.r < color.r ) color = tmp;",
-
-                    "add += tmp = texture2D( map, uv + vec2( -param2, 0.0 ));",
-                    "if( tmp.r < color.r ) color = tmp;",
-
-                    "add += tmp = texture2D( map, uv + vec2( 0, param2 ));",
-                    "if( tmp.r < color.r ) color = tmp;",
-
-                    "add += tmp = texture2D( map, uv + vec2( 0, -param2 ));",
-                    "if( tmp.r < color.r ) color = tmp;",
-
-
-                    "gl_FragColor = color * color + add * 0.5 / 8.0;",
-
-                    // "gl_FragColor = texture2D( map, uv );",
-
-                "}"
 
             ].join("\n")
 
@@ -247,13 +270,13 @@ function render() {
 
     renderer.clear();
 
-    renderer.render( scene, camera );
+    //renderer.render( scene, camera );
 
-	/*
+
     renderer.render( scene, camera, postprocessing.texture, true );
 
     postprocessing.materialFilm.uniforms.time.value += 0.01 * delta;
-    postprocessing.materialHeat.uniforms.time.value += 0.01 * delta;
+    //postprocessing.materialHeat.uniforms.time.value += 0.01 * delta;
 
     // HEAT => NOISE
     
@@ -265,7 +288,7 @@ function render() {
     
     postprocessing.quad.materials[ 0 ] = postprocessing.materialFilm;
     postprocessing.materialFilm.uniforms.tDiffuse.texture = postprocessing.texture2;
-    */
+
 
 }
 

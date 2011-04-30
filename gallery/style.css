@@ -1,0 +1,210 @@
+div.object-title {
+  font: 9.5px/29px "Gotham Medium", sans-serif;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  float: left;
+}
+
+ul#pagination li {
+  font: 9.5px/29px "Gotham Medium", sans-serif;
+  float: left;
+  text-align: center;
+  height: 28px;
+  width: 28px;
+  margin-right: 5px;
+}
+
+ul#pagination li:last-child {
+  margin-right: 0;
+}
+
+ul#pagination li a {
+  border: 1px solid #9b9a94;
+  text-decoration: none;
+  height: 27px;
+  width: 27px;
+  line-height: 29px;
+  color: #404040;
+  display: block;
+}
+
+ul#pagination li.selected a {
+  background-color: #f65824;
+  border-color: #f65824;
+  color: #f4f1e8;
+}
+
+ul#pagination li a:hover {
+  background-color: #404040;
+  border-color: #404040;
+  color: #f4f1e8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #f4f1e8;
+  color: #404040;
+}
+
+.clear {
+  clear: both;
+}
+
+div#container {
+  padding: 100px 0px
+}
+
+div#gallery {
+  max-width: 1621px;
+  margin: 0 auto;
+}
+
+div#gallery .inner {
+  border: 1px solid #c3c0b7;
+  border-top: 0;
+  border-left: 0;
+  margin: 0 auto;
+}
+
+div.object img {
+  width: 300px;
+  height: 180px;
+  background-color: #c3c0b7;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+div.object {
+  padding: 12px;
+  width: 299px;
+  height: 215px;
+  border: 1px solid #c3c0b7;
+  border-bottom: 0;
+  border-right: 0;
+  float: left;
+}
+
+div.vote-box {
+  float: right;
+}
+
+a.vote {
+  display: block;
+  width: 27px;
+  height: 27px;
+  background: url(images/vote-sprites.gif);
+  background-repeat: no-repeat;
+  float: left;
+  margin-left: 6px;
+}
+
+a.upvote {
+  background-position: bottom left;
+}
+
+a.upvote:hover {
+  background-position: center left;
+}
+
+a.upvote.selected {
+  background-position: top left;
+}
+
+a.downvote {
+  background-position: bottom right;
+}
+
+a.downvote:hover {
+  background-position: center right;
+}
+
+a.downvote.selected {
+  background-position: top right;
+}
+
+div#lightbox {
+  display: none;
+}
+
+div#shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(244, 241, 232, 0.75);
+}
+
+div#object-viewer {
+  padding: 12px;
+  width: 736px;
+  z-index: 101;
+  height: 500px;
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  background-color: #f4f1e8;
+  top: 200px;
+  left: 50%;
+  margin-left: -380px;
+}
+
+div#webgl {
+  width: 735px;
+  height: 465px;
+  background-color: #c3c0b7;
+  margin-bottom: 10px;
+}
+
+ul#pagination {
+  width: 230px;
+  margin: 0 auto;
+  margin-top: 40px;
+  list-style: none;
+}
+
+#lightbox-buttons div {
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  background-image: url(images/lightbox-sprites.gif);
+  
+  position: absolute;
+  z-index: 100;
+  top: 430px;
+  left: 50%;
+}
+
+#lightbox-next {
+  background-position: right top;
+  margin-left: 379px;
+}
+
+#lightbox-prev {
+  margin-left: -417px;
+}
+
+#lightbox-close {
+  background-position: center top;
+  margin-left: -19px;
+  margin-top: -267px;
+}
+
+#lightbox-next:hover {
+  background-position: right bottom;
+}
+#lightbox-close:hover {
+  background-position: center bottom;
+}
+#lightbox-prev:hover {
+  background-position: left bottom;
+}
