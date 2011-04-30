@@ -194,6 +194,14 @@ var DunesWorld = function ( shared ) {
 		walkPosition = new THREE.Vector3( 0, 0, 0 * TILE_SIZE );
 		sceneWalk.rotation.z = Math.PI;
 		addDunesPart( sceneWalk, walkPosition, result );
+		
+		/*
+		console.log( result.objects[ "D_tile_walk" ].geometry.materials );
+		
+		var testMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+		
+		result.objects[ "D_tile_walk" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
+		*/
 
 	};
 
