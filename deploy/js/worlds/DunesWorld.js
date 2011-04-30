@@ -187,6 +187,8 @@ var DunesWorld = function ( shared ) {
 		}
 		
 	};
+
+	var testMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
 	
 	function walkLoaded( result ) {
 
@@ -195,13 +197,8 @@ var DunesWorld = function ( shared ) {
 		sceneWalk.rotation.z = Math.PI;
 		addDunesPart( sceneWalk, walkPosition, result );
 		
-		/*
 		console.log( result.objects[ "D_tile_walk" ].geometry.materials );
-		
-		var testMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-		
-		result.objects[ "D_tile_walk" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
-		*/
+		//result.objects[ "D_tile_walk" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 	};
 
@@ -212,6 +209,9 @@ var DunesWorld = function ( shared ) {
 		addDunesPart( scenePrairie, prairiePosition, result );
 		
 		console.log( "prairie", result );
+
+		console.log( result.objects[ "D_tile_prairie" ].geometry.materials );
+		//result.objects[ "D_tile_prairie" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 		/*
 		that.scene.update( undefined, true );
@@ -239,6 +239,9 @@ var DunesWorld = function ( shared ) {
 		addDunesPart( sceneCity, cityPosition, result );
 		
 		console.log( "city", result );
+		
+		console.log( result.objects[ "D_tile_city" ].geometry.materials );
+		//result.objects[ "D_tile_city" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 		var centerObj = result.objects[ "City_Center" ];
 		var portalObj = result.objects[ "City_Portal" ];
