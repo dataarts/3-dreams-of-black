@@ -14,6 +14,28 @@ ul#pagination li {
   margin-right: 5px;
 }
 
+a {
+  color: #f65824;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+div.object .img-wrapper:hover:before {
+  font: 11px/0px "Gotham Medium", sans-serif;
+  letter-spacing: 0.15em;
+  color: #fff;
+  content: 'PREVIEW';
+  position: absolute;
+  display: block;
+  padding: 20px;
+  margin-top: 73px;
+  margin-left: 100px;
+  background-color: rgba(246, 88, 36, 0.9);
+}
+
 ul#pagination li:last-child {
   margin-right: 0;
 }
@@ -46,12 +68,8 @@ ul#pagination li a:hover {
   line-height: 0;
 }
 
-html, body {
-  height: 100%;
-}
-
 body {
-  background-color: #f4f1e8;
+  background: #f4f1e8 url(images/title.png) center 40px no-repeat;
   color: #404040;
 }
 
@@ -60,7 +78,7 @@ body {
 }
 
 div#container {
-  padding: 100px 0px
+  padding: 120px 0px 50px;
 }
 
 div#gallery {
@@ -80,6 +98,9 @@ div.object img {
   height: 180px;
   background-color: #c3c0b7;
   margin-bottom: 10px;
+}
+
+div.object .img-wrapper {
   cursor: pointer;
 }
 
@@ -150,10 +171,10 @@ div#object-viewer {
   width: 736px;
   z-index: 101;
   height: 500px;
-  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
-  position: absolute;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+  position: fixed;
   background-color: #f4f1e8;
-  top: 200px;
+  top: 250px;
   left: 50%;
   margin-left: -380px;
 }
@@ -177,10 +198,9 @@ ul#pagination {
   height: 38px;
   cursor: pointer;
   background-image: url(images/lightbox-sprites.gif);
-  
-  position: absolute;
+  position: fixed;
   z-index: 100;
-  top: 430px;
+  top: 480px;
   left: 50%;
 }
 
@@ -207,4 +227,59 @@ ul#pagination {
 }
 #lightbox-prev:hover {
   background-position: left bottom;
+}
+
+ul#nav {
+  list-style: none;
+  margin: 0 auto;
+  padding-bottom: 50px;
+  width: 950px;
+}
+
+ul#nav li {
+  float: left;
+  margin-right: 50px;
+}
+
+ul#nav li a span {
+  display: none;
+}
+
+ul#nav li:last-child {
+  margin-right: 0;
+}
+
+ul#nav li,
+ul#nav li a {
+  display: block;
+  width: 200px;
+  height: 30px;
+}
+
+ul#nav li a {
+  opacity: 0.5;
+  -webkit-transition: all 0.2s linear;
+  background: url(images/everyone.png);
+}
+
+ul#nav li a:hover {
+  opacity: 1;
+  background: url(images/everyone.png);
+}
+
+ul#nav li.selected a {
+  opacity: 0.9;
+  background: url(images/everyone.png);
+}
+
+ul#nav li#sky a {
+  background: url(images/sky.png);
+}
+
+ul#nav li#ground a {
+  background: url(images/ground.png);
+}
+
+ul#nav li#favorite a {
+  background: url(images/favorite.png);
 }

@@ -5,8 +5,6 @@ var GALLERY = function() {
   var maxWidthCSS = gallery.css('max-width');
 
   var shade = $('#shade');
-  var objectViewer = $('#object-viewer');
-
   var lightbox = $('#lightbox');
 
   var maxWidth = parseInt(maxWidthCSS.replace('px', ''));
@@ -17,30 +15,18 @@ var GALLERY = function() {
   window.addEventListener('resize', onWindowResize, false)
   onWindowResize();
 
-  function onWindowResize() {
+  var closeLightbox = function() {
+    lightboxOpen = true;
+    lightbox.fadeOut(200);
+    shade.get(0).removeEventListener('mousedown', closeLightbox, false);
+  };
 
-    var newWidth;
-    if (window.innerWidth < maxWidth) {
-      newWidth = objectWidth * 3;
-    } else {
-      newWidth = maxWidth;
-    }
-    galleryInner.width(newWidth);
-  }
+  $('#lightbox-close').click(closeLightbox);
 
-  $('.object img').click(function() {
+  $('.object .img-wrapper').click(function() {
 
-    lightbox.css('display', 'block');
-    
-    var closeLightbox = function() {
-      lightboxOpen = true;
-      lightbox.css('display', 'none');
-      shade.get(0).removeEventListener('mousedown', closeLightbox,
-        false);
-    }
-
-    shade.get(0).addEventListener('mousedown', closeLightbox,
-        false);
+    lightbox.fadeIn(200);
+    shade.get(0).addEventListener('mousedown', closeLightbox, false);
 
   });
 
@@ -65,5 +51,20 @@ var GALLERY = function() {
     return false;
 
   });
+
+  function onWindowResize() {
+
+    var newWidth;
+    if (window.innerWidth < maxWidth) {
+      newWidth = objectWidth * 3;
+    } else {
+      newWidth = maxWidth;
+    }
+    galleryInner.width(newWidth);
+
+    shade.height(document.body.offsetHeight);
+
+  }
+
 
 };
