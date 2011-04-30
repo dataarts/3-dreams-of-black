@@ -83,6 +83,7 @@ var ExplorationSection = function ( shared ) {
 		if ( worldId == "city" ) {
 			
 			postEffect = paintEffect;
+			//postEffect = paintEffectDunes;
 		
 		} else if ( worldId == "prairie" ) {
 

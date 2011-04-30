@@ -19,7 +19,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 	var i;
 
-	this.addInstance = function( geometry, predefined, tree, lightHouse ) {
+	this.addInstance = function( geometry, predefined, tree, lightHouse, materialArray ) {
 		
 		var predefined = predefined || null;
 		var tree = tree || false;
@@ -31,11 +31,15 @@ var Trail = function ( numOfInstances, scene ) {
 				continue;
 			}
 
-			var c = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+			if (materialArray == undefined) {
+				var c = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+			} else {
+				var c = new THREE.Mesh( geometry, materialArray[i%materialArray.length] );			
+			}
 
 			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
 			
-			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree, lightHouse:lightHouse};
+			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree, lightHouse:lightHouse, normal: new THREE.Vector3(0,1,0), scale: 0.00000001 };
 			
 			scene.addObject(c);
 			that.array[i] = obj;
@@ -51,7 +55,7 @@ var Trail = function ( numOfInstances, scene ) {
 		}
 
 		var multiplier = delta/that.settings.aliveDivider;
-		
+
 		// grass
 		for (i=0; i<that.array.length; ++i ) {
 			var obj = that.array[i];
@@ -63,9 +67,11 @@ var Trail = function ( numOfInstances, scene ) {
 			var maxHeight = obj.maxHeight;
 			
 			alivetime += multiplier;
-			
+
+
 			// respawn
 			if (alivetime > that.initSettings.numOfInstances) {
+
 				c.position.x = position.x;
 				c.position.y = position.y;
 				c.position.z = position.z;
@@ -74,7 +80,7 @@ var Trail = function ( numOfInstances, scene ) {
 				c.rotation.z = 0;
 				c.rotation.y = 0;
 
-				var amount = 8;
+				var amount = 12//8;
 
 				if (tree) {
 					amount = 10;
@@ -188,10 +194,15 @@ var Trail = function ( numOfInstances, scene ) {
 					xscale = zscale = 0.4*that.settings.scale;
 				}
 
+				var easeType = TWEEN.Easing.Quintic.EaseOut;
+				if (tree) {
+					easeType = TWEEN.Easing.Elastic.EaseOut;
+				}
+
 				var growTween = new TWEEN.Tween(c.scale)
 							.to({x: xscale, y: yscale, z: zscale}, that.settings.tweenTime)
-							.easing(TWEEN.Easing.Elastic.EaseOut)
-							.delay(300);
+							.easing(easeType)
+							//.delay(300);
 				growTween.start();				
 
 				if (lightHouse) {
@@ -207,6 +218,7 @@ var Trail = function ( numOfInstances, scene ) {
 					lightHouseDownTween.start();
 
 				}
+
 
 				alivetime = 0;
 			}

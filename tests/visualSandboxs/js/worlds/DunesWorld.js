@@ -570,6 +570,8 @@ var DunesWorld = function ( shared ) {
 	
 	this.update = function ( delta, camera, portalsActive ) {
 
+
+
 		// check if we are close to islands
 		
 		checkInfluenceSpheres( camera, delta / 1000, portalsActive );

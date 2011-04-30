@@ -1,10 +1,10 @@
-var VoxelPainter = function () {
+var VoxelPainter = function ( camera ) {
 
-	var _intersectedFace, _intersectedObject;
+	var _intersectPoint, _intersectFace, _intersectObject;
 
 	// Scene
 
-	var _scene = new THREE.Scene();
+	var _scene = new THREE.Scene();https://github.com/mrdoob/three.js/network
 
 	var _light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
 	_light1.position.set( 0.5, 0.75, 1 );
@@ -15,13 +15,6 @@ var VoxelPainter = function () {
 	_light2.position.set( - 0.5, - 0.75, - 1 );
 	_light2.color.setHSV( 0, 0, 0.306 );
 	_scene.addLight( _light2 );
-
-	var _ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparency: true, wireframe: true } ) );
-	_ground.position.x = - 25;
-	_ground.position.y = - 25;
-	_ground.position.z = - 25;
-	_ground.rotation.x = - 90 * Math.PI / 180;
-	_scene.addObject( _ground );
 
 	// Colliders
 
@@ -48,10 +41,26 @@ var VoxelPainter = function () {
 	_collider.matrixAutoUpdate = false;
 	_sceneCollider.addObject( _collider );
 
+	// Mouse projection
+
+	var projector, mouse2D, mouse3D, ray;
+
+	projector = new THREE.Projector();
+
+	mouse2D = new THREE.Vector3( 0, 0, 0.5 );
+	ray = new THREE.Ray( camera.position, null );
+
 	// Voxels
 
 	var _sceneVoxels = new THREE.Scene();
 	_scene.addObject( _sceneVoxels );
+
+	var _ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparency: true, wireframe: true } ) );
+	_ground.position.x = - 25;
+	_ground.position.y = - 25;
+	_ground.position.z = - 25;
+	_ground.rotation.x = - 90 * Math.PI / 180;
+	_sceneVoxels.addObject( _ground );
 
 	var _mode = VoxelPainter.MODE_IDLE, _size = 50, _grid = {};
 
@@ -60,8 +69,8 @@ var VoxelPainter = function () {
 
 	// Preview
 
-	var _preview = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: 0xff0000, opacity: 0, transparent: true, depthTest: false } ) );
-	_preview.doubleSided = true;
+	var _preview = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: 0x00ff00, opacity: 0, transparent: true } ) );
+	// _preview.doubleSided = true;
 	_preview.matrixAutoUpdate = false;
 	_scene.addObject( _preview );
 
@@ -119,7 +128,18 @@ var VoxelPainter = function () {
 
 	};
 
-	this.process = function ( ray ) {
+	this.moveMouse = function ( x, y ) {
+
+		mouse2D.x = x * 2 - 1;
+		mouse2D.y = - y * 2 + 1;
+
+		mouse3D = projector.unprojectVector( mouse2D.clone(), camera );
+		ray.direction = mouse3D.subSelf( camera.position ).normalize();
+
+
+	};
+
+	this.update = function () {
 
 		var intersects;
 
@@ -131,9 +151,14 @@ var VoxelPainter = function () {
 
 				if ( intersects.length > 0 ) {
 
+					_intersectPoint = intersects[ 0 ].point;
+					_intersectObject = intersects[ 0 ].object;
+					_intersectFace = intersects[ 0 ].face;
+
 					_preview.materials[ 0 ].opacity = 0.5;
 
-					_collider.position.copy( intersects[ 0 ].point.clone().addSelf( intersects[ 0 ].face.normal ) );
+					_collider.position.copy( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ) );
+					_collider.position.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
 					_collider.updateMatrix();
 					_collider.update();
 
@@ -144,15 +169,12 @@ var VoxelPainter = function () {
 					_preview.updateMatrix();
 					_preview.update();
 
-					_intersectedObject = intersects[ 0 ].object;
-					_intersectedFace = intersects[ 0 ].face;
-
 				} else {
 
 					_preview.materials[ 0 ].opacity = 0;
 
-					_intersectedObject = null;
-					_intersectedFace = null;
+					_intersectObject = null;
+					_intersectFace = null;
 
 				}
 
@@ -164,13 +186,12 @@ var VoxelPainter = function () {
 
 				intersects = ray.intersectScene( _sceneCollider );
 
-				if ( _intersectedFace && intersects.length > 0 ) {
+				if ( _intersectFace && intersects.length > 0 ) {
 
-					var face = _intersectedFace,
-					point = intersects[ 0 ].point,
-					centroidWorld = face.centroid.clone().addSelf( _intersectedObject.position ),
+					var point = intersects[ 0 ].point,
+					centroidWorld = _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ),
 					distance = centroidWorld.distanceTo( point ),
-					pointInNormal = centroidWorld.addSelf( _intersectedObject.matrixRotationWorld.multiplyVector3( face.normal.clone() ).multiplyScalar( distance ) );
+					pointInNormal = centroidWorld.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ).multiplyScalar( distance ) );
 
 					addVoxel( pointInNormal );
 
@@ -200,8 +221,14 @@ var VoxelPainter = function () {
 
 	};
 
+	this.getGrid = function () {
+
+		return _grid;
+
+	};
+
 }
 
-VoxelPainter.MODE_IDLE = 'mode_idle';
-VoxelPainter.MODE_DRAW = 'mode_draw';
-VoxelPainter.MODE_ERASE = 'mode_erase';
+VoxelPainter.MODE_IDLE = 'VoxelPainter.MODE_IDLE';
+VoxelPainter.MODE_DRAW = 'VoxelPainter.MODE_DRAW';
+VoxelPainter.MODE_ERASE = 'VoxelPainter.MODE_ERASE';
