@@ -6,7 +6,11 @@
     <script type = "text/javascript">
 
       // TODO's:
-      // Hook in typography, 
+      // + Hook in typography
+      // + Hook errors with proper copy
+      // + Hook conditions with proper conditions
+      // + Hook facebook and twitter buttons
+      // + Contact Dominic Louth for how to do Buy Album button
 
       // Holds the error handling for conditions for ro.me
       Errors = [
@@ -20,7 +24,8 @@
       // scrape everything navigator.userAgent;
       Detector = {
           webgl : ( function () { try { return !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); } catch( e ) { return false; } } )(),
-          conditions : [],
+          conditions : [
+                        ( function () { return ; } )()],
           errorMessage: Errors[0]
       };
 
@@ -53,15 +58,16 @@
       }
       body {
 /*        background: #1d62af url("images/clouds.jpg") center center no-repeat;*/
+        font-family: "Futura", Arial, sans-serif;
         background: url("images/clouds.jpg") center 0 no-repeat;
-        color: #fff;
-        font: 500 12px/18px "Futura", Arial, sans-serif;
-        letter-spacing: 1px;
-        text-align: center;
       }
       #content {
         width: 400px;
         margin: 0 auto;
+        color: #fff;
+        font: 500 12px/18px "Futura", Arial, sans-serif;
+        letter-spacing: 1px;
+        text-align: center;
       }
       #header {
         width: 100%;
@@ -76,19 +82,75 @@
         padding: 50px 35px;
         background: url("images/bg-trans.png");
       }
+      #bottom {
+        position: fixed;
+        min-width: 930px;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+
+        font: 500 10px/18px "Futura", Arial, sans-serif;
+        color: #434343;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      #shout-out {
+        float: left;
+        margin: 0 0 50px 100px;
+      }
+      #navigation {
+        float: right;
+        margin: 0 100px 50px 0;
+      }
+      #bottom ul li {
+        border-right: 1px solid #a0a0a0;
+        padding: 4px 10px;
+        width: auto;
+        float: left;
+        list-style: none;
+      }
+      #bottom ul li.last,
+      #bottom ul li.last li {
+        border: none;
+        padding: 4px 0 0 10px;
+      }
+      #shout-out ul li {
+/*        padding: 0;*/
+        margin: 0;
+        border: 0;
+      }
+      #shout-out li.divider {
+        margin: 15px 0 15px 15px;
+        border-left: 1px solid #a0a0a0;
+      }
       .background-image {
         margin-left: -9000px;
       }
-      a:link, a:visited {
+      #content a:link, #content a:visited {
         color: #fff;
       }
-      a:hover, a:active {
+      #content a:hover, #content a:active {
         
+      }
+      #bottom a:link, #bottom a:visited {
+        color: #434343;
+        text-decoration: none;
+      }
+      #bottom a:hover, #bottom a:active {
+        
+      }
+      .secondary {
+        margin: 36px 0 0 235px;
+      }
+      .clear {
+        clear: both;
+        width: 0;
+        height: 0;
       }
     </style>
   </head>
   <body>
-    
+
     <div id = "content">
       <div id = "header">
         <h1 class = "background-image">Rome</h1>
@@ -96,8 +158,40 @@
       </div>
       <div id = "error">
         <!-- Any errors fall here -->
+        <noscript>
+          We are deeply sorry, but it appears your computer&#39;s graphics card and your browser do not support the &#147;3 Dreams of Black&#148; experience. You can find more details for troubleshooting WebGL issues <a href = 'http://get.webgl.org/troubleshooting/'>here<a> and obtain a list of recommended graphics cards and browsers. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience.
+        </noscript>
       </div>
     </div>
-    
+
+    <div id = "bottom">
+      <div id = "shout-out">
+        <ul>
+          <li><a href = "http://chromeexperiments.com/"><img src = "images/chrome-trans.png" alt = "This is a Chrome Experiment" /></a></li>
+          <li class = "divider">&nbsp;</li>
+          <li><a href = "http://google.com/"><img src = "images/google-trans.png" alt = "Made With Friends From Google"/></a></li>
+          <li class = "clear">&nbsp;</li>
+        </ul>
+      </div>
+
+      <div id = "navigation">
+        <ul class = "primary">
+          <li class = "first"><a href = "http://ro.me/tech">Technology</a></li>
+          <li><a href = "http://ro.me/credits">Credits</a></li>
+          <li><a href = "http://ro.me/album">Rome Album</a></li>
+          <li><a href = "#">Buy Album</a></li>
+          <li class = "last">Share</li>
+          <li class = "last icons"><a href = "#"><img src = "images/fb-trans.png" alt = "facebook"></a></li>
+          <li class = "last icons"><a href = "#"><img src = "images/twitter-trans.png" alt = "twitter" /></a></li>
+          <li class = "clear last">&nbsp;</li>
+        </ul>
+        <ul class = "secondary">
+          <li class = "first"><a href = "http://ro.me/terms">Terms</a></li>
+          <li class = "last"><a href = "http://ro.me/privacy">Privacy</a></li>
+          <li class = "clear last">&nbsp;</li>
+        </ul>
+      </div>
+      <div class = "clear">&nbsp;</div>
+    </div>
   </body>
 </html>
