@@ -2,6 +2,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	
 	var that = this;
 	that.currentNormal = new THREE.Vector3( 0, 1, 0 );
+	that.emitterNormal = new THREE.Vector3( 0, 1, 0 );
 	that.distance = 0;
 
 	that.initSettings = {
@@ -161,6 +162,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 				that.currentNormal = normal;
+				that.emitterNormal = normal;
 
 				//console.log( c.mesh.parent );
 				//console.log( normal.x+" | "+normal.y+" | "+normal.z) ;

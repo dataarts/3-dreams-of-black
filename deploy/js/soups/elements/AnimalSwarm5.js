@@ -94,7 +94,7 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 			ray = new THREE.Ray();
 			ray.direction = new THREE.Vector3(0, -1, 0);
 
-			var obj = { c: mesh, a: animal, f: 0, time: 0, attack: 0, lifetime: 0, dead: false, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
+			var obj = { c: mesh, a: animal, f: 0, time: 0, attack: 0, lifetime: 0, dead: false, speeda: speeda, speedb: speedb, active: false, toPosition: new THREE.Vector3(0,0,0), normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
 
 			that.array[i] = obj;
 
@@ -151,7 +151,7 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 		that.array[arrayIndex].scale = scale * scaleMultiplier;
 	}
 
-	this.create = function (position, normal) {
+	this.create = function (position, normal, toPosition) {
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			if (that.array[i].active) {
 				continue;
@@ -166,7 +166,24 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].lifetime = 0;
 			that.array[i].attack = 0;
 			that.array[i].dead = false;
-			that.array[i].scale = that.array[i].origscale
+			that.array[i].scale = that.array[i].origscale;
+			that.array[i].toPosition.copy(toPosition.subSelf(position).normalize());
+
+			//console.log(that.array[i].toPosition.x+" - "+that.array[i].toPosition.y+" - "+that.array[i].toPosition.z);
+if (that.array[i].toPosition.x < 0) {
+	that.array[i].toPosition.x*= -1;
+}
+if (that.array[i].toPosition.x < 0.5) {
+	that.array[i].toPosition.x += 0.5;
+}
+if (that.array[i].toPosition.z < 0) {
+	that.array[i].toPosition.z += 0.5;
+}
+
+			/*that.array[i].toPosition.x *= 1-Math.abs(normal.x);
+			that.array[i].toPosition.y *= 1-Math.abs(normal.y);
+			that.array[i].toPosition.z *= 1-Math.abs(normal.z);*/
+
 			/*if (that.settings.flying) {
 				that.array[i].normal.set(0,1,0);
 			}*/
@@ -181,9 +198,9 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 			*/
 			// tween popup
 			var scale = that.array[i].scale;
-			that.array[i].c.position.x -= (normal.x)*(scale*350);
-			that.array[i].c.position.y -= (normal.y)*(scale*350);
-			that.array[i].c.position.z -= (normal.z)*(scale*350);
+			that.array[i].c.position.x -= (normal.x)*(scale*400);
+			that.array[i].c.position.y -= (normal.y)*(scale*400);
+			that.array[i].c.position.z -= (normal.z)*(scale*400);
 
 			//console.log(scale*200);
 /*			var popupTween = new TWEEN.Tween(that.array[i].c.position)
@@ -242,13 +259,13 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 
 			// change follow index
 			//var changeTime = Math.max(animalSpeed*18, 80);
-			var changeTime = Math.max(animalSpeed*25, 100);
+			//var changeTime = Math.max(animalSpeed*25, 100);
 			//var changeTime = Math.max(animalSpeed*30, 110);
 
 			//var dx = animal.position.x - vectorArray[f].position.x, dy = animal.position.y - vectorArray[f].position.y, dz = animal.position.z - vectorArray[f].position.z;
 			//var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 
-			if (that.array[i].time > changeTime) {
+			/*if (that.array[i].time > changeTime) {
 			//if (distance > 200 && that.array[i].time > 200) {
 				++that.array[i].f;
 				
@@ -275,16 +292,18 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 
 				f = that.array[i].f;
 				that.array[i].time = 0;
-			}
+			}*/
 
 /*			var tox = toPosition.x;
 			var toy = toPosition.y;
 			var toz = toPosition.z;
 */
 
+			var tox = animal.position.x+(that.array[i].toPosition.x*100);
+			var toy = animal.position.y+(that.array[i].toPosition.y*100);
+			var toz = animal.position.z+(that.array[i].toPosition.z*100);
 
-
-			var inc = (Math.PI*2)/6;
+/*			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
 			var offsetx = Math.cos(thisinc+((i-r*2)/8))*that.settings.xPositionMultiplier;
 			var offsetz = Math.sin(thisinc+((i-r*2)/8))*that.settings.zPositionMultiplier;
@@ -299,8 +318,8 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 			var tox = vectorArray[f].position.x+(offsetx*amountx);
 			var toy = vectorArray[f].position.y+(offsety*amounty);
 			var toz = vectorArray[f].position.z+(offsetz*amountz);
-
-			if (cNormal.y > 0.5) {
+*/
+			if (normal.y > 0.5) {
 				toy = vectorArray[f].position.y - 10;
 			}
 
@@ -318,19 +337,19 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 				//var pulse = Math.cos((i-r*10)/15)*10
 				var flyAmount = that.settings.flyingDistance//+Math.abs(Math.sin((thisinc+pulse)/10)*30);			
 
-				if (cNormal.x < -0.8) {
+				if (normal.x < -0.8) {
 					tox -= flyAmount;
 				}
-				if (cNormal.x > 0.8) {
+				if (normal.x > 0.8) {
 					tox += flyAmount;
 				}
-				if (cNormal.y < -0.8 || cNormal.y > 0.8) {
+				if (normal.y < -0.8 || normal.y > 0.8) {
 					toy += flyAmount;
 				}
-				if (cNormal.z < -0.8) {
+				if (normal.z < -0.8) {
 					toz -= flyAmount;
 				}
-				if (cNormal.z > 0.8) {
+				if (normal.z > 0.8) {
 					toz += flyAmount;
 				}
 			}
@@ -355,7 +374,7 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 
 					//animal.position.y -= ( c.distance * 1 ) + 3;
 					toy = ray.origin.y - ( ( c.distance * 1 ) + 3 );
-					cNormal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
+					normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 				
 				}
 
@@ -391,9 +410,9 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 
 			obj.normal = normal;*/
 
-			var falloffDivider = 8+(f/5);
+			//var falloffDivider = 8+(f/5);
 
-			var maxSpeed = animalSpeed/falloffDivider//3//delta/3;//12;
+			var maxSpeed = animalSpeed/15//falloffDivider//3//delta/3;//12;
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
@@ -408,7 +427,7 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 			zvec.subSelf( animal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
-			var yvec = new THREE.Vector3(cNormal.x*-1, cNormal.y*-1, cNormal.z*-1);
+			var yvec = new THREE.Vector3(normal.x*-1, normal.y*-1, normal.z*-1);
 			if (that.settings.flying && !that.settings.butterfly) {
 				yvec = new THREE.Vector3(0, -1, 0);
 			}

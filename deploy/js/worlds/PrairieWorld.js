@@ -78,7 +78,7 @@ var PrairieWorld = function ( shared, camera ) {
 
 		var groundMesh = result.objects[ "Ground" ];
 
-		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1350, markTexture, shared.renderer );
+		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 2048, markTexture, shared.renderer );
 
 		TriggerUtils.setupPrairieTriggers( result );
 
