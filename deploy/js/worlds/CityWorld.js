@@ -109,7 +109,7 @@ var CityWorld = function ( shared ) {
 	
 	var time = 0;
 	var last_time = 0;
-	var cameraPosition, d;
+	var cameraPosition, targetPosition, d;
 
 	this.update = function ( delta, camera, portalsActive ) {
 		
@@ -123,7 +123,9 @@ var CityWorld = function ( shared ) {
 		TriggerUtils.effectorRadius = 300;
 		TriggerUtils.update();
 
-		updateCityShader( cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, cameraPosition, time );
+		targetPosition = camera.target.position;
+
+		updateCityShader( cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, cameraPosition, targetPosition, time );
 		
 		if ( portalsActive ) {
 			

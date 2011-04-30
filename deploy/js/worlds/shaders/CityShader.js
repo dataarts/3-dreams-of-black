@@ -222,17 +222,10 @@ function applyCityShader( result, exclude, start, end, materials, shader ) {
 };
 
 
-function updateCityShader( start, end, materials, position, time ) {
+function updateCityShader( start, end, materials, position, front, time ) {
 	
-	end.copy( start );
-
-	start.x = Math.sin( position.z / 500 ) * 200;
-	start.y = position.y;
-	start.z = position.z - 300;
-
-	end.subSelf( start );
-	end.multiplyScalar( 200 );
-	end.addSelf( start );
+	start.copy( position );
+	end.copy( front );
 	
 	var i, l = materials.length;
 	
