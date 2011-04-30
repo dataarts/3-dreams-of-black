@@ -152,10 +152,11 @@ var Dunes = function ( shared ) {
 	
 			// not too high
 	
-			camera.position.y = cap_top( camera.position.y, 5000 );
+			//camera.position.y = cap_top( camera.position.y, 5000 );
 	
-			camera.rotation.x = -( shared.mouse.y / shared.screenWidth - 0.5 ) * Math.PI * 0.5;
-			camera.rotation.y = -( shared.mouse.x / shared.screenHeight - 0.5 ) * Math.PI * 0.5;
+			//camera.rotation.x = -( shared.mouse.y / shared.screenWidth - 0.5 ) * Math.PI * 0.5;
+			camera.rotation.y += -( shared.mouse.x / shared.screenWidth - 0.5 ) * Math.PI * 0.05;
+			camera.position.y -= ( shared.mouse.y / shared.screenHeight - 0.5 ) * 10;
 	
 			if( shared.forward ) {
 				
