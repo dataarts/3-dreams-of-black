@@ -1,9 +1,12 @@
 // Create a class to handle emitting cases
-function HandleErrors(destination) {
+function HandleErrors(d) {
 
   var that = this;
+  var destination = d || "http://ro.me/alternate";
 
   Trailer = "<ul><li><a href = '#'>Watch Trailer</a></li><li><a href = '#'>Rome Album</a></li><li><a href = '#'>The Technology</a></li></ul>";
+
+  this.MagicVariable = "case";
 
   this.Errors = [
     "<p>We are very sorry, but &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears that your computer&#39;s graphics card doesn&#39;t support WebGL technology. You can find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards. Although you are unable to participate in the full experience today, we expect this website to be up for a while, so please check back if you&#39;re on a different computer. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site and learn more about WebGL technology.</p>" + Trailer,
@@ -54,7 +57,7 @@ function HandleErrors(destination) {
       if(Detector.conditions[1]) {
         // Overlay condition check with localStorage
         // Detector.message = Errors[5];
-        if(hasLocalStorage()) {
+        if(!hasLocalStorage()) {
           // go ahead darling
           if(localStorage["RomeError"]) {
             // overlay our condition
@@ -111,7 +114,7 @@ function HandleErrors(destination) {
       for(var i = 0; i < Detector.conditions.length; i++) {
         if(Detector.conditions[i]) {
           // Then we've found what we're looking for!
-          window.location = destination + "/?case=" + i;
+          window.location = destination + "/?" + this.MagicVariable + "=" + i;
           break;
         }
       }
@@ -133,11 +136,16 @@ function HandleErrors(destination) {
 
 // if has get contents of case then dont run else run HandleErrors
 // Read a page's GET URL variables and return them as an associative array.
-var romeErrors = new HandleErrors("http://ro.me/alternate");
+var romeErrors = new HandleErrors();
 var variables = romeErrors.getUrlVars();
 if(variables) {
-  if(variables['case']) {
+  if(variables[romeErrors.MagicVariable]) {
     // this is the error page
+    window.onload = function() {
+      var iterator = variables[romeErrors.MagicVariable];
+      var error = document.getElementById("error");
+          error.innerHTML = romeErrors.Errors[iterator];
+    };
   }
 } else {
   romeErrors.checkForErrors();

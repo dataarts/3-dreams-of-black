@@ -1,0 +1,163 @@
+<!doctype html>
+  <html>
+  <head>
+    <!--[if lt IE 9]>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+    <![endif]-->
+    <script type = "text/javascript" src = "Error.js"></script>
+    <style type = "text/css">
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        /* The gradient comes from testCapture.html which takes an alpha picture of the clouds WebGL */
+        background: #4584b4 url("images/gradient.png") 0 -400px;
+        font-family: "Futura", Arial, sans-serif;
+      }
+      #container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: url("images/clouds-trans.png") center center no-repeat;
+      }
+      #content {
+        width: 400px;
+        margin: 0 auto;
+        color: #fff;
+        font: 500 12px/18px "Futura", Arial, sans-serif;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+      #header {
+        width: 100%;
+        height: 119px;
+        margin: 50px 0;
+        text-align: center;
+        overflow: hidden;
+        background: url("images/header-trans.png") center center no-repeat;
+      }
+      #error {
+        width: 330px;
+        padding: 50px 35px;
+        background: url("images/bg-trans.png");
+      }
+      #bottom {
+        position: fixed;
+        min-width: 930px;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+
+        font: 500 10px/18px "Futura", Arial, sans-serif;
+        color: #434343;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      #shout-out {
+        float: left;
+        margin: 0 0 50px 100px;
+      }
+      #navigation {
+        float: right;
+        margin: 0 100px 50px 0;
+      }
+      #bottom ul li {
+        border-right: 1px solid #a0a0a0;
+        padding: 4px 10px;
+        width: auto;
+        float: left;
+        list-style: none;
+      }
+      #bottom ul li.last,
+      #bottom ul li.last li {
+        border: none;
+        padding: 4px 0 0 10px;
+      }
+      #shout-out ul li {
+        margin: 0;
+        border: 0;
+      }
+      #shout-out li.divider {
+        margin: 15px 0 15px 15px;
+        border-left: 1px solid #a0a0a0;
+      }
+      a img {
+        border: 0;
+      }
+      .background-image {
+        margin-left: -9000px;
+      }
+      #content a:link, #content a:visited {
+        color: #fff;
+      }
+      #content a:hover, #content a:active {
+        
+      }
+      #bottom a:link, #bottom a:visited {
+        color: #434343;
+        text-decoration: none;
+      }
+      #bottom a:hover, #bottom a:active {
+        color: #000;
+      }
+      .secondary {
+        margin: 36px 0 0 235px;
+      }
+      .clear {
+        clear: both;
+        width: 0;
+        height: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id = "container">
+      <div id = "content">
+        <div id = "header">
+          <h1 class = "background-image">Rome</h1>
+          <h2 class = "background-image">&#147;Three Dreams of Black&#148;</h2>
+        </div>
+        <div id = "error">
+          <!-- Any errors fall here -->
+          <noscript>
+            We are deeply sorry, but it appears your computer&#39;s graphics card and your browser do not support the &#147;3 Dreams of Black&#148; experience. You can find more details for troubleshooting WebGL issues <a href = 'http://get.webgl.org/troubleshooting/'>here<a> and obtain a list of recommended graphics cards and browsers. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience.
+          </noscript>
+        </div>
+      </div>
+
+      <div id = "bottom">
+        <div id = "shout-out">
+          <ul>
+            <li><a href = "http://chromeexperiments.com/"><img src = "images/chrome-trans.png" alt = "This is a Chrome Experiment" border = "0" /></a></li>
+            <li class = "divider">&nbsp;</li>
+            <li><a href = "http://google.com/"><img src = "images/google-trans.png" alt = "Made With Friends From Google" border = "0" /></a></li>
+            <li class = "clear">&nbsp;</li>
+          </ul>
+        </div>
+
+        <div id = "navigation">
+          <ul class = "primary">
+            <li class = "first"><a href = "http://ro.me/tech">Technology</a></li>
+            <li><a href = "http://ro.me/credits">Credits</a></li>
+            <li><a href = "http://ro.me/album">Rome Album</a></li>
+            <li><a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html">Buy Album</a></li>
+            <li class = "last">Share</li>
+            <li class = "last icons"><a href = "#"><img src = "images/fb-trans.png" alt = "facebook" border = "0"  /></a></li>
+            <li class = "last icons"><a href = "#"><img src = "images/twitter-trans.png" alt = "twitter" border = "0" /></a></li>
+            <li class = "clear last">&nbsp;</li>
+          </ul>
+          <ul class = "secondary">
+            <li class = "first"><a href = "http://ro.me/terms">Terms</a></li>
+            <li class = "last"><a href = "http://ro.me/privacy">Privacy</a></li>
+            <li class = "clear last">&nbsp;</li>
+          </ul>
+        </div>
+        <div class = "clear">&nbsp;</div>
+      </div>
+    </div>
+  </body>
+</html>
