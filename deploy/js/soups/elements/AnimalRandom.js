@@ -697,7 +697,7 @@ ROME.AnimalAnimationData = {
 					if ( this.animalVariationMap[ morphTargetName ] !== undefined ) {
 						
 						variations = this.colorVariations[  this.animalVariationMap[ morphTargetName ] ];
-						console.log( morphColor.name, morphTargetName );
+						//console.log( morphColor.name, morphTargetName );
 
 					}
 					
@@ -721,7 +721,7 @@ ROME.AnimalAnimationData = {
 
 					}		
 					
-					console.log( morphTargetName );
+					//console.log( morphTargetName );
 
 					randomizeColors( attributes[ morphTargetName ].value, variations );
 					

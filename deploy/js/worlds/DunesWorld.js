@@ -187,6 +187,8 @@ var DunesWorld = function ( shared ) {
 		}
 		
 	};
+
+	var testMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
 	
 	function walkLoaded( result ) {
 
@@ -194,6 +196,8 @@ var DunesWorld = function ( shared ) {
 		walkPosition = new THREE.Vector3( 0, 0, 0 * TILE_SIZE );
 		sceneWalk.rotation.z = Math.PI;
 		addDunesPart( sceneWalk, walkPosition, result );
+		
+		//result.objects[ "D_tile_walk" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 	};
 
@@ -202,8 +206,8 @@ var DunesWorld = function ( shared ) {
 		scenePrairie = result.scene;
 		prairiePosition = new THREE.Vector3( 0, 0, 1 * TILE_SIZE );
 		addDunesPart( scenePrairie, prairiePosition, result );
-		
-		console.log( "prairie", result );
+
+		//result.objects[ "D_tile_prairie" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 		/*
 		that.scene.update( undefined, true );
@@ -230,7 +234,7 @@ var DunesWorld = function ( shared ) {
 		showHierarchyNotColliders( sceneCity, false );
 		addDunesPart( sceneCity, cityPosition, result );
 		
-		console.log( "city", result );
+		//result.objects[ "D_tile_city" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 		var centerObj = result.objects[ "City_Center" ];
 		var portalObj = result.objects[ "City_Portal" ];
@@ -275,6 +279,26 @@ var DunesWorld = function ( shared ) {
 
 		addDunesPart( result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE), result );
 
+		/*
+		if ( result.objects[ "D_tile_1" ] !== undefined ) {
+		
+			result.objects[ "D_tile_1" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		} else if ( result.objects[ "D_tile_2" ] !== undefined ) {
+		
+			result.objects[ "D_tile_2" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		} else if ( result.objects[ "D_tile_3" ] !== undefined ) {
+		
+			result.objects[ "D_tile_3" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		} else if ( result.objects[ "D_tile_4" ] !== undefined ) {
+		
+			result.objects[ "D_tile_4" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		}
+		*/
+		
 		tiles[z][x] = result.scene;
 		++randomAdded;
 
