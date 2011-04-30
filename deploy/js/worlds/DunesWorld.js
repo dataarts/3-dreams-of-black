@@ -197,7 +197,6 @@ var DunesWorld = function ( shared ) {
 		sceneWalk.rotation.z = Math.PI;
 		addDunesPart( sceneWalk, walkPosition, result );
 		
-		console.log( result.objects[ "D_tile_walk" ].geometry.materials );
 		//result.objects[ "D_tile_walk" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 	};
@@ -207,10 +206,7 @@ var DunesWorld = function ( shared ) {
 		scenePrairie = result.scene;
 		prairiePosition = new THREE.Vector3( 0, 0, 1 * TILE_SIZE );
 		addDunesPart( scenePrairie, prairiePosition, result );
-		
-		console.log( "prairie", result );
 
-		console.log( result.objects[ "D_tile_prairie" ].geometry.materials );
 		//result.objects[ "D_tile_prairie" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 		/*
@@ -238,9 +234,6 @@ var DunesWorld = function ( shared ) {
 		showHierarchyNotColliders( sceneCity, false );
 		addDunesPart( sceneCity, cityPosition, result );
 		
-		console.log( "city", result );
-		
-		console.log( result.objects[ "D_tile_city" ].geometry.materials );
 		//result.objects[ "D_tile_city" ].geometry.materials[ 0 ][ 0 ] = testMaterial;
 
 		var centerObj = result.objects[ "City_Center" ];
@@ -286,6 +279,26 @@ var DunesWorld = function ( shared ) {
 
 		addDunesPart( result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE), result );
 
+		/*
+		if ( result.objects[ "D_tile_1" ] !== undefined ) {
+		
+			result.objects[ "D_tile_1" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		} else if ( result.objects[ "D_tile_2" ] !== undefined ) {
+		
+			result.objects[ "D_tile_2" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		} else if ( result.objects[ "D_tile_3" ] !== undefined ) {
+		
+			result.objects[ "D_tile_3" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		} else if ( result.objects[ "D_tile_4" ] !== undefined ) {
+		
+			result.objects[ "D_tile_4" ].geometry.materials[ 1 ][ 0 ] = testMaterial;
+
+		}
+		*/
+		
 		tiles[z][x] = result.scene;
 		++randomAdded;
 

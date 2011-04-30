@@ -149,3 +149,6 @@ function hideColliders( scene ) {
 	}
 
 };
+
+function applyMaterial() {
+};
