@@ -52,11 +52,15 @@
       }
     </style>
     <script type = "text/javascript" src = "depends/gee.js"></script>
-    <script type = "text/javascript" src = "https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
     <script type = "text/javascript" src = "swell.js"></script>
     <script type = "text/javascript" src = "Heart.js"></script>
     <script type = "text/javascript" src = "WonderWall.js"></script>
     <script type = "text/javascript">
+
+
+      // Return points as margin + / -
+      // in order to get dom elements to move
+      // with pentagon
 
       window.onload = function() {
 
@@ -75,12 +79,8 @@
         heart.svg.showDrips = false;
         heart.svg.showBoils = false;
 
-        var gui = new DAT.GUI();
-            gui.add(inner);
-            gui.add(outer);
-
         // Colors for rome
-        var rome = {};
+        var rome = rome || {};
             rome.color = {
               red: "#f15d22",
               black: "#30302e",
@@ -106,17 +106,20 @@
         gee.draw = function() {
 
           g.clearRect(0, 0, gee.width, gee.height);
+
           g.strokeStyle = rome.color.black;
-          g.lineWidth = 1;
+          g.lineWidth = 0.5;
           outer.render();
+
+          g.globalCompositeOperation = "source-out";
           g.fillStyle = rome.color.white;
-          g.lineWidth = 24;
+          g.lineWidth = 36;
           inner.render();
+          g.globalCompositeOperation = "source-over";
 
           heart.point.update();
           g.save();
           g.translate(heart.point.x, heart.point.y);
-          g.rotate(heart.point.angle);
           heart.svg.render();
           g.restore();
         };
