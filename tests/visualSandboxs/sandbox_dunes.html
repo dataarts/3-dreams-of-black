@@ -34,8 +34,7 @@
 				color: #ffffff;
 				padding: 2px;
 				font-family: Monospace;
-				font-size: 10px;
-				z-index:100;
+				z-index:1000;
 			}
 			
 		</style>
@@ -81,7 +80,7 @@
 					element.innerHTML = value;
 				}
 			};
-
+		
 			function hideCtrl() {
 				
 				document.getElementById( 'ctrl' ).style.visibility = 'hidden';				
@@ -90,7 +89,7 @@
 				
 				document.getElementById( 'ctrl' ).style.visibility = 'visible';				
 			}
-
+		
 			function updateValue( name, value ) {
 				
 				painterEffect.uniforms[ name ].value = value;
@@ -106,6 +105,7 @@
 			function updateValueColor( name, part, value ) {
 				
 				painterEffect.uniforms[ name ].value[ part ] = value;
+				CityShader.colors[ name ][ part ] = value;
 
 				var element = document.getElementById( name + "." + part );
 				if( element ) {
@@ -116,7 +116,7 @@
 			
 			function updateLightCol( name, part, value ) {
 				
-				shared.worlds.dunes[ name ].color[ part ] = value;
+				shared.worlds.city[ name ].color[ part ] = value;
 				
 				var element = document.getElementById( name + "." + part );
 				if( element ) {
@@ -127,7 +127,7 @@
 			
 			function updateLightPos( name, part, value ) {
 				
-				shared.worlds.dunes[ name ].position[ part ] = value;
+				shared.worlds.city[ name ].position[ part ] = value;
 				
 				var element = document.getElementById( name + "." + part );
 				if( element ) {
@@ -183,6 +183,7 @@
 		<script src="js/worlds/DunesWorld.js"></script>
 
 		<script src="js/soups/DunesSoup.js"></script>
+		<script src="js/soups/PrairieSoup.js"></script>
 		<script src="js/soups/elements/Ribbon.js"></script>
 		<script src="js/soups/elements/Animal.js"></script>
 		<script src="js/soups/elements/Ribbons.js"></script>
@@ -191,6 +192,7 @@
 		<script src="js/soups/elements/AnimalSwarm.js"></script>
 		<script src="js/soups/elements/AnimalInFrontOfCamera.js"></script>
 		<script src="js/soups/elements/Trail.js"></script>
+		<script src="js/soups/elements/TrailShader.js"></script>
 		<script src="js/soups/elements/CollisionScene.js"></script>
 
 		<script src="js/sequences/Dunes.js"></script>
