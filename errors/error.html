@@ -57,9 +57,17 @@
         padding: 0;
       }
       body {
-/*        background: #1d62af url("images/clouds.jpg") center center no-repeat;*/
+        width: 100%;
+        height: 100%;
+        /* The gradient comes from testCapture.html which takes an alpha picture of the clouds WebGL */
+        background: #4584b4 url("images/gradient.png") 0 -400px;
         font-family: "Futura", Arial, sans-serif;
-        background: url("images/clouds.jpg") center 0 no-repeat;
+      }
+      #container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: url("images/clouds-trans.png") center center no-repeat;
       }
       #content {
         width: 400px;
@@ -137,7 +145,7 @@
         text-decoration: none;
       }
       #bottom a:hover, #bottom a:active {
-        
+        color: #000;
       }
       .secondary {
         margin: 36px 0 0 235px;
@@ -151,47 +159,49 @@
   </head>
   <body>
 
-    <div id = "content">
-      <div id = "header">
-        <h1 class = "background-image">Rome</h1>
-        <h2 class = "background-image">&#147;Three Dreams of Black&#148;</h2>
-      </div>
-      <div id = "error">
-        <!-- Any errors fall here -->
-        <noscript>
-          We are deeply sorry, but it appears your computer&#39;s graphics card and your browser do not support the &#147;3 Dreams of Black&#148; experience. You can find more details for troubleshooting WebGL issues <a href = 'http://get.webgl.org/troubleshooting/'>here<a> and obtain a list of recommended graphics cards and browsers. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience.
-        </noscript>
-      </div>
-    </div>
-
-    <div id = "bottom">
-      <div id = "shout-out">
-        <ul>
-          <li><a href = "http://chromeexperiments.com/"><img src = "images/chrome-trans.png" alt = "This is a Chrome Experiment" /></a></li>
-          <li class = "divider">&nbsp;</li>
-          <li><a href = "http://google.com/"><img src = "images/google-trans.png" alt = "Made With Friends From Google"/></a></li>
-          <li class = "clear">&nbsp;</li>
-        </ul>
+    <div id = "container">
+      <div id = "content">
+        <div id = "header">
+          <h1 class = "background-image">Rome</h1>
+          <h2 class = "background-image">&#147;Three Dreams of Black&#148;</h2>
+        </div>
+        <div id = "error">
+          <!-- Any errors fall here -->
+          <noscript>
+            We are deeply sorry, but it appears your computer&#39;s graphics card and your browser do not support the &#147;3 Dreams of Black&#148; experience. You can find more details for troubleshooting WebGL issues <a href = 'http://get.webgl.org/troubleshooting/'>here<a> and obtain a list of recommended graphics cards and browsers. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience.
+          </noscript>
+        </div>
       </div>
 
-      <div id = "navigation">
-        <ul class = "primary">
-          <li class = "first"><a href = "http://ro.me/tech">Technology</a></li>
-          <li><a href = "http://ro.me/credits">Credits</a></li>
-          <li><a href = "http://ro.me/album">Rome Album</a></li>
-          <li><a href = "#">Buy Album</a></li>
-          <li class = "last">Share</li>
-          <li class = "last icons"><a href = "#"><img src = "images/fb-trans.png" alt = "facebook"></a></li>
-          <li class = "last icons"><a href = "#"><img src = "images/twitter-trans.png" alt = "twitter" /></a></li>
-          <li class = "clear last">&nbsp;</li>
-        </ul>
-        <ul class = "secondary">
-          <li class = "first"><a href = "http://ro.me/terms">Terms</a></li>
-          <li class = "last"><a href = "http://ro.me/privacy">Privacy</a></li>
-          <li class = "clear last">&nbsp;</li>
-        </ul>
+      <div id = "bottom">
+        <div id = "shout-out">
+          <ul>
+            <li><a href = "http://chromeexperiments.com/"><img src = "images/chrome-trans.png" alt = "This is a Chrome Experiment" /></a></li>
+            <li class = "divider">&nbsp;</li>
+            <li><a href = "http://google.com/"><img src = "images/google-trans.png" alt = "Made With Friends From Google"/></a></li>
+            <li class = "clear">&nbsp;</li>
+          </ul>
+        </div>
+
+        <div id = "navigation">
+          <ul class = "primary">
+            <li class = "first"><a href = "http://ro.me/tech">Technology</a></li>
+            <li><a href = "http://ro.me/credits">Credits</a></li>
+            <li><a href = "http://ro.me/album">Rome Album</a></li>
+            <li><a href = "#">Buy Album</a></li>
+            <li class = "last">Share</li>
+            <li class = "last icons"><a href = "#"><img src = "images/fb-trans.png" alt = "facebook"></a></li>
+            <li class = "last icons"><a href = "#"><img src = "images/twitter-trans.png" alt = "twitter" /></a></li>
+            <li class = "clear last">&nbsp;</li>
+          </ul>
+          <ul class = "secondary">
+            <li class = "first"><a href = "http://ro.me/terms">Terms</a></li>
+            <li class = "last"><a href = "http://ro.me/privacy">Privacy</a></li>
+            <li class = "clear last">&nbsp;</li>
+          </ul>
+        </div>
+        <div class = "clear">&nbsp;</div>
       </div>
-      <div class = "clear">&nbsp;</div>
     </div>
   </body>
 </html>

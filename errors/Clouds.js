@@ -89,7 +89,7 @@ var Clouds = function ( shared ) {
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.domElement.style.position = 'absolute';
-	renderer.setSize( 1920, 1080 );
+	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.sortObjects = false;
 	renderer.autoClear = true;
   renderer.clearColor = 0xff0000;

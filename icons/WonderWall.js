@@ -50,19 +50,19 @@ WonderWall.Point = function(gee, x, y) {
         } else if(gee.mouseY < gee.height * .3 && gee.mouseX > gee.width / 2.0) {
           c = Math.cos(angle);
         }
-        r = this.maxDist * .25;
+        r = this.maxDist * .0625;
 
         x = ox + (s * r);
         y = oy + (c * r);
 
-        this.easing = .35;
+        this.easing = .0625;
       } else {
 
         x = ox;
         y = oy;
         angle = 0;
 
-        this.easing = 0.125;
+        this.easing = 0.0625;
       }
     } else {
 
