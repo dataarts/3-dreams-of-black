@@ -126,6 +126,8 @@ a.vote {
   background-repeat: no-repeat;
   float: left;
   margin-left: 6px;
+  -webkit-transition: all 0.1s ease-out;
+  -moz-transition: all 0.1s ease-out;
 }
 
 a.upvote {
@@ -174,7 +176,7 @@ div#object-viewer {
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
   position: fixed;
   background-color: #f4f1e8;
-  top: 250px;
+  top: 10%;
   left: 50%;
   margin-left: -380px;
 }
@@ -200,8 +202,10 @@ ul#pagination {
   background-image: url(images/lightbox-sprites.gif);
   position: fixed;
   z-index: 100;
-  top: 480px;
+  top: 10%;
+  margin-top: 220px;
   left: 50%;
+
 }
 
 #lightbox-next {
@@ -216,15 +220,19 @@ ul#pagination {
 #lightbox-close {
   background-position: center top;
   margin-left: -19px;
-  margin-top: -267px;
+  margin-top: -37px !important;
+  
+
 }
 
 #lightbox-next:hover {
   background-position: right bottom;
 }
+
 #lightbox-close:hover {
   background-position: center bottom;
 }
+
 #lightbox-prev:hover {
   background-position: left bottom;
 }
