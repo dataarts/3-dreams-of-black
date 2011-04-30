@@ -1,4 +1,5 @@
 <!doctype html>
+<html>
 <head>
 
   <meta charset="utf-8">
@@ -20,8 +21,10 @@
     var theCode, openLink, pre, open = false;
     $(function() {
 
-      var hashNum = window.location.hash[1];
-      $('iframe').attr('src', 'demos/'+hashNum+'/index.html');
+      var hashNum = parseInt(get('i')) || 1;
+
+      console.log(get('i'));
+      $('iframe').attr('src', 'demos/' + hashNum + '/index.html');
 
       pre = $('#the-code');
       openLink = $('#see-the-code');
@@ -41,7 +44,19 @@
       onResize();
 
     });
+    // Read a page's GET URL variables and return them as an associative array.
+    var get = function(key) {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
 
+      for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+
+      return vars[key];
+    }
     var onResize = function() {
       pre.height(window.innerHeight - 37);
       if (open) resizePre();
@@ -53,12 +68,8 @@
 
     function toggleCode() {
       if (!open) {
-        openLink.html('Hide the code');
-        //pre.css('overflow', 'scroll');
         resizePre();
       } else {
-        openLink.html('Show the code');
-        //pre.css('overflow-x', 'hidden');
         pre.width(0);
       }
       open = !open;
@@ -81,14 +92,12 @@
 
   <div class="inner">
     <a href="javascript:toggleCode()" id="see-the-code">
-      Show the code
     </a>
 
+
     <a href="index.html" id="back-to-landing">
-      <span class="title">"3 Dreams of Black"</span>
-      <span class="bull">&bull;</span>
-      <span class="subtitle">The Technology</span>
     </a>
+
   </div>
 
 </div>
@@ -96,7 +105,7 @@
 
 <!-- iframe -->
 <div id="iframe-container">
-  <iframe src="demos/1/index.html" >
+  <iframe src="demos/1/index.html">
 
   </iframe>
 </div>
