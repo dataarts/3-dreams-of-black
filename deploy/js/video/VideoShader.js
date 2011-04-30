@@ -30,9 +30,7 @@ var VideoShaderSource = {
 
 		uniforms: {
 			"map" : { type: "t", value: 0, texture: null },
-			"colorScale": { type: "f", value: 1 },
-			"threshold": { type: "f", value: 0.5 },
-			"alphaFadeout": { type: "f", value: 0.5 }
+			"colorScale": { type: "f", value: 1 }
 		},
 
 		vertexShader: [
@@ -48,9 +46,6 @@ var VideoShaderSource = {
 		fragmentShader: [
 			"uniform sampler2D map;",
 			"uniform float colorScale;",
-			"uniform float threshold;",
-			"uniform float alphaFadeout;",
-			
 			"varying vec2 vUv;",
 
 			"void main() {",
@@ -59,10 +54,9 @@ var VideoShaderSource = {
 				"vec4 c = texture2D( map, vUv );",
 				"float t = c.x + c.y + c.z;",
 				"float alpha = 1.0;",
-				"if( t < threshold )",
-					"alpha = t / alphaFadeout;",
+				"if( t < 0.5 )",
+					"alpha = t;",
 				"gl_FragColor = vec4( (c.xyz - cd) * cs, alpha );",
-				//"gl_FragColor = vec4( c.xyz, alpha );",
 			"}"
 		].join("\n")
 	},

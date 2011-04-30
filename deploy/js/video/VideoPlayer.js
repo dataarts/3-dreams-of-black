@@ -1,23 +1,3 @@
-/*
-
-2-4 videos
-
-possible shader: opaque, chromakey, distortchromakey, distortopaque
-
-shader needs: aspect, mouseXY, map
-
-the effect gets a config object like this:
-
-{
-	path: "video"
-	shader: 0|1|2|3
-	z: -900
-}
-
-the first element in the array is on the bottom, the next ones come on top
- 
-*/
-
 var VIDEO_OPAQUE = 1;
 var VIDEO_OPAQUE_DISTORT = 2;
 var VIDEO_KEYED = 3;
@@ -25,7 +5,8 @@ var VIDEO_KEYED_DISTORT = 4;
 
 var VideoPlayer = function(shared, layers, conf){
 	var that = this;
-	//SequencerItem.call( this );
+	
+	SequencerItem.call( this );
 
 	var config = {};
 	var planes = [];
@@ -48,18 +29,17 @@ var VideoPlayer = function(shared, layers, conf){
 		}
 		
 		gridLoader = new THREE.JSONLoader();
-		gridLoader.load( { model: "models/grid0.js", callback: onGrid } );
+		gridLoader.load( { model: "files/models/VideoDistortGrid.js", callback: onGrid } );
 	}
 	
 	this.onLoad = function() {	
+		console.log(layers[0].path + " video grid loaded");
 		gridLoaded = true;
 	
-		/*
 	 	shared.signals.mousemoved.add(function(){
-	 	mouseX = (shared.mouse.x / shared.screenWidth) * 2 - 1;
-	 	mouseY = (shared.mouse.y / shared.screenHeight) * 2 - 1;
+	 		mouseX = (shared.mouse.x / shared.screenWidth) * 2 - 1;
+	 		mouseY = (shared.mouse.y / shared.screenHeight) * 2 - 1;
 	 	});
-		*/
 		
 		document.addEventListener('mousemove', this.mouseMove, false);
 		targetPos = new THREE.Vector2(0,0);
@@ -84,6 +64,7 @@ var VideoPlayer = function(shared, layers, conf){
 	}
 	
 	this.show = function(progress) {
+		console.log(layers[0].path + " show()");
 		for (var i = 0; i < planes.length; i++) {
 			planes[i].start(progress);
 		}
@@ -107,20 +88,20 @@ var VideoPlayer = function(shared, layers, conf){
 		for (var i = 0; i < planes.length; i++) {
 			planes[i].updateUniform(mouseX, mouseY);
 		}
-		//renderer.render( scene, camera, renderTarget );
-		renderer.render( scene, camera );
+		
+		renderer.render( scene, camera, renderTarget );
+		//renderer.render( scene, camera );
 	}
 	
 	// #####
-	var windowHalfX = window.innerWidth >> 1;
-	var windowHalfY = window.innerHeight >> 1;
-	this.mouseMove = function(e){
-		mouseX = (event.clientX - windowHalfX) / -windowHalfX;
-		mouseY = (event.clientY - windowHalfY) / windowHalfY;
-	}
+	//var windowHalfX = window.innerWidth >> 1;
+	//var windowHalfY = window.innerHeight >> 1;
+	//this.mouseMove = function(e){
+	//	mouseX = (event.clientX - windowHalfX) / -windowHalfX;
+	//	mouseY = (event.clientY - windowHalfY) / windowHalfY;
+	//}
 }
 
-/*
+
 VideoPlayer.prototype = new SequencerItem();
 VideoPlayer.prototype.constructor = VideoPlayer;
-*/

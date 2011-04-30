@@ -55,11 +55,30 @@
                     console.log(e);
                 }
 				
-				var layers = [
-					{ path: "video/cts.webm", shaderId: VIDEO_OPAQUE_DISTORT, z: -1400 },
-					{ path: "video/dus.webm", shaderId: VIDEO_KEYED, z:  -900, colorScale: 0.7 },
-					//{ path: "video/prs.webm", shaderId: VIDEO_KEYED, z:  -500 },
-					//{ path: "video/cts.webm", shaderId: VIDEO_KEYED, z:  -400 }
+                var layers = [			
+					{
+	                    path: "video/s03.webm",
+	                    shaderId: VIDEO_OPAQUE_DISTORT,
+	                    z: -1400
+	                }, 
+					{
+	                    path: "video/s02.webm",
+	                    shaderId: VIDEO_KEYED,
+	                    z: -900,
+	                    colorScale: .99,
+	                    threshold: .45,
+	                    alphaFadeout: .35
+	                },
+					{
+	                    path: "video/s01.webm",
+	                    shaderId: VIDEO_KEYED,
+	                    z: -500,
+	                    colorScale: .91,
+	                    threshold: .28,
+	                    alphaFadeout: .7,
+	                    width: 1.18,
+	                    height: 1.18
+	                } 
 				];
 				
 				var conf = {
@@ -69,8 +88,14 @@
 				
 				player = new VideoPlayer(shared, layers, conf);
 				player.init();
-				player.show(0);
+				// Only to simulate what happens in prototype
+				setTimeout('this.onPlayerReady()', 2000);
             }
+			
+			function onPlayerReady() {
+				player.show(0);
+				animate();
+			}
             
             function animate(){
                 loop();
@@ -90,7 +115,7 @@
             })();
 			
 			init();
-			animate();
+			
         </script>
     </body>
 </html>

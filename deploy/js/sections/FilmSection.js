@@ -51,26 +51,20 @@ var FilmSection = function ( shared ) {
 
 	// effects
 
-	//var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
+	// var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
 	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
 
-	// sequence
-
-	var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false, 0 );
-	//var intro2 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
-	//var intro3 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
-	//var intro3 = new VideoSequence( shared, "files/videos/christest.webm", false, false, 1 );
-
-	//var intro2 = new VideoSequence( shared, "files/videos/trailer.800.webm", false, false, 1 );
+	// Sequence
+	var conf = { paralaxHorizontal: 40, paralaxVertical: 10 };
+	var introLayers = [ { path: "files/videos/intro.webm", shaderId: VIDEO_OPAQUE, z: -1000 } ];
+	var cityLayers = [ { path: "files/videos/transition_city.webm", shaderId: VIDEO_KEYED, z: -1000 } ];
+	var prairieLayers = [ { path: "files/videos/transition_prairie.webm", shaderId: VIDEO_KEYED, z: -1000 } ];
+	var dunesLayers = [ { path: "files/videos/transition_dunes.webm", shaderId: VIDEO_KEYED, z: -1000 } ];
 	
-
-	var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
-
-	var prairieParalax = new ParalaxSequence(shared, "files/videos/multi2.webm" );
-	var prairieAnimation = new VideoSequence(shared, "files/videos/s0234.webm", false, false );
-	var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
-
-	var dunesAnimation = new VideoSequence(shared, "files/videos/transition_dunes.webm", false, false );
+	var intro = new VideoPlayer( shared, introLayers, conf);
+	var cityAnimation = new VideoPlayer(shared, cityLayers, conf);
+	var prairieAnimation = new VideoPlayer(shared, prairieLayers, conf);
+	var dunesAnimation = new VideoPlayer(shared, dunesLayers, conf);
 
 	sequencer = new Sequencer();
 
@@ -91,9 +85,7 @@ var FilmSection = function ( shared ) {
 	//sequencer.add( new PaintDarkEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 	//sequencer.add( new OverlayEffect( shared, overlayTexture ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 
-	sequencer.add( prairieParalax, tune.getPatternMS( 24 ), tune.getPatternMS( 27.5 ), 4 );
-	sequencer.add( prairieAnimation, tune.getPatternMS( 27.5 ), tune.getPatternMS( 31 ), 4 );
-	sequencer.add( prairieTransition, tune.getPatternMS( 31 ), tune.getPatternMS( 33 ), 4 );
+	sequencer.add( prairieAnimation, tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 4 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.18, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
@@ -112,8 +104,8 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
 
-	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
+	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
 
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 6 );
 
