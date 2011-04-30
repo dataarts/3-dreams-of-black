@@ -105,6 +105,18 @@ function init() {
 	setSlider( "directionalLight2", "y", shared.worlds.dunes.directionalLight2.position.y );
 	setSlider( "directionalLight2", "z", shared.worlds.dunes.directionalLight2.position.z );
 
+	setSlider( "vectorA", "x", DunesShaderColors.vectorA.x );
+	setSlider( "vectorA", "y", DunesShaderColors.vectorA.y );
+	setSlider( "vectorA", "z", DunesShaderColors.vectorA.z );
+
+	setSlider( "vectorB", "x", DunesShaderColors.vectorB.x );
+	setSlider( "vectorB", "y", DunesShaderColors.vectorB.y );
+	setSlider( "vectorB", "z", DunesShaderColors.vectorB.z );
+
+	setSlider( "vectorC", "x", DunesShaderColors.vectorC.x );
+	setSlider( "vectorC", "y", DunesShaderColors.vectorC.y );
+	setSlider( "vectorC", "z", DunesShaderColors.vectorC.z );
+
 	shared.signals.loadItemCompleted.add( doStart )
 	
 }
