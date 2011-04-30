@@ -51,6 +51,7 @@ function init() {
 		},
 
 		worlds: {},
+		sequences: {},
 		started: { "city": false, "prairie": false, "dunes" : false },
 
 		renderer: renderer,

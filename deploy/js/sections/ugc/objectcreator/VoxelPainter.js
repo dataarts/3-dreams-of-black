@@ -22,7 +22,7 @@ var VoxelPainter = function ( camera ) {
 	_scene.addObject( _sceneCollider );
 
 	var _collider = new THREE.Object3D();
-	// _collider.visible = false;
+	_collider.visible = false;
 
 	var _geometry = new THREE.Plane( 2000, 2000, 16, 16 );
 	var _material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true, wireframe: true } );
