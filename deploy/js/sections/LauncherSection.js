@@ -66,7 +66,7 @@ var LauncherSection = function ( shared ) {
 
 			setTimeout( function () {
 
-				shared.signals.startfilm.dispatch( 0 );
+				shared.signals.startfilm.dispatch( 0, 1 );
 
 			}, 1000 );
 

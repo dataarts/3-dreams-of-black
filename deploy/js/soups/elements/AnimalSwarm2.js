@@ -94,7 +94,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			ray = new THREE.Ray();
 			ray.direction = new THREE.Vector3(0, -1, 0);
 
-			var obj = { c: mesh, a: animal, positionArray: [], normalArray: [], speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), toNormal: new THREE.Vector3(0, 1, 0), toPosition: new THREE.Vector3(), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
+			var obj = { c: mesh, a: animal, positionArray: [], normalArray: [], time: 0, lifetime: 0, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), toNormal: new THREE.Vector3(0, 1, 0), toPosition: new THREE.Vector3(), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
 
 			that.array[i] = obj;
 
@@ -116,6 +116,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].toPosition.copy(position);
 			that.array[i].positionArray = [];
 			that.array[i].normalArray = [];
+			that.array[i].time = 0;
+			that.array[i].lifetime = 0;
 
 			if (that.settings.flying) {
 				that.array[i].toNormal.set(0,1,0);
@@ -123,18 +125,19 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// tween scale
-			that.array[i].scale = 0.01;
+			/*that.array[i].scale *= 0.25;
 			var scaleTween = new TWEEN.Tween(that.array[i])
-				.to({scale: that.array[i].origscale}, 2500)
-				.easing(TWEEN.Easing.Elastic.EaseOut);
+				.to({scale: that.array[i].origscale}, 3000)
+				.easing(TWEEN.Easing.Elastic.EaseOut)
+				.delay(200);
 			scaleTween.start();
-			
+			*/
 			// tween popup
-			var scale = that.array[i].scale;
-			that.array[i].c.position.x -= (toNormal.x)*(scale*150);
-			that.array[i].c.position.y -= (toNormal.y)*(scale*150);
-			that.array[i].c.position.z -= (toNormal.z)*(scale*150);
-
+/*			var scale = that.array[i].scale;
+			that.array[i].c.position.x -= (toNormal.x)*(scale*200);
+			that.array[i].c.position.y -= (toNormal.y)*(scale*200);
+			that.array[i].c.position.z -= (toNormal.z)*(scale*200);
+*/
 			//console.log(scale*200);
 /*			var popupTween = new TWEEN.Tween(that.array[i].c.position)
 				.to({x: position.x, y: position.y, z: position.z}, 3000)
@@ -142,7 +145,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			popupTween.start();
 */
 
-			//console.log("created animal- "+that.array[i].toVector.x+" | "+that.array[i].toVector.y+" | "+that.array[i].toVector.y);
+			console.log("created animal- "+that.array[i].toPosition.x+" | "+that.array[i].toPosition.y+" | "+that.array[i].toPosition.y);
 			break;
 		}
 	}
@@ -153,13 +156,13 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			delta = 1000/60;
 		}
 
-		var addFollow = false;
+		/*var addFollow = false;
 		var dx = lastFollowPos.x - followPos.x, dy = lastFollowPos.y - followPos.y, dz = lastFollowPos.z - followPos.z;
 		var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 		if (distance > 50) {
 			addFollow = true;
 			lastFollowPos.copy(followPos);
-		}
+		}*/
 
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj =  that.array[i];
@@ -168,11 +171,20 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				continue;
 			}
 
-			if (addFollow) {
-				var a = new THREE.Vector3();
-				var b = new THREE.Vector3();
-				that.array[i].positionArray.push(a.copy(followPos));
-				that.array[i].normalArray.push(b.copy(followNormal));
+			that.array[i].time += delta;
+			that.array[i].lifetime += delta;
+
+			if (that.array[i].time >= 30) {
+				that.array[i].positionArray.push(followPos);
+				that.array[i].normalArray.push(followNormal);
+
+				that.array[i].time = 0;
+			}
+
+			if (that.array[i].lifetime >= 3000) {
+				that.array[i].active = false;
+				that.array[i].c.visible = false;
+				continue;
 			}
 
 			var positionArray = that.array[i].positionArray;
@@ -253,19 +265,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				animalSpeed = obj.speedb;
 			}
 
-// test to tween position
-			
-if (positionArray.length > 0) {
-			var movePosX = (that.array[i].positionArray[0].x-that.array[i].toPosition.x)/3;
-			var movePosY = (that.array[i].positionArray[0].y-that.array[i].toPosition.y)/3;
-			var movePosZ = (that.array[i].positionArray[0].z-that.array[i].toPosition.z)/3;
-
-			that.array[i].toPosition.x += movePosX;
-			that.array[i].toPosition.y += movePosY;
-			that.array[i].toPosition.z += movePosZ;
-}
-
-			var divider = 3//1.5;//15-animalSpeed;
+			var divider = 2//1.5;//15-animalSpeed;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
@@ -275,9 +275,9 @@ if (positionArray.length > 0) {
 			var moveY = (toy-animal.position.y);
 			var moveZ = (toz-animal.position.z);
 */
-			var moveNormalX = (toNormal.x-normal.x)/divider;
-			var moveNormalY = (toNormal.y-normal.y)/divider;
-			var moveNormalZ = (toNormal.z-normal.z)/divider;
+			var moveNormalX = (toNormal.x-normal.x)/1;
+			var moveNormalY = (toNormal.y-normal.y)/1;
+			var moveNormalZ = (toNormal.z-normal.z)/1;
 
 			normal.x += moveNormalX;
 			normal.y += moveNormalY;
@@ -285,7 +285,7 @@ if (positionArray.length > 0) {
 
 			that.array[i].normal = normal;
 
-			var maxSpeed = animalSpeed/2//Math.round(animalSpeed/3);
+			var maxSpeed = animalSpeed//Math.round(animalSpeed/3);
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
@@ -320,14 +320,15 @@ if (positionArray.length > 0) {
 			animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = animal.position.z+moveZ;
 
 			//var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
-			var dx = (animal.position.x+moveX) - tox, dy = (animal.position.y+moveY) - toy, dz = (animal.position.z+moveZ) - toz;
-			//var dx = (animal.position.x+moveX) - toPosition.x, dy = (animal.position.y+moveY) - toPosition.y, dz = (animal.position.z+moveZ) - toPosition.z;
+			//var dx = (animal.position.x+moveX) - tox, dy = (animal.position.y+moveY) - toy, dz = (animal.position.z+moveZ) - toz;
+			var dx = (animal.position.x+moveX) - toPosition.x, dy = (animal.position.y+moveY) - toPosition.y, dz = (animal.position.z+moveZ) - toPosition.z;
 			var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
+/*if (i == 0) {
+	console.log(distance);
+}*/
 
-//console.log(distance);
 
-
-			if (distance < 100) {
+			if (distance < 500000) {
 				if (positionArray.length > 0) {
 					var toPos = that.array[i].positionArray.shift();
 					var toNor = that.array[i].normalArray.shift();
@@ -352,7 +353,7 @@ if (positionArray.length > 0) {
 			animal.position.z += moveZ;
 			
 
-			if (animal.position.x < camPos.x+30 && animal.position.x > camPos.x-30 && animal.position.z < camPos.z+50 && animal.position.z > camPos.z-50) {
+			/*if (animal.position.x < camPos.x+30 && animal.position.x > camPos.x-30 && animal.position.z < camPos.z+50 && animal.position.z > camPos.z-50) {
 				if (animal.position.x < camPos.x) {
 					//obj.toPosition.x = camPos.x-30;
 					that.array[i].toPosition.x -= 3;
@@ -368,7 +369,7 @@ if (positionArray.length > 0) {
 			if (animal.position.z > camPos.z+100) {
 				that.array[i].active = false;
 				that.array[i].c.visible = false;
-			}
+			}*/
 
 		}
 

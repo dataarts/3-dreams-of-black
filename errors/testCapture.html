@@ -1,0 +1,29 @@
+<!doctype html>
+  <head>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type = "text/javascript" src = "../deploy/js/lib/Three.js"></script>
+    <script type = "text/javascript" src = "Clouds.js"></script>
+    <script type = "text/javascript">
+
+      var clouds = new Clouds();
+      var d = clouds.getDomElement();
+      document.body.appendChild(d);
+
+      setInterval( function() {
+        clouds.update();
+      }, 1000 / 60.0);
+
+      document.addEventListener("click", function() {
+        window.open(d.toDataURL("image/png"), "Clouds for Static Background");
+      });
+
+    </script>
+  </body>
+</html>

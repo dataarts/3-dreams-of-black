@@ -3,6 +3,7 @@ var DunesWorld = function ( shared ) {
 	var that = this;
 
 	var ENABLE_LENSFLARES = true;
+	var ENABLE_CUSTOM_MATERIAL = false;
 
 	this.scene = new THREE.Scene();
 	this.scene.collisions = new THREE.CollisionSystem();
@@ -86,11 +87,11 @@ var DunesWorld = function ( shared ) {
 
 	shared.influenceSpheres = [ 
 		
-		{ name: "prairie", center: new THREE.Vector3( -824, 2665, 4336 ), radius: 800, state: 0, type: 0 },
-		{ name: "city",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 800, state: 0, type: 0 },
+		{ name: "prairie", center: new THREE.Vector3( 544.30, 7167.78, 11173.20 ), radius: 1750, state: 0, type: 0 },
+		{ name: "city",    center: new THREE.Vector3( -67.22, 6124.65, 5156.30 ), radius: 1750, state: 0, type: 0 },
 		
-		{ name: "prairiePortal", center: new THREE.Vector3( -824, 2365, 4336 ), radius: 200, state: 0, type: 1, destination: "prairie" },
-		{ name: "cityPortal",    center: new THREE.Vector3( -760, 2476, 9622 ), radius: 200, state: 0, type: 1, destination: "city" }
+		{ name: "prairiePortal", center: new THREE.Vector3( -314.95, 6122.06, 5658.0 ), radius: 50, state: 0, type: 1, destination: "prairie", pattern: 32 },
+		{ name: "cityPortal",    center: new THREE.Vector3( -689.86, 6985.24, 10657.89 ), radius: 100, state: 0, type: 1, destination: "city", pattern: 16 }
 		
 	];
 
@@ -105,7 +106,8 @@ var DunesWorld = function ( shared ) {
 			
 			var s = shared.influenceSpheres[ i ];
 			
-			if ( s.type == 1 ) {
+			//if ( s.type == 1 ) 
+			{
 			
 				var radius = s.radius;
 				var center = s.center;
@@ -131,6 +133,7 @@ var DunesWorld = function ( shared ) {
 		}
 
 	}
+	
 	
 	// Mesh
 
@@ -185,6 +188,8 @@ var DunesWorld = function ( shared ) {
 		}
 		
 	};
+
+	var testMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
 	
 	function walkLoaded( result ) {
 
@@ -192,6 +197,9 @@ var DunesWorld = function ( shared ) {
 		walkPosition = new THREE.Vector3( 0, 0, 0 * TILE_SIZE );
 		sceneWalk.rotation.z = Math.PI;
 		addDunesPart( sceneWalk, walkPosition, result );
+		
+		if ( ENABLE_CUSTOM_MATERIAL ) 
+			applyMaterial( result, [ [ "D_tile_walk", 0 ] ], testMaterial );
 
 	};
 
@@ -201,6 +209,25 @@ var DunesWorld = function ( shared ) {
 		prairiePosition = new THREE.Vector3( 0, 0, 1 * TILE_SIZE );
 		addDunesPart( scenePrairie, prairiePosition, result );
 
+		if ( ENABLE_CUSTOM_MATERIAL ) 
+			applyMaterial( result, [ [ "D_tile_prairie", 0 ] ], testMaterial );
+
+		/*
+		that.scene.update( undefined, true );
+		
+		var centerObj = result.objects[ "Prairie_Center" ];
+		var portalObj = result.objects[ "Prairie_Portal" ];
+
+		var centerPos = centerObj.matrixWorld.getPosition();
+		var portalPos = portalObj.matrixWorld.getPosition();
+		
+		shared.influenceSpheres[ 0 ].center.copy( centerPos );
+		shared.influenceSpheres[ 2 ].center.copy( portalPos );
+		
+		console.log( "cityCenter", centerPos );
+		console.log( "cityPortal", portalPos );
+		*/
+		
 	};
 
 	function cityLoaded( result ) {
@@ -209,6 +236,34 @@ var DunesWorld = function ( shared ) {
 		cityPosition = new THREE.Vector3( 0, 0, 2 * TILE_SIZE );
 		showHierarchyNotColliders( sceneCity, false );
 		addDunesPart( sceneCity, cityPosition, result );
+
+		if ( ENABLE_CUSTOM_MATERIAL ) 
+			applyMaterial( result, [ [ "D_tile_city", 0 ] ], testMaterial );
+
+		var centerObj = result.objects[ "City_Center" ];
+		var portalObj = result.objects[ "City_Portal" ];
+		
+		portalObj.visible = false;
+		centerObj.visible = false;
+		
+		// hack for invisibility to survive toggling
+		
+		portalObj.__isCollider = true;
+		centerObj.__isCollider = true;
+		
+		/*
+		that.scene.update( undefined, true );
+		
+		
+		var centerPos = centerObj.matrixWorld.getPosition();
+		var portalPos = portalObj.matrixWorld.getPosition();
+		
+		shared.influenceSpheres[ 1 ].center.copy( centerPos );
+		shared.influenceSpheres[ 3 ].center.copy( portalPos );
+
+		console.log( "prairieCenter", centerPos );
+		console.log( "prairiePortal", portalPos );
+		*/
 
 	};
 
@@ -228,6 +283,9 @@ var DunesWorld = function ( shared ) {
 
 		addDunesPart( result.scene, new THREE.Vector3((x-1)*TILE_SIZE, 0, (z-1)*TILE_SIZE), result );
 
+		if ( ENABLE_CUSTOM_MATERIAL )
+			applyMaterial( result, [ [ "D_tile_1", 1 ], [ "D_tile_2", 1 ], [ "D_tile_3", 1 ], [ "D_tile_4", 1 ] ], testMaterial );
+		
 		tiles[z][x] = result.scene;
 		++randomAdded;
 
@@ -518,7 +576,15 @@ var DunesWorld = function ( shared ) {
 					
 					if ( portalsActive ) {
 					
+						// exploration
+						
 						shared.signals.startexploration.dispatch( influenceSphere.destination );
+						
+						// film
+						
+						//shared.signals.showfilm.dispatch();
+						//shared.signals.startfilm.dispatch( influenceSphere.pattern, 0 );
+						
 						
 					}
 
@@ -526,8 +592,11 @@ var DunesWorld = function ( shared ) {
 				
 			} else {
 				
-				if ( influenceSphere.mesh ) 
+				if ( influenceSphere.mesh ) {
+
 					influenceSphere.mesh.materials[ 0 ].color = colorNormal;
+
+				}
 				
 				// flip sphere
 				
@@ -823,4 +892,4 @@ var DunesWorld = function ( shared ) {
 
 	}*/
 
-}
+};

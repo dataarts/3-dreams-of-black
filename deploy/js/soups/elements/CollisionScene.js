@@ -2,6 +2,8 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	
 	var that = this;
 	that.currentNormal = new THREE.Vector3( 0, 1, 0 );
+	that.emitterNormal = new THREE.Vector3( 0, 1, 0 );
+	that.distance = 0;
 
 	that.initSettings = {
 
@@ -30,7 +32,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 	var matrix2 = new THREE.Matrix4();
 	var positionVector = new THREE.Vector3();
 
-	var cube = new THREE.Cube( 5, 5, 5 );
+	var cube = new THREE.Cube( 2, 2, 2 );
 
 	that.emitter = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FFFF, opacity: 0.4 } ) );
@@ -147,6 +149,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 				distance = that.settings.collisionDistance;
 
 			}
+
+			that.distance = distance;
+
 			//console.log(c.mesh == front);
 			positionVector.copy( ray.origin );
 			positionVector.addSelf( ray.direction.multiplyScalar( distance ) );
@@ -157,6 +162,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 
 				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 				that.currentNormal = normal;
+				that.emitterNormal = normal;
 
 				//console.log( c.mesh.parent );
 				//console.log( normal.x+" | "+normal.y+" | "+normal.z) ;

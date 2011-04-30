@@ -53,6 +53,7 @@ function init() {
 		},
 
 		worlds: {},
+		sequences: {},
 		started: { "city": false, "prairie": false, "dunes" : false },
 
 		renderer: renderer,
@@ -70,11 +71,12 @@ function init() {
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
-	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 75 ), 1 );
+	sequencer.add( new City( shared ), tune.getPatternMS( 0), tune.getPatternMS( 75 ), 1 );
 	//sequencer.add( new BloomEffect( shared, 0.7 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 2 );
 	//sequencer.add( new NoiseEffect( shared, 0.15, 0.0, 4096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 5 );
+	sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
+	//sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 5 );
 
 }
 

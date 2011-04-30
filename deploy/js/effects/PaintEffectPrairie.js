@@ -19,7 +19,7 @@ var PaintEffectPrairie = function ( shared ) {
 			"screenWidth": { type: "f", value:shared.baseWidth },
 			"screenHeight": { type: "f", value:shared.baseHeight },
 			"vingenettingOffset": { type: "f", value: 0.94 },
-			"vingenettingDarkening": { type: "f", value: 0.57 },
+			"vingenettingDarkening": { type: "f", value: 0.36 },
 			"colorOffset": { type: "f", value: 0 },
 			"colorFactor": { type: "f", value: 0 },
 			"colorBrightness": { type: "f", value: 0 },
