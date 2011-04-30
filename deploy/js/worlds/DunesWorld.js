@@ -137,8 +137,47 @@ var DunesWorld = function ( shared ) {
 		}
 
 	}
-	
-	
+
+
+	// UGC - TODO: Temp implementation
+
+	var ugcHandler = new UgcHandler();
+
+	ugcHandler.getLatestUGOs( function ( objects ) {
+
+		var geometry = new THREE.Cube( 50, 50, 50 );
+		var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+
+		for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+			var data = eval( objects[ i ].UGC );
+
+			if ( data instanceof Array ) {
+
+				var group = new THREE.Object3D();
+				group.position.x = Math.random() * 10000 - 5000;
+				group.position.z = Math.random() * 10000 - 5000;
+
+				for ( var j = 0, jl = data.length; j < jl; j += 4 ) {
+
+					var voxel = new THREE.Mesh( geometry, material );
+					voxel.position.x = data[ j ];
+					voxel.position.y = data[ j + 1 ];
+					voxel.position.z = data[ j + 2 ];
+
+					group.addChild( voxel );
+
+				}
+
+				that.scene.addObject( group );
+
+			}
+
+		}
+
+	} );
+
+
 	// Mesh
 
 	var loader = new THREE.SceneLoader();
