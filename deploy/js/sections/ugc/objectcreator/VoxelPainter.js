@@ -4,7 +4,7 @@ var VoxelPainter = function ( camera ) {
 
 	// Scene
 
-	var _scene = new THREE.Scene();
+	var _scene = new THREE.Scene();https://github.com/mrdoob/three.js/network
 
 	var _light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
 	_light1.position.set( 0.5, 0.75, 1 );
@@ -218,6 +218,12 @@ var VoxelPainter = function ( camera ) {
 	this.getScene = function () {
 
 		return _scene;
+
+	};
+
+	this.getGrid = function () {
+
+		return _grid;
 
 	};
 

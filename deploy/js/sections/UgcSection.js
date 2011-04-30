@@ -13,15 +13,19 @@ var UgcSection = function ( shared ) {
 
 	this.load = function () {
 
+		var Signal = signals.Signal;
+
+		shared.ugcSignals = {};
+		shared.ugcSignals.submit = new Signal();
+
 		objectCreator = new UgcObjectCreator( shared );
 		domElement.appendChild( objectCreator.getDomElement() );
 
-		ui = new UgcUI();
+		ui = new UgcUI( shared );
 		ui.getDomElement().style.position = 'absolute';
 		ui.getDomElement().style.left = '100px';
 		ui.getDomElement().style.top = '100px';
 		domElement.appendChild( ui.getDomElement() );
-
 
 	};
 

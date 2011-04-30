@@ -54,6 +54,29 @@ var UgcObjectCreator = function ( shared ) {
 
 	var painter = new VoxelPainter( camera );
 
+	// TODO: Temp implementation
+
+	var ugcHandler = new UgcHandler();
+
+	shared.ugcSignals.submit.add( function () {
+
+		var data = '', grid = painter.getGrid();
+
+		for ( var item in grid ) {
+
+			data += grid[ item ].position.x + ',' + grid[ item ].position.y + ',' + grid[ item ].position.z + ',0xffffff,';
+
+		}
+
+		data = '[' + data.slice( 0, - 1 ) + ']';
+
+		ugcHandler.submitUGO( 'this is a test', 'test@tes.com', 1, data, null, function ( json ) {
+
+			console.log( json );
+
+		} );
+
+	} );
 
 	function onMouseDown( event ) {
 

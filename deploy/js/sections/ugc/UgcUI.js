@@ -1,4 +1,4 @@
-var UgcUI = function ( signals ) {
+var UgcUI = function ( shared ) {
 
 	var Button = function ( path ) {
 
@@ -30,6 +30,19 @@ var UgcUI = function ( signals ) {
 	}
 
 	var domElement = document.createElement( 'div' );
+
+	// TODO: Temp implementation
+
+	var button = document.createElement('button');
+	button.addEventListener( 'click', function () {
+
+		shared.ugcSignals.submit.dispatch();
+
+	}, false );
+	button.innerHTML = 'SAVE';
+	domElement.appendChild( button ); 
+
+	/*
 
 	// Object Panel
 
@@ -93,6 +106,8 @@ var UgcUI = function ( signals ) {
 	objectPanel.appendChild( button );
 
 	// Soup Panel
+
+	*/
 
 
 	this.getDomElement = function () {
