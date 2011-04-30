@@ -169,7 +169,7 @@ ROME.TrailShader = {
 		
 		trailMap: undefined,		// set by code
 		faceMap: THREE.ImageUtils.loadTexture( "files/textures/Closeup_PaintDubs.jpg" ),
-		lavaMap: THREE.ImageUtils.loadTexture( "files/textures/lava.jpg" ),
+		lavaMap: THREE.ImageUtils.loadTexture( "files/textures/lava_grey.jpg" ),
 		lavaNoiseMap: THREE.ImageUtils.loadTexture( "files/textures/lavaNoise.png" )
 		
 	},

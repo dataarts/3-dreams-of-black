@@ -129,7 +129,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 			if (!that.settings.gravitateTowardsCamera) {
 			
-				particles.position.y += 0.20;
+				particles.position.y += 0.10;
 				
 				particles.rotation.y += 0.025;
 				particles.rotation.z += 0.010;
