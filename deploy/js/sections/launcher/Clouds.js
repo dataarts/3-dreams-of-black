@@ -148,24 +148,24 @@ var Clouds = function ( shared ) {
       boid.setWorldSize( 1000, 200, 400 );
 
       /////Birds
-      morphObject[i] = new ROME.Animal( geometry, true );
-      morphObject[i].timeOffset = Math.random()*100;
-      bird = birds[i] = morphObject[i].mesh;
-      bird.phase = Math.floor( Math.random() * 62.8);
-      bird.rotation.set( 0, -0.5, 0 );
-      bird.updateMatrix();
-      bird.update();
-
-      var nameA = morphObject[i].availableAnimals[ 0 ],
-          nameB = morphObject[i].availableAnimals[ 0 ];
-
-      morphObject[i].play( nameA, nameB );
-
-      bird.position = boids[ i ].position;
-
-      bird.doubleSided = true;
-      bird.scale.x = bird.scale.y = bird.scale.z = 0.2;
-      birdsGroup.addChild( bird );
+      // morphObject[i] = new ROME.Animal( geometry, true );
+      // morphObject[i].timeOffset = Math.random()*100;
+      // bird = birds[i] = morphObject[i].mesh;
+      // bird.phase = Math.floor( Math.random() * 62.8);
+      // bird.rotation.set( 0, -0.5, 0 );
+      // bird.updateMatrix();
+      // bird.update();
+      // 
+      // var nameA = morphObject[i].availableAnimals[ 0 ],
+      //     nameB = morphObject[i].availableAnimals[ 0 ];
+      // 
+      // morphObject[i].play( nameA, nameB );
+      // 
+      // bird.position = boids[ i ].position;
+      // 
+      // bird.doubleSided = true;
+      // bird.scale.x = bird.scale.y = bird.scale.z = 0.2;
+      // birdsGroup.addChild( bird );
     }
 
     //Adding clouds
