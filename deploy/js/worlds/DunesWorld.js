@@ -164,6 +164,9 @@ var DunesWorld = function ( shared ) {
 					voxel.position.x = data[ j ];
 					voxel.position.y = data[ j + 1 ];
 					voxel.position.z = data[ j + 2 ];
+					voxel.matrixAutoUpdate = false;
+					voxel.updateMatrix();
+					voxel.update();
 
 					group.addChild( voxel );
 
