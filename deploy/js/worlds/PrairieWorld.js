@@ -78,7 +78,7 @@ var PrairieWorld = function ( shared, camera ) {
 
 		var groundMesh = result.objects[ "Ground" ];
 
-		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1024, markTexture, shared.renderer );
+		ROME.TrailShaderUtils.setMaterials( [ groundMesh ], 1350, markTexture, shared.renderer );
 
 		TriggerUtils.setupPrairieTriggers( result );
 
@@ -162,7 +162,7 @@ var PrairieWorld = function ( shared, camera ) {
 		ROME.TrailShaderUtils.updateLava( delta / 30000, shared.lavatrailx, -shared.lavatrailz );
 		ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
 		
-		TriggerUtils.effectorRadius = 30;
+		TriggerUtils.effectorRadius = 40;
 		TriggerUtils.update();
 		
 		if ( portalsActive ) {

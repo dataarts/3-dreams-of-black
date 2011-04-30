@@ -75,7 +75,7 @@ var Prairie = function ( shared ) {
 			waypoints: waypoints, duration: 25,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.003, lookVertical: true, lookHorizontal: true,
+			lookSpeed: 0.004, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.3, Math.PI-0.3 ] }
 
@@ -139,12 +139,13 @@ var Prairie = function ( shared ) {
 
 		if ( camera.animationParent ) {
 
-			camera.animationParent.rotation.z = camera.target.position.x / 600;
+			camera.animationParent.rotation.z = camera.target.position.x / 300;
 
 		}
 
-		// slightly bumpy camera, since we're on a train // this feels like a horse or something...
+		// slightly bumpy camera, since we're on a train // this feels like a horse or something... // lol ;)
 		// camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
+		camera.animationParent.position.y += (Math.random()-0.5)*0.3;
 
 
 		// make it darker towards the end
