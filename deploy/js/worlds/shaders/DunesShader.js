@@ -1,4 +1,4 @@
-var CityShader = {
+var DunesShader = {
 
 	colors:{
 	
@@ -63,11 +63,16 @@ var CityShader = {
 
 			"vLightWeighting = ambientLightColor;",
 
-/*			"vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ 0 ], 0.0 );",
+			"vec4 lDirection = viewMatrix * vec4( directionalLightDirection[ 0 ], 0.0 );",
 			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
 			"vLightWeighting += directionalLightColor[ 0 ] * directionalLightWeighting;",
-			"vLightWeighting = vLightWeighting * vec3(0.5, 0.55, 0.45) + vec3(0.5, 0.45, 0.55);",
-*/
+			
+			"lDirection = viewMatrix * vec4( directionalLightDirection[ 1 ], 0.0 );",
+			"directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
+			"vLightWeighting += directionalLightColor[ 1 ] * directionalLightWeighting;",
+			
+			//"vLightWeighting = vLightWeighting * vec3(0.5, 0.55, 0.45) + vec3(0.5, 0.45, 0.55);",
+
 			"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
@@ -106,7 +111,6 @@ var CityShader = {
 			"vec3 normal;",
 			"vec4 surface;",
 			"vec4 grass;",
-			"float fog_density = 0.0001;",
 
 			"vec3 worldPosition = vWorldPosition * 0.0005;",
 
@@ -121,7 +125,11 @@ var CityShader = {
 			        "texture2D( grassImage, worldPosition.xy * vec2(10.0)) * vNormalsquare.zzzz;",
 			"distance += (0.5 + grass.g) * texture2D(surfaceImage, worldPosition.zx * vec2(3.0)).g;",
 			//"distance += grass.g;",
-			"surface = vec4(vec3(0.15, 0.18, 0.2)/*colorA*/ * vec3(2.0), 1.0);",
+			//"surface = vec4(vec3(0.15, 0.18, 0.2)/*colorA*/ * vec3(2.0), 1.0);",
+			
+			// neutral baseline color
+
+			"surface = vec4( vec3( 0.5 ), 1.0 );",
 
 			"if(distance > 0.0)",
 				"surface = grass;",
@@ -132,8 +140,22 @@ var CityShader = {
 
 			"gl_FragColor = surface * vec4( vColor, 1.0 ) * vec4(2.0);",
 			"gl_FragColor = mix(gl_FragColor * texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time)), gl_FragColor, vec4(colorC.rgb, 0.1));",
-			"gl_FragColor = mix(vec4(gl_FragColor.rgb, 1.0), vec4(/*colorB*/0.64, 0.88, 1, 1.0), vec4(depth));",	
+			//"gl_FragColor = mix(vec4(gl_FragColor.rgb, 1.0), vec4(/*colorB*/0.64, 0.88, 1, 1.0), vec4(depth));",	
 
+
+			// lights
+			
+			"gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
+
+			// fog
+			
+			"depth = gl_FragCoord.z / gl_FragCoord.w;",
+
+			"const float LOG2 = 1.442695;",
+			"float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );",
+			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
+
+			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
 
 			//"gl_FragColor = vec4(distance, distance, distance, 1.0);",
 			//"gl_FragColor *= vec4( 0.0, 1.0, 0.0, 1.0 );",
@@ -146,14 +168,15 @@ var CityShader = {
 
 			/*grass only*/
 			//"gl_FragColor = texture2D( grassImage, worldPosition.zx * vec2(10.0));",
-			//"gl_FragColor = vec4(vNormalsquare.yyy, 1.0);", 
+			//"gl_FragColor = vec4(vNormalsquare.yyy, 1.0);",
+
 		"}"
 
 	].join("\n")
 
 };
 
-function applyCityShader( result, exclude, start, end, materials, shader ) {
+function applyDunesShader( result, exclude, start, end, materials, shader ) {
 	
 	var i, name, geometry, obj, mat;
 
@@ -221,18 +244,10 @@ function applyCityShader( result, exclude, start, end, materials, shader ) {
 	
 };
 
-
-function updateCityShader( start, end, materials, position, time ) {
+function updateDunesShader( start, end, materials, position, front, time ) {
 	
-	end.copy( start );
-
-	start.x = Math.sin( position.z / 500 ) * 200;
-	start.y = position.y;
-	start.z = position.z - 300;
-
-	end.subSelf( start );
-	end.multiplyScalar( 200 );
-	end.addSelf( start );
+	start.copy( position );
+	end.copy( front );
 	
 	var i, l = materials.length;
 	
@@ -243,4 +258,3 @@ function updateCityShader( start, end, materials, position, time ) {
 	}
 
 };
-
