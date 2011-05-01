@@ -131,8 +131,8 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 			
 				particles.position.y += 0.10;
 				
-				particles.rotation.y += 0.010;
-				particles.rotation.z += 0.005;
+				particles.rotation.y += 0.015;
+				particles.rotation.z += 0.010;
 
 				var scale = Math.max(alivetime/15, 1);
 				//scale = Math.max(scale,0.05);

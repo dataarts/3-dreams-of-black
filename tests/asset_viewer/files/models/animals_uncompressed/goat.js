@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/goat/goatCharge_A_0016/obj/goatCharge_A_001.obj
+// Converted from: ../files/srcModels/01_black_soup/goat/goatCharge_A_0016/obj/goatCharge_A_001.obj
 //  vertices: 350
 //  faces: 696
 //  normals: 0

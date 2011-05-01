@@ -169,6 +169,8 @@ var DunesShader = {
 			/*grass only*/
 			//"gl_FragColor = texture2D( grassImage, worldPosition.zx * vec2(10.0));",
 			//"gl_FragColor = vec4(vNormalsquare.yyy, 1.0);",
+			
+			//"gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );",
 
 		"}"
 
@@ -201,6 +203,26 @@ function applyDunesShader( result, exclude, start, end, materials, shader ) {
 
 	};
 
+	function createDunesMaterial() {
+		
+		var mat = new THREE.MeshShaderMaterial( shaderParams );
+
+		mat.uniforms = THREE.UniformsUtils.clone( shaderParams.uniforms );
+		
+		mat.uniforms[ 'targetStart'  ].value   = start;
+		mat.uniforms[ 'targetEnd'    ].value   = end;
+		mat.uniforms[ 'grassImage'   ].texture = shaderParams.uniforms[ 'grassImage'   ].texture;
+		mat.uniforms[ 'surfaceImage' ].texture = shaderParams.uniforms[ 'surfaceImage' ].texture;
+
+		mat.uniforms.colorA.value = shader.colors.colorA;
+		mat.uniforms.colorB.value = shader.colors.colorB;
+		mat.uniforms.colorC.value = shader.colors.colorC;
+		
+		obj.materials[ 0 ] = mat;
+		materials.push( mat );
+
+	};
+	
 	shaderParams.uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
 	shaderParams.uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
 	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
@@ -220,21 +242,13 @@ function applyDunesShader( result, exclude, start, end, materials, shader ) {
 			
 			for( i = 0; i < geometry.materials.length; i++ ) {
 				
-				mat = new THREE.MeshShaderMaterial( shaderParams );
+				createDunesMaterial();
 
-				mat.uniforms = THREE.UniformsUtils.clone( shaderParams.uniforms );
-				
-				mat.uniforms[ 'targetStart'  ].value   = start;
-				mat.uniforms[ 'targetEnd'    ].value   = end;
-				mat.uniforms[ 'grassImage'   ].texture = shaderParams.uniforms[ 'grassImage'   ].texture;
-				mat.uniforms[ 'surfaceImage' ].texture = shaderParams.uniforms[ 'surfaceImage' ].texture;
+			}
+			
+			if ( geometry.materials.length == 0 ) {
 
-				mat.uniforms.colorA.value = shader.colors.colorA;
-				mat.uniforms.colorB.value = shader.colors.colorB;
-				mat.uniforms.colorC.value = shader.colors.colorC;
-				
-				obj.materials[ 0 ] = mat;
-				materials.push( mat );
+				createDunesMaterial();
 
 			}
 			
@@ -243,6 +257,7 @@ function applyDunesShader( result, exclude, start, end, materials, shader ) {
 	}
 	
 };
+
 
 function updateDunesShader( start, end, materials, position, front, time ) {
 	

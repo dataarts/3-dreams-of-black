@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/centipede/centipede_walkA_v009/obj/centipede_walkA_001.obj
+// Converted from: ../files/srcModels/01_black_soup/centipede/centipede_walkA_v009/obj/centipede_walkA_001.obj
 //  vertices: 251
 //  faces: 498
 //  normals: 0

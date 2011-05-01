@@ -54,7 +54,7 @@ var FilmSection = function ( shared ) {
 	// var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
 	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
 	
-	console.log(VideoShots);
+	console.log( VideoShots );
 
 	// Sequence
 	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill);

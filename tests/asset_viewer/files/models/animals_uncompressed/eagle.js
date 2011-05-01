@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/birds_A/eagle/eagle_flyA_v020/obj/eagle_flyA_001.obj
+// Converted from: ../files/srcModels/02_life_soup/birds_A/eagle/eagle_flyA_v020/obj/eagle_flyA_001.obj
 //  vertices: 315
 //  faces: 626
 //  normals: 0

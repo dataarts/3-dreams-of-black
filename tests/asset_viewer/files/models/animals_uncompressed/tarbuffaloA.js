@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/taruffalo/taruffalo_runA_v046/obj/tarbuffaloA_runA_001.obj
+// Converted from: ../files/srcModels/01_black_soup/taruffalo/taruffalo_runA_v046/obj/tarbuffaloA_runA_001.obj
 //  vertices: 1150
 //  faces: 2219
 //  normals: 0
