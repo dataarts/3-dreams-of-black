@@ -56,10 +56,30 @@ var FilmSection = function ( shared ) {
 
 	// Sequence
 	var conf = { paralaxHorizontal: 40, paralaxVertical: 10 };
-	var introLayers = [ { path: "files/videos/intro.webm", shaderId: VIDEO_OPAQUE, z: -1000 } ];
-	var cityLayers = [ { path: "files/videos/transition_city.webm", shaderId: VIDEO_KEYED, z: -1000 } ];
-	var prairieLayers = [ { path: "files/videos/transition_prairie.webm", shaderId: VIDEO_KEYED, z: -1000 } ];
-	var dunesLayers = [ { path: "files/videos/transition_dunes.webm", shaderId: VIDEO_KEYED, z: -1000 } ];
+	
+    var introLayers = [{
+        path: "files/videos/intro.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1000
+    }];
+	
+    var cityLayers = [{
+        path: "files/videos/transition_city.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1000
+    }];
+	
+    var prairieLayers = [{
+        path: "files/videos/transition_prairie.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1000
+    }];
+	
+    var dunesLayers = [{
+        path: "files/videos/transition_dunes.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1000
+    }];
 	
 	var intro = new VideoPlayer( shared, introLayers, conf);
 	var cityAnimation = new VideoPlayer(shared, cityLayers, conf);
@@ -69,6 +89,7 @@ var FilmSection = function ( shared ) {
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
+	
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( intro2, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
@@ -85,14 +106,14 @@ var FilmSection = function ( shared ) {
 	//sequencer.add( new PaintDarkEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 	//sequencer.add( new OverlayEffect( shared, overlayTexture ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 
-	sequencer.add( prairieAnimation, tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 4 );
+	//sequencer.add( prairieAnimation, tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.18, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 4 );
 	//sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 4 );
 
-	sequencer.add( dunesAnimation, tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
+	//sequencer.add( dunesAnimation, tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
 
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
 	//sequencer.add( new NoiseEffect( shared, 0.094, 0.0, 4096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );

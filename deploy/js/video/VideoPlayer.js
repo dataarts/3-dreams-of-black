@@ -12,6 +12,7 @@ var VideoPlayer = function(shared, layers, conf){
 	var planes = [];
 	var gridLoaded = false;
 	
+	var scene, camera;
 	var renderer = shared.renderer, renderTarget = shared.renderTarget;
 	
 	var mouseX = 0, mouseY = 0;
@@ -33,7 +34,7 @@ var VideoPlayer = function(shared, layers, conf){
 	}
 	
 	this.onLoad = function() {	
-		console.log(layers[0].path + " video grid loaded");
+		console.log(layers[0].path + " onLoad()");
 		gridLoaded = true;
 	
 	 	shared.signals.mousemoved.add(function(){
@@ -41,7 +42,7 @@ var VideoPlayer = function(shared, layers, conf){
 	 		mouseY = (shared.mouse.y / shared.screenHeight) * 2 - 1;
 	 	});
 		
-		document.addEventListener('mousemove', this.mouseMove, false);
+		//document.addEventListener('mousemove', this.mouseMove, false);
 		targetPos = new THREE.Vector2(0,0);
 		
 		config.fov = 54;
@@ -64,7 +65,6 @@ var VideoPlayer = function(shared, layers, conf){
 	}
 	
 	this.show = function(progress) {
-		console.log(layers[0].path + " show()");
 		for (var i = 0; i < planes.length; i++) {
 			planes[i].start(progress);
 		}
@@ -77,7 +77,9 @@ var VideoPlayer = function(shared, layers, conf){
 	}
 	
 	this.update = function(progress, delta, time) {
-		if(!gridLoaded) return;
+		if(!gridLoaded) {
+			return;
+		}
 		
 		targetPos.x = mouseX * config.prx;
 		targetPos.y = mouseY * config.pry;

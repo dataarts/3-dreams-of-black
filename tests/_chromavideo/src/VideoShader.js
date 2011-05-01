@@ -26,6 +26,38 @@ var VideoShaderSource = {
 
 	},
 	
+	halfAlpha : {
+
+		uniforms: {
+			"map": { type: "t", value: 0, texture: null },
+		},
+
+		vertexShader: [
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec4 c = texture2D( map, vec2( vUv.x * 0.5, vUv.y ) );",
+				"vec4 a = texture2D( map, vec2( 0.5 + vUv.x * 0.5, vUv.y ) );",
+				"gl_FragColor = vec4(c.rgb, a.r);",
+			"}"
+
+		].join("\n")
+
+	},
+	
 	keyed: {
 
 		uniforms: {
@@ -151,7 +183,10 @@ var VideoShaderSource = {
 		uniforms: {
             "aspect": { type: "f", value: 0 },
 			"map": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() }
+            "mouseXY": { type: "v2", value: new THREE.Vector2() },
+			"colorScale": { type: "f", value: 1 },
+			"threshold": { type: "f", value: 0.5 },
+			"alphaFadeout": { type: "f", value: 0.5 }
 		},
 
 		vertexShader: [
@@ -199,6 +234,9 @@ var VideoShaderSource = {
 
 		fragmentShader: [
             "uniform sampler2D map;",
+			"uniform float colorScale;",
+			"uniform float threshold;",
+			"uniform float alphaFadeout;",
 
             "uniform vec2 mouseXY;",
             "varying vec2 vUv;",
@@ -219,13 +257,14 @@ var VideoShaderSource = {
                 "if ((distancePoly)>0.7) c = cPoly; ",
                 "if (c.a<=0.1) {",
 				"	discard;",
-				"} else {",			
+				"} else {",	
+				"	vec3 cd = vec3(1.0 - colorScale);",
+				"	vec3 cs = vec3(colorScale);",				
 				"	float t = c.x + c.y + c.z;",
 				"	float alpha = 1.0;",
-				"	if( t < 0.5 )",
-				"		alpha = t;",
-				"	gl_FragColor = vec4( c.xyz, alpha );",
-				//"	gl_FragColor = c;",
+				"	if( t < threshold )",
+				"		alpha = t / alphaFadeout;",
+				"	gl_FragColor = vec4( (c.xyz - cd) * cs, alpha );",		
 				"}",
 			"}"
 

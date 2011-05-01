@@ -84,8 +84,6 @@ var VideoPlane = function(layer, config){
 	}
 	
 	this.start = function(t) {
-		console.log(t);
-		
 		video.currentTime = video.duration * 0;
 		video.play();
 		

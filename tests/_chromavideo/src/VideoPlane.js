@@ -22,6 +22,10 @@ var VideoPlane = function(layer, config){
 		case VIDEO_KEYED_DISTORT:
             shader = VideoShaderSource.distortKeyed;
 			hasDistortion = true;
+			hasKey = true;
+            break;
+		case VIDEO_HALFALPHA:
+            shader = VideoShaderSource.halfAlpha;
             break;
         case VIDEO_KEYED:
         default:
