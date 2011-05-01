@@ -5,6 +5,7 @@
 
 ROME = {};
 
+
 // animal
 
 ROME.Animal = function( geometry, parseMorphTargetsNames ) {
@@ -235,13 +236,8 @@ ROME.AnimalShader = {
 					"animalBInterpolation": 		{ type: "f", value: 0.0 },
 					"animalMorphValue" :    		{ type: "f", value: 0.0 },					
 
-					"fogDensity"  :    { type: "f", value: 1.0 },
-          "fogNear"  :    { type: "f", value: 1.0 },
-          "fogFar"  :    { type: "f", value: 2000.0 },
-          "fogColor"  :    { type: "v3", value: new THREE.Vector3( 1.0, 1.0, 1.0 ) },
-
-          "lightScale"  :    { type: "f", value: 1.0 },
-					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) }
+					"lightScale"  :    { type: "f", value: 1.0 },
+					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) },
 
 			   } ] );
 	},
@@ -290,15 +286,21 @@ ROME.AnimalShader = {
 			// separate lights for animals
 			// ( ambient + one directional )
 
-			"vLightWeighting = vec3( 0.2 );", 
+			"vLightWeighting = vec3( 0.2 );",
 
 			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
 			"float directionalLightWeighting = dot( transformedNormal, normalize( lDirection.xyz ) ) * 0.5 + 0.5;",
 			"vLightWeighting += vec3( 0.7 ) * directionalLightWeighting;",
 			
+			/*
+			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
+			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
+			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
+			*/
+			
 			// tweak lighting
 			
-			"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
+			//"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
 
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 
@@ -311,11 +313,7 @@ ROME.AnimalShader = {
 		"uniform vec3 diffuse;",
 		"uniform float opacity;",
 		
-		//THREE.ShaderChunk[ "fog_pars_fragment" ],
-		"uniform vec3 fogColor;",
-		"uniform float fogNear;",
-	  "uniform float fogFar;",
-
+		THREE.ShaderChunk[ "fog_pars_fragment" ],
 		THREE.ShaderChunk[ "lights_pars_fragment" ],
 
 		"varying vec3 vLightWeighting;",
@@ -329,11 +327,8 @@ ROME.AnimalShader = {
 			//"gl_FragColor = gl_FragColor * vec4( diffuse, opacity );",
 
 			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );",
+			THREE.ShaderChunk[ "fog_fragment" ],
 
-			//THREE.ShaderChunk[ "fog_fragment" ], //Tried this, doesent work
-			"float depth = gl_FragCoord.z / gl_FragCoord.w;",
-			"float fogFactor = smoothstep( fogNear, fogFar, depth );",
-      "gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
 		"}"
 
 	].join("\n")
@@ -347,7 +342,7 @@ ROME.AnimalAnimationData = {
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
 	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
-	animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "vulture", "raven", "bison", "sickle", "armHand" ],
 	
 	colorVariations: {
 		
@@ -662,7 +657,6 @@ ROME.AnimalAnimationData = {
 				fragmentShader: ROME.AnimalShader.fragmentShader,
 
 				lights: true,
-        fog: true,
 				morphTargets: true,
 				vertexColors: THREE.VertexColors
 				
@@ -818,7 +812,7 @@ ROME.AnimalAnimationData = {
 				attributes: {},
 				vertexShader: ROME.AnimalShader.vertexShader,
 				fragmentShader: ROME.AnimalShader.fragmentShader,
-
+				
 				fog: true,
 				lights: true,
 				morphTargets: true
@@ -843,7 +837,7 @@ ROME.AnimalAnimationData = {
 						array: undefined,
 						buffer: undefined,
 						needsUpdate: false,
-						__webglInitialized: true
+						__webglInitialized: true,
 
 					};
 					
@@ -884,5 +878,4 @@ function randomizeColors( colors, variations ) {
 		
 	}
 
-}
-
+};

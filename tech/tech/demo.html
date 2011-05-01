@@ -21,7 +21,7 @@
     var theCode, openLink, pre, open = false, firstOpen = true;
     $(function() {
 
-      var hashNum = parseInt(get('i')) || 1;
+      var hashNum = parseInt(getId()) || 1;
 
       $('iframe').attr('src', 'demos/' + hashNum + '/index.html');
 
@@ -33,6 +33,22 @@
       onResize();
 
     });
+
+    var slugs = {
+      'hatching-glow-shader': 1,
+      'normal-mapping': 2,
+      'video-shader': 3,
+      'depth-of-field': 4,
+      'mouse-in-3d-space': 5,
+      'cel-shader': 6,
+      'metaball-playground': 7,
+      'turbulent-point-cloud': 8
+    };
+
+    var getId = function() {
+      var name = window.location.href.slice(window.location.href.indexOf('tech/') + 5);
+      return slugs[name];
+    };
 
     var get = function(key) {
       var vars = [], hash;
@@ -91,7 +107,7 @@
     </a>
 
 
-    <a href="index.html" id="back-to-landing">
+    <a href="/tech" id="back-to-landing">
     </a>
 
   </div>
@@ -101,9 +117,7 @@
 
 <!-- iframe -->
 <div id="iframe-container">
-  <iframe src="demos/1/index.html">
-
-  </iframe>
+  <iframe></iframe>
 </div>
 
 </body>
