@@ -11,7 +11,10 @@ var Dunes = function ( shared ) {
 	ray.direction = new THREE.Vector3( 0, -1, 0 );
 	var positionVector = new THREE.Vector3();
 
-	var speedStart = 150, speedEnd = 300;
+	//var speedStart = 150, speedEnd = 300;
+	
+	// temp speed up
+	var speedStart = 300, speedEnd = 600;
 
 	var frontCube;
 
