@@ -5,7 +5,6 @@
 
 ROME = {};
 
-
 // animal
 
 ROME.Animal = function( geometry, parseMorphTargetsNames ) {
@@ -236,8 +235,13 @@ ROME.AnimalShader = {
 					"animalBInterpolation": 		{ type: "f", value: 0.0 },
 					"animalMorphValue" :    		{ type: "f", value: 0.0 },					
 
-					"lightScale"  :    { type: "f", value: 1.0 },
-					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) },
+					"fogDensity"  :    { type: "f", value: 1.0 },
+          "fogNear"  :    { type: "f", value: 1.0 },
+          "fogFar"  :    { type: "f", value: 2000.0 },
+          "fogColor"  :    { type: "v3", value: new THREE.Vector3( 1.0, 1.0, 1.0 ) },
+
+          "lightScale"  :    { type: "f", value: 1.0 },
+					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) }
 
 			   } ] );
 	},
@@ -307,7 +311,11 @@ ROME.AnimalShader = {
 		"uniform vec3 diffuse;",
 		"uniform float opacity;",
 		
-		THREE.ShaderChunk[ "fog_pars_fragment" ],
+		//THREE.ShaderChunk[ "fog_pars_fragment" ],
+		"uniform vec3 fogColor;",
+		"uniform float fogNear;",
+	  "uniform float fogFar;",
+
 		THREE.ShaderChunk[ "lights_pars_fragment" ],
 
 		"varying vec3 vLightWeighting;",
@@ -321,8 +329,11 @@ ROME.AnimalShader = {
 			//"gl_FragColor = gl_FragColor * vec4( diffuse, opacity );",
 
 			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );",
-			THREE.ShaderChunk[ "fog_fragment" ],
 
+			//THREE.ShaderChunk[ "fog_fragment" ], //Tried this, doesent work
+			"float depth = gl_FragCoord.z / gl_FragCoord.w;",
+			"float fogFactor = smoothstep( fogNear, fogFar, depth );",
+      "gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
 		"}"
 
 	].join("\n")
@@ -651,6 +662,7 @@ ROME.AnimalAnimationData = {
 				fragmentShader: ROME.AnimalShader.fragmentShader,
 
 				lights: true,
+        fog: true,
 				morphTargets: true,
 				vertexColors: THREE.VertexColors
 				
@@ -806,7 +818,7 @@ ROME.AnimalAnimationData = {
 				attributes: {},
 				vertexShader: ROME.AnimalShader.vertexShader,
 				fragmentShader: ROME.AnimalShader.fragmentShader,
-				
+
 				fog: true,
 				lights: true,
 				morphTargets: true
@@ -831,7 +843,7 @@ ROME.AnimalAnimationData = {
 						array: undefined,
 						buffer: undefined,
 						needsUpdate: false,
-						__webglInitialized: true,
+						__webglInitialized: true
 
 					};
 					
@@ -872,5 +884,5 @@ function randomizeColors( colors, variations ) {
 		
 	}
 
-};
+}
 
