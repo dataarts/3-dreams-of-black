@@ -81,7 +81,7 @@ var Shortcuts = function ( shared ) {
 		addLink( text, function () {
 
 			shared.signals.showfilm.dispatch();
-			shared.signals.startfilm.dispatch( pattern );
+			shared.signals.startfilm.dispatch( pattern, 1 );
 
 		} );
 

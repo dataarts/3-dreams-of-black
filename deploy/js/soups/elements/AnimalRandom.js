@@ -286,21 +286,15 @@ ROME.AnimalShader = {
 			// separate lights for animals
 			// ( ambient + one directional )
 
-			"vLightWeighting = vec3( 0.2 );",
+			"vLightWeighting = vec3( 0.2 );", 
 
 			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
 			"float directionalLightWeighting = dot( transformedNormal, normalize( lDirection.xyz ) ) * 0.5 + 0.5;",
-			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
-			
-			/*
-			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
-			"float directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
-			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
-			*/
+			"vLightWeighting += vec3( 0.7 ) * directionalLightWeighting;",
 			
 			// tweak lighting
 			
-			//"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
+			"vLightWeighting = lightScale * vLightWeighting + lightOffset;",
 
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( morphed, 1.0 );",
 
@@ -703,7 +697,7 @@ ROME.AnimalAnimationData = {
 					if ( this.animalVariationMap[ morphTargetName ] !== undefined ) {
 						
 						variations = this.colorVariations[  this.animalVariationMap[ morphTargetName ] ];
-						console.log( morphColor.name, morphTargetName );
+						//console.log( morphColor.name, morphTargetName );
 
 					}
 					
@@ -727,7 +721,7 @@ ROME.AnimalAnimationData = {
 
 					}		
 					
-					console.log( morphTargetName );
+					//console.log( morphTargetName );
 
 					randomizeColors( attributes[ morphTargetName ].value, variations );
 					
@@ -796,24 +790,6 @@ ROME.AnimalAnimationData = {
 			//randomizeColors( attributes.colorAnimalA.value, variations );
 			//randomizeColors( attributes.colorAnimalB.value, variations );
 
-
-			function randomizeColors( colors, variations ) {
-				
-				var i, il, c, hd, sd, vd;
-				
-				for( i = 0, il = colors.length; i < il; i++ ) {
-					
-					c = colors[ i ];
-
-					hd = variations.hRange * Math.random() + variations.hOffset;
-					sd = variations.sRange * Math.random() + variations.sOffset;
-					vd = variations.vRange * Math.random() + variations.vOffset;
-
-					THREE.ColorUtils.adjustHSV( c, hd, sd, vd );							
-					
-				}
-
-			}
 			
 			// set return values
 	
@@ -879,3 +855,22 @@ ROME.AnimalAnimationData = {
 	}
 
 };
+
+function randomizeColors( colors, variations ) {
+	
+	var i, il, c, hd, sd, vd;
+	
+	for( i = 0, il = colors.length; i < il; i++ ) {
+		
+		c = colors[ i ];
+
+		hd = variations.hRange * Math.random() + variations.hOffset;
+		sd = variations.sRange * Math.random() + variations.sOffset;
+		vd = variations.vRange * Math.random() + variations.vOffset;
+
+		THREE.ColorUtils.adjustHSV( c, hd, sd, vd );
+		
+	}
+
+};
+

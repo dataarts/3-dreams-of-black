@@ -18,7 +18,9 @@ function preInitModel( geometry, renderer, scene, object ) {
 
 			if( !material.program ) {
 
-				//renderer.initMaterial( material, scene.lights, scene.fog, object );
+				// dirty hack, otherwise some textures stay black
+				
+				//setTimeout( function() { renderer.initMaterial( material, scene.lights, scene.fog, object ); }, 200 );
 				
 			}
 
@@ -26,6 +28,44 @@ function preInitModel( geometry, renderer, scene, object ) {
 
 	}
 
+
+};
+
+function preInitScene( result, renderer ) {
+
+	renderer.initWebGLObjects( result.scene );
+	
+	var m, material;
+
+	for ( m in result.materials ) {
+
+		material = result.materials[ m ];
+		if ( ! ( material instanceof THREE.MeshFaceMaterial ) ) {
+
+			if( !material.program ) {
+
+				// dirty hack, otherwise some textures stay black
+
+				//setTimeout( function() { renderer.initMaterial( material, result.scene.lights, result.scene.fog ); }, 200 );
+
+			}
+
+		}
+
+	}
+
+};
+
+function preinitAnimal( animal, renderer, scene ) {
+	
+	//console.log( animal );
+	
+	renderer.initWebGLObjects( scene );
+	
+	// this makes weird things
+	
+	//var material = animal.mesh.materials[ 0 ];
+	//setTimeout( function() { renderer.initMaterial( material, scene.lights, scene.fog, animal.mesh ); }, 100 );
 
 };
 
@@ -49,25 +89,8 @@ function initLensFlares( where, position, sx, sy ) {
 	where.lensFlare.customUpdateCallback = lensFlareUpdateCallback;
 	where.lensFlare.position.copy( position );
 
-	
 	where.lensFlareRotate = new THREE.Object3D();
-	
 	where.lensFlareRotate.addChild( where.lensFlare );
-
-	var alwaysThere = new THREE.Sprite( { map: texture0, blending: THREE.AdditiveBlending, useScreenCoordinates: false, mergeWith3D: true, affectedByDistance: false } );
-	alwaysThere.position.copy( position );
-	alwaysThere.rotation = -1.2;
-	alwaysThere.opacity = 0.2;
-	alwaysThere.scale.set( 0.75, 0.75, 1.0 );
-	where.lensFlareRotate.addChild( alwaysThere );
-
-	var alwaysThere = new THREE.Sprite( { map: texture0, blending: THREE.AdditiveBlending, useScreenCoordinates: false, mergeWith3D: false, affectedByDistance: false } );
-	alwaysThere.position.copy( position );
-	alwaysThere.rotation = 1.2;
-	alwaysThere.opacity = 0.1;
-	alwaysThere.scale.set( 1.5, 1.5, 1.0 );
-	where.lensFlareRotate.addChild( alwaysThere );
-
 
 	where.lensFlareRotate.rotation.x = sx * Math.PI / 180;
 	where.lensFlareRotate.rotation.y = sy * Math.PI / 180;
@@ -125,4 +148,23 @@ function hideColliders( scene ) {
 		mesh.visible = false;
 	}
 
+};
+
+function applyMaterial( result, ids, material ) {
+	
+	var i, id, n, l = ids.length;
+
+	for ( i = 0; i < l; i++ ) {
+		
+		id = ids[ i ][ 0 ];
+		n = ids[ i ][ 1 ];
+		
+		if ( result.objects[ id ] ) {
+			
+			result.objects[ id ].geometry.materials[ n ][ 0 ] = material;
+
+		}
+		
+	}
+	
 };

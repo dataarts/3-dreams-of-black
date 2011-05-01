@@ -252,7 +252,7 @@ ROME.TrailShader = {
 	
 			"#if MAX_POINT_LIGHTS > 0",
 	
-				"for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {",
+				/*"for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {",
 	
 					"vec4 lPosition = viewMatrix * vec4( pointLightPosition[ i ], 1.0 );",
 					"vec3 lVector = lPosition.xyz - mvPosition.xyz;",
@@ -266,7 +266,7 @@ ROME.TrailShader = {
 					"float pointLightWeighting = max( dot( transformedNormal, lVector ), 0.0 );",
 					"vLightWeighting.xyz += pointLightColor[ i ] * pointLightWeighting * lDistance;",
 	
-				"}",
+				"}",*/
 	
 			"#endif",
 
@@ -325,25 +325,28 @@ ROME.TrailShader = {
 			"mixValue /= 4.0;",
 			"mixValue = smoothstep( 0.0, 1.0, mixValue );",
 			
-			"if( mixValue != 0.0 ) {",
+			/*"if( mixValue != 0.0 ) {",
 
 				"vec2 movement = vec2( lavaTime );",
 				"vec4 noise = texture2D( lavaNoiseMap, ( vTrailUV - movement ) * lavaUvScale * 3.0 + vec2( sin( lavaTime * 100.0 ) * 0.05, cos( lavaTime * 150.0 ) * 0.05 ));",
 				"vec4 color = texture2D( lavaMap, ( vTrailUV + movement ) * lavaUvScale + vec2( sin( noise.a ) * 0.03, cos( noise.a * 1.1 ) * 0.03 ));",
 
 				"lavaColor = color * color * mixValue * noise.a;",
-			"}",
+			"}",*/
 
 
 			// grass
 			
-			"vec4 grassColor = vec4( vColor, 1.0 ) * texture2D( faceMap, vUV );",
-			
-			
+			"vec4 grassColor = vec4( vColor, 1.0 ) * texture2D(faceMap, vUV);",
+
+
 			// add up
 			
 			"gl_FragColor = mix( grassColor, lavaColor, mixValue ) * vLightWeighting;", 
-			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+			//"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+
+			//"gl_FragColor = vec4(mixValue);//texture2D(trailMap, vTrailUV);",
+
 			"gl_FragColor.a = 1.0;",
 
 		"}"

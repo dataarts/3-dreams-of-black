@@ -229,7 +229,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// change follow index
-			//var changeTime = Math.max(animalSpeed*10, 80);
+			//var changeTime = Math.max(animalSpeed*18, 80);
 			var changeTime = Math.max(animalSpeed*25, 80);
 			//var changeTime = Math.max(animalSpeed*30, 110);
 
@@ -315,7 +315,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 
-			var divider = 8;
+			var divider = 7;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
@@ -366,8 +366,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
 				var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 
-				var speed = Math.max(distance/delta, 0.8);
-				speed = Math.min(speed, 2.0);
+				var speed = Math.max(distance/delta, 0.65);
+				speed = Math.min(speed, 1.5);
 				
 				that.array[i].a.animalA.timeScale = speed;
 				that.array[i].a.animalB.timeScale = speed;
@@ -384,7 +384,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// hack..
-			if (animal.position.z > camPos.z+150) {
+			if (animal.position.z > camPos.z+170) {
 				that.array[i].active = false;
 				that.array[i].c.visible = false;
 			}

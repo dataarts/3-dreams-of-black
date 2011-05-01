@@ -11,7 +11,8 @@ var LoadingBar = function ( callback ) {
 	loadBar.style.width = '300px';
 	loadBar.style.height = '8px';
 	loadBar.style.borderStyle = 'solid';
-	loadBar.style.borderColor = 'rgba(255,255,255,0.5)';
+	loadBar.style.borderColor = 'rgba(255,255,255,0.0)';
+	loadBar.style.background = 'rgba(255,255,255,0.15)';
 	loadBar.style.borderWidth = '1px';
 	loadBar.style.borderRadius = '5px';
 	domElement.appendChild( loadBar );

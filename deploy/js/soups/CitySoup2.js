@@ -33,7 +33,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	collisionScene.settings.capTop = 1000;
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.allowFlying = false;
-	collisionScene.settings.emitterDivider = 8;
+	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.normalOffsetAmount = 8;
 	collisionScene.settings.minDistance = 100;
 	collisionScene.settings.keepEmitterFollowDown = true;
@@ -202,13 +202,13 @@ var CitySoup = function ( camera, scene, shared ) {
 	
 	function birdsALoadedProxy( geometry ) {
 		var morphArray = [0,1,2,3,0,1,2,3,0,1];
-		var speedArray = [2.848, 4, 4.5, 1.5];
+		var speedArray = [4.848, 7, 7.5, 3.5];
 		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, speedArray );
 	}
 
 	function birdsBLoadedProxy( geometry ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
-		var speedArray = [5.5, 5.623];
+		var speedArray = [8.5, 8.623];
 		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, speedArray );
 	}
 
@@ -302,7 +302,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function ligthhouseLoadedProxy( geometry ) {
 		trail.addInstance( geometry, "light", false, true );
-		trail.array[4].maxHeight = 5;
+		trail.array[4].maxHeight = 12;
 	}
 
 	
@@ -354,7 +354,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		camera.position.x = 0+noise+xshake+( ((angleRad-Math.PI/2)*30)*-1 );
 
 		var zoom = collisionScene.cameraTarget.position.y/25;
-		camera.fov = 54-zoom;
+		camera.fov = 60-zoom;
 		camera.updateProjectionMatrix();
 
 		// spawn animal test
@@ -380,7 +380,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		//butterflys.update(camPos, that.camera.theta, delta);
 		butterflysC.update(camPos, angleRad, delta);
 		butterflysD.update(camPos, angleRad, delta, true);
-		trail.update(collisionScene.emitterFollow.position, collisionScene.currentNormal, camPos, delta);
+		trail.update(collisionScene.emitter.position, collisionScene.emitterNormal, camPos, delta);
 		TWEEN.update();
 
 		shared.trigger.copy(vectors.array[10].position);
