@@ -2,8 +2,6 @@ var UgcUI = function ( shared ) {
 
 	var Button = function ( path ) {
 
-		// Convert to SVG
-
 		var PI2 = Math.PI * 2;
 
 		var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -40,7 +38,9 @@ var UgcUI = function ( shared ) {
 
 	}, false );
 	button.innerHTML = 'SAVE';
-	domElement.appendChild( button ); 
+	domElement.appendChild( button );
+
+	//
 
 	var objectPanel = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 	objectPanel.setAttribute( 'viewBox', '0 0 400 200' );
