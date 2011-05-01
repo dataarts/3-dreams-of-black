@@ -17,13 +17,41 @@ var VideoShots = {
 		duration: 22000
     }],
     
-    cityLayers: [{
-        path: "files/videos/transition_city.webm",
+/*
+s01 = 3:12
+s03 = 8:12
+s06 = 2:03
+s09 = 8:23
+ */
+
+	s01_01: [{
+        path: "files/videos/s01_layer01.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1000,
-		duration: 20000,
-    }],
-    
+		duration: 3120
+	}],
+	
+	s01_03: [{
+        path: "files/videos/s03_layer01.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1000,
+		duration: 8120
+	}],
+	
+	s01_06: [{
+        path: "files/videos/s06_layer06.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1000,
+		duration: 2030	
+	}],
+	
+	s01_09: [{       
+	    path: "files/videos/s09_layer01.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1000,
+		duration: 8230	
+	}],
+   
     dunesLayers: [{
         path: "files/videos/transition_dunes.webm",
         shaderId: VIDEO_OPAQUE,
