@@ -27,30 +27,10 @@ WonderWall.Point = function(gee, x, y) {
 
       if(d <= this.maxDist) {
 
-        angle = Math.atan2(dy, dx);
-        if((gee.mouseX > gee.width / 2.0 && gee.mouseY < gee.height / 2.0) ||
-            gee.mouseX < gee.width / 2.0 && gee.mouseX > gee.height / 2.0) {
-            angle = angle - Math.PI;
-        }
+        var s = dx;
+        var c = dy;
 
-        var s = Math.sin(angle);
-        var c = Math.cos(angle);
-
-        // the nasty...canvas has to be a set size now, based on whatever params are held
-        // in the wonderWall.html
-        if(gee.mouseX < gee.width / 2.0 && gee.mouseY < gee.height / 2.0) {
-          s = Math.cos(angle - Math.PI);
-          c = -Math.cos(angle) + Math.PI / 4.0;
-        } else if(gee.mouseX > gee.width / 2.0 && gee.mouseY < gee.height / 2.0) {
-          s = Math.cos(angle - Math.PI);
-          c = Math.cos(angle) + Math.PI / 4.0;
-        }
-        if(gee.mouseY < gee.height * .3 && gee.mouseX < gee.width / 2.0) {
-          c = -Math.cos(angle);
-        } else if(gee.mouseY < gee.height * .3 && gee.mouseX > gee.width / 2.0) {
-          c = Math.cos(angle);
-        }
-        r = this.maxDist * .0625;
+        r = .0925;
 
         x = ox + (s * r);
         y = oy + (c * r);
@@ -184,12 +164,7 @@ WonderWall.Pentagon = function(gee, x, y, r) {
   };
 
   this.getPoints = function() {
-    var coords = [];
-    for(var i = 0; i < points.length; i++) {
-      var point = points[i];
-      coords[i] = point.getPoint();
-    }
-    return coords;
+    return points;
   };
 
 };
