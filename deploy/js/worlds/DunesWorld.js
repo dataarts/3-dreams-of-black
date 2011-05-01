@@ -15,6 +15,7 @@ var DunesWorld = function ( shared ) {
 	// Fog
 
 	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000275 );
+	//this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00000275 );
 	this.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
 
 	// Lights
@@ -83,6 +84,26 @@ var DunesWorld = function ( shared ) {
 	that.refCube = new THREE.Mesh( cube, material );
 	that.refCube.visible = false;
 	that.scene.addObject( that.refCube );
+	
+	// skydome
+	
+	var skydomeGeo = new THREE.Cube( 50000, 50000, 50000 );
+	var skydomeMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } ); 
+	that.skydome = new THREE.Mesh( skydomeGeo, skydomeMaterial );
+	that.skydome.flipSided = true;
+	that.scene.addObject( that.skydome );
+	
+	var tmpResult = {
+	
+		objects: {
+
+			"skydome" : that.skydome
+
+		}
+		
+	};
+	
+	applyDunesShader( tmpResult, [], dunesMaterialStart, dunesMaterialEnd, dunesMaterials, DunesShader );
 
 	// islands influence spheres
 
@@ -750,6 +771,9 @@ var DunesWorld = function ( shared ) {
 		dirVec.addSelf( cameraPosition );
 		
 		updateDunesShader( dunesMaterialStart, dunesMaterialEnd, dunesMaterials, cameraPosition, dirVec, time );
+		
+		that.skydome.position.copy( cameraPosition );
+		that.skydome.updateMatrix();
 		
 
 	};
