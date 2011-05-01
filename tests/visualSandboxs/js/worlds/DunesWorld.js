@@ -209,6 +209,8 @@ var DunesWorld = function ( shared ) {
 			cloudMesh.updateMatrix();
 			
 			that.scene.addChild( cloudMesh );
+			
+			applyCloudsShader( cloudMesh, CloudsShader, dunesMaterialStart, dunesMaterialEnd, dunesMaterials );
 
 		}
 		

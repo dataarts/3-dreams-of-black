@@ -251,6 +251,8 @@ var DunesWorld = function ( shared ) {
 			cloudMesh.updateMatrix();
 			
 			that.scene.addChild( cloudMesh );
+			
+			applyCloudsShader( cloudMesh, CloudsShader, dunesMaterialStart, dunesMaterialEnd, dunesMaterials );
 
 		}
 		
@@ -774,7 +776,6 @@ var DunesWorld = function ( shared ) {
 		
 		that.skydome.position.copy( cameraPosition );
 		that.skydome.updateMatrix();
-		
 
 	};
 
