@@ -101,7 +101,7 @@ var PrairieWorld = function ( shared, camera ) {
 
 		//train.materials[ 0 ].wireframe = true;
 
-		train.position.set( -0.5, -6, 11 );
+/*		train.position.set( -0.5, -6, 11 );
 		train.rotation.set( -1.57, 0, 3.14  );
 		train.updateMatrix();
 		camera.animationParent.addChild( train );
@@ -115,7 +115,8 @@ var PrairieWorld = function ( shared, camera ) {
 		cargo2.rotation.set( -1.57, 0, 3.14  );
 		cargo2.updateMatrix();
 		camera.animationParent.addChild( cargo2 );
-		
+*/		
+
 		var jloader = new THREE.JSONLoader();
 		
 		jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
@@ -162,7 +163,7 @@ var PrairieWorld = function ( shared, camera ) {
 		ROME.TrailShaderUtils.updateLava( delta / 30000, shared.lavatrailx, -shared.lavatrailz );
 		ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
 		
-		TriggerUtils.effectorRadius = 40;
+		TriggerUtils.effectorRadius = 50;
 		TriggerUtils.update();
 		
 		if ( portalsActive ) {

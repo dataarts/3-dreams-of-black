@@ -1,0 +1,50 @@
+RRRRRRRR GGGGGGGG BBBBBBBB AAAAAAAA
+RRRRRRGG GGGGBBBB BBAAAAAA
+
+
+vec2 toRGB565(in vec3 c)
+{
+        // Convert from [0,1] to [0,31] - 32 possible values for 
+        // 5 bits (R & G components)
+	ivec2 outcInt = ivec2(c.rb * 31.0);
+
+        // Convert from [0,1] to [0,64] - 64 possible values for 
+        // 6 bits (B component)
+	int green = int(c.g*63.0);
+
+        /*
+            Target bits : 
+            GGGRRRRR GGGBBBBB
+        */
+                
+        // In x component, keep the low 3 bits of green
+        // In y component, keep the high 3 bits of green & 
+        // move them to become the low 3 bits
+	
+        ivec2 LOHI = ivec2(green & 7,green >> 3); //-> bitwise version
+        ivec2 LOHI = ivec2(mod(green,8), green / pow(2,3)); //-> your version
+        
+        // move both by 5 bits so that they lie in the final
+        // 3 bits of each component
+	LOHI <<= ivec2(5); //->bitwise version
+        LOHI = LOHI * pow(2,5);
+        
+        // OR it now with the r/g components
+        // RG is limited to 5 bits so we have no overlap
+        // Divide by 255 to rearrange it to [0,1]
+
+	return (vec2(outcInt | LOHI) / 255.0); //-> bitwise version
+        return (vec2(outcInt + LOHI) / 255.0); //-> your version, it is ok since we have NO overlap in the values
+}
+
+vec3 fromRGB565(in vec2 c)
+{
+        // inverse documentation & non-bitwise left as homework :)
+	vec3 outc;
+	ivec2 cInt = ivec2(c*255.0);
+	ivec2 cIntMod = cInt & 31;		
+	outc.rb = vec2(cIntMod) / 31.0;	
+	ivec2 gComps = cInt>>5;
+	outc.g = float(gComps.x | (gComps.y<<3)) / 63.0;
+	return outc;
+}
