@@ -83,21 +83,19 @@ var FilmSection = function ( shared ) {
 	//sequencer.add( prairieParalax, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 4 );
 
-	sequencer.add( cityAnimation, tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
-
 	var s01start = tune.getPatternMS( 8 );
 	var s01end = tune.getPatternMS( 16 );
 	
 	sequencer.add( s01_01, s01start, s01start + s01_01.duration, 1 );
 	s02start += s01_01.duration;
 	
-	sequencer.add( s01_03, s01start, s01start + s01_03.duration, 1 );
+	//sequencer.add( s01_03, s01start, s01start + s01_03.duration, 1 );
 	s02start += s01_03.duration;
 	
-	sequencer.add( s01_06, s01start, s01start + s01_06.duration, 1 );
+	//sequencer.add( s01_06, s01start, s01start + s01_06.duration, 1 );
 	s02start += s01_03.duration;
 	
-	sequencer.add( s01_09, s01start, s01start + s01_089.duration, 1 );
+	//sequencer.add( s01_09, s01start, s01start + s01_09.duration, 1 );
 
 	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
 	sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
