@@ -25,8 +25,8 @@ function init() {
 	renderer.sortObjects = false;
 
 	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, { depthBuffer: true, stencilBuffer: true } );
-	renderTarget.minFilter = THREE.NearestFilter;
-	renderTarget.magFilter = THREE.NearestFilter;
+	renderTarget.minFilter = THREE.LinearFilter;
+	renderTarget.magFilter = THREE.LinearFilter;
 
 	shared = {
 

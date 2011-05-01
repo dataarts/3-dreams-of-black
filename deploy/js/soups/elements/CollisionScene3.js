@@ -3,6 +3,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 	var that = this;
 	var scene = new THREE.Scene();
 	that.currentNormal = new THREE.Vector3( 0, 1, 0 );
+	that.emitterNormal = new THREE.Vector3( 0, 1, 0 );
 
 	that.initSettings = {
 
@@ -178,16 +179,16 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 						that.emitter.position.z = camPos.z-20;
 					}
 
-					/*var face = intersects[i].face;
+					var face = intersects[i].face;
 					var object = intersects[i].object;
 					var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
-					var emitterNormal = normal;
-					*/
+					that.emitterNormal = normal;
+					
 					// walls
 					if (intersects[i].object == right || intersects[i].object == front || intersects[i].object == back || intersects[i].object == left || intersects[i].object == top) {
-						/*emitterNormal.x = 0;
-						emitterNormal.y = 1;
-						emitterNormal.z = 0;*/
+						that.emitterNormal.x = 0;
+						that.emitterNormal.y = 1;
+						that.emitterNormal.z = 0;
 						// not to be airbourne
 						if (!that.settings.allowFlying) {
 							that.emitter.position.y = bottom.position.y+5;					
@@ -382,8 +383,8 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		that.cameraTarget.position.z += moveZ;
 
 		// hack for now...
-		if (that.cameraTarget.position.z > camPos.z-100) {
-			that.cameraTarget.position.z = camPos.z-100;
+		if (that.cameraTarget.position.z > camPos.z-80) {
+			that.cameraTarget.position.z = camPos.z-80;
 		}
 
 /*		emitterReal.position = that.emitter.position;

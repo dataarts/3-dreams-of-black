@@ -1,12 +1,12 @@
-/* Converted from: City3_Export15b.blend
+/* Converted from: City3_Export16b.blend
  *
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
  * objects:    359
  * geometries: 44
- * materials:  280
- * textures:   19
+ * materials:  275
+ * textures:   20
  */
 
 var scene = {
@@ -17,10 +17,10 @@ var scene = {
 
 "objects" :
 {
-    "1" : {
-        "geometry"  : "geo_1.002",
+    "Ground" : {
+        "geometry"  : "geo_Ground",
         "groups"    : [  ],
-        "materials" : [ "assets.010" ],
+        "materials" : [ "Ground" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -31,10 +31,10 @@ var scene = {
         "trigger"       : "None"
     },
 
-    "Ground" : {
-        "geometry"  : "geo_Ground.001",
+    "Backdrop_City" : {
+        "geometry"  : "geo_Backdrop_City.001",
         "groups"    : [  ],
-        "materials" : [ "Ground.001" ],
+        "materials" : [ "Backdrop_City.001" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -46,9 +46,9 @@ var scene = {
     },
 
     "5" : {
-        "geometry"  : "geo_5.001",
+        "geometry"  : "geo_5",
         "groups"    : [  ],
-        "materials" : [ "assets.009", "City.009" ],
+        "materials" : [ "assets.001" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -60,9 +60,9 @@ var scene = {
     },
 
     "4" : {
-        "geometry"  : "geo_4.001",
+        "geometry"  : "geo_4",
         "groups"    : [  ],
-        "materials" : [ "City.008", "assets.008" ],
+        "materials" : [ "City.002" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -74,9 +74,9 @@ var scene = {
     },
 
     "3" : {
-        "geometry"  : "geo_3.001",
+        "geometry"  : "geo_3",
         "groups"    : [  ],
-        "materials" : [ "City.007", "assets.007" ],
+        "materials" : [ "City.001" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -88,9 +88,23 @@ var scene = {
     },
 
     "2" : {
-        "geometry"  : "geo_2.001",
+        "geometry"  : "geo_2",
         "groups"    : [  ],
-        "materials" : [ "City.006", "assets.006" ],
+        "materials" : [ "City" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "None"
+    },
+
+    "1" : {
+        "geometry"  : "geo_1",
+        "groups"    : [  ],
+        "materials" : [ "assets" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -116,7 +130,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.011" : {
@@ -125,7 +139,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.019" : {
@@ -134,7 +148,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, -0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_6_.016" : {
@@ -143,7 +157,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.024" : {
@@ -152,7 +166,7 @@ var scene = {
         "rotation"  : [ -3.141593, -0.000001, -0.000002 ],
         "quaternion": [ -0.000000, 1.000000, -0.000001, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_6_.015" : {
@@ -161,7 +175,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.023" : {
@@ -170,7 +184,7 @@ var scene = {
         "rotation"  : [ -3.141593, -0.000001, -0.000002 ],
         "quaternion": [ -0.000000, 1.000000, -0.000001, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.022" : {
@@ -197,7 +211,7 @@ var scene = {
         "rotation"  : [ 3.141593, -0.000002, 0.000001 ],
         "quaternion": [ 0.000000, 1.000000, 0.000001, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.021" : {
@@ -269,7 +283,7 @@ var scene = {
         "rotation"  : [ 3.078173, -0.000002, -1.570797 ],
         "quaternion": [ 0.022419, 0.706751, -0.706752, -0.022418 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_10_.008" : {
@@ -296,7 +310,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -3.141593 ],
         "quaternion": [ -0.000000, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_8_.011" : {
@@ -332,7 +346,7 @@ var scene = {
         "rotation"  : [ -0.000000, -3.141591, -0.000001 ],
         "quaternion": [ -0.000001, 0.000000, 1.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.010" : {
@@ -548,7 +562,7 @@ var scene = {
         "rotation"  : [ 3.141593, -0.000001, 0.000001 ],
         "quaternion": [ 0.000000, 1.000000, 0.000001, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_11_.012" : {
@@ -575,7 +589,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -3.141592 ],
         "quaternion": [ -0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.015" : {
@@ -584,7 +598,7 @@ var scene = {
         "rotation"  : [ 3.141591, -0.000000, 1.570796 ],
         "quaternion": [ 0.000000, 0.707107, 0.707107, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.014" : {
@@ -611,7 +625,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.013" : {
@@ -701,7 +715,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_11_.009" : {
@@ -710,7 +724,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000001 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.012" : {
@@ -719,7 +733,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_11_.008" : {
@@ -755,7 +769,7 @@ var scene = {
         "rotation"  : [ 3.141593, -0.000001, 0.000001 ],
         "quaternion": [ 0.000000, 1.000000, 0.000001, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_8_.008" : {
@@ -845,7 +859,7 @@ var scene = {
         "rotation"  : [ 3.141593, -0.000001, 0.000001 ],
         "quaternion": [ 0.000000, 1.000000, 0.000001, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_6_.004" : {
@@ -863,7 +877,7 @@ var scene = {
         "rotation"  : [ -0.000000, -0.000000, -1.570797 ],
         "quaternion": [ 0.707107, -0.000000, 0.000000, -0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.007" : {
@@ -872,7 +886,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_11_.003" : {
@@ -936,7 +950,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "TriggerMesh_nsole_10_" : {
@@ -1052,7 +1066,7 @@ var scene = {
     },
 
     "TriggerMesh_SignBroke" : {
-        "geometry"  : "geo_TriggerMesh_SignBroke",
+        "geometry"  : "geo_Trigger_SignBroke",
         "groups"    : [  ],
         "materials" : [ "daisy_centerSG", "shrub_greenSG", "flower_whiteSG", "tulip_petalsSG", "tulip_stemSG", "shrub_redSG", "flower_yellowSG", "vinesSG.001", "grassSG" ],
         "position"  : [ -6556.883789, -3064.087402, 0.000000 ],
@@ -1149,20 +1163,6 @@ var scene = {
         "trigger"       : "None"
     },
 
-    "Backdrop_City" : {
-        "geometry"  : "geo_Backdrop_City",
-        "groups"    : [  ],
-        "materials" : [ "Backdrop_City" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 1.104425 ],
-        "quaternion": [ 0.851366, 0.000000, 0.000000, 0.524572 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
     "Console_14.006" : {
         "groups"    : [ "Hide_Mesh" ],
         "position"  : [ -14115.177734, 13651.149414, 2058.872314 ],
@@ -1241,7 +1241,7 @@ var scene = {
         "rotation"  : [ -3.141593, 0.000001, 0.000001 ],
         "quaternion": [ -0.000000, 1.000000, 0.000001, -0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.001" : {
@@ -1250,7 +1250,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -3.141591 ],
         "quaternion": [ -0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.001" : {
@@ -1313,7 +1313,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -3.141591 ],
         "quaternion": [ -0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_8_.004" : {
@@ -1394,7 +1394,7 @@ var scene = {
         "rotation"  : [ -3.141591, -0.000000, -1.570796 ],
         "quaternion": [ -0.000000, 0.707107, -0.707107, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_15_.003" : {
@@ -1412,7 +1412,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, -0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_15_.001" : {
@@ -1421,7 +1421,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "Small"
     },
 
     "Console_15_" : {
@@ -1430,7 +1430,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "None"
+        "trigger"   : "Small"
     },
 
     "Collision_Big.003" : {
@@ -1836,7 +1836,7 @@ var scene = {
         "rotation"  : [ 0.011077, -0.229554, 2.100420 ],
         "quaternion": [ 0.493558, 0.102089, -0.052189, 0.862122 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "Wheel_.234" : {
@@ -1926,7 +1926,7 @@ var scene = {
         "rotation"  : [ 0.003707, -0.046081, -1.675341 ],
         "quaternion": [ 0.669049, -0.015879, -0.016794, -0.742859 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "CarPile_.025" : {
@@ -1944,7 +1944,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -2.266780 ],
         "quaternion": [ 0.423591, 0.000000, 0.000000, -0.905853 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "Console_13_.047" : {
@@ -1971,7 +1971,7 @@ var scene = {
         "rotation"  : [ -0.000000, -0.145371, -3.141593 ],
         "quaternion": [ 0.000000, 0.072622, -0.000000, 0.997360 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.315" : {
@@ -1989,7 +1989,7 @@ var scene = {
         "rotation"  : [ -0.000000, -0.108486, 3.141593 ],
         "quaternion": [ 0.000000, 0.054216, -0.000000, 0.998529 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.313" : {
@@ -2034,7 +2034,7 @@ var scene = {
         "rotation"  : [ -0.101625, 0.000000, -1.570796 ],
         "quaternion": [ 0.706194, -0.035914, 0.035914, -0.706194 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.303" : {
@@ -2106,7 +2106,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_6_.066" : {
@@ -2115,7 +2115,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_6_.065" : {
@@ -2277,7 +2277,7 @@ var scene = {
         "rotation"  : [ -0.101625, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, -0.050791, 0.998709 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.298" : {
@@ -2286,7 +2286,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.147679, 3.141591 ],
         "quaternion": [ 0.000001, 0.073772, 0.000000, 0.997275 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.297" : {
@@ -2313,7 +2313,7 @@ var scene = {
         "rotation"  : [ 0.097197, -0.102167, 1.811458 ],
         "quaternion": [ 0.613627, 0.070071, 0.006702, 0.786452 ],
         "scale"     : [ 1.000001, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.289" : {
@@ -2331,7 +2331,7 @@ var scene = {
         "rotation"  : [ -0.276046, 0.047470, 1.357497 ],
         "quaternion": [ 0.768690, -0.121819, -0.068058, 0.624215 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.287" : {
@@ -2385,7 +2385,7 @@ var scene = {
         "rotation"  : [ 0.003707, -0.046081, 3.037049 ],
         "quaternion": [ 0.052191, 0.023104, 0.000647, 0.998370 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "SignMany_.020" : {
@@ -2565,7 +2565,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -3.141592 ],
         "quaternion": [ -0.000000, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_7_.036" : {
@@ -2637,7 +2637,7 @@ var scene = {
         "rotation"  : [ 0.017169, 0.178437, -1.994540 ],
         "quaternion": [ 0.539777, 0.079480, 0.041162, -0.837036 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "Wheel_.205" : {
@@ -2745,7 +2745,7 @@ var scene = {
         "rotation"  : [ 0.329802, 0.125424, -3.035141 ],
         "quaternion": [ 0.042103, 0.070449, -0.160311, -0.983649 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "SignMany_.017" : {
@@ -2853,7 +2853,7 @@ var scene = {
         "rotation"  : [ -0.262781, 0.000000, 1.570797 ],
         "quaternion": [ 0.701012, -0.092640, -0.092640, 0.701012 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.263" : {
@@ -3015,7 +3015,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.127331 ],
         "quaternion": [ 0.997974, 0.000000, 0.000000, 0.063622 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "RailTrain_.003" : {
@@ -3024,7 +3024,7 @@ var scene = {
         "rotation"  : [ 0.568438, -0.204028, -1.150647 ],
         "quaternion": [ 0.816706, 0.180856, -0.233794, -0.495603 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "Small"
     },
 
     "Console_5_.031" : {
@@ -3042,7 +3042,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.030" : {
@@ -3060,7 +3060,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.030" : {
@@ -3105,7 +3105,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, -0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_13_.036" : {
@@ -3177,7 +3177,7 @@ var scene = {
         "rotation"  : [ 0.097197, -0.102167, 0.240660 ],
         "quaternion": [ 0.990006, 0.054287, -0.044808, 0.122204 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.247" : {
@@ -3195,7 +3195,7 @@ var scene = {
         "rotation"  : [ -0.276046, 0.047470, -0.213301 ],
         "quaternion": [ 0.984932, -0.134263, 0.038015, -0.102160 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "LampPost_.245" : {
@@ -3411,7 +3411,7 @@ var scene = {
         "rotation"  : [ 0.011077, -0.229554, -2.381048 ],
         "quaternion": [ 0.369314, -0.104300, -0.047617, -0.922205 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "Wheel_.178" : {
@@ -3429,7 +3429,7 @@ var scene = {
         "rotation"  : [ 0.011077, -0.229554, -0.785009 ],
         "quaternion": [ 0.918103, -0.038722, -0.107919, -0.379395 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "ExitHead_.009" : {
@@ -3472,34 +3472,39 @@ var scene = {
 
 "geometries" :
 {
-    "geo_1.002" : {
+    "geo_Ground" : {
         "type" : "ascii_mesh",
-        "url"  : "City.1.002.js"
+        "url"  : "City.Ground.js"
     },
 
-    "geo_Ground.001" : {
+    "geo_Backdrop_City.001" : {
         "type" : "ascii_mesh",
-        "url"  : "City.Ground.001.js"
+        "url"  : "City.Backdrop_City.001.js"
     },
 
-    "geo_5.001" : {
+    "geo_5" : {
         "type" : "ascii_mesh",
-        "url"  : "City.5.001.js"
+        "url"  : "City.5.js"
     },
 
-    "geo_4.001" : {
+    "geo_4" : {
         "type" : "ascii_mesh",
-        "url"  : "City.4.001.js"
+        "url"  : "City.4.js"
     },
 
-    "geo_3.001" : {
+    "geo_3" : {
         "type" : "ascii_mesh",
-        "url"  : "City.3.001.js"
+        "url"  : "City.3.js"
     },
 
-    "geo_2.001" : {
+    "geo_2" : {
         "type" : "ascii_mesh",
-        "url"  : "City.2.001.js"
+        "url"  : "City.2.js"
+    },
+
+    "geo_1" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.1.js"
     },
 
     "geo_TriggerMesh_nsole_3_" : {
@@ -3585,11 +3590,6 @@ var scene = {
     "geo_Cube.006" : {
         "type" : "ascii_mesh",
         "url"  : "City.Cube.006.js"
-    },
-
-    "geo_Backdrop_City" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Backdrop_City.js"
     },
 
     "geo_Collision_Big.003" : {
@@ -3700,6 +3700,10 @@ var scene = {
         "url": "Backdrop_City.jpg"
     },
 
+    "Backdrop_City.jpg.001" : {
+        "url": "Backdrop_City.jpg"
+    },
+
     "Console_02.jpg" : {
         "url": "Console_02.jpg"
     },
@@ -3791,21 +3795,6 @@ var scene = {
         "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "assets.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
-    },
-
-    "assets.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
-    },
-
-    "assets.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
-    },
-
     "assets.005" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
@@ -3831,14 +3820,14 @@ var scene = {
         "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "assets.010" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
-    },
-
     "Backdrop_City" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "Backdrop_City.jpg" }
+    },
+
+    "Backdrop_City.001" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Backdrop_City.jpg.001", vertexColors: "vertex" }
     },
 
     "bus_0006_flowerSu.000" : {
@@ -4133,7 +4122,7 @@ var scene = {
 
     "City" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 15790320, opacity: 1.00 }
+        "parameters": { color: 15790320, opacity: 1.00, vertexColors: "vertex" }
     },
 
     "City.001" : {
@@ -4142,16 +4131,6 @@ var scene = {
     },
 
     "City.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 15790320, opacity: 1.00, vertexColors: "vertex" }
-    },
-
-    "City.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 15790320, opacity: 1.00, vertexColors: "vertex" }
-    },
-
-    "City.004" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 15790320, opacity: 1.00, vertexColors: "vertex" }
     },
@@ -4613,7 +4592,7 @@ var scene = {
 
     "Ground" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 6974067, opacity: 1.00, map: "Ground1.jpg.001", vertexColors: "vertex" }
+        "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg.001", vertexColors: "vertex" }
     },
 
     "Ground.001" : {

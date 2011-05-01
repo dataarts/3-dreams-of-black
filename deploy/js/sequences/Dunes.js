@@ -69,6 +69,7 @@ var Dunes = function ( shared ) {
 		soup = new DunesSoup( camera, world.scene, shared );
 
 		shared.worlds.dunes = world;
+		shared.sequences.dunes = this;
 
 		//frontCube = new THREE.Mesh( new THREE.Cube( 1, 1, 1 ), new THREE.MeshLambertMaterial( { color:0xff0000 } ) );
 		frontCube = new THREE.Object3D();
@@ -107,11 +108,7 @@ var Dunes = function ( shared ) {
 
 	this.show = function ( progress ) {
 
-		// look at prairie island
-
-		setRollCameraPosTarget( camera, new THREE.Vector3( 0, 150, -1600 ), shared.influenceSpheres[ 0 ].center );
-
-		renderer.setClearColor( world.scene.fog.color );
+		this.resetCamera();
 
 		shared.started.dunes = true;
 
@@ -121,6 +118,15 @@ var Dunes = function ( shared ) {
 
 	};
 
+	this.resetCamera = function() {
+
+		// look at prairie island
+		
+		setRollCameraPosTarget( camera, new THREE.Vector3( 0, 150, -1600 ), shared.influenceSpheres[ 0 ].center );
+		renderer.setClearColor( world.scene.fog.color );
+
+	};
+	
 
 	this.update = function ( progress, delta, time ) {
 
@@ -139,11 +145,12 @@ var Dunes = function ( shared ) {
 
 			var c = world.scene.collisions.rayCastNearest( ray );
 			if ( c ) {
+
 				positionVector.copy( ray.origin );
 				positionVector.addSelf( ray.direction.multiplyScalar( c.distance*0.15 ) );
 				positionVector.y += 50;
 
-				if (positionVector.y > 0 && camera.position.y < positionVector.y) {
+				if ( positionVector.y > 0 && camera.position.y < positionVector.y ) {
 					camera.position.y = positionVector.y;
 				}
 			}

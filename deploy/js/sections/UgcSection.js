@@ -1,5 +1,7 @@
 var UgcSection = function ( shared ) {
 
+	var objectCreator, ui;
+
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
@@ -11,8 +13,19 @@ var UgcSection = function ( shared ) {
 
 	this.load = function () {
 
-		objectCreator = new ObjectCreator( shared );
+		var Signal = signals.Signal;
+
+		shared.ugcSignals = {};
+		shared.ugcSignals.submit = new Signal();
+
+		objectCreator = new UgcObjectCreator( shared );
 		domElement.appendChild( objectCreator.getDomElement() );
+
+		ui = new UgcUI( shared );
+		ui.getDomElement().style.position = 'absolute';
+		ui.getDomElement().style.left = '100px';
+		ui.getDomElement().style.top = '100px';
+		domElement.appendChild( ui.getDomElement() );
 
 	};
 

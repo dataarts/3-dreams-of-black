@@ -149,3 +149,22 @@ function hideColliders( scene ) {
 	}
 
 };
+
+function applyMaterial( result, ids, material ) {
+	
+	var i, id, n, l = ids.length;
+
+	for ( i = 0; i < l; i++ ) {
+		
+		id = ids[ i ][ 0 ];
+		n = ids[ i ][ 1 ];
+		
+		if ( result.objects[ id ] ) {
+			
+			result.objects[ id ].geometry.materials[ n ][ 0 ] = material;
+
+		}
+		
+	}
+	
+};
