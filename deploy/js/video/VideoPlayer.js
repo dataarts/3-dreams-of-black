@@ -20,8 +20,8 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var mouseX = 0, mouseY = 0;
 	var targetPos;
 	
-	this.duration = layers[0].duration;
-	console.log(layers[0].path + ": " + this.duration);
+	this.duration = layers[ 0 ].duration;
+	console.log( layers[ 0 ].path + ": " + this.duration) ;
 	
 	this.init = function(){
 		
@@ -46,12 +46,14 @@ var VideoPlayer = function( shared, layers, conf ) {
 		gridLoaded = true;
 	
 	 	shared.signals.mousemoved.add(function(){
-	 		mouseX = (shared.mouse.x / shared.screenWidth) * -2 + 1;
-	 		mouseY = (shared.mouse.y / shared.screenHeight) * 2 - 1;
+
+	 		mouseX = ( shared.mouse.x / shared.screenWidth ) * -2 + 1;
+	 		mouseY = ( shared.mouse.y / shared.screenHeight ) * 2 - 1;
+
 	 	});
 		
 		//document.addEventListener('mousemove', this.mouseMove, false);
-		targetPos = new THREE.Vector2(0,0);
+		targetPos = new THREE.Vector2( 0, 0 );
 		
 		config.fov = 54;
 		config.aspect = 2.35;

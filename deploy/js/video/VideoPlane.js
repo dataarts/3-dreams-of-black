@@ -8,6 +8,7 @@ var VideoPlane = function( layer, config ) {
     video = document.createElement( 'video' );
     video.src = layer.path;
 	video.preload = true;
+	video.load();
     
     texture = new THREE.Texture(video);
     texture.minFilter = THREE.LinearFilter;
