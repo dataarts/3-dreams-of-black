@@ -140,7 +140,7 @@ var romeErrors = new HandleErrors();
 var variables = romeErrors.getUrlVars();
 if(variables) {
   if(variables[romeErrors.MagicVariable]) {
-    // this is the error page
+    // this means we are in the error page
     window.onload = function() {
       var iterator = variables[romeErrors.MagicVariable];
       var error = document.getElementById("error");
