@@ -79,7 +79,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	particles.settings.aliveDivider = 2;
 
 	// running animals
-	runningAnimals = new AnimalSwarm4( 40, scene, vectors.array );
+	runningAnimals = new AnimalSwarm5( 40, scene, vectors.array );
 	runningAnimals.settings.xPositionMultiplier = 22;
 	runningAnimals.settings.zPositionMultiplier = 18;
 	runningAnimals.settings.shootRayDown = true;
@@ -203,7 +203,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// flying animals
 
-	flyingAnimals = new AnimalSwarm4( 10, scene, vectors.array );
+	flyingAnimals = new AnimalSwarm5( 10, scene, vectors.array );
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.xPositionMultiplier = 24;
 	flyingAnimals.settings.zPositionMultiplier = 12;
@@ -246,6 +246,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	trail.settings.aliveDivider = 40;
 	trail.settings.tweenTime = 400;
 	trail.settings.scale = 0.4;
+	trail.settings.offsetAmount = 9;
 
 	loader.load( { model: "files/models/soup/grass01.js", callback: grass01LoadedProxy } );
 	loader.load( { model: "files/models/soup/grass02.js", callback: grass02LoadedProxy } );

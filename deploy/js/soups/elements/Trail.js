@@ -10,11 +10,13 @@ var Trail = function ( numOfInstances, scene ) {
 	}
 
 	that.settings = {
-		spread : 50,
+		spread : 70,
 		visible : true,
 		aliveDivider: that.initSettings.numOfInstances,
-		tweenTime: 4000,
+		tweenTime: 2500,
 		scale: 1,
+		offsetAmount: 6,
+		freeRotation: true,
 	}
 
 	var i;
@@ -39,7 +41,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
 			
-			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree, lightHouse:lightHouse, normal: new THREE.Vector3(0,1,0), scale: 0.00000001 };
+			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree, lightHouse:lightHouse};
 			
 			scene.addObject(c);
 			that.array[i] = obj;
@@ -55,7 +57,7 @@ var Trail = function ( numOfInstances, scene ) {
 		}
 
 		var multiplier = delta/that.settings.aliveDivider;
-
+		
 		// grass
 		for (i=0; i<that.array.length; ++i ) {
 			var obj = that.array[i];
@@ -67,133 +69,153 @@ var Trail = function ( numOfInstances, scene ) {
 			var maxHeight = obj.maxHeight;
 			
 			alivetime += multiplier;
-
-
+			
 			// respawn
 			if (alivetime > that.initSettings.numOfInstances) {
-				
-				var amount = 9;
-
-				if (tree) {
-					amount = 10;
-				}
-
-				c.position.x = position.x-(normal.x*amount);
-				c.position.y = position.y-(normal.y*amount);
-				c.position.z = position.z-(normal.z*amount);
-
-				c.position.x += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.x));
-				c.position.z += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.z));
+				c.position.x = position.x;
+				c.position.y = position.y;
+				c.position.z = position.z;
 
 				c.rotation.x = 0;
 				c.rotation.z = 0;
-				c.rotation.y = Math.random()*Math.PI;
+				c.rotation.y = 0;
+
+				var amount = that.settings.offsetAmount;
+
+				if (tree) {
+					amount = that.settings.offsetAmount+2;
+				}
 
 				var torotx = 0;
 				var toroty = 0;
 				var torotz = 0;
 
-/*				if (normal.x < -0.8) {
-					c.position.x = position.x + amount/2;
-					c.rotation.z = 1.57;
-					c.rotation.x = Math.random()*Math.PI;
-					if (tree) {
-						torotz = c.rotation.z+(Math.random()-0.5);
-						c.rotation.z = 0;
-						torotx = c.rotation.x;
-						toroty = c.rotation.y;
-					}
-					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-				}
-				if (normal.x > 0.8) {
-					c.position.x = position.x - amount/2;
-					c.rotation.z = -1.57;
-					if (tree) {
-						torotz = c.rotation.z +(Math.random()-0.5);
-						c.rotation.z = 0;
-						torotx = c.rotation.x;
-						toroty = c.rotation.y;
-					}
-					c.rotation.x = Math.random()*Math.PI;
+				if (that.settings.freeRotation) {
 
-					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-				}
-				if (normal.y < -0.8) {
-					c.position.y = position.y + amount;
+					c.position.x = position.x-(normal.x*amount);
+					c.position.y = position.y-(normal.y*amount);
+					c.position.z = position.z-(normal.z*amount);
+
+					c.position.x += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.x));
+					c.position.z += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.z));
+
+					c.rotation.x = 0;
+					c.rotation.z = 0;
 					c.rotation.y = Math.random()*Math.PI;
-					if (tree) {
-						torotz = c.rotation.z+(Math.random()-0.5);
+
+					c.up.copy(normal);
+					c.lookAt(c.position);
+
+				} else {
+	
+					if (normal.x < -0.5) {
+						c.position.x = position.x + amount/2;
 						c.rotation.z = 1.57;
-						torotx = c.rotation.x;
-						toroty = c.rotation.y;
+						c.rotation.x = Math.random()*Math.PI;
+						if (tree) {
+							torotz = c.rotation.z+(Math.random()-0.5);
+							c.rotation.z = 0;
+							torotx = c.rotation.x;
+							toroty = c.rotation.y;
+						}
+						c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+						c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 					}
-					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-				}
-				if (normal.y > 0.8) {
-					c.position.y = position.y - amount;
-					c.rotation.y = Math.random()*Math.PI;
-					if (tree) {
-						torotz += c.rotation.z+(Math.random()-0.5);
-						c.rotation.z = 1.57;
-						torotx = c.rotation.x;
-						toroty = c.rotation.y;
+					if (normal.x > 0.5) {
+						c.position.x = position.x - amount/2;
+						c.rotation.z = -1.57;
+						if (tree) {
+							torotz = c.rotation.z +(Math.random()-0.5);
+							c.rotation.z = 0;
+							torotx = c.rotation.x;
+							toroty = c.rotation.y;
+						}
+						c.rotation.x = Math.random()*Math.PI;
+
+						c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+						c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 					}
-					
-					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-					c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-				}
-				if (normal.z < -0.8) {
-					c.position.z = position.z + amount/2;
-					c.rotation.x = -1.57;
-					c.rotation.y = Math.random()*Math.PI;
-					if (tree) {
-						torotx = c.rotation.x+(Math.random()-0.5);
-						c.rotation.x = 0;
-						torotz = c.rotation.z;
-						toroty = c.rotation.y;
+					if (normal.y < -0.9) {
+						c.position.y = position.y + amount;
+						c.rotation.y = Math.random()*Math.PI;
+						if (tree) {
+							torotz = c.rotation.z+(Math.random()-0.5);
+							c.rotation.z = 1.57;
+							torotx = c.rotation.x;
+							toroty = c.rotation.y;
+						}
+						c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+						c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 					}
-					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);;
-					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-				}
-				if (normal.z > 0.8) {
-					c.position.z = position.z - amount/2;
-					c.rotation.x = 1.57;
-					c.rotation.y = Math.random()*Math.PI;
-					if (tree) {
-						torotx = c.rotation.x+(Math.random()-0.5);
-						c.rotation.x = 0;
-						torotz = c.rotation.z;
-						toroty = c.rotation.y;
+					if (normal.y > 0.9) {
+						c.position.y = position.y - amount;
+						c.rotation.y = Math.random()*Math.PI;
+						if (tree) {
+							torotz += c.rotation.z+(Math.random()-0.5);
+							c.rotation.z = 1.57;
+							torotx = c.rotation.x;
+							toroty = c.rotation.y;
+						}
+						
+						c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+						c.position.z += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+					}
+					if (normal.z < -0.5) {
+						c.position.z = position.z + amount/2;
+						c.rotation.x = -1.57;
+						c.rotation.y = Math.random()*Math.PI;
+						if (tree) {
+							torotx = c.rotation.x+(Math.random()-0.5);
+							c.rotation.x = 0;
+							torotz = c.rotation.z;
+							toroty = c.rotation.y;
+						}
+						c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);;
+						c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+					}
+					if (normal.z > 0.5) {
+						c.position.z = position.z - amount/2;
+						c.rotation.x = 1.57;
+						c.rotation.y = Math.random()*Math.PI;
+						if (tree) {
+							torotx = c.rotation.x+(Math.random()-0.5);
+							c.rotation.x = 0;
+							torotz = c.rotation.z;
+							toroty = c.rotation.y;
+						}
+
+						c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
+						c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 					}
 
-					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
-					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
-*/
+
 				if (tree) {
 					var treeRotateTween = new TWEEN.Tween(c.rotation)
 								.to({x: torotx, y: toroty, z: torotz}, that.settings.tweenTime)
-								.easing(TWEEN.Easing.Elastic.EaseOut)
-								.delay(400);
+								.easing(TWEEN.Easing.Elastic.EaseOut);
 					treeRotateTween.start();				
 				}
 
 				// keep away from camera path - hack
-				/*if (tree && c.position.x < camPos.x+40 && c.position.x > camPos.x-40) {
-					c.position.x = camPos.x+40;
+				if (tree && c.position.x < camPos.x+60 && c.position.x > camPos.x-60) {
+					c.position.x = camPos.x+60;
 					if (c.position.x < camPos.x) {
-						c.position.x = camPos.x-40;
+						c.position.x = camPos.x-60;
 					}
-				}*/
+				}
 
 
 				c.scale.x = c.scale.y= c.scale.z = 0.001*that.settings.scale;
 				var xscale = zscale = yscale = 0.1*that.settings.scale;
+				if (lightHouse) {
+					var xscale = zscale = yscale = 0.4*that.settings.scale;
+					if (Math.abs(normal.y) < 0.9) {
+						continue;
+					}
+				}
 				if (!tree && !lightHouse) {
-					yscale = 0.2*that.settings.scale;
+					yscale = 0.3*that.settings.scale;
 					xscale = zscale = 0.4*that.settings.scale;
 				}
 
@@ -204,26 +226,9 @@ var Trail = function ( numOfInstances, scene ) {
 
 				var growTween = new TWEEN.Tween(c.scale)
 							.to({x: xscale, y: yscale, z: zscale}, that.settings.tweenTime)
-							.easing(easeType)
-							//.delay(300);
+							.easing(TWEEN.Easing.Quintic.EaseOut);
 				growTween.start();				
 
-				if (lightHouse) {
-					
-					var posx = c.position.x+((normal.x*-1)*50);
-					var posy = c.position.y+((normal.y*-1)*50);
-					var posz = c.position.z+((normal.z*-1)*50);
-
-					var lightHouseDownTween = new TWEEN.Tween(c.position)
-								.to({x: posx, y: posy, z: posz}, 1000)
-								.easing(TWEEN.Easing.Elastic.EaseIn)
-								.delay(that.settings.tweenTime/2);
-					lightHouseDownTween.start();
-
-				}
-
-				c.up.copy(normal);
-				c.lookAt(c.position);
 
 				alivetime = 0;
 			}

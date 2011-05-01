@@ -63,7 +63,7 @@ var City = function ( shared ) {
 		*/
 
 		camera = new THREE.Camera( 60, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-		camera.position.set( 0, 20, 0 );
+		camera.position.set( 0, 20, -300 );
 
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
@@ -83,7 +83,7 @@ var City = function ( shared ) {
 
 	this.resetCamera = function() {
 		
-		camera.position.set( 0, 20, 0 );
+		camera.position.set( 0, 20, -300 );
 		//camera.animation.play( false, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
@@ -113,7 +113,7 @@ var City = function ( shared ) {
 
 		if ( camera.position.z < -3300 ) {
 
-			camera.position.z = 0;
+			camera.position.z = -300;
 
 		}
 
