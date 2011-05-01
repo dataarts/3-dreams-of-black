@@ -57,9 +57,9 @@ function HandleErrors(d) {
       if(Detector.conditions[1]) {
         // Overlay condition check with localStorage
         // Detector.message = Errors[5];
-        if(!hasLocalStorage()) {
+        if(hasLocalStorage()) {
           // go ahead darling
-          if(localStorage["RomeError"]) {
+          if(!localStorage["RomeError"]) {
             // overlay our condition
 
             window.onload = function() {
@@ -100,7 +100,8 @@ function HandleErrors(d) {
               document.body.appendChild(errorContainer);
 
               var escape = document.getElementById("escape-from-warning");
-                  escape.addEventListener("click", function() {
+                  escape.addEventListener("click", function(e) {
+                    e.preventDefault();
                     removeErrors();
                   }, false);
             };

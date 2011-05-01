@@ -44,10 +44,6 @@
           clouds.update();
         }, 1000 / 30.0);
         
-        document.addEventListener("click", function() {
-          window.open(d.toDataURL("image/png"), "Clouds for Static Background");
-        });
-        
         window.addEventListener("resize", function() {
           clouds.resize(window.innerWidth, window.innerHeight);
         }, false);
@@ -88,12 +84,12 @@
             inner.setUpdate(true);
             outer.setUpdate(true);
             heart.point.updating = true;
-          });
+          }, false);
           dom.addEventListener("mouseout", function(e) {
             inner.setUpdate(false);
             outer.setUpdate(false);
             heart.point.updating = false;
-          });
+          }, false);
         }
 
         gee.draw = function() {
