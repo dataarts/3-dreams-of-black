@@ -1,0 +1,203 @@
+#guidat { 
+    z-index: 1001;
+    text-align: right;
+  overflow:hidden;
+}
+
+.guidat { 
+    color: #fff;
+    opacity: 0.97;
+    text-align: left;
+}
+
+.guidat,
+.guidat input { 
+    font: 9.5px Lucida Grande, sans-serif;
+}
+
+.guidat-controllers { 
+    width:960px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+a.guidat-toggle { 
+    text-decoration: none;
+    width:960px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #ccc;
+    text-align: center;
+    display: block;
+    padding: 5px 0;
+
+}
+
+a.guidat-toggle:hover { 
+    background-color: #999;
+}
+
+.guidat-controller { 
+    padding: 3px;
+    height: 25px;
+    border-top: 1px solid #fff;
+    border-right: 1px solid #fff;
+    border-left: 2px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.guidat-controller,
+.guidat-controller input,
+.guidat-slider-bg,
+.guidat-slider-fg { 
+    -moz-transition: background-color 0.15s linear;
+    -webkit-transition: background-color 0.15s linear;
+    transition: background-color 0.15s linear;
+}
+
+.guidat-controller.boolean:hover,
+.guidat-controller.function:hover {
+    background-color: #ccc;
+}
+
+.guidat-controller input { 
+    float: right;
+    outline: none;
+    border: 0;
+    padding: 4px;
+    margin-top: 2px;
+    background-color: #ccc;
+}
+
+
+.guidat-controller select {
+    margin-top: 4px;
+    float: right;
+}
+
+.guidat-controller input:hover.
+.guidat-controller.number.active { 
+    background-color: #444;
+}
+
+.guidat-controller input:focus { 
+    background-color: #555;
+}
+
+.guidat-controller.string input {
+    border: 0;
+    color: #1ed36f;
+    margin-right: 2px;
+    width: 148px;
+}
+
+.guidat-controller.function,
+.guidat-controller.boolean,
+.guidat-controller.string,
+.guidat-controller.number{
+
+}
+
+.guidat-controller.number input[type=text] {
+    width: 35px;
+    margin-left: 5px;
+    margin-right: 2px;
+    color: #fff;
+}
+
+.guidat .guidat-controller.boolean input { 
+    margin-top: 6px;
+    margin-right: 2px;
+    font-size: 20px;
+}
+
+.guidat-controller:last-child {
+}
+
+.guidat-propertyname { 
+    padding: 5px;
+    padding-top: 7px;
+    cursor: default;
+    display: inline-block;
+}
+
+
+.guidat-slider-bg:hover,
+.guidat-slider-bg.active {
+    background-color: #ccc;
+}
+
+.guidat-slider-bg:hover .guidat-slider-fg, 
+.guidat-slider-bg.active .guidat-slider-fg { 
+    background-color: #fff;
+}
+
+.guidat-slider-bg { 
+    background-color: #ccc;
+    cursor: ew-resize;
+
+    margin-top: 2px;
+    float: right;
+    height: 21px;
+}
+
+
+
+.guidat-slider-fg { 
+    background-color: #fff;
+    height: 20px;
+}
+
+#guidat-speed,#guidat-morph,#guidat-aperture,#guidat-focus,#guidat-radius{
+  float:left;
+  height:26px;
+  width:180px;
+  background:#eee;
+}
+#guidat-wireframe,#guidat-texture,#guidat-component,#guidat-lighting,#guidat-grid,#guidat-occlusion,#guidat-depth_of_field{
+  float:left;
+  height:26px;
+  width:80px;
+  padding-left:10px;
+  background:#eee;
+}
+#guidat-morph{
+  width:325px;
+}
+#guidat-morph .guidat-slider-bg{
+  width: 70%;
+}
+#guidat-speed .guidat-slider-bg{
+  width: 55%;
+}
+#guidat-speed{
+  width:225px;
+}
+
+#guidat-component{
+  width:155px;
+  padding-right:15px;
+  clear:left;
+}
+#guidat-grid{
+  width:75px;
+}
+#guidat-wireframe{
+  width:92px;
+}
+#guidat-depth_of_field{
+  width:100px;
+}
+#guidat-occlusion{
+  width:80px;
+}
+#guidat-radius,#guidat-aperture,#guidat-focus{
+  width:179px;
+}
+#guidat-radius .guidat-slider-bg,#guidat-aperture .guidat-slider-bg,#guidat-focus .guidat-slider-bg{
+  width:40%;
+}
+
+#guidat-radius, #guidat-lighting{
+  margin-right:-40px;
+}
