@@ -163,12 +163,12 @@ var distortingShaderSource = {
                 "if (c.a<=0.1) {",
 				"	discard;",
 				"} else {",			
-				//"	float t = c.x + c.y + c.z;",
-				//"	float alpha = 1.0;",
-				//"	if( t > 2.0 )",
-				//"		alpha = 1.0 - (t - 2.0);",
-				//"	gl_FragColor = vec4( c.xyz, alpha );",
-				"	gl_FragColor = c;",
+				"	float t = c.x + c.y + c.z;",
+				"	float alpha = 1.0;",
+				"	if( t < 0.5 )",
+				"		alpha = t;",
+				"	gl_FragColor = vec4( c.xyz, alpha );",
+				//"	gl_FragColor = c;",
 				"}",
 			"}"
 

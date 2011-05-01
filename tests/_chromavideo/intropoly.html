@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <title>001 Chromakey</title>
+        <meta charset="utf-8">
+        <style type="text/css">
+            body {
+                background: #000000;
+                color: #ffffff;
+                padding: 0;
+                margin: 0;
+                font-family: sans-serif;
+				overflow: hidden;
+                text-align: left;
+            }
+            
+            #options {
+                padding: 10px;
+                text-aligh: left;
+                font-family: Georgia, serif;
+            }
+            
+            canvas {
+                pointer-events: none;
+                z-index: 10;
+            }
+        </style>
+        <script type="text/javascript" src="build_r38/Three.js">
+        </script>
+		<script type="text/javascript" src="build_r38/Stats.js">
+        </script>
+		<script type="text/javascript" src="src/VideoPlayer.js">
+        </script>
+		<script type="text/javascript" src="src/VideoShader.js">
+        </script>
+		<script type="text/javascript" src="src/VideoPlane.js">
+        </script>
+    </head>
+    <body>
+    	<script type="text/javascript">
+    		var stats = new Stats();
+
+			// Align top-left
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.left = '0px';
+			stats.domElement.style.top = '0px';
+			
+			document.body.appendChild( stats.domElement );
+			
+			setInterval( function () {
+			
+			    stats.update();
+			
+			}, 1000 / 60 );
+
+        	var viewWidth =  window.innerWidth;
+			var aspect = 2.35;
+        	var shared = {};
+			var player;
+			
+            function init(){
+            
+                shared.container = document.createElement('div');
+                document.body.appendChild(shared.container);
+				
+                try {
+                    shared.renderer = new THREE.WebGLRenderer();
+                    shared.renderer.setSize(viewWidth, viewWidth / aspect);
+                    shared.container.appendChild(shared.renderer.domElement);
+                } 
+                catch (e) {
+                    console.log(e);
+                }
+				
+                var layers = [			
+					{
+	                    path: "video/intro.webm",
+	                    shaderId: VIDEO_OPAQUE_DISTORT,
+	                    z: -1010
+	                }
+				];
+				
+				var conf = {
+					paralaxHorizontal: 40,
+					paralaxVertical: 10
+				};
+				
+				player = new VideoPlayer(shared, layers, conf);
+				player.init();
+				// Only to simulate what happens in prototype
+				setTimeout('this.onPlayerReady()', 2000);
+            }
+			
+			function onPlayerReady() {
+				player.show(0);
+				animate();
+			}
+            
+            function animate(){
+                loop();
+                requestAnimFrame(animate);
+            }
+            
+            function loop(){
+            	player.update();
+            }
+            
+            window.requestAnimFrame = (function(){
+                return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame
+            })();
+			
+			init();
+			
+        </script>
+    </body>
+</html>
