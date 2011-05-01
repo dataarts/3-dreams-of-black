@@ -108,7 +108,7 @@ var FilmSection = function ( shared ) {
 	//sequencer.add( new PaintDarkEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 	//sequencer.add( new OverlayEffect( shared, overlayTexture ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 
-	//sequencer.add( prairieAnimation, tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
+	sequencer.add( prairieAnimation, tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
@@ -117,7 +117,7 @@ var FilmSection = function ( shared ) {
 	//sequencer.add( new NoiseEffect( shared, 0.18, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 4 );
 
-	//sequencer.add( dunesAnimation, tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
+	sequencer.add( dunesAnimation, tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
 
 	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
 	sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 4 );

@@ -34,7 +34,6 @@ var VideoPlayer = function(shared, layers, conf){
 	}
 	
 	this.onLoad = function() {	
-		console.log(layers[0].path + " onLoad()");
 		gridLoaded = true;
 	
 	 	shared.signals.mousemoved.add(function(){
