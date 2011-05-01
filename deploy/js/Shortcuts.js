@@ -14,19 +14,19 @@ var Shortcuts = function ( shared ) {
 
 	// Demo
 
-	addDemoShortcut( 'Intro', 0 );
+	addFilmShortcut( 'Intro', 0 );
 	addSeparator();
 
-	addDemoShortcut( 'Transition to City', 8 );
-	addDemoShortcut( 'City', 16 );
+	addFilmShortcut( 'Transition to City', 8 );
+	addFilmShortcut( 'City', 16 );
 	addSeparator();
 
-	addDemoShortcut( 'Transition to Prairie', 24 );
-	addDemoShortcut( 'Prairie', 32 );
+	addFilmShortcut( 'Transition to Prairie', 24 );
+	addFilmShortcut( 'Prairie', 32 );
 	addSeparator();
 
-	addDemoShortcut( 'Transition to Dunes', 40 );
-	addDemoShortcut( 'Dunes', 48 );
+	addFilmShortcut( 'Transition to Dunes', 40 );
+	addFilmShortcut( 'Dunes', 48 );
 	addSeparator();
 
 	// Relauncher
@@ -76,7 +76,7 @@ var Shortcuts = function ( shared ) {
 
 	}
 
-	function addDemoShortcut( text, pattern ) {
+	function addFilmShortcut( text, pattern ) {
 
 		addLink( text, function () {
 
