@@ -1,7 +1,8 @@
 var VIDEO_OPAQUE = 1;
-var VIDEO_OPAQUE_DISTORT = 2;
-var VIDEO_KEYED = 3;
-var VIDEO_KEYED_DISTORT = 4;
+var VIDEO_HALFALPHA = 2;
+var VIDEO_OPAQUE_DISTORT = 3;
+var VIDEO_KEYED = 4;
+var VIDEO_KEYED_DISTORT = 5;
 
 var VideoPlayer = function(shared, layers, conf){
 	var that = this;
@@ -17,6 +18,9 @@ var VideoPlayer = function(shared, layers, conf){
 	
 	var mouseX = 0, mouseY = 0;
 	var targetPos;
+	
+	this.duration = layers[0].duration;
+	console.log(layers[0].path + ": " + this.duration);
 	
 	this.init = function(){
 		
@@ -37,7 +41,7 @@ var VideoPlayer = function(shared, layers, conf){
 		gridLoaded = true;
 	
 	 	shared.signals.mousemoved.add(function(){
-	 		mouseX = (shared.mouse.x / shared.screenWidth) * 2 - 1;
+	 		mouseX = (shared.mouse.x / shared.screenWidth) * -2 + 1;
 	 		mouseY = (shared.mouse.y / shared.screenHeight) * 2 - 1;
 	 	});
 		
@@ -83,9 +87,12 @@ var VideoPlayer = function(shared, layers, conf){
 		targetPos.x = mouseX * config.prx;
 		targetPos.y = mouseY * config.pry;
 
-		camera.position.x += (targetPos.x - camera.position.x) / 2;
-		camera.position.y += (targetPos.y - camera.position.y) / 2;	
+		//camera.position.x += (targetPos.x - camera.position.x) / 2;
+		//camera.position.y += (targetPos.y - camera.position.y) / 2;	
 		
+		camera.target.position.x += (targetPos.x - camera.target.position.x) / 2;
+		camera.target.position.y += (targetPos.y - camera.target.position.y) / 2;	
+				
 		for (var i = 0; i < planes.length; i++) {
 			planes[i].updateUniform(mouseX, mouseY);
 		}

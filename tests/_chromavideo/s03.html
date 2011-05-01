@@ -85,12 +85,17 @@
 	                    colorScale: .99,
 	                    threshold: .45,
 	                    alphaFadeout: .35
+	                },
+					{
+	                    path: "video/s03_layer01.webm",
+	                    shaderId: VIDEO_HALFALPHA,
+	                    z: -990,
 	                }
 				];
 				
 				var conf = {
-					paralaxHorizontal: 40,
-					paralaxVertical: 10
+					paralaxHorizontal: 0,
+					paralaxVertical: 0
 				};
 				
 				player = new VideoPlayer(shared, layers, conf);
