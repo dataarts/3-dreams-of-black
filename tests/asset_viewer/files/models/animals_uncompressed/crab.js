@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/octo/crab/crab_walkA_v008/obj/crab_walkA_001.obj
+// Converted from: ../files/srcModels/01_black_soup/octo/crab/crab_walkA_v008/obj/crab_walkA_001.obj
 //  vertices: 491
 //  faces: 978
 //  normals: 0

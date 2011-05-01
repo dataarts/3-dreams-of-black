@@ -75,26 +75,26 @@ function AnimalMat(attributes){
 function updateShaders(){
     lightmapShader.uniforms['enableTexture'].value = params.texture;
     lightmapShader.uniforms['enableLights'].value = params.lighting;
-    lightmapShader.uniforms['shaderDebug'].value = params.shader_components;
+    lightmapShader.uniforms['shaderDebug'].value = params.component;
     lightmapShader.uniforms['near'].value = near;
     lightmapShader.uniforms['far'].value = far;
 
     triggerShader.uniforms['enableTexture'].value = params.texture;
     triggerShader.uniforms['enableLights'].value = params.lighting;
-    triggerShader.uniforms['shaderDebug'].value = params.shader_components;
+    triggerShader.uniforms['shaderDebug'].value = params.component;
     triggerShader.uniforms['near'].value = near;
     triggerShader.uniforms['far'].value = far;
 
     animalShader.uniforms['enableTexture'].value = params.texture;
     animalShader.uniforms['enableLights'].value = params.lighting;
-    animalShader.uniforms['shaderDebug'].value = params.shader_components;
+    animalShader.uniforms['shaderDebug'].value = params.component;
     animalShader.uniforms['near'].value = near;
     animalShader.uniforms['far'].value = far;
 
 
     animalShader.uniforms['enableTexture'].value = params.texture;
     animalShader.uniforms['enableLights'].value = params.lighting;
-    animalShader.uniforms['shaderDebug'].value = params.shader_components;
+    animalShader.uniforms['shaderDebug'].value = params.component;
     animalShader.uniforms['near'].value = near;
     animalShader.uniforms['far'].value = far;
 }

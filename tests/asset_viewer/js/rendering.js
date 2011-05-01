@@ -45,7 +45,8 @@ function initPostprocessingNoise( effect ) {
      effect.textureNoise.wrapT = THREE.RepeatWrapping;
     var heatUniforms = {
     "time": { type: "f", value: 0 },
-    "sphere": { type: "fv", value: [0.000000,0.000000,-1.000000,0.000000,0.525731,-0.850651,0.500000,0.162460,-0.850651,0.000000,0.894427,-0.447213,0.500000,0.688191,-0.525731,0.850651,0.276394,-0.447213,0.309017,-0.425325,-0.850651,0.809017,-0.262865,-0.525731,0.525731,-0.723607,-0.447213,-0.309017,-0.425325,-0.850651,0.000000,-0.850651,-0.525731,-0.525731,-0.723607,-0.447213,-0.500000,0.162460,-0.850651,-0.809017,-0.262865,-0.525731,-0.850651,0.276394,-0.447213,-0.500000,0.688191,-0.525731,-0.309017,0.951057,0.000000,-0.809017,0.587785,0.000000,-0.525731,0.723607,0.447213,-1.000000,0.000000,0.000000,-0.809017,-0.587785,0.000000,-0.850651,-0.276394,0.447213,-0.309017,-0.951057,0.000000,0.309017,-0.951057,0.000000,0.000000,-0.894427,0.447213,0.809017,-0.587785,0.000000,1.000000,0.000000,0.000000,0.850651,-0.276394,0.447213,0.809017,0.587785,0.000000,0.309017,0.951057,0.000000,0.525731,0.723607,0.447213,0.000000,0.850651,0.525731,-0.809017,0.262865,0.525731,-0.500000,-0.688191,0.525731,0.500000,-0.688191,0.525731,0.809017,0.262865,0.525731,0.000000,0.000000,1.000000,0.309017,0.425325,0.850651,-0.309017,0.425325,0.850651,0.500000,-0.162460,0.850651,0.000000,-0.525731,0.850651,-0.500000,-0.162460,0.850651] },
+    "samplerSphere": { type: "fv", value: [0.000000,0.000000,-1.000000,0.000000,0.525731,-0.850651,0.500000,0.162460,-0.850651,0.000000,0.894427,-0.447213,0.500000,0.688191,-0.525731,0.850651,0.276394,-0.447213,0.309017,-0.425325,-0.850651,0.809017,-0.262865,-0.525731,0.525731,-0.723607,-0.447213,-0.309017,-0.425325,-0.850651,0.000000,-0.850651,-0.525731,-0.525731,-0.723607,-0.447213,-0.500000,0.162460,-0.850651,-0.809017,-0.262865,-0.525731,-0.850651,0.276394,-0.447213,-0.500000,0.688191,-0.525731,-0.309017,0.951057,0.000000,-0.809017,0.587785,0.000000,-0.525731,0.723607,0.447213,-1.000000,0.000000,0.000000,-0.809017,-0.587785,0.000000,-0.850651,-0.276394,0.447213,-0.309017,-0.951057,0.000000,0.309017,-0.951057,0.000000,0.000000,-0.894427,0.447213,0.809017,-0.587785,0.000000,1.000000,0.000000,0.000000,0.850651,-0.276394,0.447213,0.809017,0.587785,0.000000,0.309017,0.951057,0.000000,0.525731,0.723607,0.447213,0.000000,0.850651,0.525731,-0.809017,0.262865,0.525731,-0.500000,-0.688191,0.525731,0.500000,-0.688191,0.525731,0.809017,0.262865,0.525731,0.000000,0.000000,1.000000,0.309017,0.425325,0.850651,-0.309017,0.425325,0.850651,0.500000,-0.162460,0.850651,0.000000,-0.525731,0.850651,-0.500000,-0.162460,0.850651]},
+    "samplerBokehHex": { type: "fv", value: [0.500000,0.000000,0.866025,0.166667,0.000000,0.866025,-0.166667,0.000000,0.866025,-0.500000,0.000000,0.866025,-0.666667,0.000000,0.577350,-0.833333,0.000000,0.288675,-1.000000,0.000000,0.000000,-0.833333,0.000000,-0.288675,-0.666667,0.000000,-0.577350,-0.500000,0.000000,-0.866025,-0.166667,0.000000,-0.866025,0.166667,0.000000,-0.866025,0.500000,0.000000,-0.866025,0.666667,0.000000,-0.577350,0.833333,0.000000,-0.288675,1.000000,0.000000,0.000000,0.833333,0.000000,0.288675,0.666667,0.000000,0.577350]},
     "tColor": { type: "t", value: 0, texture: effect.textureColor },
     "tDepth": { type: "t", value: 1, texture: effect.textureDepth },
     "tNoise": { type: "t", value: 2, texture: effect.textureNoise },
@@ -60,7 +61,6 @@ function initPostprocessingNoise( effect ) {
     };
 
     effect.materialHeat = new THREE.MeshShaderMaterial( {
-
 
         uniforms: heatUniforms,
         vertexShader: [
@@ -88,7 +88,8 @@ function initPostprocessingNoise( effect ) {
         "uniform float dof;",
         "uniform float ssao;",
         "uniform float ssaoRad;",
-        "uniform vec3 sphere[42];",
+        "uniform vec3 samplerBokehHex[18];",
+        "uniform vec3 samplerSphere[42];",
         "uniform float focus;",
         "uniform float aspect;",
 
@@ -106,56 +107,51 @@ function initPostprocessingNoise( effect ) {
           "float depth = depthRGB.r/3.+depthRGB.g/3.+depthRGB.b/3.;",
           "if(depthRGB.a == 0.0) depth = 1.;",
 
-          //"vec4 rndVec = texture2D( tNoise, vUv*vec2(3.0,2.0));",
+          "vec3 rndVec = texture2D( tNoise, vUv*vec2(300.0,200.0) ).rgb * vec3(0.2);",
           //"rndVec = rndVec*2.0 - vec4(1.0);",
 
-          "vec4 ao = vec4(1.0);",
+          "float ao = (1.0);",
           "vec3 rndUv = vec3(0.0);",
 
-          "if (ssao == 1.0) {",
-            "ao = vec4(0.0);",
+          "if (ssao == 1.0 && depth != 1.) {",
+            "ao = 0.0;",
             "for( int i=1; i<42; i++ ){",
-              "rndUv = vec3(vUv,depth) + ssaoRad*reflect(sphere[i].xyz,normal.xyz);",
-              //"vec3 rndUv = vec3(vUv,depth) + ssaoRad*sphere[i].xyz;",
+              "rndUv = vec3(vUv,depth) + ssaoRad*reflect(samplerSphere[i].xyz,normal.xyz);",
+              //"rndUv = vec3(vUv,depth) + ssaoRad*(samplerSphere[i].xyz);",
 
-              "vec3 rndDepthRGB = texture2D(tDepth,rndUv.xy).rgb;",
+              "vec4 rndDepthRGB = texture2D(tDepth,rndUv.xy);",
               "float rndDepth = rndDepthRGB.r/3.+rndDepthRGB.g/3.+rndDepthRGB.b/3.;",
+              "if(rndDepthRGB.a == 0.0) rndDepth = 1.;",
 
               "float zd = (rndUv.z-rndDepth);",
-              "zd = max(min(zd-0.05,0.1-zd), 0.0);",
-              "ao += 1.0/(1.0+20000.0*zd*zd);",
+              "zd = max(min(zd-0.03,0.2-zd), 0.0);",
+              "ao += 1.0/(1.0+10000.0*zd*zd);",
             "}",
-            "ao = vec4(ao/42.0);",
-          "}",
-
-          "if (dof == 1.0) {",
-
-            "vec3 aspectcorrect = vec3( 1.0, aspect, 1.0);",
+            "ao = ao/42.0;",
+            "gl_FragColor = vec4(col.rgb*ao,col.a);",
+            "gl_FragColor.rgb *= 1./gl_FragColor.a;",
+          "} else if (dof == 1.0) {",
+            "col = vec4(0.);",
+            "vec2 aspectcorrect = vec2( 1.0, aspect );",
             "float factor = depth - focus;",
-            "vec3 dofblur = vec3( clamp( factor * aperture, -maxblur, maxblur ) );",
-
-            "for( int i=1; i<42; i++ ){",
-              "rndUv = vec3(vUv,depth) + (dofblur*sphere[i].xyz*aspectcorrect);",
-
-              "vec3 rndDepthRGB = texture2D(tDepth,rndUv.xy).rgb;",
-              "float rndDepth = rndDepthRGB.r/3.+rndDepthRGB.g/3.+rndDepthRGB.b/3.;",
-
-              "float zd = (depth-rndDepth);",
-              "if (zd > 0.0) col += texture2D( tColor, rndUv.xy );",
-              "else col += texture2D( tColor, vUv.xy );",
+            "vec2 dofblur = vec2( clamp( factor * aperture, -maxblur, maxblur ) );",
+            "float j = 1.;",
+            "for( int i=1; i<18; i++ ){",
+              "rndUv.xy = vUv + (dofblur*samplerBokehHex[i].xz*aspectcorrect);",
+              "col += texture2D( tColor, rndUv.xy );",
             "}",
-            "col = col / 43.0;",
-
+            "gl_FragColor = col/18.;",
+            "gl_FragColor.rgb *= 1./gl_FragColor.a;",
           "} else {",
             //ANTIALIASING
-            "col = texture2D( tColor, vUv );",
-            // frame buffer resolution is hard coded here
-            "col += texture2D( tColor, vUv+vec2(.5/960.,0.) );",
-            "col += texture2D( tColor, vUv+vec2(.0,.5/360.) );",
-            "col += texture2D( tColor, vUv+vec2(.5/960.,.5/360.) );",
-            "col *= 0.25;",
+            "gl_FragColor = texture2D( tColor, vUv );",
+            // frame buffer resolution is hard coded
+            "gl_FragColor += texture2D( tColor, vUv+vec2(.5/960.,0.) );",
+            "gl_FragColor += texture2D( tColor, vUv+vec2(.0,.5/360.) );",
+            "gl_FragColor += texture2D( tColor, vUv+vec2(.5/960.,.5/360.) );",
+            "gl_FragColor *= 0.25;",
+            "gl_FragColor.rgb *= 1./gl_FragColor.a;",
           "}",
-          "gl_FragColor = col*vec4(ao.rgb,1.0);",
 				"}"
 
             ].join("\n")
@@ -170,10 +166,10 @@ function initPostprocessingNoise( effect ) {
 function render(){
     renderer.clear();
 
-    lightmapShader.uniforms['shaderDebug'].value = params.shader_components;
-    triggerShader.uniforms['shaderDebug'].value = params.shader_components;
-    animalShader.uniforms['shaderDebug'].value = params.shader_components;
-    wireMat.opacity = params.grid;
+    lightmapShader.uniforms['shaderDebug'].value = params.component;
+    triggerShader.uniforms['shaderDebug'].value = params.component;
+    animalShader.uniforms['shaderDebug'].value = params.component;
+    wireMat.opacity = .1*params.grid;
     renderer.render( scene, camera, postprocessing.textureColor, true );
 
     lightmapShader.uniforms['shaderDebug'].value = 3;
@@ -210,6 +206,6 @@ function updateCamera(){
     near = (-camera.position.x) - Math.max(meshRadius+100, 650);
     var negNear = Math.min(0,near);
     near = Math.max(1,near);
-    far = (-camera.position.x) + Math.max(meshRadius+100, 650)+negNear;
+    far = (-camera.position.x) + Math.max(meshRadius+100, 650)-negNear;
     camera.projectionMatrix = THREE.Matrix4.makePerspective(45, aspect, near, far);
 }

@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/birds_B/flamingo/flamingo_fly_A_v010/obj/flamingo_flyA_000.obj
+// Converted from: ../files/srcModels/02_life_soup/birds_B/flamingo/flamingo_fly_A_v010/obj/flamingo_flyA_000.obj
 //  vertices: 273
 //  faces: 542
 //  normals: 0

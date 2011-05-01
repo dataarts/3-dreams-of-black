@@ -27,7 +27,7 @@ function makeScene(){
   rootZ.addChild(rootY);
 
   light[0] = new THREE.AmbientLight( 0xffffff );
-  light[0].color.setHSV( 0.6,  0.4, 0.3 );
+  light[0].color.setHSV( 0.7,  0.0, 0.5 );
 
   light[1] = new THREE.DirectionalLight( 0xffffff );
   light[1].position.set( 0.4,  0.7, -0.6 );
@@ -44,7 +44,7 @@ function makeScene(){
   scene.addLight( light[2] );
 
   //gound plane
-  wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xeeeeee, lighting:false, opacity:1, wireframe: true });
+  wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0x000000, lighting:false, opacity:0.2, wireframe: true });
   plane = new THREE.Mesh(new THREE.Plane(1000, 1000, 10, 10), wireMat);
   plane.rotation.x = -Math.PI / 2;
 

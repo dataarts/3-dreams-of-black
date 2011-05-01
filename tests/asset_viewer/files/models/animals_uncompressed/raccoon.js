@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/quadruped_A/racoon/raccoonRun_A_v043/obj/raccoonRun_A_001.obj
+// Converted from: ../files/srcModels/02_life_soup/quadruped_A/racoon/raccoonRun_A_v043/obj/raccoonRun_A_001.obj
 //  vertices: 494
 //  faces: 983
 //  normals: 0

@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/birds_B/stork/storkFly_B_v027/obj/storkFly_B_001.obj
+// Converted from: ../files/srcModels/02_life_soup/birds_B/stork/storkFly_B_v027/obj/storkFly_B_001.obj
 //  vertices: 273
 //  faces: 542
 //  normals: 0

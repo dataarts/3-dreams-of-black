@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/moose/mooseGallop_A_v027/obj/mooseGallop_A_001.obj
+// Converted from: ../files/srcModels/02_life_soup/moose/mooseGallop_A_v027/obj/mooseGallop_A_001.obj
 //  vertices: 654
 //  faces: 1292
 //  normals: 0
