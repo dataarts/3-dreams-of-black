@@ -11,9 +11,10 @@ WonderWall.Point = function(gee, x, y) {
   // Public variables
   this.x = x;
   this.y = y;
+  this.r = .15;
   this.threshold = 0.1;
   this.easing = 0.125;
-  this.maxDist = gee.height / 4.0;
+  this.maxDist = gee.height / 3.9;
   this.updating = false;
   this.angle = 0;
 
@@ -30,10 +31,8 @@ WonderWall.Point = function(gee, x, y) {
         var s = dx;
         var c = dy;
 
-        r = .0925;
-
-        x = ox + (s * r);
-        y = oy + (c * r);
+        x = ox + (s * this.r);
+        y = oy + (c * this.r);
 
         this.easing = .0625;
       } else {
