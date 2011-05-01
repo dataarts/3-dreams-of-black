@@ -114,7 +114,7 @@ function HandleErrors(d) {
       for(var i = 0; i < Detector.conditions.length; i++) {
         if(Detector.conditions[i]) {
           // Then we've found what we're looking for!
-          window.location = destination + "/?" + this.MagicVariable + "=" + i;
+          window.location = destination + "?" + this.MagicVariable + "=" + i;
           break;
         }
       }
