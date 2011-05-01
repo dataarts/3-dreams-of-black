@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/quadruped_A/chow_chow/chowRun_A_v058/obj/chowRun_A_001.obj
+// Converted from: ../files/srcModels/02_life_soup/quadruped_A/chow_chow/chowRun_A_v058/obj/chowRun_A_001.obj
 //  vertices: 494
 //  faces: 984
 //  normals: 0

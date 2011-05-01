@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/birds_A/owl/owl_flyA_v004/obj/owl_flyA_000.obj
+// Converted from: ../files/srcModels/02_life_soup/birds_A/owl/owl_flyA_v004/obj/owl_flyA_000.obj
 //  vertices: 315
 //  faces: 626
 //  normals: 0

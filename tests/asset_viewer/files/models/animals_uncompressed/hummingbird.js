@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/birds_A/hummingbird/hummingBird_hoverA_v009/obj/hummingBird_hoverA_000.obj
+// Converted from: ../files/srcModels/02_life_soup/birds_A/hummingbird/hummingBird_hoverA_v009/obj/hummingBird_hoverA_000.obj
 //  vertices: 315
 //  faces: 626
 //  normals: 0

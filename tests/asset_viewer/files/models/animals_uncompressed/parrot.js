@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/birds_A/parrot/parrot_A_v011/obj/parrot_A_001.obj
+// Converted from: ../files/srcModels/02_life_soup/birds_A/parrot/parrot_A_v011/obj/parrot_A_001.obj
 //  vertices: 315
 //  faces: 626
 //  normals: 0

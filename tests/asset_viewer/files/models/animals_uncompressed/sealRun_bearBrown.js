@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/quadruped_A/seal/seal_runA_v007/obj/seal_runA_001.obj
+// Converted from: ../files/srcModels/02_life_soup/quadruped_A/seal/seal_runA_v007/obj/seal_runA_001.obj
 //  vertices: 494
 //  faces: 984
 //  normals: 0
