@@ -5,7 +5,6 @@ var VideoPlane = function(layer, config){
 	var hasKey = false;
     
     video = document.createElement('video');
-	video.preload = true;
     video.src = layer.path;
     
     texture = new THREE.Texture(video);
@@ -23,6 +22,10 @@ var VideoPlane = function(layer, config){
 		case VIDEO_KEYED_DISTORT:
             shader = VideoShaderSource.distortKeyed;
 			hasDistortion = true;
+			hasKey = true;
+            break;
+		case VIDEO_HALFALPHA:
+            shader = VideoShaderSource.halfAlpha;
             break;
         case VIDEO_KEYED:
         default:
@@ -31,8 +34,8 @@ var VideoPlane = function(layer, config){
             break;
     }
 	
-	var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-	uniforms['map'].texture = texture;
+	var uniforms = THREE.UniformsUtils.clone(shader.uniforms); // ? ######
+    uniforms['map'].texture = texture;
 	
 	if (hasDistortion) {
 		uniforms['mouseXY'].value = new THREE.Vector2(0, 0);
@@ -41,6 +44,8 @@ var VideoPlane = function(layer, config){
 	
 	if (hasKey) {
 		uniforms['colorScale'].value = layer.colorScale;
+		uniforms['threshold'].value = layer.threshold;
+		uniforms['alphaFadeout'].value = layer.alphaFadeout;
 	}
 	
 	material = new THREE.MeshShaderMaterial({
@@ -84,7 +89,7 @@ var VideoPlane = function(layer, config){
 	}
 	
 	this.start = function(t) {
-		video.currentTime = video.duration * 0;
+		video.currentTime = video.duration * t;
 		video.play();
 		
 		interval = setInterval(function(){

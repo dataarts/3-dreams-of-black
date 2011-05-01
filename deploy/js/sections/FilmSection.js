@@ -59,7 +59,13 @@ var FilmSection = function ( shared ) {
 	// Sequence
 	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill);
 	var cityAnimation = new VideoPlayer(shared, VideoShots.cityLayers, VideoShots.confStill);
-	var prairieAnimation = new VideoPlayer(shared, VideoShots.prairieLayers, VideoShots.confStill);
+	
+	var s02_01 = new VideoPlayer(shared, VideoShots.s02_01, VideoShots.confParalax);
+	var s02_02 = new VideoPlayer(shared, VideoShots.s02_02, VideoShots.confStill);
+	var s02_03 = new VideoPlayer(shared, VideoShots.s02_03, VideoShots.confStill);
+	var s02_04 = new VideoPlayer(shared, VideoShots.s02_04, VideoShots.confStill);
+	var s02_06 = new VideoPlayer(shared, VideoShots.s02_06, VideoShots.confStill);
+	
 	var dunesAnimation = new VideoPlayer(shared, VideoShots.dunesLayers, VideoShots.confStill);
 
 	sequencer = new Sequencer();
@@ -84,7 +90,22 @@ var FilmSection = function ( shared ) {
 	//sequencer.add( new PaintDarkEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 	//sequencer.add( new OverlayEffect( shared, overlayTexture ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 
-	sequencer.add( prairieAnimation, tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 1 );
+	var s02start = tune.getPatternMS( 24 );
+	var s02end = tune.getPatternMS( 32 );
+	
+	sequencer.add( s02_01, s02start, s02start + s02_01.duration, 1 );
+	s02start += s02_01.duration;
+	
+	sequencer.add( s02_02, s02start, s02start + s02_02.duration, 1 );
+	s02start += s02_02.duration;
+	
+	sequencer.add( s02_03, s02start, s02start + s02_03.duration, 1 );
+	s02start += s02_03.duration;
+	
+	sequencer.add( s02_04, s02start, s02start + s02_04.duration, 1 );
+	s02start += s02_04.duration;
+	
+	sequencer.add( s02_06, s02start, s02start + s02_06.duration, 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
