@@ -71,7 +71,8 @@ var VideoPlane = function(layer, config){
     this.mesh.scale.x *= Math.abs(layer.z) * config.adj * config.aspect;
     this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
 	
-	if(hasDistortion) {
+	
+	if(false){//hasDistortion) {
 		wireMaterial = new THREE.MeshShaderMaterial( {
 			uniforms: uniforms,
 			vertexShader: VideoShaderSource.distortWire.vertexShader,
