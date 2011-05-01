@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/octo/scorpion/scorpSkitter_A_v0013/obj/scorpSkitter_A_001.obj
+// Converted from: ../files/srcModels/01_black_soup/octo/scorpion/scorpSkitter_A_v0013/obj/scorpSkitter_A_001.obj
 //  vertices: 491
 //  faces: 978
 //  normals: 0

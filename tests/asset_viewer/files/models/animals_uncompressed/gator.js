@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/alligator/gator_runB_v018/obj/gator_runB_001.obj
+// Converted from: ../files/srcModels/01_black_soup/alligator/gator_runB_v018/obj/gator_runB_001.obj
 //  vertices: 546
 //  faces: 1088
 //  normals: 0

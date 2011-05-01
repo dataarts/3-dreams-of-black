@@ -8,7 +8,7 @@ var UgcObjectCreator = function ( shared ) {
 	var ENABLE_LENSFLARES = true;
 	
 	var DEG2RAD = Math.PI / 180,
-	camera, light1, light2, loader, renderer,
+	camera, light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
 	isDeleteMode = false, isRotateMode = false,
 	isMouseDown = false, radius = 1500, theta = 45, phi = 15;
@@ -63,13 +63,18 @@ var UgcObjectCreator = function ( shared ) {
 
 	// Renderer
 
-	renderer = new THREE.WebGLRenderer();
-	renderer.domElement.style.position = 'absolute';
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	renderer.setClearColor( that.scene.fog.color );
-	renderer.sortObjects = false;
-	renderer.autoClear = false;
-	domElement.appendChild( renderer.domElement );
+	if ( !shared.renderer ) {
+
+		var renderer = new THREE.WebGLRenderer();
+		renderer.domElement.style.position = 'absolute';
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.setClearColor( that.scene.fog.color );
+		renderer.sortObjects = false;
+		renderer.autoClear = false;
+		
+		shared.renderer = renderer;
+
+	}
 
 	// Postprocess
 
@@ -77,21 +82,14 @@ var UgcObjectCreator = function ( shared ) {
 		
 		var offset = 0;
 
-		if ( !shared.renderer ) {
-
-			shared.renderer = renderer;
-			
-			shared.baseWidth = 1024;
-			shared.baseHeight = 436;
-			shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
-			shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
-			
-			renderer.setSize( shared.viewportWidth, shared.baseHeight );
-
-		}
+		shared.baseWidth = 1024;
+		shared.baseHeight = 436;
+		shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
+		shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
+		
+		shared.renderer.setSize( shared.viewportWidth, shared.baseHeight );
 		
 		if ( !shared.renderTarget ) {
-		
 
 			var renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
 			renderTarget.minFilter = THREE.LinearFilter;
@@ -207,6 +205,9 @@ var UgcObjectCreator = function ( shared ) {
 		shared.signals.keydown.add( onKeyDown );
 		shared.signals.keyup.add( onKeyUp );
 
+		domElement.appendChild( shared.renderer.domElement );
+		shared.renderer.setClearColor( that.scene.fog.color );
+
 	};
 
 	this.hide = function () {
@@ -249,7 +250,7 @@ var UgcObjectCreator = function ( shared ) {
 			camera.aspect = width / height;
 			camera.updateProjectionMatrix();
 
-			renderer.setSize( width, height );
+			shared.renderer.setSize( width, height );
 
 		}
 		
@@ -274,18 +275,18 @@ var UgcObjectCreator = function ( shared ) {
 
 		painter.update();
 
-		renderer.clear();
+		shared.renderer.clear();
 		
 		if ( USE_POSTPROCESS ) {
 
-			renderer.render( that.scene, camera, renderTarget, true );
-			renderer.render( painter.getScene(), camera, renderTarget );
+			shared.renderer.render( that.scene, camera, shared.renderTarget, true );
+			shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
 			paintEffectDunes.update( 0, 0, 0 );
 
 		} else {
 			
-			renderer.render( that.scene, camera );
-			renderer.render( painter.getScene(), camera );
+			shared.renderer.render( that.scene, camera );
+			shared.renderer.render( painter.getScene(), camera );
 
 		}
 

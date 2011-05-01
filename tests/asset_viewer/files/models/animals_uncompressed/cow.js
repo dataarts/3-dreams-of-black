@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/quadruped_A/cow/cow_grazeC_v002/obj/cow_grazeC_001.obj
+// Converted from: ../files/srcModels/01_black_soup/quadruped_A/cow/cow_grazeC_v002/obj/cow_grazeC_001.obj
 //  vertices: 494
 //  faces: 984
 //  normals: 0

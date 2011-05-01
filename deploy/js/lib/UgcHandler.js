@@ -1,6 +1,6 @@
 var UgcHandler = function () {
 
-	var base_url = 'http://2.radicalvid.appspot.com/services/';
+	var base_url = '/ugc/';
 
 	this.getLatestUGOs = function ( callback ) {
 
@@ -33,7 +33,7 @@ var UgcHandler = function () {
 
 	this.submitUGO = function ( title, email, type, data, image, callback ) {
 
-		var url = base_url + 'add';
+		var url = base_url + 'objects';
 
 		var data = 'title=' + title + '&email=' + email + '&type=' + type + '&object=' + data + '&image=' + image;
 
@@ -42,8 +42,8 @@ var UgcHandler = function () {
 		var request = new XMLHttpRequest();
 		request.open( 'POST', url );
 		request.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
-		request.setRequestHeader( 'Content-length', data.length );
-		request.setRequestHeader( 'Connection', 'close' );
+//		request.setRequestHeader( 'Content-length', data.length );
+//		request.setRequestHeader( 'Connection', 'close' );
 
 		request.onreadystatechange = function () {
 

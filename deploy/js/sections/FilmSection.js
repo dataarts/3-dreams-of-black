@@ -51,30 +51,27 @@ var FilmSection = function ( shared ) {
 
 	// effects
 
-	//var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
+	// var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
 	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
-
-	// sequence
-
-	var intro = new VideoSequence( shared, "files/videos/intro.webm", false, false, 0 );
-	//var intro2 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
-	//var intro3 = new VideoSequence( shared, "files/videos/large.webm", false, false, 1 );
-	//var intro3 = new VideoSequence( shared, "files/videos/christest.webm", false, false, 1 );
-
-	//var intro2 = new VideoSequence( shared, "files/videos/trailer.800.webm", false, false, 1 );
 	
+	console.log(VideoShots);
 
-	var cityAnimation = new VideoSequence(shared, "files/videos/transition_city.webm", false, false );
-
-	var prairieParalax = new ParalaxSequence(shared, "files/videos/multi2.webm" );
-	var prairieAnimation = new VideoSequence(shared, "files/videos/s0234.webm", false, false );
-	var prairieTransition = new VideoSequence(shared, "files/videos/s06.webm", true, true );
-
-	var dunesAnimation = new VideoSequence(shared, "files/videos/transition_dunes.webm", false, false );
+	// Sequence
+	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill);
+	var cityAnimation = new VideoPlayer(shared, VideoShots.cityLayers, VideoShots.confStill);
+	
+	var s02_01 = new VideoPlayer(shared, VideoShots.s02_01, VideoShots.confParalax);
+	var s02_02 = new VideoPlayer(shared, VideoShots.s02_02, VideoShots.confStill);
+	var s02_03 = new VideoPlayer(shared, VideoShots.s02_03, VideoShots.confStill);
+	var s02_04 = new VideoPlayer(shared, VideoShots.s02_04, VideoShots.confStill);
+	var s02_06 = new VideoPlayer(shared, VideoShots.s02_06, VideoShots.confStill);
+	
+	var dunesAnimation = new VideoPlayer(shared, VideoShots.dunesLayers, VideoShots.confStill);
 
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
+	
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( intro2, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
@@ -93,9 +90,22 @@ var FilmSection = function ( shared ) {
 	//sequencer.add( new PaintDarkEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 	//sequencer.add( new OverlayEffect( shared, overlayTexture ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
 
-	sequencer.add( prairieParalax, tune.getPatternMS( 24 ), tune.getPatternMS( 27.5 ), 4 );
-	sequencer.add( prairieAnimation, tune.getPatternMS( 27.5 ), tune.getPatternMS( 31 ), 4 );
-	sequencer.add( prairieTransition, tune.getPatternMS( 31 ), tune.getPatternMS( 33 ), 4 );
+	var s02start = tune.getPatternMS( 24 );
+	var s02end = tune.getPatternMS( 32 );
+	
+	sequencer.add( s02_01, s02start, s02start + s02_01.duration, 1 );
+	s02start += s02_01.duration;
+	
+	sequencer.add( s02_02, s02start, s02start + s02_02.duration, 1 );
+	s02start += s02_02.duration;
+	
+	sequencer.add( s02_03, s02start, s02start + s02_03.duration, 1 );
+	s02start += s02_03.duration;
+	
+	sequencer.add( s02_04, s02start, s02start + s02_04.duration, 1 );
+	s02start += s02_04.duration;
+	
+	sequencer.add( s02_06, s02start, s02start + s02_06.duration, 1 );
 
 	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
@@ -118,8 +128,8 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
 
-	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
+	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	//sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
 
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 16 ), 6 );
 	

@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/fish/fishB_swimA/fishB_swimA_v005/obj/fishB_swimA_001.obj
+// Converted from: ../files/srcModels/02_life_soup/fish/fishB_swimA/fishB_swimA_v005/obj/fishB_swimA_001.obj
 //  vertices: 118
 //  faces: 232
 //  normals: 0

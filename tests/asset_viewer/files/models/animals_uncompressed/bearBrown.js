@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/quadruped_A/bear/bearRun_B_v109/obj/bearBrown_B_001.obj
+// Converted from: ../files/srcModels/02_life_soup/quadruped_A/bear/bearRun_B_v109/obj/bearBrown_B_001.obj
 //  vertices: 494
 //  faces: 984
 //  normals: 0

@@ -171,8 +171,8 @@ var VideoShadersSource = {
 				"vec4 c = texture2D( sheet, vUv );",
 				"float t = c.x + c.y + c.z;",
 				"float alpha = 1.0;",
-				"if( t > 2.0 )",
-					"alpha = 1.0 - (t - 2.0);",
+				"if( t < 0.5 )",
+					"alpha = t;",
 				"gl_FragColor = vec4( c.xyz, alpha );",
 
 			"}"

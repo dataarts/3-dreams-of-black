@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/quadruped_A/rabbit/bunnyScurry_B_v007/obj/bunnyScurry_B_001.obj
+// Converted from: ../files/srcModels/02_life_soup/quadruped_A/rabbit/bunnyScurry_B_v007/obj/bunnyScurry_B_001.obj
 //  vertices: 494
 //  faces: 984
 //  normals: 0

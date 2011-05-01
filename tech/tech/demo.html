@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+  <script type="text/javascript" src="js/prettify.js"></script>
+  <script type="text/javascript" src="js/encoder.js"></script>
+  <script type="text/javascript">
+
+    var theCode, openLink, pre, open = false, firstOpen = true;
+    $(function() {
+
+      var hashNum = parseInt(getId()) || 1;
+
+      $('iframe').attr('src', 'demos/' + hashNum + '/index.html');
+
+      pre = $('#the-code');
+      openLink = $('#see-the-code');
+
+      // Add resize listener
+      window.addEventListener('resize', onResize, false);
+      onResize();
+
+    });
+
+    var slugs = {
+      'hatching-glow-shader': 1,
+      'normal-mapping': 2,
+      'video-shader': 3,
+      'depth-of-field': 4,
+      'mouse-in-3d-space': 5,
+      'cel-shader': 6,
+      'metaball-playground': 7,
+      'turbulent-point-cloud': 8
+    };
+
+    var getId = function() {
+      var name = window.location.href.slice(window.location.href.indexOf('tech/') + 5);
+      return slugs[name];
+    };
+
+    var get = function(key) {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars[key];
+    }
+
+    var onResize = function() {
+      pre.height(window.innerHeight - 37);
+      if (open) resizePre();
+    }
+
+    var resizePre = function() {
+      pre.width(window.innerWidth * 0.5);
+    }
+
+    function toggleCode() {
+      if (firstOpen) {
+        theCode = Encoder.htmlEncode($.trim(window.frames[0].document
+            .getElementById('main-code')
+            .innerHTML));
+        $('#the-code .wrapper').html(theCode);
+        prettyPrint();
+      firstOpen = false;
+      }
+      if (!open) {
+        resizePre();
+      } else {
+        pre.width(0);
+      }
+      open = !open;
+
+    }
+
+  </script>
+
+</head>
+
+<body class="demo">
+
+<pre id="the-code" class="prettyprint linenums:1"><div class="wrapper">
+
+</div>
+</pre>
+
+<!-- Top bar -->
+<div id="top">
+
+  <div class="inner">
+    <a href="javascript:toggleCode()" id="see-the-code">
+    </a>
+
+
+    <a href="/tech" id="back-to-landing">
+    </a>
+
+  </div>
+
+</div>
+
+
+<!-- iframe -->
+<div id="iframe-container">
+  <iframe></iframe>
+</div>
+
+</body>
+</html>

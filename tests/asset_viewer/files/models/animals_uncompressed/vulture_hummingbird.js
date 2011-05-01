@@ -1,4 +1,4 @@
-// Converted from: ./01_black_soup/birds_A/vulture/vulture_A_v0021/obj/vulture_A_001.obj
+// Converted from: ../files/srcModels/01_black_soup/birds_A/vulture/vulture_A_v0021/obj/vulture_A_001.obj
 //  vertices: 315
 //  faces: 626
 //  normals: 0

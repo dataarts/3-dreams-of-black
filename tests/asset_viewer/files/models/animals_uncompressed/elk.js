@@ -1,4 +1,4 @@
-// Converted from: ./02_life_soup/elk/elkRun_B_v0043/obj/elkRun_B_001.obj
+// Converted from: ../files/srcModels/02_life_soup/elk/elkRun_B_v0043/obj/elkRun_B_001.obj
 //  vertices: 596
 //  faces: 1176
 //  normals: 0
