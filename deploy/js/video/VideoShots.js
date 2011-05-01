@@ -21,7 +21,7 @@ var VideoShots = {
         path: "files/videos/transition_city.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1000,
-		duration: 20000
+		duration: 20000,
     }],
     
     dunesLayers: [{
