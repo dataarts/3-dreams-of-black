@@ -71,26 +71,29 @@ var Trail = function ( numOfInstances, scene ) {
 
 			// respawn
 			if (alivetime > that.initSettings.numOfInstances) {
-
-				c.position.x = position.x;
-				c.position.y = position.y;
-				c.position.z = position.z;
-
-				c.rotation.x = 0;
-				c.rotation.z = 0;
-				c.rotation.y = 0;
-
-				var amount = 12//8;
+				
+				var amount = 9;
 
 				if (tree) {
 					amount = 10;
 				}
 
+				c.position.x = position.x-(normal.x*amount);
+				c.position.y = position.y-(normal.y*amount);
+				c.position.z = position.z-(normal.z*amount);
+
+				c.position.x += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.x));
+				c.position.z += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.z));
+
+				c.rotation.x = 0;
+				c.rotation.z = 0;
+				c.rotation.y = Math.random()*Math.PI;
+
 				var torotx = 0;
 				var toroty = 0;
 				var torotz = 0;
 
-				if (normal.x < -0.8) {
+/*				if (normal.x < -0.8) {
 					c.position.x = position.x + amount/2;
 					c.rotation.z = 1.57;
 					c.rotation.x = Math.random()*Math.PI;
@@ -169,7 +172,7 @@ var Trail = function ( numOfInstances, scene ) {
 					c.position.y += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 					c.position.x += (Math.random()*that.settings.spread)-(that.settings.spread/2);
 				}
-
+*/
 				if (tree) {
 					var treeRotateTween = new TWEEN.Tween(c.rotation)
 								.to({x: torotx, y: toroty, z: torotz}, that.settings.tweenTime)
@@ -179,18 +182,18 @@ var Trail = function ( numOfInstances, scene ) {
 				}
 
 				// keep away from camera path - hack
-				if (tree && c.position.x < camPos.x+40 && c.position.x > camPos.x-40) {
+				/*if (tree && c.position.x < camPos.x+40 && c.position.x > camPos.x-40) {
 					c.position.x = camPos.x+40;
 					if (c.position.x < camPos.x) {
 						c.position.x = camPos.x-40;
 					}
-				}
+				}*/
 
 
 				c.scale.x = c.scale.y= c.scale.z = 0.001*that.settings.scale;
 				var xscale = zscale = yscale = 0.1*that.settings.scale;
 				if (!tree && !lightHouse) {
-					yscale = 0.3*that.settings.scale;
+					yscale = 0.2*that.settings.scale;
 					xscale = zscale = 0.4*that.settings.scale;
 				}
 
@@ -219,6 +222,8 @@ var Trail = function ( numOfInstances, scene ) {
 
 				}
 
+				c.up.copy(normal);
+				c.lookAt(c.position);
 
 				alivetime = 0;
 			}
