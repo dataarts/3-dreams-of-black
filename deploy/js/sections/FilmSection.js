@@ -53,38 +53,14 @@ var FilmSection = function ( shared ) {
 
 	// var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
 	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
+	
+	console.log(VideoShots);
 
 	// Sequence
-	var conf = { paralaxHorizontal: 40, paralaxVertical: 10 };
-	
-    var introLayers = [{
-        path: "files/videos/intro.webm",
-        shaderId: VIDEO_OPAQUE,
-        z: -1000
-    }];
-	
-    var cityLayers = [{
-        path: "files/videos/transition_city.webm",
-        shaderId: VIDEO_OPAQUE,
-        z: -1000
-    }];
-	
-    var prairieLayers = [{
-        path: "files/videos/transition_prairie.webm",
-        shaderId: VIDEO_OPAQUE,
-        z: -1000
-    }];
-	
-    var dunesLayers = [{
-        path: "files/videos/transition_dunes.webm",
-        shaderId: VIDEO_OPAQUE,
-        z: -1000
-    }];
-	
-	var intro = new VideoPlayer( shared, introLayers, conf);
-	var cityAnimation = new VideoPlayer(shared, cityLayers, conf);
-	var prairieAnimation = new VideoPlayer(shared, prairieLayers, conf);
-	var dunesAnimation = new VideoPlayer(shared, dunesLayers, conf);
+	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill);
+	var cityAnimation = new VideoPlayer(shared, VideoShots.cityLayers, VideoShots.confStill);
+	var prairieAnimation = new VideoPlayer(shared, VideoShots.prairieLayers, VideoShots.confStill);
+	var dunesAnimation = new VideoPlayer(shared, VideoShots.dunesLayers, VideoShots.confStill);
 
 	sequencer = new Sequencer();
 
