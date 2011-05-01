@@ -120,7 +120,7 @@ var DunesWorld = function ( shared ) {
 		
 	];
 
-	var showSpheres = true;
+	var showSpheres = false;
 	
 	if ( showSpheres ) {
 	
@@ -719,13 +719,13 @@ var DunesWorld = function ( shared ) {
 		if ( deltaRoll > 0 ) {
 			
 			deltaRoll -= deltaSec * rollSpeed;
-			camera.roll = startRoll + ( rollAngle - deltaRoll );
+			//camera.roll = startRoll + ( rollAngle - deltaRoll );
 			
 			camera.movementSpeed += deltaSpeed * deltaSec;
 
 		} else {
 			
-			camera.roll = startRoll + rollAngle;
+			//camera.roll = startRoll + rollAngle;
 
 		}
 
