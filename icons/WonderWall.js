@@ -77,6 +77,18 @@ WonderWall.Point = function(gee, x, y) {
     this.y = this.ease(this.y, y, this.easing);
     this.angle = this.ease(this.angle, angle, this.easing);
   };
+
+  this.setPosition = function(x, y) {
+    ox = x;
+    oy = y;
+  };
+  this.getOriginPosition = function() {
+    return { x: ox, y: oy };
+  };
+
+  this.getPoint = function() {
+    return { x: this.x, y: this.y };
+  };
 };
 WonderWall.Point.prototype.ease = function(cur, tar, inc) {
   var dif = tar - cur;
@@ -114,9 +126,20 @@ WonderWall.Pentagon = function(gee, x, y, r) {
 
   this.update = function() {
 
+    this.x = gee.width / 2.0;
+    this.y = gee.height / 2.0;
+
+    var coords = this.generatePoints(this.x, this.y, r, 5)
+
     if(!this.separate) this.separate = true;
     for(var i = 0; i < points.length; i++) {
-      points[i].update();
+      var point = points[i];
+      var coord = coords[i];
+      point.update();
+      var op = point.getOriginPosition();
+      if(coord.x != op.x || coord.y != op.y) {
+        point.setPosition(coord.x, coord.y);
+      }
     }
     return this;
   };
@@ -158,6 +181,15 @@ WonderWall.Pentagon = function(gee, x, y, r) {
       var point = points[i];
       point.updating = b;
     }
+  };
+
+  this.getPoints = function() {
+    var coords = [];
+    for(var i = 0; i < points.length; i++) {
+      var point = points[i];
+      coords[i] = point.getPoint();
+    }
+    return coords;
   };
 
 };
