@@ -335,7 +335,7 @@ ROME.AnimalShader = {
 			
 			"colorAnimalA": 	{ type: "c", boundTo: "faces", value:[] },
 			"colorAnimalB": 	{ type: "c", boundTo: "faces", value:[] },
-			"contourUV": 		{ type: "v2", boundTo: "faceVertices", value:[] },
+			"contourUV": 		{ type: "v2", boundTo: "faceVertices", value:[] }
 			
 		}
 		

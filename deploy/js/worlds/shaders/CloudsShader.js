@@ -52,6 +52,7 @@ var CloudsShader = {
 		"varying vec3 vNormal;",
 		"varying vec3 vNormalsquare;",
 		"varying vec3 vLightWeighting;",
+		"varying vec3 worldVector;",
 
 		"void main() {",
 
@@ -68,13 +69,15 @@ var CloudsShader = {
 			"vLightWeighting += directionalLightColor[ 0 ] * directionalLightWeighting;",
 			
 			"lDirection = viewMatrix * vec4( directionalLightDirection[ 1 ], 0.0 );",
-			"directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
+		//	"directionalLightWeighting = max( dot( transformedNormal, normalize( lDirection.xyz ) ), 0.0 );",
+			"directionalLightWeighting = dot( transformedNormal, normalize( lDirection.xyz ) ) * 0.5 + 0.5;",
 			"vLightWeighting += directionalLightColor[ 1 ] * directionalLightWeighting;",
 			
 			//"vLightWeighting = vLightWeighting * vec3(0.5, 0.55, 0.45) + vec3(0.5, 0.45, 0.55);",
 
 			"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+			"worldVector = (vWorldPosition - cameraPosition) * vec3(0.01, 0.02, 0.01);",
 
 		"}"
 
@@ -100,62 +103,49 @@ var CloudsShader = {
 		"varying vec3 vNormal;",
 		"varying vec3 vNormalsquare;",
 		"varying vec3 vLightWeighting;",
-		"uniform vec3 colorA;",
-		"uniform vec3 colorB;",
-		"uniform vec3 colorC;",
+		"uniform vec3 vectorA;",
+		"uniform vec3 vectorB;",
+		"uniform vec3 vectorC;",
 
+		"varying vec3 worldVector;",
 
 		"void main() {",
 
-			"float distance;",
+			"float distance, f;",
 			"vec3 normal;",
+			"vec3 sky_color;",
 			"vec4 surface;",
 			"vec4 grass;",
-
+			"f = normalize(worldVector).y;",
+			"f = max(f, 0.0);",
+			"sky_color = mix(vectorA, vectorB, f);",			
 			"vec3 worldPosition = vWorldPosition * 0.0005;",
 
-			"vec3 pointStart = vWorldPosition - targetStart;",
-			"vec3 endStart = targetEnd - targetStart;",
-			"float endStartLength2 = dot(endStart, endStart);",
-			"float pointOnLine = clamp( dot( endStart, pointStart ) / endStartLength2, 0.0, 1.0 );",
-			"distance = length( vWorldPosition - ( targetStart + pointOnLine * ( targetEnd - targetStart ))) * -0.01;",
-			
-			"grass = texture2D( grassImage, worldPosition.yz * vec2(10.0)) * vNormalsquare.xxxx + ",
-			        "texture2D( grassImage, worldPosition.xz * vec2(10.0)) * vNormalsquare.yyyy + ",
-			        "texture2D( grassImage, worldPosition.xy * vec2(10.0)) * vNormalsquare.zzzz;",
-			"distance += (0.5 + grass.g) * texture2D(surfaceImage, worldPosition.zx * vec2(3.0)).g;",
-			//"distance += grass.g;",
-			//"surface = vec4(vec3(0.15, 0.18, 0.2)/*colorA*/ * vec3(2.0), 1.0);",
-			
-			// neutral baseline color
-
 			"surface = vec4( vec3( 0.5 ), 1.0 );",
-
-			"if(distance > 0.0)",
-				"surface = grass;",
-				//"surface = mix( surface, grass, smoothstep( 0.0, 0.1, distance ));",
 
 			"float depth = gl_FragCoord.z / gl_FragCoord.w;",
 			"depth *= 0.0001;",
 
-			"gl_FragColor = surface * vec4( vColor, 1.0 ) * vec4(2.0);",
-			"gl_FragColor = mix(gl_FragColor * texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time)), gl_FragColor, vec4(colorC.rgb, 0.1));",
+			"gl_FragColor = vec4( vColor, 1.0 ) + vec4(2.0);",
+			"gl_FragColor = mix(gl_FragColor * texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time)), gl_FragColor, vec4(vectorC.rgb, 0.1));",
 			//"gl_FragColor = mix(vec4(gl_FragColor.rgb, 1.0), vec4(/*colorB*/0.64, 0.88, 1, 1.0), vec4(depth));",	
 
 
 			// lights
 			
-			"gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
+			"gl_FragColor = gl_FragColor + vec4( vLightWeighting, 1.0 );",
 
 			// fog
 			
 			"depth = gl_FragCoord.z / gl_FragCoord.w;",
-
+			"depth *= 50.0;",
 			"const float LOG2 = 1.442695;",
 			"float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );",
 			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
 
-			"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
+
+			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.w ), fogFactor/*min(length(worldVector) * 0.02, 1.0) */);",
+			//"gl_FragColor = vec4( gl_FragColor.rgb * vectorA * vectorB * vectorC, 1.0 );",
 
 			//"gl_FragColor = vec4(distance, distance, distance, 1.0);",
 			//"gl_FragColor *= vec4( 0.0, 1.0, 0.0, 1.0 );",
@@ -170,7 +160,7 @@ var CloudsShader = {
 			//"gl_FragColor = texture2D( grassImage, worldPosition.zx * vec2(10.0));",
 			//"gl_FragColor = vec4(vNormalsquare.yyy, 1.0);",
 			
-			//"gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );",
+			"gl_FragColor = vec4(vec3(vLightWeighting) * vec3(0.9, 0.5, 0.3) + vec3(0.7, 0.6, 0.6), vLightWeighting * 0.9 + 0.1);",
 
 		"}"
 

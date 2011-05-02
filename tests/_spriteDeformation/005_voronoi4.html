@@ -1,0 +1,125 @@
+
+<!DOCTYPE HTML> 
+<html lang="en"> 
+    <head> 
+        <title>001 Chromakey</title> 
+        <meta charset="utf-8"> 
+        <style type="text/css"> 
+            body {
+                background: #000000;
+                color: #ffffff;
+                padding: 0;
+                margin: 0;
+                font-family: sans-serif;
+				overflow: hidden;
+                text-align: left;
+            }
+            
+            #options {
+                padding: 10px;
+                text-aligh: left;
+                font-family: Georgia, serif;
+            }
+            
+            canvas {
+                pointer-events: none;
+                z-index: 10;
+            }
+        </style> 
+        <script type="text/javascript" src="build_r38/Three_modified.js">
+        </script> 
+		<script type="text/javascript" src="src/VideoPlayer.js"> 
+        </script> 
+		<script type="text/javascript" src="src/VideoShader.js"> 
+        </script> 
+		<script type="text/javascript" src="src/VideoPlane.js"> 
+        </script> 
+    </head> 
+    <body> 
+        <script type="text/javascript"> 
+        	var viewWidth =  window.innerWidth;
+		    	var aspect = 2.35;
+          var viewHeight = viewWidth/aspect;
+        	var shared = {};
+		    	var player;
+
+          var gridModel = "models/grid.voronoi.4.js";
+			
+            function init(){
+            
+                shared.container = document.createElement('div');
+                document.body.appendChild(shared.container);
+				
+                try {
+                    shared.renderer = new THREE.WebGLRenderer();
+                    shared.renderer.setSize(viewWidth, viewHeight);
+                    shared.container.appendChild(shared.renderer.domElement);
+                } 
+                catch (e) {
+                    console.log(e);
+                }
+				
+                var layers = [			
+					{
+	                    path: "video/s03.webm",
+	                    shaderId: VIDEO_OPAQUE_DISTORT,
+	                    z: -1400
+	                },
+					{
+	                    path: "video/s02.webm",
+	                    shaderId: VIDEO_KEYED_DISTORT,
+	                    z: -900,
+	                    colorScale: .99,
+	                    threshold: .45,
+	                    alphaFadeout: .35
+	                },
+//					{
+//	                    path: "video/s01.webm",
+//	                    shaderId: VIDEO_KEYED,
+//	                    z: -500,
+//	                    colorScale: .91,
+//	                    threshold: .28,
+//	                    alphaFadeout: .7,
+//	                    width: 1.18,
+//	                    height: 1.18
+//	                }
+				];
+				
+				var conf = {
+					paralaxHorizontal: 40,
+					paralaxVertical: 10
+				};
+				
+				player = new VideoPlayer(shared, layers, conf);
+				player.init();
+				// Only to simulate what happens in prototype
+				setTimeout('this.onPlayerReady()', 2000);
+            }
+			
+			function onPlayerReady() {
+				player.show(0);
+				animate();
+			}
+            
+            function animate(){
+                loop();
+                requestAnimFrame(animate);
+            }
+            
+            function loop(){
+            	player.update();
+            }
+            
+            window.requestAnimFrame = (function(){
+                return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame
+            })();
+			
+			init();
+			
+        </script> 
+    </body> 
+</html> 

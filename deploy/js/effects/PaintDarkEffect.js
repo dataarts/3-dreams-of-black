@@ -15,7 +15,7 @@ var PaintDarkEffect = function ( shared ) {
 
 		uniforms = {
 
-			"map": { type: "t", value:0, texture: renderTarget },
+			"map": { type: "t", value:0, texture: renderTarget }
 
 		};
 

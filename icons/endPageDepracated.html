@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <style>
+      * {
+        margin:  0;
+        padding: 0;
+      }
+      div.after-experience {
+        position: absolute;
+        padding: 25px 50px;
+        border: 1px solid #c9c8c1;
+        text-transform: uppercase;
+        font: 500 12px / 17px "Gotham-Medium", Arial, sans-serif;
+        letter-spacing: 1px;
+        color: #434343;
+        cursor: pointer;
+      }
+      div.after-experience:hover {
+        color: #f15d22;
+        background: #30302e;
+      }
+    </style>
+    <script type = "text/javascript" src = "depends/gee.js"></script>
+    <script type = "text/javascript" src = "swell.js"></script>
+    <script type = "text/javascript" src = "Heart.js"></script>
+    <script type = "text/javascript" src = "WonderWall.js"></script>
+    <script type = "text/javascript" src = "../deploy/js/lib/Three.js"></script>
+    <script type = "text/javascript" src = "Clouds.js"></script>
+    <script type = "text/javascript">
+
+
+      // Return points as margin + / -
+      // in order to get dom elements to move
+      // with pentagon
+      window.onload = function() {
+
+        var clouds = new Clouds();
+        var d = clouds.getDomElement();
+        d.setAttribute("style", "position: absolute; z-index: -1;");
+        document.body.appendChild(d);
+        
+        setInterval( function() {
+          clouds.update();
+        }, 1000 / 30.0);
+        
+        window.addEventListener("resize", function() {
+          clouds.resize(window.innerWidth, window.innerHeight);
+        }, false);
+
+        var container = document.createElement("div");
+            container.setAttribute("id", "container");
+            container.setAttribute("style", "position: absolute; z-index: 1000;")
+            document.body.appendChild(container);
+
+        var gee = new GEE({ fullscreen: true, container: container });
+        var g = gee.ctx;
+
+        var inner = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 85);
+        var outer = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 130);
+            outer.showFill = false;
+            outer.insides  = true;
+
+        var heart = {
+          svg: new Heart(gee, "assets/heart_small.svg", 0, 0),
+          point: new WonderWall.Point(gee, gee.width * .5, gee.height * .5)
+        };
+        heart.svg.showDrips = false;
+        heart.svg.showBoils = false;
+
+        // Colors for rome
+        var rome = rome || {};
+            rome.color = {
+              red: "#f15d22",
+              black: "#30302e",
+              white: "#f4f4ea"
+            };
+
+        // Handle dom elements
+        var navigation = initDomElements();
+        for(var i = 0; i < navigation.list.length; i++) {
+          var dom = navigation.list[i];
+          dom.addEventListener("mouseover", function(e) {
+            inner.setUpdate(true);
+            outer.setUpdate(true);
+            heart.point.updating = true;
+          }, false);
+          dom.addEventListener("mouseout", function(e) {
+            inner.setUpdate(false);
+            outer.setUpdate(false);
+            heart.point.updating = false;
+          }, false);
+        }
+
+        gee.draw = function() {
+
+          g.clearRect(0, 0, gee.width, gee.height);
+
+          g.strokeStyle = rome.color.black;
+          g.lineWidth = 0.5;
+          outer.update().render();
+
+          g.globalCompositeOperation = "source-out";
+          g.fillStyle = rome.color.white;
+          g.lineWidth = 36;
+          inner.update().render();
+          g.globalCompositeOperation = "source-over";
+
+          heart.point.setPosition(gee.width / 2.0, gee.height / 2.0);
+          heart.point.update();
+          g.save();
+          g.translate(heart.point.x, heart.point.y);
+          heart.svg.render();
+          g.restore();
+
+          g.fillStyle = "#f00";
+          var points = outer.getPoints();
+          for(var i = 0; i < points.length; i++) {
+            var point = points[i];
+            // these are the center points of the objects
+            var navItem = navigation.list[i];
+            var xpos = point.x - (navItem.offsetWidth / 2.0);
+            var ypos = point.y - (navItem.offsetHeight / 2.0);
+
+            if(i == 0) {
+              ypos = point.y - 111;
+            } else if(i == 1) {
+              xpos = point.x + 80;
+              ypos = point.y - 30;
+            } else if(i == 2) {
+              xpos = point.x + 76;
+              ypos = point.y + 38;
+            } else if(i == 3) {
+              xpos = point.x - 283;
+              ypos = point.y + 36;
+            } else {
+              xpos = point.x - 296;
+              ypos = point.y - 31;
+            }
+
+            navItem.style.left = xpos + "px";
+            navItem.style.top = ypos + "px";
+          }
+        };
+      };
+
+      function createDomElement(parent, element, id, class, contents) {
+        var dom = document.createElement(element);
+            dom.setAttribute("id", id);
+            dom.setAttribute("class", class);
+            dom.innerHTML = contents;
+            parent.appendChild(dom);
+        return dom;
+      }
+
+      function initDomElements() {
+
+        var navigation = {};
+        var container = document.getElementById("container");
+
+        var start = createDomElement(container, "div", "start-over", "after-experience", "start over");
+        var technology = createDomElement(container, "div", "technology", "after-experience", "technology");
+        var add = createDomElement(container, "div", "add-to-the-dream", "after-experience", "add to the dream");
+        var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "explore other dreams");
+        var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "continue to explore");
+
+        navigation.start = start;
+        navigation.technology = technology;
+        navigation.add = add;
+        navigation.otherDreams = otherDreams;
+        navigation.explore = explore;
+
+        navigation.list = [start, otherDreams, explore, add, technology];
+
+        return navigation;
+      }
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

@@ -6,6 +6,7 @@ var Shortcuts = function ( shared ) {
 	domElement.style.top = "0px";
 	domElement.style.padding = "0.5em";
 	domElement.style.fontSize = '10px';
+	//domElement.style.display = "none";
 
 	// Launcher
 
@@ -51,7 +52,7 @@ var Shortcuts = function ( shared ) {
 		element.innerHTML = ' ';
 		domElement.appendChild( element );
 
-	}
+	};
 
 	function addLink( text, callback ) {
 
@@ -64,7 +65,7 @@ var Shortcuts = function ( shared ) {
 		element.addEventListener( 'click', callback, false );
 		domElement.appendChild( element );
 
-	}
+	};
 
 	function addLauncherShortcut( text ) {
 
@@ -74,7 +75,7 @@ var Shortcuts = function ( shared ) {
 
 		} );
 
-	}
+	};
 
 	function addFilmShortcut( text, pattern ) {
 
@@ -85,7 +86,7 @@ var Shortcuts = function ( shared ) {
 
 		} );
 
-	}
+	};
 
 	function addRelauncherShortcut( text ) {
 
@@ -95,7 +96,7 @@ var Shortcuts = function ( shared ) {
 
 		} );
 
-	}
+	};
 
 	function addExplorationShortcut( text, worldId ) {
 
@@ -106,7 +107,7 @@ var Shortcuts = function ( shared ) {
 
 		} );
 
-	}
+	};
 
 	function addUgcShortcut( text ) {
 
@@ -116,7 +117,7 @@ var Shortcuts = function ( shared ) {
 
 		} );
 
-	}
+	};
 
 
 	this.getDomElement = function () {

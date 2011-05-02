@@ -6,7 +6,7 @@ var AnimalInFrontOfCamera = function ( numOfAnimals, scene ) {
 	var scene = scene;
 
 	that.initSettings = {
-		numOfAnimals : numOfAnimals || 30,
+		numOfAnimals : numOfAnimals || 30
 	}
 
 	that.settings = {

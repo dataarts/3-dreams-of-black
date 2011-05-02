@@ -653,7 +653,7 @@ TriggerBigShader = {
 
 			"gl_Position = projectionMatrix * mvPosition;",
 
-		"}",
+		"}"
 		
 		
 	].join("\n") },

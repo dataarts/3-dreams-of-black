@@ -14,8 +14,8 @@ var DunesWorld = function ( shared ) {
 
 	// Fog
 
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000275 );
-	//this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00000275 );
+	//this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000275 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00000275 );
 	this.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
 
 	// Lights
@@ -405,7 +405,7 @@ var DunesWorld = function ( shared ) {
 			var colliders = scene.collisions.colliders;
 
 			for( var i = 0; i < colliders.length; i++ ) {
-				
+
 				if ( colliders[ i ].mesh == node ) {
 				
 					node.__isCollider = true; 
@@ -749,11 +749,14 @@ var DunesWorld = function ( shared ) {
 		// for the moment RollCamera doesn't have straightforward way to get orientation yet
 		// so we attach child in front of it to get direction vector
 
-		frontPosition = shared.frontCube.matrixWorld.getPosition();
+/*		frontPosition = shared.frontCube.matrixWorld.getPosition();
 		cameraPosition = camera.matrixWorld.getPosition();
 
 		dirVec.sub( frontPosition, cameraPosition );
 		dirVec.normalize();		
+*/		
+		cameraPosition = camera.matrixWorld.getPosition();
+		dirVec = camera.matrixWorld.getColumnZ().negate();
 		
 		var z = Math.round( ( cameraPosition.z  + 2000 * dirVec.z ) / TILE_SIZE );
 		var x = Math.round( ( cameraPosition.x  + 2000 * dirVec.x ) / TILE_SIZE );		

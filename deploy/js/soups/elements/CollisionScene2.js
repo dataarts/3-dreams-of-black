@@ -22,7 +22,7 @@ var CollisionScene2 = function ( camera, scale, shared, collisionDistance, reals
 		keepEmitterFollowDown : false,
 		normalOffsetAmount : 6,
 		minDistance : 10,
-		camera : camera,
+		camera : camera
 
 	};
 

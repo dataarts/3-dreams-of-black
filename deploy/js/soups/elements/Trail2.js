@@ -6,7 +6,7 @@ var Trail = function ( numOfInstances, scene ) {
 	var scene = scene;
 
 	that.initSettings = {
-		numOfInstances : numOfInstances || 100,
+		numOfInstances : numOfInstances || 100
 	}
 
 	that.settings = {
@@ -14,7 +14,7 @@ var Trail = function ( numOfInstances, scene ) {
 		visible : true,
 		aliveDivider: that.initSettings.numOfInstances,
 		tweenTime: 2500,
-		scale: 1,
+		scale: 1
 	}
 
 	var i;

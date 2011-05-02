@@ -28,8 +28,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		addaptiveSpeed : false,
 		capy : null,
 		startPosition : new THREE.Vector3( 0, 0, 0 ),
-		switchPosition : false,
-		//butterfly : false,
+		switchPosition : false
+		//butterfly : false
 
 	};
 	
