@@ -10,8 +10,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script type="text/javascript" src="gallery/js/jquery-1.5.2.min.js"></script>
-  <script type="text/javascript" src="gallery/js/gallery.js"></script>
+  <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+  <script type="text/javascript" src="js/gallery.js"></script>
 
   <script type="text/javascript">
 
@@ -28,7 +28,7 @@
         return vars;
       })();
 
-      GALLERY.API_BASE = 'http://localhost:8080/ugc/';
+      GALLERY.API_BASE = '/ugc/';
       GALLERY({ page: $_GET['p'], category: $_GET['c'] });
 
 
@@ -36,7 +36,7 @@
 
   </script>
 
-  <link rel="stylesheet" href="gallery/style.css">
+  <link rel="stylesheet" href="style.css">
 
 
 </head>
@@ -89,7 +89,7 @@
     </div>
 
     <div class="object-title">
-      Object Title 01 &nbsp;&bull;&nbsp; <a href="#">Experience this in "3
+      <span id="lightbox-title">Object Title 01</span> &nbsp;&bull;&nbsp; <a href="#">Experience this in "3
       Dreams of
       Black"</a>
     </div>
