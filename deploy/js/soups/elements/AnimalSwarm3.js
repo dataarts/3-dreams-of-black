@@ -130,21 +130,22 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 	}
 
 	// switch animal test
-	this.switchAnimal = function (geometry, scale, speed, morph) {
+	this.switchAnimal = function (geometry, scale, speed, morph, arrayIndex) {
 		//console.log("adding on index = "+index);
 	
 		var scaleMultiplier = scale || 1.2;
-		//var arrayIndex = index || 0;
-		//var startMorph = morph || 0;
-		//var endMorph = morph || 0;
 
 		for ( i = 0; i < that.initSettings.numOfAnimals; ++i ) {
+			if (arrayIndex != undefined) {
+				i = arrayIndex;
+			}
+
 			var a = that.array[i].a;
 
 			var startMorph = that.array[i].startMorph;
 			var endMorph = that.array[i].endMorph;
 
-			if (a != undefined && a.mesh.geometry == geometry && (startMorph == morph || endMorph == morph)) {
+			if (a != undefined && a.mesh.geometry == geometry && arrayIndex == undefined && (startMorph == morph || endMorph == morph)) {
 				continue;
 			}
 

@@ -87,10 +87,10 @@ var UgcSoup = function ( camera, scene, shared ) {
 	this.removeGator = function () { that.removeAnimal("gator") }
 	this.addRaven = function () { that.addAnimal("raven") }
 	this.removeRaven = function () { that.removeAnimal("raven") }
-	this.setTest = function () { that.set("moose|elk|golden|deer|moose|bearbrown|horse|fox|fisha|chow|elk|rabbit|frog|horse|moose|deer|fisha|rabbit|mountainlion|deer|elk|horse|golden|deer|fisha|bearbrown|horse|fox|mountainlion|chow") }
+	this.setTest = function () { that.set("moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose") }
 
 
-	that.addAnimal = function ( id ) {
+	that.addAnimal = function ( id, arrayIndex ) {
 		
 		if (id == undefined) {
 			id = "moose";
@@ -103,9 +103,9 @@ var UgcSoup = function ( camera, scene, shared ) {
 		var flying = allAnimals[id].flying;
 		
 		if (flying) {
-			flyingAnimals.switchAnimal(geometry, scale, speed, morph);
+			flyingAnimals.switchAnimal(geometry, scale, speed, morph, arrayIndex);
 		} else {
-			runningAnimals.switchAnimal(geometry, scale, speed, morph);
+			runningAnimals.switchAnimal(geometry, scale, speed, morph, arrayIndex);
 		}
 
 	}
@@ -161,6 +161,11 @@ var UgcSoup = function ( camera, scene, shared ) {
 		
 		var array = str.split("|");
 		console.log(array);
+
+		for (var i=0; i<array.length; ++i ) {
+			var id = array[i];
+			that.addAnimal(id, i);
+		}
 
 	}
 
