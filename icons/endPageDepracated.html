@@ -42,12 +42,10 @@
         
         setInterval( function() {
           clouds.update();
-          updateDomElementsPosition();
         }, 1000 / 30.0);
         
         window.addEventListener("resize", function() {
           clouds.resize(window.innerWidth, window.innerHeight);
-          updateDomElementsPosition();
         }, false);
 
         var container = document.createElement("div");
@@ -58,11 +56,13 @@
         var gee = new GEE({ fullscreen: true, container: container });
         var g = gee.ctx;
 
-        var inner = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 95);
-            inner.showFill = false;
+        var inner = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 85);
+        var outer = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 130);
+            outer.showFill = false;
+            outer.insides  = true;
 
         var heart = {
-          svg: new Heart(gee, "assets/eminating-heart.svg", 0, 0),
+          svg: new Heart(gee, "assets/heart_small.svg", 0, 0),
           point: new WonderWall.Point(gee, gee.width * .5, gee.height * .5)
         };
         heart.svg.showDrips = false;
@@ -82,106 +82,28 @@
           var dom = navigation.list[i];
           dom.addEventListener("mouseover", function(e) {
             inner.setUpdate(true);
+            outer.setUpdate(true);
             heart.point.updating = true;
           }, false);
           dom.addEventListener("mouseout", function(e) {
             inner.setUpdate(false);
+            outer.setUpdate(false);
             heart.point.updating = false;
           }, false);
         }
 
-        updateDomElementsPosition();
-
         gee.draw = function() {
-
-          inner.update();
-          var points = inner.getPoints();
 
           g.clearRect(0, 0, gee.width, gee.height);
 
           g.strokeStyle = rome.color.black;
           g.lineWidth = 0.5;
-          g.beginPath();
-          for(var i = 0; i < points.length; i++) {
-            var point = points[i];
-            var xpos  = point.x;
-            var ypos  = point.y;
-
-            if(i == 0) {
-              ypos -= 48;
-              g.moveTo(xpos, ypos);
-            } else if(i == 1) {
-              xpos += 43;
-              ypos -= 15;
-              g.lineTo(xpos, ypos);
-            } else if(i == 2) {
-              xpos += 28;
-              ypos += 38;
-              g.lineTo(xpos, ypos);
-            } else if(i == 3) {
-              xpos -= 28;
-              ypos += 38;
-              g.lineTo(xpos, ypos);
-            } else if(i == 4) {
-              xpos -= 43;
-              ypos -= 15;
-              g.lineTo(xpos, ypos);
-            }
-          }
-          g.closePath();
-          g.stroke();
-
-          for(var i = 0; i < points.length; i++) {
-            var point = points[i];
-            var xpos  = point.x;
-            var ypos  = point.y;
-            var ox    = xpos;
-            var oy    = ypos;
-
-            g.beginPath();
-            if(i == 0) {
-              ypos -= 48;
-              oy += 20;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 1) {
-              xpos += 43;
-              ypos -= 15;
-              ox -= 19;
-              oy += 6;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 2) {
-              xpos += 28;
-              ypos += 38;
-              ox -= 11;
-              oy -= 16;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 3) {
-              xpos -= 28;
-              ypos += 38;
-              ox += 12;
-              oy -= 17;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 4) {
-              xpos -= 43;
-              ypos -= 15;
-              ox += 19;
-              oy += 6;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            }
-            g.closePath();
-            g.stroke();
-          }
+          outer.update().render();
 
           g.globalCompositeOperation = "source-out";
-          g.lineWidth = 32;
-          inner.showStroke = true;
-          inner.showFill = false;
-          inner.render();
+          g.fillStyle = rome.color.white;
+          g.lineWidth = 36;
+          inner.update().render();
           g.globalCompositeOperation = "source-over";
 
           heart.point.setPosition(gee.width / 2.0, gee.height / 2.0);
@@ -190,37 +112,36 @@
           g.translate(heart.point.x, heart.point.y);
           heart.svg.render();
           g.restore();
-        };
-        
-        function updateDomElementsPosition() {
-          var points = inner.getPoints();
+
+          g.fillStyle = "#f00";
+          var points = outer.getPoints();
           for(var i = 0; i < points.length; i++) {
-            var point = points[i].getOriginPosition();
+            var point = points[i];
             // these are the center points of the objects
             var navItem = navigation.list[i];
-            var xpos = point.x;
-            var ypos = point.y;
+            var xpos = point.x - (navItem.offsetWidth / 2.0);
+            var ypos = point.y - (navItem.offsetHeight / 2.0);
 
             if(i == 0) {
-              ypos -= 159;
-              xpos -= (navItem.offsetWidth / 2.0);
+              ypos = point.y - 111;
             } else if(i == 1) {
-              xpos +=  133;
-              ypos -= 45;
+              xpos = point.x + 80;
+              ypos = point.y - 30;
             } else if(i == 2) {
-              xpos += 104;
-              ypos += 76;
+              xpos = point.x + 76;
+              ypos = point.y + 38;
             } else if(i == 3) {
-              xpos -= 311;
-              ypos += 74;
+              xpos = point.x - 283;
+              ypos = point.y + 36;
             } else {
-              xpos -= 333;
-              ypos -= 46;
+              xpos = point.x - 296;
+              ypos = point.y - 31;
             }
+
             navItem.style.left = xpos + "px";
             navItem.style.top = ypos + "px";
           }
-        }
+        };
       };
 
       function createDomElement(parent, element, id, class, contents) {
