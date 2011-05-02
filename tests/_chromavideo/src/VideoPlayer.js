@@ -23,6 +23,7 @@ var VIDEO_HALFALPHA = 2;
 var VIDEO_OPAQUE_DISTORT = 3;
 var VIDEO_KEYED = 4;
 var VIDEO_KEYED_DISTORT = 5;
+var VIDEO_KEYED_INVERSE = 6;
 
 var VideoPlayer = function(shared, layers, conf){
 	var that = this;
@@ -32,6 +33,7 @@ var VideoPlayer = function(shared, layers, conf){
 	var planes = [];
 	var gridLoaded = false;
 	
+	var scene, camera;
 	var renderer = shared.renderer, renderTarget = shared.renderTarget;
 	
 	var mouseX = 0, mouseY = 0;

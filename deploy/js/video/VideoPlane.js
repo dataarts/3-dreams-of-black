@@ -1,7 +1,7 @@
-var VideoPlane = function( shared, layer, config ) {
+var VideoPlane = function( shared, layer, conf ) {
 	
-    var video, texture, interval, shader, material, wireMaterial;
-	var config = config;
+	var video, texture, interval, shader, material, wireMaterial;
+	var config = conf;
 	var hasDistortion = false;
 	var hasKey = false;
     
@@ -10,21 +10,9 @@ var VideoPlane = function( shared, layer, config ) {
 	video.preload = true;
 	video.load();
     
-	//shared.signals.loadItemAdded.dispatch();
-	//console.log( "start load", layer.path );
-	
-	video.addEventListener( "canplay", function() {
-
-		//console.log( "canplay", layer.path );
-		//shared.signals.loadItemCompleted.dispatch()
-
-	}, false );
-	
-	video.addEventListener( "canplaythrough", function() { 
-		
-		//console.log( "canplaythrough", layer.path );
-		//shared.signals.loadItemCompleted.dispatch()
-		
+	shared.signals.loadItemAdded.dispatch();
+	video.addEventListener( "canplaythrough", function() { 	
+		shared.signals.loadItemCompleted.dispatch()	
 	}, false );
 	
     texture = new THREE.Texture(video);
