@@ -100,5 +100,5 @@ tmp_file = open('main.js','w')
 tmp_file.write(string)
 tmp_file.close()
 
-os.system("java -jar compiler.jar --language_in=ECMASCRIPT5 --js main.js --js_output_file main.min.js")
-# os.unlink("main.js")
+os.system("java -jar compiler.jar --language_in=ECMASCRIPT5 --js main.js --js_output_file ../deploy/main.min.js")
+os.unlink("main.js") #comment this line if you want to make sense of the errors
