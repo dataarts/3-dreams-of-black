@@ -173,7 +173,7 @@ var Clouds = function ( shared ) {
                   "flamingos += texture2D( tFlamingos, vUv+vec2(.0,2./height) );",
                   "flamingos += texture2D( tFlamingos, vUv+vec2(2./width,2./height) );",
                   "flamingos *= 1./7.;",
-                  "flamingos = mix(flamingos, vec4(fogColor,1.), 0.3);",
+                  "flamingos.rgb = mix(flamingos.rgb, vec3(fogColor), 0.3*flamingos.a);",
               "}",
 
               "vec4 clouds = texture2D( tClouds, vUv );",
@@ -227,7 +227,7 @@ var Clouds = function ( shared ) {
       bird.position = boids[ i ].position;
 
       bird.doubleSided = false;
-      bird.scale.x = bird.scale.y = bird.scale.z = 0.03+0.1*Math.random();
+      bird.scale.x = bird.scale.y = bird.scale.z = 0.03+0.05*Math.random();
       birdsGroup.addChild( bird );
     }
 
@@ -264,8 +264,7 @@ var Clouds = function ( shared ) {
 
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
-
-		renderer.setSize( width, height );
+    renderer.setSize( width, height );
 
 	};
 
@@ -286,11 +285,13 @@ var Clouds = function ( shared ) {
 		camera.target.position.z = camera.position.z - 1000;
 
 		renderer.clear();
+
 		renderer.render( scene, camera, renderTargetClouds, true );
     renderer.render( birdsScene, camera, renderTargetFlamingos, true );
+
   	renderer.render( postScene, postCamera );
 
-//    renderer.render( scene, camera );
+//    render.render( scene, camera );
 
     for ( var i = 0, il = birds.length; i < il; i++ ) {
       boid = boids[ i ];
