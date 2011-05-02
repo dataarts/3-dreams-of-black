@@ -81,7 +81,7 @@ var VideoPlane = function(layer, config){
     this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
 	//this.mesh.doubleSided = true;
 	
-	if(hasDistortion) {
+	if(false) { //hasDistortion) {
 		wireMaterial = new THREE.MeshShaderMaterial( {
 			uniforms: uniforms,
 			vertexShader: VideoShaderSource.distortWire.vertexShader,
