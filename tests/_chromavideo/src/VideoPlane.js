@@ -3,13 +3,17 @@ var VideoPlane = function(layer, config){
 	var config = config;
 	var hasDistortion = false;
 	var hasKey = false;
-    
-    video = document.createElement('video');
-    video.src = layer.path;
-    
-    texture = new THREE.Texture(video);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
+	var isStatic = layer.path.match("png$");
+	
+	if(isStatic) {
+		texture = THREE.ImageUtils.loadTexture(layer.path);
+	} else {
+	    video = document.createElement('video');
+	    video.src = layer.path;    
+	    texture = new THREE.Texture(video);
+	    texture.minFilter = THREE.LinearFilter;
+	    texture.magFilter = THREE.LinearFilter;		
+	}
     
     switch (layer.shaderId) {
         case VIDEO_OPAQUE:
@@ -27,6 +31,10 @@ var VideoPlane = function(layer, config){
 		case VIDEO_HALFALPHA:
             shader = VideoShaderSource.halfAlpha;
             break;
+		case VIDEO_KEYED_INVERSE:
+            shader = VideoShaderSource.keyedInverse;
+			hasKey = true;
+            break;
         case VIDEO_KEYED:
         default:
             shader = VideoShaderSource.keyed;
@@ -34,7 +42,7 @@ var VideoPlane = function(layer, config){
             break;
     }
 	
-	var uniforms = Uniforms.clone(shader.uniforms); // ? ######
+	var uniforms = THREE.UniformsUtils.clone(shader.uniforms); // ? ######
     uniforms['map'].texture = texture;
 	
 	if (hasDistortion) {
@@ -62,14 +70,16 @@ var VideoPlane = function(layer, config){
     if(hasDistortion) 
 		this.mesh = new THREE.Mesh( config.grid, material );
 	else 
-		this.mesh = new THREE.Mesh( new Plane(1,1,1,1), material );
+		this.mesh = new THREE.Mesh( new THREE.Plane(1,1,1,1), material );
 		
 	
 	this.mesh.scale.x = layer.width;
 	this.mesh.scale.y = layer.height;
     this.mesh.position.z = layer.z;
+	this.mesh.position.y = layer.y || 0;
     this.mesh.scale.x *= Math.abs(layer.z) * config.adj * config.aspect;
     this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
+	//this.mesh.doubleSided = true;
 	
 	if(hasDistortion) {
 		wireMaterial = new THREE.MeshShaderMaterial( {
@@ -89,6 +99,8 @@ var VideoPlane = function(layer, config){
 	}
 	
 	this.start = function(t) {
+		if(isStatic) return;
+		
 		video.currentTime = video.duration * t;
 		video.play();
 		
@@ -100,6 +112,8 @@ var VideoPlane = function(layer, config){
 	}
 	
 	this.stop = function() {
+		if(isStatic) return;
+		
 		video.pause();
 		clearInterval( interval );
 	}

@@ -99,6 +99,47 @@ var VideoShaderSource = {
 		].join("\n")
 	},
 	
+	keyedInverse: {
+
+		uniforms: {
+			"map" : { type: "t", value: 0, texture: null },
+			"colorScale": { type: "f", value: 1 },
+			"threshold": { type: "f", value: 0.5 },
+			"alphaFadeout": { type: "f", value: 0.5 }
+		},
+
+		vertexShader: [
+			"varying vec2 vUv;",
+			"uniform bool flip;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+			"uniform float colorScale;",
+			"uniform float threshold;",
+			"uniform float alphaFadeout;",
+			
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec3 cd = vec3(1.0 - colorScale);",
+				"vec3 cs = vec3(colorScale);",				
+				"vec4 c = texture2D( map, vUv );",
+				"float t = c.x + c.y + c.z;",
+				"float alpha = 1.0;",
+				"if( t > threshold )",
+					"alpha = (1.0 - (t - threshold)) / alphaFadeout;",
+				"gl_FragColor = vec4( (c.xyz - cd) * cs, alpha );",
+				//"gl_FragColor = vec4( c.xyz, alpha );",
+			"}"
+		].join("\n")
+	},
+	
 	distortOpaque: {
 
 		uniforms: {

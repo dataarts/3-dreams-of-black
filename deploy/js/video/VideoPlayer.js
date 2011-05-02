@@ -65,15 +65,12 @@ var VideoPlayer = function( shared, layers, conf ) {
 		scene = new THREE.Scene();
 		scene.addLight( new THREE.AmbientLight( 0x000000 ) );
 
-		for(var i = 0; i < layers.length; i++) {
-
-			var p = new VideoPlane(layers[i], config);
+		for(var i = 0; i < layers.length; i++) {			
+			var p = new VideoPlane(shared, layers[i], config);
 			planes.push(p);
 			scene.addObject(p.mesh);
 			if(p.wireMesh) scene.addObject(p.wireMesh);
-
 		}
-
 	}
 	
 	this.show = function( progress ) {
