@@ -5,12 +5,17 @@ var RelauncherSection = function ( shared ) {
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 	domElement.style.height = window.innerHeight + 'px';
-	domElement.style.backgroundColor = '#4584b4';
-	domElement.style.paddingTop = '60px';
+	domElement.style.backgroundColor = '#fff';
+	domElement.style.paddingTop = '0px';
 
-	addLink( domElement, 'Explore City', 'city' ); addBreakLine( domElement );
-	addLink( domElement, 'Explore Prairie', 'prairie' ); addBreakLine( domElement );
-	addLink( domElement, 'Explore Dunes', 'dunes' ); addBreakLine( domElement );
+	clouds = new CloudsWhite( shared );
+	clouds.getDomElement().style.position = 'absolute';
+	domElement.appendChild( clouds.getDomElement() );
+	
+	var linksParent = domElement;
+	addLink( linksParent, 40, 'Explore City', 'city' ); addBreakLine( domElement );
+	addLink( linksParent, 80, 'Explore Prairie', 'prairie' ); addBreakLine( domElement );
+	addLink( linksParent, 120, 'Explore Dunes', 'dunes' ); addBreakLine( domElement );
 
 	function addBreakLine( target ) {
 
@@ -18,10 +23,17 @@ var RelauncherSection = function ( shared ) {
 
 	};
 
-	function addLink( target, text, world ) {
+	function addLink( target, top, text, world ) {
 
 		var element = document.createElement( 'span' );
-		element.style.cursor = 'pointer';
+		element.style.cursor = 'pointer';		
+		element.style.padding = "0.5em";
+		element.style.marginRight = "4px";
+		element.style.zIndex = 10;
+		element.style.position = "absolute";
+		element.style.top = top + "px";
+		element.style.width = "100px";
+		element.style.backgroundColor = 'rgba(0,0,0,0.5)';
 		element.innerHTML = text;
 		element.addEventListener( 'click', function () {
 
@@ -42,23 +54,27 @@ var RelauncherSection = function ( shared ) {
 
 	this.show = function () {
 
+		clouds.show();
 		domElement.style.display = 'block';
 
 	};
 
 	this.hide = function () {
 
+		clouds.hide();
 		domElement.style.display = 'none';
 
 	};
 
 	this.resize = function ( width, height ) {
 
-		
+		clouds.resize( width, height );
 
 	};
 
 	this.update = function () {
+		
+		clouds.update();
 
 	};
 
