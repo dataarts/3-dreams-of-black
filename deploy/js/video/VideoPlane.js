@@ -1,4 +1,4 @@
-var VideoPlane = function( layer, config ) {
+var VideoPlane = function( shared, layer, config ) {
 	
     var video, texture, interval, shader, material, wireMaterial;
 	var config = config;
@@ -10,6 +10,21 @@ var VideoPlane = function( layer, config ) {
 	video.preload = true;
 	video.load();
     
+	shared.signals.loadItemAdded.dispatch();
+	
+	video.addEventListener( "canplay", function() {
+
+		//console.log( "canplay", layer.path );
+
+	}, false );
+	
+	video.addEventListener( "canplaythrough", function() { 
+		
+		//console.log( "canplaythrough", layer.path );
+		shared.signals.loadItemCompleted.dispatch()
+		
+	}, false );
+	
     texture = new THREE.Texture(video);
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
@@ -87,7 +102,8 @@ var VideoPlane = function( layer, config ) {
     this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
 	
 	
-	if(false){//hasDistortion) {
+	if ( false ) { //hasDistortion) {
+
 		wireMaterial = new THREE.MeshShaderMaterial( {
 			uniforms: uniforms,
 			vertexShader: VideoShaderSource.distortWire.vertexShader,
@@ -102,10 +118,11 @@ var VideoPlane = function( layer, config ) {
 	    this.wireMesh.position.z = layer.z + 0.1;
 	    this.wireMesh.scale.x *= Math.abs(layer.z) * config.adj * config.aspect;
 	    this.wireMesh.scale.y *= Math.abs(layer.z) * config.adj;
+
 	}
 	
 	this.start = function( t ) {
-
+		
 		video.currentTime = video.duration * t;
 		video.play();
 		

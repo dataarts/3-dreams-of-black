@@ -57,16 +57,16 @@ var FilmSection = function ( shared ) {
 	console.log( VideoShots );
 
 	// Sequence
-	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill);
-	var cityAnimation = new VideoPlayer(shared, VideoShots.cityLayers, VideoShots.confStill);
+	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill );
+	var cityAnimation = new VideoPlayer( shared, VideoShots.cityLayers, VideoShots.confStill );
 	
-	var s02_01 = new VideoPlayer(shared, VideoShots.s02_01, VideoShots.confParalax);
-	var s02_02 = new VideoPlayer(shared, VideoShots.s02_02, VideoShots.confStill);
-	var s02_03 = new VideoPlayer(shared, VideoShots.s02_03, VideoShots.confStill);
-	var s02_04 = new VideoPlayer(shared, VideoShots.s02_04, VideoShots.confStill);
-	var s02_06 = new VideoPlayer(shared, VideoShots.s02_06, VideoShots.confStill);
+	var s02_01 = new VideoPlayer( shared, VideoShots.s02_01, VideoShots.confParalax );
+	var s02_02 = new VideoPlayer( shared, VideoShots.s02_02, VideoShots.confStill );
+	var s02_03 = new VideoPlayer( shared, VideoShots.s02_03, VideoShots.confStill );
+	var s02_04 = new VideoPlayer( shared, VideoShots.s02_04, VideoShots.confStill );
+	var s02_06 = new VideoPlayer( shared, VideoShots.s02_06, VideoShots.confStill );
 	
-	var dunesAnimation = new VideoPlayer(shared, VideoShots.dunesLayers, VideoShots.confStill);
+	var dunesAnimation = new VideoPlayer( shared, VideoShots.dunesLayers, VideoShots.confStill );
 
 	sequencer = new Sequencer();
 
