@@ -79,6 +79,7 @@ files = [
 'js/sections/UgcSection.js',
 
 'js/sections/launcher/Clouds.js',
+'js/sections/launcher/CloudsWhite.js',
 'js/sections/ugc/UgcUI.js',
 'js/sections/ugc/UgcObjectCreator.js',
 'js/sections/ugc/UgcSoupCreator.js',
