@@ -11,12 +11,15 @@ var Dunes = function ( shared ) {
 	ray.direction = new THREE.Vector3( 0, -1, 0 );
 	var positionVector = new THREE.Vector3();
 
-	var speedStart = 150, speedEnd = 300;
+	//var speedStart = 150, speedEnd = 300;
+	
+	// temp speed up
+	var speedStart = 300, speedEnd = 600;
 
 	var frontCube;
 
 	// debug
-/*
+
 	var domElement = document.createElement( 'div' );
 	domElement.style.position = "absolute";
 	domElement.style.right = "0px";
@@ -30,7 +33,7 @@ var Dunes = function ( shared ) {
 	domElement.style.textAlign = "right";
 	domElement.style.display = "none";
 	document.body.appendChild( domElement )
-*/
+
 	this.init = function () {
 
 		/*
@@ -58,15 +61,18 @@ var Dunes = function ( shared ) {
 		//camera.lon = 90;
 		*/
 
-//		camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-//		camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-		camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-		camera.useTarget = false;
+		camera = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+		camera.movementSpeed = speedStart;
+		camera.lookSpeed = 3;
+		camera.constrainVertical = [ -0.4, 0.4 ];
+		camera.autoForward = true;
+		//camera.mouseLook = false;
 
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
 
 		shared.worlds.dunes = world;
+		shared.sequences.dunes = this;
 
 		//frontCube = new THREE.Mesh( new THREE.Cube( 1, 1, 1 ), new THREE.MeshLambertMaterial( { color:0xff0000 } ) );
 		frontCube = new THREE.Object3D();
@@ -77,7 +83,7 @@ var Dunes = function ( shared ) {
 
 		// RollCamera must be added to scene
 
-		//world.scene.addChild( camera );
+		world.scene.addChild( camera );
 
 		shared.frontCube = frontCube;
 
@@ -98,18 +104,14 @@ var Dunes = function ( shared ) {
 		dirVec.sub( cameraGround, targetGround );
 		dirVec.normalize();
 
-	//	camera.forward.copy( dirVec );
+		camera.forward.copy( dirVec );
 		camera.update();
 
 	};
 
 	this.show = function ( progress ) {
 
-		// look at prairie island
-
-		//setRollCameraPosTarget( camera, new THREE.Vector3( 0, 150, -1600 ), shared.influenceSpheres[ 0 ].center );
-
-		renderer.setClearColor( world.scene.fog.color );
+		this.resetCamera();
 
 		shared.started.dunes = true;
 
@@ -119,63 +121,110 @@ var Dunes = function ( shared ) {
 
 	};
 
+	this.resetCamera = function() {
+
+		// look at prairie island
+		
+		setRollCameraPosTarget( camera, new THREE.Vector3( 0, 150, -1600 ), shared.influenceSpheres[ 0 ].center );
+		renderer.setClearColor( world.scene.fog.color );
+
+	};
+	
 
 	this.update = function ( progress, delta, time ) {
 
-		if( delta !== 0 ) {
-			
-			THREE.AnimationHandler.update( delta );
-	
-			// not too low
-	
-			// camera.position.y = cap_bottom( camera.position.y, 150 );
-	
-			// some sort of ground collision
-			ray.origin.x = frontCube.matrixWorld.n14;
-			ray.origin.y = frontCube.matrixWorld.n24 + 400;
-			ray.origin.z = frontCube.matrixWorld.n34;
-	
-			if ( ray.origin.y < 1000 ) {
-	
-				var c = world.scene.collisions.rayCastNearest( ray );
-				if ( c ) {
-					positionVector.copy( ray.origin );
-					positionVector.addSelf( ray.direction.multiplyScalar( c.distance*0.15 ) );
-					positionVector.y += 50;
-	
-					if (positionVector.y > 0 && camera.position.y < positionVector.y) {
-						camera.position.y = positionVector.y;
-					}
-				}
-	
-			}
-	
-			// not too high
-	
-			//camera.position.y = cap_top( camera.position.y, 5000 );
-	
-			//camera.rotation.x = -( shared.mouse.y / shared.screenWidth - 0.5 ) * Math.PI * 0.5;
-			camera.rotation.y += -( shared.mouse.x / shared.screenWidth - 0.5 ) * Math.PI * 0.05;
-			camera.position.y -= ( shared.mouse.y / shared.screenHeight - 0.5 ) * 10;
-	
-			if( shared.forward ) {
-				
-				camera.position.subSelf( camera.matrixWorld.getColumnZ().multiplyScalar( 20 ));
-				
-			}
-	
-			world.update( delta, camera, false );
-			soup.update( delta );
-			
-		}
+		THREE.AnimationHandler.update( delta );
 
+
+
+
+
+
+
+
+		world.update( delta, camera, false );
+		soup.update( delta );
 
 		renderer.render( world.scene, camera, renderTarget );
+
+
+		//////////// OLD ///////////////
 /*
+		// not too low
+
+		// camera.position.y = cap_bottom( camera.position.y, 150 );
+
+		// some sort of ground collision
+		ray.origin.x = frontCube.matrixWorld.n14;
+		ray.origin.y = frontCube.matrixWorld.n24 + 400;
+		ray.origin.z = frontCube.matrixWorld.n34;
+
+		if ( ray.origin.y < 1000 ) {
+
+			var c = world.scene.collisions.rayCastNearest( ray );
+			if ( c ) {
+
+				positionVector.copy( ray.origin );
+				positionVector.addSelf( ray.direction.multiplyScalar( c.distance*0.15 ) );
+				positionVector.y += 50;
+
+				if ( positionVector.y > 0 && camera.position.y < positionVector.y ) {
+					camera.position.y = positionVector.y;
+				}
+			}
+
+		}
+
+		// not too high
+
+		camera.position.y = cap_top( camera.position.y, 5000 );
+
+		// not too high before lift-off
+
+		if ( progress < world.startLift ) {
+
+			camera.position.y = cap_top( camera.position.y, 150 );
+
+			// small bump
+
+			camera.position.y += Math.sin( time / 100 ) * 0.5;
+
+			// small roll
+
+			// RollCamera doesn't use up vector
+
+			//camera.up.z = Math.sin( time / 250 ) / 200;
+			//camera.up.x = Math.cos( time / 250 ) / 200;
+
+			//camera.position.x = 0;
+
+		}
+
+		// lift-off
+
+		var localProgres = ( progress - world.startLift ) / ( world.endLift - world.startLift );
+
+		if ( progress > world.startLift && progress < world.endLift ) {
+
+			camera.position.y += world.liftSpeed * ( delta / 1000 );
+			//camera.movementSpeed = speedStart + ( speedEnd - speedStart ) * localProgres;
+
+			//world.scene.fog.color.setHSV( 0.6, 0.1235 - 0.1235 * localProgres, 1 );
+			//world.scene.fog.density = 0.0004 - 0.0001 * localProgres;
+			//renderer.setClearColor( world.scene.fog.color );
+
+		}
+
+		world.update( delta, camera, false );
+		soup.update( delta );
+
+		renderer.render( world.scene, camera, renderTarget );
+
 		shared.logger.log( "vertices: " + renderer.data.vertices );
 		shared.logger.log( 'faces: ' + renderer.data.faces );
 		shared.logger.log( 'draw calls: ' + renderer.data.drawCalls );
 */
+
 	};
 
 	function cap( val, bottom, top ) {

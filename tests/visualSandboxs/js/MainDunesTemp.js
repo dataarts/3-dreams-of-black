@@ -33,6 +33,8 @@ function init() {
 		baseWidth: WIDTH,
 		baseHeight: HEIGHT,
 
+		sequences: {},
+
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
 
@@ -76,7 +78,7 @@ function init() {
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 0 );
 	sequencer.add( dunes, tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 1 );
 	sequencer.add( painterEffect, tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
-
+/*
 	setSlider( "colorFactor", "", painterEffect.uniforms.colorFactor.value );
 	setSlider( "colorOffset", "", painterEffect.uniforms.colorOffset.value );
 	setSlider( "colorBrightness", "", painterEffect.uniforms.colorBrightness.value );
@@ -116,7 +118,7 @@ function init() {
 	setSlider( "vectorC", "x", DunesShaderColors.vectorC.x );
 	setSlider( "vectorC", "y", DunesShaderColors.vectorC.y );
 	setSlider( "vectorC", "z", DunesShaderColors.vectorC.z );
-
+*/
 	shared.signals.loadItemCompleted.add( doStart )
 	
 }

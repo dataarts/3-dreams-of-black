@@ -59,6 +59,12 @@ function init() {
 
 	};
 
+	shared.logger.domElement.style.position = 'fixed';
+	shared.logger.domElement.style.right = '100px';
+	shared.logger.domElement.style.top = '0px';
+	document.body.appendChild( shared.logger.domElement );
+
+
 	window.addEventListener( 'resize', onWindowResize, false );
 	onWindowResize();
 
@@ -102,7 +108,7 @@ function start( pattern ) {
 	//gui.add( this, 'jumpToDunes').name( 'Dunes' );
 
 	audio.play();
-	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
+//	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	audio.volume = 0.0;
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );

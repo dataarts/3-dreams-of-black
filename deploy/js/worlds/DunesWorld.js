@@ -749,11 +749,14 @@ var DunesWorld = function ( shared ) {
 		// for the moment RollCamera doesn't have straightforward way to get orientation yet
 		// so we attach child in front of it to get direction vector
 
-		frontPosition = shared.frontCube.matrixWorld.getPosition();
+/*		frontPosition = shared.frontCube.matrixWorld.getPosition();
 		cameraPosition = camera.matrixWorld.getPosition();
 
 		dirVec.sub( frontPosition, cameraPosition );
 		dirVec.normalize();		
+*/		
+		cameraPosition = camera.matrixWorld.getPosition();
+		dirVec = camera.matrixWorld.getColumnZ().negate();
 		
 		var z = Math.round( ( cameraPosition.z  + 2000 * dirVec.z ) / TILE_SIZE );
 		var x = Math.round( ( cameraPosition.x  + 2000 * dirVec.x ) / TILE_SIZE );		
