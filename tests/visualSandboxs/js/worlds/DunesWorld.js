@@ -19,19 +19,19 @@ var DunesWorld = function ( shared ) {
 
 	// Lights
 
-	this.ambient = new THREE.AmbientLight( 0x221100 );
-	this.ambient.color.setHSV( 0, 0, 0.1 );
-	this.scene.addLight( this.ambient );
+	var ambient = new THREE.AmbientLight( 0x221100 );
+	ambient.color.setHSV( 0, 0, 0.1 );
+	this.scene.addLight( ambient );
 
-	this.directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
-	this.directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
-	this.directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
-	this.scene.addLight( this.directionalLight1 );
+	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
+	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
+	this.scene.addLight( directionalLight1 );
 
-	this.directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
-	this.directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
-	this.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
-	this.scene.addLight( this.directionalLight2 );
+	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
+	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
+	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+	this.scene.addLight( directionalLight2 );
 	
 	// Lens flares
 
@@ -137,8 +137,50 @@ var DunesWorld = function ( shared ) {
 		}
 
 	}
-	
-	
+
+
+	// UGC - TODO: Temp implementation
+/*
+	var ugcHandler = new UgcHandler();
+
+	ugcHandler.getLatestUGOs( function ( objects ) {
+
+		var geometry = new THREE.Cube( 50, 50, 50 );
+		var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+
+		for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+			var data = eval( objects[ i ].UGC );
+
+			if ( data instanceof Array ) {
+
+				var group = new THREE.Object3D();
+				group.position.x = Math.random() * 10000 - 5000;
+				group.position.z = Math.random() * 10000 - 5000;
+
+				for ( var j = 0, jl = data.length; j < jl; j += 4 ) {
+
+					var voxel = new THREE.Mesh( geometry, material );
+					voxel.position.x = data[ j ];
+					voxel.position.y = data[ j + 1 ];
+					voxel.position.z = data[ j + 2 ];
+					voxel.matrixAutoUpdate = false;
+					voxel.updateMatrix();
+					voxel.update();
+
+					group.addChild( voxel );
+
+				}
+
+				that.scene.addObject( group );
+
+			}
+
+		}
+
+	} );
+*/
+
 	// Mesh
 
 	var loader = new THREE.SceneLoader();
@@ -704,7 +746,7 @@ var DunesWorld = function ( shared ) {
 		lastz = z;
 		lastx = x;
 		
-		dirVec.multiplyScalar( 350 + camera.position.y * 0.05 );
+		dirVec.multiplyScalar( 350 );
 		dirVec.addSelf( cameraPosition );
 		
 		updateDunesShader( dunesMaterialStart, dunesMaterialEnd, dunesMaterials, cameraPosition, dirVec, time );

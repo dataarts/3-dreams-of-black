@@ -542,7 +542,7 @@ var DunesWorld = function ( shared ) {
 		var visible1 = showHideStaticTiles(t1.position, true);
 		var visible2 = showHideStaticTiles(t2.position, true);
 
-		// temp, since visible don´t seem to effect scenes
+		// temp, since visible donï¿½t seem to effect scenes
 
 		if ( visible0 ) {
 
@@ -726,11 +726,14 @@ var DunesWorld = function ( shared ) {
 		// for the moment RollCamera doesn't have straightforward way to get orientation yet
 		// so we attach child in front of it to get direction vector
 
-		frontPosition = shared.frontCube.matrixWorld.getPosition();
+/*		frontPosition = shared.frontCube.matrixWorld.getPosition();
 		cameraPosition = camera.matrixWorld.getPosition();
 
 		dirVec.sub( frontPosition, cameraPosition );
 		dirVec.normalize();		
+*/		
+		cameraPosition = camera.matrixWorld.getPosition();
+		dirVec = camera.matrixWorld.getColumnZ().negate();
 		
 		var z = Math.round( ( cameraPosition.z  + 2000 * dirVec.z ) / TILE_SIZE );
 		var x = Math.round( ( cameraPosition.x  + 2000 * dirVec.x ) / TILE_SIZE );		
