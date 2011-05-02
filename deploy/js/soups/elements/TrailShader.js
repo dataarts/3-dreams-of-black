@@ -324,7 +324,7 @@ ROME.TrailShader = {
 			// lava
 
 			"vec4 lavaColor;",
-			"float mixValue;",
+			"float mixValue, f;",
 			
 			"float offsetU = sin( lavaTime * 10.0 ) * 0.002;",
 			"float offsetV = cos( lavaTime * 11.0 ) * 0.002;",
@@ -332,32 +332,20 @@ ROME.TrailShader = {
 			"vec2 uvOffsetB = vec2( -offsetU, offsetV );",
 			"vec2 lookup;",
 			
-			/*"mixValue  = texture2D( trailMap, vTrailUV + uvOffsetA ).r;",
-
-			"mixValue = smoothstep( 0.0, 1.0, mixValue );",*/
-			
-			/*"if( mixValue != 0.0 ) {",
-
-				"vec2 movement = vec2( lavaTime );",
-				"vec4 noise = texture2D( lavaNoiseMap, ( vTrailUV - movement ) * lavaUvScale * 3.0 + vec2( sin( lavaTime * 100.0 ) * 0.05, cos( lavaTime * 150.0 ) * 0.05 ));",
-				"vec4 color = texture2D( lavaMap, ( vTrailUV + movement ) * lavaUvScale + vec2( sin( noise.a ) * 0.03, cos( noise.a * 1.1 ) * 0.03 ));",
-
-				"lavaColor = color * color * mixValue * noise.a;",
-			"}",*/
-
 
 			// grass
 			
 			"gl_FragColor = vec4( vColor, 1.0 ) * texture2D(faceMap, vUV);",
-			"lookup = texture2D(lavaNoiseMap, vTrailUV * vec2(65.0) + vec2( lavaTime )).rg;",
-			"mixValue = texture2D(trailMap, vTrailUV + vec2(0.01) * lookup).r;",
-			"mixValue += max(1.0 - length(vec2(0.015) * vec2(vPos.xy - lavaHeadPosition.xz) + lookup * vec2(0.4)), 0.0);",
+			"lookup = texture2D(lavaNoiseMap, vTrailUV * vec2(65.0)).rg;",
+			"f = texture2D(trailMap, vTrailUV + vec2(0.01) * lookup).r;",
+			"mixValue = f + max(1.0 - length(vec2(0.015) * vec2(vPos.xy - lavaHeadPosition.xz) + lookup * vec2(0.4)), 0.0);",
 			//"mixValue = dot(vPos - lavaHeadPosition.xz,  vPos - lavaHeadPosition.xz);",
 			"if(mixValue > 0.5)",
 			"{",
 				"gl_FragColor = gl_FragColor.gggg * vec4(0.27, 0.25, 0.3, 1.0) - vec4(0.1, 0.1, 0.1, 1.0);",
-				"mixValue = max((texture2D(lavaNoiseMap, vTrailUV * vec2(80.0) + vec2( lavaTime )).rrrr * vec4(16.0) - vec4(12.0)).r, 0.0);",
-				"gl_FragColor += vec4(mixValue) * texture2D( lavaMap, vTrailUV * vec2(200.0)) * texture2D(lavaNoiseMap, vTrailUV * vec2(10.0) + vec2( lavaTime )).rrrr * vec4(2.0);",
+				"mixValue = abs((texture2D(lavaNoiseMap, vTrailUV.yx * vec2(40.0, -40.0)).r - 0.5));",
+				"mixValue = max(max(1.0 - mixValue * 32.0, 0.0) * (lookup.r - 0.5) * 8.0, 0.0);",
+				"gl_FragColor += vec4(mixValue) * texture2D( lavaMap, vTrailUV * vec2(200.0) - vec2( lavaTime * 2.5)) * texture2D(lavaNoiseMap, vTrailUV * vec2(10.0) - vec2( lavaTime * 2.5)).rrrr * vec4(2.0);",
 			"}",
 
 
@@ -365,18 +353,7 @@ ROME.TrailShader = {
 			// add up
 			
 			"gl_FragColor = gl_FragColor * vLightWeighting;", 
-			//"gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );",
-
-			//"gl_FragColor = vec4(mixValue);//texture2D(trailMap, vTrailUV);",
-
-			//"lookup = vec2(0.01) * texture2D(lavaNoiseMap, vTrailUV * vec2(100.0) + vec2( lavaTime )).rg;",
-			//"gl_FragColor = texture2D(trailMap, vTrailUV + lookup);",
-
-			//"gl_FragColor = texture2D(lavaNoiseMap, vTrailUV * vec2(40.0) + vec2( lavaTime )).rrrr * vec4(2.0) - vec4(1.0);",
-
-			//"mixValue = max((texture2D(lavaNoiseMap, vTrailUV * vec2(40.0) + vec2( lavaTime )).rrrr * vec4(16.0) - vec4(12.0)).r, 0.0);",
-			//"gl_FragColor = vec4(mixValue);",
-			//"gl_FragColor = vec4();",
+			//"gl_FragColor = lookup.rrrr;",
 			"gl_FragColor.a = 1.0;",
 
 		"}"
