@@ -94,7 +94,7 @@ var AnimalSwarm5 = function ( numOfAnimals, scene, vectorArray ) {
 			ray = new THREE.Ray();
 			ray.direction = new THREE.Vector3(0, -1, 0);
 
-			var obj = { c: mesh, a: animal, f: 0, time: 0, attack: 0, lifetime: 0, dead: false, speeda: speeda, speedb: speedb, active: false, toPosition: new THREE.Vector3(0,0,0), normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
+			var obj = { c: mesh, a: animal, f: 0, time: 0, lifetime: 0, dead: false, speeda: speeda, speedb: speedb, active: false, toPosition: new THREE.Vector3(0,0,0), normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
 
 			that.array[i] = obj;
 
@@ -169,7 +169,6 @@ var AnimalSwarm5 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].f = 0;
 			that.array[i].time = 0;
 			that.array[i].lifetime = 0;
-			that.array[i].attack = 0;
 			that.array[i].dead = false;
 			that.array[i].scale = that.array[i].origscale;
 			that.array[i].toPosition = toPos.subSelf(pos).normalize();
