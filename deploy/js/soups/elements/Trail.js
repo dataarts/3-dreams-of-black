@@ -6,18 +6,22 @@ var Trail = function ( numOfInstances, scene ) {
 	var scene = scene;
 
 	that.initSettings = {
-		numOfInstances : numOfInstances || 100,
-	}
+
+		numOfInstances : numOfInstances || 100
+
+	};
 
 	that.settings = {
+
 		spread : 70,
 		visible : true,
 		aliveDivider: that.initSettings.numOfInstances,
 		tweenTime: 2500,
 		scale: 1,
 		offsetAmount: 6,
-		freeRotation: true,
-	}
+		freeRotation: true
+
+	};
 
 	var i;
 
@@ -48,7 +52,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 		}
 
-	}
+	};
 
 	this.update = function (position, normal, camPos, delta) {
 
@@ -239,7 +243,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 		}
 
-	}
+	};
 
 
-}
+};
