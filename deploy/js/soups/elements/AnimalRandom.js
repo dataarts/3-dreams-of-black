@@ -326,7 +326,10 @@ ROME.AnimalShader = {
 			"gl_FragColor = vec4( vLightWeighting, 1.0 );",
 			//"gl_FragColor = gl_FragColor * vec4( diffuse, opacity );",
 
-			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );",
+			//"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );",
+			
+			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 ) * vec4( 0.9, 0.85, 0.8, 1.0 );",
+			
 			THREE.ShaderChunk[ "fog_fragment" ],
 
 		"}"
