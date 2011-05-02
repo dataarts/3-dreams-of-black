@@ -118,7 +118,7 @@ var UgcObjectCreator = function ( shared ) {
 
 		for ( var item in grid ) {
 
-			data += grid[ item ].position.x + ',' + grid[ item ].position.y + ',' + grid[ item ].position.z + ',0xffffff,';
+			data += grid[ item ].position.x + ',' + grid[ item ].position.y + ',' + grid[ item ].position.z + ',16777215,';
 
 		}
 

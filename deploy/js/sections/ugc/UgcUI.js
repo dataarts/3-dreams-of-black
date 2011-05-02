@@ -2,30 +2,28 @@ var UgcUI = function ( shared ) {
 
 	var Button = function ( path ) {
 
-		// Convert to SVG
-
 		var PI2 = Math.PI * 2;
 
-		var canvas = document.createElement( 'canvas' );
-		canvas.width = 64;
-		canvas.height = 64;
+		var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+		path.setAttribute( 'style', 'fill: white; fill-opacity: 0.5' );
 
-		var context = canvas.getContext( '2d' );
-
-		context.fillStyle = 'rgba(255,255,255,0.5)';
-		context.beginPath();
-		context.moveTo( Math.round( Math.cos( 0 ) * 32 + 32 ), y = Math.round( Math.sin ( 0 ) * 32 + 32 ) ); 
+		var d = 'M ' + Math.round( Math.cos( 0 ) * 32 + 32 ) + ',' + Math.round( Math.sin ( 0 ) * 32 + 32 ) + ' ';
 
 		for ( var i = 0, j = 0; i < 6; i ++, j = ( i / 6 ) * PI2 ) {
 
-			context.lineTo( Math.round( Math.cos( j ) * 32 + 32 ), y = Math.round( Math.sin ( j ) * 32 + 32 ) ); 
+			d += Math.round( Math.cos( j ) * 32 + 32 ) + ',' + Math.round( Math.sin ( j ) * 32 + 32 ) + ' ';
 
 		}
 
-		context.closePath();
-		context.fill();
+		d += 'z';
 
-		return canvas;
+		path.setAttribute( 'd', d );
+		path.setAttribute( 'cursor', 'pointer' );
+
+		path.addEventListener( 'mouseover', function () { this.setAttribute( 'style', 'fill: red; fill-opacity: 0.5' ); }, false );
+		path.addEventListener( 'mouseout', function () { this.setAttribute( 'style', 'fill: white; fill-opacity: 0.5' ); }, false );
+
+		return path;
 
 	}
 
@@ -40,74 +38,62 @@ var UgcUI = function ( shared ) {
 
 	}, false );
 	button.innerHTML = 'SAVE';
-	domElement.appendChild( button ); 
+	domElement.appendChild( button );
 
-	/*
+	//
 
-	// Object Panel
-
-	var objectPanel = document.createElement( 'div' );
+	var objectPanel = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	objectPanel.setAttribute( 'viewBox', '0 0 400 200' );
+	objectPanel.setAttribute( 'width', 400 );
+	objectPanel.setAttribute( 'height', 200 );
 	domElement.appendChild( objectPanel );
 
 	// brush
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '0px';
-	button.style.top = '0px';
+	button.addEventListener( 'click', function () { alert( 'brush' ); }, false );
 	objectPanel.appendChild( button );
 
 	// mirror
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '0px';
-	button.style.top = '58px';
+	button.setAttribute( 'transform', 'translate(0,58)' );
+	button.addEventListener( 'click', function () { alert( 'mirror' ); }, false );
 	objectPanel.appendChild( button );
 
 	// color
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '0px';
-	button.style.top = '116px';
+	button.setAttribute( 'transform', 'translate(0,116)' );
+	button.addEventListener( 'click', function () { alert( 'color' ); }, false );
 	objectPanel.appendChild( button );
 
 	// zoom
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '50px';
-	button.style.top = '29px';
+	button.setAttribute( 'transform', 'translate(50,29)' );
+	button.addEventListener( 'click', function () { alert( 'zoom' ); }, false );
 	objectPanel.appendChild( button );
 
 	// view
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '50px';
-	button.style.top = '87px';
+	button.setAttribute( 'transform', 'translate(50,87)' );
+	button.addEventListener( 'click', function () { alert( 'view' ); }, false );
 	objectPanel.appendChild( button );
 
 	// smooth
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '50px';
-	button.style.top = '145px';
+	button.setAttribute( 'transform', 'translate(50,145)' );
+	button.addEventListener( 'click', function () { alert( 'smooth' ); }, false );
 	objectPanel.appendChild( button );
 
 	// erase
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '100px';
-	button.style.top = '58px';
+	button.setAttribute( 'transform', 'translate(100,58)' );
+	button.addEventListener( 'click', function () { alert( 'erase' ); }, false );
 	objectPanel.appendChild( button );
 
 	// size
 	var button = new Button();
-	button.style.position = 'absolute';
-	button.style.left = '100px';
-	button.style.top = '116px';
+	button.setAttribute( 'transform', 'translate(100,116)' );
+	button.addEventListener( 'click', function () { alert( 'size' ); }, false );
 	objectPanel.appendChild( button );
-
-	// Soup Panel
-
-	*/
 
 
 	this.getDomElement = function () {
