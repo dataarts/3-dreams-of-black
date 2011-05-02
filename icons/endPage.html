@@ -58,15 +58,21 @@
         var gee = new GEE({ fullscreen: true, container: container });
         var g = gee.ctx;
 
+        var core  = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 75);
         var inner = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 95);
+        var outer = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 130, .25);
+            outer.showFill = false;
+            outer.insides  = true;
             inner.showFill = false;
+            outer.setRadius(.19);
+            core.setRadius(.12);
 
         var heart = {
           svg: new Heart(gee, "assets/eminating-heart.svg", 0, 0),
           point: new WonderWall.Point(gee, gee.width * .5, gee.height * .5)
         };
-        heart.svg.showDrips = false;
-        heart.svg.showBoils = false;
+        heart.point.r = .0625;
+        
 
         // Colors for rome
         var rome = rome || {};
@@ -81,11 +87,17 @@
         for(var i = 0; i < navigation.list.length; i++) {
           var dom = navigation.list[i];
           dom.addEventListener("mouseover", function(e) {
-            inner.setUpdate(true);
+            var iterator = navigation.list.indexOf(this);
+            core.setUpdatePoint(true, iterator);
+            inner.setUpdatePoint(true, iterator);
+            outer.setUpdatePoint(true, iterator);
             heart.point.updating = true;
           }, false);
           dom.addEventListener("mouseout", function(e) {
-            inner.setUpdate(false);
+            var iterator = navigation.list.indexOf(this);
+            core.setUpdatePoint(false, iterator);
+            inner.setUpdatePoint(false, iterator);
+            outer.setUpdatePoint(false, iterator);
             heart.point.updating = false;
           }, false);
         }
@@ -101,81 +113,10 @@
 
           g.strokeStyle = rome.color.black;
           g.lineWidth = 0.5;
-          g.beginPath();
-          for(var i = 0; i < points.length; i++) {
-            var point = points[i];
-            var xpos  = point.x;
-            var ypos  = point.y;
+          outer.update().render();
 
-            if(i == 0) {
-              ypos -= 48;
-              g.moveTo(xpos, ypos);
-            } else if(i == 1) {
-              xpos += 43;
-              ypos -= 15;
-              g.lineTo(xpos, ypos);
-            } else if(i == 2) {
-              xpos += 28;
-              ypos += 38;
-              g.lineTo(xpos, ypos);
-            } else if(i == 3) {
-              xpos -= 28;
-              ypos += 38;
-              g.lineTo(xpos, ypos);
-            } else if(i == 4) {
-              xpos -= 43;
-              ypos -= 15;
-              g.lineTo(xpos, ypos);
-            }
-          }
-          g.closePath();
-          g.stroke();
-
-          for(var i = 0; i < points.length; i++) {
-            var point = points[i];
-            var xpos  = point.x;
-            var ypos  = point.y;
-            var ox    = xpos;
-            var oy    = ypos;
-
-            g.beginPath();
-            if(i == 0) {
-              ypos -= 48;
-              oy += 20;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 1) {
-              xpos += 43;
-              ypos -= 15;
-              ox -= 19;
-              oy += 6;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 2) {
-              xpos += 28;
-              ypos += 38;
-              ox -= 11;
-              oy -= 16;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 3) {
-              xpos -= 28;
-              ypos += 38;
-              ox += 12;
-              oy -= 17;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            } else if(i == 4) {
-              xpos -= 43;
-              ypos -= 15;
-              ox += 19;
-              oy += 6;
-              g.moveTo(ox, oy);
-              g.lineTo(xpos, ypos);
-            }
-            g.closePath();
-            g.stroke();
-          }
+          g.globalCompositeOperation = "destination-out";
+          core.update().render();
 
           g.globalCompositeOperation = "source-out";
           g.lineWidth = 32;

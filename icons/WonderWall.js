@@ -14,7 +14,6 @@ WonderWall.Point = function(gee, x, y) {
   this.r = .15;
   this.threshold = 0.1;
   this.easing = 0.125;
-  this.maxDist = gee.height / 3.9;
   this.updating = false;
   this.angle = 0;
 
@@ -26,8 +25,6 @@ WonderWall.Point = function(gee, x, y) {
       var dy = gee.mouseY - oy;
       var d = Math.sqrt(dx * dx + dy * dy);
 
-      if(d <= this.maxDist) {
-
         var s = dx;
         var c = dy;
 
@@ -35,14 +32,7 @@ WonderWall.Point = function(gee, x, y) {
         y = oy + (c * this.r);
 
         this.easing = .0625;
-      } else {
-
-        x = ox;
-        y = oy;
-        angle = 0;
-
-        this.easing = 0.0625;
-      }
+        
     } else {
 
       x = ox;
@@ -159,6 +149,18 @@ WonderWall.Pentagon = function(gee, x, y, r) {
     for(var i = 0; i < points.length; i++) {
       var point = points[i];
       point.updating = b;
+    }
+  };
+
+  this.setUpdatePoint = function(b, n) {
+    var point = points[n];
+    point.updating = b;
+  }
+
+  this.setRadius = function(r) {
+    for(var i = 0; i < points.length; i++) {
+      var point = points[i];
+      point.r = r;
     }
   };
 
