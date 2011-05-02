@@ -4,7 +4,7 @@ function HandleErrors(d) {
   var that = this;
   var destination = d || "http://ro.me/alternate";
 
-  Trailer = "<ul><li><a href = '#'>Watch Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li><a href = 'http://ro.me/tech'>The Technology</a></li></ul>";
+  Trailer = "<ul id = 'trailer'><li class = 'first'><a href = '#'>Watch Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
   this.MagicVariable = "case";
 

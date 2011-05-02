@@ -1,10 +1,10 @@
 var UgcHandler = function () {
 
-	var base_url = '/ugc/';
+	var base_url = '/ugc/objects';
 
 	this.getLatestUGOs = function ( callback ) {
 
-		var url = base_url + 'latest';
+		var url = base_url + '/latest';
 
 		var request = new XMLHttpRequest();
 		request.open( 'GET', url, true );
@@ -15,11 +15,11 @@ var UgcHandler = function () {
 
 				if ( request.status == 200 ) {
 
-					callback( eval( request.responseText ) );
+					callback( JSON.parse( request.responseText ) );
 
 				} else {
 
-					console.log( 'UGCHandler::getLatestUGOs: An error has occured making the request' );
+					console.log( 'Unable to load latest User Generated Content' );
 
 				}
 
@@ -33,16 +33,16 @@ var UgcHandler = function () {
 
 	this.submitUGO = function ( title, email, type, data, image, callback ) {
 
-		var url = base_url + 'objects';
+		var url = base_url;
 
-		var data = 'title=' + title + '&email=' + email + '&type=' + type + '&object=' + data + '&image=' + image;
+		var params = 'title=' + title + '&email=' + email + '&type=' + type + '&data=' + data + '&image=' + image;
 
 		console.log( data );
 
 		var request = new XMLHttpRequest();
-		request.open( 'POST', url );
+		request.open( 'POST', url, true );
 		request.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
-//		request.setRequestHeader( 'Content-length', data.length );
+//		request.setRequestHeader( 'Content-length', params.length );
 //		request.setRequestHeader( 'Connection', 'close' );
 
 		request.onreadystatechange = function () {
@@ -51,11 +51,11 @@ var UgcHandler = function () {
 
 				if ( request.status == 200 ) {
 
-					callback( request.responseText /*eval( request.responseText )*/ );
+					callback( request.responseText );
 
 				} else {
 
-					console.log( 'UGCHandler::submitUGO: An error has occured making the request' );
+					console.log( 'Submission of model failed' );
 
 				}
 
@@ -63,7 +63,7 @@ var UgcHandler = function () {
 
 		}
 
-		request.send( data );
+		request.send( params );
 
 	};
 
