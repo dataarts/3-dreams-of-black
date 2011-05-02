@@ -237,7 +237,7 @@ ROME.AnimalShader = {
 					"animalMorphValue" :    		{ type: "f", value: 0.0 },					
 
 					"lightScale"  :    { type: "f", value: 1.0 },
-					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) },
+					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) }
 
 			   } ] );
 	},
@@ -837,7 +837,7 @@ ROME.AnimalAnimationData = {
 						array: undefined,
 						buffer: undefined,
 						needsUpdate: false,
-						__webglInitialized: true,
+						__webglInitialized: true
 
 					};
 					

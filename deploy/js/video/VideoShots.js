@@ -28,7 +28,7 @@ var VideoShots = {
         path: "files/videos/transition_city.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1000,
-		duration: 20000,
+		duration: 20000
 
     }],
     
@@ -121,7 +121,7 @@ var VideoShots = {
     }, {
         path: "files/videos/s03_layer01.webm",
         shaderId: VIDEO_HALFALPHA,
-        z: -990,
+        z: -990
     }],
     
     s02_04: [{
@@ -139,7 +139,7 @@ var VideoShots = {
     }, {
         path: "files/videos/s04_layer01.webm",
         shaderId: VIDEO_HALFALPHA,
-        z: -990,
+        z: -990
     }],
     
     s02_06: [{

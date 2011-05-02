@@ -21,7 +21,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance 
 		keepEmitterFollowDown : false,
 		normalOffsetAmount : 6,
 		minDistance : 10,
-		camera : camera,
+		camera : camera
 
 	};
 

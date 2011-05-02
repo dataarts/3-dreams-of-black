@@ -2,7 +2,7 @@ var VideoShaderSource = {
 	opaque: {
 
 		uniforms: {
-			"map" : { type: "t", value: 0, texture: null },
+			"map" : { type: "t", value: 0, texture: null }
 		},
 
 		vertexShader: [
@@ -29,7 +29,7 @@ var VideoShaderSource = {
 	halfAlpha : {
 
 		uniforms: {
-			"map": { type: "t", value: 0, texture: null },
+			"map": { type: "t", value: 0, texture: null }
 		},
 
 		vertexShader: [
@@ -277,7 +277,7 @@ var VideoShaderSource = {
 		uniforms: {
             "aspect": { type: "f", value: 0 },
 			"map": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() },
+            "mouseXY": { type: "v2", value: new THREE.Vector2() }
 		},
 
 		vertexShader: [

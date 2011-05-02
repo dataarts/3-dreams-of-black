@@ -7,7 +7,7 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 	var scene = scene;
 
 	that.initSettings = {
-		numOfRibbons : numOfRibbons || 6,
+		numOfRibbons : numOfRibbons || 6
 	}
 
 	that.settings = {
@@ -15,7 +15,7 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 		ribbonPulseMultiplier_2 : 5.5,
 		ribbonMin : 1.5,
 		ribbonMax : 3,
-		visible : true,
+		visible : true
 	}
 	
 	var r = 0;

@@ -6,14 +6,14 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 	var scene = scene;
 
 	that.initSettings = {
-		numOfAnimals : numOfAnimals || 3,
+		numOfAnimals : numOfAnimals || 3
 	}
 
 	that.settings = {
 		divider : 2,
 		constantSpeed : null,
 		addaptiveSpeed : false,
-		capy : null,
+		capy : null
 	}
 	
 	var i;
