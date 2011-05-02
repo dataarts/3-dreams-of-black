@@ -171,7 +171,7 @@ var DunesWorld = function ( shared ) {
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var data = eval( objects[ i ].UGC );
+			var data = eval( objects[ i ] );
 
 			if ( data instanceof Array ) {
 
@@ -565,7 +565,7 @@ var DunesWorld = function ( shared ) {
 		var visible1 = showHideStaticTiles(t1.position, true);
 		var visible2 = showHideStaticTiles(t2.position, true);
 
-		// temp, since visible don´t seem to effect scenes
+		// temp, since visible donï¿½t seem to effect scenes
 
 		if ( visible0 ) {
 

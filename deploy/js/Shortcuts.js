@@ -51,7 +51,7 @@ var Shortcuts = function ( shared ) {
 		element.innerHTML = ' ';
 		domElement.appendChild( element );
 
-	};
+	}
 
 	function addLink( text, callback ) {
 
@@ -85,7 +85,7 @@ var Shortcuts = function ( shared ) {
 
 		} );
 
-	};
+	}
 
 	function addRelauncherShortcut( text ) {
 
@@ -125,4 +125,4 @@ var Shortcuts = function ( shared ) {
 
 	};
 
-}
+};
