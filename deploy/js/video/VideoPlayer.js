@@ -21,7 +21,6 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var targetPos;
 	
 	this.duration = layers[ 0 ].duration;
-	console.log( layers[ 0 ].path + ": " + this.duration) ;
 	
 	this.init = function(){
 		

@@ -31,24 +31,62 @@ var VideoShots = {
 	}],
 	
 	s01_03: [{
-        path: "files/videos/s03_layer01.webm",
+        path: "files/videos/city/s03_layer04.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1000,
 		duration: 8120
+	},{
+        path: "files/videos/city/s03_layer03.webm",
+        shaderId: VIDEO_KEYED,
+        z: -900,
+		colorScale: .9,
+        threshold: .25,
+        alphaFadeout: .35
+	},{
+        path: "files/videos/city/s03_layer02.webm",
+        shaderId: VIDEO_KEYED,
+        z: -800,
+        colorScale: .9,
+        threshold: .28,
+        alphaFadeout: .35
+	},{
+        path: "files/videos/city/s03_layer01.webm",
+        shaderId: VIDEO_KEYED,
+        z: -700,
+        colorScale: .9,
+        threshold: .28,
+        alphaFadeout: .35
 	}],
 	
 	s01_06: [{
-        path: "files/videos/s06_layer06.webm",
+        path: "files/videos/city/s06_layer02.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1000,
 		duration: 2030	
+	},{
+        path: "files/videos/city/s06_layer01.webm",
+        shaderId: VIDEO_KEYED,
+        z: -900,
+		colorScale: .99,
+        threshold: .45,
+        alphaFadeout: .35	
 	}],
 	
 	s01_09: [{       
-	    path: "files/videos/s09_layer01.webm",
-        shaderId: VIDEO_OPAQUE,
+	    path: "files/videos/city/s09_layer02.webm",
+        shaderId: VIDEO_KEYED,
         z: -1000,
-		duration: 8230	
+		duration: 8230,
+		colorScale: .99,
+        threshold: .45,
+        alphaFadeout: .35	
+	},{       
+	    path: "files/videos/city/s09_layer01.webm",
+        shaderId: VIDEO_KEYED,
+        z: -900,
+		colorScale: .99,
+        threshold: .45,
+        alphaFadeout: .35
 	}],
    
     dunesLayers: [{
