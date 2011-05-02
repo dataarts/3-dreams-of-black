@@ -1,4 +1,4 @@
-var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
+var AnimalSwarm5 = function ( numOfAnimals, scene, vectorArray ) {
 	
 	var that = this;
 
