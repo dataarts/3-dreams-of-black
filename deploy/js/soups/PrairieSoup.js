@@ -225,7 +225,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 	
 	// trail - of grass/trees/etc
-	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000 } ),
+	/*var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x170202 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x030303 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x080808 } ),
@@ -234,41 +234,34 @@ var PrairieSoup = function ( camera, scene, shared ) {
 					 new THREE.MeshLambertMaterial( { color: 0x080808 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x030303 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x080808 } )
-	];
+	];*/
 
 	var trail = new Trail(80, scene);
 	// preoccupy for differnt grass
 	for (i=0; i<80; ++i ) {
-		var type = i%4;
+		var type = i%2;
 		trail.array[i] = "0"+(type+1);
 	}
 	trail.settings.spread = 10;
 	trail.settings.aliveDivider = 40;
 	trail.settings.tweenTime = 400;
-	trail.settings.scale = 0.4;
-	trail.settings.offsetAmount = 9;
+	trail.settings.scale = 5.0;
+	trail.settings.offsetAmount = 10;
 
-	loader.load( { model: "files/models/soup/grass01.js", callback: grass01LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass02.js", callback: grass02LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass03.js", callback: grass03LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass04.js", callback: grass04LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass05.js", callback: grass05LoadedProxy } );
+	loader.load( { model: "files/models/soup/darkBlob1.js", callback: blob01LoadedProxy } );
+	loader.load( { model: "files/models/soup/darkBlob2.js", callback: blob02LoadedProxy } );
+	loader.load( { model: "files/models/soup/darkBlob3.js", callback: blob03LoadedProxy } );
 
-	function grass01LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "01", false, false, trailMaterials );
+	function blob01LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "01", false, false );
 	}
-	function grass02LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "02", false, false, trailMaterials );
+	function blob02LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "02", false, false );
 	}
-	function grass03LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "03", false, false, trailMaterials );
+	function blob03LoadedProxy( geometry ) {
+		trail.addInstance( geometry, "03", false, false );
 	}
-	function grass04LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "04", false, false, trailMaterials );
-	}
-	function grass05LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "05", false, false, trailMaterials );
-	}
+
 
 
 
