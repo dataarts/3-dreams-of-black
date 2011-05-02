@@ -20,7 +20,7 @@ var VideoShaderSource = {
 			
 			"void main() {",				
 				"vec4 c = texture2D( map, vUv );",				
-				"gl_FragColor = c;",
+				"gl_FragColor = vec4( c.rgb * vec3(1.4), 1.0);",
 			"}"
 		].join("\n")
 
