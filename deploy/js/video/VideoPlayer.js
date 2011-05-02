@@ -21,7 +21,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var targetPos;
 	
 	this.duration = layers[ 0 ].duration;
-	console.log( layers[ 0 ].path + ": " + this.duration) ;
+	console.log( layers[ 0 ].path + ": " + this.duration );
 	
 	this.init = function(){
 		
@@ -39,7 +39,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 		gridLoader = new THREE.JSONLoader();
 		gridLoader.load( { model: "files/models/VideoDistortGrid.js", callback: onGrid } );
 
-	}
+	};
 	
 	this.onLoad = function() {
 
@@ -66,16 +66,16 @@ var VideoPlayer = function( shared, layers, conf ) {
 		scene = new THREE.Scene();
 		scene.addLight( new THREE.AmbientLight( 0x000000 ) );
 
-		for(var i = 0; i < layers.length; i++) {
+		for(var i = 0; i < layers.length; i++ ) {
 
-			var p = new VideoPlane(layers[i], config);
-			planes.push(p);
-			scene.addObject(p.mesh);
-			if(p.wireMesh) scene.addObject(p.wireMesh);
+			var p = new VideoPlane( shared, layers[i], config );
+			planes.push( p );
+			scene.addObject( p.mesh );
+			if( p.wireMesh ) scene.addObject( p.wireMesh );
 
 		}
 
-	}
+	};
 	
 	this.show = function( progress ) {
 
@@ -85,7 +85,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 
 		}
 
-	}
+	};
 	
 	this.hide = function(){
 
@@ -95,7 +95,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 
 		}
 
-	}
+	};
 	
 	this.update = function( progress, delta, time ) {
 
@@ -122,7 +122,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 		
 		renderer.render( scene, camera, renderTarget );
 		//renderer.render( scene, camera );
-	}
+	};
 	
 	// #####
 	//var windowHalfX = window.innerWidth >> 1;
@@ -131,7 +131,8 @@ var VideoPlayer = function( shared, layers, conf ) {
 	//	mouseX = (event.clientX - windowHalfX) / -windowHalfX;
 	//	mouseY = (event.clientY - windowHalfY) / windowHalfY;
 	//}
-}
+
+};
 
 
 VideoPlayer.prototype = new SequencerItem();
