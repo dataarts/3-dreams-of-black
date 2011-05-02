@@ -19,31 +19,30 @@ var Clouds = function ( shared ) {
 
 	// Clouds
 
-  //////////////////////////////////////////////////////////////////
-  // BIRDS                                                        //
-  //////////////////////////////////////////////////////////////////
-  var boid, bird;
+	//////////////////////////////////////////////////////////////////
+	// BIRDS                                                        //
+	//////////////////////////////////////////////////////////////////
+	var boid, bird;
 	var birds = [];
 	var boids = [];
-  var morphObject = [];
-  //////////////////////////////////////////////////////////////////
+	var morphObject = [];
+	//////////////////////////////////////////////////////////////////
 
-  var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
+	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
 	camera, postCamera, scene, postScene, birdsScene, renderer, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos;
-  fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
+	
+	fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
   
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
 
 	scene = new THREE.Scene();
-  birdsScene = new THREE.Scene();
-  birdsGroup = new THREE.Object3D();
+	birdsScene = new THREE.Scene();
+	birdsGroup = new THREE.Object3D();
 
 	geometry = new THREE.Geometry();
 
 	var texture = THREE.ImageUtils.loadTexture( 'files/cloud256.png', null, function () {
-
-
 
 		material = new THREE.MeshShaderMaterial( {
 

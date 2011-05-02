@@ -112,7 +112,6 @@ var LauncherSection = function ( shared ) {
 	this.show = function () {
 
 		clouds.show();
-
 		domElement.style.display = 'block';
 
 	};
