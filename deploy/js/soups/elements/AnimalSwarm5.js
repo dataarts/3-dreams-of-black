@@ -103,12 +103,17 @@ var AnimalSwarm5 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i] = obj;
 
 		}
+		
+		return animal;
 
-	}
+	};
 
 	// switch animal test
-	this.switchAnimal = function (geometry, scale, index) {
+
+	this.switchAnimal = function ( geometry, scale, index ) {
+
 		console.log("switch");
+
 		var scaleMultiplier = scale || 1.2;
 		var arrayIndex = index || 0;
 
@@ -153,12 +158,17 @@ var AnimalSwarm5 = function ( numOfAnimals, scene, vectorArray ) {
 		that.array[arrayIndex].c = mesh;
 		that.array[arrayIndex].a = animal;
 		that.array[arrayIndex].scale = scale * scaleMultiplier;
-	}
 
-	this.create = function (position, normal, toPosition) {
-		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
-			if (that.array[i].active) {
+	};
+
+	this.create = function ( position, normal, toPosition ) {
+
+		for ( i=0; i<that.initSettings.numOfAnimals; ++i ) {
+
+			if ( that.array[i].active ) {
+
 				continue;
+
 			}
 
 			var pos = new THREE.Vector3();
