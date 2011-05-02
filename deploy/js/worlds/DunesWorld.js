@@ -14,8 +14,8 @@ var DunesWorld = function ( shared ) {
 
 	// Fog
 
-	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000275 );
-	//this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00000275 );
+	//this.scene.fog = new THREE.FogExp2( 0xffffff, 0.000275 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.00000275 );
 	this.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
 
 	// Lights
