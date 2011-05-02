@@ -1,4 +1,4 @@
-var Clouds = function ( shared ) {
+var Clouds = function ( shared, isRelaunch ) {
 
 	/*
 	var canvas = document.createElement( 'canvas' );
@@ -100,7 +100,11 @@ var Clouds = function ( shared ) {
 		for ( var i = 0; i < 4000; i++ ) {
 
 			plane.position.x = Math.random() * 1000 - 500;
-			plane.position.y = - Math.random() * Math.random() * 200 - 15;
+			if(isRelaunch) {
+				plane.position.y = - Math.random() * Math.random() * 200 + 25;
+			} else {
+				plane.position.y = - Math.random() * Math.random() * 200 - 15;
+			}
 			plane.position.z = i;
 			plane.rotation.z = Math.random() * Math.PI;
 			plane.scale.x = plane.scale.y = Math.random() * Math.random() * 1.5 + 0.5;
@@ -188,9 +192,11 @@ var Clouds = function ( shared ) {
 
 
   function onMouseMove () {
-		mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
-		mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
-    vector = new THREE.Vector3( shared.mouse.x - shared.screenWidth/2, - shared.mouse.y + shared.screenHeight/2, 0 );
+		if(!isRelaunch) {
+			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
+			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
+			vector = new THREE.Vector3( shared.mouse.x - shared.screenWidth/2, - shared.mouse.y + shared.screenHeight/2, 0 );
+		}
 	}
 
   function makeScene(geometry){

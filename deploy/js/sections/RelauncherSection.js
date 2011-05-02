@@ -11,9 +11,7 @@
 
 
 // TODO:
-// + Add styles
 // + Add Footer
-// + Add Different Clouds
 
 var RelauncherSection = function( shared ) {
 
@@ -21,7 +19,10 @@ var RelauncherSection = function( shared ) {
 
 	var domElement = document.createElement("div");
 			domElement.setAttribute("id", "relauncher-section");
+			domElement.style.position = "relative";
 			domElement.style.display = 'none';
+
+	var navigation = {};
 
 	// add css styling
 	var rule = document.createTextNode("#relauncher-section div.after-experience { position: absolute; padding: 25px 50px; border: 1px solid #c9c8c1; text-transform: uppercase; font: 500 12px / 17px 'Futura', Arial, sans-serif; letter-spacing: 1px; color: #434343; cursor: pointer; } #relauncher-section div.after-experience:hover { color: #f15d22; background: #30302e; }");
@@ -35,14 +36,14 @@ var RelauncherSection = function( shared ) {
 	}
 	head.appendChild(style);
 
-	var clouds = new Clouds(shared);
+	var clouds = new Clouds(shared, true);
 	var d = clouds.getDomElement();
-			d.setAttribute("style", "position: absolute; z-index: -1;");
+			d.style.background = "#fff";
 			domElement.appendChild(d);
 
 	var container = document.createElement("div");
 			container.setAttribute("id", "container");
-			container.setAttribute("style", "position: absolute; z-index: 1000;")
+			container.setAttribute("style", "position: absolute;");
 			domElement.appendChild(container);
 
 	var gee = new GEE({
@@ -80,7 +81,7 @@ var RelauncherSection = function( shared ) {
 	};
 
 	// Handle dom elements
-	var navigation = initDomElements(domElement);
+	navigation = initDomElements(domElement);
 	for (var i = 0; i < navigation.list.length; i++) {
 
 		var dom = navigation.list[i];
@@ -149,11 +150,9 @@ var RelauncherSection = function( shared ) {
 			var xpos = point.x;
 			var ypos = point.y;
 
-			console.log(navItem);
-
 			if (i == 0) {
+				xpos -= 82;
 				ypos -= 159;
-				xpos -= (navItem.offsetWidth / 2.0);
 			} else if (i == 1) {
 				xpos += 133;
 				ypos -= 45;
@@ -242,6 +241,7 @@ var RelauncherSection = function( shared ) {
 		navigation.explore = explore;
 
 		navigation.list = [start, otherDreams, explore, add, technology];
+		init = true;
 
 		return navigation;
 	}
@@ -249,6 +249,7 @@ var RelauncherSection = function( shared ) {
 	this.show = function() {
 
 		clouds.show();
+		updateDomElementsPosition();
 		domElement.style.display = 'block';
 
 	};
