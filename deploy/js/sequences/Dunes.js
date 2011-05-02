@@ -247,7 +247,7 @@ var Dunes = function ( shared ) {
 		}
 
 
-		// calculate sum of all factors and 
+		// calculate sum of all factors 
 
 		var cameraSpeedFactor = wantedCameraSpeedFactor.forward *
 							    wantedCameraSpeedFactor.up *
@@ -261,6 +261,7 @@ var Dunes = function ( shared ) {
 		wantedCameraTarget.position.y -= mouseY * this.CAMERA_VERTICAL_FACTOR;
 		wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, this.CAMERA_LOWEST_Y );
 		wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, this.CAMERA_HIGHEST_Y );
+
 
 		// cap target-position differance to vertical limit
 
@@ -277,7 +278,6 @@ var Dunes = function ( shared ) {
 			}
 			
 		}
-
 
 
 		// handle left/right		
@@ -299,6 +299,16 @@ var Dunes = function ( shared ) {
 		wantedCamera.position.addSelf( wantedCameraDirection.multiplyScalar( cameraSpeed * cameraSpeedFactor ));
 		wantedCamera.position.y = Math.max( wantedCamera.position.y, this.CAMERA_LOWEST_Y );
 		wantedCamera.position.y = Math.min( wantedCamera.position.y, this.CAMERA_HIGHEST_Y );
+
+
+		// lift off
+		
+		if ( progress > world.startLift && progress < world.endLift ) {
+
+			wantedCamera.position.y += world.liftSpeed * ( delta / 1000 );
+			wantedCameraTarget.position.y += world.liftSpeed * ( delta / 2000 );
+	
+		}
 
 
 		// intertia
