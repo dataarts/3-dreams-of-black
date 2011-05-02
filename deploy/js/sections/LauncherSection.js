@@ -9,7 +9,8 @@ var LauncherSection = function ( shared ) {
 	loading, footer, footerRight;
 
 	domElement = document.createElement( 'div' );
-	domElement.style.height = window.innerHeight + 'px';
+  domElement.style.width = window.innerWidth + 'px';
+  domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#4584b4';
 	domElement.style.textAlign = 'center';
 
@@ -39,6 +40,10 @@ var LauncherSection = function ( shared ) {
 
 		clouds = new Clouds( shared );
 		clouds.getDomElement().style.position = 'absolute';
+    clouds.getDomElement().style.left = "0px";
+    clouds.getDomElement().style.top = "0px";
+    clouds.getDomElement().style.width = window.innerWidth+"px";
+    clouds.getDomElement().style.height = window.innerHeight+"px";
 		domElement.appendChild( clouds.getDomElement() );
 
 		// UI
@@ -159,6 +164,7 @@ var LauncherSection = function ( shared ) {
 		loading.getDomElement().style.top = '215px';
 		loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
 
+    domElement.style.width = width + 'px';
 		domElement.style.height = height + 'px';
 
 	};
