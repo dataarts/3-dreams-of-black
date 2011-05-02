@@ -6,14 +6,14 @@ var Vectors = function ( length, divider, normaldivider, startPos ) {
 	var i;
 
 	that.initSettings = {
-		length : length || 50,
+		length : length || 50
 	}
 
 	that.settings = {
 		divider : divider || 4,
 		normaldivider : normaldivider || 10,
 		absoluteTrail : false,
-		startPosition : startPos || new THREE.Vector3(0,0,0),
+		startPosition : startPos || new THREE.Vector3(0,0,0)
 	}	
 
 	// vectors

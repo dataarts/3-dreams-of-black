@@ -10,14 +10,14 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 		numOfParticleSystems : numOfParticleSystems || 25,
 		numInSystem : numInSystem || 60,
 		spread : spread || 50,
-		particleSize : particleSize || 8,
+		particleSize : particleSize || 8
 	}
 
 	that.settings = {
 		aliveDivider : 3,
 		zeroAlphaStart : true,
 		visible : true,
-		gravitateTowardsCamera : false, 
+		gravitateTowardsCamera : false
 	}
 
 	var i;

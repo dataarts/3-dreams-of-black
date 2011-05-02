@@ -19,12 +19,12 @@ var PaintEffectDunes = function ( shared ) {
 			"screenWidth": { type: "f", value:shared.baseWidth },
 			"screenHeight": { type: "f", value:shared.baseHeight },
 			"vingenettingOffset": { type: "f", value: 1.2 },
-			"vingenettingDarkening": { type: "f", value: 0.7 },
+			"vingenettingDarkening": { type: "f", value: 0.64 },
 			"colorOffset": { type: "f", value: 0 },
 			"colorFactor": { type: "f", value: 0 },
 			"colorBrightness": { type: "f", value: 0 },
 			"sampleDistance": { type: "f", value: 0.4 },
-			"waveFactor": { type: "f", value: 0.0115 },
+			"waveFactor": { type: "f", value: 0.00756 },
 			"colorA": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 			"colorB": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 			"colorC": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) }
@@ -76,7 +76,7 @@ var PaintEffectDunes = function ( shared ) {
 					"vin = (uv - vec2(0.5)) * vec2(4.0);",
 					"sample_dist =(dot( vin, vin ) * 2.0);",
 					
-					"f = (waveFactor * 100.0 + sample_dist) * sampleDistance * 0.5;",
+					"f = (1.86 + sample_dist) * sampleDistance * 0.5;",
 	
 					"vec2 sampleSize = vec2(  1.0 / screenWidth, 1.0 / screenHeight ) * vec2(f);",
 	

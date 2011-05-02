@@ -4,13 +4,16 @@ var LauncherSection = function ( shared ) {
 
 	var domElement,
 	canvas, context, gradient,
-	clouds, title, titleOverlay, loading, footer;
+	clouds, title, buttonEnter, buttonStart,
+	loading, footer;
 
 	domElement = document.createElement( 'div' );
 	domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#4584b4';
 	domElement.style.textAlign = 'center';
 
+	var isLoading = false;
+	
 	this.load = function () {
 
 		// Background
@@ -44,21 +47,28 @@ var LauncherSection = function ( shared ) {
 		title.innerHTML = '<img src="files/title_heart_loading.png">';
 		domElement.appendChild( title );
 
-		titleOverlay = document.createElement( 'div' );
-		titleOverlay.style.position = 'absolute';
-		titleOverlay.style.cursor = 'pointer';
-		titleOverlay.innerHTML = '<img src="files/title_heart_enter.png">';
-		titleOverlay.addEventListener( 'click', function () {
+		buttonEnter = document.createElement( 'div' );
+		buttonEnter.style.position = 'absolute';
+		buttonEnter.style.cursor = 'pointer';
+		buttonEnter.innerHTML = '<img src="files/title_heart_enter.png">';
+		buttonEnter.addEventListener( 'click', function () {
 
 			loading.getDomElement().style.display = 'block';
-			titleOverlay.style.display = 'none';
+			buttonEnter.style.display = 'none';
 
+			isLoading = true;
+			
 			shared.signals.load.dispatch();
 
 		}, false );
-		domElement.appendChild( titleOverlay );
+		domElement.appendChild( buttonEnter );
 
-		loading = new LoadingBar( function () {
+		buttonStart = document.createElement( 'div' );
+		buttonStart.style.position = 'absolute';
+		buttonStart.style.cursor = 'pointer';
+		buttonStart.style.display = 'none';
+		buttonStart.innerHTML = '<img src="files/title_heart_start.png">';
+		buttonStart.addEventListener( 'click', function () {
 
 			shared.signals.showfilm.dispatch();
 
@@ -69,8 +79,19 @@ var LauncherSection = function ( shared ) {
 				shared.signals.startfilm.dispatch( 0, 1 );
 
 			}, 1000 );
+			
+		}, false );
+		domElement.appendChild( buttonStart );
+		
+		loading = new LoadingBar( function () {
+			
+			loading.getDomElement().style.display = 'none';
+			buttonStart.style.display = 'block';
+			
+			isLoading = false;
 
 		} );
+
 		loading.getDomElement().style.position = 'absolute';
 		loading.getDomElement().style.display = 'none';
 
@@ -91,7 +112,6 @@ var LauncherSection = function ( shared ) {
 	this.show = function () {
 
 		clouds.show();
-
 		domElement.style.display = 'block';
 
 	};
@@ -103,8 +123,8 @@ var LauncherSection = function ( shared ) {
 		title.style.top = '60px';
 		title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
 
-		titleOverlay.style.top = '210px';
-		titleOverlay.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+		buttonEnter.style.top = buttonStart.style.top = '210px';
+		buttonEnter.style.left = buttonStart.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
 
 		loading.getDomElement().style.top = '215px';
 		loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
@@ -122,7 +142,11 @@ var LauncherSection = function ( shared ) {
 
 	this.update = function () {
 
-		clouds.update();
+		if ( ! isLoading ) {
+		
+			clouds.update();
+			
+		}
 
 	};
 
