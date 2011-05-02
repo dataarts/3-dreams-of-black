@@ -21,7 +21,6 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var targetPos;
 	
 	this.duration = layers[ 0 ].duration;
-	console.log( layers[ 0 ].path + ": " + this.duration );
 	
 	this.init = function(){
 		
@@ -66,7 +65,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 		scene = new THREE.Scene();
 		scene.addLight( new THREE.AmbientLight( 0x000000 ) );
 
-		for(var i = 0; i < layers.length; i++ ) {
+		for(var i = 0; i < layers.length; i++) {
 
 			var p = new VideoPlane( shared, layers[i], config );
 			planes.push( p );
