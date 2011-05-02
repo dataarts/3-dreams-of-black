@@ -125,9 +125,9 @@ var VideoPlayer = function(shared, layers, conf){
     mouseNewX = mouseX;
     mouseNewY = mouseY;
 
-    mouseSpeed.x += (1800*limitSpeed(mouseNewX-mouseOldX,0.1)/delta - mouseSpeed.x)/12;
-    mouseSpeed.y += (1800*limitSpeed(mouseNewY-mouseOldY,0.1)/delta - mouseSpeed.y)/12;
-    mouseRad += (Math.max(Math.min((Math.abs(mouseSpeed.x)+Math.abs(mouseSpeed.y)),2),0.3)-mouseRad)/5;
+    mouseSpeed.x += (1000*limitSpeed(mouseNewX-mouseOldX,0.1)/delta - mouseSpeed.x)/12;
+    mouseSpeed.y += (1000*limitSpeed(mouseNewY-mouseOldY,0.1)/delta - mouseSpeed.y)/12;
+    mouseRad += (Math.max(Math.min((Math.abs(mouseSpeed.x)+Math.abs(mouseSpeed.y)),3),0.4)-mouseRad)/2;
 
     mouseOldX = mouseX;
     mouseOldY = mouseY;
