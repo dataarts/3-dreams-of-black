@@ -405,7 +405,7 @@ var DunesWorld = function ( shared ) {
 			var colliders = scene.collisions.colliders;
 
 			for( var i = 0; i < colliders.length; i++ ) {
-				
+
 				if ( colliders[ i ].mesh == node ) {
 				
 					node.__isCollider = true; 

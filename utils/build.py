@@ -20,6 +20,11 @@ files = [
 'js/lib/UgcHandler.js',
 'js/lib/Utils.js',
 
+'js/lib/Gee.js',
+'js/lib/Swell.js',
+'js/lib/WonderWall.js',
+'js/lib/Heart.js',
+
 'js/effects/ClearEffect.js',
 'js/effects/FadeInEffect.js',
 'js/effects/FadeOutEffect.js',
@@ -54,7 +59,8 @@ files = [
 'js/soups/elements/Vectors.js',
 'js/soups/elements/Particles.js',
 'js/soups/elements/AnimalSwarm.js',
-'js/soups/elements/AnimalSwarm4.js',
+'js/soups/elements/AnimalSwarm3.js',
+'js/soups/elements/AnimalSwarm5.js',
 'js/soups/elements/AnimalInFrontOfCamera.js',
 'js/soups/elements/Trail.js',
 'js/soups/elements/CollisionScene.js',
@@ -79,7 +85,6 @@ files = [
 'js/sections/UgcSection.js',
 
 'js/sections/launcher/Clouds.js',
-'js/sections/launcher/CloudsWhite.js',
 'js/sections/ugc/UgcUI.js',
 'js/sections/ugc/UgcObjectCreator.js',
 'js/sections/ugc/UgcSoupCreator.js',
