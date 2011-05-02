@@ -99,8 +99,10 @@ var AnimalSwarm4 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i] = obj;
 
 		}
+		
+		return animal;
 
-	}
+	};
 
 	// switch animal test
 	this.switchAnimal = function (geometry, scale, index) {

@@ -37,7 +37,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	];
 
-	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
+	var ribbons = new Ribbons( 6, vectors.array, scene, ribbonMaterials );
 
 	ribbons.settings.ribbonPulseMultiplier_1 = 20;
 	ribbons.settings.ribbonPulseMultiplier_2 = 0.01;
@@ -60,17 +60,19 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// flying animals
 
-	var flyingAnimals = new AnimalSwarm(20, scene, vectors.array);
+	var flyingAnimals = new AnimalSwarm( 20, scene, vectors.array );
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 10;
 	flyingAnimals.settings.divider = 10;
 	flyingAnimals.settings.constantSpeed = 0.8;
 	
-	for (var i=0; i<20; ++i ) {
+	for ( var i=0; i<20; ++i ) {
 
 		var odd = i%2;
 		if (odd == 0) {
+
 			flyingAnimals.array[i] = "b";
+
 		}
 
 	}
@@ -101,11 +103,13 @@ var DunesSoup = function ( camera, scene, shared ) {
 	this.update = function ( delta ) {
 
 		// update to reflect _real_ camera position
+
 		shared.camPos.x = camera.matrixWorld.n14;
 		shared.camPos.y = camera.matrixWorld.n24;
 		shared.camPos.z = camera.matrixWorld.n34;
 
 		// update the soup parts
+
 		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
 		ribbons.update( collisionScene.emitterFollow.position );

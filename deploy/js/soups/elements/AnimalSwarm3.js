@@ -103,12 +103,17 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i] = obj;
 
 		}
+		
+		return animal;
 
-	}
+	};
 
 	// switch animal test
+
 	this.switchAnimal = function (geometry, scale, index) {
+
 		console.log("switch");
+
 		var scaleMultiplier = scale || 1.2;
 		var arrayIndex = index || 0;
 
@@ -156,6 +161,7 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 	}
 
 	this.create = function (position, normal) {
+
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			if (that.array[i].active) {
 				continue;
@@ -196,7 +202,8 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			//console.log("created animal- "+that.array[i].toVector.x+" | "+that.array[i].toVector.y+" | "+that.array[i].toVector.y);
 			break;
 		}
-	}
+
+	};
 
 	this.update = function (delta, camPos) {
 
@@ -561,7 +568,8 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 
 	this.reset = function ( x,y,z ) {
 
-		for (var i=0; i<that.initSettings.numOfAnimals; ++i ) {
+		for ( var i = 0; i < that.initSettings.numOfAnimals; ++i ) {
+
 			var obj = that.array[i].c;
 			obj.position.x = x;
 			obj.position.y = y;
@@ -570,6 +578,6 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].active = false;
 		}
 
-	}
+	};
 
-}
+};
