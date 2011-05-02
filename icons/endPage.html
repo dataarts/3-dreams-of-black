@@ -11,7 +11,7 @@
         padding: 25px 50px;
         border: 1px solid #c9c8c1;
         text-transform: uppercase;
-        font: 500 12px / 17px "Gotham-Medium", Arial, sans-serif;
+        font: 500 12px / 17px "Futura", Arial, sans-serif;
         letter-spacing: 1px;
         color: #434343;
         cursor: pointer;
@@ -33,6 +33,7 @@
       // Return points as margin + / -
       // in order to get dom elements to move
       // with pentagon
+      
       window.onload = function() {
 
         var clouds = new Clouds();
@@ -42,7 +43,6 @@
         
         setInterval( function() {
           clouds.update();
-          updateDomElementsPosition();
         }, 1000 / 30.0);
         
         window.addEventListener("resize", function() {
@@ -183,6 +183,22 @@
         var add = createDomElement(container, "div", "add-to-the-dream", "after-experience", "add to the dream");
         var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "explore other dreams");
         var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "continue to explore");
+
+        start.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
+        technology.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
+        add.addEventListener("click", function() {
+          window.location = "/tool";
+        }, false);
+        otherDreams.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
+        explore.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
 
         navigation.start = start;
         navigation.technology = technology;
