@@ -5,7 +5,8 @@ var LauncherSection = function ( shared ) {
 	var domElement,
 	canvas, context, gradient,
 	clouds, title, buttonEnter, buttonStart,
-	loading, footer;
+	buttonEnterImg,
+	loading, footer, footerRight;
 
 	domElement = document.createElement( 'div' );
 	domElement.style.height = window.innerHeight + 'px';
@@ -44,13 +45,38 @@ var LauncherSection = function ( shared ) {
 
 		title = document.createElement( 'div' );
 		title.style.position = 'absolute';
-		title.innerHTML = '<img src="files/title_heart_loading.png">';
+		title.innerHTML = '<img src="files/logo_heart.png">';
 		domElement.appendChild( title );
 
-		buttonEnter = document.createElement( 'div' );
-		buttonEnter.style.position = 'absolute';
-		buttonEnter.style.cursor = 'pointer';
-		buttonEnter.innerHTML = '<img src="files/title_heart_enter.png">';
+		function createRolloverButton( margin, imgIdle, imgRoll ) {
+			
+			var button = document.createElement( 'div' );
+			button.style.position = 'absolute';
+			button.style.cursor = 'pointer';
+			button.style.margin = margin;
+			
+			var buttonImg = document.createElement( 'img' );
+			buttonImg.src = imgIdle;
+			
+			button.appendChild( buttonImg );
+
+			button.addEventListener( 'mouseout', function () {
+
+				buttonImg.src = imgIdle;
+
+			}, false );
+
+			button.addEventListener( 'mouseover', function () {
+
+				buttonImg.src = imgRoll;
+
+			}, false );
+			
+			return button;
+			
+		};
+		
+		buttonEnter = createRolloverButton( "10px 0 0 85px", "files/enter_idle.png", "files/enter_rollover.png" );
 		buttonEnter.addEventListener( 'click', function () {
 
 			loading.getDomElement().style.display = 'block';
@@ -63,11 +89,8 @@ var LauncherSection = function ( shared ) {
 		}, false );
 		domElement.appendChild( buttonEnter );
 
-		buttonStart = document.createElement( 'div' );
-		buttonStart.style.position = 'absolute';
-		buttonStart.style.cursor = 'pointer';
+		buttonStart = createRolloverButton( "10px 0 0 85px", "files/start_idle.png", "files/start_rollover.png" );
 		buttonStart.style.display = 'none';
-		buttonStart.innerHTML = '<img src="files/title_heart_start.png">';
 		buttonStart.addEventListener( 'click', function () {
 
 			shared.signals.showfilm.dispatch();
@@ -107,6 +130,13 @@ var LauncherSection = function ( shared ) {
 		footer.innerHTML = '<img src="files/footer.png">';
 		domElement.appendChild( footer );
 
+		footerRight = document.createElement( 'div' );
+		footerRight.style.position = 'absolute';
+		footerRight.style.right = '20px';
+		footerRight.style.bottom = '10px';
+		footerRight.innerHTML = '<img src="files/footer_right.png">';
+		domElement.appendChild( footerRight );
+		
 	}
 
 	this.show = function () {

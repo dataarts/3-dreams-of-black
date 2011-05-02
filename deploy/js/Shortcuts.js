@@ -6,6 +6,7 @@ var Shortcuts = function ( shared ) {
 	domElement.style.top = "0px";
 	domElement.style.padding = "0.5em";
 	domElement.style.fontSize = '10px';
+	//domElement.style.display = "none";
 
 	// Launcher
 
