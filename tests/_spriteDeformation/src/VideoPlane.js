@@ -71,14 +71,23 @@ var VideoPlane = function(layer, conf){
   this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
 
   if(hasDistortion) {
-    wireMaterial = new THREE.MeshShaderMaterial( {
-          uniforms: uniforms,
-          vertexShader: VideoShaderSource.distortWire.vertexShader,
-          fragmentShader: VideoShaderSource.distortWire.fragmentShader,
-          blending: THREE.BillboardBlending,
-          wireframe: true
-        });
-
+    if (hasKey) {
+      wireMaterial = new THREE.MeshShaderMaterial( {
+            uniforms: uniforms,
+            vertexShader: VideoShaderSource.distortWireKeyed.vertexShader,
+            fragmentShader: VideoShaderSource.distortWireKeyed.fragmentShader,
+            blending: THREE.BillboardBlending,
+            wireframe: true
+          });
+    } else {
+      wireMaterial = new THREE.MeshShaderMaterial( {
+            uniforms: uniforms,
+            vertexShader: VideoShaderSource.distortWire.vertexShader,
+            fragmentShader: VideoShaderSource.distortWire.fragmentShader,
+            blending: THREE.BillboardBlending,
+            wireframe: true
+          });
+    }
     this.wireMesh = new THREE.Mesh( config.grid, wireMaterial );
     this.wireMesh.scale.x = layer.width;
     this.wireMesh.scale.y = layer.height;
@@ -103,12 +112,14 @@ var VideoPlane = function(layer, conf){
     clearInterval( interval );
   };
 
-  this.updateUniform = function(mouseX, mouseY, mouseZ) {
+  this.updateUniform = function(mouseX, mouseY, mouseZ, mouseSpeed, mouseRad) {
     if(!hasDistortion) return;
     material.uniforms['mouseXYZ'].value.x = -mouseX * config.aspect;
     material.uniforms['mouseXYZ'].value.y = -mouseY;
     material.uniforms['mouseXYZ'].value.z = mouseZ;
-  }
+    material.uniforms['mouseSpeed'].value = mouseSpeed;
+    material.uniforms['mouseRad'].value = mouseRad;
+  };
 
   this.updatePass = function(pass) {
     material.uniforms['depthPass'].value = pass;

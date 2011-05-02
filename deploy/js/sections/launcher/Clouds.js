@@ -1,4 +1,4 @@
-var Clouds = function ( shared ) {
+var Clouds = function ( shared, isRelaunch ) {
 
 	/*
 	var canvas = document.createElement( 'canvas' );
@@ -19,31 +19,30 @@ var Clouds = function ( shared ) {
 
 	// Clouds
 
-  //////////////////////////////////////////////////////////////////
-  // BIRDS                                                        //
-  //////////////////////////////////////////////////////////////////
-  var boid, bird;
+	//////////////////////////////////////////////////////////////////
+	// BIRDS                                                        //
+	//////////////////////////////////////////////////////////////////
+	var boid, bird;
 	var birds = [];
 	var boids = [];
-  var morphObject = [];
-  //////////////////////////////////////////////////////////////////
+	var morphObject = [];
+	//////////////////////////////////////////////////////////////////
 
-  var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
+	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
 	camera, postCamera, scene, postScene, birdsScene, renderer, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos;
-  fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
+	
+	fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
   
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
 
 	scene = new THREE.Scene();
-  birdsScene = new THREE.Scene();
-  birdsGroup = new THREE.Object3D();
+	birdsScene = new THREE.Scene();
+	birdsGroup = new THREE.Object3D();
 
 	geometry = new THREE.Geometry();
 
 	var texture = THREE.ImageUtils.loadTexture( 'files/cloud256.png', null, function () {
-
-
 
 		material = new THREE.MeshShaderMaterial( {
 
@@ -100,7 +99,11 @@ var Clouds = function ( shared ) {
 		for ( var i = 0; i < 4000; i++ ) {
 
 			plane.position.x = Math.random() * 1000 - 500;
-			plane.position.y = - Math.random() * Math.random() * 200 - 15;
+			if(isRelaunch) {
+				plane.position.y = - Math.random() * Math.random() * 200 + 25;
+			} else {
+				plane.position.y = - Math.random() * Math.random() * 200 - 15;
+			}
 			plane.position.z = i;
 			plane.rotation.z = Math.random() * Math.PI;
 			plane.scale.x = plane.scale.y = Math.random() * Math.random() * 1.5 + 0.5;
@@ -173,7 +176,7 @@ var Clouds = function ( shared ) {
                   "flamingos += texture2D( tFlamingos, vUv+vec2(.0,2./height) );",
                   "flamingos += texture2D( tFlamingos, vUv+vec2(2./width,2./height) );",
                   "flamingos *= 1./7.;",
-                  "flamingos = mix(flamingos, vec4(fogColor,1.), 0.3);",
+                  "flamingos.rgb = mix(flamingos.rgb, vec3(fogColor), 0.3*flamingos.a);",
               "}",
 
               "vec4 clouds = texture2D( tClouds, vUv );",
@@ -188,9 +191,11 @@ var Clouds = function ( shared ) {
 
 
   function onMouseMove () {
-		mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
-		mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
-    vector = new THREE.Vector3( shared.mouse.x - shared.screenWidth/2, - shared.mouse.y + shared.screenHeight/2, 0 );
+		if(!isRelaunch) {
+			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
+			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
+			vector = new THREE.Vector3( shared.mouse.x - shared.screenWidth/2, - shared.mouse.y + shared.screenHeight/2, 0 );
+		}
 	}
 
   function makeScene(geometry){
@@ -227,7 +232,7 @@ var Clouds = function ( shared ) {
       bird.position = boids[ i ].position;
 
       bird.doubleSided = false;
-      bird.scale.x = bird.scale.y = bird.scale.z = 0.03+0.1*Math.random();
+      bird.scale.x = bird.scale.y = bird.scale.z = 0.03+0.05*Math.random();
       birdsGroup.addChild( bird );
     }
 
@@ -264,8 +269,7 @@ var Clouds = function ( shared ) {
 
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
-
-		renderer.setSize( width, height );
+    renderer.setSize( width, height );
 
 	};
 
@@ -286,11 +290,13 @@ var Clouds = function ( shared ) {
 		camera.target.position.z = camera.position.z - 1000;
 
 		renderer.clear();
+
 		renderer.render( scene, camera, renderTargetClouds, true );
     renderer.render( birdsScene, camera, renderTargetFlamingos, true );
+
   	renderer.render( postScene, postCamera );
 
-//    renderer.render( scene, camera );
+//    render.render( scene, camera );
 
     for ( var i = 0, il = birds.length; i < il; i++ ) {
       boid = boids[ i ];

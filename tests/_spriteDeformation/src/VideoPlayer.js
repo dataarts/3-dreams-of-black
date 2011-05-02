@@ -25,6 +25,7 @@ var VIDEO_KEYED_DISTORT = 4;
 
 var VideoPlayer = function(shared, layers, conf){
 	var that = this;
+  var oldTime = new Date().getTime();
 	//SequencerItem.call( this );
 
 	var config = {};
@@ -43,7 +44,13 @@ var VideoPlayer = function(shared, layers, conf){
   var readBuffer = new Uint8Array(4);
 
   var mouseX = 0, mouseY = 0;
+  var mouseOldX = 0, mouseOldY = 0;
+  var mouseNewX = 0, mouseNewY = 0;
   var mouseU = 0, mouseV = 0;
+  var mouseRad = 0;
+  var mouseAttack = new THREE.Vector2(0,0);
+  var mouseFalloff = new THREE.Vector2(0,0);
+  var mouseSpeed = new THREE.Vector2(0,0);
 	var targetPos;
 	
 	this.init = function(){
@@ -58,7 +65,7 @@ var VideoPlayer = function(shared, layers, conf){
 		};
 		
 		gridLoader = new THREE.JSONLoader();
-		gridLoader.load( { model: "models/grid.cells.1.js", callback: onGrid } );
+		gridLoader.load( { model: gridModel, callback: onGrid } );
 	};
 	
 	this.onLoad = function() {	
@@ -72,6 +79,7 @@ var VideoPlayer = function(shared, layers, conf){
 		*/
 		
 		document.addEventListener('mousemove', this.mouseMove, false);
+    document.addEventListener('mousedown', this.mouseDown, false);
 		targetPos = new THREE.Vector2(0,0);
 		
 		config.fov = 54;
@@ -91,7 +99,7 @@ var VideoPlayer = function(shared, layers, conf){
 			var p = new VideoPlane(layers[i], config);
 			planes.push(p);
 			scene.addObject(p.mesh);
-			//if(p.wireMesh) scene.addObject(p.wireMesh);
+			if(p.wireMesh) scene.addObject(p.wireMesh);
 		}
 	};
 	
@@ -108,15 +116,35 @@ var VideoPlayer = function(shared, layers, conf){
 	};
 	
 	this.update = function(progress, delta, time) {
+    time = new Date().getTime();
+    delta = time - oldTime;
+    oldTime = time;
+
 		if(!gridLoaded) return;
-		
+
+    mouseNewX = mouseX;
+    mouseNewY = mouseY;
+
+    mouseSpeed.x += (1000*limitSpeed(mouseNewX-mouseOldX,0.1)/delta - mouseSpeed.x)/12;
+    mouseSpeed.y += (1000*limitSpeed(mouseNewY-mouseOldY,0.1)/delta - mouseSpeed.y)/12;
+    mouseRad += (Math.max(Math.min((Math.abs(mouseSpeed.x)+Math.abs(mouseSpeed.y)),3),0.4)-mouseRad)/2;
+
+    mouseOldX = mouseX;
+    mouseOldY = mouseY;
+
+    function limitSpeed(speed, limit){
+      return Math.max(Math.min(speed,limit),-limit);
+    }
+
+
+
 		targetPos.x = mouseX * config.prx;
 		targetPos.y = mouseY * config.pry;
 
 		camera.position.x += (targetPos.x - camera.position.x) / 2;
 		camera.position.y += (targetPos.y - camera.position.y) / 2;	
 		for (var i = 0; i < planes.length; i++) {
-			planes[i].updateUniform(mouseX, mouseY, mouseRay.z);
+			planes[i].updateUniform(mouseX, mouseY, mouseRay.z, mouseSpeed, mouseRad );
 		}
 		//renderer.render( scene, camera, renderTarget );
 
@@ -139,6 +167,10 @@ var VideoPlayer = function(shared, layers, conf){
 		mouseY = (event.clientY - windowHalfY) / windowHalfY;
     mouseU = (event.clientX) / viewWidth;
     mouseV = (event.clientY) / viewHeight / aspect;
+
+  };
+  this.mouseDown = function(){
+    mouseRad += 0.5;
   }
 };
 

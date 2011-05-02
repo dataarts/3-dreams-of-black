@@ -42,6 +42,8 @@
           var viewHeight = viewWidth/aspect;
         	var shared = {};
 		    	var player;
+
+          var gridModel = "models/grid.cells.1.js";
 			
             function init(){
             
@@ -71,16 +73,16 @@
 	                    threshold: .45,
 	                    alphaFadeout: .35
 	                },
-					{
-	                    path: "video/s01.webm",
-	                    shaderId: VIDEO_KEYED_DISTORT,
-	                    z: -500,
-	                    colorScale: .91,
-	                    threshold: .28,
-	                    alphaFadeout: .7,
-	                    width: 1.18,
-	                    height: 1.18
-	                } 
+//					{
+//	                    path: "video/s01.webm",
+//	                    shaderId: VIDEO_KEYED,
+//	                    z: -500,
+//	                    colorScale: .91,
+//	                    threshold: .28,
+//	                    alphaFadeout: .7,
+//	                    width: 1.18,
+//	                    height: 1.18
+//	                }
 				];
 				
 				var conf = {

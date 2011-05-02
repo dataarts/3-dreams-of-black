@@ -10,18 +10,20 @@ var VideoPlane = function( shared, layer, config ) {
 	video.preload = true;
 	video.load();
     
-	shared.signals.loadItemAdded.dispatch();
+	//shared.signals.loadItemAdded.dispatch();
+	//console.log( "start load", layer.path );
 	
 	video.addEventListener( "canplay", function() {
 
 		//console.log( "canplay", layer.path );
+		//shared.signals.loadItemCompleted.dispatch()
 
 	}, false );
 	
 	video.addEventListener( "canplaythrough", function() { 
 		
 		//console.log( "canplaythrough", layer.path );
-		shared.signals.loadItemCompleted.dispatch()
+		//shared.signals.loadItemCompleted.dispatch()
 		
 	}, false );
 	

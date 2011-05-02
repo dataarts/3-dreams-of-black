@@ -11,7 +11,7 @@
         padding: 25px 50px;
         border: 1px solid #c9c8c1;
         text-transform: uppercase;
-        font: 500 12px / 17px "Gotham-Medium", Arial, sans-serif;
+        font: 500 12px / 17px "Futura", Arial, sans-serif;
         letter-spacing: 1px;
         color: #434343;
         cursor: pointer;
@@ -33,6 +33,7 @@
       // Return points as margin + / -
       // in order to get dom elements to move
       // with pentagon
+      
       window.onload = function() {
 
         var clouds = new Clouds();
@@ -46,6 +47,7 @@
         
         window.addEventListener("resize", function() {
           clouds.resize(window.innerWidth, window.innerHeight);
+          updateDomElementsPosition();
         }, false);
 
         var container = document.createElement("div");
@@ -56,17 +58,21 @@
         var gee = new GEE({ fullscreen: true, container: container });
         var g = gee.ctx;
 
-        var inner = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 85);
-        var outer = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 130);
+        var core  = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 75);
+        var inner = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 95);
+        var outer = new WonderWall.Pentagon(gee, gee.width * .5, gee.height * .5, 130, .25);
             outer.showFill = false;
             outer.insides  = true;
+            inner.showFill = false;
+            outer.setRadius(.19);
+            core.setRadius(.12);
 
         var heart = {
-          svg: new Heart(gee, "assets/heart_small.svg", 0, 0),
+          svg: new Heart(gee, "assets/eminating-heart.svg", 0, 0),
           point: new WonderWall.Point(gee, gee.width * .5, gee.height * .5)
         };
-        heart.svg.showDrips = false;
-        heart.svg.showBoils = false;
+        heart.point.r = .0625;
+        
 
         // Colors for rome
         var rome = rome || {};
@@ -81,18 +87,27 @@
         for(var i = 0; i < navigation.list.length; i++) {
           var dom = navigation.list[i];
           dom.addEventListener("mouseover", function(e) {
-            inner.setUpdate(true);
-            outer.setUpdate(true);
+            var iterator = navigation.list.indexOf(this);
+            core.setUpdatePoint(true, iterator);
+            inner.setUpdatePoint(true, iterator);
+            outer.setUpdatePoint(true, iterator);
             heart.point.updating = true;
           }, false);
           dom.addEventListener("mouseout", function(e) {
-            inner.setUpdate(false);
-            outer.setUpdate(false);
+            var iterator = navigation.list.indexOf(this);
+            core.setUpdatePoint(false, iterator);
+            inner.setUpdatePoint(false, iterator);
+            outer.setUpdatePoint(false, iterator);
             heart.point.updating = false;
           }, false);
         }
 
+        updateDomElementsPosition();
+
         gee.draw = function() {
+
+          inner.update();
+          var points = inner.getPoints();
 
           g.clearRect(0, 0, gee.width, gee.height);
 
@@ -100,10 +115,14 @@
           g.lineWidth = 0.5;
           outer.update().render();
 
+          g.globalCompositeOperation = "destination-out";
+          core.update().render();
+
           g.globalCompositeOperation = "source-out";
-          g.fillStyle = rome.color.white;
-          g.lineWidth = 36;
-          inner.update().render();
+          g.lineWidth = 32;
+          inner.showStroke = true;
+          inner.showFill = false;
+          inner.render();
           g.globalCompositeOperation = "source-over";
 
           heart.point.setPosition(gee.width / 2.0, gee.height / 2.0);
@@ -112,36 +131,37 @@
           g.translate(heart.point.x, heart.point.y);
           heart.svg.render();
           g.restore();
-
-          g.fillStyle = "#f00";
-          var points = outer.getPoints();
+        };
+        
+        function updateDomElementsPosition() {
+          var points = inner.getPoints();
           for(var i = 0; i < points.length; i++) {
-            var point = points[i];
+            var point = points[i].getOriginPosition();
             // these are the center points of the objects
             var navItem = navigation.list[i];
-            var xpos = point.x - (navItem.offsetWidth / 2.0);
-            var ypos = point.y - (navItem.offsetHeight / 2.0);
+            var xpos = point.x;
+            var ypos = point.y;
 
             if(i == 0) {
-              ypos = point.y - 111;
+              ypos -= 159;
+              xpos -= (navItem.offsetWidth / 2.0);
             } else if(i == 1) {
-              xpos = point.x + 80;
-              ypos = point.y - 30;
+              xpos +=  133;
+              ypos -= 45;
             } else if(i == 2) {
-              xpos = point.x + 76;
-              ypos = point.y + 38;
+              xpos += 104;
+              ypos += 76;
             } else if(i == 3) {
-              xpos = point.x - 283;
-              ypos = point.y + 36;
+              xpos -= 311;
+              ypos += 74;
             } else {
-              xpos = point.x - 296;
-              ypos = point.y - 31;
+              xpos -= 333;
+              ypos -= 46;
             }
-
             navItem.style.left = xpos + "px";
             navItem.style.top = ypos + "px";
           }
-        };
+        }
       };
 
       function createDomElement(parent, element, id, class, contents) {
@@ -163,6 +183,22 @@
         var add = createDomElement(container, "div", "add-to-the-dream", "after-experience", "add to the dream");
         var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "explore other dreams");
         var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "continue to explore");
+
+        start.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
+        technology.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
+        add.addEventListener("click", function() {
+          window.location = "/tool";
+        }, false);
+        otherDreams.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
+        explore.addEventListener("click", function() {
+          window.location = "/tech";
+        }, false);
 
         navigation.start = start;
         navigation.technology = technology;
