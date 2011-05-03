@@ -2,7 +2,7 @@
 function HandleErrors(d) {
 
   var that = this;
-  var destination = d || "http://ro.me/alternate";
+  var destination = d || "/alternate";
 
   Trailer = "<ul id = 'trailer'><li class = 'first'><a href = '#'>Watch Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
@@ -62,7 +62,7 @@ function HandleErrors(d) {
           if(!localStorage["RomeError"]) {
             // overlay our condition
 
-            window.onload = function() {
+            window.addEventListener("load", function() {
 
               var shade = document.createElement("div");
               var errorContainer = document.createElement("div");
@@ -75,15 +75,16 @@ function HandleErrors(d) {
               // Styling
               var shadeStyle = "width: 100%; height: 100%; position: fixed; margin: 0; padding: 0; top: 0; left: 0;";
               shade.setAttribute("style", shadeStyle);
-              var errorContainerStyle = "position: fixed; width: 400px; margin: 50px auto; top: 0; left: " + (window.innerWidth - 400) / 2.0 + "px;";
+              var errorContainerStyle = "position: fixed; width: 400px; margin: 0 auto; top: " + (window.innerHeight - 200) / 2.0 + "px; left: " + (window.innerWidth - 400) / 2.0 + "px;";
               errorContainer.setAttribute("style", errorContainerStyle);
               var errorStyle = "width: 330px; padding: 50px 35px; background: rgba(0, 0, 0, 0.3); color: #fff; font: color: #fff; font: 500 12px/18px 'Futura', Arial, sans-serif; letter-spacing: 1px; text-align: center;";
               error.setAttribute("style", errorStyle);
-              error.innerHTML = this.Errors[5];
+              error.innerHTML = that.Errors[5];
 
               // Add Event Listeners
               var windowResize = function() {
                 errorContainer.style.left = (window.innerWidth - 400) / 2.0 + "px";
+                errorContainer.style.top = (window.innerHeight) / 2.0 + "px";
               };
               var removeErrors = function() {
                 document.body.removeChild(shade);
@@ -104,7 +105,7 @@ function HandleErrors(d) {
                     e.preventDefault();
                     removeErrors();
                   }, false);
-            };
+            }, false);
 
             localStorage["RomeError"] = true;
           }
@@ -139,15 +140,14 @@ function HandleErrors(d) {
 // Read a page's GET URL variables and return them as an associative array.
 var romeErrors = new HandleErrors();
 var variables = romeErrors.getUrlVars();
-
 if(variables) {
   if(variables[romeErrors.MagicVariable]) {
     // this means we are in the error page
-    window.onload = function() {
+    window.addEventListener("load", function() {
       var iterator = variables[romeErrors.MagicVariable];
       var error = document.getElementById("error");
           error.innerHTML = romeErrors.Errors[iterator];
-    };
+    }, false);
   }
 } else {
   romeErrors.checkForErrors();
