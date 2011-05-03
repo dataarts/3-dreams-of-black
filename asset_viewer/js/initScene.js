@@ -1,5 +1,3 @@
-if (! Detector.webgl) Detector.addGetWebGLMessage();
-
 var loader;
 
 var effector;

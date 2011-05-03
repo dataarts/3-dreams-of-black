@@ -1,4 +1,4 @@
-var camera, scene, renderer, postRenderer, container;
+var camera, scene, stats, renderer, postRenderer, container;
 var postprocessing = {};
 
 var width = 960;
@@ -25,6 +25,14 @@ function initRenderer() {
 
   container.appendChild(renderer.domElement);
 
+
+  stats = new Stats();
+  stats.domElement.style.position = 'fixed';
+  stats.domElement.style.right = '0px';
+  stats.domElement.style.top = '0px';
+  container.appendChild( stats.domElement );
+
+
   initPostprocessingNoise(postprocessing);
 }
 
@@ -39,7 +47,7 @@ function initPostprocessingNoise( effect ) {
     effect.textureColor = new THREE.WebGLRenderTarget( width*2, height*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
     effect.textureDepth = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter } );
     effect.textureNormal = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter } );
-    effect.textureNoise = THREE.ImageUtils.loadTexture( 'files/textures/noise.png', { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
+    effect.textureNoise = THREE.ImageUtils.loadTexture( '/files/textures/Color_noise.jpg', { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
     effect.textureNoise.minFilter = THREE.NearestFilter;
     effect.textureNoise.wrapS = THREE.RepeatWrapping;
      effect.textureNoise.wrapT = THREE.RepeatWrapping;
@@ -198,7 +206,7 @@ function render(){
     postprocessing.materialHeat.uniforms.tNormal.texture = postprocessing.textureNormal;
     renderer.render( postprocessing.scene, postprocessing.camera );
 
-
+    stats.update();
     updateCamera();
 }
 
