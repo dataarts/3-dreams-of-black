@@ -137,8 +137,8 @@ var RelauncherSection = function( shared ) {
 		inner.render();
 		g.globalCompositeOperation = "source-over";
 
-		heart.point.setPosition(gee.width / 2.0, gee.height / 2.0);
-		heart.point.update();
+		//heart.point.setPosition(gee.width / 2.0, gee.height / 2.0);
+		//heart.point.update();
 		g.save();
 		g.translate(heart.point.x, heart.point.y);
 		heart.svg.render();

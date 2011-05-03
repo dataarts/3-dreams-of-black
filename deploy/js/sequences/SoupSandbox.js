@@ -40,7 +40,7 @@ var City = function ( shared ) {
 		camera.position.set(0,150,-550)
 
 		world = new SoupWorld( shared );
-		soup = new UgcSoup( camera, world.scene, shared );
+		soup = new UgcSoup( camera, world.scene, shared, true );
 
 		gui.add(soup, "addMoose").name("Add Moose");
 		gui.add(soup, "removeMoose").name("Remove Moose");

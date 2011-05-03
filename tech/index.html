@@ -10,7 +10,36 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="tech/style.css">
+  <script type="text/javascript" src="/asset_viewer/gui-dat/gui.js"></script>
+  <script type="text/javascript" src="/asset_viewer/gui-dat/controllers/slider.js"></script>
+  <script type="text/javascript" src="/asset_viewer/gui-dat/controllers/controller.js"></script>
+  <script type="text/javascript" src="/asset_viewer/gui-dat/controllers/controller.boolean.js"></script>
+  <script type="text/javascript" src="/asset_viewer/gui-dat/controllers/controller.function.js"></script>
+  <script type="text/javascript" src="/asset_viewer/gui-dat/controllers/controller.number.js"></script>
+  <script type="text/javascript" src="/asset_viewer/gui-dat/controllers/controller.string.js"></script>
+
+  <script type="text/javascript" src="/js/lib/Three.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/lib/Animal.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/lib/Trigger.js"></script>
+  <script type="text/javascript" src="/js/lib/Stats.js"></script>
+  <script type="text/javascript" src="/js/lib/RequestAnimationFrame.js"></script>
+
+  <script type="text/javascript" src="/asset_viewer/js/shaders/depthShader.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/shaders/animalShader.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/shaders/triggerShader.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/shaders/lightmapShader.js"></script>
+
+
+  <script type="text/javascript" src="/asset_viewer/js/initScene.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/initGui.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/initModels.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/animation.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/rendering.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/initShaders.js"></script>
+
+  <link rel="stylesheet" href="/asset_viewer/style.css">
+  <link rel="stylesheet" href="/asset_viewer/gui-dat/gui.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -20,7 +49,7 @@
   <div id="behind-the-curtain">
 
     <header>
-      <img src="tech/images/header.png" alt="Rome: 3 Dreams of Black. The Technology"/>
+      <img src="images/header.png" alt="Rome: 3 Dreams of Black. The Technology"/>
     </header>
 
     <div id="behind-the-curtain-video" class="content">
@@ -47,14 +76,17 @@
   <h1>Model Viewer</h1>
 
   <div id="model-viewer" class="content">
-    <!-- Model viewer goes here -->
+      <div id="canvasHolder"></div>
+      <div id="viewerModels"></div>
+      <div id="viewerSettings"></div>
+      <div class="clear"></div>
   </div>
 
   <h1>WebGL Examples</h1>
 
   <figure class="example">
     <a href="/tech/hatching-glow-shader">
-      <img src="tech/thumbs/1.png"
+      <img src="thumbs/1.png"
            class="example-thumb content">
 
       <h2>Hatching Glow Shader</h2>
@@ -67,7 +99,7 @@
 
   <figure class="example">
     <a href="index.html#">
-      <img src="tech/thumbs/2.png"
+      <img src="thumbs/2.png"
            class="example-thumb content">
 
       <h2>Normal Mapping</h2>
@@ -79,7 +111,7 @@
 
   <figure class="example">
     <a href="index.html#">
-      <img src="tech/images/place-holder.gif"
+      <img src="images/place-holder.gif"
            class="example-thumb content">
 
       <h2>Polygonal Deformation</h2>
@@ -90,7 +122,7 @@
 
   <figure class="example fourth">
     <a href="/tech/depth-of-field">
-      <img src="tech/thumbs/4.png"
+      <img src="thumbs/4.png"
            class="example-thumb content">
 
       <h2>Depth of Field</h2>
@@ -106,7 +138,7 @@
 
   <figure class="example">
     <a href="index.html#">
-      <img src="tech/images/place-holder.gif"
+      <img src="images/place-holder.gif"
            class="example-thumb content">
 
       <h2>Mouse in 3D Space</h2>
@@ -119,7 +151,7 @@
 
   <figure class="example">
     <a href="/tech/cel-shader">
-      <img src="tech/thumbs/6.png"
+      <img src="thumbs/6.png"
            class="example-thumb content">
 
       <h2>Cel Shader</h2>
@@ -133,7 +165,7 @@
 
   <figure class="example">
     <a href="/tech/metaball-playground">
-      <img src="tech/thumbs/7.png"
+      <img src="thumbs/7.png"
            class="example-thumb content">
       <h2>Metaball Playground</h2>
     </a>
@@ -147,7 +179,7 @@
 
   <figure class="example fourth">
     <a href="/tech/turbulent-point-cloud">
-      <img src="tech/thumbs/8.png"
+      <img src="thumbs/8.png"
            class="example-thumb content">
 
       <h2>Turbulent Point Cloud</h2>
@@ -226,8 +258,8 @@
       <a href="http://www.ro.me/album">Rome The Album</a>
     </div>
     
-    <a href="http://chromeexperiments.com"><img src="tech/images/ce.png" alt="This is a Chrome Experiment" /></a>
-    <a href="http://google.com"><img src="tech/images/goog.png" alt="Made with some friends from Google" /></a>
+    <a href="http://chromeexperiments.com"><img src="images/ce.png" alt="This is a Chrome Experiment" /></a>
+    <a href="http://google.com"><img src="images/goog.png" alt="Made with some friends from Google" /></a>
 
 
   </footer>

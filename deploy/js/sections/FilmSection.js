@@ -59,9 +59,9 @@ var FilmSection = function ( shared ) {
 	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill);
 
 	var s01_01 = new VideoPlayer(shared, VideoShots.s01_01, VideoShots.confStill);
-	var s01_03 = new VideoPlayer(shared, VideoShots.s01_03, VideoShots.confStill);
+	var s01_03 = new VideoPlayer(shared, VideoShots.s01_03, VideoShots.confParalax);
 	var s01_06 = new VideoPlayer(shared, VideoShots.s01_06, VideoShots.confStill);
-	var s01_09 = new VideoPlayer(shared, VideoShots.s01_09, VideoShots.confStill);
+	var s01_09 = new VideoPlayer(shared, VideoShots.s01_09, VideoShots.confParalax);
 	
 	var s02_01 = new VideoPlayer(shared, VideoShots.s02_01, VideoShots.confParalax);
 	var s02_02 = new VideoPlayer(shared, VideoShots.s02_02, VideoShots.confStill);

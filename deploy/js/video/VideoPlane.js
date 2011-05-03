@@ -1,31 +1,45 @@
-var VideoPlane = function( shared, layer, config ) {
+var VideoPlane = function( shared, layer, conf ) {
 	
-    var video, texture, interval, shader, material, wireMaterial;
-	var config = config;
+	var video, texture, interval, shader, material, wireMaterial;
+	var config = conf;
 	var hasDistortion = false;
 	var hasKey = false;
     
+	VideoLoadRegister[ layer.path ] = 1;
+	
     video = document.createElement( 'video' );
     video.src = layer.path;
 	video.preload = true;
 	video.load();
     
-	//shared.signals.loadItemAdded.dispatch();
-	//console.log( "start load", layer.path );
+	shared.signals.loadItemAdded.dispatch();
 	
-	video.addEventListener( "canplay", function() {
+	// emit loaded signal either at canplaythrough event
+	// or after 5 seconds
+	// (this is to get around occasional not firing of 
+	//  canplaythrough event :/)
 
-		//console.log( "canplay", layer.path );
-		//shared.signals.loadItemCompleted.dispatch()
+	video.addEventListener( "canplaythrough", function() { 	
+
+		if ( VideoLoadRegister[ layer.path ] == 1 ) {
+		
+			shared.signals.loadItemCompleted.dispatch();
+			VideoLoadRegister[ layer.path ] = 2;
+
+		}
 
 	}, false );
 	
-	video.addEventListener( "canplaythrough", function() { 
+	setTimeout( function() { 
 		
-		//console.log( "canplaythrough", layer.path );
-		//shared.signals.loadItemCompleted.dispatch()
-		
-	}, false );
+		if( VideoLoadRegister[ layer.path ] == 1 ) {
+
+			shared.signals.loadItemCompleted.dispatch();
+			VideoLoadRegister[ layer.path ] = 2;
+
+		}
+
+	}, 5000 );
 	
     texture = new THREE.Texture(video);
     texture.minFilter = THREE.LinearFilter;
@@ -156,6 +170,9 @@ var VideoPlane = function( shared, layer, config ) {
 
 	}
 
-}
+};
+
+var VideoLoadRegister = {
+};
 
 

@@ -13,16 +13,16 @@ var DunesSoup = function ( camera, scene, shared ) {
 	// collision scene
 	
 	var collisionScene = new CollisionScene( camera, scene, 0.15, shared, 3000 );
-	collisionScene.settings.emitterDivider = 5;
-	collisionScene.settings.maxSpeedDivider = 2;
+	collisionScene.settings.emitterDivider = 4;
+	collisionScene.settings.maxSpeedDivider = 0.5;
 	//collisionScene.settings.capBottom = 50;
 	collisionScene.settings.allowFlying = true;
-	collisionScene.settings.normalOffsetAmount = 50;
+	//collisionScene.settings.normalOffsetAmount = 50;
 
 	// vector trail
 
 	var vectors = new Vectors();
-	vectors.settings.divider = 4;
+	vectors.settings.divider = 3;
 
 	// ribbons
 	
@@ -37,12 +37,12 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	];
 
-	var ribbons = new Ribbons(6, vectors.array, scene, ribbonMaterials);
+	var ribbons = new Ribbons( 6, vectors.array, scene, ribbonMaterials );
 
 	ribbons.settings.ribbonPulseMultiplier_1 = 20;
 	ribbons.settings.ribbonPulseMultiplier_2 = 0.01;
-	ribbons.settings.ribbonMin = 0.3;
-	ribbons.settings.ribbonMax = 0.4;
+	ribbons.settings.ribbonMin = 0.05;
+	ribbons.settings.ribbonMax = 0.1;
 
 	// particles
 /*	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
@@ -60,17 +60,20 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// flying animals
 
-	var flyingAnimals = new AnimalSwarm(20, scene, vectors.array);
+	var flyingAnimals = new AnimalSwarm( 20, scene, vectors.array );
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 10;
 	flyingAnimals.settings.divider = 10;
 	flyingAnimals.settings.constantSpeed = 0.8;
-	
-	for (var i=0; i<20; ++i ) {
+	flyingAnimals.settings.respawn = false;
+
+	for ( var i=0; i<20; ++i ) {
 
 		var odd = i%2;
 		if (odd == 0) {
+
 			flyingAnimals.array[i] = "b";
+
 		}
 
 	}
@@ -83,7 +86,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 		var animal,
 			morphArray = [1,1,0,0,1,0,0,1,0,0];
 
-		animal = flyingAnimals.addAnimal( geometry, null, 1.8, morphArray, 0.8 );
+		animal = flyingAnimals.addAnimal( geometry, null, 2.8, morphArray, 0.8 );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -93,7 +96,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 		var animal,
 			morphArray = [1,1,0,0,1,0,0,1,0,0];
 		
-		animal = flyingAnimals.addAnimal( geometry, "b", 1.8, morphArray, 0.8 );
+		animal = flyingAnimals.addAnimal( geometry, "b", 2.8, morphArray, 0.8 );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -101,15 +104,20 @@ var DunesSoup = function ( camera, scene, shared ) {
 	this.update = function ( delta ) {
 
 		// update to reflect _real_ camera position
+
 		shared.camPos.x = camera.matrixWorld.n14;
 		shared.camPos.y = camera.matrixWorld.n24;
 		shared.camPos.z = camera.matrixWorld.n34;
 
+		flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
+
 		// update the soup parts
+
 		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
 		ribbons.update( collisionScene.emitterFollow.position );
-		flyingAnimals.update();
+		//flyingAnimals.update();
+		flyingAnimals.update(delta, shared.camPos);
 		//particles.update(delta, vectors.array[0].position);
 		
 	}

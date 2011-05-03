@@ -1,4 +1,4 @@
-var UgcSoup = function ( camera, scene, shared ) {
+var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 	var that = this;
 	var r = 0;
@@ -34,8 +34,16 @@ var UgcSoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 2500, false );
-	collisionScene.settings.capBottom = 0;
+	var collisionScene = new CollisionScene( camera, scene, 0.15, shared, 3000 );
+	if (runInCircle) {
+		collisionScene.settings.capBottom = 0;
+	} else {
+		//collisionScene.settings.allowFlying = true;
+		collisionScene.settings.shootRayDown = true;
+	}
+	collisionScene.settings.emitterDivider = 3;
+	collisionScene.settings.maxSpeedDivider = 0.5;
+
 /*	loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
 
 	function collisionLoadedProxy( geometry ) {
@@ -44,7 +52,7 @@ var UgcSoup = function ( camera, scene, shared ) {
 */
 	// vector trail
 	var startPosition = new THREE.Vector3(0,0,100);
-	var vectors = new Vectors(50,3,3,startPosition);
+	var vectors = new Vectors(50,2,2,startPosition);
 
 	// ribbons
 /*	var ribbonMaterials = [
@@ -87,7 +95,7 @@ var UgcSoup = function ( camera, scene, shared ) {
 	this.removeGator = function () { that.removeAnimal("gator") }
 	this.addRaven = function () { that.addAnimal("raven") }
 	this.removeRaven = function () { that.removeAnimal("raven") }
-	this.setTest = function () { that.set("moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose|moose") }
+	this.setTest = function () { that.set("moose|moose|moose|moose|moose|moose|moose|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|deer|fisha|bearbrown|horse|fox|mountainlion|chow|raven|raven|raven|raven|raven|owl|flamingo|hummingbird|flamingo|owl") }
 
 
 	that.addAnimal = function ( id, arrayIndex ) {
@@ -132,6 +140,7 @@ var UgcSoup = function ( camera, scene, shared ) {
 		
 		var str = "";
 
+		// running
 		for (var i=0; i<runningAnimals.array.length; ++i ) {
 			var geometry = runningAnimals.array[i].a.mesh.geometry;
 			var startMorph = runningAnimals.array[i].startMorph;
@@ -146,7 +155,23 @@ var UgcSoup = function ( camera, scene, shared ) {
 					break;
 				}
 			}
+		}
 
+		// flying
+		for (var i=0; i<flyingAnimals.array.length; ++i ) {
+			var geometry = flyingAnimals.array[i].a.mesh.geometry;
+			var startMorph = flyingAnimals.array[i].startMorph;
+			
+			for (var j in allAnimals) {
+				var checkGeometry = allAnimals[j].geometry;
+				var morph = allAnimals[j].index;
+
+				if (geometry == checkGeometry && startMorph == morph) {
+					//console.log("found match "+i+" - "+j);
+					str += j+"|";
+					break;
+				}
+			}
 		}
 
 		// remove last pipe
@@ -162,9 +187,25 @@ var UgcSoup = function ( camera, scene, shared ) {
 		var array = str.split("|");
 		console.log(array);
 
+		var runningIndex = 0;
+		var flyingIndex = 0;
+
 		for (var i=0; i<array.length; ++i ) {
 			var id = array[i];
-			that.addAnimal(id, i);
+			var isRunning = true;
+
+			if (allAnimals[id].flying) {
+				isRunning = false;
+			}
+
+			if (isRunning) {
+				that.addAnimal(id, runningIndex);
+				++runningIndex;
+			} else {
+				that.addAnimal(id, flyingIndex);
+				++flyingIndex;
+			}
+			
 		}
 
 	}
@@ -222,11 +263,12 @@ var UgcSoup = function ( camera, scene, shared ) {
 
 
 	// running animals
-	var runningAnimals = new AnimalSwarm3(30, scene, vectors.array);
-	runningAnimals.settings.addaptiveSpeed = true;
-	runningAnimals.settings.capy = 0;
-	runningAnimals.settings.startPosition = startPosition;
-	runningAnimals.settings.constantSpeed = 0.75;
+	var runningAnimals = new AnimalSwarm(30, scene, vectors.array);
+	//runningAnimals.settings.addaptiveSpeed = true;
+	//runningAnimals.settings.capy = 0;
+	//runningAnimals.settings.startPosition = startPosition;
+	//runningAnimals.settings.shootRayDown = true;
+	//runningAnimals.settings.constantSpeed = 0.75;
 	//runningAnimals.settings.switchPosition = true;
 
 	// preoccupy slots for specific animals - hack...
@@ -402,7 +444,7 @@ var UgcSoup = function ( camera, scene, shared ) {
 
 
 	// flying animals
-	var flyingAnimals = new AnimalSwarm3(10, scene, vectors.array);
+	var flyingAnimals = new AnimalSwarm(10, scene, vectors.array);
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 65;
 
@@ -443,16 +485,17 @@ var UgcSoup = function ( camera, scene, shared ) {
 	}
 
 	// butterflys
-	var butterflysD = new AnimalInFrontOfCamera(15, scene);
+/*	var butterflysD = new AnimalInFrontOfCamera(15, scene);
 	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflysD.addAnimal } );
 	var butterflysC = new AnimalInFrontOfCamera(15, scene);
 	loader.load( { model: "files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
-	
+*/	
 	
 	// trail - of grass/trees/etc
 	var trail = new Trail(80, scene);
 	trail.settings.freeRotation = false;
 	trail.settings.offsetAmount = 4;
+	
 	// preoccupy for differnt grass
 	for (i=0; i<80; ++i ) {
 		var type = i%4;
@@ -538,6 +581,7 @@ var UgcSoup = function ( camera, scene, shared ) {
 		// spawn animal test
 		if (spawnAnimal >= 50) {
 			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
+			//runningAnimals.create(collisionScene.emitter.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
 			spawnAnimal = 0;
 		}		
 		if (spawnBird >= 300) {
@@ -548,20 +592,22 @@ var UgcSoup = function ( camera, scene, shared ) {
 		// update the soup parts	
 		collisionScene.update(shared.camPos, delta);
 
-		var pulse = Math.sin(r*2)*80;
-		var distance = 280;
-		collisionScene.emitter.position.x = Math.cos( r )*(distance-pulse);
-		collisionScene.emitter.position.z = Math.sin( r )*(distance-pulse);
-		collisionScene.emitterFollow.position.x = collisionScene.emitter.position.x;
-		collisionScene.emitterFollow.position.z = collisionScene.emitter.position.z;
-
+		if (runInCircle) {
+			var pulse = Math.sin(r*2)*80;
+			var distance = 280;
+			collisionScene.emitter.position.x = Math.cos( r )*(distance-pulse);
+			collisionScene.emitter.position.z = Math.sin( r )*(distance-pulse);
+			collisionScene.emitterFollow.position.x = collisionScene.emitter.position.x;
+			collisionScene.emitterFollow.position.z = collisionScene.emitter.position.z;
+		}
+	
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		//ribbons.update(collisionScene.emitterFollow.position);
 		particles.update(delta, vectors.array[0].position, shared.camPos);
 		runningAnimals.update(delta, shared.camPos);
 		flyingAnimals.update(delta, shared.camPos);
-		butterflysC.update(shared.camPos, camera.theta, delta);
-		butterflysD.update(shared.camPos, camera.theta, delta, true);
+		//butterflysC.update(shared.camPos, camera.theta, delta);
+		//butterflysD.update(shared.camPos, camera.theta, delta, true);
 
 		trail.update(collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta);
 		

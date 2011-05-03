@@ -1,7 +1,8 @@
 var CitySoup = function ( camera, scene, shared ) {
 
 	var that = this;
-	that.camera = camera;
+	that.camera = camera,
+	renderer = shared.renderer;
 
 	// init
 	var noiseCount = 0;
@@ -52,37 +53,48 @@ var CitySoup = function ( camera, scene, shared ) {
 	camera.target = collisionScene.cameraTarget;
 
 	function mesh0LoadedProxy( geometry ) {
+
 		var scale = 0.1;
-		var rotation = new THREE.Vector3(-1.570796,0,3.141591);
+		var rotation = new THREE.Vector3( -1.570796,0,3.141591 );
 		var position = new THREE.Vector3();
-		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+
+		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
+
 	}
 
 	function mesh1LoadedProxy( geometry ) {
+
 		var scale = 0.1;
-		var rotation = new THREE.Vector3(-1.570796,0,0);
+		var rotation = new THREE.Vector3( -1.570796,0,0 );
 		var position = new THREE.Vector3();
-		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
+
 	}
 
 	function mesh2LoadedProxy( geometry ) {
+
 		var scale = 0.1;
 		var rotation = new THREE.Vector3(-1.570796,0,0);
 		var position = new THREE.Vector3();
-		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
+
 	}
 
 	function mesh3LoadedProxy( geometry ) {
+
 		var scale = 0.1;
 		var rotation = new THREE.Vector3(-1.570796,0,1.570797);
 		var position = new THREE.Vector3();
-		collisionScene.addLoaded(geometry, scale, rotation, position, scene);
+		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
+
 	}
 
 
 	// vector trail
-	var startPosition = new THREE.Vector3(0,0,100);
-	var vectors = new Vectors(50,2,2,startPosition);
+
+	var startPosition = new THREE.Vector3( 0,0,100 );
+	var vectors = new Vectors( 50,2,2,startPosition );
+
 	//vectors.settings.divider = 4;
 	//vectors.settings.normaldivider = 4;
 	//vectors.settings.absoluteTrail = true;
@@ -113,11 +125,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
-	var particles = new Particles(22, scene, 5, particleSprites, 15, 50, THREE.AdditiveBlending);
+	var particles = new Particles( 22, scene, 5, particleSprites, 15, 50, THREE.AdditiveBlending );
 	particles.settings.gravitateTowardsCamera = true;
 
 	// stragglers
-	var stragglers = new Stragglers(4, scene, vectors.array);
+	var stragglers = new Stragglers( 4, scene, vectors.array );
 	//stragglers.settings.constantSpeed = 0.7;
 	stragglers.settings.capy = 0;
 
@@ -131,7 +143,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// running animals
 
-	var runningAnimals = new AnimalSwarm3(30, scene, vectors.array);
+	var runningAnimals = new AnimalSwarm( 30, scene, vectors.array );
+
 	runningAnimals.settings.addaptiveSpeed = true;
 	runningAnimals.settings.capy = 0;
 	runningAnimals.settings.startPosition = startPosition;
@@ -159,58 +172,89 @@ var CitySoup = function ( camera, scene, shared ) {
 	//loader.load( { model: "files/models/soup/sock_jump_life.js", callback: sockLoadedProxy } );
 
 	function animalLoadedProxy( geometry ) {
+
 		// regular
+
 		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
 		var speedArray = [6.5, 13.12, 9.76, 7.47, 4.74, 4.94, 0.777, 6.252, 3.412, 5.52, 5.576];
+		
 		runningAnimals.addAnimal( geometry, null, 1.5, morphArray, speedArray );
 		// stragglers
 		morphArray = [5,6,9,2];
-		stragglers.addAnimal( geometry, null, 1.8, morphArray, speedArray );
+		
+		var animal = stragglers.addAnimal( geometry, null, 1.8, morphArray, speedArray );
+		preinitAnimal( animal, renderer, scene );
+
 	}
 
 	function elkLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "elk", 2.2, null, [6] );
+		
+		var animal = runningAnimals.addAnimal( geometry, "elk", 2.2, null, [6] );
+		preinitAnimal( animal, renderer, scene );
+
 	}
 
 	function mooseLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "moose", 1.1, null, [13.964] );
+
+		var animal = runningAnimals.addAnimal( geometry, "moose", 1.1, null, [13.964] );
+		preinitAnimal( animal, renderer, scene );
+
 	}
 
 	function fishLoadedProxy( geometry ) {
+
 		var morphArray = [0,1,2,3];
-		runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray, [2] );
+
+		var animal = runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray, [2] );
+		preinitAnimal( animal, renderer, scene );
+
 	}
 
 	/*function sockLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "sock", 1.5, null );
+	
+		var animal = runningAnimals.addAnimal( geometry, "sock", 1.5, null );
+		preinitAnimal( animal, renderer, scene );
+	
 	}*/
 
 
 	// flying animals
-	var flyingAnimals = new AnimalSwarm3(10, scene, vectors.array);
+	var flyingAnimals = new AnimalSwarm( 10, scene, vectors.array );
+
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 45;
 
 	for (var i=0; i<10; ++i ) {
+
 		var odd = i%2;
-		if (odd == 0) {
+		if ( odd == 0 ) {
+
 			flyingAnimals.array[i] = "b";
 		}
+
 	}
 
 	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
+
 		var morphArray = [0,1,2,3,0,1,2,3,0,1];
 		var speedArray = [4.848, 7, 7.5, 3.5];
-		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, speedArray );
+
+		var animal = flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, speedArray );
+		preinitAnimal( animal, renderer, scene );
+
 	}
 
 	function birdsBLoadedProxy( geometry ) {
+
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
 		var speedArray = [8.5, 8.623];
-		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, speedArray );
+
+		var animal = flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, speedArray );
+		preinitAnimal( animal, renderer, scene );
+
 	}
 
 
@@ -235,24 +279,36 @@ var CitySoup = function ( camera, scene, shared ) {
 */
 
 	// butterflys
-	var butterflysD = new AnimalInFrontOfCamera(15, scene);
+
+	var butterflysD = new AnimalInFrontOfCamera( 15, scene );
 	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflysD.addAnimal } );
-	var butterflysC = new AnimalInFrontOfCamera(15, scene);
+
+	var butterflysC = new AnimalInFrontOfCamera( 15, scene );
 	loader.load( { model: "files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
 	
 	// trail - of grass/trees/etc
-	var trail = new Trail(80, scene);
+
+	var trail = new Trail( 80, scene );
 	trail.settings.freeRotation = false;
+
 	// preoccupy for differnt grass
-	for (i=0; i<80; ++i ) {
+
+	for ( i = 0; i < 80; ++i ) {
+
 		var type = i%4;
-		trail.array[i] = "0"+(type+1);
+		trail.array[i] = "0" + ( type + 1 );
+
 	}
+
 	// preoccupy slots for trees and lighthouse
-	for (i=0; i<80; i+=8 ) {
+
+	for ( i = 0; i < 80; i += 8 ) {
+
 		var type = (i/8)%4;
 		trail.array[i] = "tree"+(type+1);
+
 	}
+	
 	trail.array[4] = "light";
 
 	loader.load( { model: "files/models/soup/grass01.js", callback: grass01LoadedProxy } );
@@ -271,40 +327,81 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/soup/lighthouse.js", callback: ligthhouseLoadedProxy } );
 
 	function grass01LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "01", false );
+
+		var object = trail.addInstance( geometry, "01", false );
+
 	}
+
 	function grass02LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "02", false );
+
+		var object = trail.addInstance( geometry, "02", false );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function grass03LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "03", false );
+
+		var object = trail.addInstance( geometry, "03", false );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function grass04LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "04", false );
+
+		var object = trail.addInstance( geometry, "04", false );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function grass05LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "05", false );
+
+		var object = trail.addInstance( geometry, "05", false );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
 
 	function treeALoadedProxy( geometry ) {
-		trail.addInstance( geometry, "tree1", true );
+
+		var object = trail.addInstance( geometry, "tree1", true );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function treeBLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "tree2", true);
+
+		var object = trail.addInstance( geometry, "tree2", true );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function treeCLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "tree3", true );
+
+		var object = trail.addInstance( geometry, "tree3", true );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function treeDLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "tree4", true );
+
+		var object = trail.addInstance( geometry, "tree4", true );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function treeELoadedProxy( geometry ) {
-		trail.addInstance( geometry, "tree5", true );
+
+		var object = trail.addInstance( geometry, "tree5", true );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
 
 	function ligthhouseLoadedProxy( geometry ) {
-		trail.addInstance( geometry, "light", false, true );
+		
+		var object = trail.addInstance( geometry, "light", false, true );
+		preInitModel( geometry, renderer, scene, object );
+
 		trail.array[4].maxHeight = 12;
+
 	}
 
 	
@@ -394,13 +491,16 @@ var CitySoup = function ( camera, scene, shared ) {
 		*/
 	}
 
-	this.changeCamera = function (camera) {
+	this.changeCamera = function ( camera ) {
+
 		that.camera = camera;
 		collisionScene.settings.camera = camera;
+
 	}
 
 
 	function reset () {
+
 		camPos = new THREE.Vector3( 0, 20, 50 );
 
 		collisionScene.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);

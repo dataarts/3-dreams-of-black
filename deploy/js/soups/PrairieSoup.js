@@ -5,6 +5,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// init
 
 	shared.camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
+
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -30,6 +31,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	// collision scene
 	
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 1100 );
+
 	collisionScene.settings.maxSpeedDivider = 1;
 	collisionScene.settings.allowFlying = false;
 	collisionScene.settings.emitterDivider = 2;
@@ -66,7 +68,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	ribbons.settings.ribbonMin = 0.2;
 	ribbons.settings.ribbonMax = 0.2;
 	*/
+
 	// particles
+
 	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/dark_0.png" );
 	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/dark_1.png" );
 	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/dark_2.png" );
@@ -79,7 +83,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	particles.settings.aliveDivider = 2;
 
 	// running animals
-	runningAnimals = new AnimalSwarm5( 40, scene, vectors.array );
+
+	runningAnimals = new AnimalSwarm( 40, scene, vectors.array );
 	runningAnimals.settings.xPositionMultiplier = 22;
 	runningAnimals.settings.zPositionMultiplier = 18;
 	runningAnimals.settings.shootRayDown = true;
@@ -89,6 +94,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.settings.startPosition = startPosition;
 
 	// preoccupy slots for specific animals - hack...
+
 	runningAnimals.array[0] = "gator";
 	runningAnimals.array[10] = "gator";
 	runningAnimals.array[5] = "goat";
@@ -203,7 +209,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// flying animals
 
-	flyingAnimals = new AnimalSwarm5( 10, scene, vectors.array );
+	flyingAnimals = new AnimalSwarm( 10, scene, vectors.array );
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.xPositionMultiplier = 24;
 	flyingAnimals.settings.zPositionMultiplier = 12;
@@ -225,7 +231,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 	
 	// trail - of grass/trees/etc
-	/*var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000 } ),
+	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x170202 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x030303 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x080808 } ),
@@ -234,35 +240,57 @@ var PrairieSoup = function ( camera, scene, shared ) {
 					 new THREE.MeshLambertMaterial( { color: 0x080808 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x030303 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x080808 } )
-	];*/
+	];
 
-	var trail = new Trail(80, scene);
+	var trail = new Trail( 80, scene );
+
 	// preoccupy for differnt grass
-	for (i=0; i<80; ++i ) {
+	for ( i=0; i<80; ++i ) {
+
 		var type = i%2;
 		trail.array[i] = "0"+(type+1);
+		trail.array[i] = "04";
+
 	}
+
 	trail.settings.spread = 10;
 	trail.settings.aliveDivider = 40;
 	trail.settings.tweenTime = 400;
 	trail.settings.scale = 5.0;
 	trail.settings.offsetAmount = 10;
 
-	loader.load( { model: "files/models/soup/darkBlob1.js", callback: blob01LoadedProxy } );
+	/*loader.load( { model: "files/models/soup/darkBlob1.js", callback: blob01LoadedProxy } );
 	loader.load( { model: "files/models/soup/darkBlob2.js", callback: blob02LoadedProxy } );
-	loader.load( { model: "files/models/soup/darkBlob3.js", callback: blob03LoadedProxy } );
+	loader.load( { model: "files/models/soup/darkBlob3.js", callback: blob03LoadedProxy } );*/
+	loader.load( { model: "files/models/soup/darkBlob4.js", callback: blob04LoadedProxy } );
 
-	function blob01LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "01", false, false );
+/*	function blob01LoadedProxy( geometry ) {
+
+		var object = trail.addInstance( geometry, "01", false, false );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function blob02LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "02", false, false );
+
+		var object = trail.addInstance( geometry, "02", false, false );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
+
 	function blob03LoadedProxy( geometry ) {
-		trail.addInstance( geometry, "03", false, false );
+
+		var object = trail.addInstance( geometry, "03", false, false );
+		preInitModel( geometry, renderer, scene, object );
+
+	}*/
+
+	function blob04LoadedProxy( geometry ) {
+
+		var object = trail.addInstance( geometry, "04", false, false, trailMaterials );
+		preInitModel( geometry, renderer, scene, object );
+
 	}
-
-
 
 
 	this.update = function ( delta ) {
@@ -292,13 +320,14 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		particles.update( delta, vectors.array[0].position );
 		//runningAnimals.update();
 		//flyingAnimals.update();
-		runningAnimals.update(delta, shared.camPos);
-		flyingAnimals.update(delta, shared.camPos);
+		runningAnimals.update( delta, shared.camPos );
+		flyingAnimals.update( delta, shared.camPos );
 
-		trail.update(collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta);
+		trail.update( collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta );
 
 		// spawn animal test
-		if (spawnAnimal >= 100) {
+		if ( spawnAnimal >= 100 ) {
+
 			//runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			var rndx = (Math.random()*20)-10;
 			var rndz = (Math.random()*20)-10;
@@ -312,11 +341,15 @@ var PrairieSoup = function ( camera, scene, shared ) {
 			pos2.z += rndz;
 			runningAnimals.create(pos1, collisionScene.currentNormal, pos2);
 			spawnAnimal = 0;
-		}		
-		if (spawnBird >= 500) {
+
+		}
+
+		if ( spawnBird >= 500 ) {
+
 			//flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
-			flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position);
+			flyingAnimals.create( collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position );
 			spawnBird = 0;
+
 		}			
 
 		TWEEN.update();

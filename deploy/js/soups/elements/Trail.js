@@ -37,24 +37,30 @@ var Trail = function ( numOfInstances, scene ) {
 				continue;
 			}
 
-			if (materialArray == undefined) {
+			if ( materialArray == undefined ) {
+
 				var c = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+
 			} else {
-				var c = new THREE.Mesh( geometry, materialArray[i%materialArray.length] );			
+
+				var c = new THREE.Mesh( geometry, materialArray[i%materialArray.length] );	
+
 			}
 
 			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
 			
-			var obj = {c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree, lightHouse:lightHouse};
+			var obj = { c:c, alivetime:i, normal:new THREE.Vector3(), tree:tree, lightHouse:lightHouse };
 			
 			scene.addObject(c);
 			that.array[i] = obj;
 
 		}
+		
+		return c;
 
 	};
 
-	this.update = function (position, normal, camPos, delta) {
+	this.update = function ( position, normal, camPos, delta ) {
 
 		if (isNaN(delta) || delta > 1000 ) {
 			delta = 1000/60;
@@ -63,7 +69,9 @@ var Trail = function ( numOfInstances, scene ) {
 		var multiplier = delta/that.settings.aliveDivider;
 		
 		// grass
-		for (i=0; i<that.array.length; ++i ) {
+
+		for ( i=0; i<that.array.length; ++i ) {
+
 			var obj = that.array[i];
 			var c = obj.c;
 
@@ -76,6 +84,7 @@ var Trail = function ( numOfInstances, scene ) {
 			
 			// respawn
 			if (alivetime > that.initSettings.numOfInstances) {
+
 				c.position.x = position.x;
 				c.position.y = position.y;
 				c.position.z = position.z;
