@@ -61,13 +61,13 @@ var RelauncherSection = function( shared ) {
 	var g = gee.ctx;
 
 	// Implemented Footer.js
-	// footer = document.createElement( 'div' );
-	// footer.style.position = 'absolute';
-	// footer.style.left = '0';
-	// footer.style.bottom = '0';
-	// footer.style.width = "100%";
-	// footNav = new Footer( footer );
-	// domElement.appendChild( footer );
+	footer = document.createElement( 'div' );
+	footer.style.position = 'absolute';
+	footer.style.left = '0';
+	footer.style.bottom = '0';
+	footer.style.width = "100%";
+	footNav = new Footer( footer );
+	domElement.appendChild( footer );
 
 	var core = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 75 );
 	var inner = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 95 );
@@ -212,40 +212,37 @@ var RelauncherSection = function( shared ) {
 		start.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			// window.location = "/tech";
-			alert("start over");
+			shared.signals.showfilm.dispatch();
+			shared.signals.startfilm.dispatch( 0, 1 );
 
 		}, false);
 
 		technology.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			// window.location = "/tech";
-			alert("technology");
+			window.location = "/tech";
 
 		}, false);
 
 		add.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			// window.location = "/tool";
-			alert("Add to the Dream");
+			shared.signals.showugc.dispatch();
 
 		}, false);
 
 		otherDreams.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			// window.location = "/tech";
-			alert("Explore Other Dreams");
+			window.location = "/gallery";
 
 		}, false);
 
 		explore.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			// window.location = "/tech";
-			alert("Continue to Explore");
+			shared.signals.showexploration.dispatch();
+			shared.signals.startexploration.dispatch( 'dunes' );
 
 		}, false);
 
@@ -255,7 +252,7 @@ var RelauncherSection = function( shared ) {
 		navigation.otherDreams = otherDreams;
 		navigation.explore = explore;
 
-		navigation.list = [ start, otherDreams, explore, add, technology ];
+		navigation.list = [ explore, start, otherDreams, add, technology ];
 		init = true;
 
 		return navigation;
