@@ -72,7 +72,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	ribbons.settings.ribbonMax = 8;
 */
 	// light particles
-/*	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
+	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
 	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
 	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
 	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/particle_3.png" );
@@ -82,9 +82,9 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 	var particles = new Particles(22, scene, 5, particleSprites, 15, 50, THREE.NormalBlending);
 	particles.settings.gravitateTowardsCamera = true;
-*/
+
 	// dark particles
-	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/dark_0.png" );
+/*	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/dark_0.png" );
 	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/dark_1.png" );
 	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/dark_2.png" );
 	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/dark_3.png" );
@@ -92,7 +92,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 	particles = new Particles(20, scene, 5, particleSprites, 55, 200);
-
+*/
 	// stragglers
 	//var stragglers = new Stragglers(4, scene, vectors.array);
 	//stragglers.settings.constantSpeed = 0.7;
@@ -107,6 +107,13 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	this.removeRaven = function () { that.removeAnimal("raven") }
 	this.setTest = function () { that.set("moose|moose|moose|moose|moose|moose|moose|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|gator|deer|fisha|bearbrown|horse|fox|mountainlion|chow|raven|raven|raven|raven|raven|owl|flamingo|hummingbird|flamingo|owl") }
 
+	that.setLife = function (  ) {
+		console.log("set soup type to life");
+	}
+	
+	that.setDark = function (  ) {
+		console.log("set soup type to dark");
+	}
 
 	that.addAnimal = function ( id, arrayIndex ) {
 		
@@ -277,14 +284,14 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	//runningAnimals.settings.addaptiveSpeed = true;
 	//runningAnimals.settings.capy = 0;
 	//runningAnimals.settings.startPosition = startPosition;
-	runningAnimals.settings.shootRayDown = true;
+	//runningAnimals.settings.shootRayDown = true;
 	//runningAnimals.settings.constantSpeed = 0.75;
 	//runningAnimals.settings.switchPosition = true;
 	//runningAnimals.settings.gravity = true;
 
 	// preoccupy slots for specific animals - hack...
 	// life
-/*	runningAnimals.array[0] = "moose";
+	runningAnimals.array[0] = "moose";
 	runningAnimals.array[10] = "elk";
 	runningAnimals.array[20] = "elk";
 	runningAnimals.array[1] = "elk";
@@ -292,10 +299,10 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	runningAnimals.array[14] = "moose";
 	runningAnimals.array[8] = "fish";
 	runningAnimals.array[16] = "fish";
-	runningAnimals.array[24] = "fish";*/
+	runningAnimals.array[24] = "fish";
 
 	// dark
-	runningAnimals.array[0] = "gator";
+/*	runningAnimals.array[0] = "gator";
 	runningAnimals.array[10] = "gator";
 	runningAnimals.array[5] = "goat";
 	runningAnimals.array[18] = "goat";
@@ -327,7 +334,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	runningAnimals.array[1] = "shadow";
 	runningAnimals.array[17] = "arm";
 	runningAnimals.array[30] = "arm";
-
+*/
 
 	loader.load( { model: "files/models/soup/animals_A_life.js", callback: lifeAnimalsLoadedProxy } );
 	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoadedProxy } );
@@ -361,7 +368,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		var animal;
 		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
 		var speedArray = [6.5, 13.12, 9.76, 7.47, 4.74, 4.94, 0.777, 6.252, 3.412, 5.52, 5.576];
-		//animal = runningAnimals.addAnimal( geometry, null, 1.5, morphArray, speedArray );
+		animal = runningAnimals.addAnimal( geometry, null, 1.5, morphArray, speedArray );
 
 		preinitAnimal( animal, shared.renderer, scene );
 		// stragglers
@@ -373,7 +380,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		allAnimals.elk.geometry = geometry;
 
 		var animal;
-		//animal = runningAnimals.addAnimal( geometry, "elk", 2.2, null, [6] );
+		animal = runningAnimals.addAnimal( geometry, "elk", 2.2, null, [6] );
 
 		preinitAnimal( animal, shared.renderer, scene );
 	}
@@ -382,7 +389,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		allAnimals.moose.geometry = geometry;
 
 		var animal;
-		//animal = runningAnimals.addAnimal( geometry, "moose", 1.1, null, [13.964] );
+		animal = runningAnimals.addAnimal( geometry, "moose", 1.1, null, [13.964] );
 
 		preinitAnimal( animal, shared.renderer, scene );
 	}
@@ -395,7 +402,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		var animal;
 		var morphArray = [0,1,2,3];
-		//animal = runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray, [2] );
+		animal = runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray, [2] );
 
 		preinitAnimal( animal, shared.renderer, scene );
 	}
@@ -411,7 +418,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 			morphArray = [0,0,1,2,1,2,0,2,3];
 		var speedArray = [13.12, 9.73, 6.7, 3.06];
 		
-		animal = runningAnimals.addAnimal( geometry, "animal", 1.7, morphArray, speedArray );
+		//animal = runningAnimals.addAnimal( geometry, "animal", 1.7, morphArray, speedArray );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -424,7 +431,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		var animal,
 			morphArray = [0,1,0,1];
 		var speedArray = [9.2, 14.2];
-		animal = runningAnimals.addAnimal( geometry, null, 1.5, morphArray, speedArray );
+		//animal = runningAnimals.addAnimal( geometry, null, 1.5, morphArray, speedArray );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -434,7 +441,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		var animal;
 
-		animal = runningAnimals.addAnimal( geometry, "gator", 1.55, null, [4.5] );
+		//animal = runningAnimals.addAnimal( geometry, "gator", 1.55, null, [4.5] );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -444,7 +451,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		
 		var animal;
 		
-		animal = runningAnimals.addAnimal( geometry, "goat", 1.65, null, [5.2] );
+		//animal = runningAnimals.addAnimal( geometry, "goat", 1.65, null, [5.2] );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -454,7 +461,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		var animal;
 
-		animal = runningAnimals.addAnimal( geometry, "shadow", 2.9, null, [3.5] );
+		//animal = runningAnimals.addAnimal( geometry, "shadow", 2.9, null, [3.5] );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -464,7 +471,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		var animal;
 
-		animal = runningAnimals.addAnimal( geometry, "arm", 4.0, null, [2.5] );
+		//animal = runningAnimals.addAnimal( geometry, "arm", 4.0, null, [2.5] );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -478,7 +485,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 			morphArray = [0,0,0,2];
 		var speedArray = [1.629, 3, 1.7];
 
-		animal = runningAnimals.addAnimal( geometry, "octo", 1.05, morphArray, speedArray );
+		//animal = runningAnimals.addAnimal( geometry, "octo", 1.05, morphArray, speedArray );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -494,12 +501,12 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 65;
 
-	/*for (var i=0; i<10; ++i ) {
+	for (var i=0; i<10; ++i ) {
 		var odd = i%2;
 		if (odd == 0) {
 			flyingAnimals.array[i] = "b";
 		}
-	}*/
+	}
 
 	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
@@ -513,7 +520,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		var morphArray = [0,1,2,3,0,1,2,3,0,1];
 		var speedArray = [4.848, 7, 7.5, 3.5];
-		//flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, speedArray );
+		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, speedArray );
 	}
 
 	function birdsBLoadedProxy( geometry ) {
@@ -522,7 +529,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
 		var speedArray = [8.5, 8.623];
-		//flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, speedArray );
+		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, speedArray );
 	}
 
 	function birdsABlackLoadedProxy( geometry ) {
@@ -533,7 +540,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 			morphArray = [1,1,0,0,1,0,0,1,0,0];
 		var speedArray = [12, 14];
 
-		animal = flyingAnimals.addAnimal( geometry, null, 1.55, morphArray, speedArray );
+		//animal = flyingAnimals.addAnimal( geometry, null, 1.55, morphArray, speedArray );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	}
@@ -546,7 +553,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 */	
 	
 	// life trail - of grass/trees/etc
-/*	var trail = new Trail(80, scene);
+	var trail = new Trail(80, scene);
 	trail.settings.freeRotation = false;
 	trail.settings.offsetAmount = 4;
 	
@@ -613,10 +620,10 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		trail.addInstance( geometry, "light", false, true );
 		trail.array[4].maxHeight = 12;
 	}
-*/	
+	
 	// dark trail
 	// trail - of grass/trees/etc
-	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000 } ),
+/*	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x170202 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x030303 } ),
 					 new THREE.MeshLambertMaterial( { color: 0x080808 } ),
@@ -650,7 +657,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		preInitModel( geometry, renderer, scene, object );
 
 	}
-
+*/
 	//setupGui();
 
 
@@ -670,12 +677,12 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		// spawn animal test
 		if (spawnAnimal >= 70) {
-			//runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
-			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal, vectors.array[0].position);
+			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
+			//runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal, vectors.array[0].position);
 			spawnAnimal = 0;
 		}		
 		if (spawnBird >= 300) {
-			//flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
+			flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			spawnBird = 0;
 		}
 

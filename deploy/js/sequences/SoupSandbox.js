@@ -16,33 +16,69 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		/*
-		waypoints = [ [ 0, 10, 0 ], [ 0, 10, -3300 ] ];
-
-		camera = new THREE.PathCamera( {
-
-			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypoints, duration: 30, 
-			useConstantSpeed: true, resamplingCoef: 1,
-			createDebugPath: shared.debug, createDebugDummy: shared.debug,
-			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
-
-		 } );
-
-
-		camera.position.set( 0, 10, 0 );
-		camera.lon = 90;
-		*/
-
 		camera = new THREE.Camera(50, shared.viewportWidth / shared.viewportHeight, 1, 100000);
 		camera.position.set(0,150,-550)
 
 		world = new SoupWorld( shared );
 		soup = new UgcSoup( camera, world.scene, shared, true );
 
-		gui.add(soup, "addMoose").name("Add Moose");
+		/*
+
+		soup.addAnimal("id") to add an animal
+		soup.removeAnimal("id") to remove an animal
+
+		soup.get() to get a string of the current soup
+		soup.set("str") to set the soup from a string
+
+		soup.setLife() to set it to life (not done yet)
+		soup.setDark() to set it to dark (not done yet)
+
+		id´s of animals are:
+
+		elk
+		moose
+		fisha
+		fishb
+		fishc
+		fishd
+		horse
+		bearbrown
+		mountainlion
+		deer
+		golden
+		fox
+		seal
+		chow 
+		raccoon
+		rabbit
+		frog 
+		eagle
+		owl
+		parrot
+		hummingbird
+		flamingo
+		stork
+
+		bearblack
+		panther
+		wolf
+		toad
+		taruffalo
+		buffalo
+		gator
+		goat
+		shadow
+		arm
+		spider
+		crab
+		scorpion
+		raven
+		vulture
+
+		*/
+
+		// test stuff
+/*		gui.add(soup, "addMoose").name("Add Moose");
 		gui.add(soup, "removeMoose").name("Remove Moose");
 
 		gui.add(soup, "addGator").name("Add Gator");
@@ -53,29 +89,13 @@ var City = function ( shared ) {
 
 		gui.add(soup, "get").name("Get (test)");
 		gui.add(soup, "setTest").name("Set (test)");
+*/
 
-
-		/*
-		if (shared.debug) {
-			world.scene.addObject( camera.debugPath );
-		}
-		world.scene.addObject( camera.animationParent );
-		*/
-
-		/*
-		shared.signals.cameraFov.add( function ( value ) {
-
-			camera.fov = value;
-			camera.updateProjectionMatrix();
-
-		} );
-		*/
 
 	};
 
 	this.show = function ( progress ) {
 
-		// camera.animation.play( true, 0 );
 		renderer.setClearColor( world.scene.fog.color );
 
 	};
@@ -91,11 +111,6 @@ var City = function ( shared ) {
 		THREE.AnimationHandler.update( delta );
 
 		soup.update( delta );
-
-		// slight camera roll
-		/*if (camera.animationParent) {
-			camera.animationParent.rotation.z = (camera.target.position.x)/700;
-		}*/
 
 		renderer.render( world.scene, camera, renderTarget );
 
