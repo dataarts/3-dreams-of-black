@@ -125,15 +125,15 @@ var Clouds = function ( shared, isRelaunch ) {
 
 	renderer = new THREE.WebGLRenderer({ antialias: false, clearColor: 0x000000, clearAlpha: 0 });
 	renderer.domElement.style.position = 'absolute';
+  renderer.domElement.style.left = '0px';
+  renderer.domElement.style.top = '0px';
 
-  var cloudsWidth = window.innerWidth/2;
-  var cloudsHeight = window.innerHeight/2;
-  var birdsWidth = window.innerWidth*2;
-  var birdsHeight = window.innerHeight*2;
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
-  renderTargetClouds = new THREE.WebGLRenderTarget( cloudsWidth, cloudsHeight, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
-  renderTargetFlamingos = new THREE.WebGLRenderTarget( birdsWidth, birdsHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
+  renderTargetClouds = new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight/2, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
+  renderTargetFlamingos = new THREE.WebGLRenderTarget( window.innerWidth*2, window.innerHeight*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
+
+  window.renderTargetClouds = renderTargetClouds;
   postCamera = new THREE.Camera();
   postCamera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
   postScene = new THREE.Scene();
@@ -172,11 +172,8 @@ var Clouds = function ( shared, isRelaunch ) {
                   "flamingos += texture2D( tFlamingos, vUv+vec2(1./width,0.) );",
                   "flamingos += texture2D( tFlamingos, vUv+vec2(.0,1./height) );",
                   "flamingos += texture2D( tFlamingos, vUv+vec2(1./width,1./height) );",
-                  "flamingos += texture2D( tFlamingos, vUv+vec2(2./width,0.) );",
-                  "flamingos += texture2D( tFlamingos, vUv+vec2(.0,2./height) );",
-                  "flamingos += texture2D( tFlamingos, vUv+vec2(2./width,2./height) );",
-                  "flamingos *= 1./7.;",
-                  "flamingos.rgb = mix(flamingos.rgb, vec3(fogColor), 0.3*flamingos.a);",
+                  "flamingos *= 1./4.;",
+                  "flamingos.rgb = mix(flamingos.rgb, vec3(fogColor), 0.15*flamingos.a);",
               "}",
 
               "vec4 clouds = texture2D( tClouds, vUv );",
@@ -215,7 +212,6 @@ var Clouds = function ( shared, isRelaunch ) {
       /////Birds
       morphObject[i] = new ROME.Animal( geometry, true );
       morphObject[i].timeOffset = Math.random()*100;
-      morphObject[i].mesh.materials[0].fog = true;
       bird = birds[i] = morphObject[i].mesh;
       bird.phase = Math.floor( Math.random() * 62.8);
       bird.rotation.set( 0, -0.5, 0 );
@@ -269,7 +265,12 @@ var Clouds = function ( shared, isRelaunch ) {
 
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
+
     renderer.setSize( width, height );
+
+//    renderer.setViewport(0,0,width, height);
+    renderer.domElement.style.width = width + 'px';
+		renderer.domElement.style.height = height + 'px';
 
 	};
 
@@ -284,6 +285,7 @@ var Clouds = function ( shared, isRelaunch ) {
 		camera.position.y += ( - mouse.y - camera.target.position.y ) * 0.01;
 		camera.position.z = - position + 4000;
     birdsGroup.position.z = camera.position.z - 500;
+    birdsGroup.position.y = - 50;
 
 		camera.target.position.x =  camera.position.x;
 		camera.target.position.y = camera.position.y;

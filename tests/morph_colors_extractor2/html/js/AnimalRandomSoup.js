@@ -326,8 +326,13 @@ ROME.AnimalShader = {
 			"gl_FragColor = vec4( vLightWeighting, 1.0 );",
 			//"gl_FragColor = gl_FragColor * vec4( diffuse, opacity );",
 
-			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );",
+			//"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 );",
+			
+			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 ) * vec4( 0.9, 0.85, 0.8, 1.0 );",
+			
 			THREE.ShaderChunk[ "fog_fragment" ],
+			
+			//"gl_FragColor = gl_FragColor * vec4( 1.0, 0.0, 0.0, 1.0 );",
 
 		"}"
 
@@ -353,9 +358,13 @@ ROME.AnimalAnimationData = {
 	"bearBlack": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
 			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
 				  
-	"bearBrown": { hRange:  0.02, sRange:   0.15, vRange:  0.25,
+	"bearBrown": { hRange:  0.02, sRange:   0.15, vRange:  0.15,
 			       hOffset: -0.01, sOffset:  0.05, vOffset: -0.15 },				  
-			
+
+	"blackWidow": { hRange:  0.02, sRange:  0.10,  vRange: 0.05,
+			     hOffset: 0.00, sOffset: 0.0,   vOffset: -0.1 },
+			  
+				   
 	"bunny": { hRange:  0.05, sRange:  0.125, vRange:  0.20,
 			  hOffset: 0.00, sOffset:  -0.05, vOffset: 0.00 },				   
 			  
@@ -372,13 +381,13 @@ ROME.AnimalAnimationData = {
 			        hOffset: 0.00, sOffset: 0.00, vOffset: 0.0 },
 
 	"centipede": { hRange: 0.05, sRange:  0.00, vRange:  0.55,
-		           hOffset: 0.00, sOffset: 0.10, vOffset: -0.40 },
+		           hOffset: 0.00, sOffset: 0.10, vOffset: -0.45 },
 					
 	"chow": { hRange:  0.025, sRange:   0.15, vRange:  0.10,
-			  hOffset: 0.00, sOffset:  -0.1, vOffset: 0.10 },
+			  hOffset: 0.00, sOffset:  -0.1,  vOffset: -0.1 },
 
 	"cow": { hRange:  0.00, sRange:   0.00, vRange:  0.20,
-			 hOffset: 0.00, sOffset:  0.05, vOffset: 0.00 },
+			 hOffset: 0.00, sOffset:  0.05, vOffset: -0.25 },
 
 	"cowCarcass": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
 			        hOffset: 0.00, sOffset:  -0.10, vOffset: 0.00 },
@@ -404,11 +413,11 @@ ROME.AnimalAnimationData = {
 	"fox": { hRange:  0.03, sRange:   0.15, vRange:  0.25,
 			 hOffset: -0.012, sOffset:  0.05, vOffset: 0.00 },
 				  
-	"frog": { hRange:  0.00, sRange:   0.10, vRange:  0.20,
-			  hOffset: 0.01, sOffset:  0.00, vOffset: 0.00 },
+	"frog": { hRange:  0.05, sRange:   0.10, vRange:  0.25,
+			  hOffset: 0.01, sOffset:  0.05, vOffset: -0.10 },
 			  
 	"gator": { hRange:  0.05, sRange:   0.00, vRange:  0.20,
-			   hOffset: -0.05, sOffset:  0.00, vOffset: -0.21 },
+			   hOffset: -0.05, sOffset:  0.00, vOffset: -0.26 },
 			  
 	"goat": { hRange:  0.02, sRange:   0.07, vRange:  0.1,
 			  hOffset: 0.00, sOffset:  0.00, vOffset: -0.20 },			  
@@ -432,43 +441,43 @@ ROME.AnimalAnimationData = {
 			 hOffset: -0.005, sOffset:  -0.3, vOffset: -0.10 },
 
 	"panther": { hRange:  0.00, sRange:  0.10, vRange:  0.075,
-			     hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+			     hOffset: 0.00, sOffset:  0.00, vOffset: -0.16 },
 
 			 
 	"parrot": { hRange:  0.05, sRange:   0.10, vRange:  0.3,
 			    hOffset: -0.025, sOffset:  0.1, vOffset: -0.10 },
 
-	"raccoon": { hRange:  0.00, sRange:   0.00, vRange:  0.25,
-			     hOffset: 0.00, sOffset:  -0.20, vOffset: -0.15 },			  
+	"raccoon": { hRange:  0.00, sRange:   0.10, vRange:  0.25,
+			     hOffset: 0.6, sOffset:  -0.10, vOffset: -0.2 },			  
 
 	"raven": { hRange:  0.02, sRange:  0.10,  vRange: 0.1,
 			  hOffset: 0.00, sOffset:  0.0, vOffset: -0.1 },
 
 	"scorp": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
-			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.15 },
 			   
 	"seal": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
-			  hOffset: 0.00, sOffset:  0.05, vOffset: 0.00 },
+			  hOffset: 0.00, sOffset: 0.05, vOffset: -0.10 },
 	
-	"shdw2": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
-			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+	"shdw2": { hRange:  0.00, sRange:   0.10, vRange:  0.06,
+			      hOffset: 0.00, sOffset:  -0.05, vOffset: -0.15 },
 			   
-	"sickle": { hRange:  0.04, sRange:  0.00, vRange:  0.05,
-		       hOffset: 0.00, sOffset: -0.20, vOffset: -0.10 },
+	"sickle": { hRange:  0.04, sRange:  0.00, vRange:  0.1,
+		       hOffset: 0.00, sOffset: -0.20, vOffset: -0.30 },
 
 	"stork": { hRange:  0.00, sRange:   0.10, vRange:  0.20,
 			   hOffset: 0.02, sOffset:  -0.05, vOffset: -0.05 },
 			   
 	"tarbuffalo": { hRange:  0.04, sRange:  0.10,  vRange:  0.1,
-		            hOffset: -0.015, sOffset: 0.0, vOffset: -0.15 },
+		            hOffset: -0.015, sOffset: 0.0, vOffset: -0.175 },
 			  
-	"toad": { hRange:  0.07, sRange:   0.00, vRange:  0.20,
+	"toad": { hRange:  0.07, sRange:   0.00, vRange:  0.1,
 			  hOffset: -0.02,  sOffset:  0.0, vOffset: -0.25 },			  
 			  
-	"vulture": { hRange:  0.01, sRange:   0.25, vRange:  0.12,
-			     hOffset: 0.0, sOffset:  -0.10, vOffset: -0.135 },
+	"vulture": { hRange:  0.01, sRange:   0.25, vRange:  0.08,
+			     hOffset: 0.0, sOffset:  -0.10, vOffset: -0.16 },
 
-	"wolf": { hRange:  0.00,  sRange:   0.2, vRange:  0.125,
+	"wolf": { hRange:  0.00,  sRange:   0.2, vRange:  0.06,
 			  hOffset: -0.05, sOffset:  -0.15, vOffset: -0.10 },
 
 	"zero": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
@@ -482,6 +491,8 @@ ROME.AnimalAnimationData = {
 
 		"bearbrown"   : "bearBrown",
 		"bearblack"   : "bearBlack",
+		
+		"blackwidow"   : "blackWidow",
 
 		"bunny" 	: "bunny",
 		
