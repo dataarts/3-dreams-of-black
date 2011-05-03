@@ -64,7 +64,6 @@ files = [
 'js/soups/elements/AnimalInFrontOfCamera.js',
 'js/soups/elements/Trail.js',
 'js/soups/elements/CollisionScene.js',
-'js/soups/elements/CollisionScene2.js',
 'js/soups/elements/TrailShader.js',
 'js/soups/elements/Stragglers.js',
 
@@ -89,6 +88,8 @@ files = [
 'js/sections/ugc/UgcObjectCreator.js',
 'js/sections/ugc/UgcSoupCreator.js',
 'js/sections/ugc/objectcreator/VoxelPainter.js',
+
+'js/Footer.js',
 
 'js/Shortcuts.js',
 

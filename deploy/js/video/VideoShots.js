@@ -182,7 +182,7 @@ var VideoShots = {
     }, {
         path: "files/videos/prairie/s03_layer01.webm",
         shaderId: VIDEO_HALFALPHA,
-        z: -990,
+        z: -990
     }],
     
     s02_04: [{
@@ -200,7 +200,7 @@ var VideoShots = {
     }, {
         path: "files/videos/prairie/s04_layer01.webm",
         shaderId: VIDEO_HALFALPHA,
-        z: -990,
+        z: -990
     }],
     
     s02_06: [{
@@ -216,7 +216,8 @@ var VideoShots = {
         threshold: .3,
         alphaFadeout: .3
     }]
-}
+};
+
 
 
 

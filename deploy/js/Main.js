@@ -55,7 +55,9 @@
 			startfilm : new Signal(),
 			stopfilm : new Signal(),
 
-			startexploration: new Signal()
+			startexploration: new Signal(),
+			
+			initscenes: new Signal()
 
 		},
 

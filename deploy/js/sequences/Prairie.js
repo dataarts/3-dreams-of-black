@@ -1,34 +1,29 @@
 var Prairie = function ( shared ) {
 
+	var that = this;
+
 	SequencerItem.call( this );
 
+	// signals
+	
+	shared.signals.initscenes.add( initScene );
+	
+	// private variables
+	
 	var camera, world, soup,
-	renderer = shared.renderer, renderTarget = shared.renderTarget,
+	renderer = shared.renderer, 
+	renderTarget = shared.renderTarget,
 	cameraPath, waypoints = [];
 
+	function initScene () {
+		
+		console.log( "prairie initScene" );
+		
+		that.update( 0.0009, 49.99, 90375 );
+
+	};
+	
 	this.init = function () {
-/*
-		waypoints = [
-			[ 0, 0, 0 ],
-			[ 104, -1, -44 ],
-			[ 167, -4, -69 ],
-			[ 250, -9, -95 ],
-			[ 336, -12, -111 ],
-			[ 364, -12, -115 ],
-			[ 402, -14, -120 ],
-			[ 467, -14, -122 ],
-			[ 532, -14, -116 ],
-			[ 616, -15, -94 ],
-			[ 696, -15, -60 ],
-			[ 754, -14, -21 ],
-			[ 805, -14, 16 ],
-			[ 883, -13, 80 ],
-			[ 970, -14, 146 ],
-			[ 1028, -13, 182 ],
-			[ 1080, -47, 228 ],
-			[ 1142, -138, 288 ]
-		];
-*/
 
 		waypoints = [
 		[ 302.182, 105.662, -15.045 ],
@@ -63,11 +58,13 @@ var Prairie = function ( shared ) {
 
 		}
 
-		/*camera = new THREE.QuakeCamera( {
+		/*
+		camera = new THREE.QuakeCamera( {
 		fov: 60, aspect: WIDTH / HEIGHT, near: 1, far: 100000,
 		movementSpeed: 100, lookSpeed: 0.25, noFly: false, lookVertical: true,
 		autoForward: false
-		} );*/
+		} );
+		*/
 
 		cameraPath = new THREE.PathCamera( {
 
@@ -99,6 +96,8 @@ var Prairie = function ( shared ) {
 		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
+		 
+		 console.log( "prairie init" );
 
 	};
 
@@ -107,6 +106,8 @@ var Prairie = function ( shared ) {
 		this.resetCamera();
 
 		shared.started.prairie = true;
+		
+		console.log( "show prairie" );
 
 	};
 
@@ -126,7 +127,7 @@ var Prairie = function ( shared ) {
 	};
 	
 	this.update = function ( progress, delta, time ) {
-
+		
 		if ( isNaN(delta) || delta > 1000 || delta == 0 ) {
 
 			delta = 1000 / 60;

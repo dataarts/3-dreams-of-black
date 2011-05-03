@@ -40,7 +40,20 @@ var City = function ( shared ) {
 		camera.position.set(0,150,-550)
 
 		world = new SoupWorld( shared );
-		soup = new Soup( camera, world.scene, shared );
+		soup = new UgcSoup( camera, world.scene, shared );
+
+		gui.add(soup, "addMoose").name("Add Moose");
+		gui.add(soup, "removeMoose").name("Remove Moose");
+
+		gui.add(soup, "addGator").name("Add Gator");
+		gui.add(soup, "removeGator").name("Remove Gator");
+
+		gui.add(soup, "addRaven").name("Add Raven");
+		gui.add(soup, "removeRaven").name("Remove Raven");
+
+		gui.add(soup, "get").name("Get (test)");
+		gui.add(soup, "setTest").name("Set (test)");
+
 
 		/*
 		if (shared.debug) {
