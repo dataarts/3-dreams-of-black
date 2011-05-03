@@ -9,10 +9,6 @@
  *					 files/eminating-heart.svg
  */
 
-
-// TODO:
-// + Add Footer
-
 var RelauncherSection = function( shared ) {
 
 	Section.call( this );
@@ -23,6 +19,7 @@ var RelauncherSection = function( shared ) {
 			domElement.style.display = 'none';
 
 	var navigation = {};
+	var footer, footNav;
 
 	// add css styling
 
@@ -46,12 +43,12 @@ var RelauncherSection = function( shared ) {
 	var clouds = new Clouds( shared, true );
 	var d = clouds.getDomElement();
 	d.style.background = "#fff";
-	d.style.zIndex = -1;
+	d.style.zIndex = -2;
 	domElement.appendChild( d );
 
 	var container = document.createElement("div");
 	container.setAttribute("id", "container");
-	container.setAttribute("style", "position: absolute;");
+	container.setAttribute("style", "position: absolute; z-index: -1;");
 	domElement.appendChild(container);
 
 	var gee = new GEE({
@@ -63,9 +60,9 @@ var RelauncherSection = function( shared ) {
 	// Implemented Footer.js
 	footer = document.createElement( 'div' );
 	footer.style.position = 'absolute';
-	footer.style.left = '0';
-	footer.style.bottom = '0';
 	footer.style.width = "100%";
+	footer.style.top = (window.innerHeight - 78) + "px";
+	footer.style.left = "0";
 	footNav = new Footer( footer );
 	domElement.appendChild( footer );
 
@@ -263,7 +260,7 @@ var RelauncherSection = function( shared ) {
 
 		clouds.show();
 		updateDomElementsPosition();
-		// if(footNav.isSetup()) footNav.setupEmiBuyButton();
+		if(footNav.isSetup()) footNav.setupEmiBuyButton();
 		domElement.style.display = 'block';
 
 	};
@@ -271,6 +268,7 @@ var RelauncherSection = function( shared ) {
 	this.resize = function( width, height ) {
 
 		clouds.resize( width, height );
+		footer.style.top = (window.innerHeight - 78) + "px";
 		updateDomElementsPosition();
 
 	};
