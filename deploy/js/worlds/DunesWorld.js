@@ -116,7 +116,7 @@ var DunesWorld = function ( shared ) {
 		{ name: "city",    center: new THREE.Vector3( -67.22, 6124.65, 5156.30 ), radius: 1750, state: 0, type: 0 },
 		
 		{ name: "prairiePortal", center: new THREE.Vector3( -314.95, 6122.06, 5658.0 ), radius: 50, state: 0, type: 1, destination: "prairie", pattern: 32 },
-		{ name: "cityPortal",    center: new THREE.Vector3( -689.86, 6985.24, 10657.89 ), radius: 100, state: 0, type: 1, destination: "city", pattern: 16 }
+		{ name: "cityPortal",    center: new THREE.Vector3( 171.92702640000002, 3573.60187991009, 10419.361519434933 ), radius: 100, state: 0, type: 1, destination: "city", pattern: 16 }
 		
 	];
 
@@ -327,7 +327,7 @@ var DunesWorld = function ( shared ) {
 			
 		}
 
-		/*
+		
 		var centerObj = result.objects[ "City_Center" ];
 		var portalObj = result.objects[ "City_Portal" ];
 		
@@ -338,9 +338,9 @@ var DunesWorld = function ( shared ) {
 		
 		portalObj.__isCollider = true;
 		centerObj.__isCollider = true;
-		*/
 		
-		/*
+		
+		
 		that.scene.update( undefined, true );
 		
 		
@@ -350,9 +350,9 @@ var DunesWorld = function ( shared ) {
 		shared.influenceSpheres[ 1 ].center.copy( centerPos );
 		shared.influenceSpheres[ 3 ].center.copy( portalPos );
 
-		console.log( "prairieCenter", centerPos );
-		console.log( "prairiePortal", portalPos );
-		*/
+		console.log( "cityCenter", centerPos );
+		console.log( "cityPortal", portalPos );
+		
 
 	};
 
