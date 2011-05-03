@@ -97,7 +97,7 @@ var VideoPlane = function( shared, layer, conf ) {
         uniforms: uniforms,
         vertexShader: shader.vertexShader,
         fragmentShader: shader.fragmentShader,
-        blending: THREE.BillboardBlending
+		depthTest: false
 
     });
 	
