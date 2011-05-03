@@ -1,4 +1,4 @@
-/* Converted from: Desert2.blend
+/* Converted from: Desert3.blend
  *
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
@@ -6,7 +6,7 @@
  * objects:    2
  * geometries: 2
  * materials:  53
- * textures:   3
+ * textures:   2
  */
 
 var scene = {
@@ -17,6 +17,20 @@ var scene = {
 
 "objects" :
 {
+    "D_tile_4" : {
+        "geometry"  : "geo_D_tile_4",
+        "groups"    : [  ],
+        "materials" : [ "Stone.001", "Desert3.012", "Rock3.012", "Bush" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "None"
+    },
+
     "D_tile_4_Collision" : {
         "geometry"  : "geo_D_tile_4_Collisio.000",
         "groups"    : [  ],
@@ -29,34 +43,20 @@ var scene = {
         "castsShadow"   : false,
         "meshCollider"  : true,
         "trigger"       : "None"
-    },
-
-    "D_tile_4" : {
-        "geometry"  : "geo_D_tile_4.001",
-        "groups"    : [  ],
-        "materials" : [ "Stone.005", "Desert3.003", "Rock3.003", "Bush.002" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
     }
 },
 
 
 "geometries" :
 {
+    "geo_D_tile_4" : {
+        "type" : "embedded_mesh",
+        "id"  : "emb_D_tile_4"
+    },
+
     "geo_D_tile_4_Collisio.000" : {
         "type" : "embedded_mesh",
         "id"  : "emb_D_tile_4_Collisio.000"
-    },
-
-    "geo_D_tile_4.001" : {
-        "type" : "embedded_mesh",
-        "id"  : "emb_D_tile_4.001"
     }
 },
 
@@ -67,10 +67,6 @@ var scene = {
         "url": "Closeup_PaintDubs.jpg"
     },
 
-    "GrungePaint0014_S.jpg" : {
-        "url": "GrungePaint0014_S.jpg"
-    },
-
     "PaintDubs.jpg" : {
         "url": "PaintDubs.jpg"
     }
@@ -79,37 +75,37 @@ var scene = {
 
 "materials" :
 {
-    "08 - Default.001" : {
+    "08 - Default" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 9803157, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "11 - Default.001" : {
+    "11 - Default" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 4600096, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "12 - Default.001" : {
+    "12 - Default" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 0, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "assets.002" : {
+    "assets" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "assets.003" : {
+    "assets.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Bush.002" : {
+    "Bush" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Closeup_PaintDubs.001" : {
+    "Closeup_PaintDubs" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
     },
@@ -139,6 +135,16 @@ var scene = {
         "parameters": { color: 11876351, opacity: 1.00 }
     },
 
+    "Collision.002" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11876351, opacity: 1.00 }
+    },
+
+    "Collision.004" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11876351, opacity: 1.00 }
+    },
+
     "Collision.010" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 11876351, opacity: 1.00 }
@@ -159,17 +165,7 @@ var scene = {
         "parameters": { color: 11876351, opacity: 1.00 }
     },
 
-    "Collision.015" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
-    },
-
     "Collision.016" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
-    },
-
-    "Collision.017" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 11876351, opacity: 1.00 }
     },
@@ -179,32 +175,27 @@ var scene = {
         "parameters": { color: 11876351, opacity: 1.00 }
     },
 
-    "Desert3" : {
+    "Desert3.004" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Desert3.001" : {
+    "Desert3.005" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Desert3.002" : {
+    "Desert3.006" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Desert3.003" : {
+    "Desert3.007" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Desert3.008" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
-    },
-
-    "Desert3.010" : {
+    "Desert3.009" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
@@ -214,7 +205,7 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Desert3.013" : {
+    "Desert3.012" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
@@ -224,37 +215,37 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "PaintDubs.001" : {
+    "Desert3.015" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Rock3" : {
+    "PaintDubs" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Rock3.001" : {
+    "Rock3.004" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Rock3.002" : {
+    "Rock3.005" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Rock3.003" : {
+    "Rock3.006" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Rock3.008" : {
+    "Rock3.007" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Rock3.010" : {
+    "Rock3.009" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
@@ -264,7 +255,7 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Rock3.013" : {
+    "Rock3.012" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
@@ -274,17 +265,22 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "RocksWhite.001" : {
+    "Rock3.015" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+    },
+
+    "RocksWhite" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 2960685, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Standard_10.001" : {
+    "Standard_10" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 1250067, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Standard_19.003" : {
+    "Standard_19" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 14408667, opacity: 1.00, vertexColors: "vertex" }
     },
@@ -294,49 +290,49 @@ var scene = {
         "parameters": { color: 14408667, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Stone.004" : {
+    "Stone" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Stone.005" : {
+    "Stone.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Stone.006" : {
+    "Stone.002" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Tree" : {
+    "Tree.004" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Tree.001" : {
+    "Tree.005" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Tree.002" : {
+    "Tree.006" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Tree.003" : {
+    "Tree.007" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+    },
+
+    "Water" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 4878045, opacity: 0.50, vertexColors: "vertex" }
     },
 
     "Water.002" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 6992127, opacity: 0.79 }
-    },
-
-    "Water.006" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 4878045, opacity: 0.50, vertexColors: "vertex" }
     },
 
     "Water.007" : {
@@ -380,14 +376,14 @@ var scene = {
     "edges" : []
 },
 
-"emb_D_tile_4.001": {    "version" : 2,
+"emb_D_tile_4": {    "version" : 2,
 
     "scale" : 10.000000,
 
     "materials": [	{
 	"DbgColor" : 15658734,
 	"DbgIndex" : 0,
-	"DbgName" : "Stone.005",
+	"DbgName" : "Stone.001",
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
@@ -400,7 +396,7 @@ var scene = {
 	{
 	"DbgColor" : 15597568,
 	"DbgIndex" : 1,
-	"DbgName" : "Desert3.003",
+	"DbgName" : "Desert3.012",
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.0, 0.0, 0.0],
@@ -414,7 +410,7 @@ var scene = {
 	{
 	"DbgColor" : 60928,
 	"DbgIndex" : 2,
-	"DbgName" : "Rock3.003",
+	"DbgName" : "Rock3.012",
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.0, 0.0, 0.0],
@@ -428,7 +424,7 @@ var scene = {
 	{
 	"DbgColor" : 238,
 	"DbgIndex" : 3,
-	"DbgName" : "Bush.002",
+	"DbgName" : "Bush",
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
