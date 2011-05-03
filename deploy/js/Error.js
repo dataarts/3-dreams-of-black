@@ -2,7 +2,7 @@
 function HandleErrors(d) {
 
   var that = this;
-  var destination = d || "http://ro.me/alternate";
+  var destination = d || "/alternate";
 
   Trailer = "<ul id = 'trailer'><li class = 'first'><a href = '#'>Watch Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
@@ -139,15 +139,14 @@ function HandleErrors(d) {
 // Read a page's GET URL variables and return them as an associative array.
 var romeErrors = new HandleErrors();
 var variables = romeErrors.getUrlVars();
-
 if(variables) {
   if(variables[romeErrors.MagicVariable]) {
     // this means we are in the error page
-    window.onload = function() {
+    window.addEventListener("load", function() {
       var iterator = variables[romeErrors.MagicVariable];
       var error = document.getElementById("error");
           error.innerHTML = romeErrors.Errors[iterator];
-    };
+    }, false);
   }
 } else {
   romeErrors.checkForErrors();
