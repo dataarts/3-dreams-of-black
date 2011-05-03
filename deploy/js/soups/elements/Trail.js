@@ -233,13 +233,13 @@ var Trail = function ( numOfInstances, scene ) {
 				}
 
 				var easeType = TWEEN.Easing.Quintic.EaseOut;
-				if (tree) {
+				if (tree || lightHouse) {
 					easeType = TWEEN.Easing.Elastic.EaseOut;
 				}
 
 				var growTween = new TWEEN.Tween(c.scale)
 							.to({x: xscale, y: yscale, z: zscale}, that.settings.tweenTime)
-							.easing(TWEEN.Easing.Quintic.EaseOut);
+							.easing(easeType);
 				growTween.start();				
 
 
