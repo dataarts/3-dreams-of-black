@@ -1,6 +1,12 @@
 var Dunes = function ( shared ) {
 
+	var that = this;
+
 	SequencerItem.call( this );
+
+	// signals
+	
+	shared.signals.initscenes.add( initScene );
 
 	this.CAMERA_LOWEST_Y = 250;
 	this.CAMERA_HIGHEST_Y = 4500;
@@ -22,6 +28,8 @@ var Dunes = function ( shared ) {
 	this.CAMERA_START_LIFT = 0.29;
 	this.CAMERA_END_LIFT = 0.375;
 
+	// private variables
+	
 	var wantedCamera;
 	var wantedCameraTarget;
 	var wantedCameraDirection = new THREE.Vector3();
@@ -36,6 +44,14 @@ var Dunes = function ( shared ) {
 
 
 	//--- Init ---
+
+	function initScene () {
+		
+		console.log( "dunes initScene" );
+		
+		that.update( 0.0009, 49.99, 90375 );
+
+	};
 
 	this.init = function () {
 
@@ -56,6 +72,8 @@ var Dunes = function ( shared ) {
 
 		shared.worlds.dunes = world;
 		shared.sequences.dunes = this;
+		
+		console.log( "dunes init" );
 
 	};
 
@@ -66,6 +84,8 @@ var Dunes = function ( shared ) {
 
 		this.resetCamera();
 		shared.started.dunes = true;
+		
+		console.log( "show dunes" );
 
 	};
 
@@ -96,8 +116,6 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, delta, time ) {
 
-		shared.logger.clear();
-
 		this.updateCamera( progress, delta, time );
 
 		THREE.AnimationHandler.update( delta );
@@ -115,7 +133,6 @@ var Dunes = function ( shared ) {
 	this.updateCamera = function( progress, delta, time ) {
 		
 		delta = delta * ( 1000 / 30 ) / 1000; 
-		
 		
 		// check collision round-robin (can't afford to do all every frame)
 

@@ -1,0 +1,38 @@
+<!doctype html>
+  <html>
+  <head>
+    <!--[if lt IE 9]>
+    <script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+    <![endif]-->
+    <script type = "text/javascript" src = "Footer.js"></script>
+    <script type = "text/javascript">
+      window.onload = function() {
+        var foot = new Footer(document.getElementById("bottom"), "images");
+            foot.setupEmiBuyButton();
+        var container = foot.getDomElement();
+            container.style.position = "fixed";
+            container.style.bottom = 0;
+            container.style.left = 0;
+      };
+    </script>
+  </head>
+  <body>
+
+    <div id = "container">
+      <div id = "content">
+        <div id = "header">
+          <h1 class = "background-image">Rome</h1>
+          <h2 class = "background-image">&#147;Three Dreams of Black&#148;</h2>
+        </div>
+        <div id = "error">
+          <!-- Any errors fall here -->
+          <noscript>
+            We are deeply sorry, but it appears your computer&#39;s graphics card and your browser do not support the &#147;3 Dreams of Black&#148; experience. You can find more details for troubleshooting WebGL issues <a href = 'http://get.webgl.org/troubleshooting/'>here<a> and obtain a list of recommended graphics cards and browsers. In the meantime, we would like to invite you to watch the video trailer of the &#147;3 Dreams of Black&#148; experience.
+          </noscript>
+        </div>
+      </div>
+
+      <div id = "bottom">
+    </div>
+  </body>
+</html>

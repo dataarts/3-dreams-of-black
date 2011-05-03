@@ -43,6 +43,18 @@ var DunesWorld = function ( shared ) {
 	initLensFlares( that, new THREE.Vector3( 0, 0, -10000 ), 70, 292 );		
 
 
+	// can these be removed?
+
+	shared.influenceSpheres = [ 
+		
+		{ name: "prairie", center: new THREE.Vector3( 544.30, 7167.78, 11173.20 ), radius: 1750, state: 0, type: 0 },
+		{ name: "city",    center: new THREE.Vector3( -67.22, 6124.65, 5156.30 ), radius: 1750, state: 0, type: 0 },
+		
+		{ name: "prairiePortal", center: new THREE.Vector3( -314.95, 6122.06, 5658.0 ), radius: 50, state: 0, type: 1, destination: "prairie", pattern: 32 },
+		{ name: "cityPortal",    center: new THREE.Vector3( -689.86, 6985.24, 10657.89 ), radius: 100, state: 0, type: 1, destination: "city", pattern: 16 }
+		
+	];
+
 
 	// generate base grid (rotations depend on where the grid is in space)
 	// 0-3 = tiles
@@ -117,8 +129,101 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
 
+//	var jloader = new THREE.JSONLoader();
+	
+//	jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
+//	jloader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
+	
+//	jloader.load( { model: 'files/models/Cloud1_.js', callback: function( geo ) { addClouds( geo, 100 ); } } );
+//	jloader.load( { model: 'files/models/Cloud2_.js', callback: function( geo ) { addClouds( geo, 100 ); } } );
 
-	//--- functions ---
+
+	
+	/////////// COPIED FROM OLD DUNESWORLD.JS - NOT USED HERE ///////////////
+
+	var showSpheres = false;
+	
+	if ( showSpheres ) {
+	
+		var sphere = new THREE.Sphere( 1, 64, 32 );
+		var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
+
+		for ( var i = 0; i < shared.influenceSpheres.length; i ++ ) {
+			
+			var s = shared.influenceSpheres[ i ];
+			
+			//if ( s.type == 1 ) 
+			{
+			
+				var radius = s.radius;
+				var center = s.center;
+			
+				//var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+				//var sphereObject = new THREE.Mesh( sphere, wireMaterial );
+				
+				var particleMaterial = new THREE.ParticleBasicMaterial( { size: 5, color:0xff7700, map: sprite, transparent: true } );
+				var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
+				sphereObject.sortParticles = true;
+				
+				sphereObject.name = s.name;
+				
+				sphereObject.position.copy( center );
+				sphereObject.scale.set( radius, radius, radius );
+				
+				s.mesh = sphereObject;
+				
+				that.scene.addObject( sphereObject );
+				
+			}
+
+		}
+
+	}
+
+
+	// UGC - TODO: Temp implementation
+
+	var ugcHandler = new UgcHandler();
+
+	ugcHandler.getLatestUGOs( function ( objects ) {
+
+		var geometry = new THREE.Cube( 50, 50, 50 );
+		var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+
+		for ( var i = 0, l = objects.length; i < l; i ++ ) {
+
+			var data = eval( objects[ i ] );
+
+			if ( data instanceof Array ) {
+
+				var group = new THREE.Object3D();
+				group.position.x = Math.random() * 10000 - 5000;
+				group.position.z = Math.random() * 10000 - 5000;
+
+				for ( var j = 0, jl = data.length; j < jl; j += 4 ) {
+
+					var voxel = new THREE.Mesh( geometry, material );
+					voxel.position.x = data[ j ];
+					voxel.position.y = data[ j + 1 ];
+					voxel.position.z = data[ j + 2 ];
+					voxel.matrixAutoUpdate = false;
+					voxel.updateMatrix();
+					voxel.update();
+
+					group.addChild( voxel );
+
+				}
+
+				that.scene.addObject( group );
+
+			}
+
+		}
+
+	} );
+
+
+	/////////////////////////////////////////////////////////////////////////
 
 	//--- walk loaded ---
 
@@ -160,7 +265,7 @@ var DunesWorld = function ( shared ) {
 		markColliders( scene );
 		showHierarchyNotColliders( scene, true );
 		
-		
+
 		// get collider
 		
 		tileColliders[ numTilesLoaded ] = scene.collisions.colliders[ 0 ].mesh;
@@ -168,7 +273,7 @@ var DunesWorld = function ( shared ) {
 		tileColliders[ numTilesLoaded ].scale.set( SCALE, SCALE, SCALE );
 		
 		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
-		//tileColliders[ numTilesLoaded ].visible= true;//materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+		//tileColliders[ numTilesLoaded ].visible= true;
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
 		that.scene.collisions.merge( scene.collisions );
 
@@ -186,54 +291,6 @@ var DunesWorld = function ( shared ) {
 	};
 	
 	
-	//--- duplicate mesh (dublicates the mesh of the tile) ---
-	
-	function duplicateMesh( scene ) {
-		
-		for( var c = 0; c < scene.children.length; c++ ) {
-			
-			if( !scene.children[ c ].__isCollider ) {
-				
-				var org  = scene.children[ c ];
-				var mesh = new THREE.Mesh( org.geometry, org.materials );
-				
-				mesh.rotation.x = -90 * Math.PI / 180;
-				mesh.scale.set( SCALE, SCALE, SCALE );
-				
-				that.scene.addChild( mesh );
-						
-				return mesh;
-			}
-		
-		}
-		
-	};
-	
-	
-	//--- add dunes part ---
-
-	function addDunesPart( result ) {
-
-		var scene = result.scene;
-
-		scene.scale.set( SCALE, SCALE, SCALE );
-		scene.matrixAutoUpdate = true;
-
-		markColliders( scene );
-		showHierarchyNotColliders( scene, true );
-		preInitScene( result, shared.renderer );
-		
-		that.scene.addChild( scene );
-		
-		if ( scene.collisions ) {
-		
-			that.scene.collisions.merge( scene.collisions );
-
-		}
-		
-		return scene;
-	};
-
 	//--- udpate ---
 	
 	that.update = function ( delta, camera, portalsActive ) {
@@ -330,6 +387,56 @@ var DunesWorld = function ( shared ) {
 
 
 	//--- helpers ---
+
+	//--- duplicate mesh (dublicates the mesh of the tile) ---
+	
+	function duplicateMesh( scene ) {
+		
+		for( var c = 0; c < scene.children.length; c++ ) {
+			
+			if( !scene.children[ c ].__isCollider ) {
+				
+				var org  = scene.children[ c ];
+				var mesh = new THREE.Mesh( org.geometry, org.materials );
+				
+				mesh.rotation.x = -90 * Math.PI / 180;
+				mesh.scale.set( SCALE, SCALE, SCALE );
+				
+				that.scene.addChild( mesh );
+						
+				return mesh;
+			}
+		
+		}
+		
+	};
+	
+	
+	//--- add dunes part ---
+
+	function addDunesPart( result ) {
+
+		var scene = result.scene;
+
+		scene.scale.set( SCALE, SCALE, SCALE );
+		scene.matrixAutoUpdate = true;
+
+		markColliders( scene );
+		showHierarchyNotColliders( scene, true );
+		preInitScene( result, shared.renderer );
+		
+		that.scene.addChild( scene );
+		
+		if ( scene.collisions ) {
+		
+			that.scene.collisions.merge( scene.collisions );
+
+		}
+		
+		return scene;
+	};
+
+
 	
 	function getRotation ( x, z ) {
 
