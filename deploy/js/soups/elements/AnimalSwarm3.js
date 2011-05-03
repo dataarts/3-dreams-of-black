@@ -98,72 +98,105 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			ray = new THREE.Ray();
 			ray.direction = new THREE.Vector3(0, -1, 0);
 
-			var obj = { c: mesh, a: animal, f: 0, time: 0, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
+			var obj = { c: mesh, a: animal, f: 0, time: 0, lifetime: 0, dead: false, startMorph: startMorph, endMorph: endMorph, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
 
 			that.array[i] = obj;
 
 		}
-		
-		return animal;
 
-	};
+	}
+
+	// remove animal test
+	this.removeAnimal = function (geometry, morph) {
+		for ( i = 0; i < that.initSettings.numOfAnimals; ++i ) {
+			var a = that.array[i].a;
+			if (a == undefined) {
+				continue;
+			}
+			var startMorph = that.array[i].startMorph;
+			var endMorph = that.array[i].endMorph;
+
+			if (a.mesh.geometry == geometry && (morph == startMorph || morph == endMorph)) {
+				//console.log("found match = "+i);
+				scene.removeChild( that.array[i].c );
+				
+				delete that.array[i].a;
+				that.array[i].active = false;
+
+				break;
+			}
+
+		}
+	}
 
 	// switch animal test
-
-	this.switchAnimal = function (geometry, scale, index) {
-
-		console.log("switch");
-
+	this.switchAnimal = function (geometry, scale, speed, morph, arrayIndex) {
+		//console.log("adding on index = "+index);
+	
 		var scaleMultiplier = scale || 1.2;
-		var arrayIndex = index || 0;
 
-		/*if (speedArray == null) {
-			speedArray = [1];
-		}*/
-
-		var animal = ROME.Animal( geometry, false );
-		var mesh = animal.mesh;
-
-		var scale = 0.02+(Math.random()/8);
-		if (i<2) {
-			scale = 0.15;
-		}
-
-		scale = Math.max(scale, 0.1);
-
-		mesh.matrixAutoUpdate = false;
-
-		scene.removeChild( that.array[arrayIndex].c );
-		scene.addChild( mesh );
-		
-		var startMorph = 0;
-		var endMorph = 0;
-/*		if (morphArray != null) {
-			startMorph = morphArray[i%morphArray.length]%animal.availableAnimals.length;
-			endMorph = startMorph+1;
-			var rnd = Math.round(Math.random());
-			if ((rnd == 1 && startMorph > 0) || endMorph > animal.availableAnimals.length-1) {
-				endMorph = startMorph-1;
+		for ( i = 0; i < that.initSettings.numOfAnimals; ++i ) {
+			if (arrayIndex != undefined) {
+				i = arrayIndex;
 			}
-			//endMorph = Math.floor(Math.random()*animal.availableAnimals.length);
+
+			var a = that.array[i].a;
+
+			var startMorph = that.array[i].startMorph;
+			var endMorph = that.array[i].endMorph;
+
+			if (a != undefined && a.mesh.geometry == geometry && arrayIndex == undefined && (startMorph == morph || endMorph == morph)) {
+				continue;
+			}
+
+			console.log("adding on "+i);
+
+			var oldPosition = that.array[i].c.position;
+
+			var animal = ROME.Animal( geometry, false );
+			var mesh = animal.mesh;
+
+			var scale = 0.02+(Math.random()/8);
+			if (i<2) {
+				scale = 0.15;
+			}
+
+			scale = Math.max(scale, 0.1);
+			mesh.position = oldPosition;
+			mesh.visible = false;
+			mesh.scale.set(0.00001,0.00001,0.00001);
+
+			mesh.updateMatrix();
+
+			mesh.matrixAutoUpdate = false;
+			
+			scene.removeChild( that.array[i].c );
+			scene.addChild( mesh );
+			
+			var speeda = speed;
+			var speedb = speed;
+
+			animal.play( animal.availableAnimals[ morph ], animal.availableAnimals[ morph ], 0, Math.random(), Math.random() );
+
+			that.array[i].c = mesh;
+			that.array[i].a = animal;
+			that.array[i].scale = scale * scaleMultiplier;
+			that.array[i].origscale = scale * scaleMultiplier;
+			that.array[i].speeda = speed;
+			that.array[i].speedb = speed;
+			that.array[i].active = false;
+			that.array[i].startMorph = morph;
+			that.array[i].endMorph = morph;
+
+			break;
+
 		}
-
-		var speeda = speedArray[startMorph];
-		var speedb = speedArray[endMorph];
-*/
-		animal.play( animal.availableAnimals[ startMorph ], animal.availableAnimals[ endMorph ], 0, Math.random(), Math.random() );
-
-		//var obj = { c: mesh, a: animal, f: 0, time: 0, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
-
-		that.array[arrayIndex].c = mesh;
-		that.array[arrayIndex].a = animal;
-		that.array[arrayIndex].scale = scale * scaleMultiplier;
+		
 	}
 
 	this.create = function (position, normal) {
-
 		for (i=0; i<that.initSettings.numOfAnimals; ++i ) {
-			if (that.array[i].active) {
+			if (that.array[i].active || that.array[i].a == undefined) {
 				continue;
 			}
 
@@ -173,6 +206,8 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].c.visible = true;
 			that.array[i].f = 0;
 			that.array[i].time = 0;
+			that.array[i].lifetime = 0;
+			that.array[i].dead = false;
 			
 			/*if (that.settings.flying) {
 				that.array[i].normal.set(0,1,0);
@@ -200,10 +235,10 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 */
 
 			//console.log("created animal- "+that.array[i].toVector.x+" | "+that.array[i].toVector.y+" | "+that.array[i].toVector.y);
+			//console.log("created animal - "+i);
 			break;
 		}
-
-	};
+	}
 
 	this.update = function (delta, camPos) {
 
@@ -226,7 +261,14 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			var normal = obj.normal;
 			var f = obj.f;
 
+			var wasDead = that.array[i].dead;
+
 			that.array[i].time += delta;
+			that.array[i].lifetime += delta;
+
+			if (that.array[i].lifetime > 2500) {
+				that.array[i].dead = true;
+			}
 
 			// morph
 			that.array[i].count += 0.04;
@@ -251,8 +293,9 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			//if (distance > 200 && that.array[i].time > 200) {
 				++that.array[i].f;
 				
-				if (that.array[i].f >= 35) {
-					that.array[i].f = 35;
+				if (that.array[i].f >= 40) {
+					that.array[i].f = 40;
+					that.array[i].dead = true;
 					//that.array[i].active = false;
 					//that.array[i].c.visible = false;
 				}
@@ -293,9 +336,9 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// test
-			if (toz > animal.position.z) {
+			/*if (toz > animal.position.z) {
 				toz = animal.position.z;
-			}
+			}*/
 
 			// flying
 			if (that.settings.flying) {
@@ -332,6 +375,19 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
 			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
 
+			if (that.array[i].dead && !wasDead) {
+				// tween scale
+				var scaleTween = new TWEEN.Tween(that.array[i])
+					.to({scale: that.array[i].scale*0.1}, 400)
+					.easing(TWEEN.Easing.Quartic.EaseIn);
+				scaleTween.start()
+			}
+
+			if (that.array[i].dead && scale <= 0.1) {
+				that.array[i].active = false;
+				that.array[i].c.visible = false;
+				continue;
+			}
 
 			/*var moveNormalX = (vectorArray[f].normal.x-normal.x)/5;
 			var moveNormalY = (vectorArray[f].normal.y-normal.y)/5;
@@ -389,7 +445,7 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			animal.position.z += moveZ;
 			
 
-			if (animal.position.x < camPos.x+30 && animal.position.x > camPos.x-30 && animal.position.z < camPos.z+30 && animal.position.z > camPos.z-30) {
+			/*if (animal.position.x < camPos.x+30 && animal.position.x > camPos.x-30 && animal.position.z < camPos.z+30 && animal.position.z > camPos.z-30) {
 				that.array[i].active = false;
 				that.array[i].c.visible = false;
 			}
@@ -398,7 +454,7 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			if (animal.position.z > camPos.z+170) {
 				that.array[i].active = false;
 				that.array[i].c.visible = false;
-			}
+			}*/
 
 		}
 
@@ -568,8 +624,7 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 
 	this.reset = function ( x,y,z ) {
 
-		for ( var i = 0; i < that.initSettings.numOfAnimals; ++i ) {
-
+		for (var i=0; i<that.initSettings.numOfAnimals; ++i ) {
 			var obj = that.array[i].c;
 			obj.position.x = x;
 			obj.position.y = y;
@@ -578,6 +633,6 @@ var AnimalSwarm3 = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].active = false;
 		}
 
-	};
+	}
 
-};
+}
