@@ -2,12 +2,13 @@
 <html>
 <head>
 
-<title>three.js webgl - elk</title>
+<title>three.js webgl - horse</title>
 
 <style type="text/css">
 body {
     font-family: Monospace;
-    background-color: #545454;
+    background-color: #ffffff;
+	color: #000;
     margin: 0px;
     overflow: hidden;
 }
@@ -59,7 +60,7 @@ function init() {
     light.position.set( 0, 1, 1 );
     scene.addLight( light );
 
-    renderer = new THREE.WebGLRenderer( { antialias: true, clearColor: 0x545454, clearAlpha: 1 } );
+    renderer = new THREE.WebGLRenderer( { antialias: true, clearColor: 0xffffff, clearAlpha: 0 } );
     renderer.setSize( window.innerWidth, window.innerHeight );
     
     renderer.autoClear = false;
@@ -69,7 +70,7 @@ function init() {
     initPostprocessingNoise( postprocessing );
 
     var loader = new THREE.JSONLoader();
-    loader.load( { model: "../results/elk.js", callback: addAnimal } );
+    loader.load( { model: "../results/horse.js", callback: addAnimal } );
 
 };
 
@@ -101,7 +102,7 @@ function addAnimal( geometry ) {
         nameB = morphObject.availableAnimals[ 0 ];
 
     morphObject.play( nameA, nameB );
-    morphObject.animalA.timeScale = morphObject.animalB.timeScale = 0.3;
+    morphObject.animalA.timeScale = morphObject.animalB.timeScale = 0.05;
 
 };
 
