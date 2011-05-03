@@ -25,9 +25,6 @@ var CityShader = {
 		"targets": { type: "fv", value: [] },
 		"radiuses": { type: "fv1", value: [] },
 
-		"targetStart": { type: "v3", value: new THREE.Vector3() },
-		"targetEnd": { type: "v3", value: new THREE.Vector3() },
-
 	},
 
 	vertexShader: [
@@ -55,8 +52,6 @@ var CityShader = {
 		"uniform sampler2D grassImage;",
 		"uniform sampler2D surfaceImage;",
 
-		"uniform vec3 	targetStart;",
-		"uniform vec3 	targetEnd;",
 		"const 	 int  	NUMTARGETS = " + CityShaderEffectors.length + ";",
 		"uniform vec3 	targets[ NUMTARGETS ];",
 		"uniform float 	radiuses[ NUMTARGETS ];",

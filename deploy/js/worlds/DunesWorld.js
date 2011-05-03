@@ -67,21 +67,21 @@ var DunesWorld = function ( shared ) {
 
 			// place city, prairie and walk
 
-/*			if( x === 2 && z === 2 ) {
+			if( x === 0 && z === 0 ) {
 				
-				tileRow.push( 4 );					// walk
+				tileRow.push( 4 );										// walk
 				
-			} else if( x === 3 && z === 1 ) {
+			} else if( x === 0 && z === 4 ) {
 				
-				tileRow.push( 5 );					// prairie
+				tileRow.push( 5 );										// prairie
 				
-			} else if( x === 2 && z === 0 ) {
+			} else if( x === 1 && z === 3 ) {
 				
-				tileRow.push( 6 );					// city
+				tileRow.push( 6 );										// city
 				
-			} else */{
+			} else {
 				
-				tileNumber = Math.floor( Math.random() * 3.99999 );
+				tileNumber = Math.floor( Math.random() * 3.99999 );		// random tile
 				tileRow.push( tileNumber );
 				numTileInstances[ tileNumber ]++;
 				
@@ -115,7 +115,7 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_4.js", tileLoaded );
+	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
 
 
 	//--- functions ---
@@ -125,7 +125,7 @@ var DunesWorld = function ( shared ) {
 	function walkLoaded( result ) {
 
 		applyDunesShader( result );
-	//	tileMeshes[ 4 ][ 0 ] = addDunesPart( result );
+		tileMeshes[ 4 ][ 0 ] = addDunesPart( result );
 
 	};
 
@@ -135,7 +135,7 @@ var DunesWorld = function ( shared ) {
 	function prairieLoaded( result ) {
 
 		applyDunesShader( result );
-	//	tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
+		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
 	};
 	
@@ -145,7 +145,7 @@ var DunesWorld = function ( shared ) {
 	function cityLoaded( result ) {
 
 		applyDunesShader( result );
-	//	tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
+		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
 	};
 	
@@ -166,10 +166,9 @@ var DunesWorld = function ( shared ) {
 		tileColliders[ numTilesLoaded ] = scene.collisions.colliders[ 0 ].mesh;
 		tileColliders[ numTilesLoaded ].rotation.x = -90 * Math.PI / 180;
 		tileColliders[ numTilesLoaded ].scale.set( SCALE, SCALE, SCALE );
-
-		tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 } );
-		tileColliders[ numTilesLoaded ].visible = true;
 		
+		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+		//tileColliders[ numTilesLoaded ].visible= true;//materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
 		that.scene.collisions.merge( scene.collisions );
 
@@ -253,66 +252,66 @@ var DunesWorld = function ( shared ) {
 	that.updateTiles = function( camera ) {
 		
 		var halfGridSize = Math.floor( tileGridSize / 2 );
-		var position = camera.matrixWorld.getPosition();//.addSelf( camera.matrixWorld.getColumnZ().multiplyScalar( -TILE_SIZE * 1.5 ));
-		var cameraPositionX = Math.floor( position.x / TILE_SIZE );
-		var cameraPositionZ = Math.floor( position.z / TILE_SIZE );
-		var cameraTileGridX = ( cameraPositionX + halfGridSize ) % tileGridSize;
-		var cameraTileGridZ = ( cameraPositionZ + halfGridSize ) % tileGridSize;
+		var gridCenterPosition = camera.matrixWorld.getPosition();
+		var camX = gridCenterPosition.x;
+		var camZ = gridCenterPosition.z;
+		
+
+		gridCenterPosition.addSelf( camera.matrixWorld.getColumnZ().multiplyScalar( -TILE_SIZE * 1.5 ));
+
+		var cameraTileGridX = Math.floor( gridCenterPosition.x / TILE_SIZE ) % tileGridSize;
+		var cameraTileGridZ = Math.floor( gridCenterPosition.z / TILE_SIZE ) % tileGridSize;
 
 		while( cameraTileGridX < 0 ) cameraTileGridX += tileGridSize;
 		while( cameraTileGridZ < 0 ) cameraTileGridZ += tileGridSize;
 
-		shared.logger.log( "X: " + cameraTileGridX );
-		shared.logger.log( "Z: " + cameraTileGridZ );
 
-		if( cameraTileGridX !== lastCameraTileGridPosition.x || cameraTileGridZ !== lastCameraTileGridPosition.z ) {
+		var x, z, tx, tz, px, pz, distance, tile, tileMesh;
+		var currentNumberUsed = [ 0, 0, 0, 0, 0, 0, 0 ];
+		var currentColliderDistances = [ -1, -1, -1, -1 ];
+		
+		for( z = -halfGridSize; z < halfGridSize + 1; z++ ) {
 			
-			lastCameraTileGridPosition.x = cameraTileGridX;
-			lastCameraTileGridPosition.z = cameraTileGridZ;
-			
-			var x, z, tx, tz, px, pz, distance, tile, tileMesh;
-			var currentNumberUsed = [ 0, 0, 0, 0, 0, 0, 0 ];
-			var currentColliderDistances = [ -1, -1, -1, -1 ];
-			
-			for( z = -halfGridSize; z < halfGridSize + 1; z++ ) {
+			for( x = -halfGridSize; x < halfGridSize + 1; x++ ) {
 				
-				for( x = -halfGridSize; x < halfGridSize + 1; x++ ) {
-					
-					tx = ( cameraTileGridX + x ) % tileGridSize;
-					tz = ( cameraTileGridZ + z ) % tileGridSize;
-					
-					while( tx < 0 ) tx += tileGridSize;
-					while( tz < 0 ) tz += tileGridSize;
-					
-					tile = tileGrid[ tz ][ tx ];
-					
-					tileMesh = tileMeshes[ tile ][ currentNumberUsed[ tile ]++ ];
+				px = ( Math.floor( gridCenterPosition.x / TILE_SIZE ) + x ) * TILE_SIZE;
+				pz = ( Math.floor( gridCenterPosition.z / TILE_SIZE ) + z ) * TILE_SIZE;
+				
+				tx = ( cameraTileGridX + x ) % tileGridSize;
+				tz = ( cameraTileGridZ + z ) % tileGridSize;
+				
+				while( tx < 0 ) tx += tileGridSize;
+				while( tz < 0 ) tz += tileGridSize;
+				
+				tile = tileGrid[ tz ][ tx ];
+				
+				tileMesh = tileMeshes[ tile ][ currentNumberUsed[ tile ]++ ];
 
-					px = ( cameraPositionX + x ) * TILE_SIZE;
-					pz = ( cameraPositionZ + z ) * TILE_SIZE;
+				if( tileMesh ) {
 					
-					if( tileMesh ) {
-						
-						tileMesh.position.x = px; 
-						tileMesh.position.z = pz;
-						tileMesh.rotation.z = getRotation( px, pz );
-												
-					}
+					tileMesh.position.x = px; 
+					tileMesh.position.z = pz;
+					tileMesh.rotation.z = getRotation( px, pz );
+											
+				}
+				
+				// set colliders around the user
+				
+				if( tile < 4 ) {
 					
-					// set colliders around the user
+					tx = px - camX;
+					tz = pz - camZ;
 					
-					if( tile < 4 ) {
-						
-						tx = px - cameraPositionX * TILE_SIZE;
-						tz = pz - cameraPositionZ * TILE_SIZE;
-						
-						distance = tx * tx + tz * tz;
-						
-						if( currentColliderDistances[ tile ] === -1 || distance < currentColliderDistances[ tile ] ) {
+					distance = tx * tx + tz * tz;
+					
+					if( currentColliderDistances[ tile ] === -1 || distance < currentColliderDistances[ tile ] ) {
 
-							currentColliderDistances[ tile ] = distance;
+						currentColliderDistances[ tile ] = distance;
+						
+						tileMesh = tileColliders[ tile ];
+						
+						if( tileMesh ) {
 							
-							tileMesh = tileColliders[ tile ];
 							tileMesh.position.x = px; 
 							tileMesh.position.z = pz;
 							tileMesh.rotation.z = getRotation( px, pz );
