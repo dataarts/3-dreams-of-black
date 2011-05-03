@@ -5,6 +5,8 @@ import tempfile
 
 files = [
 
+'js/Error.js',
+
 'js/lib/Logger.js',
 'js/lib/Stats.js',
 'js/lib/gui.min.js',
