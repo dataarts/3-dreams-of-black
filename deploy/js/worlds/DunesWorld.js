@@ -327,6 +327,7 @@ var DunesWorld = function ( shared ) {
 			
 		}
 
+		/*
 		var centerObj = result.objects[ "City_Center" ];
 		var portalObj = result.objects[ "City_Portal" ];
 		
@@ -337,6 +338,7 @@ var DunesWorld = function ( shared ) {
 		
 		portalObj.__isCollider = true;
 		centerObj.__isCollider = true;
+		*/
 		
 		/*
 		that.scene.update( undefined, true );
