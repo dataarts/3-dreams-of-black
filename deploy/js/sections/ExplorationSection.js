@@ -31,8 +31,16 @@ var ExplorationSection = function ( shared ) {
 	cameras.city.lookSpeed = 3;
 	cameras.city.constrainVertical = [ -0.4, 0.4 ];
 	cameras.city.autoForward = false;
-	cameras.city.position.set( 0, 0, 0 );
+	cameras.city.position.set( 0, 20, -300 );
 
+	var cameraInitPos = {
+		
+		city	: new THREE.Vector3( 0, 20, -300 ),
+		prairie	: new THREE.Vector3( 0, 0, 0 ),
+		dunes	: new THREE.Vector3( 0, 0, 0 )
+
+	};
+	
 	var sequence, world, scene,
 	postEffect, clearEffect, heatEffect, paintEffect, paintEffectPrairie, paintEffectDunes,
 	noiseEffect, renderEffect, overlayEffect;
@@ -102,7 +110,7 @@ var ExplorationSection = function ( shared ) {
 		if ( EXPLORE_FREE ) {
 
 			scene.addChild( camera );			
-			camera.position.set( 0, 0, 0 );
+			camera.position.copy( cameraInitPos[ worldId ] );
 
 		} else {
 			

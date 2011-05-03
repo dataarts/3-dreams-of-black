@@ -3,9 +3,9 @@
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
- * objects:    198
+ * objects:    197
  * geometries: 29
- * materials:  36
+ * materials:  32
  * textures:   3
  */
 
@@ -17,13 +17,27 @@ var scene = {
 
 "objects" :
 {
-    "Tree1_" : {
-        "geometry"  : "geo_Tree1_.001",
+    "Collision_Ground" : {
+        "geometry"  : "geo_Collision_Ground.001",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
-        "position"  : [ -28.060339, 23.693203, -4.058559 ],
-        "rotation"  : [ 0.000000, -0.101596, 0.000000 ],
-        "quaternion": [ 0.998710, 0.000000, -0.050776, 0.000000 ],
+        "materials" : [ "Collision.001" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : false,
+        "castsShadow"   : false,
+        "meshCollider"  : true,
+        "trigger"       : "None"
+    },
+
+    "Mountains" : {
+        "geometry"  : "geo_Mountains.001",
+        "groups"    : [  ],
+        "materials" : [ "GroundLit.001" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -32,9 +46,9 @@ var scene = {
     },
 
     "Ground" : {
-        "geometry"  : "geo_Ground",
+        "geometry"  : "geo_Ground.001",
         "groups"    : [  ],
-        "materials" : [ "Closeup_PaintDubs" ],
+        "materials" : [ "GroundLit" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -87,38 +101,10 @@ var scene = {
         "trigger"       : "None"
     },
 
-    "Collision_Ground" : {
-        "geometry"  : "geo_Collision_Ground",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : false,
-        "meshCollider"  : true,
-        "trigger"       : "None"
-    },
-
-    "Mountains" : {
-        "geometry"  : "geo_Mountains",
-        "groups"    : [  ],
-        "materials" : [ "PaintDubs" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
     "Tree1_.090" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 567.102661, 97.354675, -21.485209 ],
         "rotation"  : [ -0.018020, -0.024829, 2.562201 ],
         "quaternion": [ 0.285734, 0.009323, -0.012180, 0.958186 ],
@@ -130,9 +116,9 @@ var scene = {
     },
 
     "Tree1_.089" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 710.793335, 60.051994, -22.917381 ],
         "rotation"  : [ -0.051910, 0.019273, -2.315938 ],
         "quaternion": [ 0.401276, -0.001588, 0.027635, -0.915539 ],
@@ -172,9 +158,9 @@ var scene = {
     },
 
     "House5_.000" : {
-        "geometry"  : "geo_House5_.001",
+        "geometry"  : "geo_House5_",
         "groups"    : [  ],
-        "materials" : [ "Closeup_PaintDubs.005" ],
+        "materials" : [ "Closeup_paintdubs.002" ],
         "position"  : [ 818.790771, 123.109322, -43.689705 ],
         "rotation"  : [ 0.047630, -0.036828, -2.189706 ],
         "quaternion": [ 0.458359, -0.005453, -0.029597, -0.888257 ],
@@ -218,7 +204,7 @@ var scene = {
         "groups"    : [  ],
         "materials" : [ "blinn1SG.001" ],
         "position"  : [ 708.036560, 108.757553, -33.414925 ],
-        "rotation"  : [ -0.061054, -0.295124, -1.541537 ],
+        "rotation"  : [ -0.061054, -0.295125, -1.541537 ],
         "quaternion": [ 0.706122, -0.124042, -0.084391, -0.692014 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
@@ -232,7 +218,7 @@ var scene = {
         "groups"    : [  ],
         "materials" : [ "blinn1SG.001" ],
         "position"  : [ 685.587158, 125.463943, -33.670052 ],
-        "rotation"  : [ -0.061054, -0.295124, -1.541537 ],
+        "rotation"  : [ -0.061054, -0.295125, -1.541537 ],
         "quaternion": [ 0.706122, -0.124042, -0.084391, -0.692014 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
@@ -270,9 +256,9 @@ var scene = {
     },
 
     "Tree1_.088" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 796.235107, -3.578061, -20.126101 ],
         "rotation"  : [ 0.044557, 0.037760, 1.177030 ],
         "quaternion": [ 0.831645, 0.008048, 0.028063, 0.554540 ],
@@ -284,9 +270,9 @@ var scene = {
     },
 
     "Tree1_.087" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 789.388733, 2.883009, -20.505898 ],
         "rotation"  : [ -0.056456, 0.014939, -1.003580 ],
         "quaternion": [ 0.876451, -0.021153, 0.020121, -0.480606 ],
@@ -298,9 +284,9 @@ var scene = {
     },
 
     "Tree1_.086" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 789.430542, 7.084881, -21.097645 ],
         "rotation"  : [ 0.061292, 0.013915, 0.428241 ],
         "quaternion": [ 0.976727, 0.028463, 0.013306, 0.212175 ],
@@ -312,12 +298,12 @@ var scene = {
     },
 
     "Tree1_.085" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 783.647339, 11.848536, -21.455412 ],
-        "rotation"  : [ -0.034083, -0.052816, 2.795462 ],
-        "quaternion": [ 0.172561, 0.023073, -0.021326, 0.984498 ],
+        "rotation"  : [ -0.034083, -0.052816, 2.795463 ],
+        "quaternion": [ 0.172560, 0.023073, -0.021326, 0.984498 ],
         "scale"     : [ 0.552055, 0.552055, 0.552055 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -326,12 +312,12 @@ var scene = {
     },
 
     "Tree1_.084" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 781.188171, 16.667568, -21.851391 ],
-        "rotation"  : [ -0.047024, -0.041714, 3.067682 ],
-        "quaternion": [ 0.037419, 0.019967, -0.024259, 0.998806 ],
+        "rotation"  : [ -0.047024, -0.041714, 3.067683 ],
+        "quaternion": [ 0.037418, 0.019967, -0.024259, 0.998806 ],
         "scale"     : [ 0.592750, 0.592750, 0.592750 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -340,12 +326,12 @@ var scene = {
     },
 
     "Tree1_.083" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 770.696594, 37.206249, -23.366859 ],
         "rotation"  : [ -0.060806, 0.015905, -2.234853 ],
-        "quaternion": [ 0.437998, -0.006168, 0.030808, -0.898426 ],
+        "quaternion": [ 0.437998, -0.006168, 0.030808, -0.898427 ],
         "scale"     : [ 0.592750, 0.592750, 0.592750 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -354,9 +340,9 @@ var scene = {
     },
 
     "Tree1_.082" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 773.174622, 31.535370, -22.471077 ],
         "rotation"  : [ 0.055587, -0.029343, 1.136421 ],
         "quaternion": [ 0.842230, 0.031313, 0.002592, 0.538202 ],
@@ -368,9 +354,9 @@ var scene = {
     },
 
     "Tree1_.081" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 773.920776, 24.223330, -22.656815 ],
         "rotation"  : [ 0.111507, -0.003365, 1.135506 ],
         "quaternion": [ 0.841750, 0.047885, 0.028549, 0.536982 ],
@@ -382,9 +368,9 @@ var scene = {
     },
 
     "Tree1_.080" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 757.526123, 28.567318, -21.510454 ],
         "rotation"  : [ 0.035326, -0.094419, 2.933149 ],
         "quaternion": [ 0.103072, 0.048764, 0.012638, 0.993397 ],
@@ -396,9 +382,9 @@ var scene = {
     },
 
     "Tree1_.079" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 754.157349, 44.384724, -23.473255 ],
         "rotation"  : [ 0.083921, 0.055891, 1.134781 ],
         "quaternion": [ 0.842865, 0.020358, 0.046078, 0.535762 ],
@@ -410,9 +396,9 @@ var scene = {
     },
 
     "Tree1_.010" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 787.151428, -30.798592, -22.780632 ],
         "rotation"  : [ -0.030824, 0.103999, -1.678345 ],
         "quaternion": [ 0.667693, 0.028388, 0.046172, -0.742461 ],
@@ -424,11 +410,11 @@ var scene = {
     },
 
     "Tree1_.000" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 736.419800, 6.174378, -21.253407 ],
-        "rotation"  : [ 0.027000, -0.015445, 2.112826 ],
+        "rotation"  : [ 0.027000, -0.015445, 2.112825 ],
         "quaternion": [ 0.491848, 0.013364, 0.007953, 0.870542 ],
         "scale"     : [ 0.556491, 0.556491, 0.556491 ],
         "visible"       : true,
@@ -456,7 +442,7 @@ var scene = {
         "groups"    : [  ],
         "materials" : [ "PaintDubs.001" ],
         "position"  : [ 411.590759, -78.792801, -46.912041 ],
-        "rotation"  : [ -0.055043, 0.078287, -1.044496 ],
+        "rotation"  : [ -0.055043, 0.078286, -1.044496 ],
         "quaternion": [ 0.866245, -0.004318, 0.047620, -0.497326 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
@@ -735,9 +721,9 @@ var scene = {
     },
 
     "Tree1_.078" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 1040.028198, -177.143799, -22.625591 ],
         "rotation"  : [ 0.104651, -0.065662, 0.510679 ],
         "quaternion": [ 0.965299, 0.058858, -0.018515, 0.253753 ],
@@ -749,9 +735,9 @@ var scene = {
     },
 
     "Tree1_.077" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 1026.717651, -223.130600, -29.633364 ],
         "rotation"  : [ 0.096755, 0.285539, 0.409901 ],
         "quaternion": [ 0.969376, 0.017941, 0.148886, 0.194476 ],
@@ -763,12 +749,12 @@ var scene = {
     },
 
     "Tree1_.076" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 1017.438232, -210.231934, -24.492533 ],
-        "rotation"  : [ -0.157468, -0.222744, 3.028863 ],
-        "quaternion": [ 0.064540, 0.106218, -0.084283, 0.988660 ],
+        "rotation"  : [ -0.157468, -0.222744, 3.028862 ],
+        "quaternion": [ 0.064541, 0.106218, -0.084283, 0.988660 ],
         "scale"     : [ 0.643728, 0.643728, 0.643728 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -777,9 +763,9 @@ var scene = {
     },
 
     "Tree1_.075" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 1020.752380, -179.767914, -22.462595 ],
         "rotation"  : [ 0.115428, 0.048699, 0.505663 ],
         "quaternion": [ 0.966661, 0.049751, 0.037959, 0.248296 ],
@@ -791,12 +777,12 @@ var scene = {
     },
 
     "Tree1_.074" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 1033.390015, -185.354492, -23.634052 ],
         "rotation"  : [ -0.080861, 0.060745, -2.952742 ],
-        "quaternion": [ 0.095386, 0.026399, 0.043082, -0.994157 ],
+        "quaternion": [ 0.095387, 0.026399, 0.043082, -0.994157 ],
         "scale"     : [ 0.498286, 0.498286, 0.498286 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -805,9 +791,9 @@ var scene = {
     },
 
     "Tree1_.073" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 833.676025, -282.702606, -57.361835 ],
         "rotation"  : [ 0.070868, -0.031847, 0.505288 ],
         "quaternion": [ 0.967384, 0.038275, -0.006554, 0.250322 ],
@@ -819,9 +805,9 @@ var scene = {
     },
 
     "Tree1_.072" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 834.453796, -257.950958, -54.774616 ],
         "rotation"  : [ -0.067766, -0.043464, 2.295030 ],
         "quaternion": [ 0.411093, 0.005890, -0.039800, 0.910705 ],
@@ -833,9 +819,9 @@ var scene = {
     },
 
     "Tree1_.071" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 827.482910, -228.120682, -52.876820 ],
         "rotation"  : [ -0.010658, 0.079782, -1.980843 ],
         "quaternion": [ 0.548071, 0.030430, 0.026320, -0.835464 ],
@@ -847,9 +833,9 @@ var scene = {
     },
 
     "Tree1_.070" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 820.728882, -222.867111, -52.342487 ],
         "rotation"  : [ 0.053493, 0.060170, -0.473634 ],
         "quaternion": [ 0.971114, 0.033040, 0.022959, -0.235201 ],
@@ -889,9 +875,9 @@ var scene = {
     },
 
     "Tree1_.069" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 602.083679, 121.193810, -26.073097 ],
         "rotation"  : [ 0.029037, -0.009901, 0.692052 ],
         "quaternion": [ 0.940593, 0.015336, 0.000267, 0.339190 ],
@@ -903,9 +889,9 @@ var scene = {
     },
 
     "Tree1_.068" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 588.075256, 126.977722, -26.263859 ],
         "rotation"  : [ -0.037177, 0.014689, -0.572689 ],
         "quaternion": [ 0.959130, -0.015756, 0.012294, -0.282260 ],
@@ -917,9 +903,9 @@ var scene = {
     },
 
     "Tree1_.067" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 725.732361, 63.085793, -24.252857 ],
         "rotation"  : [ 0.032389, 0.025049, 1.132421 ],
         "quaternion": [ 0.843872, 0.006948, 0.019254, 0.536154 ],
@@ -931,9 +917,9 @@ var scene = {
     },
 
     "Tree1_.066" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 730.921570, 55.038021, -24.074762 ],
         "rotation"  : [ -0.036794, -0.041384, 2.768388 ],
         "quaternion": [ 0.185824, 0.016916, -0.021911, 0.982193 ],
@@ -945,9 +931,9 @@ var scene = {
     },
 
     "Tree1_.065" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 708.414978, 64.722092, -23.503912 ],
         "rotation"  : [ -0.030250, 0.046382, -1.678537 ],
         "quaternion": [ 0.668012, 0.007154, 0.026740, -0.743635 ],
@@ -959,9 +945,9 @@ var scene = {
     },
 
     "Tree1_.064" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 725.458679, 70.416977, -25.580729 ],
         "rotation"  : [ 0.043683, -0.034033, 1.131937 ],
         "quaternion": [ 0.843547, 0.027554, -0.002650, 0.536342 ],
@@ -973,9 +959,9 @@ var scene = {
     },
 
     "Tree1_.063" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 716.359375, 66.822235, -24.396091 ],
         "rotation"  : [ -0.184299, -0.071356, -1.671940 ],
         "quaternion": [ 0.664753, -0.088009, 0.044416, -0.740530 ],
@@ -987,9 +973,9 @@ var scene = {
     },
 
     "Tree1_.062" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 710.890320, 68.823853, -25.009184 ],
         "rotation"  : [ 0.016315, 0.024293, 1.132070 ],
         "quaternion": [ 0.843997, 0.000371, 0.014626, 0.536149 ],
@@ -1001,9 +987,9 @@ var scene = {
     },
 
     "Tree1_.061" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 720.651367, 91.463867, -31.739698 ],
         "rotation"  : [ -0.012878, 0.098973, -0.074683 ],
         "quaternion": [ 0.998071, -0.004580, 0.049671, -0.036968 ],
@@ -1015,9 +1001,9 @@ var scene = {
     },
 
     "Tree1_.060" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 717.653442, 96.448692, -31.905704 ],
         "rotation"  : [ 0.083921, 0.055891, 1.134781 ],
         "quaternion": [ 0.842865, 0.020358, 0.046078, 0.535762 ],
@@ -1029,9 +1015,9 @@ var scene = {
     },
 
     "Tree1_.059" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 718.967346, 25.038607, -21.358215 ],
         "rotation"  : [ 0.051433, -0.104965, 0.925807 ],
         "quaternion": [ 0.892630, 0.046393, -0.035456, 0.446993 ],
@@ -1043,13 +1029,13 @@ var scene = {
     },
 
     "Tree1_.058" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 704.517639, 69.322441, -24.231749 ],
         "rotation"  : [ 0.084114, 0.055477, 1.134792 ],
         "quaternion": [ 0.842860, 0.020550, 0.045956, 0.535773 ],
-        "scale"     : [ 0.683374, 0.683374, 0.683374 ],
+        "scale"     : [ 0.683374, 0.683374, 0.683375 ],
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
@@ -1057,9 +1043,9 @@ var scene = {
     },
 
     "Tree1_.057" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 722.849243, 8.929920, -22.186970 ],
         "rotation"  : [ -0.014360, -0.010292, 0.909260 ],
         "quaternion": [ 0.898405, -0.004191, -0.007776, 0.439080 ],
@@ -1071,11 +1057,11 @@ var scene = {
     },
 
     "Tree1_.056" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 720.117004, 13.699906, -21.958584 ],
-        "rotation"  : [ 0.005511, 0.165506, -1.560532 ],
+        "rotation"  : [ 0.005511, 0.165507, -1.560532 ],
         "quaternion": [ 0.708131, 0.060099, 0.056816, -0.701220 ],
         "scale"     : [ 0.450177, 0.450177, 0.450177 ],
         "visible"       : true,
@@ -1085,11 +1071,11 @@ var scene = {
     },
 
     "Tree1_.055" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 739.815735, 41.035252, -21.781469 ],
-        "rotation"  : [ -0.099458, -0.016376, -1.583249 ],
+        "rotation"  : [ -0.099458, -0.016376, -1.583248 ],
         "quaternion": [ 0.701509, -0.040747, 0.029620, -0.710878 ],
         "scale"     : [ 0.531343, 0.531343, 0.531343 ],
         "visible"       : true,
@@ -1099,9 +1085,9 @@ var scene = {
     },
 
     "Treegroup_.004" : {
-        "geometry"  : "geo_Treegroup_.001",
+        "geometry"  : "geo_Treegroup_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.004" ],
+        "materials" : [ "PaintDubs.013" ],
         "position"  : [ 762.800293, -21.860584, -22.679413 ],
         "rotation"  : [ 0.114508, 0.042985, -1.678550 ],
         "quaternion": [ 0.665839, 0.054182, -0.028241, -0.743590 ],
@@ -1113,9 +1099,9 @@ var scene = {
     },
 
     "Tree1_.053" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 695.158386, 38.684963, -22.720779 ],
         "rotation"  : [ 0.046472, 0.067508, -0.884942 ],
         "quaternion": [ 0.902602, 0.035431, 0.020547, -0.428523 ],
@@ -1127,9 +1113,9 @@ var scene = {
     },
 
     "Tree1_.052" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 695.192505, 34.751514, -23.624216 ],
         "rotation"  : [ 0.084979, -0.051634, 1.150721 ],
         "quaternion": [ 0.837363, 0.049660, 0.001467, 0.544385 ],
@@ -1141,9 +1127,9 @@ var scene = {
     },
 
     "Tree1_.051" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 777.263000, -22.977724, -22.501810 ],
         "rotation"  : [ -0.004718, 0.108353, -1.433224 ],
         "quaternion": [ 0.753011, 0.033791, 0.042378, -0.655772 ],
@@ -1155,9 +1141,9 @@ var scene = {
     },
 
     "Tree1_.050" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 812.613281, -45.510597, -22.224854 ],
         "rotation"  : [ 0.078663, 0.036256, -1.053397 ],
         "quaternion": [ 0.863303, 0.043092, -0.004105, -0.502827 ],
@@ -1169,11 +1155,11 @@ var scene = {
     },
 
     "Tree1_.031" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 638.966614, 75.873970, -22.374386 ],
-        "rotation"  : [ 0.039555, 0.068580, -0.908699 ],
+        "rotation"  : [ 0.039555, 0.068580, -0.908698 ],
         "quaternion": [ 0.897545, 0.032803, 0.022125, -0.439143 ],
         "scale"     : [ 0.821995, 0.821995, 0.821995 ],
         "visible"       : true,
@@ -1183,9 +1169,9 @@ var scene = {
     },
 
     "Tree1_.028" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 624.567932, 79.040497, -23.001242 ],
         "rotation"  : [ 0.022777, 0.075813, -1.140264 ],
         "quaternion": [ 0.840937, 0.030033, 0.025759, -0.539684 ],
@@ -1197,11 +1183,11 @@ var scene = {
     },
 
     "Tree1_.025" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 628.360535, 81.289436, -22.161245 ],
-        "rotation"  : [ 0.058011, -0.053883, 0.886087 ],
+        "rotation"  : [ 0.058011, -0.053883, 0.886086 ],
         "quaternion": [ 0.902409, 0.037735, -0.011899, 0.429061 ],
         "scale"     : [ 0.643921, 0.643921, 0.643921 ],
         "visible"       : true,
@@ -1211,13 +1197,13 @@ var scene = {
     },
 
     "Tree1_.024" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 510.623230, 106.330467, -20.620947 ],
         "rotation"  : [ 0.056594, 0.114401, -1.024285 ],
         "quaternion": [ 0.869130, 0.052627, 0.035972, -0.490459 ],
-        "scale"     : [ 0.573773, 0.573773, 0.573774 ],
+        "scale"     : [ 0.573773, 0.573773, 0.573773 ],
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
@@ -1225,11 +1211,11 @@ var scene = {
     },
 
     "Tree1_.023" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 518.363159, 102.500626, -21.537975 ],
-        "rotation"  : [ -0.100690, -0.035616, 2.905248 ],
+        "rotation"  : [ -0.100690, -0.035616, 2.905249 ],
         "quaternion": [ 0.118619, 0.011728, -0.052062, 0.991505 ],
         "scale"     : [ 0.643921, 0.643921, 0.643921 ],
         "visible"       : true,
@@ -1239,9 +1225,9 @@ var scene = {
     },
 
     "Tree1_.022" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 525.145447, 101.692535, -21.520615 ],
         "rotation"  : [ 0.143688, -0.157383, 0.877036 ],
         "quaternion": [ 0.897856, 0.098081, -0.040604, 0.427301 ],
@@ -1253,9 +1239,9 @@ var scene = {
     },
 
     "Tree1_.021" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 461.205902, 101.087296, -19.036720 ],
         "rotation"  : [ 0.107271, -0.113771, 2.878023 ],
         "quaternion": [ 0.127981, 0.063314, 0.045599, 0.988703 ],
@@ -1267,9 +1253,9 @@ var scene = {
     },
 
     "Tree1_.020" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 452.338959, 94.897423, -19.832836 ],
         "rotation"  : [ -0.001170, 0.093913, 0.648327 ],
         "quaternion": [ 0.946864, -0.015505, 0.044308, 0.318191 ],
@@ -1281,9 +1267,9 @@ var scene = {
     },
 
     "Tree1_.019" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 447.201355, 100.064056, -19.768854 ],
         "rotation"  : [ 0.107271, -0.113771, -0.937137 ],
         "quaternion": [ 0.890868, 0.022115, -0.074825, -0.447511 ],
@@ -1323,9 +1309,9 @@ var scene = {
     },
 
     "Tree1_.047" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 266.185028, -101.541229, -40.544300 ],
         "rotation"  : [ 0.018703, -0.012470, -0.964641 ],
         "quaternion": [ 0.885892, 0.005393, -0.009861, -0.463755 ],
@@ -1346,9 +1332,9 @@ var scene = {
     },
 
     "Tree1_.040" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 259.945129, 3.008766, -30.513319 ],
         "rotation"  : [ 0.074410, -0.135986, 1.153690 ],
         "quaternion": [ 0.834294, 0.068134, -0.036668, 0.545864 ],
@@ -1360,9 +1346,9 @@ var scene = {
     },
 
     "Tree1_.035" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 204.974365, 62.206074, -14.938915 ],
         "rotation"  : [ -0.034353, 0.080640, -1.830801 ],
         "quaternion": [ 0.609437, 0.021493, 0.038170, -0.791624 ],
@@ -1374,9 +1360,9 @@ var scene = {
     },
 
     "Tree1_.030" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 273.011322, -111.068474, -41.736385 ],
         "rotation"  : [ 0.057287, 0.043161, -0.964049 ],
         "quaternion": [ 0.885202, 0.035370, 0.005839, -0.463823 ],
@@ -1388,9 +1374,9 @@ var scene = {
     },
 
     "Tree1_.029" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 277.371124, -107.505310, -41.675686 ],
         "rotation"  : [ -0.081353, 0.095083, -1.770171 ],
         "quaternion": [ 0.633480, 0.011030, 0.061506, -0.771231 ],
@@ -1402,9 +1388,9 @@ var scene = {
     },
 
     "Tree1_.027" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 367.822754, 42.341492, -28.307985 ],
         "rotation"  : [ 0.135493, -0.133588, 1.119457 ],
         "quaternion": [ 0.841171, 0.092593, -0.020566, 0.532386 ],
@@ -1416,9 +1402,9 @@ var scene = {
     },
 
     "Tree1_.026" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 379.807251, 16.050491, -31.884102 ],
         "rotation"  : [ 0.012085, -0.097832, 1.376008 ],
         "quaternion": [ 0.771389, 0.035711, -0.033940, 0.634454 ],
@@ -1430,9 +1416,9 @@ var scene = {
     },
 
     "Tree1_.018" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 396.452942, 47.873421, -27.434175 ],
         "rotation"  : [ -0.091198, -0.040859, -2.713505 ],
         "quaternion": [ 0.211238, -0.029622, 0.040199, -0.976158 ],
@@ -1444,9 +1430,9 @@ var scene = {
     },
 
     "Tree1_.017" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 255.700714, 61.759346, -19.893229 ],
         "rotation"  : [ 0.107271, -0.113771, 0.881959 ],
         "quaternion": [ 0.900272, 0.072635, -0.028497, 0.428279 ],
@@ -1458,9 +1444,9 @@ var scene = {
     },
 
     "Tree1_.016" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 192.647095, 42.054985, -17.661028 ],
         "rotation"  : [ 0.046423, 0.157759, -0.555982 ],
         "quaternion": [ 0.957859, 0.043867, 0.069403, -0.275256 ],
@@ -1472,9 +1458,9 @@ var scene = {
     },
 
     "Tree1_.015" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 151.816040, 34.645103, -14.286193 ],
         "rotation"  : [ -0.002876, 0.051611, -1.266144 ],
         "quaternion": [ 0.805967, 0.014106, 0.021653, -0.591397 ],
@@ -1486,13 +1472,13 @@ var scene = {
     },
 
     "Treegroup_.002" : {
-        "geometry"  : "geo_Treegroup_.001",
+        "geometry"  : "geo_Treegroup_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.004" ],
+        "materials" : [ "PaintDubs.013" ],
         "position"  : [ 230.323746, 50.705471, -20.090057 ],
         "rotation"  : [ -0.132150, -0.206480, 1.718865 ],
-        "quaternion": [ 0.653128, 0.035015, -0.116883, 0.747353 ],
-        "scale"     : [ 1.228280, 1.228279, 1.228279 ],
+        "quaternion": [ 0.653128, 0.035015, -0.116883, 0.747352 ],
+        "scale"     : [ 1.228279, 1.228279, 1.228279 ],
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
@@ -1518,7 +1504,7 @@ var scene = {
         "groups"    : [  ],
         "materials" : [ "12 - Default.004" ],
         "position"  : [ 563.415100, 379.270447, -37.298958 ],
-        "rotation"  : [ 0.000000, 0.049173, 1.349713 ],
+        "rotation"  : [ -0.000000, 0.049173, 1.349713 ],
         "quaternion": [ 0.780561, -0.015360, 0.019195, 0.624596 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
@@ -1584,9 +1570,9 @@ var scene = {
     },
 
     "Tree1_.014" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 84.882568, 21.341957, -8.469187 ],
         "rotation"  : [ -0.027093, -0.156546, 1.864090 ],
         "quaternion": [ 0.595164, 0.054720, -0.057456, 0.799678 ],
@@ -1598,9 +1584,9 @@ var scene = {
     },
 
     "Tree1_.013" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 75.628235, 16.037727, -8.415860 ],
         "rotation"  : [ -0.035311, 0.045686, -2.365734 ],
         "quaternion": [ 0.378488, 0.014464, 0.024977, -0.925156 ],
@@ -1757,7 +1743,7 @@ var scene = {
         "materials" : [ "blinn1SG.001" ],
         "position"  : [ 68.365784, -49.428955, -18.740250 ],
         "rotation"  : [ 0.149618, -0.040890, -1.015938 ],
-        "quaternion": [ 0.871851, 0.055372, -0.054158, -0.483607 ],
+        "quaternion": [ 0.871852, 0.055372, -0.054158, -0.483607 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -1911,7 +1897,7 @@ var scene = {
         "materials" : [ "PaintDubs.001" ],
         "position"  : [ 180.916199, -283.865662, -49.118660 ],
         "rotation"  : [ 0.076735, -0.042508, -0.246545 ],
-        "quaternion": [ 0.991557, 0.035447, -0.025791, -0.122033 ],
+        "quaternion": [ 0.991558, 0.035447, -0.025791, -0.122033 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -1966,9 +1952,9 @@ var scene = {
         "groups"    : [  ],
         "materials" : [ "PaintDubs.010" ],
         "position"  : [ 561.293396, 202.592133, -37.536724 ],
-        "rotation"  : [ 0.062398, 0.056832, 2.911761 ],
+        "rotation"  : [ 0.062398, 0.056832, 2.911760 ],
         "quaternion": [ 0.115442, -0.024636, 0.034232, 0.992419 ],
-        "scale"     : [ 1.098118, 1.098117, 1.098117 ],
+        "scale"     : [ 1.098118, 1.098118, 1.098118 ],
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
@@ -2050,8 +2036,8 @@ var scene = {
         "groups"    : [  ],
         "materials" : [ "PaintDubs.012" ],
         "position"  : [ 526.639709, 188.851410, -34.439800 ],
-        "rotation"  : [ -0.128666, 0.065356, -3.061340 ],
-        "quaternion": [ 0.042110, 0.030001, 0.065510, -0.996512 ],
+        "rotation"  : [ -0.128666, 0.065356, -3.061339 ],
+        "quaternion": [ 0.042110, 0.030001, 0.065510, -0.996511 ],
         "scale"     : [ 1.053038, 1.053038, 1.053038 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -2060,9 +2046,9 @@ var scene = {
     },
 
     "Tree1_.012" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 580.479065, 167.296600, -33.982071 ],
         "rotation"  : [ -0.007077, -0.042664, 0.241101 ],
         "quaternion": [ 0.992520, -0.000947, -0.021601, 0.120156 ],
@@ -2074,9 +2060,9 @@ var scene = {
     },
 
     "Tree1_.011" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 583.158630, 166.216660, -34.256557 ],
         "rotation"  : [ -0.007077, -0.042664, 0.241101 ],
         "quaternion": [ 0.992520, -0.000947, -0.021601, 0.120156 ],
@@ -2270,9 +2256,9 @@ var scene = {
     },
 
     "House5_.004" : {
-        "geometry"  : "geo_House5_.001",
+        "geometry"  : "geo_House5_",
         "groups"    : [  ],
-        "materials" : [ "Closeup_PaintDubs.005" ],
+        "materials" : [ "Closeup_paintdubs.002" ],
         "position"  : [ 562.462585, -416.008484, -54.369759 ],
         "rotation"  : [ -0.043797, 0.001855, 0.529509 ],
         "quaternion": [ 0.964920, -0.021377, -0.004835, 0.261629 ],
@@ -2284,9 +2270,9 @@ var scene = {
     },
 
     "House5_.003" : {
-        "geometry"  : "geo_House5_.001",
+        "geometry"  : "geo_House5_",
         "groups"    : [  ],
-        "materials" : [ "Closeup_PaintDubs.005" ],
+        "materials" : [ "Closeup_paintdubs.002" ],
         "position"  : [ 1124.932373, 354.222717, -70.442551 ],
         "rotation"  : [ 0.014235, -0.060548, -1.763938 ],
         "quaternion": [ 0.635491, -0.018845, -0.024732, -0.771482 ],
@@ -2298,9 +2284,9 @@ var scene = {
     },
 
     "House5_.002" : {
-        "geometry"  : "geo_House5_.001",
+        "geometry"  : "geo_House5_",
         "groups"    : [  ],
-        "materials" : [ "Closeup_PaintDubs.005" ],
+        "materials" : [ "Closeup_paintdubs.002" ],
         "position"  : [ 344.872253, 31.621361, -30.776844 ],
         "rotation"  : [ 0.129797, 0.020233, 0.264575 ],
         "quaternion": [ 0.989212, 0.062951, 0.018561, 0.130967 ],
@@ -2331,7 +2317,7 @@ var scene = {
         "materials" : [ "PaintDubs.014" ],
         "position"  : [ 299.712097, -44.453033, -38.317406 ],
         "rotation"  : [ -0.055062, 0.033559, 0.451359 ],
-        "quaternion": [ 0.974033, -0.030579, 0.010188, 0.224103 ],
+        "quaternion": [ 0.974032, -0.030579, 0.010188, 0.224103 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -2354,9 +2340,9 @@ var scene = {
     },
 
     "Treegroup_.001" : {
-        "geometry"  : "geo_Treegroup_.001",
+        "geometry"  : "geo_Treegroup_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.004" ],
+        "materials" : [ "PaintDubs.013" ],
         "position"  : [ 391.884460, 149.811005, -21.462042 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -2368,9 +2354,9 @@ var scene = {
     },
 
     "Tree1_.009" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 649.825867, 163.120346, -35.683201 ],
         "rotation"  : [ -0.081037, -0.033252, -0.262769 ],
         "quaternion": [ 0.990343, -0.042329, -0.011162, -0.131549 ],
@@ -2382,9 +2368,9 @@ var scene = {
     },
 
     "Tree1_.008" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 476.036926, 150.840500, -23.895576 ],
         "rotation"  : [ 0.023560, -0.006436, -2.408962 ],
         "quaternion": [ 0.358186, 0.001215, -0.012151, -0.933570 ],
@@ -2396,9 +2382,9 @@ var scene = {
     },
 
     "Tree1_.007" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 451.840332, 162.416397, -24.532301 ],
         "rotation"  : [ -0.239915, 0.035570, -0.277469 ],
         "quaternion": [ 0.983413, -0.116060, 0.034033, -0.135167 ],
@@ -2410,9 +2396,9 @@ var scene = {
     },
 
     "Tree1_.006" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 445.832275, 166.259277, -23.805389 ],
         "rotation"  : [ -0.101260, -0.047716, -0.326004 ],
         "quaternion": [ 0.985004, -0.053790, -0.015299, -0.163218 ],
@@ -2424,9 +2410,9 @@ var scene = {
     },
 
     "Tree1_.005" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 77.799011, 56.850811, -8.785063 ],
         "rotation"  : [ -0.024309, -0.016550, -0.343165 ],
         "quaternion": [ 0.985192, -0.013388, -0.006078, -0.170822 ],
@@ -2438,11 +2424,11 @@ var scene = {
     },
 
     "Tree1_.004" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 50.780945, 44.332687, -7.094347 ],
-        "rotation"  : [ -0.001338, -0.008339, -0.343450 ],
+        "rotation"  : [ -0.001338, -0.008339, -0.343451 ],
         "quaternion": [ 0.985282, -0.001372, -0.003994, -0.170884 ],
         "scale"     : [ 0.845771, 0.845771, 0.845771 ],
         "visible"       : true,
@@ -2452,11 +2438,11 @@ var scene = {
     },
 
     "Tree1_.003" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 25.462097, 37.340927, -6.197870 ],
-        "rotation"  : [ 0.092585, -0.109254, -2.221072 ],
+        "rotation"  : [ 0.092585, -0.109254, -2.221073 ],
         "quaternion": [ 0.445307, -0.028341, -0.065625, -0.892520 ],
         "scale"     : [ 0.845771, 0.845771, 0.845771 ],
         "visible"       : true,
@@ -2466,9 +2452,9 @@ var scene = {
     },
 
     "Tree1_.002" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ 0.170074, 68.536812, -9.660001 ],
         "rotation"  : [ -0.050735, -0.051489, 0.002613 ],
         "quaternion": [ 0.999347, -0.025323, -0.025767, 0.000653 ],
@@ -2480,9 +2466,9 @@ var scene = {
     },
 
     "Tree1_.001" : {
-        "geometry"  : "geo_Tree1_.001",
+        "geometry"  : "geo_Tree1_",
         "groups"    : [  ],
-        "materials" : [ "PaintDubs.003" ],
+        "materials" : [ "PaintDubs.011" ],
         "position"  : [ -5.904449, 52.108212, -7.774284 ],
         "rotation"  : [ 0.000000, 0.000000, -2.136145 ],
         "quaternion": [ 0.481814, 0.000000, 0.000000, -0.876273 ],
@@ -2570,7 +2556,7 @@ var scene = {
         "position"  : [ 211.399597, -111.944992, -38.805210 ],
         "rotation"  : [ -0.081897, 0.143043, 0.522541 ],
         "quaternion": [ 0.962029, -0.057890, 0.058430, 0.260258 ],
-        "scale"     : [ 1.156295, 1.156295, 1.156294 ],
+        "scale"     : [ 1.156294, 1.156294, 1.156294 ],
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
@@ -2662,9 +2648,9 @@ var scene = {
     },
 
     "House5_.001" : {
-        "geometry"  : "geo_House5_.001",
+        "geometry"  : "geo_House5_",
         "groups"    : [  ],
-        "materials" : [ "Closeup_PaintDubs.005" ],
+        "materials" : [ "Closeup_paintdubs.002" ],
         "position"  : [ 42.123901, 134.621414, -15.193066 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -2693,14 +2679,19 @@ var scene = {
 
 "geometries" :
 {
-    "geo_Tree1_.001" : {
+    "geo_Collision_Ground.001" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Tree1_.001.js"
+        "url"  : "Prairie.Collision_Ground.001.js"
     },
 
-    "geo_Ground" : {
+    "geo_Mountains.001" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Ground.js"
+        "url"  : "Prairie.Mountains.001.js"
+    },
+
+    "geo_Ground.001" : {
+        "type" : "ascii_mesh",
+        "url"  : "Prairie.Ground.001.js"
     },
 
     "geo_Backdrop.001" : {
@@ -2718,14 +2709,9 @@ var scene = {
         "url"  : "Prairie.Exithead_Prairie.001.js"
     },
 
-    "geo_Collision_Ground" : {
+    "geo_Tree1_" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Collision_Ground.js"
-    },
-
-    "geo_Mountains" : {
-        "type" : "ascii_mesh",
-        "url"  : "Prairie.Mountains.js"
+        "url"  : "Prairie.Tree1_.js"
     },
 
     "geo_Windmill_.001" : {
@@ -2738,9 +2724,9 @@ var scene = {
         "url"  : "Prairie.Silo_.js"
     },
 
-    "geo_House5_.001" : {
+    "geo_House5_" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.House5_.001.js"
+        "url"  : "Prairie.House5_.js"
     },
 
     "geo_Hayball_" : {
@@ -2793,9 +2779,9 @@ var scene = {
         "url"  : "Prairie.Car2_.js"
     },
 
-    "geo_Treegroup_.001" : {
+    "geo_Treegroup_" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Treegroup_.001.js"
+        "url"  : "Prairie.Treegroup_.js"
     },
 
     "geo_House1_" : {
@@ -2868,16 +2854,6 @@ var scene = {
         "parameters": { color: 12162908, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Closeup_PaintDubs" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
-    },
-
-    "Closeup_PaintDubs.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
-    },
-
     "Closeup_paintdubs.002" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
@@ -2903,12 +2879,7 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Closeup_PaintDubs.005" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
-    },
-
-    "Collision" : {
+    "Collision.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16721610, opacity: 1.00 }
     },
@@ -2916,6 +2887,16 @@ var scene = {
     "Exithead1.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+    },
+
+    "GroundLit" : {
+        "type": "MeshBasicMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
+    },
+
+    "GroundLit.001" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
     },
 
     "lambert3.001" : {
@@ -2928,11 +2909,6 @@ var scene = {
         "parameters": { color: 1842204, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "PaintDubs" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
-    },
-
     "PaintDubs.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
@@ -2941,16 +2917,6 @@ var scene = {
     "PaintDubs.002" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg" }
-    },
-
-    "PaintDubs.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
-    },
-
-    "PaintDubs.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
     },
 
     "PaintDubs.006" : {

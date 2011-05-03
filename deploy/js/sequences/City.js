@@ -1,7 +1,15 @@
 var City = function ( shared ) {
 
+	var that = this;
+
 	SequencerItem.call( this );
 
+	// signals
+	
+	shared.signals.initscenes.add( initScene );
+	
+	// private variables
+	
 	var camera, startCamera, switchCamera, world, soup,
 	renderer = shared.renderer, renderTarget = shared.renderTarget,
 	waypointsA = [], waypointsB = [];
@@ -16,13 +24,22 @@ var City = function ( shared ) {
 		shared.debug = true;
 
 	}
+	
+	function initScene () {
+		
+		console.log( "city initScene" );
+		
+		that.update( 0.001, 34.99, 45199 );
+
+	};
 
 	this.init = function () {
 
 		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -1210 ] ];
 		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -3350 ] ];
 
-		/*startCamera = new THREE.PathCamera( {
+		/*
+		startCamera = new THREE.PathCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			waypoints: waypointsA, duration: 9.2, 
@@ -32,10 +49,12 @@ var City = function ( shared ) {
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
 
-		 } );*/
+		 } );
+		*/
 
 
-		/*startCamera = new THREE.PathCamera( {
+		/*
+		startCamera = new THREE.PathCamera( {
 
 			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			waypoints: waypointsA, duration: 26, 
@@ -50,13 +69,16 @@ var City = function ( shared ) {
 		startCamera.position.set( 0, 0, 0 );
 		startCamera.lon = 90;
 
-		camera = startCamera;*/
+		camera = startCamera;
+		*/
 
-		/*camera = new THREE.QuakeCamera( {
+		/*
+		camera = new THREE.QuakeCamera( {
 		fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 		movementSpeed: 100.0, lookSpeed: 0.25, noFly: false, lookVertical: true,
 		autoForward: false
 		} );
+
 		gui.add( camera.position, 'x' ).name( 'Camera x' ).listen();
 		gui.add( camera.position, 'y' ).name( 'Camera y' ).listen();
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
@@ -71,7 +93,8 @@ var City = function ( shared ) {
 		shared.worlds.city = world;
 		shared.sequences.city = this;
 		 
-		/*if ( shared.debug ) {
+		/*
+		if ( shared.debug ) {
 
 			world.scene.addObject( camera.debugPath );
 
@@ -79,6 +102,9 @@ var City = function ( shared ) {
 
 		world.scene.addObject( camera.animationParent );
 		*/
+		
+		console.log( "city init" );
+		
 	};
 
 	this.resetCamera = function() {
@@ -97,6 +123,8 @@ var City = function ( shared ) {
 
 		shared.started.city = true;
 
+		console.log( "show city" );
+
 	};
 
 	this.hide = function () {
@@ -104,12 +132,12 @@ var City = function ( shared ) {
 	};
 
 	this.update = function ( progress, delta, time ) {
-
+		
 		THREE.AnimationHandler.update( delta );
 
 		soup.update( delta );
 
-		camera.position.z -= delta / 8;
+		camera.position.z -= 0.9 * delta / 8;
 
 		if ( camera.position.z < -3300 ) {
 
@@ -118,7 +146,8 @@ var City = function ( shared ) {
 		}
 
 		// choose path
-		/*var camz = camera.matrixWorld.n34;
+		/*
+		var camz = camera.matrixWorld.n34;
 
 		if (camz < -1200 && !switchedCamera ) {
 
@@ -159,16 +188,19 @@ var City = function ( shared ) {
 			//console.log("switched camera");
 			switchedCamera = true;
 
-		}*/
+		}
+		*/
 
 
 		// slight camera roll
 
-		/*if ( camera.animationParent ) {
+		/*
+		if ( camera.animationParent ) {
 
 			camera.animationParent.rotation.z = ( camera.target.position.x ) / 700;
 
-		}*/
+		}
+		*/
 
 		renderer.render( world.scene, camera, renderTarget );
 

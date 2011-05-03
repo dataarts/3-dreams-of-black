@@ -6,9 +6,10 @@ var LauncherSection = function ( shared ) {
 	canvas, context, gradient,
 	clouds, title, buttonEnter, buttonStart,
 	buttonEnterImg,
-	loading, footer, footerRight;
+	loading, footer, footNav;
 
 	domElement = document.createElement( 'div' );
+	domElement.style.width = window.innerWidth + 'px';
 	domElement.style.height = window.innerHeight + 'px';
 	domElement.style.backgroundColor = '#4584b4';
 	domElement.style.textAlign = 'center';
@@ -39,6 +40,10 @@ var LauncherSection = function ( shared ) {
 
 		clouds = new Clouds( shared );
 		clouds.getDomElement().style.position = 'absolute';
+		clouds.getDomElement().style.left = "0px";
+		clouds.getDomElement().style.top = "0px";
+		clouds.getDomElement().style.width = window.innerWidth+"px";
+		clouds.getDomElement().style.height = window.innerHeight+"px";
 		domElement.appendChild( clouds.getDomElement() );
 
 		// UI
@@ -112,6 +117,8 @@ var LauncherSection = function ( shared ) {
 			buttonStart.style.display = 'block';
 			
 			isLoading = false;
+			
+			shared.signals.initscenes.dispatch();
 
 		} );
 
@@ -123,26 +130,22 @@ var LauncherSection = function ( shared ) {
 		shared.signals.loadItemAdded.add( loading.addItem );
 		shared.signals.loadItemCompleted.add( loading.completeItem );
 
+		// Implemented Footer.js
 		footer = document.createElement( 'div' );
 		footer.style.position = 'absolute';
-		footer.style.left = '20px';
-		footer.style.bottom = '10px';
-		footer.innerHTML = '<img src="files/footer.png">';
+		footer.style.left = '0';
+		footer.style.bottom = '0';
+		footer.style.width = "100%";
+		footNav = new Footer( footer );
 		domElement.appendChild( footer );
 
-		footerRight = document.createElement( 'div' );
-		footerRight.style.position = 'absolute';
-		footerRight.style.right = '20px';
-		footerRight.style.bottom = '10px';
-		footerRight.innerHTML = '<img src="files/footer_right.png">';
-		domElement.appendChild( footerRight );
-		
 	}
 
 	this.show = function () {
 
 		clouds.show();
 		domElement.style.display = 'block';
+		//if(footNav.isSetup()) footNav.setupEmiBuyButton();
 
 	};
 
@@ -159,6 +162,7 @@ var LauncherSection = function ( shared ) {
 		loading.getDomElement().style.top = '215px';
 		loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
 
+		domElement.style.width = width + 'px';
 		domElement.style.height = height + 'px';
 
 	};

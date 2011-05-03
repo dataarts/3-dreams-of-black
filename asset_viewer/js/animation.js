@@ -17,9 +17,9 @@ var objRadius = 100;
 function initMouse(){
   document.addEventListener('mouseup', mouseUp, false);
   document.addEventListener('mousemove', mouseMove, false);
-  document.addEventListener('mousewheel', mouseWheel, false);
-  document.getElementById('canvasHolder').addEventListener('mousedown', mouseDown, false);
-  document.getElementById('canvasHolder').addEventListener('mouseout', mouseOut, false);
+  document.getElementById('viewerCanvas').addEventListener('mousewheel', mouseWheel, false);
+  document.getElementById('viewerCanvas').addEventListener('mousedown', mouseDown, false);
+  document.getElementById('viewerCanvas').addEventListener('mouseout', mouseOut, false);
 }
 
 function mouseOut(e) {
@@ -44,6 +44,7 @@ function mouseMove(e) {
   mouseY = currentY;
 }
 function mouseWheel(e) {
+  e.preventDefault();
   firstDraw = true;
   var steps = e.wheelDeltaY ? e.wheelDeltaY : -e.detail * 13;
 

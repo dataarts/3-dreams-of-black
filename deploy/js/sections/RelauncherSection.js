@@ -46,6 +46,7 @@ var RelauncherSection = function( shared ) {
 	var clouds = new Clouds( shared, true );
 	var d = clouds.getDomElement();
 	d.style.background = "#fff";
+	d.style.zIndex = -1;
 	domElement.appendChild( d );
 
 	var container = document.createElement("div");
@@ -58,6 +59,15 @@ var RelauncherSection = function( shared ) {
 		container: container
 	});
 	var g = gee.ctx;
+
+	// Implemented Footer.js
+	// footer = document.createElement( 'div' );
+	// footer.style.position = 'absolute';
+	// footer.style.left = '0';
+	// footer.style.bottom = '0';
+	// footer.style.width = "100%";
+	// footNav = new Footer( footer );
+	// domElement.appendChild( footer );
 
 	var core = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 75 );
 	var inner = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 95 );
@@ -137,10 +147,8 @@ var RelauncherSection = function( shared ) {
 		inner.render();
 		g.globalCompositeOperation = "source-over";
 
-		//heart.point.setPosition(gee.width / 2.0, gee.height / 2.0);
-		//heart.point.update();
 		g.save();
-		g.translate(heart.point.x, heart.point.y);
+		g.translate(gee.width / 2.0, gee.height / 2.0);
 		heart.svg.render();
 		g.restore();
 
@@ -258,6 +266,7 @@ var RelauncherSection = function( shared ) {
 
 		clouds.show();
 		updateDomElementsPosition();
+		// if(footNav.isSetup()) footNav.setupEmiBuyButton();
 		domElement.style.display = 'block';
 
 	};

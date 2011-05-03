@@ -16,14 +16,14 @@
 }
 
 .guidat-controllers { 
-    width:960px;
+    width:970px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 a.guidat-toggle { 
     text-decoration: none;
-    width:960px;
+    width:970px;
     cursor: pointer;
     color: #fff;
     background-color: #ccc;

@@ -1,7 +1,7 @@
 var CityWorld = function ( shared ) {
 
 	var that = this;
-
+	
 	var cityMaterials = [];
 	var cityMaterialGrassStart = new THREE.Vector3();
 	var cityMaterialGrassEnd = new THREE.Vector3();

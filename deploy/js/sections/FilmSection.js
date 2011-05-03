@@ -51,25 +51,24 @@ var FilmSection = function ( shared ) {
 
 	// effects
 
-	// var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/VignetteWithDirt_alpha.png" );
 	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
 	
 	
 	// Sequence
-	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill);
+	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill );
 
-	var s01_01 = new VideoPlayer(shared, VideoShots.s01_01, VideoShots.confStill);
-	var s01_03 = new VideoPlayer(shared, VideoShots.s01_03, VideoShots.confParalax);
-	var s01_06 = new VideoPlayer(shared, VideoShots.s01_06, VideoShots.confStill);
-	var s01_09 = new VideoPlayer(shared, VideoShots.s01_09, VideoShots.confParalax);
+	var s01_01 = new VideoPlayer( shared, VideoShots.s01_01, VideoShots.confStill );
+	var s01_03 = new VideoPlayer( shared, VideoShots.s01_03, VideoShots.confParalax );
+	var s01_06 = new VideoPlayer( shared, VideoShots.s01_06, VideoShots.confStill );
+	var s01_09 = new VideoPlayer( shared, VideoShots.s01_09, VideoShots.confParalax );
 	
-	var s02_01 = new VideoPlayer(shared, VideoShots.s02_01, VideoShots.confParalax);
-	var s02_02 = new VideoPlayer(shared, VideoShots.s02_02, VideoShots.confStill);
-	var s02_03 = new VideoPlayer(shared, VideoShots.s02_03, VideoShots.confStill);
-	var s02_04 = new VideoPlayer(shared, VideoShots.s02_04, VideoShots.confStill);
-	var s02_06 = new VideoPlayer(shared, VideoShots.s02_06, VideoShots.confStill);
+	var s02_01 = new VideoPlayer( shared, VideoShots.s02_01, VideoShots.confParalax );
+	var s02_02 = new VideoPlayer( shared, VideoShots.s02_02, VideoShots.confStill );
+	var s02_03 = new VideoPlayer( shared, VideoShots.s02_03, VideoShots.confStill );
+	var s02_04 = new VideoPlayer( shared, VideoShots.s02_04, VideoShots.confStill );
+	var s02_06 = new VideoPlayer( shared, VideoShots.s02_06, VideoShots.confStill );
 	
-	var dunesAnimation = new VideoPlayer(shared, VideoShots.dunesLayers, VideoShots.confStill);
+	var dunesAnimation = new VideoPlayer( shared, VideoShots.dunesLayers, VideoShots.confStill );
 
 	sequencer = new Sequencer();
 
@@ -94,12 +93,13 @@ var FilmSection = function ( shared ) {
 	sequencer.add( s01_06, s01start, s01start + s01_06.duration, 1 );
 	s01start += s01_06.duration;
 	
-	sequencer.add( s01_09, s01start, s01end, 1 ); // 5);
-
-	// should start at tune.getPatternMS( 16 ) - s01_09.duration
-	sequencer.add( new City( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
-	//sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
+	sequencer.add( s01_09, s01start, s01end, 5 ); // must be rendered after city
+	
+	var cityStart = tune.getPatternMS( 16 ) - 3000;
+	
+	sequencer.add( new City( shared ), cityStart, tune.getPatternMS( 24 ), 1 );
+	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 24 ), 4 );
+	//sequencer.add( new PaintEffectDunes( shared ), cityStart, tune.getPatternMS( 24 ), 4 );
 
 	//sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 4 );
