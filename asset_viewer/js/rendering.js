@@ -1,13 +1,16 @@
 var camera, scene, stats, renderer, postRenderer, container;
 var postprocessing = {};
 
-var width = 960;
-var height = 360;
+var width = 970;
+var height = 540;
 var near = 10;
 var far = 10000;
 var aspect = width/height;
 
 function initRenderer() {
+
+
+
   container = document.createElement('div');
   container.id = "viewerCanvas";
 
@@ -32,6 +35,21 @@ function initRenderer() {
   stats.domElement.style.top = '0px';
   container.appendChild( stats.domElement );
 
+		canvas = document.createElement( 'canvas' );
+		canvas.width = 32;
+		canvas.height = window.innerHeight;
+
+		context = canvas.getContext( '2d' );
+
+		gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
+		gradient.addColorStop( 0, "#6788b1" );
+		gradient.addColorStop( 1., "#ffffff" );
+
+		context.fillStyle = gradient;
+		context.fillRect( 0, 0, canvas.width, canvas.height );
+
+		container.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
+		container.style.backgroundRepeat = 'repeat-x';
 
   initPostprocessingNoise(postprocessing);
 }
