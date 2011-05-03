@@ -102,7 +102,7 @@ hr {
 
 #model-viewer {
   width: 970px;
-  height: 553px;
+  height: auto;
   margin-bottom: 64px;
 }
 

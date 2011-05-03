@@ -3,8 +3,8 @@ AnimalShader = {
 
   textures: {
 
-    contour: THREE.ImageUtils.loadTexture( 'files/textures/faceContour.jpg' ),
-    faceLight: THREE.ImageUtils.loadTexture( 'files/textures/faceLight.jpg' )
+    contour: THREE.ImageUtils.loadTexture( '/files/textures/faceContour.jpg' ),
+    faceLight: THREE.ImageUtils.loadTexture( '/files/textures/faceLight.jpg' )
 
   },
 
