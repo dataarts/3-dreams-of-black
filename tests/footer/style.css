@@ -1,0 +1,142 @@
+* {
+  margin:  0;
+  padding: 0;
+}
+body {
+  width: 100%;
+  height: 100%;
+  /* The gradient comes from testCapture.html which takes an alpha picture of the clouds WebGL */
+  background: #4584b4 url("images/gradient.png") 0 -400px;
+  font-family: "Futura", Arial, sans-serif;
+}
+#container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url("images/clouds-trans.png") center center no-repeat;
+}
+#content {
+  width: 540px;
+  margin: 0 auto;
+  color: #fff;
+  font: 500 12px/18px Arial, sans-serif;
+}
+#content p {
+  word-spacing: 2px;
+}
+#header {
+  width: 100%;
+  height: 119px;
+  margin: 50px 0;
+  overflow: hidden;
+  background: url("images/header-trans.png") center center no-repeat;
+}
+#error {
+  padding: 50px 35px;
+  background: url("images/bg-trans.png");
+}
+#trailer {
+  width: auto;
+  margin: 18px 0 0 95px;
+}
+#trailer li {
+  float: left;
+  margin-left: 10px;
+  list-style: none;
+}
+#bottom {
+  position: fixed;
+  min-width: 930px;
+  width: 100%;
+  bottom: 10px;
+  left: 0;
+
+  font: 500 10px/18px "Futura", Arial, sans-serif;
+  color: #434343;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+#shout-out {
+  float: left;
+  margin: 0 0 0 18px;
+}
+#navigation {
+  float: right;
+  margin: 20px 26px 0 0;
+  vertical-align: middle;
+}
+#bottom ul li {
+  height: 16px;
+  border-right: 1px solid #a0a0a0;
+  padding: 0 10px 0 10px;
+  width: auto;
+  float: left;
+  list-style: none;
+}
+#bottom ul li.last,
+#bottom ul li.last li {
+  border: none;
+  padding: 0 0 0 10px;
+}
+#shout-out ul li {
+  margin: 0;
+  border: 0;
+}
+#shout-out li.divider {
+  margin: 15px 0 15px 15px;
+  height: 24px;
+  border-left: 1px solid #a0a0a0;
+}
+a img {
+  border: 0;
+}
+.background-image {
+  margin-left: -9000px;
+}
+#bottom .secondary a:link, #bottom .secondary a:visited {
+  color: #777;
+}
+#content a:link, #content a:visited {
+  color: #fff;
+}
+#content a:hover, #content a:active {
+  
+}
+#bottom a:link, #bottom a:visited,
+#bottom .secondary a:hover, #bottom .secondary a:active {
+  color: #434343;
+  text-decoration: none;
+}
+#bottom a:hover, #bottom a:active {
+  color: #000;
+}
+#emi_buy_button_link_c9e456919b824bdeb2e3a326b122db43_1 {
+  margin-top: 2px;
+  height: 8px;
+  line-height: 8px;
+  overflow: hidden;
+}
+#buy_album img {
+  display: block;
+  margin-top: 0;
+}
+#buy_album a:hover img {
+  margin-top: -8px;
+}
+#emi_vendor_menu_c9e456919b824bdeb2e3a326b122db43_1 a:hover img {
+  margin-top: 0;
+}
+#emi_vendor_menu_c9e456919b824bdeb2e3a326b122db43_1 {
+  margin-top: -150px;
+  margin-left: -15px;
+}
+.secondary {
+  margin: 10px 0 0 0;
+  float: right;
+}
+.clear {
+  float: none;
+  clear: both;
+  width: 0;
+  height: 0;
+}
