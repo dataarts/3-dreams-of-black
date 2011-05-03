@@ -138,5 +138,4 @@ function switchModel(id) {
   gridSpeed = models[id].speed;
   params.auto = true;
 
-
 }

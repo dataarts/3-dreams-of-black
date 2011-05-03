@@ -42,7 +42,7 @@ function makeScene(){
   scene.addLight( light[2] );
 
   //gound plane
-  wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0x000000, lighting:false, opacity:0.2, wireframe: true });
+  wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xffffff, lighting:false, opacity:0.5, wireframe: true });
   plane = new THREE.Mesh(new THREE.Plane(1000, 1000, 10, 10), wireMat);
   plane.rotation.x = -Math.PI / 2;
 
