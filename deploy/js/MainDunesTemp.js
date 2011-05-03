@@ -46,7 +46,9 @@ function init() {
 			loadItemCompleted : new Signal(),
 
 			mousemoved : new Signal(),
-			windowresized : new Signal()
+			windowresized : new Signal(),
+			
+			initscenes: new Signal()
 
 		},
 
