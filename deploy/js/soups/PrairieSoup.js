@@ -100,7 +100,6 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	runningAnimals.array[5] = "goat";
 	runningAnimals.array[18] = "goat";
 	runningAnimals.array[25] = "goat";
-//	runningAnimals.array[21] = "arm";
 	runningAnimals.array[2] = "octo";
 	runningAnimals.array[7] = "octo";
 	runningAnimals.array[32] = "octo";

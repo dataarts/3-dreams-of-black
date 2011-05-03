@@ -30,7 +30,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		capy : null,
 		startPosition : new THREE.Vector3( 0, 0, 0 ),
 		switchPosition : false,
-		respawn : true
+		respawn : true,
+		gravity : false
 		//butterfly : false
 
 	};
@@ -214,6 +215,15 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].dead = false;
 			that.array[i].scale = that.array[i].origscale;
 			that.array[i].keepRunning = false;
+			that.array[i].gravity = 0;
+
+			if (that.settings.gravity) {
+				that.array[i].c.matrixAutoUpdate = true;
+				that.array[i].c.scale.set(that.array[i].scale,that.array[i].scale,that.array[i].scale);
+
+				that.array[i].c.rotation.x = 0;
+				that.array[i].c.rotation.y = Math.random()*Math.PI;
+			}
 
 			if (!that.settings.respawn) {
 				that.array[i].f = i;
@@ -438,8 +448,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 					if(c) {
 
-						//animal.position.y -= ( c.distance * 1 ) + 3;
+						// need scale setting...
 						toy = ray.origin.y - ( ( c.distance * 1 ) + 3 );
+						//toy = ray.origin.y - ( ( c.distance * 0.15 ) + 3 );
 						cNormal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 					
 						that.array[i].lastToy = toy;
@@ -449,6 +460,17 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				} else {
 					toy = that.array[i].lastToy;
 				}
+
+			}
+
+			if (that.settings.gravity) {
+				that.array[i].gravity += 0.3;
+				toy = animal.position.y -= that.array[i].gravity;
+				toz = animal.position.z;
+				tox = animal.position.x;
+
+				animal.rotation.x += 0.04;
+				animal.rotation.y += 0.02;
 
 			}
 
@@ -496,7 +518,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				var falloffDivider = 2+(f/10);
 				var maxSpeed = animalSpeed/falloffDivider;
 			} else {
-				var maxSpeed = animalSpeed/15;	
+				var maxSpeed = animalSpeed/15;
+				//var maxSpeed = animalSpeed/3;				
 			}
 
 
@@ -511,12 +534,14 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			if ( moveZ > maxSpeed )	moveZ = maxSpeed;
 			if ( moveZ < -maxSpeed )moveZ = -maxSpeed;
 
+			if (!that.settings.gravity) {
+			
 			var zvec = new THREE.Vector3(animal.position.x+moveX,animal.position.y+moveY,animal.position.z+moveZ);
 			zvec.subSelf( animal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
 			var yvec = new THREE.Vector3(cNormal.x*-1, cNormal.y*-1, cNormal.z*-1);
-			if (that.settings.flying) {
+			if (that.settings.flying || that.settings.gravity) {
 				yvec = new THREE.Vector3(0, -1, 0);
 			}
 
@@ -526,6 +551,8 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			animal.matrixWorld.n11 = xvec.x*scale; animal.matrixWorld.n12 = yvec.x*scale; animal.matrixWorld.n13 = zvec.x*scale; animal.matrixWorld.n14 = animal.position.x;
 			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = animal.position.y;
 			animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = animal.position.z;
+
+			}
 
 			/*if (that.settings.addaptiveSpeed) {
 				var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
