@@ -1,3 +1,4 @@
+
 var VideoShots = {
 
     confParalax: {

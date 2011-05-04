@@ -1,7 +1,17 @@
+<!--
+
+1920   x   817
+width: 1.5625, height: 1.1627
+3000   x   950
+
+width: 1.8, height: 2.44
+3500   x 2000
+
+-->
 <!DOCTYPE HTML>
 <html lang="en">
     <head>
-        <title>001 Chromakey</title>
+        <title>001 City paralax</title>
         <meta charset="utf-8">
         <style type="text/css">
             body {
@@ -75,24 +85,25 @@
                 var layers = [			
 					{       
 					    path: "video/s01/s09_layer03.webm",
-				        shaderId: VIDEO_KEYED_DISTORT,
+				        shaderId: VIDEO_KEYED,
 				        z: -1000,
 						duration: 8230,
 						colorScale: .99,
 				        threshold: .45,
-				        alphaFadeout: .35	
+				        alphaFadeout: .35,
+						paralax: true,
+						width: 1.5625, height: 1.1627
 					},{       
 					    path: "video/s01/s09_layer02.webm",
-				        shaderId: VIDEO_KEYED,
+				        shaderId: VIDEO_HALFALPHA,
 				        z: -900,
-						colorScale: .99,
-				        threshold: .45,
-				        alphaFadeout: .35,
-						width: 1.4, height: 1
+						paralax: true,
+						width: 1.5625, height: 1.1627
 					},{       
 					    path: "video/s01/s09_layer01.webm",
 				        shaderId: VIDEO_KEYED,
-				        z: -900,
+				        z: -500,
+						locked: true,
 						colorScale: .99,
 				        threshold: .45,
 				        alphaFadeout: .35
@@ -100,8 +111,8 @@
 				];
 				
 				var conf = {
-					paralaxHorizontal: 0,
-					paralaxVertical: 0
+					paralaxHorizontal: 400,
+					paralaxVertical: 80
 				};
 				
 				player = new VideoPlayer(shared, layers, conf);

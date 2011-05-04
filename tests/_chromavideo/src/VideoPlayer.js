@@ -24,6 +24,8 @@ var VIDEO_OPAQUE_DISTORT = 3;
 var VIDEO_KEYED = 4;
 var VIDEO_KEYED_DISTORT = 5;
 var VIDEO_KEYED_INVERSE = 6;
+var VIDEO_SMARTALPHA = 7;
+var VIDEO_SMARTALPHA_DISTORT = 8;
 
 var VideoPlayer = function(shared, layers, conf){
 	var that = this;
@@ -77,11 +79,15 @@ var VideoPlayer = function(shared, layers, conf){
 		
 		scene = new THREE.Scene();
 		scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+		scene.addObject(camera);
 
 		for(var i = 0; i < layers.length; i++) {
 			var p = new VideoPlane(layers[i], config);
 			planes.push(p);
-			scene.addObject(p.mesh);
+			
+			if(p.locked) camera.addChild(p.mesh);
+			else scene.addObject(p.mesh);
+			
 			if(p.wireMesh) scene.addObject(p.wireMesh);
 		}
 	}
@@ -101,8 +107,14 @@ var VideoPlayer = function(shared, layers, conf){
 	this.update = function(progress, delta, time) {
 		if(!gridLoaded) return;
 		
-		targetPos.x = mouseX * config.prx;
-		targetPos.y = mouseY * config.pry;
+		targetPos.x = mouseX * 2 * config.prx;
+		targetPos.y = mouseY * 2 * config.pry;
+		
+		targetPos.x = Math.min(targetPos.x, config.prx);
+		targetPos.x = Math.max(targetPos.x, -config.prx);
+		
+		targetPos.y = Math.min(targetPos.y, config.pry);
+		targetPos.y = Math.max(targetPos.y, -config.pry);
 
 		camera.target.position.x += (targetPos.x - camera.target.position.x) / 2;
 		camera.target.position.y += (targetPos.y - camera.target.position.y) / 2;	
@@ -110,6 +122,10 @@ var VideoPlayer = function(shared, layers, conf){
 		for (var i = 0; i < planes.length; i++) {
 			planes[i].updateUniform(mouseX, mouseY);
 		}
+		
+		
+		camera.rotation.setRotationFromMatrix( camera.matrixWorld );
+		
 		//renderer.render( scene, camera, renderTarget );
 		renderer.render( scene, camera );
 	}
