@@ -56,7 +56,7 @@ var VideoPlane = function(layer, config){
 	
 	if (hasDistortion) {
 		uniforms['mouseXY'].value = new THREE.Vector2(0, 0);
-		uniforms['aspect'].value = aspect;
+		uniforms['aspect'].value = config.aspect;
 	}
 	
 	if (hasKey) {
@@ -84,17 +84,25 @@ var VideoPlane = function(layer, config){
 		plane = new THREE.Plane(1, 1, 39, 9);
 	}
 	
+	var pmax = 0;
+	var pmin = 0;
+	
 	if(layer.paralax) {
 		for ( var i=0; i < plane.vertices.length; ++i ) {
-			var col = i%40 / 12.5; // ~ 3.14
+			var px = plane.vertices[i].position.x;
+			pmax = Math.max(pmax, px);
+			pmin = Math.min(pmin, px);
+			
+			var col = (px + 0.5) * 3.14
 			var sin = Math.sin(col);
 			plane.vertices[i].position.z = (1-sin) * 500;
 		}
 	}
+	
+	console.log(pmax + " : " + pmin);
 		
 	this.mesh = new THREE.Mesh( plane, material );
-		
-	
+
 	this.mesh.scale.x = layer.width;
 	this.mesh.scale.y = layer.height;
     this.mesh.position.z = layer.z;
@@ -103,23 +111,6 @@ var VideoPlane = function(layer, config){
     this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
 	//this.mesh.doubleSided = true;
 
-	/*if(false) { //hasDistortion) {
-		wireMaterial = new THREE.MeshShaderMaterial( {
-			uniforms: uniforms,
-			vertexShader: VideoShaderSource.distortWire.vertexShader,
-			fragmentShader: VideoShaderSource.distortWire.fragmentShader,
-			blending: THREE.BillboardBlending,
-			wireframe: true
-		});
-		
-		this.wireMesh = new THREE.Mesh( config.grid, wireMaterial );
-		this.wireMesh.scale.x = layer.width;
-		this.wireMesh.scale.y = layer.height;
-	    this.wireMesh.position.z = layer.z + 0.1;
-	    this.wireMesh.scale.x *= Math.abs(layer.z) * config.adj * config.aspect;
-	    this.wireMesh.scale.y *= Math.abs(layer.z) * config.adj;
-	}*/
-	
 	this.start = function(t) {
 		if(isStatic) return;
 		
@@ -134,10 +125,11 @@ var VideoPlane = function(layer, config){
 	}
 	
 	this.stop = function() {
-		if(isStatic) return;
-		
+	
+		if(isStatic) return;	
 		video.pause();
 		clearInterval( interval );
+		
 	}
 	
 	this.updateUniform = function(mouseX, mouseY) {

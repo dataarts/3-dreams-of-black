@@ -121,10 +121,12 @@ var FilmSection = function ( shared ) {
 	sequencer.add( s02_04, s02start, s02start + s02_04.duration, 1 );
 	s02start += s02_04.duration;
 	
-	sequencer.add( s02_06, s02start, s02end, 1 ); // 5);
+	sequencer.add( s02_06, s02start, s02end, 5);
+	
+	var prairieStart = tune.getPatternMS( 32 ) - 3000;
 
 	// should start at tune.getPatternMS( 32 ) - s02_06.duration
-	sequencer.add( new Prairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 1 );
+	sequencer.add( new Prairie( shared ), prairieStart, tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
 	//sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
 

@@ -2,26 +2,20 @@
 var VideoShots = {
 
     confParalax: {
-
-        paralaxHorizontal: 40,
-        paralaxVertical: 10
-
+        paralaxHorizontal: 400,
+        paralaxVertical: 100
     },
     
     confStill: {
-
         paralaxHorizontal: 0,
         paralaxVertical: 0
-
     },
     
     introLayers: [{
-
         path: "files/videos/intro.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1000,
 		duration: 22000
-
     }],
 
 	s01_01: [{
@@ -34,25 +28,24 @@ var VideoShots = {
 	s01_03: [{
         path: "files/videos/city/s03_layer03.webm",
         shaderId: VIDEO_OPAQUE,
-        z: -900,
+        z: -1200,
+		width: 1.56, height: 1.59,
+		paralax: true,
 		duration: 8120
 	},{
         path: "files/videos/city/s03_layer02.webm",
-        shaderId: VIDEO_KEYED_DISTORT,
-        z: -800,
-        colorScale: .9,
-        threshold: .28,
-        alphaFadeout: .35,
-		width: 2, height: 2
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        z: -700,
+		width: 1.30, height: 1.16,
+		paralax: true
 	},{
         path: "files/videos/city/s03_layer01.webm",
-        shaderId: VIDEO_KEYED,
-        z: -700,
-        colorScale: .9,
-        threshold: .28,
-        alphaFadeout: .35
+        shaderId: VIDEO_SMARTALPHA,
+        z: -100,
+		locked: true,
+		removeAt: 0.3
 	}],
-	
+
 	s01_06: [{
         path: "files/videos/city/s06_layer02.webm",
         shaderId: VIDEO_OPAQUE,
@@ -60,163 +53,137 @@ var VideoShots = {
 		duration: 2030	
 	},{
         path: "files/videos/city/s06_layer01.webm",
-        shaderId: VIDEO_KEYED_DISTORT,
-        z: -900,
-		colorScale: .99,
-        threshold: .45,
-        alphaFadeout: .35	
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        z: -900
 	}],
 	
-	s01_09: [
-		{       
-		    path: "files/videos/city/s09_layer03.webm",
-	        shaderId: VIDEO_KEYED_DISTORT,
-	        z: -1000,
-			duration: 8230,
-			colorScale: .99,
-	        threshold: .45,
-	        alphaFadeout: .35	
-		},{       
-		    path: "files/videos/city/s09_layer02.webm",
-	        shaderId: VIDEO_KEYED,
-	        z: -900,
-			colorScale: .99,
-	        threshold: .45,
-	        alphaFadeout: .35,
-			width: 1.4, height: 1
-		},{       
-		    path: "files/videos/city/s09_layer01.webm",
-	        shaderId: VIDEO_KEYED,
-	        z: -700,
-			colorScale: .99,
-	        threshold: .45,
-	        alphaFadeout: .35
-		}
-	],
-   
-    dunesLayers: [{
-
-        path: "files/videos/transition_dunes.webm",
-        shaderId: VIDEO_OPAQUE,
+	s01_09: [{       
+	    path: "files/videos/city/s09_layer04.webm",
+        shaderId: VIDEO_KEYED_DISTORT,
         z: -1000,
-		duration: 20000
+		duration: 8230,
+		colorScale: .99,
+        threshold: .45,
+        alphaFadeout: .35,
+		paralax: true,
+		width: 1.5625, height: 1.1627
+	},{       
+	    path: "files/videos/city/s09_layer03.webm",
+        shaderId: VIDEO_SMARTALPHA,
+        z: -900,
+		paralax: true,
+		removeAt: 0.8,
+		width: 1.5625, height: 1.1627
+	},{       
+	    path: "files/videos/city/s09_layer02.webm",
+        shaderId: VIDEO_SMARTALPHA,
+        z: -800,
+		paralax: true,
+		removeAt: 0.8,
+		width: 1.5625, height: 1.1627
+	},{       
+	    path: "files/videos/city/s09_layer01.webm",
+        shaderId: VIDEO_SMARTALPHA,
+        z: -500,
+		locked: true,
+		colorScale: .99,
+        threshold: .45,
+        alphaFadeout: .35,
+        removeAt : 0.3
+	}],
+   
 
-    }],
     
     
     s02_01: [{
-
         path: "files/videos/prairie/s01_layer04.webm",
-        shaderId: VIDEO_OPAQUE_DISTORT,
+        shaderId: VIDEO_OPAQUE,
         z: -1400,
-		duration: 9230 // in millis
-
-    }, {
-
+		duration: 9230,
+		paralax: true,
+    },{
         path: "files/videos/prairie/s01_layer03.webm",
-        shaderId: VIDEO_KEYED,
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
         z: -1000,
-        colorScale: .99,
-        threshold: .45,
-        alphaFadeout: .35
-
-    }, {
-
+		width: 1.2, height: 1.2
+    },{
         path: "files/videos/prairie/s01_layer02.webm",
-        shaderId: VIDEO_KEYED,
-        z: -50,
-        colorScale: .91,
-        threshold: .28,
-        alphaFadeout: .7,
-        width: 1.05,
-        height: 1.05
-
-    }, {
-
+        shaderId: VIDEO_SMARTALPHA,
+        z: -900,
+		paralax: true,
+		width: 1.2, height: 1.9
+    },{
         path: "files/videos/prairie/s01_layer01.webm",
-        shaderId: VIDEO_KEYED,
+        shaderId: VIDEO_SMARTALPHA,
         z: -30,
-        colorScale: .8,
-        threshold: .28,
-        alphaFadeout: .7,
-        width: 1.05,
-        height: 1.05
-
+        locked: true
     }],
     
     s02_02: [{
-
-        path: "files/videos/prairie/s02_layer03.webm",
+        path: "files/videos/prairie/s02_layer03.jpg",
         shaderId: VIDEO_OPAQUE,
         z: -1010,
 		duration: 2020
-
-    }, {
-
+    },{
         path: "files/videos/prairie/s02_layer02.webm",
-        shaderId: VIDEO_KEYED_DISTORT,
-        z: -1000,
-        colorScale: .99,
-        threshold: .45,
-        alphaFadeout: .35
-
-    }, {
-
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        z: -1000
+    },{
         path: "files/videos/prairie/s02_layer01.webm",
-        shaderId: VIDEO_HALFALPHA,
-        z: -990
-		
+        shaderId: VIDEO_SMARTALPHA,
+        z: -990	
     }],
     
+	
     s02_03: [{
         path: "files/videos/prairie/s03_layer03.webm",
         shaderId: VIDEO_OPAQUE,
-        z: -1010,
+        z: -1500,
 		duration: 2030
     }, {
-        path: "files/videos/prairie/s03_layer02.webm",
-        shaderId: VIDEO_KEYED_DISTORT,
-        z: -1000,
-        colorScale: .99,
-        threshold: .45,
-        alphaFadeout: .35
-    }, {
         path: "files/videos/prairie/s03_layer01.webm",
-        shaderId: VIDEO_HALFALPHA,
-        z: -990
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        z: -1000
     }],
     
+	
+	
     s02_04: [{
-        path: "files/videos/prairie/s04_layer03.webm",
+        path: "files/videos/prairie/s04_layer02.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1010,
 		duration: 5000
     }, {
-        path: "files/videos/prairie/s04_layer02.webm",
-        shaderId: VIDEO_KEYED_DISTORT,
-        z: -1000,
-        colorScale: 1,
-        threshold: .3,
-        alphaFadeout: .3
-    }, {
         path: "files/videos/prairie/s04_layer01.webm",
-        shaderId: VIDEO_HALFALPHA,
-        z: -990
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        z: -1000
     }],
+	
     
     s02_06: [{
         path: "files/videos/prairie/s06_layer02.webm",
-        shaderId: VIDEO_OPAQUE,
+        shaderId: VIDEO_SMARTALPHA,
         z: -1010,
 		duration: 6060
-    }, {
+    }
+	/*, {
         path: "files/videos/prairie/s06_layer01.webm",
-        shaderId: VIDEO_KEYED_DISTORT,
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        z: -1000
+    }*/
+	],
+	
+	
+	
+	
+	
+	
+	dunesLayers: [{
+        path: "files/videos/transition_dunes.webm",
+        shaderId: VIDEO_OPAQUE,
         z: -1000,
-        colorScale: 1,
-        threshold: .3,
-        alphaFadeout: .3
-    }]
+		duration: 20000
+    }],
 };
 
 
