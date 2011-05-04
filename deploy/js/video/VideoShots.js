@@ -207,14 +207,15 @@ var VideoShots = {
 		paralax: true
     },{
         path: "files/videos/dunes/s01_layer02.webm",
-        shaderId: VIDEO_SMARTALPHA,
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
         z: -800,
 		width: 1.56, height: 1.22,
 		paralax: true
     },{
         path: "files/videos/dunes/s01_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
-        z: -100
+        z: -100,
+		locked: true
     }],
 	
 	
