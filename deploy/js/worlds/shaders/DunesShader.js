@@ -285,7 +285,7 @@ function updateDunesShader( delta ) {
 
 	// update time
 
-	var time = DunesShader.uniforms.time.value += delta * 0.00005;
+	var time = DunesShader.uniforms.time.value += delta * 0.00001;
 	
 	for( e = 0, el = DunesShaderEffectors.materials.length; e < el; e++ ) {
 		
