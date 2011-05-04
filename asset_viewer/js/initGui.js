@@ -29,4 +29,5 @@ function initGui(){
   gui.add(params, "aperture", 0, 0.01).listen();
   gui.add(params, "occlusion", false).listen();
   gui.add(params, "radius", 0.001, 0.05).listen();
+  gui.show();
 }
