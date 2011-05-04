@@ -1,15 +1,31 @@
-#viewerCanvas {
-  display: block;
-  float:left;
-  z-index: 10000;
-  cursor: move;
+#model-viewer{
+  width:970px;
 }
 
-#viewerModels {
-  float:left;
+#viewerCanvas {
+  display: block;
   width: 970px;
+  float:left;
+  z-index: 100;
+  cursor: move;
+}
+#viewerModelsWrapper{
+  width: 970px;
+  overflow:hidden;
+}
+
+#viewerModelsStrip {
+  float:left;
+  width: 3000px;
   height: auto;
-  margin:5px 0 0 5px;
+  margin:0 0 0 5px;
+}
+#viewerModels{
+  position:relative;
+  float:left;
+  left:0px;
+  width: auto;
+  height: auto;
 }
 
 a.modelLink{
@@ -21,6 +37,7 @@ a.modelLink{
   float:left;
   margin:0 2px 5px 2px;
   overflow:hidden;
+  z-index:200;
 }
 
 #viewerSettings {
