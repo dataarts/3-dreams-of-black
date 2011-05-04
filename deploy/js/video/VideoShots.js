@@ -94,24 +94,28 @@ var VideoShots = {
    
 
     
+	
+	
     
     s02_01: [{
         path: "files/videos/prairie/s01_layer04.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1400,
-		duration: 9230,
+		width: 1, height: 1.83,
 		paralax: true,
-    },{
+		duration: 9230
+    }/*,{
         path: "files/videos/prairie/s01_layer03.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
-        z: -1000,
-		width: 1.2, height: 1.2
-    },{
+        z: -1100,
+		width: 1.56, height: 1,
+		paralax: true
+    }*/,{
         path: "files/videos/prairie/s01_layer02.webm",
         shaderId: VIDEO_SMARTALPHA,
-        z: -900,
+        z: -700,
 		paralax: true,
-		width: 1.2, height: 1.9
+		width: 1.56, height: 1.83
     },{
         path: "files/videos/prairie/s01_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
@@ -119,6 +123,13 @@ var VideoShots = {
         locked: true
     }],
     
+	
+	
+	
+	
+	
+	
+	
     s02_02: [{
         path: "files/videos/prairie/s02_layer03.jpg",
         shaderId: VIDEO_OPAQUE,
