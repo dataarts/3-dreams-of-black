@@ -38,6 +38,7 @@ files = [
 'js/effects/PaintEffect.js',
 'js/effects/PaintEffectPrairie.js',
 'js/effects/PaintEffectDunes.js',
+'js/effects/PaintEffectVideo.js',
 'js/effects/PaintDarkEffect.js',
 'js/effects/OverlayEffect.js',
 
