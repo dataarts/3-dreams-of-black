@@ -239,7 +239,7 @@ var DunesWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
-		applyDunesShader( result );
+		applyDunesShader( result, { "D_tile_Prairie_Is.000": -1.0, "D_tile_Prairie_Island": -1.0 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
 	};
@@ -249,7 +249,7 @@ var DunesWorld = function ( shared ) {
 
 	function cityLoaded( result ) {
 
-		applyDunesShader( result );
+		applyDunesShader( result, { "D_tile_City_Island": -1.0, "D_tile_City_Island_Co": -1.0 } );
 		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
 	};
@@ -272,6 +272,7 @@ var DunesWorld = function ( shared ) {
 		tileColliders[ numTilesLoaded ].rotation.x = -90 * Math.PI / 180;
 		tileColliders[ numTilesLoaded ].scale.set( SCALE, SCALE, SCALE );
 		
+		// shows collision meshes
 		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
 		//tileColliders[ numTilesLoaded ].visible= true;
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
