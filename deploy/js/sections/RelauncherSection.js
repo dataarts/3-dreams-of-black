@@ -14,9 +14,11 @@ var RelauncherSection = function( shared ) {
 	Section.call( this );
 
 	var domElement = document.createElement( "div" );
-			domElement.setAttribute( "id", "relauncher-section" );
-			domElement.style.position = "relative";
-			domElement.style.display = 'none';
+	domElement.style.width = window.innerWidth + 'px';
+	domElement.style.height = window.innerHeight + 'px';
+	domElement.style.display = 'none';
+	domElement.style.backgroundColor = '#ffffff';
+	domElement.setAttribute( "id", "relauncher-section" );
 
 	var navigation = {};
 	var footer, footNav;
@@ -40,14 +42,16 @@ var RelauncherSection = function( shared ) {
 	head.appendChild( style );
 
 	var clouds = new Clouds( shared, true );
-	var d = clouds.getDomElement();
-	d.style.background = "#fff";
-	d.style.zIndex = -2;
-	domElement.appendChild( d );
+	clouds.getDomElement().style.position = 'absolute';
+	clouds.getDomElement().style.left = "0px";
+	clouds.getDomElement().style.top = "0px";
+	clouds.getDomElement().style.width = window.innerWidth+"px";
+	clouds.getDomElement().style.height = window.innerHeight+"px";
+	domElement.appendChild( clouds.getDomElement() );
 
 	var container = document.createElement("div");
 	container.setAttribute("id", "container");
-	container.setAttribute("style", "position: absolute; z-index: -1;");
+	container.setAttribute("style", "position: absolute;");
 	domElement.appendChild(container);
 
 	var gee = new GEE({
@@ -265,6 +269,9 @@ var RelauncherSection = function( shared ) {
 	};
 
 	this.resize = function( width, height ) {
+
+		domElement.style.width = width + 'px';
+		domElement.style.height = height + 'px';
 
 		clouds.resize( width, height );
 		footer.style.top = (window.innerHeight - 78) + "px";
