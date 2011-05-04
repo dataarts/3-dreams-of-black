@@ -53,8 +53,6 @@ function TriggerMat(){
 
 var animalShader = AnimalShader;
 animalShader.uniforms = THREE.UniformsUtils.clone(AnimalShader.uniforms);
-animalShader.uniforms['contour'].texture = AnimalShader.textures.contour;
-animalShader.uniforms['faceLight'].texture = AnimalShader.textures.contour;
 
 function AnimalMat(attributes){
 

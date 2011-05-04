@@ -139,6 +139,7 @@ function HandleErrors(d) {
 // Read a page's GET URL variables and return them as an associative array.
 var romeErrors = new HandleErrors();
 var variables = romeErrors.getUrlVars();
+
 if(variables) {
   if(variables[romeErrors.MagicVariable]) {
     // this means we are in the error page

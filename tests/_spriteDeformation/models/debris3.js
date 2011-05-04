@@ -21,7 +21,7 @@ var model = {
 	"DbgName" : "default"
 	}],
 
-    "vertices": [-0.703297,-0.703297,-0.703297,0.977541,-0.977541,-0.977541,0.465664,-0.465664,0.465664,-0.254221,-0.254221,0.254221,-0.658710,0.658710,-0.658710,0.468501,0.468501,-0.468501,0.252662,0.252662,0.252662,-0.379820,0.379820,0.379820],
+    "vertices": [],
     
     "morphTargets": [],
 
@@ -33,11 +33,62 @@ var model = {
 
     "uvs": [[0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000]],
 
-    "faces": [43,1,0,4,5,0,1,0,4,5,1,0,4,5,43,2,1,5,6,0,2,1,5,6,2,1,5,6,43,3,2,6,7,0,3,2,6,7,3,2,6,7,43,0,3,7,4,0,0,3,7,4,0,3,7,4,43,2,3,0,1,0,2,3,0,1,2,3,0,1,43,5,4,7,6,0,5,4,7,6,5,4,7,6],
+    "faces": [],
 
     "edges" : []
 
 };
+
+var req = new XMLHttpRequest();
+req.open('GET', "debris3.txt", false);
+req.send(null);
+if (req.status == 200 || req.status == 0) {
+  var numVertices = 24;
+  var numMorphTargets = model.morphTargets.length;
+  var scale = 0.0076370390625;
+  model.vertices = new Float32Array(numVertices);
+  for (var j = 0; j < numMorphTargets; ++j) {
+    model.morphTargets[j].vertices = new Float32Array(numVertices);
+  }
+
+  var untransposed = new Int16Array(numVertices);
+  var transposeOffset = numVertices / 3;
+  var prevX = 0, prevY = 0, prevZ = 0;
+  for (var i = 0; i < transposeOffset; ++i) {
+    var x = req.responseText.charCodeAt(i);
+    x = (x >> 1) ^ (-(x & 1));
+    prevX += x;
+    untransposed[3*i] = prevX;
+    var y = req.responseText.charCodeAt(transposeOffset + i);
+    y = (y >> 1) ^ (-(y & 1));
+    prevY += y;
+    untransposed[3*i + 1] = prevY;
+    var z = req.responseText.charCodeAt(2*transposeOffset + i);
+    z = (z >> 1) ^ (-(z & 1));
+    prevZ += z;
+    untransposed[3*i + 2] = prevZ;
+  }
+
+  for (var i = 0; i < numVertices; ++i) {
+    var word = untransposed[i];
+    model.vertices[i] = scale * word;
+
+    var prev = word;
+    for (var j = 0; j < numMorphTargets; ++j) {
+      var offset = (j + 1) * numVertices;
+      var delta = req.responseText.charCodeAt(offset + i);
+      delta = (delta >> 1) ^ (-(delta & 1));
+      prev += delta;
+      model.morphTargets[j].vertices[i] = scale * prev;
+    }
+  }
+  var faceOffset = numVertices * (numMorphTargets + 1);
+  var numFaces = 84;
+  model.faces = new Uint16Array(numFaces);
+  for (var i = 0; i < numFaces; ++i) {
+    model.faces[i] = req.responseText.charCodeAt(faceOffset + i);
+  }
+}
 
 postMessage( model );
 close();
