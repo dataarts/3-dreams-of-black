@@ -120,22 +120,10 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
 
 
-//	var jloader = new THREE.JSONLoader();
-	
-//	jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
-//	jloader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
-	
-//	jloader.load( { model: 'files/models/Cloud1_.js', callback: function( geo ) { addClouds( geo, 100 ); } } );
-//	jloader.load( { model: 'files/models/Cloud2_.js', callback: function( geo ) { addClouds( geo, 100 ); } } );
-
-
-	
-	/////////// COPIED FROM OLD DUNESWORLD.JS - NOT USED HERE ///////////////
-
 
 	// UGC - TODO: Temp implementation
 
-	var ugcHandler = new UgcHandler();
+/*	var ugcHandler = new UgcHandler();
 
 	ugcHandler.getLatestUGOs( function ( objects ) {
 
@@ -173,9 +161,8 @@ var DunesWorld = function ( shared ) {
 		}
 
 	} );
+*/
 
-
-	/////////////////////////////////////////////////////////////////////////
 
 	//--- walk loaded ---
 
