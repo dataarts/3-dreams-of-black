@@ -26,7 +26,7 @@ var model = {
 	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
 	"mapDiffuse" : "Closeup_PaintDubs.jpg",
-	"shading" : "Lambert",
+	"shading" : "Basic",
 	"specularCoef" : 10,
 	"transparency" : 1.0,
 	"vertexColors" : 1
