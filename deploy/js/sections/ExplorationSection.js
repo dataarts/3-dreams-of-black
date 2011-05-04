@@ -2,54 +2,22 @@ var ExplorationSection = function ( shared ) {
 
 	Section.call( this );
 
-	var EXPLORE_FREE = true;
+	// init dom
 
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
+
+	// renderer and post effects
+
+	var progress = 0, start = 0, lastTime = 0;
 	var renderer = shared.renderer;
-	renderTarget = shared.renderTarget;
-
-	var camera, cameras = {};
-
-	cameras.dunes = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-	cameras.dunes.movementSpeed = 200;
-	cameras.dunes.lookSpeed = 3;
-	cameras.dunes.constrainVertical = [ -0.4, 0.4 ];
-	cameras.dunes.autoForward = false;
-	cameras.dunes.position.set( 0, 0, 0 );
-
-	cameras.prairie = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-	cameras.prairie.movementSpeed = 50;
-	cameras.prairie.lookSpeed = 3;
-	cameras.prairie.constrainVertical = [ -0.4, 0.4 ];
-	cameras.prairie.autoForward = false;
-	cameras.prairie.position.set( 0, 0, 0 );
-
-	cameras.city = new THREE.RollCamera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-	cameras.city.movementSpeed = 100;
-	cameras.city.lookSpeed = 3;
-	cameras.city.constrainVertical = [ -0.4, 0.4 ];
-	cameras.city.autoForward = false;
-	cameras.city.position.set( 0, 20, -300 );
-
-	var cameraInitPos = {
-		
-		city	: new THREE.Vector3( 0, 20, -300 ),
-		prairie	: new THREE.Vector3( 0, 0, 0 ),
-		dunes	: new THREE.Vector3( 0, 0, 0 )
-
-	};
-	
-	var sequence, world, scene,
-	postEffect, clearEffect, heatEffect, paintEffect, paintEffectPrairie, paintEffectDunes,
-	noiseEffect, renderEffect, overlayEffect;
+	var renderTarget = shared.renderTarget;
+	var world, scene;
+	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
-
-	heatEffect = new HeatEffect( shared );
-	heatEffect.init();
 
 	paintEffect = new PaintEffect( shared );
 	paintEffect.init();
@@ -60,67 +28,52 @@ var ExplorationSection = function ( shared ) {
 	paintEffectDunes = new PaintEffectDunes( shared );
 	paintEffectDunes.init();
 
-	noiseEffect = new NoiseEffect( shared, 0.15, 0.0, 4096 );
-	noiseEffect.init();
 
-	overlayEffect = new OverlayEffect( shared, THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" ) );
-	overlayEffect.init();
+	// init cameras
 
-	renderEffect = new RenderEffect( shared );
-	renderEffect.init();
+	var camera, cameras = {};
 
-	var progress = 0, start = 0, lastTime = 0;
+	cameras.dunes   = new DunesCameraFreeExplore( shared );
+	cameras.prairie = new PrairieCameraFreeExplore( shared );
+	cameras.city    = new CityCameraFreeExplore( shared );
+
 
 	// signals
 
 	shared.signals.startexploration.add( startExplore );
-	// shared.signals.windowresized.add( updateViewportSize );
+	shared.signals.windowresized.add( updateViewportSize );
+
+
+	//--- start explore ---
 
 	function startExplore( worldId ) {
 
 		domElement.appendChild( renderer.domElement );
 
-		// updateViewportSize();
-
-		world = shared.worlds[ worldId ];
-		sequence = shared.sequences[ worldId ];
-		
-		scene = world.scene;
+		world  = shared.worlds[ worldId ];
+		scene  = world.scene;
 		camera = cameras[ worldId ];
+		camera.resetCamera();
 		
-		if ( worldId == "city" ) {
+		if( worldId == "city" ) {
 			
 			postEffect = paintEffect;
-			//postEffect = paintEffectDunes;
 		
 		} else if ( worldId == "prairie" ) {
 
-			postEffect = paintEffect;
+			postEffect = paintEffectPrairie;
 			
-		} else if ( worldId == "dunes" ) {
+		} else {
 
 			postEffect = paintEffectDunes;
 			
-		} else {
-			
-			postEffect = renderEffect;
-
 		}
+
+		updateViewportSize();
 		
-		if ( EXPLORE_FREE ) {
-
-			scene.addChild( camera );			
-			camera.position.copy( cameraInitPos[ worldId ] );
-
-		} else {
-			
-			sequence.resetCamera();
-			
-		}
-
 		// hide soup (if it wasn't yet activated)
 
-		if ( !shared.started[ worldId ] ) {
+/*		if ( !shared.started[ worldId ] ) {
 
 			THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
 
@@ -140,14 +93,20 @@ var ExplorationSection = function ( shared ) {
 			} );
 
 		}
-
+*/
 		start = lastTime = new Date().getTime();
 
 	};
 
+
+	//--- stop ---
+
 	function stop() {
 
 	};
+
+
+	//--- update viewport size ---
 
 	function updateViewportSize() {
 
@@ -189,7 +148,7 @@ var ExplorationSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		// TODO
+		console.log( "Exploration Resize" );
 
 	};
 
@@ -197,48 +156,26 @@ var ExplorationSection = function ( shared ) {
 
 		// just flying around worlds using new RollCamera
 		
-		if ( EXPLORE_FREE ) {
+		if( world ) {
 
-			if ( world ) {
+			time = new Date().getTime() - start;
+			delta = time - lastTime;
+			lastTime = time;
+			delta = 33;
 
-				time = new Date().getTime() - start;
-				delta = time - lastTime;
-				lastTime = time;
 
-				world.update( delta, camera, true );
+			THREE.AnimationHandler.update( delta );
 
-				clearEffect.update( progress, delta, time );
+			camera.updateCamera( progress, delta, time );
+			world.update( delta, camera.camera, true );
 
-				renderer.setClearColor( world.scene.fog.color );
-				renderer.render( world.scene, camera, renderTarget );
 
-				shared.logger.log( "vertices: " + renderer.data.vertices );
-				shared.logger.log( 'faces: ' + renderer.data.faces );
+			clearEffect.update( progress, delta, time );
 
-				postEffect.update( progress, delta, time );
-			
-				//heatEffect.update( progress, delta, time );
-				//noiseEffect.update( progress, delta, time );
-				//overlayEffect.update( progress, delta, time );
-				//renderEffect.update( progress, delta, time );
+			renderer.setClearColor( world.scene.fog.color );
+			renderer.render( world.scene, camera.camera, renderTarget );
 
-			}
-
-		// replay sequences
-
-		} else {			
-		
-			if ( sequence ) {
-
-				time = new Date().getTime() - start;
-				delta = time - lastTime;
-				lastTime = time;
-
-				clearEffect.update( progress, delta, time );
-				sequence.update( progress, delta, time );
-				renderEffect.update( progress, delta, time );
-
-			}
+			postEffect.update( progress, delta, time );
 
 		}
 

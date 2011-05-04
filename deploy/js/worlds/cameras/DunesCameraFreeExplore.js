@@ -2,30 +2,27 @@
  * @author Mikael Emtinger
  */
 
-DunesCamera = function( shared ) {
+DunesCameraFreeExplore = function( shared ) {
 	
 	// setttings
 	
-	var CAMERA_LOWEST_Y = 10;
+	var CAMERA_LOWEST_Y = 150;
 	var CAMERA_LOWEST_Y_NULL_ATTENUATION = 200;
 	var CAMERA_HIGHEST_Y = 4500;
-	var CAMERA_FORWARD_SPEED = 10;
-	var CAMERA_FORWARD_SPEED_MAX = 15;
+	var CAMERA_FORWARD_SPEED = 12;
+	var CAMERA_FORWARD_SPEED_MAX = 25;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
-	var CAMERA_VERTICAL_FACTOR = 15;
+	var CAMERA_VERTICAL_FACTOR = 20;
 	var CAMERA_VERTICAL_LIMIT = 50;
-	var CAMERA_HORIZONTAL_FACTOR = 12;
+	var CAMERA_HORIZONTAL_FACTOR = 15;
 	var CAMERA_INERTIA = 0.02;
-	var CAMERA_ROLL_FACTOR = 0.3;
-	var CAMERA_COLLISION_SLOWDOWN_DISTANCE = 50;
+	var CAMERA_ROLL_FACTOR = 0.4;
+	var CAMERA_COLLISION_SLOWDOWN_DISTANCE = 60;
 	var CAMERA_COLLISION_DISTANCE = 200;			// if this+slowdown > 280 there's a collision with a mysterious box collider
 	var CAMERA_COLLISION_DISTANCE_SIDES = 40;
 	var CAMERA_COLLISION_DISTANCE_DOWN = 50;
 	var CAMERA_COLLISION_DISTANCE_UP = 40;
 	var CAMERA_TARGET_ADJUSTMENT_FACTOR = 15;
-	var CAMERA_LIFT_SPEED = 4.5;
-	var CAMERA_START_LIFT = 0.29;
-	var CAMERA_END_LIFT = 0.375;
 	var CAMERA_DOWN_COLLISION_OFFSET = 100;
 
 
@@ -69,8 +66,8 @@ DunesCamera = function( shared ) {
 	
 	that.resetCamera = function() {
 		
-		wantedCamera.position.set( 0, 50, 800 );
-		wantedCameraTarget.position.set( 0, 50, 300 );
+		wantedCamera.position.set( 0, 300, 0 );
+		wantedCameraTarget.position.set( 0, 300, -500 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
 		
 		camera.position.copy( wantedCamera.position );
@@ -83,7 +80,7 @@ DunesCamera = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = delta * ( 1000 / 30 ) / 1000; 
+		delta = 1;// delta * ( 1000 / 30 ) / 1000; 
 		
 		// check collision round-robin (can't afford to do all every frame)
 
@@ -263,25 +260,10 @@ DunesCamera = function( shared ) {
 		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 
-
-		// handle walk
-		
-		if( progress < CAMERA_START_LIFT ) {
 			
-			cameraSpeed = CAMERA_FORWARD_SPEED * 0.3;
-			shared.cameraSlowDown = true;
-			wantedCameraDirection.y = 0;
-			wantedCameraDirection.normalize();
-			wantedCameraTarget.position.y = wantedCamera.position.y;
-			
-		} else {
-		
-			cameraSpeed = CAMERA_FORWARD_SPEED;
-			
-		}
-
-
 		// calc camera speed (dependent on hight)
+
+		cameraSpeed = CAMERA_FORWARD_SPEED;
 		
 		if( !shared.cameraSlowDown )  {
 			
@@ -294,16 +276,6 @@ DunesCamera = function( shared ) {
 		// move forward
 
 		wantedCamera.position.addSelf( wantedCameraDirection.multiplyScalar( cameraSpeed * cameraSpeedFactor * delta ));
-
-
-		// lift off
-
-		if( progress > CAMERA_START_LIFT && progress < CAMERA_END_LIFT ) {
-
-			wantedCamera.position.y += CAMERA_LIFT_SPEED * delta;
-			wantedCameraTarget.position.y += CAMERA_LIFT_SPEED * delta * 0.9;
-	
-		}
 
 
 		// cap height

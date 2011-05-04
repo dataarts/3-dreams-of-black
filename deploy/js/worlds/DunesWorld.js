@@ -4,7 +4,7 @@ var DunesWorld = function ( shared ) {
 
 	var that = this;
 	var	SCALE = 0.20;
-	var TILE_SIZE = 30000 * SCALE;
+	var TILE_SIZE = 29990 * SCALE;
 	var scenePrairie, sceneCity, sceneWalk;
 	
 	shared.influenceSpheres = [];
@@ -216,8 +216,8 @@ var DunesWorld = function ( shared ) {
 		tileColliders[ numTilesLoaded ].scale.set( SCALE, SCALE, SCALE );
 		
 		// shows collision meshes
-		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
-		//tileColliders[ numTilesLoaded ].visible= true;
+		tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+		tileColliders[ numTilesLoaded ].visible = true;
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
 		that.scene.collisions.merge( scene.collisions );
 
@@ -446,6 +446,11 @@ var DunesWorld = function ( shared ) {
 
 				node.visible = visible; 
 
+			} else {
+				
+				//node.materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+				//node.visible = true;
+				
 			}
 			
 		} );
