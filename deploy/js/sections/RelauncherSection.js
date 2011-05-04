@@ -9,10 +9,6 @@
  *					 files/eminating-heart.svg
  */
 
-
-// TODO:
-// + Add Footer
-
 var RelauncherSection = function( shared ) {
 
 	Section.call( this );
@@ -23,10 +19,10 @@ var RelauncherSection = function( shared ) {
 			domElement.style.display = 'none';
 
 	var navigation = {};
+	var footer, footNav;
 
 	// add css styling
-
-	var rule = document.createTextNode( "#relauncher-section div.after-experience { position: absolute; padding: 25px 50px; border: 1px solid #c9c8c1; text-transform: uppercase; font: 500 12px / 17px 'Futura', Arial, sans-serif; letter-spacing: 1px; color: #434343; cursor: pointer; } #relauncher-section div.after-experience:hover { color: #f15d22; background: #30302e; }" );
+	var rule = document.createTextNode( "#relauncher-section div.after-experience { position: absolute; height: 57px; overflow: hidden; cursor: pointer; } #relauncher-section div.after-experience img { display: block; } #relauncher-section div.after-experience:hover img { margin-top: -57px; }" );
 	var head = document.getElementsByTagName( 'head' )[ 0 ];
 	var style = document.createElement( "style" );
 	style.type = "text/css";
@@ -46,12 +42,12 @@ var RelauncherSection = function( shared ) {
 	var clouds = new Clouds( shared, true );
 	var d = clouds.getDomElement();
 	d.style.background = "#fff";
-	d.style.zIndex = -1;
+	d.style.zIndex = -2;
 	domElement.appendChild( d );
 
 	var container = document.createElement("div");
 	container.setAttribute("id", "container");
-	container.setAttribute("style", "position: absolute;");
+	container.setAttribute("style", "position: absolute; z-index: -1;");
 	domElement.appendChild(container);
 
 	var gee = new GEE({
@@ -63,13 +59,13 @@ var RelauncherSection = function( shared ) {
 	// Implemented Footer.js
 	footer = document.createElement( 'div' );
 	footer.style.position = 'absolute';
-	footer.style.left = '0';
-	footer.style.bottom = '0';
 	footer.style.width = "100%";
+	footer.style.top = (window.innerHeight - 78) + "px";
+	footer.style.left = "0";
 	footNav = new Footer( footer );
 	domElement.appendChild( footer );
 
-	var core = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 75 );
+	var core = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 80 );
 	var inner = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 95 );
 	var outer = new WonderWall.Pentagon( gee, gee.width * .5, gee.height * .5, 130, .25 );
 
@@ -82,7 +78,7 @@ var RelauncherSection = function( shared ) {
 	var heart = {
 
 		svg: new Heart (gee, "files/eminating-heart.svg", 0, 0 ),
-		point: new WonderWall.Point( gee, gee.width * .5, gee.height * .5 )
+		point: new WonderWall.Point( gee, gee.width * .5, gee.height * .5 + 6 )
 
 	};
 	heart.point.r = .0625;
@@ -141,7 +137,7 @@ var RelauncherSection = function( shared ) {
 		core.update().render();
 
 		g.globalCompositeOperation = "source-out";
-		g.lineWidth = 32;
+		g.lineWidth = 24;
 		inner.showStroke = true;
 		inner.showFill = false;
 		inner.render();
@@ -166,19 +162,19 @@ var RelauncherSection = function( shared ) {
 			var ypos = point.y;
 
 			if (i == 0) {
-				xpos -= 82;
-				ypos -= 159;
+				xpos -= 113;
+				ypos -= 162;
 			} else if (i == 1) {
-				xpos += 133;
-				ypos -= 45;
+				xpos += 137;
+				ypos -= 46;
 			} else if (i == 2) {
-				xpos += 104;
-				ypos += 76;
+				xpos += 106;
+				ypos += 78;
 			} else if (i == 3) {
-				xpos -= 311;
-				ypos += 74;
+				xpos -= 312;
+				ypos += 75;
 			} else {
-				xpos -= 333;
+				xpos -= 344;
 				ypos -= 46;
 			}
 			navItem.style.left = xpos + "px";
@@ -203,11 +199,11 @@ var RelauncherSection = function( shared ) {
 
 		var navigation = {};
 
-		var start = createDomElement(container, "div", "start-over", "after-experience", "start over");
-		var technology = createDomElement(container, "div", "technology", "after-experience", "technology");
-		var add = createDomElement(container, "div", "add-to-the-dream", "after-experience", "add to the dream");
-		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "explore other dreams");
-		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "continue to explore");
+		var start = createDomElement(container, "div", "start-over", "after-experience", "<img src = 'files/relaunch_section/start_over.png' alt = 'Start Over' />");
+		var technology = createDomElement(container, "div", "technology", "after-experience", "<img src = 'files/relaunch_section/technology.png' alt = 'Technology' />");
+		var add = createDomElement(container, "div", "add-to-the-dream", "after-experience", "<img src = 'files/relaunch_section/add_dreams.png' alt = 'Add to the Dream' />");
+		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "<img src = 'files/relaunch_section/explore_dreams.png' alt = 'Explore Other Dreams' />");
+		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "<img src = 'files/relaunch_section/continue.png' alt = 'Continue To Explore' />");
 
 		start.addEventListener("click", function(e) {
 
@@ -263,7 +259,7 @@ var RelauncherSection = function( shared ) {
 
 		clouds.show();
 		updateDomElementsPosition();
-		// if(footNav.isSetup()) footNav.setupEmiBuyButton();
+		if(footNav.isSetup()) footNav.setupEmiBuyButton();
 		domElement.style.display = 'block';
 
 	};
@@ -271,6 +267,7 @@ var RelauncherSection = function( shared ) {
 	this.resize = function( width, height ) {
 
 		clouds.resize( width, height );
+		footer.style.top = (window.innerHeight - 78) + "px";
 		updateDomElementsPosition();
 
 	};
