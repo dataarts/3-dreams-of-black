@@ -147,8 +147,8 @@ function initPostprocessingNoise( effect ) {
               "if(rndDepthRGB.a == 0.0) rndDepth = 1.;",
 
               "float zd = (rndUv.z-rndDepth);",
-              "zd = max(min(zd-0.03,0.2-zd), 0.0);",
-              "ao += 1.0/(1.0+10000.0*zd*zd);",
+              "zd = max(min(zd-0.01,0.07-zd), 0.0);",
+              "ao += 1.2/(1.0+50000.0*zd*zd);",
             "}",
             "ao = ao/42.0;",
             "gl_FragColor = vec4(col.rgb*ao,col.a);",

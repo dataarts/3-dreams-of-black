@@ -24,22 +24,17 @@ function makeScene(){
   scene.addObject(rootZ);
   rootZ.addChild(rootY);
 
-  light[0] = new THREE.AmbientLight( 0xffffff );
-  light[0].color.setHSV( 0.7,  0.0, 0.5 );
+  light[0] = new THREE.AmbientLight( 0x608090 );
 
-  light[1] = new THREE.DirectionalLight( 0xffffff );
-  light[1].position.set( 0.4,  0.7, -0.6 );
-  light[1].color.setHSV( 0.45, 0.2,  0.78 );
-  light[1].castShadow = true;
+  light[1] = new THREE.DirectionalLight( 0xffcc99, 0.6 );
+  light[1].position.set( 0, 2, 1 );
 
-  light[2] = new THREE.DirectionalLight( 0xffffff );
-  light[2].position.set( -0.8,  0.8,  0.9 );
-  light[2].color.setHSV( 0,  0, 0.5 );
-  light[2].castShadow = false;
+  light[2] = new THREE.DirectionalLight( 0xffcc66, 0.1 );
+  light[2].position.set( -1, 0, 0.5 );
 
   scene.addLight( light[0] );
   scene.addLight( light[1] );
-  scene.addLight( light[2] );
+  //scene.addLight( light[2] );
 
   //gound plane
   wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xffffff, lighting:false, opacity:0.5, wireframe: true });

@@ -1,5 +1,10 @@
+#model-viewer{
+  width:970px;
+}
+
 #viewerCanvas {
   display: block;
+  width: 970px;
   float:left;
   z-index: 100;
   cursor: move;

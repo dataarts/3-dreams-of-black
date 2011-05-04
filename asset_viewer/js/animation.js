@@ -106,7 +106,7 @@ function animate() {
   }
   if (typeof(morphObject) != "undefined"){
     morphObject.material.wireframe = params.wireframe;
-    morphObject.morph = params.morph*2-0.5;
+    morphObject.morph = params.morph;
   }
 
   updateShaders();
@@ -121,12 +121,11 @@ function animate() {
 
 
 function moveModelStrip(e) {
-  if(!drag) {
-    stripSpeedX = (event.clientX - viewerModelsStrip.offsetLeft - 970 / 2) / 970 * 2;
-  }
+  stripSpeedX = (event.clientX - viewerModelsStrip.offsetLeft - 970 / 2) / 970 * 2;
+  (stripSpeedX < 0) ? viewerModelsGoalX = 0 : viewerModelsGoalX = Math.max(0,viewerModels.clientWidth-970);
 }
 function animateStrip(){
-  (stripSpeedX < 0) ? viewerModelsGoalX = 0 : viewerModelsGoalX = Math.max(0,viewerModels.clientWidth-970);
+
 
   viewerModelsCurrentX += (viewerModelsGoalX-viewerModelsCurrentX)/(20)*Math.pow(stripSpeedX,4);
 

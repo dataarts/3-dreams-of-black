@@ -21,8 +21,8 @@ for i in range(0,len(models_dict)):
   sh_script = sh_script.replace("OUT", models_dict[i]["file"].replace(".obj", ".js"))
   os.system(sh_script)    
 
-####Compress
-#for i in range(0,len(models_dict)):
-#  sh_script = script_compress.replace("JSON", models_dict[i]["file"].replace(".obj", ".js"))
-#  sh_script = sh_script.replace("TXT", models_dict[i]["file"].replace(".obj", ".txt"))
-#  os.system(sh_script)
+###Compress
+for i in range(0,len(models_dict)):
+  sh_script = script_compress.replace("JSON", models_dict[i]["file"].replace(".obj", ".js"))
+  sh_script = sh_script.replace("TXT", models_dict[i]["file"].replace(".obj", ".txt"))
+  os.system(sh_script)
