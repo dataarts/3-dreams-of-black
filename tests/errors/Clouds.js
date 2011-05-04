@@ -88,8 +88,8 @@ var Clouds = function ( shared ) {
 	texture.minFilter = THREE.LinearMipMapLinearFilter;
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.domElement.style.position = 'absolute';
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.domElement.style.float = "left";
+	renderer.setSize( 250, 250 );
 	renderer.sortObjects = false;
 	renderer.autoClear = true;
   renderer.clearColor = 0xff0000;
@@ -111,6 +111,12 @@ var Clouds = function ( shared ) {
     mesh2.position.z = 0;
     scene.addObject( mesh2 );
   }
+
+	this.getRenderer = function() {
+
+		return renderer;
+
+	};
 
 	this.getDomElement = function () {
 
