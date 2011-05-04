@@ -19,7 +19,7 @@
   <script type="text/javascript" src="/asset_viewer/gui-dat/controllers/controller.string.js"></script>
 
   <script type="text/javascript" src="/js/lib/Three.js"></script>
-  <script type="text/javascript" src="/asset_viewer/js/lib/Animal.js"></script>
+  <script type="text/javascript" src="/asset_viewer/js/lib/AnimalRandom.js"></script>
   <script type="text/javascript" src="/asset_viewer/js/lib/Trigger.js"></script>
   <script type="text/javascript" src="/js/lib/Stats.js"></script>
   <script type="text/javascript" src="/js/lib/RequestAnimationFrame.js"></script>
@@ -77,7 +77,11 @@
 
   <div id="model-viewer" class="content">
       <div id="canvasHolder"></div>
-      <div id="viewerModels"></div>
+      <div id="viewerModelsWrapper">
+        <div id="viewerModelsStrip">
+          <div id="viewerModels"></div>
+        </div>
+      </div>
       <div id="viewerSettings"></div>
       <div class="clear"></div>
   </div>

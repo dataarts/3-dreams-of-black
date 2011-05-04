@@ -16,11 +16,11 @@ function init() {
 
 	scene = new THREE.Scene();
 
-	renderer = new THREE.WebGLRenderer( { antialias: false } );
+	renderer = new THREE.WebGLRenderer( { antialias: false, stencil: false } );
 	renderer.autoClear = false;
 	renderer.sortObjects = false;
 
-	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, { stencilBuffer: false } );
 	renderTarget.minFilter = THREE.LinearFilter;
 	renderTarget.magFilter = THREE.NearestFilter;
 
@@ -39,14 +39,34 @@ function init() {
 
 		mouse : { x: 0, y : 0 },
 
-		signals: {
+		signals : {
+
+			mousedown : new Signal(),
+			mouseup : new Signal(),
+			mousemoved : new Signal(),
+			mousewheel : new Signal(),
+
+			keydown : new Signal(),
+			keyup : new Signal(),
+
+			windowresized : new Signal(),
+
+			load : new Signal(),
+
+			showlauncher : new Signal(),
+			showfilm : new Signal(),
+			showrelauncher : new Signal(),
+			showexploration : new Signal(),
+			showugc : new Signal(),
 
 			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
-			mousemoved : new Signal(),
-			windowresized : new Signal(),
+			startfilm : new Signal(),
+			stopfilm : new Signal(),
+
+			startexploration: new Signal(),
 			
 			initscenes: new Signal()
 

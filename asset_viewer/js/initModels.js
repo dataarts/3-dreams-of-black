@@ -7,31 +7,23 @@ var models = [];
 function initModels(){
 
   //MORPHS
-  models.push({"file": '/asset_viewer/files/models/animals/owl_parrot.js', "type": 'animal', "centerY": 0, "riseY" : 70, "speed": 0.8});
-  models.push({"file": '/asset_viewer/files/models/animals/stork_flamingo.js', "type": 'animal', "centerY": 0, "riseY" : 60, "speed": 0.8});
-  models.push({"file": '/asset_viewer/files/models/animals/raven_eagle.js', "type": 'animal', "centerY": 0, "riseY" : 70, "speed": 0.9});
-  models.push({"file": '/asset_viewer/files/models/animals/vulture_hummingbird.js', "type": 'animal', "centerY": 0, "riseY" : 70, "speed": 0.9});
-  models.push({"file": '/asset_viewer/files/models/animals/black_widow_scorpion.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.47});
-  models.push({"file": '/asset_viewer/files/models/animals/wolf_fox.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.47});
-  models.push({"file": '/asset_viewer/files/models/animals/fish1_fish2.js', "type": 'animal', "centerY": 100, "riseY" : -160, "speed": 0.2});
-  models.push({"file": '/asset_viewer/files/models/animals/toad_treeFrog.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.47});
-  models.push({"file": '/asset_viewer/files/models/animals/chowchow_sealSwim.js', "type": 'animal', "centerY": 50, "riseY" : 0, "speed": 0.35});
-  models.push({"file": '/asset_viewer/files/models/animals/retreiver_bearBlack.js', "type": 'animal', "centerY": 50, "riseY" : 0, "speed": 0.35});
-  models.push({"file": '/asset_viewer/files/models/animals/horse_bearBlack.js', "type": 'animal', "centerY": 90, "riseY" : 0, "speed": 0.47});
-  models.push({"file": '/asset_viewer/files/models/animals/tarbuffaloA_tarbuffaloB.js', "type": 'animal', "centerY": 90, "riseY" : 0, "speed": 0.47});
-  //BLACK SOUP
-  models.push({"file": '/files/models/soup/shadow_black.js', "type": 'animal', "centerY": 0, "riseY" : 60, "speed": 0.0});
-  models.push({"file": '/files/models/soup/shdw2.js', "type": 'animal', "centerY": 0, "riseY" : 10, "speed": 0.0});
-  models.push({"file": '/asset_viewer/files/models/animals/gator.js', "type": 'animal', "centerY": 40, "riseY" : 0, "speed": 0.4});
-  models.push({"file": '/asset_viewer/files/models/animals/centipede.js', "type": 'animal', "centerY": 20, "riseY" : 0, "speed": 0.5});
-  models.push({"file": '/asset_viewer/files/models/animals/goat.js', "type": 'animal', "centerY": 50, "riseY" : 0, "speed": 0.5});
-  models.push({"file": '/asset_viewer/files/models/animals/crab.js', "type": 'animal', "centerY": 40, "riseY" : 0, "speed": 0.2});
-  models.push({"file": '/asset_viewer/files/models/animals/cow.js', "type": 'animal', "centerY": 80, "riseY" : 0, "speed": 0});
-  models.push({"file": '/asset_viewer/files/models/animals/panther.js', "type": 'animal', "centerY": 80, "riseY" : 0, "speed": 0.8});
-  //LIFE SOUP
-  models.push({"file": '/asset_viewer/files/models/animals/eagle.js', "type": 'animal', "centerY": 70, "riseY" : 180, "speed": 0.8});
-  models.push({"file": '/asset_viewer/files/models/animals/rabbit.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.8});
-  models.push({"file": '/asset_viewer/files/models/animals/elk.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.5});
+  models.push({"file": '/files/models/soup/birds_B_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/animals_A_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/animals_A_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/arm_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/birds_A_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/birds_A_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/butterfly_hiA.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/elk_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/fish_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/gator_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/goat_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/moose_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/octo_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/shadow_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/shdw2.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/taruffalo_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+
   //Triggers
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Bus_.js', "base": '/asset_viewer/files/models/city/City.Bus_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2500,0,0,1000]});
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Car_.js', "base": '/asset_viewer/files/models/city/City.Car_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2800,0,0,1000]});
@@ -107,7 +99,7 @@ function switchModel(id) {
       //rootY.addChild( effector );
     }});
     models[id].speed = models[id].riseY = 0;
-    cameraDistance = 300 + trigger.mesh.boundRadius;
+    cameraDistance = 100 + trigger.mesh.boundRadius;
     meshRadius = trigger.mesh.boundRadius;
   }
 
@@ -128,15 +120,18 @@ function switchModel(id) {
     }
     rootY.addChild(morphObject.mesh);
 
-    morphObject.play(nameA, nameB, 0, 0, 0);
+    morphObject.play(nameA, nameB );
+    morphObject.animalA.timeScale = morphObject.animalB.timeScale = 0.9;
+        
     cameraDistance = 300 + morphObject.mesh.boundRadius;
     meshRadius = morphObject.mesh.boundRadius;
+
+    animalShader.uniforms["animalLength"].value = meshRadius*3;
   }
 
   centerY = models[id].centerY;
   riseY = models[id].riseY;
   gridSpeed = models[id].speed;
   params.auto = true;
-
 
 }

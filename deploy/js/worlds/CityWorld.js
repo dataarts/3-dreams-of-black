@@ -1,11 +1,6 @@
 var CityWorld = function ( shared ) {
 
 	var that = this;
-	
-	var cityMaterials = [];
-	var cityMaterialGrassStart = new THREE.Vector3();
-	var cityMaterialGrassEnd = new THREE.Vector3();
-
 	var ENABLE_LENSFLARES = true;
 
 	this.scene = new THREE.Scene();
@@ -94,7 +89,7 @@ var CityWorld = function ( shared ) {
 		// setup custom materials
 
 		var excludeIds = [ "Backdrop_City" ];
-		applyCityShader( result, excludeIds, cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, CityShader );
+		applyCityShader( result, excludeIds );
 
 		that.scene.update( undefined, true );
 		
@@ -107,25 +102,17 @@ var CityWorld = function ( shared ) {
 
 	}
 	
-	var time = 0;
-	var last_time = 0;
-	var cameraPosition, targetPosition, d;
+	var cameraPosition,  d;
 
 	this.update = function ( delta, camera, portalsActive ) {
 		
 		cameraPosition = camera.matrixWorld.getPosition();		
 
-		time += (new Date().getTime() - last_time) / 50000.0;
-		last_time = new Date().getTime();
-		if( time > 1.0 )
-			time = 0.0;
-		
 		TriggerUtils.effectorRadius = 300;
 		TriggerUtils.update();
 
-		targetPosition = camera.target.position;
+		updateCityShader( delta );
 
-		updateCityShader( cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, cameraPosition, targetPosition, time );
 		
 		if ( portalsActive ) {
 			

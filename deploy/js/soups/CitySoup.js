@@ -143,7 +143,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// running animals
 
-	var runningAnimals = new AnimalSwarm3( 30, scene, vectors.array );
+	var runningAnimals = new AnimalSwarm( 30, scene, vectors.array );
 
 	runningAnimals.settings.addaptiveSpeed = true;
 	runningAnimals.settings.capy = 0;
@@ -219,7 +219,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	// flying animals
-	var flyingAnimals = new AnimalSwarm3( 10, scene, vectors.array );
+	var flyingAnimals = new AnimalSwarm( 10, scene, vectors.array );
 
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 45;

@@ -28,28 +28,25 @@ function initRenderer() {
 
   container.appendChild(renderer.domElement);
 
-
   stats = new Stats();
   stats.domElement.style.position = 'fixed';
   stats.domElement.style.right = '0px';
   stats.domElement.style.top = '0px';
   container.appendChild( stats.domElement );
 
-		canvas = document.createElement( 'canvas' );
-		canvas.width = 32;
-		canvas.height = window.innerHeight;
+  canvas = document.createElement( 'canvas' );
+  canvas.width = 32;
+  canvas.height = window.innerHeight;
+  context = canvas.getContext( '2d' );
+  gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
+  gradient.addColorStop( 0, "#6788b1" );
+  gradient.addColorStop( 1., "#ffffff" );
 
-		context = canvas.getContext( '2d' );
+  context.fillStyle = gradient;
+  context.fillRect( 0, 0, canvas.width, canvas.height );
 
-		gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-		gradient.addColorStop( 0, "#6788b1" );
-		gradient.addColorStop( 1., "#ffffff" );
-
-		context.fillStyle = gradient;
-		context.fillRect( 0, 0, canvas.width, canvas.height );
-
-		container.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
-		container.style.backgroundRepeat = 'repeat-x';
+  document.getElementById('model-viewer').style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
+  document.getElementById('model-viewer').style.backgroundRepeat = 'repeat-x';
 
   initPostprocessingNoise(postprocessing);
 }
@@ -68,7 +65,7 @@ function initPostprocessingNoise( effect ) {
     effect.textureNoise = THREE.ImageUtils.loadTexture( '/files/textures/Color_noise.jpg', { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
     effect.textureNoise.minFilter = THREE.NearestFilter;
     effect.textureNoise.wrapS = THREE.RepeatWrapping;
-     effect.textureNoise.wrapT = THREE.RepeatWrapping;
+    effect.textureNoise.wrapT = THREE.RepeatWrapping;
     var heatUniforms = {
     "time": { type: "f", value: 0 },
     "samplerSphere": { type: "fv", value: [0.000000,0.000000,-1.000000,0.000000,0.525731,-0.850651,0.500000,0.162460,-0.850651,0.000000,0.894427,-0.447213,0.500000,0.688191,-0.525731,0.850651,0.276394,-0.447213,0.309017,-0.425325,-0.850651,0.809017,-0.262865,-0.525731,0.525731,-0.723607,-0.447213,-0.309017,-0.425325,-0.850651,0.000000,-0.850651,-0.525731,-0.525731,-0.723607,-0.447213,-0.500000,0.162460,-0.850651,-0.809017,-0.262865,-0.525731,-0.850651,0.276394,-0.447213,-0.500000,0.688191,-0.525731,-0.309017,0.951057,0.000000,-0.809017,0.587785,0.000000,-0.525731,0.723607,0.447213,-1.000000,0.000000,0.000000,-0.809017,-0.587785,0.000000,-0.850651,-0.276394,0.447213,-0.309017,-0.951057,0.000000,0.309017,-0.951057,0.000000,0.000000,-0.894427,0.447213,0.809017,-0.587785,0.000000,1.000000,0.000000,0.000000,0.850651,-0.276394,0.447213,0.809017,0.587785,0.000000,0.309017,0.951057,0.000000,0.525731,0.723607,0.447213,0.000000,0.850651,0.525731,-0.809017,0.262865,0.525731,-0.500000,-0.688191,0.525731,0.500000,-0.688191,0.525731,0.809017,0.262865,0.525731,0.000000,0.000000,1.000000,0.309017,0.425325,0.850651,-0.309017,0.425325,0.850651,0.500000,-0.162460,0.850651,0.000000,-0.525731,0.850651,-0.500000,-0.162460,0.850651]},
@@ -77,7 +74,7 @@ function initPostprocessingNoise( effect ) {
     "tDepth": { type: "t", value: 1, texture: effect.textureDepth },
     "tNoise": { type: "t", value: 2, texture: effect.textureNoise },
     "tNormal": { type: "t", value: 3, texture: effect.textureNormal },
-    "dof":    { type: "f", value: 0.0 },
+    "dof":    { type: "f", value: 1.0 },
     "ssao":    { type: "f", value: 0.0 },
     "ssaoRad":    { type: "f", value: 0.0 },
     "focus":    { type: "f", value: 0.33 },
@@ -150,8 +147,8 @@ function initPostprocessingNoise( effect ) {
               "if(rndDepthRGB.a == 0.0) rndDepth = 1.;",
 
               "float zd = (rndUv.z-rndDepth);",
-              "zd = max(min(zd-0.03,0.2-zd), 0.0);",
-              "ao += 1.0/(1.0+10000.0*zd*zd);",
+              "zd = max(min(zd-0.01,0.07-zd), 0.0);",
+              "ao += 1.2/(1.0+50000.0*zd*zd);",
             "}",
             "ao = ao/42.0;",
             "gl_FragColor = vec4(col.rgb*ao,col.a);",
@@ -161,7 +158,6 @@ function initPostprocessingNoise( effect ) {
             "vec2 aspectcorrect = vec2( 1.0, aspect );",
             "float factor = depth - focus;",
             "vec2 dofblur = vec2( clamp( factor * aperture, -maxblur, maxblur ) );",
-            "float j = 1.;",
             "for( int i=1; i<18; i++ ){",
               "rndUv.xy = vUv + (dofblur*samplerBokehHex[i].xz*aspectcorrect);",
               "col += texture2D( tColor, rndUv.xy );",
@@ -195,7 +191,7 @@ function render(){
     lightmapShader.uniforms['shaderDebug'].value = params.component;
     triggerShader.uniforms['shaderDebug'].value = params.component;
     animalShader.uniforms['shaderDebug'].value = params.component;
-    wireMat.opacity = .1*params.grid;
+    wireMat.opacity = .3*params.grid;
     renderer.render( scene, camera, postprocessing.textureColor, true );
 
     lightmapShader.uniforms['shaderDebug'].value = 3;
@@ -212,10 +208,10 @@ function render(){
 
     postprocessing.materialHeat.uniforms.ssao.value = params.occlusion;
     postprocessing.materialHeat.uniforms.ssaoRad.value = params.radius;
-    postprocessing.materialHeat.uniforms.dof.value = params.depth_of_field
-    postprocessing.materialHeat.uniforms.focus.value = params.focus;
     postprocessing.materialHeat.uniforms.aperture.value = params.aperture;
-  
+    postprocessing.materialHeat.uniforms.dof.value = params.depth_of_field;
+    postprocessing.materialHeat.uniforms.focus.value = params.focus;
+
     postprocessing.materialHeat.uniforms.time.value += 0.01 * delta;
     postprocessing.quad.materials[ 0 ] = postprocessing.materialHeat;
     postprocessing.materialHeat.uniforms.tColor.texture = postprocessing.textureColor;

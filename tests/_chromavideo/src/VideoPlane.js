@@ -5,6 +5,8 @@ var VideoPlane = function(layer, config){
 	var hasKey = false;
 	var isStatic = layer.path.match("png$");
 	
+	this.locked = layer.locked;
+	
 	if(isStatic) {
 		texture = THREE.ImageUtils.loadTexture(layer.path);
 	} else {
@@ -30,6 +32,13 @@ var VideoPlane = function(layer, config){
             break;
 		case VIDEO_HALFALPHA:
             shader = VideoShaderSource.halfAlpha;
+            break;
+		case VIDEO_SMARTALPHA:
+            shader = VideoShaderSource.smartAlpha;
+            break;
+		case VIDEO_SMARTALPHA_DISTORT:
+            shader = VideoShaderSource.distortSmartalpha;
+			hasDistortion = true;
             break;
 		case VIDEO_KEYED_INVERSE:
             shader = VideoShaderSource.keyedInverse;
@@ -67,10 +76,23 @@ var VideoPlane = function(layer, config){
 	if(!layer.width) layer.width = (hasDistortion) ? 1.104 : 1;
 	if(!layer.height) layer.height = (hasDistortion) ? 1.24 : 1;
     
-    if(hasDistortion) 
-		this.mesh = new THREE.Mesh( config.grid, material );
-	else 
-		this.mesh = new THREE.Mesh( new THREE.Plane(1,1,1,1), material );
+	var plane;
+	
+    if (hasDistortion) {
+		plane = config.grid;
+	} else {
+		plane = new THREE.Plane(1, 1, 39, 9);
+	}
+	
+	if(layer.paralax) {
+		for ( var i=0; i < plane.vertices.length; ++i ) {
+			var col = i%40 / 12.5; // ~ 3.14
+			var sin = Math.sin(col);
+			plane.vertices[i].position.z = (1-sin) * 500;
+		}
+	}
+		
+	this.mesh = new THREE.Mesh( plane, material );
 		
 	
 	this.mesh.scale.x = layer.width;
@@ -80,8 +102,8 @@ var VideoPlane = function(layer, config){
     this.mesh.scale.x *= Math.abs(layer.z) * config.adj * config.aspect;
     this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
 	//this.mesh.doubleSided = true;
-	
-	if(false) { //hasDistortion) {
+
+	/*if(false) { //hasDistortion) {
 		wireMaterial = new THREE.MeshShaderMaterial( {
 			uniforms: uniforms,
 			vertexShader: VideoShaderSource.distortWire.vertexShader,
@@ -96,7 +118,7 @@ var VideoPlane = function(layer, config){
 	    this.wireMesh.position.z = layer.z + 0.1;
 	    this.wireMesh.scale.x *= Math.abs(layer.z) * config.adj * config.aspect;
 	    this.wireMesh.scale.y *= Math.abs(layer.z) * config.adj;
-	}
+	}*/
 	
 	this.start = function(t) {
 		if(isStatic) return;
