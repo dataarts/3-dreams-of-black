@@ -6,7 +6,9 @@ var DunesWorld = function ( shared ) {
 	var	SCALE = 0.20;
 	var TILE_SIZE = 30000 * SCALE;
 	var scenePrairie, sceneCity, sceneWalk;
-	var lastCameraTileGridPosition = { x: 999999, z: 9999999 };
+	
+	shared.influenceSpheres = [];
+	shared.cameraSlowDown = false;
 
 
 	// create scene
@@ -42,18 +44,6 @@ var DunesWorld = function ( shared ) {
 
 	initLensFlares( that, new THREE.Vector3( 0, 0, -10000 ), 70, 292 );		
 
-
-	// can these be removed?
-
-	shared.influenceSpheres = [ 
-		
-		{ name: "prairie", center: new THREE.Vector3( 544.30, 7167.78, 11173.20 ), radius: 1750, state: 0, type: 0 },
-		{ name: "city",    center: new THREE.Vector3( -67.22, 6124.65, 5156.30 ), radius: 1750, state: 0, type: 0 },
-		
-		{ name: "prairiePortal", center: new THREE.Vector3( -314.95, 6122.06, 5658.0 ), radius: 50, state: 0, type: 1, destination: "prairie", pattern: 32 },
-		{ name: "cityPortal",    center: new THREE.Vector3( -689.86, 6985.24, 10657.89 ), radius: 100, state: 0, type: 1, destination: "city", pattern: 16 }
-		
-	];
 
 
 	// generate base grid (rotations depend on where the grid is in space)
@@ -129,6 +119,7 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
 
+
 //	var jloader = new THREE.JSONLoader();
 	
 //	jloader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
@@ -140,45 +131,6 @@ var DunesWorld = function ( shared ) {
 
 	
 	/////////// COPIED FROM OLD DUNESWORLD.JS - NOT USED HERE ///////////////
-
-	var showSpheres = false;
-	
-	if ( showSpheres ) {
-	
-		var sphere = new THREE.Sphere( 1, 64, 32 );
-		var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
-
-		for ( var i = 0; i < shared.influenceSpheres.length; i ++ ) {
-			
-			var s = shared.influenceSpheres[ i ];
-			
-			//if ( s.type == 1 ) 
-			{
-			
-				var radius = s.radius;
-				var center = s.center;
-			
-				//var wireMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-				//var sphereObject = new THREE.Mesh( sphere, wireMaterial );
-				
-				var particleMaterial = new THREE.ParticleBasicMaterial( { size: 5, color:0xff7700, map: sprite, transparent: true } );
-				var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
-				sphereObject.sortParticles = true;
-				
-				sphereObject.name = s.name;
-				
-				sphereObject.position.copy( center );
-				sphereObject.scale.set( radius, radius, radius );
-				
-				s.mesh = sphereObject;
-				
-				that.scene.addObject( sphereObject );
-				
-			}
-
-		}
-
-	}
 
 
 	// UGC - TODO: Temp implementation
@@ -239,9 +191,11 @@ var DunesWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_Prairie_Is.000": -1.0, "D_tile_Prairie_Island": -1.0 } );
+		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -1.0 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
+		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
+		addInfluenceSphere( { name: "prairieSlowDown", object: result.empties.Prairie_Center, radius: 8000, type: 1 } );
 	};
 	
 	
@@ -249,9 +203,11 @@ var DunesWorld = function ( shared ) {
 
 	function cityLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_City_Island": -1.0, "D_tile_City_Island_Co": -1.0 } );
+		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 } );
 		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
+		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2000, type: 0, destination: "city" } );
+		addInfluenceSphere( { name: "citySlowDown", object: result.empties.City_Center, radius: 10000, type: 1 } );
 	};
 	
 	
@@ -296,6 +252,7 @@ var DunesWorld = function ( shared ) {
 	
 	that.update = function ( delta, camera, portalsActive ) {
 		
+		that.checkInfluenceSpheres( camera, portalsActive );
 		that.updateTiles( camera ); 
 		updateDunesShader( delta );
 		
@@ -304,6 +261,55 @@ var DunesWorld = function ( shared ) {
 
 	};
 
+
+	//--- check influence spheres ---
+	
+	that.checkInfluenceSpheres = function( camera, portalsActive ) {
+
+		var i, il, distance, influenceSphere;
+		
+		var currentPosition = camera.matrixWorld.getPosition();
+
+		for( i = 0, il = shared.influenceSpheres.length; i < il; i ++ ) {
+			
+			influenceSphere = shared.influenceSpheres[ i ];
+			distance = influenceSphere.object.matrixWorld.getPosition().distanceTo( currentPosition );
+			
+			if( distance < influenceSphere.radius * SCALE ) {
+				
+				// portal
+				
+				if( influenceSphere.type === 0 && influenceSphere.state === 0 ) {
+					
+					console.log( "entered portal [" + influenceSphere.name + "]" );
+
+					influenceSphere.state = 1;
+					
+					if( portalsActive ) {
+						
+						shared.signals.startexploration.dispatch( influenceSphere.destination );
+						
+					}
+					
+				// slow down
+
+				} else if( influenceSphere.type == 1 ) {
+					
+					shared.cameraSlowDown = true;
+
+				}
+				
+			} else {
+			
+				influenceSphere.state = 0;	
+				shared.cameraSlowDown = false;
+
+			}
+			
+		}
+	
+	}
+	
 
 	//--- update tiles ---
 
@@ -478,6 +484,34 @@ var DunesWorld = function ( shared ) {
 		} );
 		
 	};
+	
+	function addInfluenceSphere( info ) {
+	
+		info.state = 0;
+		shared.influenceSpheres.push( info );
+
+		if( false ) {
+			
+			var sphere = new THREE.Sphere( 1, 32, 32 );
+			var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
+	
+			var particleMaterial = new THREE.ParticleBasicMaterial( { size: 50, color:0xff7700, map: sprite, transparent: true } );
+			var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
+			
+			sphereObject.sortParticles = true;
+			sphereObject.scale.set( info.radius, info.radius, info.radius );
+			
+			info.object.scale.set( 1, 1, 1 );
+			info.object.addChild( sphereObject );
+			info.object.update( info.object.parent, true );
+
+			info.mesh = sphereObject;
+				
+		}
+		
+	}
+
+
 
 };
 

@@ -7,8 +7,8 @@ var DunesShaderEffectors = {
 	radius: [ 500, 500, 500, 500 ],
 	darkness: [ 1.0, 0.5, 0.0, 0.0 ],
 
-	positionFlat: []
-	
+	positionFlat: [],
+	materials: []
 }
 
 
@@ -159,8 +159,8 @@ var DunesShader = {
 
 			// fog
 			
-			"float depth = ( gl_FragCoord.z / gl_FragCoord.w ) * 40.0;",
 			"const float LOG2 = 1.442695;",
+			"float depth = ( gl_FragCoord.z / gl_FragCoord.w ) * 50.0;",
 			"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
 			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
 
@@ -179,11 +179,12 @@ var DunesShader = {
 };
 
 
-function applyDunesShader( result, invertLightY ) {
+function applyDunesShader( result, excludeMap, invertLightY ) {
 
 	var i, name, geometry, obj, mat;
 
 	invertLightY = invertLightY !== undefined ? invertLightY : {};
+	excludeMap   = excludeMap   !== undefined ? excludeMap   : {};
 
 	var shaderParams = {
 
@@ -230,6 +231,7 @@ function applyDunesShader( result, invertLightY ) {
 		mat.uniforms.dunesOpacity.value = opacity;
 
 		obj.materials[ 0 ] = mat;
+		DunesShaderEffectors.materials.push( mat );
 
 	}
 
@@ -239,6 +241,8 @@ function applyDunesShader( result, invertLightY ) {
 	var invertLightYOnThisObject = 1.0;
 
 	for( name in result.objects ) {
+
+		if( excludeMap[ name ] ) continue;
 
 		obj = result.objects[ name ];
 		
@@ -262,47 +266,9 @@ function applyDunesShader( result, invertLightY ) {
 };
 
 
-/*
-function applyDunesShader( result ) {
-	
-	var i, name, geometry, obj, mat;
-
-	var shaderParams = {
-
-		uniforms: DunesShader.uniforms,
-		vertexShader: DunesShader.vertexShader,
-		fragmentShader: DunesShader.fragmentShader,
-		
-		shading: THREE.FlatShading,
-		lights: true,
-		fog: true,
-		vertexColors: THREE.VertexColors
-
-	};
-
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
-	
-	var mat = new THREE.MeshShaderMaterial( shaderParams );
-	
-	for( name in result.objects ) {
-
-		obj = result.objects[ name ];
-		
-		if( obj.geometry && obj.geometry.morphTargets.length === 0 ) {
-			
-			obj.materials[ 0 ] = mat;
-
-		}
-		
-	}
-	
-};
-*/
-
 function updateDunesShader( delta ) {
+
+	// update effectors
 
 	var effector, e, el = DunesShaderEffectors.position.length;
 	var p, pos = DunesShaderEffectors.positionFlat;
@@ -315,7 +281,16 @@ function updateDunesShader( delta ) {
 		pos[ p++ ] = effector.y;
 		pos[ p++ ] = effector.z;
 	}
+
+
+	// update time
+
+	var time = DunesShader.uniforms.time.value += delta * 0.00005;
 	
-	DunesShader.uniforms.time.value += delta * 0.00001;
+	for( e = 0, el = DunesShaderEffectors.materials.length; e < el; e++ ) {
+		
+		DunesShaderEffectors.materials[ e ].uniforms.time.value = time;
+	}
+	
 
 };
