@@ -70,7 +70,7 @@ var FilmSection = function ( shared ) {
 	
 	var s03_01 = new VideoPlayer( shared, VideoShots.s03_01, VideoShots.confStill );
 	var s03_02 = new VideoPlayer( shared, VideoShots.s03_02, VideoShots.confStill );
-	var s03_03 = new VideoPlayer( shared, VideoShots.s03_03, VideoShots.confStill );
+	var s03_03 = new VideoPlayer( shared, VideoShots.s03_03, VideoShots.confParalax );
 
 	sequencer = new Sequencer();
 
