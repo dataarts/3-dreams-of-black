@@ -17,9 +17,9 @@
 
     window.onload = function() {
 
-      var $_GET = (function() {
+      GALLERY.GET = (function() {
         var vars = [], hash;
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        var hashes = window.location.href.replace(/#/g, '').slice(window.location.href.indexOf('?') + 1).split('&');
         for (var i = 0; i < hashes.length; i++) {
           hash = hashes[i].split('=');
           vars.push(hash[0]);
@@ -29,7 +29,7 @@
       })();
 
       GALLERY.API_BASE = '/ugc/';
-      GALLERY({ page: $_GET['p'], category: $_GET['c'] });
+      GALLERY({ page: GALLERY.GET['p'], category: GALLERY.GET['c'] });
 
 
     };
@@ -46,11 +46,11 @@
 <div id="container">
 
   <ul id="nav">
-    <li id="everyone" class="selected"><a href="#"><span>Everyone's
+    <li id="everyone"><a href="/gallery/"><span>Everyone's
     Dreams</span></a></li>
-    <li id="ground"><a href="#"><span>Ground Dreams</span></a></li>
-    <li id="sky"><a href="#"><span>Sky Dreams</span></a></li>
-    <li id="favorite"><a href="#"><span>Favorite Dreams</span></a></li>
+    <li id="ground"><a href="/gallery/?c=ground"><span>Ground Dreams</span></a></li>
+    <li id="sky"><a href="/gallery/?c=sky"><span>Sky Dreams</span></a></li>
+    <li id="favorite"><a href="/gallery/?c=favorite"><span>Favorite Dreams</span></a></li>
   </ul>
 
   <div class="clear"></div>
@@ -95,10 +95,10 @@
     </div>
 
     <div class="vote-box">
-      <a href="#" class="upvote vote">
+      <a href="#" id="lightbox-upvote" class="upvote vote">
 
       </a>
-      <a href="#" class="downvote vote">
+      <a href="#" id="lightbox-downvote" class="downvote vote">
 
       </a>
     </div>

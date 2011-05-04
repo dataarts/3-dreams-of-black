@@ -7,8 +7,7 @@ var GALLERY = function(params) {
   params['page'] = parseInt(params['page']);
   if (isNaN(params['page'])) params['page'] = 1;
 
-  params['category'] = parseInt(params['category']);
-  if (isNaN(params['category'])) params['category'] = 0;
+  params['category'] = params['category'] || 'everyone';
 
   var OBJECTS_PER_PAGE = 15;
   var LOCAL_STORAGE_VOTE_PREFIX = 'vote';
@@ -21,15 +20,15 @@ var GALLERY = function(params) {
   var lightbox = $('#lightbox');
 
   var maxWidth = parseInt(maxWidthCSS.replace('px', ''));
-  var objectWidth = $('div.object').outerWidth();
 
   var lightboxOpen = false;
 
-  var objectData;
+  var activeObject = undefined; // The one in the lightbox ...
+  var objectData, objectWidth;
 
   var itemHTML = [
     '<div class="object" id="object-%id%">',
-    '<div class="img-wrapper"><img src="%img%" alt="%title%"/></div>',
+    '<div class="img-wrapper"><img src="%img%" alt=""/></div>',
     '<div class="object-title">',
     '%title%',
     '</div>',
@@ -66,6 +65,7 @@ var GALLERY = function(params) {
                   var toAdd = itemHTML;
                   toAdd = toAdd.replace(/%title%/g, value.title);
                   toAdd = toAdd.replace(/%img%/g, GALLERY.API_BASE + 'objects/' + value.id + '/thumbnail');
+                  toAdd = toAdd.replace(/%id%/g, value.id);
 
                   var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + value.id);
 
@@ -83,6 +83,7 @@ var GALLERY = function(params) {
                   galleryInner[0].innerHTML += toAdd;
 
                 });
+                galleryInner[0].innerHTML += '<div class="clear"></div>'
                 init();
               },
           error: error('Error fetching object data.')
@@ -90,70 +91,103 @@ var GALLERY = function(params) {
 
   }
 
+
   function init() {
+
+    objectWidth = $('div.object').outerWidth(true);
 
     window.addEventListener('resize', onWindowResize, false);
     onWindowResize();
+    
+    $('#'+params['category']).addClass('selected');
 
     $('#lightbox-close').click(closeLightbox);
+
+    $('#lightbox-prev').click(function() {
+
+      var prev = objectData.indexOf(activeObject)-1;
+      if (prev < 0) prev = objectData.length-1;
+      populateLightbox(objectData[prev]);
+
+    });
+
+
+    $('#lightbox-next').click(function() {
+
+      var next = objectData.indexOf(activeObject)+1;
+      if (next >= objectData.length) next = 0;
+      populateLightbox(objectData[next]);
+
+    });
+
     $('.object .img-wrapper').each(function(key) {
       $(this).click(openLightbox(key));
     });
 
-    $('.upvote').click(function() {
-
-      var _this = this;
-
-      vote($(this).index('.upvote'), true, function(success, id) {
-        if (!success) return;
-        localStorage.setItem(LOCAL_STORAGE_VOTE_PREFIX + id, 1);
-        $(_this).next().removeClass('selected');
-        $(_this).addClass('selected');
-      });
-
+    $('#gallery .upvote').click(function() {
+      doVote(objectData[$(this).index('.upvote')].id, true);
       return false;
-
     });
 
-    $('.downvote').click(function() {
-
-      var _this = this;
-
-      vote($(this).index('.downvote'), false, function(success, id) {
-        if (!success) return;
-        localStorage.setItem(LOCAL_STORAGE_VOTE_PREFIX + id, 0);
-        $(_this).prev().removeClass('selected');
-        $(_this).addClass('selected');
-      });
-
+    $('#gallery .downvote').click(function() {
+      doVote(objectData[$(this).index('.downvote')].id, false);
       return false;
+    });
 
+    $('#lightbox-upvote').click(function() {
+      doVote(activeObject.id, true);
+      $('#lightbox-upvote').addClass('selected');
+      $('#lightbox-downvote').removeClass('selected');
+      return false;
+    });
+
+    $('#lightbox-downvote').click(function() {
+      doVote(activeObject.id, false);
+      $('#lightbox-upvote').removeClass('selected');
+      $('#lightbox-downvote').addClass('selected');
+      return false;
     });
 
   }
 
-  /**
-   * Upvote or downvote.
-   *
-   * @param index int relative to start of page where 0 is first object
-   * @param up boolean, true = upvote, false = downvote
-   * @param onComplete function should take in one boolean param indicating success
-   */
-  function vote(index, up, onComplete) {
+  function doVote(objectID, up) {
 
-    var objectID = objectData[index].id;
+    /**
+     * Upvote or downvote.
+     *
+     * @param index int relative to start of page where 0 is first object
+     * @param up boolean, true = upvote, false = downvote
+     * @param onComplete function should take in one boolean param indicating success
+     */
+    var sendVote = function(objectID, up, onComplete) {
 
-    var url = GALLERY.API_BASE + 'object/' + objectID + '/' + ( up ? 'up' : 'down' ) + 'vote';
+      var url = GALLERY.API_BASE + 'object/' + objectID + '/' + ( up ? 'up' : 'down' ) + 'vote';
 
-    $.ajax({
-          url: url,
-          success: function() {
-            onComplete(true, objectID)
-          },
-          error: function() {
-            onComplete(false, objectID)
-          }
-        });
+      $.ajax({
+            url: url,
+            success: function() {
+              onComplete(true)
+            },
+            error: function() {
+              onComplete(false)
+            }
+          });
+
+    }
+
+    sendVote(objectID, up, function( success ) {
+      if (up) {
+        if (!success) return;
+        localStorage.setItem(LOCAL_STORAGE_VOTE_PREFIX + objectID, 1);
+        $('#gallery .object#object-'+objectID+' .upvote').next().removeClass('selected');
+        $('#gallery .object#object-'+objectID+' .upvote').addClass('selected');
+      } else {
+        if (!success) return;
+        localStorage.setItem(LOCAL_STORAGE_VOTE_PREFIX + objectID, 0);
+        $('#gallery .object#object-'+objectID+' .downvote').prev().removeClass('selected');
+        $('#gallery .object#object-'+objectID+' .downvote').addClass('selected');
+      }
+    });
 
   }
 
@@ -175,16 +209,24 @@ var GALLERY = function(params) {
     return function() {
       lightbox.fadeIn(200);
       shade.get(0).addEventListener('mousedown', closeLightbox, false);
-
       populateLightbox(objectData[index]);
-
     }
   }
 
   function populateLightbox(data) {
-    $('#lightbox-title').html(data.title);
-    //var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + data.id);
-    // TODO thumbs up and down
+    activeObject = data;
+    $('#lightbox-title').html(activeObject.title);
+    var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + activeObject.id);
+    if (savedVote == 1) {
+      $('#lightbox-upvote').addClass('selected');
+      $('#lightbox-downvote').removeClass('selected');
+    } else if (savedVote == 0) {
+      $('#lightbox-downvote').addClass('selected');
+      $('#lightbox-upvote').removeClass('selected');
+    } else {
+      $('#lightbox-upvote').removeClass('selected');
+      $('#lightbox-downvote').removeClass('selected');
+    }
   }
 
   function closeLightbox() {
