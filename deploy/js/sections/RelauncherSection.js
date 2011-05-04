@@ -56,7 +56,8 @@ var RelauncherSection = function( shared ) {
 
 	var gee = new GEE({
 		fullscreen: true,
-		container: container
+		container: container,
+		loop: false
 	});
 	var g = gee.ctx;
 
@@ -133,6 +134,8 @@ var RelauncherSection = function( shared ) {
 
 		g.clearRect(0, 0, gee.width, gee.height);
 
+		g.globalCompositeOperation = "source-over";
+
 		g.strokeStyle = rome.color.black;
 		g.lineWidth = 0.5;
 		outer.update().render();
@@ -140,7 +143,7 @@ var RelauncherSection = function( shared ) {
 		g.globalCompositeOperation = "destination-out";
 		core.update().render();
 
-		g.globalCompositeOperation = "source-out";
+		g.globalCompositeOperation = "xor";
 		g.lineWidth = 24;
 		inner.showStroke = true;
 		inner.showFill = false;
@@ -295,6 +298,7 @@ var RelauncherSection = function( shared ) {
 	this.update = function() {
 
 		clouds.update();
+		gee.draw();
 
 	};
 

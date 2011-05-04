@@ -22,15 +22,18 @@ function Footer( container, prefix ) {
 
 	this.setupEmiBuyButton = function() {
 
-		emiButton = new EMIBuyButton({
+		if(EMIBuyButton) {
+			emiButton = new EMIBuyButton({
 
-			buttonID: "c9e456919b824bdeb2e3a326b122db43",
-			buttonImageUrl: path + "/buy_button-trans.png",
-			useVendorImages: true
+				buttonID: "c9e456919b824bdeb2e3a326b122db43",
+				buttonImageUrl: path + "/buy_button-trans.png",
+				useVendorImages: true
 
-		}).replaceDiv( divReplacement );
+			}).replaceDiv( divReplacement );
 
-		init = false;
+			init = false;
+
+		}
 
 		return this;
 
