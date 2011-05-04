@@ -24,15 +24,14 @@ function initModels(){
   models.push({"file": '/files/models/soup/shdw2.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
   models.push({"file": '/files/models/soup/taruffalo_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
 
-
   //Triggers
-  models.push({"file": 'files/models/city/City.TriggerMesh_Bus_.js', "base": 'files/models/city/City.Bus_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2500,0,0,1000]});
-  models.push({"file": 'files/models/city/City.TriggerMesh_Car_.js', "base": 'files/models/city/City.Car_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2800,0,0,1000]});
-  models.push({"file": 'files/models/city/City.TriggerMesh_CarNiss_.js', "base": 'files/models/city/City.CarNiss_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2800,0,0,1000]});
-  models.push({"file": 'files/models/city/City.TriggerMesh_nsole_10_.js', "base": 'files/models/city/City.Console_10_.js', "type": 'trigger', "centerY": 1000, "effector": [-1500,1000,-4500,-1500,1000,4500]});
-  models.push({"file": 'files/models/city/City.TriggerMesh_LampPost_.js', "base": 'files/models/city/City.LampPost_.js', "type": 'trigger', "centerY": 610, "effector": [0,-2200,0,0,1000,0]});
-  models.push({"file": 'files/models/city/City.TriggerMesh_ailTrain_.js', "base": 'files/models/city/City.RailTrain_.js', "type": 'trigger', "centerY": 210, "effector": [0,-2000,0,0,800,0]});
-  models.push({"file": 'files/models/city/City.TriggerMesh_SignMany_.js', "base": 'files/models/city/City.SignMany_.js', "type": 'trigger', "centerY": 260, "effector": [0,-2500,0,0,-500,0]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Bus_.js', "base": '/asset_viewer/files/models/city/City.Bus_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2500,0,0,1000]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Car_.js', "base": '/asset_viewer/files/models/city/City.Car_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2800,0,0,1000]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_CarNiss_.js', "base": '/asset_viewer/files/models/city/City.CarNiss_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2800,0,0,1000]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_nsole_10_.js', "base": '/asset_viewer/files/models/city/City.Console_10_.js', "type": 'trigger', "centerY": 1000, "effector": [-1500,1000,-4500,-1500,1000,4500]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_LampPost_.js', "base": '/asset_viewer/files/models/city/City.LampPost_.js', "type": 'trigger', "centerY": 610, "effector": [0,-2200,0,0,1000,0]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_ailTrain_.js', "base": '/asset_viewer/files/models/city/City.RailTrain_.js', "type": 'trigger', "centerY": 210, "effector": [0,-2000,0,0,800,0]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_SignMany_.js', "base": '/asset_viewer/files/models/city/City.SignMany_.js', "type": 'trigger', "centerY": 260, "effector": [0,-2500,0,0,-500,0]});
 
   modelLoader(0);
 

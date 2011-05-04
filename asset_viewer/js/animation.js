@@ -125,9 +125,6 @@ function moveModelStrip(e) {
   (stripSpeedX < 0) ? viewerModelsGoalX = 0 : viewerModelsGoalX = Math.max(0,viewerModels.clientWidth-970);
 }
 function animateStrip(){
-
-
   viewerModelsCurrentX += (viewerModelsGoalX-viewerModelsCurrentX)/(20)*Math.pow(stripSpeedX,4);
-
   viewerModels.style.left = -viewerModelsCurrentX+"px";
 }
