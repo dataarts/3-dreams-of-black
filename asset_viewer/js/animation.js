@@ -14,12 +14,22 @@ var centerY = 0;
 var gridSpeed = 1;
 var objRadius = 100;
 
+var viewerModels,viewerModelsStrip;
+var viewerModelsCurrentX = 0;
+var viewerModelsGoalX = 0;
+var stripSpeedX=0;
+
 function initMouse(){
   document.addEventListener('mouseup', mouseUp, false);
   document.addEventListener('mousemove', mouseMove, false);
   document.getElementById('viewerCanvas').addEventListener('mousewheel', mouseWheel, false);
   document.getElementById('viewerCanvas').addEventListener('mousedown', mouseDown, false);
   document.getElementById('viewerCanvas').addEventListener('mouseout', mouseOut, false);
+
+  viewerModelsStrip = document.getElementById('viewerModelsStrip');
+  viewerModels = document.getElementById('viewerModels');
+  viewerModels.addEventListener('mousemove', moveModelStrip, false);
+
 }
 
 function mouseOut(e) {
@@ -96,12 +106,25 @@ function animate() {
   }
   if (typeof(morphObject) != "undefined"){
     morphObject.material.wireframe = params.wireframe;
-    morphObject.morph = params.morph*2-0.5;
+    morphObject.morph = params.morph;
   }
 
   updateShaders();
 
   render();
 
+  animateStrip();
+
   requestAnimationFrame(animate);
+}
+
+
+
+function moveModelStrip(e) {
+  stripSpeedX = (event.clientX - viewerModelsStrip.offsetLeft - 970 / 2) / 970 * 2;
+  (stripSpeedX < 0) ? viewerModelsGoalX = 0 : viewerModelsGoalX = Math.max(0,viewerModels.clientWidth-970);
+}
+function animateStrip(){
+  viewerModelsCurrentX += (viewerModelsGoalX-viewerModelsCurrentX)/(20)*Math.pow(stripSpeedX,4);
+  viewerModels.style.left = -viewerModelsCurrentX+"px";
 }

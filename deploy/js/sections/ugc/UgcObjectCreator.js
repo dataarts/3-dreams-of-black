@@ -6,7 +6,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	var USE_POSTPROCESS = true;
 	var ENABLE_LENSFLARES = true;
-	
+
 	var DEG2RAD = Math.PI / 180,
 	camera, light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
@@ -19,7 +19,7 @@ var UgcObjectCreator = function ( shared ) {
 	// Background
 
 	that.scene = new THREE.Scene();
-	
+
 	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.000135 );
 	that.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
 
@@ -55,7 +55,7 @@ var UgcObjectCreator = function ( shared ) {
 		mesh.position.y = - 50;
 		mesh.rotation.x = - 90 * Math.PI / 180;
 		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.5;
-		
+
 		that.scene.addChild( mesh );
 
 	} } );
@@ -71,7 +71,7 @@ var UgcObjectCreator = function ( shared ) {
 		renderer.setClearColor( that.scene.fog.color );
 		renderer.sortObjects = false;
 		renderer.autoClear = false;
-		
+
 		shared.renderer = renderer;
 
 	}
@@ -79,16 +79,16 @@ var UgcObjectCreator = function ( shared ) {
 	// Postprocess
 
 	if ( USE_POSTPROCESS ) {
-		
+
 		var offset = 0;
 
 		shared.baseWidth = 1024;
 		shared.baseHeight = 436;
 		shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
 		shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
-		
+
 		shared.renderer.setSize( shared.viewportWidth, shared.baseHeight );
-		
+
 		if ( !shared.renderTarget ) {
 
 			var renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
@@ -96,14 +96,14 @@ var UgcObjectCreator = function ( shared ) {
 			renderTarget.magFilter = THREE.LinearFilter;
 
 			shared.renderTarget = renderTarget;
-			
+
 		}
 
 		var paintEffectDunes = new PaintEffectDunes( shared );
 		paintEffectDunes.init();
 
 	}	
-	
+
 	// Painter
 
 	var painter = new VoxelPainter( camera );
@@ -124,7 +124,9 @@ var UgcObjectCreator = function ( shared ) {
 
 		data = '[' + data.slice( 0, - 1 ) + ']';
 
-		ugcHandler.submitUGO( 'this is a test', 'test@tes.com', 1, data, null, function ( json ) {
+		var thumbnail = renderer.domElement.toDataURL('image/png');
+
+		ugcHandler.submitUGO( 'this is a test', 'test@tes.com', 1, data, thumbnail, function ( json ) {
 
 			console.log( json );
 
@@ -147,7 +149,7 @@ var UgcObjectCreator = function ( shared ) {
 	function onMouseMove( event ) {
 
 		if ( USE_POSTPROCESS ) {
-			
+
 			painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
 
 		} else {
@@ -228,7 +230,7 @@ var UgcObjectCreator = function ( shared ) {
 
 			camera.aspect = shared.viewportWidth / shared.viewportHeight;
 			camera.updateProjectionMatrix();
-			
+
 			shared.viewportWidth = shared.baseWidth * ( width / shared.baseWidth );
 			shared.viewportHeight = shared.baseHeight * ( width / shared.baseWidth );
 
@@ -244,16 +246,16 @@ var UgcObjectCreator = function ( shared ) {
 
 			shared.renderer.domElement.style.left = '0px';
 			shared.renderer.domElement.style.top = offset + 'px';
-			
+
 		} else {
-			
+
 			camera.aspect = width / height;
 			camera.updateProjectionMatrix();
 
 			shared.renderer.setSize( width, height );
 
 		}
-		
+
 	};
 
 	this.update = function () {
@@ -264,8 +266,8 @@ var UgcObjectCreator = function ( shared ) {
 
 			phi -= ( shared.mouse.y / shared.screenHeight ) * 2 - 1;
 			phi = phi > 90 ? 90 :
-			      phi < - 90 ? - 90 :
-			      phi;
+						phi < - 90 ? - 90 :
+						phi;
 
 		}
 
@@ -276,7 +278,7 @@ var UgcObjectCreator = function ( shared ) {
 		painter.update();
 
 		shared.renderer.clear();
-		
+
 		if ( USE_POSTPROCESS ) {
 
 			shared.renderer.render( that.scene, camera, shared.renderTarget, true );
@@ -284,7 +286,7 @@ var UgcObjectCreator = function ( shared ) {
 			paintEffectDunes.update( 0, 0, 0 );
 
 		} else {
-			
+
 			shared.renderer.render( that.scene, camera );
 			shared.renderer.render( painter.getScene(), camera );
 

@@ -61,8 +61,6 @@ files = [
 'js/soups/elements/Vectors.js',
 'js/soups/elements/Particles.js',
 'js/soups/elements/AnimalSwarm.js',
-'js/soups/elements/AnimalSwarm3.js',
-'js/soups/elements/AnimalSwarm5.js',
 'js/soups/elements/AnimalInFrontOfCamera.js',
 'js/soups/elements/Trail.js',
 'js/soups/elements/CollisionScene.js',
@@ -110,4 +108,4 @@ tmp_file.write(string)
 tmp_file.close()
 
 os.system("java -jar compiler.jar --language_in=ECMASCRIPT5 --js main.js --js_output_file ../deploy/main.min.js")
-os.unlink("main.js") #comment this line if you want to make sense of the errors
+# os.unlink("main.js") #comment this line if you want to make sense of the errors
