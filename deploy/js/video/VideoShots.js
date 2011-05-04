@@ -1,3 +1,4 @@
+
 var VideoShots = {
 
     confParalax: {
@@ -217,6 +218,7 @@ var VideoShots = {
         alphaFadeout: .3
     }]
 };
+
 
 
 
