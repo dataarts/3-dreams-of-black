@@ -352,7 +352,7 @@ ROME.TrailShader = {
 
 			// add up
 			
-			"gl_FragColor = gl_FragColor * vLightWeighting;", 
+			//"gl_FragColor = gl_FragColor * vLightWeighting;", 
 			//"gl_FragColor = lookup.rrrr;",
 			"gl_FragColor.a = 1.0;",
 
