@@ -3,7 +3,7 @@
 	var logger, stats, renderer, renderTarget, shared,
 	Signal = signals.Signal, currentSection,
 	launcher, film, relauncher, exploration, ugc,
-	shortcuts;
+	shortcuts, FocalLength = 3.8;
 
 	// debug
 
@@ -106,6 +106,8 @@
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'keyup', onDocumentKeyUp, false );
 
+	document.addEventListener( 'deviceorientation', onDocumentAccel, false )
+
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	setSection( launcher );
@@ -153,6 +155,20 @@
 
 		shared.mouse.x = event.clientX;
 		shared.mouse.y = event.clientY;
+
+		shared.signals.mousemoved.dispatch( event );
+
+	}
+
+	// Acceleromter data in question
+	function onDocumentAccel( event ) {
+
+		var x = event.alpha;
+		var y = event.beta;
+		var z = event.gamma;
+		var t = FocalLength / (FocalLength + z);
+		shared.mouse.x = x * t;
+		shared.mouse.y = y * t;
 
 		shared.signals.mousemoved.dispatch( event );
 
