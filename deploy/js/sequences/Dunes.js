@@ -296,8 +296,14 @@ var Dunes = function ( shared ) {
 
 		// calc camera speed (dependent on hight)
 		
-		var cameraSpeed = ( Math.min( Math.max( wantedCamera.position.y, this.CAMERA_LOWEST_Y ), this.CAMERA_FORWARD_SPEED_MAX_Y ) - this.CAMERA_LOWEST_Y ) / ( this.CAMERA_FORWARD_SPEED_MAX_Y - this.CAMERA_LOWEST_Y );
-		cameraSpeed = this.CAMERA_FORWARD_SPEED + ( this.CAMERA_FORWARD_SPEED_MAX - this.CAMERA_FORWARD_SPEED ) * cameraSpeed;
+		cameraSpeed = this.CAMERA_FORWARD_SPEED;
+		
+		if( !shared.cameraSlowDown )  {
+			
+			var cameraHightFactor = ( Math.min( Math.max( wantedCamera.position.y, this.CAMERA_LOWEST_Y ), this.CAMERA_FORWARD_SPEED_MAX_Y ) - this.CAMERA_LOWEST_Y ) / ( this.CAMERA_FORWARD_SPEED_MAX_Y - this.CAMERA_LOWEST_Y );
+			cameraSpeed += ( this.CAMERA_FORWARD_SPEED_MAX - this.CAMERA_FORWARD_SPEED ) * cameraHightFactor;
+			
+		}
 		
 
 		// move forward

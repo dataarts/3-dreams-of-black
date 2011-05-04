@@ -23,7 +23,7 @@ var CityShader = {
 		"time": { type: "f", value:0.0 },
 
 		"targets": { type: "fv", value: [] },
-		"radiuses": { type: "fv1", value: [] },
+		"radiuses": { type: "fv1", value: [] }
 
 	},
 
