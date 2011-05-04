@@ -5,7 +5,7 @@
 }
 
 .guidat { 
-    color: #fff;
+    color: #333;
     opacity: 0.97;
     text-align: left;
 }
@@ -25,8 +25,8 @@ a.guidat-toggle {
     text-decoration: none;
     width:970px;
     cursor: pointer;
-    color: #fff;
-    background-color: #ccc;
+    color: #333;
+    background-color: #aaa;
     text-align: center;
     display: block;
     padding: 5px 0;
@@ -34,7 +34,7 @@ a.guidat-toggle {
 }
 
 a.guidat-toggle:hover { 
-    background-color: #999;
+    background-color: #f4f4ec;
 }
 
 .guidat-controller { 
@@ -183,7 +183,10 @@ a.guidat-toggle:hover {
   width:75px;
 }
 #guidat-wireframe{
-  width:92px;
+  width:96px;
+}
+#guidat-lighting{
+  width:86px;
 }
 #guidat-depth_of_field{
   width:100px;
@@ -191,8 +194,11 @@ a.guidat-toggle:hover {
 #guidat-occlusion{
   width:80px;
 }
-#guidat-radius,#guidat-aperture,#guidat-focus{
+#guidat-aperture,#guidat-focus{
   width:179px;
+}
+#guidat-radius{
+  width:189px;
 }
 #guidat-radius .guidat-slider-bg,#guidat-aperture .guidat-slider-bg,#guidat-focus .guidat-slider-bg{
   width:40%;
