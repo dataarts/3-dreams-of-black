@@ -1,0 +1,100 @@
+<!doctype html>
+  <head>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+			h1 {
+				font: 100 17px/20px arial, sans-serif;
+				position: fixed;
+				bottom: 10px;
+				right: 10px;
+			}
+    </style>
+  </head>
+  <body>
+
+		<script type="text/javascript" src="jsgif/LZWEncoder.js"></script>
+		<script type="text/javascript" src="jsgif/NeuQuant.js"></script>
+		<script type="text/javascript" src="jsgif/GIFEncoder.js"></script>
+		<script type="text/javascript" src="jsgif/Demos/b64.js"></script>
+    <script type="text/javascript" src="../../deploy/js/lib/Three.js"></script>
+    <script type="text/javascript" src="Clouds.js"></script>
+		<script type="text/javascript" src="https://github.com/dataarts/dat.gui/raw/build/DAT.GUI.min.js"></script>
+    <script type="text/javascript">
+
+			var encodeParams = {
+				repeat: 0,
+				delay: 500,
+				amount: 3,
+				transparent: 0,
+				quality: 10,
+				record: false
+			};
+
+			var gui = new DAT.GUI();
+					gui.add(encodeParams);
+
+			var gif = "";
+			var amount = 0;
+      var clouds = new Clouds();
+      var d = clouds.getDomElement();
+      document.body.appendChild(d);
+
+      setInterval( function() {
+        clouds.update();
+
+
+				if(encodeParams.record) {
+					if(amount < encodeParams.amount) {
+
+						document.getElementById('amount').innerHTML = amount;
+
+						if(amount < 1) setupEncoder();
+
+						var context = clouds.getRenderer().getContext();
+						var readBuffer = new Uint8Array(d.width * d.height * 4);
+						context.readPixels(0, 0, d.width, d.height, context.RGBA, context.UNSIGNED_BYTE, readBuffer);
+						gifEncoder.addFrame(readBuffer, true);
+						amount++;
+					} else {
+						gifEncoder.finish();
+					  var binary_gif = gifEncoder.stream().getData();
+					  var data_url = 'data:image/gif;base64,'+encode64(binary_gif);
+						var image = document.createElement("img");
+								image.style.display = "block";
+								image.style.float = "left";
+								image.setAttribute("src", data_url);
+						var content = document.getElementById("content");
+								content.appendChild(image);
+						amount = 0;
+
+						// start over
+						setupEncoder();
+					}
+				}
+
+      }, 1000 / 60.0);
+
+			var context, iterator, canvas, gifEncoder;
+
+				gifEncoder = new GIFEncoder();
+
+
+				function setupEncoder() {
+					gifEncoder.setRepeat(encodeParams.repeat);
+					gifEncoder.setDelay(encodeParams.delay);
+					gifEncoder.setQuality(encodeParams.quality);
+					gifEncoder.setTransparent(encodeParams.transparent)
+					gifEncoder.start();
+					gifEncoder.setSize(d.width, d.height);
+					document.getElementById('max').innerHTML = encodeParams.amount;
+				}
+
+    </script>
+  </body>
+	<h1>Click record to make a <span id = "max">3</span> frame animated gif.</h1>
+	<div id = "content">
+	</div>
+</html>
