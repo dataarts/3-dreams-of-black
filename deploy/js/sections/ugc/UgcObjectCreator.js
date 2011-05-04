@@ -135,8 +135,9 @@ var UgcObjectCreator = function ( shared ) {
 	shared.ugcSignals.submit.add( function () {
 
 		var thumbnail = renderer.domElement.toDataURL('image/png');
+		thumbnail = thumbnail.slice(22);
 
-		ugcHandler.submitUGO( 'this is a test', 'test@tes.com', 1, painter.getObject().getJSON(), thumbnail, function ( json ) {
+		ugcHandler.submitUGO( 'Amorphous Building', 'romepreview@gmail.com', 1, painter.getObject().getJSON(), thumbnail, function ( json ) {
 
 			console.log( json );
 
@@ -240,7 +241,7 @@ var UgcObjectCreator = function ( shared ) {
 			shared.renderer.render( painter.getScene(), camera );
 
 		}
-	
+
 	}
 
 	//
@@ -314,7 +315,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.update = function () {
 
-		
+
 
 	};
 
