@@ -14,7 +14,7 @@ function init() {
 
 	audio = document.getElementById( 'audio' );
 
-	gui = new GUI();
+	//gui = new GUI();
 
 	scene = new THREE.Scene();
 
