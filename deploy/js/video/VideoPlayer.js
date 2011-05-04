@@ -3,6 +3,7 @@ var VIDEO_HALFALPHA = 2;
 var VIDEO_OPAQUE_DISTORT = 3;
 var VIDEO_KEYED = 4;
 var VIDEO_KEYED_DISTORT = 5;
+var VIDEO_KEYED_INVERSE = 6;
 var VIDEO_SMARTALPHA = 7;
 var VIDEO_SMARTALPHA_DISTORT = 8;
 
@@ -71,15 +72,15 @@ var VideoPlayer = function( shared, layers, conf ) {
 		for(var i = 0; i < layers.length; i++) {			
 			var p = new VideoPlane(shared, layers[i], config);
 			planes.push(p);
-			
-			if(p.locked) camera.addChild(p.mesh);
-			else scene.addChild(p.mesh);
 		}
 	}
 	
 	this.show = function( progress ) {
 		for ( var i = 0; i < planes.length; i++ ) {
-			planes[i].start( progress );
+			var p = planes[i];
+			if(p.locked) camera.addChild(p.mesh);
+			else scene.addChild(p.mesh);
+			p.start( progress );
 		}
 	}
 	
@@ -114,7 +115,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 				p.removed = true;
 				console.log( p.path + " removed at " + progress + " (planned at " + p.removeAt + ")" );
 			} else {
-				p.updateUniform( mouseX, mouseY );
+				p.update( progress, mouseX, mouseY );
 			}
 		}
 		

@@ -6,6 +6,8 @@ var VideoPlane = function( shared, layer, conf ) {
 	var hasKey = false;
 	var isStatic = layer.path.match("png$") || layer.path.match("jpg$");
 	
+	var fps = layer.fps || 20;
+	
 	this.locked = layer.locked;
 	this.path = layer.path;
 	
@@ -89,6 +91,11 @@ var VideoPlane = function( shared, layer, conf ) {
             shader = VideoShaderSource.distortSmartalpha;
 			hasDistortion = true;
             break;
+		
+		case VIDEO_KEYED_INVERSE: // a.k.a white key
+            shader = VideoShaderSource.keyedInverse;
+			hasKey = true;
+            break;
 
         case VIDEO_KEYED:
         default:
@@ -158,7 +165,6 @@ var VideoPlane = function( shared, layer, conf ) {
 	this.start = function(t) {
 		if(isStatic) return;
 		
-		console.log(this.path + " readyState: " + video.readyState);
 		video.currentTime = video.duration * t;
 		video.play();
 		
@@ -168,7 +174,7 @@ var VideoPlane = function( shared, layer, conf ) {
 	        if (video.readyState === video.HAVE_ENOUGH_DATA) {
 	            texture.needsUpdate = true;
 	        }
-	    }, 1000 / 20);
+	    }, 1000 / fps);
 	}
 	
 	this.stop = function() {
@@ -179,7 +185,9 @@ var VideoPlane = function( shared, layer, conf ) {
 
 	}
 	
-	this.updateUniform = function(mouseX, mouseY) {
+	this.update = function(t, mouseX, mouseY) {
+		
+		//video.currentTime = video.duration * t;
 
 		if(!hasDistortion) return;
 
