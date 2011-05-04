@@ -68,18 +68,16 @@ var FilmSection = function ( shared ) {
 	var s02_04 = new VideoPlayer( shared, VideoShots.s02_04, VideoShots.confStill );
 	var s02_06 = new VideoPlayer( shared, VideoShots.s02_06, VideoShots.confStill );
 	
-	var dunesAnimation = new VideoPlayer( shared, VideoShots.dunesLayers, VideoShots.confStill );
+	var s03_01 = new VideoPlayer( shared, VideoShots.s03_01, VideoShots.confStill );
+	var s03_02 = new VideoPlayer( shared, VideoShots.s03_02, VideoShots.confStill );
+	var s03_03 = new VideoPlayer( shared, VideoShots.s03_03, VideoShots.confStill );
 
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
 	
 	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	//sequencer.add( intro2, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	//sequencer.add( intro3, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	//sequencer.add( prairieParalax, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	//sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 4 );
+	//sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 16 ), 4 );
 
 	var s01start = tune.getPatternMS( 8 );
 	var s01end = tune.getPatternMS( 16 );
@@ -93,12 +91,12 @@ var FilmSection = function ( shared ) {
 	sequencer.add( s01_06, s01start, s01start + s01_06.duration, 1 );
 	s01start += s01_06.duration;
 	
-	sequencer.add( s01_09, s01start, s01end, 5 ); // must be rendered after city
+	sequencer.add( s01_09, s01start, s01end, 4 ); // must be rendered after city
 	
 	var cityStart = tune.getPatternMS( 16 ) - 3000;
 	
 	sequencer.add( new City( shared ), cityStart, tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 24 ), 4 );
+	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 24 ), 5 );
 	//sequencer.add( new PaintEffectDunes( shared ), cityStart, tune.getPatternMS( 24 ), 4 );
 
 	//sequencer.add( new NoiseEffect( shared, 0.16, 0.0, 4096 ), tune.getPatternMS( 16 ), tune.getPatternMS( 24 ), 3 );
@@ -121,22 +119,34 @@ var FilmSection = function ( shared ) {
 	sequencer.add( s02_04, s02start, s02start + s02_04.duration, 1 );
 	s02start += s02_04.duration;
 	
-	sequencer.add( s02_06, s02start, s02end, 5);
+	sequencer.add( s02_06, s02start, s02start + s02_06.duration, 4 );
 	
 	var prairieStart = tune.getPatternMS( 32 ) - 3000;
 
 	// should start at tune.getPatternMS( 32 ) - s02_06.duration
 	sequencer.add( new Prairie( shared ), prairieStart, tune.getPatternMS( 40 ), 1 );
-	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
+	sequencer.add( new PaintEffectPrairie( shared ), prairieStart, tune.getPatternMS( 40 ), 5 );
 	//sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 5 );
 
 	//sequencer.add( new NoiseEffect( shared, 0.18, 0.0, 4096 ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 32 ), tune.getPatternMS( 40 ), 4 );
+	
+	var s03start = tune.getPatternMS( 40 );
+	var s03end = tune.getPatternMS( 48 );
 
-	sequencer.add( dunesAnimation, tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 1 );
+	sequencer.add( s03_01, s03start, s03start + s03_01.duration, 1 );
+	s03start += s03_01.duration;
+	
+	sequencer.add( s03_02, s03start, s03start + s03_02.duration, 1 );
+	s03start += s03_02.duration;
+	
+	sequencer.add( s03_03, s03start, s03start + s03_03.duration, 4 );
+	s03start += s03_03.duration;
+	
+	var dunesStart = tune.getPatternMS( 48 ) - 11000;// <- s03_03.duration;
 
-	sequencer.add( new Dunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 1 );
-	sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 4 );
+	sequencer.add( new Dunes( shared ), dunesStart, tune.getPatternMS( 73.25 ), 1 );
+	sequencer.add( new PaintEffectDunes( shared ), dunesStart, tune.getPatternMS( 73.25 ), 5 );
 	
 	//sequencer.add( new NoiseEffect( shared, 0.094, 0.0, 4096 ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 3 );
 	//sequencer.add( new HeatEffect( shared ), tune.getPatternMS( 48 ), tune.getPatternMS( 73.25 ), 4 );
@@ -150,15 +160,15 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
 
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 16 ), 6 );
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 16 )-3000, 6 );
 	
 	// !!!!!!!!! Here PaintEffect draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 6 );
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 )-3000, 6 );
 	
 	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 6 );
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 )-11000, 6 );
 	
 	// !!!!!!!!! Here PaintEffectDunes draws directly to frame buffer !!!!!!!!!!!!
 

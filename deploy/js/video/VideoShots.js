@@ -165,24 +165,47 @@ var VideoShots = {
         shaderId: VIDEO_SMARTALPHA,
         z: -1010,
 		duration: 6060
-    }
-	/*, {
+    },{
         path: "files/videos/prairie/s06_layer01.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
         z: -1000
-    }*/
+    }
 	],
-	
-	
-	
-	
-	
-	
-	dunesLayers: [{
-        path: "files/videos/transition_dunes.webm",
+
+	s03_01: [{
+        path: "files/videos/dunes/s01_layer02.webm",
         shaderId: VIDEO_OPAQUE,
+        z: -1010,
+		duration: 8000
+    },{
+        path: "files/videos/dunes/s01_layer01.webm",
+        shaderId: VIDEO_SMARTALPHA,
+        z: -1000
+    }],
+	
+	s03_02: [{
+        path: "files/videos/dunes/s02_layer02.webm",
+        shaderId: VIDEO_OPAQUE,
+        z: -1010,
+		duration: 3500
+    },{
+        path: "files/videos/dunes/s02_layer01.webm",
+        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        z: -1000
+    }],
+	
+	s03_03: [{
+        path: "files/videos/dunes/s03_layer02.webm",
+        shaderId: VIDEO_SMARTALPHA,
+        z: -1400,
+		paralax: true,
+		width: 1.526, height: 1.11,
+		duration: 11000
+    },{
+        path: "files/videos/dunes/s03_layer01.webm",
+        shaderId: VIDEO_SMARTALPHA,
         z: -1000,
-		duration: 20000
+		locked: true
     }],
 };
 
