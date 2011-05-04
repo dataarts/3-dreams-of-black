@@ -89,6 +89,7 @@ var Dunes = function ( shared ) {
 
 		world = new DunesWorld( shared );
 		soup = new DunesSoup( camera, world.scene, shared );
+		//soup = new UgcSoup( camera, world.scene, shared );
 
 		world.scene.addChild( camera );
 		world.scene.addChild( camera.target );
