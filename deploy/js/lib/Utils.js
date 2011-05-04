@@ -97,6 +97,7 @@ function initLensFlares( where, position, sx, sy ) {
 
 	where.scene.addChild( where.lensFlareRotate );
 
+	return where.lensFlareRotate;
 };
 
 

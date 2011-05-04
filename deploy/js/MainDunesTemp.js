@@ -16,11 +16,11 @@ function init() {
 
 	scene = new THREE.Scene();
 
-	renderer = new THREE.WebGLRenderer( { antialias: false } );
+	renderer = new THREE.WebGLRenderer( { antialias: false, stencil: false } );
 	renderer.autoClear = false;
 	renderer.sortObjects = false;
 
-	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+	renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, { stencilBuffer: false } );
 	renderTarget.minFilter = THREE.LinearFilter;
 	renderTarget.magFilter = THREE.NearestFilter;
 

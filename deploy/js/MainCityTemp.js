@@ -126,7 +126,7 @@ function start( pattern ) {
 	//gui.add( this, 'jumpToDunes').name( 'Dunes' );
 
 	audio.play();
-	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
+	//audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	audio.volume = 0//.2;	
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
