@@ -87,9 +87,8 @@ div#gallery {
 }
 
 div#gallery .inner {
-  padding-top: 1px;
-  padding-left: 1px;
-  background-color: #c3c0b7;
+  border-top: 1px solid #c3c0b7;
+  border-left: 1px solid #c3c0b7;
   margin: 0 auto;
 }
 
@@ -106,11 +105,10 @@ div.object .img-wrapper {
 
 div.object {
   padding: 12px;
-  background-color: #f4f1e8;
   width: 299px;
   height: 215px;
-  margin-right: 1px;
-  margin-bottom: 1px;
+  border-right: 1px solid #c3c0b7;
+  border-bottom: 1px solid #c3c0b7;
   float: left;
 }
 
