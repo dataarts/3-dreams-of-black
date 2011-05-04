@@ -30,7 +30,7 @@ var DunesShader = {
 		"directionalLightColor" : { type: "fv", value: [] },
 		"pointLightColor" : { type: "fv", value: [] },
 		"pointLightPosition" : { type: "fv", value: [] },
-		"pointLightDistance" : { type: "fv1", value: [] },
+		"pointLightDistance" : { type: "fv1", value: [] }
 	},
 
 	vertexShader: [
