@@ -33,6 +33,7 @@ python convert_obj_three.py -i objs/fishC/fishC_swimA_001.obj -o results/fishC.j
 python convert_obj_three.py -i objs/fishD/fishD_swimA_001.obj -o results/fishD.js -m "objs/fishD/fishD_swimA_*.obj" -c "mtls/fishD_colorMap.obj" -s flat -a none -b -x 10
 
 python convert_obj_three.py -i objs/sockpuppet/sockPuppet_jump_A_001.obj -o results/sockpuppet.js -m "objs/sockpuppet/sockPuppet_jump_A_*.obj" -c "mtls/sockPuppet_colorMap.obj" -s flat -a none -b -x 10
+python convert_obj_three.py -i objs/sockpuppet2/sockPuppet_popUp_A_001.obj -o results/sockpuppet2.js -m "objs/sockpuppet2/sockPuppet_popUp_A_*.obj" -c "mtls/sockPuppet_colorMap.obj" -s flat -a none -b -x 10
 
 python convert_obj_three.py -i objs/eagle/eagle_flyA_001.obj -o results/eagle.js -m "objs/eagle/eagle_flyA_*.obj" -c "mtls/eagle_colorMap.obj" -s flat -a none -b -x 10
 python convert_obj_three.py -i objs/parrot/parrot_A_001.obj -o results/parrot.js -m "objs/parrot/parrot_A_*.obj" -c "mtls/parrot_colorMap.obj" -s flat -a none -b -x 10

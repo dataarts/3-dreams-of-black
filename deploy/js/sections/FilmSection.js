@@ -148,15 +148,18 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1 );
 
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 16 ), 6 );
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 6 );
+	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 6 );
 	
 	// !!!!!!!!! Here PaintEffect draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 6 );
+	//sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 6 );
+	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ), 6 );
 	
 	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 6 );
+	//sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 6 );
+	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ), 6 );
 	
 	// !!!!!!!!! Here PaintEffectDunes draws directly to frame buffer !!!!!!!!!!!!
 
