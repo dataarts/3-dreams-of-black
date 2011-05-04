@@ -7,7 +7,8 @@ var VIDEO_KEYED_DISTORT = 5;
 var VideoPlayer = function( shared, layers, conf ) {
 
 	var that = this;
-	
+  var oldTime = new Date().getTime();
+
 	SequencerItem.call( this );
 
 	var config = {};
@@ -18,8 +19,12 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var renderer = shared.renderer, renderTarget = shared.renderTarget;
 	
 	var mouseX = 0, mouseY = 0;
+  var mouseOldX = 0, mouseOldY = 0;
+  var mouseNewX = 0, mouseNewY = 0;
+  var mouseRad = 0;
+  var mouseSpeed = new THREE.Vector2(0,0);
 	var targetPos;
-	
+
 	this.duration = layers[ 0 ].duration;
 	
 	this.init = function(){
@@ -33,12 +38,12 @@ var VideoPlayer = function( shared, layers, conf ) {
 			config.grid = geometry;
 			that.onLoad();
 
-		}
+		};
 		
 		gridLoader = new THREE.JSONLoader();
 		gridLoader.load( { model: "files/models/VideoDistortGrid.js", callback: onGrid } );
 
-	}
+	};
 	
 	this.onLoad = function() {
 
@@ -71,7 +76,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 			scene.addObject(p.mesh);
 			if(p.wireMesh) scene.addObject(p.wireMesh);
 		}
-	}
+	};
 	
 	this.show = function( progress ) {
 
@@ -81,7 +86,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 
 		}
 
-	}
+	};
 	
 	this.hide = function(){
 
@@ -91,15 +96,28 @@ var VideoPlayer = function( shared, layers, conf ) {
 
 		}
 
-	}
+	};
 	
 	this.update = function( progress, delta, time ) {
+    time = new Date().getTime();
+    delta = time - oldTime;
+    oldTime = time;
 
-		if( !gridLoaded ) {
+		if( !gridLoaded ) return;
 
-			return;
+      mouseNewX = mouseX;
+      mouseNewY = mouseY;
 
-		}
+      mouseSpeed.x += (1000*limitSpeed(mouseNewX-mouseOldX,0.05)/delta - mouseSpeed.x)/12;
+      mouseSpeed.y += (1000*limitSpeed(mouseNewY-mouseOldY,0.05)/delta - mouseSpeed.y)/12;
+      mouseRad += (Math.max(Math.min((Math.abs(mouseSpeed.x)+Math.abs(mouseSpeed.y)),3),0.4)-mouseRad)/2;
+
+      mouseOldX = mouseX;
+      mouseOldY = mouseY;
+
+      function limitSpeed(speed, limit){
+        return Math.max(Math.min(speed,limit),-limit);
+      }
 		
 		targetPos.x = mouseX * config.prx;
 		targetPos.y = mouseY * config.pry;
@@ -112,13 +130,13 @@ var VideoPlayer = function( shared, layers, conf ) {
 				
 		for ( var i = 0; i < planes.length; i++ ) {
 
-			planes[i].updateUniform( mouseX, mouseY );
+      planes[i].updateUniform(mouseX, mouseY, mouseSpeed, mouseRad );
 
 		}
 		
 		renderer.render( scene, camera, renderTarget );
 		//renderer.render( scene, camera );
-	}
+	};
 	
 	// #####
 	//var windowHalfX = window.innerWidth >> 1;
@@ -127,8 +145,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 	//	mouseX = (event.clientX - windowHalfX) / -windowHalfX;
 	//	mouseY = (event.clientY - windowHalfY) / windowHalfY;
 	//}
-}
-
+};
 
 VideoPlayer.prototype = new SequencerItem();
 VideoPlayer.prototype.constructor = VideoPlayer;

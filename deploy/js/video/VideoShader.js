@@ -1,62 +1,117 @@
 var DistortUniforms = {
-      "aspect": { type: "f", value: 0 },
-			"map": { type: "t", value: 0, texture: null },
-			"colorScale": { type: "f", value: 1 },
-			"threshold": { type: "f", value: 0.5 },
-			"alphaFadeout": { type: "f", value: 0.5 },
-      "mouseXY": { type: "v2", value: new THREE.Vector2() },
-      "mouseSpeed": { type: "v2", value: new THREE.Vector2() },
-      "mouseRad": { type: "f", value: 0 }
-		};
+
+  "aspect": { type: "f", value: 0 },
+  "map": { type: "t", value: 0, texture: null },
+  "colorScale": { type: "f", value: 1 },
+  "threshold": { type: "f", value: 0.5 },
+  "alphaFadeout": { type: "f", value: 0.5 },
+  "mouseXY": { type: "v2", value: new THREE.Vector2() },
+  "trail0": { type: "v2", value: new THREE.Vector2() },
+  "trail1": { type: "v2", value: new THREE.Vector2() },
+  "trail2": { type: "v2", value: new THREE.Vector2() },
+  "trail3": { type: "v2", value: new THREE.Vector2() },
+  "trail4": { type: "v2", value: new THREE.Vector2() },
+  "mouseSpeed": { type: "v2", value: new THREE.Vector2() },
+  "mouseRad": { type: "f", value: 1. }
+
+};
 
 
 var DistortShaderFragmentPars = [
-      "uniform sampler2D map;",
-			"uniform float colorScale;",
-			"uniform float threshold;",
-			"uniform float alphaFadeout;",
 
-      "varying vec2 vUv;",
-      "varying vec2 vUvPoly;",
-      "varying float distancePoly;"].join("\n");
+    "uniform sampler2D map;",
+    "uniform float colorScale;",
+    "uniform float threshold;",
+    "uniform float alphaFadeout;",
+
+    "varying vec2 vUv;",
+    "varying vec2 vUvPoly;",
+    "varying float distancePoly;",
+    "varying float distance;"
+
+].join("\n");
 
 var DistortVertexShader = [
-            "uniform vec2 mouseXY;",
-            "uniform float aspect;",
 
-            "varying vec2 vUv;",
-            "varying vec2 vUvPoly;",
-            "varying vec3 pos;",
-            "varying vec3 posPoly;",
-            "varying vec4 viewPos;",
-            "varying vec4 viewPosPoly;",
-            "varying vec2 projPos;",
-            "varying vec2 projPosPoly;",
-            "varying float distance;",
-            "varying float distancePoly;",
+    "uniform vec2 mouseXY;",
+    "uniform vec2 trail0;",
+    "uniform vec2 trail1;",
+    "uniform vec2 trail2;",
+    "uniform vec2 trail3;",
+    "uniform vec2 trail4;",
+    "uniform float aspect;",
+    "uniform vec2 mouseSpeed;",
+    "uniform float mouseRad;",
+
+    "varying vec2 vUv;",
+    "varying vec2 vUvPoly;",
+    "varying float distance;",
+    "varying float distancePoly;",
+
+    "float getDistance(vec2 p, vec2 l1, vec2 l2){",
+        "float A = p.x - l1.x;",
+        "float B = p.y - l1.y;",
+        "float C = l2.x - l1.x;",
+        "float D = l2.y - l1.y;",
+
+        "float dot = A * C + B * D;",
+        "float len_sq = C * C + D * D;",
+        "float param = dot / len_sq;",
+
+        "float xx,yy;",
+
+        "if(param < 0.)",
+        "{",
+        "   xx = l1.x;",
+        "   yy = l1.y;",
+        "}",
+        "else if(param > 1.)",
+        "{",
+        "    xx = l2.x;",
+        "    yy = l2.y;",
+        "}",
+        "else",
+        "{",
+        "    xx = l1.x + param * C;",
+        "    yy = l1.y + param * D;",
+        "}",
+        "return 1. - sqrt( ((p.x - xx) * (p.x - xx)) + ((p.y - yy) * (p.y - yy)) );",
+    "}",
+
+    "void main() {",
+
+        "vUv = uv;",
+
+        "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+        "vUvPoly = uv+vec2(normal.x,normal.y);",
+        "vec4 glPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
+
+        "vec2 projPos = vec2(aspect,1.)*vec2(gl_Position.x/gl_Position.z,gl_Position.y/gl_Position.z);",
+        "vec2 projPosPoly = vec2(aspect,1.)*vec2(glPosPoly.x/glPosPoly.z,glPosPoly.y/glPosPoly.z);",
+        //"distance = getDistance(projPos,mouseXY,trail5);",
+        "distance = max(0.,1.-length(vec2(projPos)-vec2(mouseXY.x, mouseXY.y)));",
+        "distance *= mouseRad;",
+
+        "float distFade = normal.z*0.9+0.4;",
+        //"distancePoly = max(0.,distFade-length(vec2(projPosPoly)-vec2(mouseXY.x, mouseXY.y)));",
+        //"distancePoly *= mouseRad;",
+
+        "float distanceTrail0 = distFade*getDistance(projPosPoly,mouseXY,trail0);",
+        "float distanceTrail1 = -0.3+1.3*distFade*getDistance(projPosPoly,trail0,trail1);",
+        "float distanceTrail2 = -0.5+1.5*distFade*getDistance(projPosPoly,trail1,trail2);",
+        "float distanceTrail3 = -0.7+1.7*distFade*getDistance(projPosPoly,trail2,trail3);",
+        "float distanceTrail4 = -0.9+1.9*distFade*getDistance(projPosPoly,trail3,trail4);",
+        "distancePoly = max(distanceTrail0,max(distanceTrail1,max(distanceTrail2,max(distanceTrail3,distanceTrail4))));",
+//
+        "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-vec2(mouseXY.x, mouseXY.y))*vec2(distance*100.);",
+        "gl_Position.xy = gl_Position.xy -mouseSpeed.xy*pow(distance,2.)*100.;",
+        "gl_Position.z -= distance;",
+
+    "}"
 
 
-			"void main() {",
-				"vUv = uv;",
-                "vUvPoly = uv+vec2(normal.x,normal.y);",
-
-                "viewPos = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-                "viewPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
-
-                "projPos = vec2(aspect,1.)*vec2(viewPos.x/viewPos.z,viewPos.y/viewPos.z);",
-                "projPosPoly = vec2(aspect,1.)*vec2(viewPosPoly.x/viewPosPoly.z,viewPosPoly.y/viewPosPoly.z);",
-
-                "distance = max(0.,1.0-length(projPos-vec2(mouseXY.x, mouseXY.y)));",
-
-                "float distFade = normal.z*0.8+0.8;",
-
-                "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
-
-                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
-                "gl_Position = viewPos;",
-
-			"}"
-		].join("\n");
+    
+].join("\n");
 
 
 var VideoShaderSource = {
@@ -193,7 +248,7 @@ var VideoShaderSource = {
 			"void main() {",
 				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
                 "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.7) c = cPoly; ",
+                "if ((distancePoly)>0.6) c = cPoly; ",
                 "if (c.a<=0.1) {",
 				"	discard;",
 				"} else {",
@@ -223,7 +278,7 @@ var VideoShaderSource = {
 
 			"void main() {",
                 "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.8 && cPoly.a>0.) cPoly = vec4(cPoly.rgb*2.,distancePoly/16.); ",
+                "if ((distancePoly)>0.3 && cPoly.a>0.05) cPoly = vec4(cPoly.rgb*2.,distancePoly/4.); ",
                 "else cPoly = vec4(1.,1.,1.,0.); ",
                 "gl_FragColor = cPoly;",
 			"}"
