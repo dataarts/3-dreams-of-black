@@ -31,7 +31,12 @@ python convert_obj_three.py -i objs/shdw6drownA/shdw6_emergeDrownA_drown_060.obj
 python convert_obj_three.py -i objs/shdw6emergeA/shdw6_emergeDrownA_emerge_001.obj -o results/shdw6emergeA.js -m "objs/shdw6emergeA/shdw6_emergeDrownA_emerge_*.obj" -c "mtls/shdw6_colorMap.obj" -s flat -a none -b -x 10
 python convert_obj_three.py -i objs/shdw6emergeB/shdw6_emergeSwimB_emerge_001.obj -o results/shdw6emergeB.js -m "objs/shdw6emergeB/shdw6_emergeSwimB_emerge_*.obj" -c "mtls/shdw6_colorMap.obj" -s flat -a none -b -x 10
 python convert_obj_three.py -i objs/shdw6swimB/shdw6_emergeSwimB_swim_060.obj -o results/shdw6swimB.js -m "objs/shdw6swimB/shdw6_emergeSwimB_swim_*.obj" -c "mtls/shdw6_colorMap.obj" -s flat -a none -b -x 10
- 
+
+
+python convert_obj_three.py -i objs/armhand/armHand_B_001.obj -o results/armhand.js -m "objs/armhand/armHand_B_*.obj" -c "mtls/armHand.obj" -s flat -a none -b -x 10
+python convert_obj_three.py -i objs/drownArmA/drownArm_A_001.obj -o results/drownArmA.js -m "objs/drownArmA/drownArm_A_*.obj" -c "mtls/armHand.obj" -s flat -a none -b -x 10
+python convert_obj_three.py -i objs/drownArmB/drownArm_B_001.obj -o results/drownArmB.js -m "objs/drownArmB/drownArm_B_*.obj" -c "mtls/armHand.obj" -s flat -a none -b -x 10
+python convert_obj_three.py -i objs/drownArmC/drownArm_C_001.obj -o results/drownArmC.js -m "objs/drownArmC/drownArm_C_*.obj" -c "mtls/armHand.obj" -s flat -a none -b -x 10
 
 python convert_obj_three.py -i objs/tarbuffalo/tarbuffalo_runA_001.obj -o results/tarbuffalo.js -m "objs/tarbuffalo/tarbuffalo_runA_*.obj" -c "mtls/tarbuffalo_colorMap.obj" -s flat -a none -b -x 10
 python convert_obj_three.py -i objs/goat/goatCharge_A_001.obj -o results/goat.js -m "objs/goat/goatCharge_A_*.obj" -c "mtls/goat_colorMap.obj" -s flat -a none -b -x 10
@@ -68,8 +73,6 @@ python convert_obj_three.py -i objs/butterflyLowA/butterflyLowA_flyA_001.obj -o 
 python convert_obj_three.py -i objs/butterflyLowB/butterflyLowB_flyA_001.obj -o results/butterflyLowB.js -m "objs/butterflyLowB/butterflyLowB_flyA_*.obj" -c "mtls/butterflyLowB.obj" -s flat -a none -b -x 10
 python convert_obj_three.py -i objs/butterflyLowC/butterflyLowC_flyA_001.obj -o results/butterflyLowC.js -m "objs/butterflyLowC/butterflyLowC_flyA_*.obj" -c "mtls/butterflyLowC.obj" -s flat -a none -b -x 10
 python convert_obj_three.py -i objs/butterflyLowD/butterflyLowD_flyA_001.obj -o results/butterflyLowD.js -m "objs/butterflyLowD/butterflyLowD_flyA_*.obj" -c "mtls/butterflyLowD.obj" -s flat -a none -b -x 10
-
-python convert_obj_three.py -i objs/armhand/armHand_B_001.obj -o results/armhand.js -m "objs/armhand/armHand_B_*.obj" -c "mtls/armHand.obj" -s flat -a none -b -x 10
 
 python convert_obj_three.py -i objs/raven/raven_flyA_001.obj -o results/raven.js -m "objs/raven/raven_flyA_*.obj" -c "mtls/raven_colorMap.obj" -s flat -a none -b -x 10
 python convert_obj_three.py -i objs/vulture/vulture_A_001.obj -o results/vulture.js -m "objs/vulture/vulture_A_*.obj" -c "mtls/vulture_colorMap.obj" -s flat -a none -b -x 10
