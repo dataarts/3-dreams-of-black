@@ -1,3 +1,64 @@
+var DistortUniforms = {
+      "aspect": { type: "f", value: 0 },
+			"map": { type: "t", value: 0, texture: null },
+			"colorScale": { type: "f", value: 1 },
+			"threshold": { type: "f", value: 0.5 },
+			"alphaFadeout": { type: "f", value: 0.5 },
+      "mouseXY": { type: "v2", value: new THREE.Vector2() },
+      "mouseSpeed": { type: "v2", value: new THREE.Vector2() },
+      "mouseRad": { type: "f", value: 0 }
+		};
+
+
+var DistortShaderFragmentPars = [
+      "uniform sampler2D map;",
+			"uniform float colorScale;",
+			"uniform float threshold;",
+			"uniform float alphaFadeout;",
+
+      "varying vec2 vUv;",
+      "varying vec2 vUvPoly;",
+      "varying float distancePoly;"].join("\n");
+
+var DistortVertexShader = [
+            "uniform vec2 mouseXY;",
+            "uniform float aspect;",
+
+            "varying vec2 vUv;",
+            "varying vec2 vUvPoly;",
+            "varying vec3 pos;",
+            "varying vec3 posPoly;",
+            "varying vec4 viewPos;",
+            "varying vec4 viewPosPoly;",
+            "varying vec2 projPos;",
+            "varying vec2 projPosPoly;",
+            "varying float distance;",
+            "varying float distancePoly;",
+
+
+			"void main() {",
+				"vUv = uv;",
+                "vUvPoly = uv+vec2(normal.x,normal.y);",
+
+                "viewPos = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                "viewPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
+
+                "projPos = vec2(aspect,1.)*vec2(viewPos.x/viewPos.z,viewPos.y/viewPos.z);",
+                "projPosPoly = vec2(aspect,1.)*vec2(viewPosPoly.x/viewPosPoly.z,viewPosPoly.y/viewPosPoly.z);",
+
+                "distance = max(0.,1.0-length(projPos-vec2(mouseXY.x, mouseXY.y)));",
+
+                "float distFade = normal.z*0.8+0.8;",
+
+                "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
+
+                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
+                "gl_Position = viewPos;",
+
+			"}"
+		].join("\n");
+
+
 var VideoShaderSource = {
 	opaque: {
 
@@ -19,8 +80,7 @@ var VideoShaderSource = {
 			"varying vec2 vUv;",
 			
 			"void main() {",				
-				"vec4 c = texture2D( map, vUv );",				
-				"gl_FragColor = c;",
+				"gl_FragColor = texture2D( map, vUv );",
 			"}"
 		].join("\n")
 
@@ -220,70 +280,13 @@ var VideoShaderSource = {
 	
 	distortOpaque: {
 
-		uniforms: {
-            "aspect": { type: "f", value: 0 },
-			"map": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() }
-		},
+		uniforms:DistortUniforms,
 
-		vertexShader: [
-
-            "uniform vec2 mouseXY;",
-            "uniform vec2 trail1;",
-            "uniform vec2 trail2;",
-            "uniform vec2 trail3;",
-            "uniform float aspect;",
-
-            "varying vec2 vUv;",
-            "varying vec2 vUvPoly;",
-            "varying vec3 pos;",
-            "varying vec3 posPoly;",
-            "varying vec4 viewPos;",
-            "varying vec4 viewPosPoly;",
-            "varying vec2 projPos;",
-            "varying vec2 projPosPoly;",
-            "varying float distance;",
-            "varying float distancePoly;",
-
-
-			"void main() {",
-				"vUv = uv;",
-                "vUvPoly = uv+vec2(normal.x,normal.y);",
-
-                "viewPos = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-                "viewPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
-
-                "projPos = vec2(aspect,1.)*vec2(viewPos.x/viewPos.z,viewPos.y/viewPos.z);",
-                "projPosPoly = vec2(aspect,1.)*vec2(viewPosPoly.x/viewPosPoly.z,viewPosPoly.y/viewPosPoly.z);",
-
-                "distance = max(0.,1.0-length(projPos-vec2(mouseXY.x, mouseXY.y)));",
-
-                "float distFade = normal.z*0.8+0.8;",
-
-                "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
-
-                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
-                "gl_Position = viewPos;",
-
-			"}"
-
-		].join("\n"),
+		vertexShader: DistortVertexShader,
 
 		fragmentShader: [
-            "uniform sampler2D map;",
 
-            "uniform vec2 mouseXY;",
-            "varying vec2 vUv;",
-            "varying vec2 vUvPoly;",
-            "varying vec3 pos;",
-            "varying vec3 posPoly;",
-            "varying vec4 viewPos;",
-            "varying vec4 viewPosPoly;",
-            "varying vec2 projPos;",
-            "varying vec2 projPosPoly;",
-
-            "varying float distance;",
-            "varying float distancePoly;",
+      DistortShaderFragmentPars,
 
 			"void main() {",
 				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
@@ -299,76 +302,12 @@ var VideoShaderSource = {
 	
 	distortKeyed : {
 
-		uniforms: {
-            "aspect": { type: "f", value: 0 },
-			"map": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() },
-			"colorScale": { type: "f", value: 1 },
-			"threshold": { type: "f", value: 0.5 },
-			"alphaFadeout": { type: "f", value: 0.5 }
-		},
+		uniforms: DistortUniforms,
 
-		vertexShader: [
-
-            "uniform vec2 mouseXY;",
-            "uniform vec2 trail1;",
-            "uniform vec2 trail2;",
-            "uniform vec2 trail3;",
-            "uniform float aspect;",
-
-            "varying vec2 vUv;",
-            "varying vec2 vUvPoly;",
-            "varying vec3 pos;",
-            "varying vec3 posPoly;",
-            "varying vec4 viewPos;",
-            "varying vec4 viewPosPoly;",
-            "varying vec2 projPos;",
-            "varying vec2 projPosPoly;",
-            "varying float distance;",
-            "varying float distancePoly;",
-
-
-			"void main() {",
-				"vUv = uv;",
-                "vUvPoly = uv+vec2(normal.x,normal.y);",
-
-                "viewPos = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-                "viewPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
-
-                "projPos = vec2(aspect,1.)*vec2(viewPos.x/viewPos.z,viewPos.y/viewPos.z);",
-                "projPosPoly = vec2(aspect,1.)*vec2(viewPosPoly.x/viewPosPoly.z,viewPosPoly.y/viewPosPoly.z);",
-
-                "distance = max(0.,1.0-length(projPos-vec2(mouseXY.x, mouseXY.y)));",
-
-                "float distFade = normal.z*0.8+0.8;",
-
-                "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
-
-                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
-                "gl_Position = viewPos;",
-
-			"}"
-
-		].join("\n"),
+		vertexShader: DistortVertexShader,
 
 		fragmentShader: [
-            "uniform sampler2D map;",
-			"uniform float colorScale;",
-			"uniform float threshold;",
-			"uniform float alphaFadeout;",
-
-            "uniform vec2 mouseXY;",
-            "varying vec2 vUv;",
-            "varying vec2 vUvPoly;",
-            "varying vec3 pos;",
-            "varying vec3 posPoly;",
-            "varying vec4 viewPos;",
-            "varying vec4 viewPosPoly;",
-            "varying vec2 projPos;",
-            "varying vec2 projPosPoly;",
-
-            "varying float distance;",
-            "varying float distancePoly;",
+      DistortShaderFragmentPars,
 
 			"void main() {",
 				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
@@ -376,14 +315,14 @@ var VideoShaderSource = {
                 "if ((distancePoly)>0.7) c = cPoly; ",
                 "if (c.a<=0.1) {",
 				"	discard;",
-				"} else {",	
+				"} else {",
 				"	vec3 cd = vec3(1.0 - colorScale);",
-				"	vec3 cs = vec3(colorScale);",				
+				"	vec3 cs = vec3(colorScale);",
 				"	float t = c.x + c.y + c.z;",
 				"	float alpha = 1.0;",
 				"	if( t < threshold )",
 				"		alpha = t / alphaFadeout;",
-				"	gl_FragColor = vec4( (c.xyz - cd) * cs, alpha );",		
+				"	gl_FragColor = vec4( (c.xyz - cd) * cs, alpha );",
 				"}",
 			"}"
 
@@ -393,68 +332,34 @@ var VideoShaderSource = {
 	
 	distortWire : {
 
-		uniforms: {
-            "aspect": { type: "f", value: 0 },
-			"map": { type: "t", value: 0, texture: null },
-            "mouseXY": { type: "v2", value: new THREE.Vector2() }
-		},
+		uniforms: DistortUniforms,
 
-		vertexShader: [
-
-            "uniform vec2 mouseXY;",
-            "uniform float aspect;",
-
-            "varying vec2 vUv;",
-            "varying vec2 vUvPoly;",
-            "varying vec3 pos;",
-            "varying vec3 posPoly;",
-            "varying vec4 viewPos;",
-            "varying vec4 viewPosPoly;",
-            "varying vec2 projPos;",
-            "varying vec2 projPosPoly;",
-            "varying float distance;",
-            "varying float distancePoly;",
-
-
-			"void main() {",
-				"vUv = uv;",
-				"vUv = uv;",
-                "vUvPoly = uv+vec2(normal.x,normal.y);",
-
-                "viewPos = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-                "viewPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
-
-                "projPos = vec2(aspect,1.)*vec2(viewPos.x/viewPos.z,viewPos.y/viewPos.z);",
-                "projPosPoly = vec2(aspect,1.)*vec2(viewPosPoly.x/viewPosPoly.z,viewPosPoly.y/viewPosPoly.z);",
-
-                "distance = max(0.,1.0-length(projPos-vec2(mouseXY.x, mouseXY.y)));",
-
-                "float distFade = normal.z*0.8+0.8;",
-
-                "distancePoly = max(0.,distFade-length(projPosPoly-vec2(mouseXY.x, mouseXY.y)));",
-
-                "viewPos.xy = viewPos.xy + normalize(projPos-vec2(mouseXY.x, mouseXY.y))*0.6*pow(distance,1.)*(viewPos.z/10.);",
-                "gl_Position = viewPos;",
-			"}"
-
-		].join("\n"),
+		vertexShader: DistortVertexShader,
 
 		fragmentShader: [
-            "uniform sampler2D map;",
-            "uniform vec2 tileOffsetX;",
 
-            "uniform vec2 mouseXY;",
-            "varying vec2 vUv;",
-            "varying vec2 vUvPoly;",
-            "varying vec3 pos;",
-            "varying vec3 posPoly;",
-            "varying vec4 viewPos;",
-            "varying vec4 viewPosPoly;",
-            "varying vec2 projPos;",
-            "varying vec2 projPosPoly;",
+      DistortShaderFragmentPars,
 
-            "varying float distance;",
-            "varying float distancePoly;",
+			"void main() {",
+                "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
+                "if ((distancePoly)>0.8 && cPoly.a>0.) cPoly = vec4(cPoly.rgb*2.,distancePoly/16.); ",
+                "else cPoly = vec4(1.,1.,1.,0.); ",
+                "gl_FragColor = cPoly;",
+			"}"
+
+		].join("\n")
+
+	},
+
+	distortWireKeyed : {
+
+		uniforms: DistortUniforms,
+
+		vertexShader: DistortVertexShader,
+
+		fragmentShader: [
+
+      DistortShaderFragmentPars,
 
 			"void main() {",
                 "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",

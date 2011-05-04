@@ -51,14 +51,14 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 
 	// collision boxes
 
-	var cube = new THREE.Cube( 5000,5000,10, 1,1,1 );
+	var cube = new THREE.Cube( 50000,50000,10, 1,1,1 );
 	var material = new THREE.MeshLambertMaterial( { color: 0x0000FF, opacity: 0.2 } );
 	var front = new THREE.Mesh ( cube, material	);
 	var back = new THREE.Mesh ( cube, material );
-	var cube = new THREE.Cube( 10,5000,5000, 1,1,1 );
+	var cube = new THREE.Cube( 10,50000,50000, 1,1,1 );
 	var left = new THREE.Mesh ( cube, material );
 	var right = new THREE.Mesh ( cube, material	);
-	var cube = new THREE.Cube( 5000,10,5000, 1,1,1 );
+	var cube = new THREE.Cube( 50000,10,50000, 1,1,1 );
 	var top = new THREE.Mesh ( cube, material );
 	var bottom = new THREE.Mesh ( cube, material );
 

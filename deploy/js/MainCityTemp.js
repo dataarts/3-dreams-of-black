@@ -41,14 +41,34 @@ function init() {
 
 		mouse : { x: 0, y : 0 },
 
-		signals: {
+		signals : {
+
+			mousedown : new Signal(),
+			mouseup : new Signal(),
+			mousemoved : new Signal(),
+			mousewheel : new Signal(),
+
+			keydown : new Signal(),
+			keyup : new Signal(),
+
+			windowresized : new Signal(),
+
+			load : new Signal(),
+
+			showlauncher : new Signal(),
+			showfilm : new Signal(),
+			showrelauncher : new Signal(),
+			showexploration : new Signal(),
+			showugc : new Signal(),
 
 			loadBegin : new Signal(),
 			loadItemAdded : new Signal(),
 			loadItemCompleted : new Signal(),
 
-			mousemoved : new Signal(),
-			windowresized : new Signal(),
+			startfilm : new Signal(),
+			stopfilm : new Signal(),
+
+			startexploration: new Signal(),
 			
 			initscenes: new Signal()
 
@@ -106,7 +126,7 @@ function start( pattern ) {
 	//gui.add( this, 'jumpToDunes').name( 'Dunes' );
 
 	audio.play();
-	audio.currentTime = tune.getPatternMS( pattern ) / 1000;
+	//audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 	audio.volume = 0//.2;	
 
 	//gui.add( audio, 'volume', 0, 1).name( 'Volume' );
