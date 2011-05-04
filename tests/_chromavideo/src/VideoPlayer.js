@@ -107,7 +107,7 @@ var VideoPlayer = function(shared, layers, conf){
 	this.update = function(progress, delta, time) {
 		if(!gridLoaded) return;
 		
-		targetPos.x = mouseX * 2 * config.prx;
+		targetPos.x = mouseX * -2 * config.prx;
 		targetPos.y = mouseY * 2 * config.pry;
 		
 		targetPos.x = Math.min(targetPos.x, config.prx);
@@ -122,10 +122,7 @@ var VideoPlayer = function(shared, layers, conf){
 		for (var i = 0; i < planes.length; i++) {
 			planes[i].updateUniform(mouseX, mouseY);
 		}
-		
-		
-		camera.rotation.setRotationFromMatrix( camera.matrixWorld );
-		
+
 		//renderer.render( scene, camera, renderTarget );
 		renderer.render( scene, camera );
 	}
