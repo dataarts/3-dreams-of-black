@@ -29,7 +29,8 @@
 				delay: 500,
 				amount: 3,
 				transparent: 0,
-				quality: 10
+				quality: 10,
+				record: false
 			};
 
 			var gui = new DAT.GUI();
@@ -43,6 +44,37 @@
 
       setInterval( function() {
         clouds.update();
+
+
+				if(encodeParams.record) {
+					if(amount < encodeParams.amount) {
+
+						document.getElementById('amount').innerHTML = amount;
+
+						if(amount < 1) setupEncoder();
+
+						var context = clouds.getRenderer().getContext();
+						var readBuffer = new Uint8Array(d.width * d.height * 4);
+						context.readPixels(0, 0, d.width, d.height, context.RGBA, context.UNSIGNED_BYTE, readBuffer);
+						gifEncoder.addFrame(readBuffer, true);
+						amount++;
+					} else {
+						gifEncoder.finish();
+					  var binary_gif = gifEncoder.stream().getData();
+					  var data_url = 'data:image/gif;base64,'+encode64(binary_gif);
+						var image = document.createElement("img");
+								image.style.display = "block";
+								image.style.float = "left";
+								image.setAttribute("src", data_url);
+						var content = document.getElementById("content");
+								content.appendChild(image);
+						amount = 0;
+
+						// start over
+						setupEncoder();
+					}
+				}
+
       }, 1000 / 60.0);
 
 			var context, iterator, canvas, gifEncoder;
@@ -60,39 +92,9 @@
 					document.getElementById('max').innerHTML = encodeParams.amount;
 				}
 
-      d.addEventListener("click", function() {
-
-				if(amount < encodeParams.amount) {
-
-					document.getElementById('amount').innerHTML = amount;
-
-					if(amount < 1) setupEncoder();
-
-					var context = clouds.getRenderer().getContext();
-					var readBuffer = new Uint8Array(d.width * d.height * 4);
-					context.readPixels(0, 0, d.width, d.height, context.RGBA, context.UNSIGNED_BYTE, readBuffer);
-					gifEncoder.addFrame(readBuffer, true);
-					amount++;
-				} else {
-					gifEncoder.finish();
-				  var binary_gif = gifEncoder.stream().getData();
-				  var data_url = 'data:image/gif;base64,'+encode64(binary_gif);
-					var image = document.createElement("img");
-							image.style.display = "block";
-							image.style.float = "left";
-							image.setAttribute("src", data_url);
-					var content = document.getElementById("content");
-							content.appendChild(image);
-					amount = 0;
-
-					// start over
-					setupEncoder();
-				}
-      });
-
     </script>
   </body>
-	<h1>Clicked the source canvas <span id = "max">3</span> to create an animated gif.</h1>
+	<h1>Clicked the source canvas <span id = "max"></span> to create an animated gif.</h1>
 	<div id = "content">
 	</div>
 </html>
