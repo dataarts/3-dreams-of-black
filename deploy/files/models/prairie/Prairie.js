@@ -95,7 +95,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 9.640689, 9.640689, 9.640689 ],
-        "visible"       : true,
+        "visible"       : false,
         "castsShadow"   : false,
         "meshCollider"  : false,
         "trigger"       : "None"
@@ -109,7 +109,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 9.640689, 9.640689, 9.640689 ],
-        "visible"       : true,
+        "visible"       : false,
         "castsShadow"   : false,
         "meshCollider"  : false,
         "trigger"       : "None"
