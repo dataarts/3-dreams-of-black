@@ -1,11 +1,11 @@
 var DunesShaderEffectors = {
 	
 	position: [ new THREE.Vector3( 0, 0, -1000 ), 
-  			 	new THREE.Vector3( -100, 0, -4500 ), 
-				new THREE.Vector3( 100, 0, -8000 ), 
+  			 	new THREE.Vector3( -100, 0, -2500 ), 
+				new THREE.Vector3( 100, 0, -4000 ), 
 				new THREE.Vector3( 2000, 0, -2500 ) ],
 	radius: [ 500, 500, 500, 500 ],
-	darkness: [ 1.0, 0.5, 0.0, 0.0 ],
+	darkness: [ 0.0, 1.0, 0.5, 0.0 ],
 
 	positionFlat: [],
 	materials: []
@@ -130,9 +130,14 @@ var DunesShader = {
 			"float distance = -9999999.0;",
 			"float fragmentDarkness = 1.0;",
 			
+			"float tempDistance;",
+			
 			"for( int i = 0; i < NUMTARGETS; i++ ) {",
-				"distance = max( distance, length( vWorldPosition - target[ i ].xyz ) * -1.0 / radius[ i ] );",
-				"fragmentDarkness = min( fragmentDarkness, 1.0 - darkness[ i ] );",
+				"tempDistance = length( vWorldPosition - target[ i ].xyz ) * -1.0 / radius[ i ];",
+				"if( tempDistance > distance ) {",
+					"distance = tempDistance;",
+					"fragmentDarkness = 1.0 - darkness[ i ];",
+				"}",
 			"}",
 			
 			"vec3 worldPosition = vWorldPosition * 0.0005;",

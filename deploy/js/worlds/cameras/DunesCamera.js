@@ -125,8 +125,8 @@ DunesCamera = function( shared ) {
 
 			camera.position.y = camera.target.position.y = wantedCameraTarget.position.y = wantedCamera.position.y;
 
-			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.5 * delta;
-			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.5 * delta;
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.25 * delta;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.25 * delta;
 
 						
 		} else if( progress < CAMERA_START_LIFT ) {
@@ -185,9 +185,9 @@ DunesCamera = function( shared ) {
 			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * 0.5 * delta;
 			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * 0.5 * delta;
 	
-			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA * 0.5 * delta;
-			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA * 0.5 * delta;
-			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA * 0.5 * delta;
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.25 * delta;
+			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * 0.25 * delta;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.25 * delta;
 
 		} else {
 			
