@@ -55,23 +55,27 @@ var FilmSection = function ( shared ) {
 	
 	
 	// Sequence
-	var intro = new VideoPlayer( shared, VideoShots.introLayers, VideoShots.confStill );
+	var intro = new VideoPlayer( shared, VideoShots.introLayers );
 
-	var s01_01 = new VideoPlayer( shared, VideoShots.s01_01, VideoShots.confStill );
-	var s01_03 = new VideoPlayer( shared, VideoShots.s01_03, VideoShots.confParalax );
-	var s01_06 = new VideoPlayer( shared, VideoShots.s01_06, VideoShots.confStill );
-	var s01_09 = new VideoPlayer( shared, VideoShots.s01_09, VideoShots.confParalax );
+	var s01_01 = new VideoPlayer( shared, VideoShots.s01_01 );
+	var s01_03 = new VideoPlayer( shared, VideoShots.s01_03 );
+	var s01_06 = new VideoPlayer( shared, VideoShots.s01_06 );
+	var s01_09 = new VideoPlayer( shared, VideoShots.s01_09 );
 	
-	var s02_01 = new VideoPlayer( shared, VideoShots.s02_01, VideoShots.confParalax );
-	var s02_02 = new VideoPlayer( shared, VideoShots.s02_02, VideoShots.confStill );
-	var s02_03 = new VideoPlayer( shared, VideoShots.s02_03, VideoShots.confStill );
-	var s02_04 = new VideoPlayer( shared, VideoShots.s02_04, VideoShots.confStill );
-	var s02_06 = new VideoPlayer( shared, VideoShots.s02_06, VideoShots.confStill );
+	var s02_01 = new VideoPlayer( shared, VideoShots.s02_01 );
+	var s02_02 = new VideoPlayer( shared, VideoShots.s02_02 );
+	var s02_03 = new VideoPlayer( shared, VideoShots.s02_03 );
+	var s02_04 = new VideoPlayer( shared, VideoShots.s02_04 );
+	var s02_06 = new VideoPlayer( shared, VideoShots.s02_06 );
 	
-	var s03_01 = new VideoPlayer( shared, VideoShots.s03_01, VideoShots.confParalax );
-	var s03_02 = new VideoPlayer( shared, VideoShots.s03_02, VideoShots.confStill );
-	var s03_03 = new VideoPlayer( shared, VideoShots.s03_03, VideoShots.confParalax );
-
+	var s03_01 = new VideoPlayer( shared, VideoShots.s03_01 );
+	var s03_02 = new VideoPlayer( shared, VideoShots.s03_02 );
+	var s03_03 = new VideoPlayer( shared, VideoShots.s03_03 );
+	
+	var cityTransitionTime = 2000;
+	var prairieTransitionTime = 3000;
+	var dunesTransitionTime = 11000;
+	
 	sequencer = new Sequencer();
 
 	sequencer.add( new ClearEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 73.25 ), 0 );
@@ -98,7 +102,7 @@ var FilmSection = function ( shared ) {
 	
 	// city 3d
 	
-	var cityStart = tune.getPatternMS( 16 ) - 3000;
+	var cityStart = tune.getPatternMS( 16 ) - cityTransitionTime; // 1 sec is enough for this transition
 	
 	sequencer.add( new City( shared ),        cityStart, tune.getPatternMS( 24 ), 1 );
 	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 24 ), 5 );
@@ -124,7 +128,7 @@ var FilmSection = function ( shared ) {
 	
 	// prairie 3d
 
-	var prairieStart = tune.getPatternMS( 32 ) - 3000; // <- s02_06.duration
+	var prairieStart = tune.getPatternMS( 32 ) - prairieTransitionTime; // <- s02_06.duration
 	
 	sequencer.add( new Prairie( shared ),            prairieStart, tune.getPatternMS( 40 ), 1 );
 	sequencer.add( new PaintEffectPrairie( shared ), prairieStart, tune.getPatternMS( 40 ), 5 );
@@ -145,7 +149,7 @@ var FilmSection = function ( shared ) {
 	
 	// dunes 3d
 	
-	var dunesStart = tune.getPatternMS( 48 ) - 11000;// <- s03_03.duration;
+	var dunesStart = tune.getPatternMS( 48 ) - dunesTransitionTime;// <- s03_03.duration;
 
 	sequencer.add( new Dunes( shared ), 		   dunesStart, tune.getPatternMS( 73.25 ), 1 );
 	sequencer.add( new PaintEffectDunes( shared ), dunesStart, tune.getPatternMS( 73.25 ), 5 );
@@ -165,15 +169,15 @@ var FilmSection = function ( shared ) {
 	// final render
 
 	sequencer.add( new RenderEffect( shared ),     tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 6 ); 		// intro
-	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 3000, 6 ); // city animation
+	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 6 ); // city animation
 
 	// !!!!!!!!! Here PaintEffect draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new PaintEffectVideo( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - 3000, 6 ); // prairie animation
+	sequencer.add( new PaintEffectVideo( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 6 ); // prairie animation
 	
 	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - 11000, 6 ); // dunes animation
+	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
 	
 	// !!!!!!!!! Here PaintEffectDunes draws directly to frame buffer !!!!!!!!!!!!
 
