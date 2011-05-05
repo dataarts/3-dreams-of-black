@@ -170,7 +170,7 @@ var VideoShots = {
     },{
         path: "files/videos/prairie/s06_layer01.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
-		removeAt: 0.6,
+		removeAt: 0.7,
         z: -1000
     }
 	],
