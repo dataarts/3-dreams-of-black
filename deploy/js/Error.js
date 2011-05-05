@@ -63,7 +63,6 @@ function HandleErrors(d) {
             // overlay our condition
             window.addEventListener("load", function() {
 
-              console.log(document.getElementById('ui-container'));
               var uiContainer = document.getElementById('ui-container');
               if(uiContainer) {
                 uiContainer.style.display = "none";
