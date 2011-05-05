@@ -1,15 +1,15 @@
 span.title, #see-the-code {
-  font-family: "Gotham Medium", sans-serif;
+  font-family: FuturaBT-Medium, sans-serif;
 }
 
 h1, h2, h3, dt, #get-the-code, #top {
-  font: 12px/20px "Gotham Book", sans-serif;
+  font: 12px/20px FuturaBT-Medium, sans-serif;
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
 #footer-links a {
-  font: 10px/20px "Gotham Book", sans-serif;
+  font: 10px/20px FuturaBT-Medium, sans-serif;
   text-transform: uppercase;
   color: #f4f4ec;
   letter-spacing: 1px;

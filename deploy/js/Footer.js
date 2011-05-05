@@ -78,7 +78,7 @@ var Footer = function(container, prefix) {
 		'  padding: 0;',
 		'}',
 		'.rome-footer {',
-		'  font: 500 10px/18px "Futura", Arial, sans-serif;',
+		'  font: 500 10px/18px FuturaBT-Medium, Arial, sans-serif;',
 		'  color: #434343;',
 		'  text-transform: uppercase;',
 		'  letter-spacing: 1px;',
@@ -172,7 +172,7 @@ var Footer = function(container, prefix) {
     // Handle dom and html content
     container.innerHTML = html;
 
-    // Append stylesheet
+    // Append stylesheets
     if (Footer.multipleInstances < 1) {
 
         var rule = document.createTextNode(css);
