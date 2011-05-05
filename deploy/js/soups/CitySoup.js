@@ -405,7 +405,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	
-	this.update = function ( delta ) {
+	this.update = function ( delta, otherCamera ) {
 
 		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
 			//delta = 1000/60;
@@ -416,9 +416,21 @@ var CitySoup = function ( camera, scene, shared ) {
 		//console.log(optimal+" | "+delta+" | "+percent);
 
 		// update to reflect _real_ camera position
-		shared.camPos.x = camera.matrixWorld.n14;
-		shared.camPos.y = camera.matrixWorld.n24;
-		shared.camPos.z = camera.matrixWorld.n34;
+		
+		if( !otherCamera ) {
+			
+			shared.camPos.x = camera.matrixWorld.n14;
+			shared.camPos.y = camera.matrixWorld.n24;
+			shared.camPos.z = camera.matrixWorld.n34;
+			
+			collisionScene.settings.camera = camera;
+			
+		} else {
+			
+			shared.camPos.copy( otherCamera.matrixWorld.getPosition());
+			collisionScene.settings.camera = otherCamera;
+		}
+		
 
 		// temp reset
 		if (shared.camPos.z <= -3290 || shared.camPos.x > 1640 || shared.camPos.x < -1640) {

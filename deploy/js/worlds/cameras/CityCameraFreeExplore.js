@@ -24,13 +24,16 @@ CityCameraFreeExplore = function( shared ) {
 	var wantedCamera;
 	var wantedCameraTarget;
 	var wantedCameraDirection = new THREE.Vector3();
+	var portalDirectionDot = new THREE.Vector3();
 	var world;
 	var camera;
+	var portals;
 	
 	
 	// construct
 
 	world = shared.worlds.city;
+	portals = world.portals;
 	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 
 	camera.target.position.set( 0, 0, -100 );
@@ -95,25 +98,53 @@ CityCameraFreeExplore = function( shared ) {
 		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * 500 - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * 500 + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 
-			
-		// calc camera speed (dependent on hight)
-
-		cameraSpeed = CAMERA_FORWARD_SPEED;
-		
-		var cameraHightFactor = ( Math.min( Math.max( wantedCamera.position.y, boundingZ.start.y ), boundingZ.end.y ) - boundingZ.start.y ) / ( boundingZ.end.y - boundingZ.start.y );
-		cameraSpeed += ( CAMERA_FORWARD_SPEED_MAX - CAMERA_FORWARD_SPEED ) * cameraHightFactor;
-			
 
 		// move forward
+		// if moving towards portal, home in on it
 
-		wantedCamera.position.addSelf( wantedCameraDirection.multiplyScalar( cameraSpeed * delta ));
+		var closestPortal;
+		var closestDistance = 9999999999;
+
+		for( var p = 0; p < portals.length; p++ ) {
+			
+			var portal = portals[ p ];
+			var dot = portalDirectionDot.sub( portal.object.matrixWorld.getPosition(), wantedCamera.position ).normalize().dot( wantedCameraDirection );
+	
+			if( dot > 0.7 && portal.currentDistance < closestDistance ) {
+				
+				closestDistance = portal.currentDistance;
+				closestPortal   = portal;
+				
+			}			
+			
+		}
+		
+		if( closestPortal && closestDistance < closestPortal.radius * 4 ) {
+			
+			wantedCamera.position.addSelf( portalDirectionDot.normalize().multiplyScalar( CAMERA_FORWARD_SPEED * delta ));
+			
+		} else {
+
+			// calc camera speed (dependent on hight)
+	
+			cameraSpeed = CAMERA_FORWARD_SPEED;
+			
+			var cameraHightFactor = ( Math.min( Math.max( wantedCamera.position.y, boundingZ.start.y ), boundingZ.end.y ) - boundingZ.start.y ) / ( boundingZ.end.y - boundingZ.start.y );
+			cameraSpeed += ( CAMERA_FORWARD_SPEED_MAX - CAMERA_FORWARD_SPEED ) * cameraHightFactor;
 
 
-		// cap xyz
+			// move forward
+	
+			wantedCamera.position.addSelf( wantedCameraDirection.multiplyScalar( cameraSpeed * delta ));
+	
+	
+			// cap xyz
+	
+			wantedCamera.position.x = boundingZ.start.x;
+			wantedCamera.position.y = Math.max( Math.min( wantedCamera.position.y, boundingZ.end.y ), boundingZ.start.y );
+			wantedCamera.position.z = Math.min( Math.max( wantedCamera.position.z, boundingZ.end.z ), boundingZ.start.z );
 
-		wantedCamera.position.x = boundingZ.start.x;
-		wantedCamera.position.y = Math.max( Math.min( wantedCamera.position.y, boundingZ.end.y ), boundingZ.start.y );
-		wantedCamera.position.z = Math.min( Math.max( wantedCamera.position.z, boundingZ.end.z ), boundingZ.start.z );
+		}
 
 
 		// position intertia
