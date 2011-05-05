@@ -9,7 +9,9 @@ var GALLERY = function(params) {
 
   params['category'] = params['category'] || 'everyone';
 
-  var OBJECTS_PER_PAGE = 15;
+console.log(params);
+
+  var OBJECTS_PER_PAGE = 10;
   var LOCAL_STORAGE_VOTE_PREFIX = 'vote';
 
   var gallery = $('#gallery');
@@ -38,8 +40,8 @@ var GALLERY = function(params) {
     '</div>',
     '</div>'].join("\n");
 
-  createPagination();
   populateObjects();
+	createPagination();
 
   function createPagination() {
 
@@ -49,7 +51,58 @@ var GALLERY = function(params) {
 						if (!data.success) {
 							error(data.error);
 						} else { 
-						  //console.log(data, 'There are ' + data.count + ' objects in this category.');
+						  
+							var numPages = Math.ceil(data.count/OBJECTS_PER_PAGE);
+							
+							if (numPages == 1) return;
+							
+							var ul = document.getElementById('pagination');
+							
+							var addPageLi = function(i) {
+								var classDec = i == params['page'] ? ' class="selected"' : '';
+								var url = '?c='+params['category']+'&p='+i;
+								ul.innerHTML += '<li'+classDec+'><a href="'+url+'">'+i+'</a></li>';
+							}
+							
+							var addHellipLi = function(i) {
+						    ul.innerHTML += '<li class="hellip"> &hellip; </li>';
+							}
+							
+							if (numPages <= 5) {
+								
+								for (var i = 1; i <= numPages; i++) {
+									addPageLi(i);
+								}
+								
+							} else if ( params['page'] < 3 ) {
+								
+									addPageLi(1);
+									addPageLi(2);
+									addPageLi(3);
+									addHellipLi();
+									addPageLi(numPages);
+								
+							} else if ( params['page'] > numPages - 2 ) {
+							
+									addPageLi(1);
+									addHellipLi();
+									addPageLi(numPages-2);
+									addPageLi(numPages-1);
+									addPageLi(numPages);
+								
+							} else { 
+								
+									addPageLi(1);
+									if ( params['page'] - 2 != 1 ) addHellipLi();
+									addPageLi(params['page']-1);
+									addPageLi(params['page']);
+									addPageLi(params['page']+1);
+									if ( params['page'] + 2 != numPages ) addHellipLi();
+									addPageLi(numPages);
+								
+							}
+							
+						
 						}
           },
           error: error('Error fetching object totals.')
