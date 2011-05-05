@@ -7,7 +7,7 @@ div.object-title {
 
 ul#pagination li {
   font: 9.5px/29px "Gotham Medium", sans-serif;
-  float: left;
+display: inline-block;
   text-align: center;
   height: 28px;
   width: 28px;
@@ -187,8 +187,8 @@ div#webgl {
 }
 
 ul#pagination {
-  width: 230px;
-  margin: 0 auto;
+	text-align: center;
+	width: 100%;
   margin-top: 40px;
   list-style: none;
 }
