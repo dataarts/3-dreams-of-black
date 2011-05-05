@@ -141,7 +141,6 @@ var UgcObjectCreator = function ( shared ) {
 		ctx.drawImage(renderer.domElement,0,0,c.width,c.height);
 		var thumbnail = c.toDataURL('image/png');
 		delete c;
-		console.log(thumbnail);
 
 		var submission = {
 			title: 'Amorphous Building',

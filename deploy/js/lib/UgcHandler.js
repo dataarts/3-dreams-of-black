@@ -48,6 +48,31 @@ var UgcHandler = function () {
 		xhr.send( null );
 	};
 
+  var submitImage = function(id, upload_url, name, image) {
+      function byteValue(x) {
+        return x.charCodeAt(0) & 0xff;
+      }
+      var xhr = new XMLHttpRequest(),
+          boundary = 'AJAX------------------------AJAX',
+          contentType = "multipart/form-data; boundary=" + boundary,
+          postHead = '--' + boundary + '\r\n' +
+              'Content-Disposition: form-data; name="file"; filename="' + name + '"\r\n' +
+              'Content-Type: application/octet-stream\r\n\r\n',
+          postTail = '\r\n--' + boundary + '--';
+      var head = Array.prototype.map.call(postHead, byteValue);
+      var tail = Array.prototype.map.call(postTail, byteValue);
+      xhr.open('POST', upload_url);
+      xhr.setRequestHeader('Content-Type', contentType);
+      var lh = head.length;
+      var li = image.length;
+      var lt = tail.length;
+      var byteArray = new Uint8Array(lh+li+lt);
+      byteArray.set(head, 0);
+      byteArray.set(image,lh);
+      byteArray.set(tail,lh+li);
+      xhr.send(byteArray.buffer);
+  };
+
 	this.submitUGO = function ( submission, callback ) {
 
 		var url = base_url;
