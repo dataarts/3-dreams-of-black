@@ -179,11 +179,6 @@ var Footer = function(container, prefix) {
         var head = document.getElementsByTagName('head')[0];
         var style = document.createElement('style');
 
-				var link = document.createElement('link');
-				link.setAttribute('rel', 'stylesheet');
-				link.setAttribute('type', 'text/css');
-				link.setAttribute('href', '/files/futura.css');
-
         if (style.stylesheet) {
 
             style.styleSheet.cssText = rule.nodeValue;
