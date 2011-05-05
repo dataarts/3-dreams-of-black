@@ -1,11 +1,11 @@
-/* Converted from: City3_Export16b.blend
+/* Converted from: City3_Export18b.blend
  *
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
- * objects:    359
- * geometries: 44
- * materials:  263
+ * objects:    364
+ * geometries: 45
+ * materials:  268
  * textures:   19
  */
 
@@ -17,10 +17,66 @@ var scene = {
 
 "objects" :
 {
-    "Ground" : {
-        "geometry"  : "geo_Ground",
+    "Collision_Big.004" : {
+        "geometry"  : "geo_Collision_Big.006",
         "groups"    : [  ],
-        "materials" : [ "Ground" ],
+        "materials" : [ "Collision.005" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : false,
+        "castsShadow"   : false,
+        "meshCollider"  : true,
+        "trigger"       : "None"
+    },
+
+    "Collision_Big.003" : {
+        "geometry"  : "geo_Collision_Big.005",
+        "groups"    : [  ],
+        "materials" : [ "Collision.004" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : false,
+        "castsShadow"   : false,
+        "meshCollider"  : true,
+        "trigger"       : "None"
+    },
+
+    "Collision_Big.001" : {
+        "geometry"  : "geo_Collision_Big.004",
+        "groups"    : [  ],
+        "materials" : [ "Collision.003" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : false,
+        "castsShadow"   : false,
+        "meshCollider"  : true,
+        "trigger"       : "None"
+    },
+
+    "Collision_Big.000" : {
+        "geometry"  : "geo_Collision_Big.000",
+        "groups"    : [  ],
+        "materials" : [ "Collision.002" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : false,
+        "castsShadow"   : false,
+        "meshCollider"  : true,
+        "trigger"       : "None"
+    },
+
+    "Exploration_Collision" : {
+        "geometry"  : "geo_Exploration_Collision",
+        "groups"    : [  ],
+        "materials" : [ "Collision.001" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -31,10 +87,60 @@ var scene = {
         "trigger"       : "None"
     },
 
-    "Backdrop_City" : {
-        "geometry"  : "geo_Backdrop_City.001",
+    "Portal.003" : {
         "groups"    : [  ],
-        "materials" : [ "Backdrop_City.001" ],
+        "position"  : [ 70.476425, 32787.789062, 929.734375 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 219.401672, 219.401672, 219.401672 ],
+        "trigger"   : "None"
+    },
+
+    "Portal.002" : {
+        "groups"    : [  ],
+        "position"  : [ 15440.302734, 17543.867188, 929.734375 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 219.401672, 219.401672, 219.401672 ],
+        "trigger"   : "None"
+    },
+
+    "Portal.001" : {
+        "groups"    : [  ],
+        "position"  : [ -24.556435, 2489.459473, 929.734375 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 219.401672, 219.401672, 219.401672 ],
+        "trigger"   : "None"
+    },
+
+    "Portal" : {
+        "groups"    : [  ],
+        "position"  : [ -15377.242188, 17643.832031, 929.734375 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 219.401672, 219.401672, 219.401672 ],
+        "trigger"   : "None"
+    },
+
+    "Backdrop_City" : {
+        "geometry"  : "geo_Backdrop_City.003",
+        "groups"    : [  ],
+        "materials" : [ "Backdrop_City.003" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "None"
+    },
+
+    "Ground" : {
+        "geometry"  : "geo_Ground",
+        "groups"    : [  ],
+        "materials" : [ "Ground" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -193,7 +299,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -3.141591 ],
         "quaternion": [ -0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "ExitHead_.000" : {
@@ -265,7 +371,7 @@ var scene = {
         "rotation"  : [ 3.141591, -0.000000, 0.000000 ],
         "quaternion": [ 0.000001, 1.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.018" : {
@@ -904,7 +1010,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.002" : {
@@ -1205,7 +1311,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.002" : {
@@ -1214,7 +1320,7 @@ var scene = {
         "rotation"  : [ 0.000002, -3.141593, -0.000001 ],
         "quaternion": [ -0.000000, 0.000001, 1.000000, -0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.001" : {
@@ -1349,7 +1455,7 @@ var scene = {
         "rotation"  : [ 0.000002, -3.141593, 0.000001 ],
         "quaternion": [ 0.000000, -0.000001, 1.000000, -0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_8_.001" : {
@@ -1385,7 +1491,7 @@ var scene = {
         "rotation"  : [ -0.062131, -0.000000, -1.570796 ],
         "quaternion": [ 0.706766, -0.021963, 0.021963, -0.706766 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.000" : {
@@ -1421,7 +1527,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
+        "trigger"   : "None"
     },
 
     "Console_15_" : {
@@ -1430,49 +1536,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Small"
-    },
-
-    "Collision_Big.003" : {
-        "geometry"  : "geo_Collision_Big.003",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
-        "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : false,
-        "meshCollider"  : true,
-        "trigger"       : "None"
-    },
-
-    "Collision_Big.000" : {
-        "geometry"  : "geo_Collision_Big.002",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : false,
-        "meshCollider"  : true,
-        "trigger"       : "None"
-    },
-
-    "Collision_Big.004" : {
-        "geometry"  : "geo_Collision_Big.001",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : false,
-        "meshCollider"  : true,
-        "trigger"       : "None"
+        "trigger"   : "None"
     },
 
     "Shadow.019" : {
@@ -1675,7 +1739,7 @@ var scene = {
         "geometry"  : "geo_Cube.003",
         "groups"    : [  ],
         "materials" : [  ],
-        "position"  : [ 6075.614258, 13774.334961, 1744.303955 ],
+        "position"  : [ 6075.614258, 13749.921875, 1744.303955 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
@@ -1696,20 +1760,6 @@ var scene = {
         "visible"       : false,
         "castsShadow"   : true,
         "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Collision_Big.001" : {
-        "geometry"  : "geo_Collision_Big",
-        "groups"    : [  ],
-        "materials" : [ "Collision" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
-        "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : false,
-        "meshCollider"  : true,
         "trigger"       : "None"
     },
 
@@ -2079,7 +2129,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570795 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707106 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_10_.013" : {
@@ -2088,7 +2138,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570795 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707106 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.026" : {
@@ -2097,7 +2147,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570795 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707106 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.037" : {
@@ -2133,7 +2183,7 @@ var scene = {
         "rotation"  : [ 3.141591, -0.000000, 0.000000 ],
         "quaternion": [ 0.000001, 1.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.041" : {
@@ -2196,7 +2246,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, -0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_5_.039" : {
@@ -2214,7 +2264,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.023" : {
@@ -2223,7 +2273,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000001 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_11_.016" : {
@@ -2232,7 +2282,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000001 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_12_.020" : {
@@ -2916,7 +2966,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.022" : {
@@ -2974,7 +3024,7 @@ var scene = {
     },
 
     "Console_5_.033" : {
-        "groups"    : [  ],
+        "groups"    : [ "Hide_Mesh" ],
         "position"  : [ 2609.046875, 26157.214844, 1969.889771 ],
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
@@ -3051,7 +3101,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, -3.141591 ],
         "quaternion": [ -0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_6_.048" : {
@@ -3472,14 +3522,39 @@ var scene = {
 
 "geometries" :
 {
+    "geo_Collision_Big.006" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Collision_Big.006.js"
+    },
+
+    "geo_Collision_Big.005" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Collision_Big.005.js"
+    },
+
+    "geo_Collision_Big.004" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Collision_Big.004.js"
+    },
+
+    "geo_Collision_Big.000" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Collision_Big.000.js"
+    },
+
+    "geo_Exploration_Collision" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Exploration_Collision.js"
+    },
+
+    "geo_Backdrop_City.003" : {
+        "type" : "ascii_mesh",
+        "url"  : "City.Backdrop_City.003.js"
+    },
+
     "geo_Ground" : {
         "type" : "ascii_mesh",
         "url"  : "City.Ground.js"
-    },
-
-    "geo_Backdrop_City.001" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Backdrop_City.001.js"
     },
 
     "geo_5" : {
@@ -3592,21 +3667,6 @@ var scene = {
         "url"  : "City.Cube.006.js"
     },
 
-    "geo_Collision_Big.003" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Collision_Big.003.js"
-    },
-
-    "geo_Collision_Big.002" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Collision_Big.002.js"
-    },
-
-    "geo_Collision_Big.001" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Collision_Big.001.js"
-    },
-
     "geo_Cube.020" : {
         "type" : "ascii_mesh",
         "url"  : "City.Cube.020.js"
@@ -3685,18 +3745,13 @@ var scene = {
     "geo_Cube" : {
         "type" : "ascii_mesh",
         "url"  : "City.Cube.js"
-    },
-
-    "geo_Collision_Big" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Collision_Big.js"
     }
 },
 
 
 "textures" :
 {
-    "Backdrop_City.jpg.001" : {
+    "Backdrop_City.jpg" : {
         "url": "Backdrop_City.jpg"
     },
 
@@ -3791,9 +3846,9 @@ var scene = {
         "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "Backdrop_City.001" : {
+    "Backdrop_City.003" : {
         "type": "MeshBasicMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Backdrop_City.jpg.001", vertexColors: "vertex" }
+        "parameters": { color: 16777215, opacity: 1.00, map: "Backdrop_City.jpg" }
     },
 
     "bus_0006_flowerSu.000" : {
@@ -4102,6 +4157,31 @@ var scene = {
     },
 
     "Collision" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16592639, opacity: 1.00 }
+    },
+
+    "Collision.001" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16711823, opacity: 1.00 }
+    },
+
+    "Collision.002" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16592639, opacity: 1.00 }
+    },
+
+    "Collision.003" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16592639, opacity: 1.00 }
+    },
+
+    "Collision.004" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16592639, opacity: 1.00 }
+    },
+
+    "Collision.005" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16592639, opacity: 1.00 }
     },

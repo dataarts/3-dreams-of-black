@@ -29,7 +29,7 @@ var model = {
 	"shading" : "Lambert",
 	"specularCoef" : 10,
 	"transparency" : 1.0,
-	"vertexColors" : false
+	"vertexColors" : 1
 	},
 
 	{
@@ -37,7 +37,7 @@ var model = {
 	"DbgIndex" : 1,
 	"DbgName" : "TreeLowDetail",
 	"colorAmbient" : [0.0, 0.0, 0.0],
-	"colorDiffuse" : [0.15289999544620514, 0.3882000148296356, 0.06270000338554382],
+	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
 	"shading" : "Lambert",
 	"specularCoef" : 10,
@@ -50,7 +50,7 @@ var model = {
 	"DbgIndex" : 2,
 	"DbgName" : "Powerlines",
 	"colorAmbient" : [0.0, 0.0, 0.0],
-	"colorDiffuse" : [0.07840000092983246, 0.050999999046325684, 0.023499999195337296],
+	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
 	"shading" : "Lambert",
 	"specularCoef" : 10,
@@ -63,7 +63,7 @@ var model = {
 	"DbgIndex" : 3,
 	"DbgName" : "TreeLowDetail.001",
 	"colorAmbient" : [0.0, 0.0, 0.0],
-	"colorDiffuse" : [0.15289999544620514, 0.3882000148296356, 0.06270000338554382],
+	"colorDiffuse" : [1.0, 1.0, 1.0],
 	"colorSpecular" : [0.8999999761581421, 0.8999999761581421, 0.8999999761581421],
 	"shading" : "Lambert",
 	"specularCoef" : 10,

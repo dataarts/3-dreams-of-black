@@ -65,7 +65,9 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 			if (particleArray[i].alivetime >= numOfParticleSystems) {
 				particleArray[i].alivetime = 0;
-				particles.scale.x = particles.scale.y = particles.scale.z = 0.1;
+				//particles.scale.x = particles.scale.y = particles.scale.z = 0.1;
+				particles.scale.x = particles.scale.y = particles.scale.z = 0.5;
+
 				particles.position.x = position.x;
 				particles.position.y = position.y;
 				particles.position.z = position.z;

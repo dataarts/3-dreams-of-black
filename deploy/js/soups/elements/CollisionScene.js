@@ -231,7 +231,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 			
 			// emitter
 			var vector = new THREE.Vector3( ( shared.mouse.x / shared.screenWidth ) * 2 - 1, - ( shared.mouse.y / shared.screenHeight ) * 2 + 1, 0.5 );
-			projector.unprojectVector( vector, camera );
+			projector.unprojectVector( vector, that.settings.camera );
 			var rayOld = new THREE.Ray( camPos, vector.subSelf( camPos ).normalize() );
 			var intersects = rayOld.intersectScene( collisionScene );
 
@@ -490,7 +490,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 			emitterFollowReal.position = that.emitterFollow.position;
 			cameraTargetReal.position = that.cameraTarget.position;
 	*/
-			shared.renderer.render( collisionScene, camera );
+			shared.renderer.render( collisionScene, that.settings.camera );
 			//shared.renderer.render( scene, camera, renderTarget );
 			shared.renderer.clear();
 

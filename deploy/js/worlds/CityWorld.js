@@ -84,7 +84,7 @@ var CityWorld = function ( shared ) {
 			
 		}
 		
-		TriggerUtils.setupCityTriggers( result );
+		//TriggerUtils.setupCityTriggers( result );
 
 		// fix texture wrapping for skydome
 		
@@ -120,13 +120,13 @@ var CityWorld = function ( shared ) {
 		if( time > 1.0 )
 			time = 0.0;
 		
-		TriggerUtils.effectorRadius = 300;
-		TriggerUtils.update();
+		//TriggerUtils.effectorRadius = 200;
+		//TriggerUtils.update();
 
 		targetPosition = camera.target.position;
 
-		updateCityShader( cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, cameraPosition, targetPosition, time );
-		
+		//updateCityShader( cityMaterialGrassStart, cityMaterialGrassEnd, cityMaterials, cameraPosition, targetPosition, time );
+
 		if ( portalsActive ) {
 			
 			d = portal.distanceTo( cameraPosition );

@@ -237,7 +237,7 @@ ROME.AnimalShader = {
 					"animalMorphValue" :    		{ type: "f", value: 0.0 },					
 
 					"lightScale"  :    { type: "f", value: 1.0 },
-					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) }
+					"lightOffset" :    { type: "v3", value: new THREE.Vector3( 0.0, 0.0, 0.0 ) },
 
 			   } ] );
 	},
@@ -290,7 +290,7 @@ ROME.AnimalShader = {
 
 			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
 			"float directionalLightWeighting = dot( transformedNormal, normalize( lDirection.xyz ) ) * 0.5 + 0.5;",
-			"vLightWeighting += vec3( 0.7 ) * directionalLightWeighting;",
+			"vLightWeighting += vec3( 1.0 ) * directionalLightWeighting;",
 			
 			/*
 			"vec4 lDirection = viewMatrix * vec4( vec3( 0.0, 1.0, 1.0 ), 0.0 );",
@@ -331,6 +331,8 @@ ROME.AnimalShader = {
 			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 ) * vec4( 0.9, 0.85, 0.8, 1.0 );",
 			
 			THREE.ShaderChunk[ "fog_fragment" ],
+			
+			//"gl_FragColor = gl_FragColor * vec4( 1.0, 0.0, 0.0, 1.0 );",
 
 		"}"
 
@@ -345,8 +347,9 @@ ROME.AnimalAnimationData = {
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
 	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
-	animalNames: [ "tarbuffalo", "horse", "bearbrown", "mountainlion", "deer", "goldenRetreiver", "fox", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "scorp", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "bearblack", "panther", "wolf", "toad", "eagle", "owl", "parrot", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "raven", "vulture", "bison", "sickle", "armHand" ],
-	
+	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "tarbuffalo", "bearbrown", "horse", "deer", "mountainlion", "goldenRetreiver", "fox", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "blackWidow", "crab", "scorp", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "wolf", "panther", "bearblack", "toad", "eagle", "owl", "parrot", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "raven", "vulture", "bison", "sickle", "armHand", "sickle", "centipede", "shdw2", "shdw5", "drownArm_A", "drownArm_C" ],
+
 	colorVariations: {
 		
 	"armhand": { hRange:  0.02, sRange:  0.10,  vRange: 0.05,
@@ -356,9 +359,13 @@ ROME.AnimalAnimationData = {
 	"bearBlack": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
 			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
 				  
-	"bearBrown": { hRange:  0.02, sRange:   0.15, vRange:  0.25,
+	"bearBrown": { hRange:  0.02, sRange:   0.15, vRange:  0.15,
 			       hOffset: -0.01, sOffset:  0.05, vOffset: -0.15 },				  
-			
+
+	"blackWidow": { hRange:  0.02, sRange:  0.10,  vRange: 0.05,
+			     hOffset: 0.00, sOffset: 0.0,   vOffset: -0.1 },
+			  
+				   
 	"bunny": { hRange:  0.05, sRange:  0.125, vRange:  0.20,
 			  hOffset: 0.00, sOffset:  -0.05, vOffset: 0.00 },				   
 			  
@@ -375,13 +382,13 @@ ROME.AnimalAnimationData = {
 			        hOffset: 0.00, sOffset: 0.00, vOffset: 0.0 },
 
 	"centipede": { hRange: 0.05, sRange:  0.00, vRange:  0.55,
-		           hOffset: 0.00, sOffset: 0.10, vOffset: -0.40 },
+		           hOffset: 0.00, sOffset: 0.10, vOffset: -0.45 },
 					
 	"chow": { hRange:  0.025, sRange:   0.15, vRange:  0.10,
-			  hOffset: 0.00, sOffset:  -0.1, vOffset: 0.10 },
+			  hOffset: 0.00, sOffset:  -0.1,  vOffset: -0.1 },
 
 	"cow": { hRange:  0.00, sRange:   0.00, vRange:  0.20,
-			 hOffset: 0.00, sOffset:  0.05, vOffset: 0.00 },
+			 hOffset: 0.00, sOffset:  0.05, vOffset: -0.25 },
 
 	"cowCarcass": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
 			        hOffset: 0.00, sOffset:  -0.10, vOffset: 0.00 },
@@ -407,11 +414,11 @@ ROME.AnimalAnimationData = {
 	"fox": { hRange:  0.03, sRange:   0.15, vRange:  0.25,
 			 hOffset: -0.012, sOffset:  0.05, vOffset: 0.00 },
 				  
-	"frog": { hRange:  0.00, sRange:   0.10, vRange:  0.20,
-			  hOffset: 0.01, sOffset:  0.00, vOffset: 0.00 },
+	"frog": { hRange:  0.05, sRange:   0.10, vRange:  0.25,
+			  hOffset: 0.01, sOffset:  0.05, vOffset: -0.10 },
 			  
 	"gator": { hRange:  0.05, sRange:   0.00, vRange:  0.20,
-			   hOffset: -0.05, sOffset:  0.00, vOffset: -0.21 },
+			   hOffset: -0.05, sOffset:  0.00, vOffset: -0.26 },
 			  
 	"goat": { hRange:  0.02, sRange:   0.07, vRange:  0.1,
 			  hOffset: 0.00, sOffset:  0.00, vOffset: -0.20 },			  
@@ -435,43 +442,43 @@ ROME.AnimalAnimationData = {
 			 hOffset: -0.005, sOffset:  -0.3, vOffset: -0.10 },
 
 	"panther": { hRange:  0.00, sRange:  0.10, vRange:  0.075,
-			     hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+			     hOffset: 0.00, sOffset:  0.00, vOffset: -0.16 },
 
 			 
 	"parrot": { hRange:  0.05, sRange:   0.10, vRange:  0.3,
 			    hOffset: -0.025, sOffset:  0.1, vOffset: -0.10 },
 
-	"raccoon": { hRange:  0.00, sRange:   0.00, vRange:  0.25,
-			     hOffset: 0.00, sOffset:  -0.20, vOffset: -0.15 },			  
+	"raccoon": { hRange:  0.00, sRange:   0.10, vRange:  0.25,
+			     hOffset: 0.6, sOffset:  -0.10, vOffset: -0.2 },			  
 
 	"raven": { hRange:  0.02, sRange:  0.10,  vRange: 0.1,
 			  hOffset: 0.00, sOffset:  0.0, vOffset: -0.1 },
 
 	"scorp": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
-			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.15 },
 			   
 	"seal": { hRange:  0.00, sRange:  0.00, vRange:  0.05,
-			  hOffset: 0.00, sOffset:  0.05, vOffset: 0.00 },
+			  hOffset: 0.00, sOffset: 0.05, vOffset: -0.10 },
 	
-	"shdw2": { hRange:  0.00, sRange:   0.10, vRange:  0.075,
-			      hOffset: 0.00, sOffset:  0.00, vOffset: -0.10 },
+	"shdw2": { hRange:  0.00, sRange:   0.10, vRange:  0.06,
+			      hOffset: 0.00, sOffset:  -0.05, vOffset: -0.15 },
 			   
-	"sickle": { hRange:  0.04, sRange:  0.00, vRange:  0.05,
-		       hOffset: 0.00, sOffset: -0.20, vOffset: -0.10 },
+	"sickle": { hRange:  0.04, sRange:  0.00, vRange:  0.1,
+		       hOffset: 0.00, sOffset: -0.20, vOffset: -0.30 },
 
 	"stork": { hRange:  0.00, sRange:   0.10, vRange:  0.20,
 			   hOffset: 0.02, sOffset:  -0.05, vOffset: -0.05 },
 			   
 	"tarbuffalo": { hRange:  0.04, sRange:  0.10,  vRange:  0.1,
-		            hOffset: -0.015, sOffset: 0.0, vOffset: -0.15 },
+		            hOffset: -0.015, sOffset: 0.0, vOffset: -0.175 },
 			  
-	"toad": { hRange:  0.07, sRange:   0.00, vRange:  0.20,
+	"toad": { hRange:  0.07, sRange:   0.00, vRange:  0.1,
 			  hOffset: -0.02,  sOffset:  0.0, vOffset: -0.25 },			  
 			  
-	"vulture": { hRange:  0.01, sRange:   0.25, vRange:  0.12,
-			     hOffset: 0.0, sOffset:  -0.10, vOffset: -0.135 },
+	"vulture": { hRange:  0.01, sRange:   0.25, vRange:  0.08,
+			     hOffset: 0.0, sOffset:  -0.10, vOffset: -0.16 },
 
-	"wolf": { hRange:  0.00,  sRange:   0.2, vRange:  0.125,
+	"wolf": { hRange:  0.00,  sRange:   0.2, vRange:  0.06,
 			  hOffset: -0.05, sOffset:  -0.15, vOffset: -0.10 },
 
 	"zero": { hRange:  0.00, sRange:   0.00, vRange:  0.00,
@@ -485,6 +492,8 @@ ROME.AnimalAnimationData = {
 
 		"bearbrown"   : "bearBrown",
 		"bearblack"   : "bearBlack",
+		
+		"blackwidow"   : "blackWidow",
 
 		"bunny" 	: "bunny",
 		
@@ -706,7 +715,7 @@ ROME.AnimalAnimationData = {
 					if ( this.animalVariationMap[ morphTargetName ] !== undefined ) {
 						
 						variations = this.colorVariations[  this.animalVariationMap[ morphTargetName ] ];
-						//console.log( morphColor.name, morphTargetName );
+						console.log( morphColor.name, morphTargetName );
 
 					}
 					
@@ -730,7 +739,7 @@ ROME.AnimalAnimationData = {
 
 					}		
 					
-					//console.log( morphTargetName );
+					console.log( morphTargetName );
 
 					randomizeColors( attributes[ morphTargetName ].value, variations );
 					
@@ -799,6 +808,24 @@ ROME.AnimalAnimationData = {
 			//randomizeColors( attributes.colorAnimalA.value, variations );
 			//randomizeColors( attributes.colorAnimalB.value, variations );
 
+
+			function randomizeColors( colors, variations ) {
+				
+				var i, il, c, hd, sd, vd;
+				
+				for( i = 0, il = colors.length; i < il; i++ ) {
+					
+					c = colors[ i ];
+
+					hd = variations.hRange * Math.random() + variations.hOffset;
+					sd = variations.sRange * Math.random() + variations.sOffset;
+					vd = variations.vRange * Math.random() + variations.vOffset;
+
+					THREE.ColorUtils.adjustHSV( c, hd, sd, vd );							
+					
+				}
+
+			}
 			
 			// set return values
 	
@@ -840,7 +867,7 @@ ROME.AnimalAnimationData = {
 						array: undefined,
 						buffer: undefined,
 						needsUpdate: false,
-						__webglInitialized: true
+						__webglInitialized: true,
 
 					};
 					
@@ -861,24 +888,6 @@ ROME.AnimalAnimationData = {
 			
 		};
 
-	}
-
-};
-
-function randomizeColors( colors, variations ) {
-	
-	var i, il, c, hd, sd, vd;
-	
-	for( i = 0, il = colors.length; i < il; i++ ) {
-		
-		c = colors[ i ];
-
-		hd = variations.hRange * Math.random() + variations.hOffset;
-		sd = variations.sRange * Math.random() + variations.sOffset;
-		vd = variations.vRange * Math.random() + variations.vOffset;
-
-		THREE.ColorUtils.adjustHSV( c, hd, sd, vd );
-		
 	}
 
 };
