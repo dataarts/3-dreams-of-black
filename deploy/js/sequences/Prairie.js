@@ -13,7 +13,7 @@ var Prairie = function ( shared ) {
 	var camera, world, soup,
 	renderer = shared.renderer, 
 	renderTarget = shared.renderTarget,
-	cameraPath, waypoints = [];
+	cameraPath, waypoints = [], lookToRight = 0;
 
 	function initScene () {
 		
@@ -72,9 +72,9 @@ var Prairie = function ( shared ) {
 			waypoints: waypoints, duration: 25,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.004, lookVertical: true, lookHorizontal: true,
+			lookSpeed: 0.0028, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.3, Math.PI-0.3 ] }
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
 		 } );
 
@@ -87,6 +87,7 @@ var Prairie = function ( shared ) {
 		soup = new PrairieSoup( camera, world.scene, shared );
 
 		shared.worlds.prairie = world;
+		shared.soups.prairie = soup;
 		shared.sequences.prairie = this;
 
 		//world.scene.addObject( cameraPath.debugPath );
@@ -117,6 +118,7 @@ var Prairie = function ( shared ) {
 
 	this.resetCamera = function() {
 		
+		lookToRight = 0;
 		camera.position.set( 0, 0, 0 );
 		camera.lon = 360;
 
@@ -132,6 +134,12 @@ var Prairie = function ( shared ) {
 
 			delta = 1000 / 60;
 
+		}
+
+		lookToRight += delta;
+
+		if (lookToRight < 2500) {
+			camera.lon = 360;
 		}
 
 		THREE.AnimationHandler.update( delta );

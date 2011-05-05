@@ -33,7 +33,7 @@ var City = function ( shared ) {
 		soup.setLife() to set it to life (not done yet)
 		soup.setDark() to set it to dark (not done yet)
 
-		id´s of animals are:
+		id´s of available animals are:
 
 		elk
 		moose
