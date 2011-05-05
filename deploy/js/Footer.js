@@ -20,32 +20,29 @@ function Footer( container, prefix ) {
 
 	};
 
-	this.setupEmiBuyButton = function() {
+	window.addEventListener("load", function() {
 
-		emiButton = new EMIBuyButton({
+		if(EMIBuyButton) {
+			emiButton = new EMIBuyButton({
 
-			buttonID: "c9e456919b824bdeb2e3a326b122db43",
-			buttonImageUrl: path + "/buy_button-trans.png",
-			useVendorImages: true
+				buttonID: "c9e456919b824bdeb2e3a326b122db43",
+				buttonImageUrl: path + "/buy_button-trans.png",
+				useVendorImages: true
 
-		}).replaceDiv( divReplacement );
+			}).replaceDiv( divReplacement );
 
-		init = false;
+			init = false;
+
+		}
 
 		return this;
 
-	}
-
-	this.isSetup = function() {
-
-		return init;
-
-	};
+	}, false);
 
 	// Add html
 	var html =  '';
 			html += '<div class = "rome-footer">';
-			html += '<div id = "shout-out">';
+			html += '<div class = "shout-out">';
 			html += '  <ul>';
 			html += '    <li><a href = "http://chromeexperiments.com/"><img src = "' + path + '/chrome-trans.png" alt = "This is a Chrome Experiment" border = "0" /></a></li>';
 			html += '    <li class = "divider">&nbsp;</li>';
@@ -54,7 +51,7 @@ function Footer( container, prefix ) {
 			html += '  </ul>';
 			html += '</div>';
 			html += '';
-			html += '<div id = "navigation">';
+			html += '<div class = "navigation">';
 			html += '  <ul class = "primary">';
 			html += '    <li class = "first"><a href = "http://ro.me/tech">Technology</a></li>';
 			html += '    <li><a href = "http://ro.me/credits">Credits</a></li>';
@@ -87,11 +84,11 @@ function Footer( container, prefix ) {
 			css += '  text-transform: uppercase;';
 			css += '  letter-spacing: 1px;';
 			css += '}';
-			css += '.rome-footer #shout-out {';
+			css += '.rome-footer .shout-out {';
 			css += '  float: left;';
 			css += '  margin: 0 0 0 18px;';
 			css += '}';
-			css += '.rome-footer #navigation {';
+			css += '.rome-footer .navigation {';
 			css += '  float: right;';
 			css += '  margin: 20px 26px 0 0;';
 			css += '  vertical-align: middle;';
@@ -109,11 +106,11 @@ function Footer( container, prefix ) {
 			css += '  border: none;';
 			css += '  padding: 0 0 0 10px;';
 			css += '}';
-			css += '.rome-footer #shout-out ul li {';
+			css += '.rome-footer .shout-out ul li {';
 			css += '  margin: 0;';
 			css += '  border: 0;';
 			css += '}';
-			css += '.rome-footer #shout-out li.divider {';
+			css += '.rome-footer .shout-out li.divider {';
 			css += '  margin: 15px 0 15px 15px;';
 			css += '  height: 24px;';
 			css += '  border-left: 1px solid #a0a0a0;';
@@ -174,7 +171,6 @@ function Footer( container, prefix ) {
 
 	// Handle dom and html content
 	container.innerHTML = html;
-	// container.setAttribute("style", "width: 100%; min-width: 930px; margin-bottom: 10px;");
 
 	// Append stylesheet
 	if(Footer.multipleInstances < 1) {

@@ -33,7 +33,7 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
 
 
-	var c, r, g, b, dr = 0.45, dg = 0.45, db = 0.45;
+	var c, r, g, b, dr = 0.45, dg = 0.45, db = 0.45, hd, sd, vd;
 
 	function cap( x, a, b ) { return x < a ? a : ( x > b ? b : x ); }
 
@@ -41,11 +41,20 @@ ROME.Animal = function( geometry, parseMorphTargetsNames ) {
 		
 		c = geometry.faces[ i ].color;
 		
+		/*
 		r = c.r;
 		g = c.g;
 		b = c.b;
+		*/
 		
-		c.setRGB( cap( r + Math.random() * dr * r, 0, 1 ), cap( g + Math.random() * dg * g, 0, 1 ), cap( b + Math.random() * db * b, 0, 1 ) );
+		//c.setRGB( cap( r + Math.random() * dr * r, 0, 1 ), cap( g + Math.random() * dg * g, 0, 1 ), cap( b + Math.random() * db * b, 0, 1 ) );
+		
+		hd = 0 * Math.random() + 0;
+		sd = 0 * Math.random() + 0;
+		vd = 0.4 * Math.random() + -0.3;
+
+		THREE.ColorUtils.adjustHSV( c, hd, sd, vd );							
+		
 		
 	}
 	

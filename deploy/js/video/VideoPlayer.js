@@ -3,6 +3,9 @@ var VIDEO_HALFALPHA = 2;
 var VIDEO_OPAQUE_DISTORT = 3;
 var VIDEO_KEYED = 4;
 var VIDEO_KEYED_DISTORT = 5;
+var VIDEO_KEYED_INVERSE = 6;
+var VIDEO_SMARTALPHA = 7;
+var VIDEO_SMARTALPHA_DISTORT = 8;
 
 var VideoPlayer = function( shared, layers, conf ) {
 
@@ -19,19 +22,19 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var renderer = shared.renderer, renderTarget = shared.renderTarget;
 	
 	var mouseX = 0, mouseY = 0;
-  var mouseOldX = 0, mouseOldY = 0;
-  var mouseNewX = 0, mouseNewY = 0;
-  var mouseRad = 0;
-  var mouseSpeed = new THREE.Vector2(0,0);
+	var mouseOldX = 0, mouseOldY = 0;
+	var mouseNewX = 0, mouseNewY = 0;
+	var mouseRad = 0;
+	var mouseSpeed = new THREE.Vector2(0,0);
 	var targetPos;
 
 	this.duration = layers[ 0 ].duration;
 	
 	this.init = function(){
 		
-		config.prx = conf.paralaxHorizontal || 0;
-		config.pry = conf.paralaxVertical || 0;
-		config.tgd = conf.targetDistance || 1500;
+		config.prx = layers[0].paralaxHorizontal || 0;
+		config.pry = layers[0].paralaxVertical || 0;
+		config.tgd = layers[0].targetDistance || 1500;
 		
 		onGrid = function(geometry){
 
@@ -56,7 +59,6 @@ var VideoPlayer = function( shared, layers, conf ) {
 
 	 	});
 		
-		//document.addEventListener('mousemove', this.mouseMove, false);
 		targetPos = new THREE.Vector2( 0, 0 );
 		
 		config.fov = 54;
@@ -69,31 +71,27 @@ var VideoPlayer = function( shared, layers, conf ) {
 		
 		scene = new THREE.Scene();
 		scene.addLight( new THREE.AmbientLight( 0x000000 ) );
+		scene.addObject(camera);
 
 		for(var i = 0; i < layers.length; i++) {			
 			var p = new VideoPlane(shared, layers[i], config);
 			planes.push(p);
-			scene.addObject(p.mesh);
-			if(p.wireMesh) scene.addObject(p.wireMesh);
 		}
 	};
 	
 	this.show = function( progress ) {
-
 		for ( var i = 0; i < planes.length; i++ ) {
-
-			planes[i].start( progress );
-
+			var p = planes[i];
+			if(p.locked) camera.addChild(p.mesh);
+			else scene.addChild(p.mesh);
+			p.start( progress );
 		}
 
 	};
 	
 	this.hide = function(){
-
 		for ( var i = 0; i < planes.length; i++ ) {
-
 			planes[i].stop();
-
 		}
 
 	};
@@ -119,32 +117,36 @@ var VideoPlayer = function( shared, layers, conf ) {
         return Math.max(Math.min(speed,limit),-limit);
       }
 		
-		targetPos.x = mouseX * config.prx;
-		targetPos.y = mouseY * config.pry;
-
-		//camera.position.x += (targetPos.x - camera.position.x) / 2;
-		//camera.position.y += (targetPos.y - camera.position.y) / 2;	
+		targetPos.x = mouseX * -2 * config.prx;
+		targetPos.y = mouseY * 2 * config.pry;
+		
+		targetPos.x = Math.min(targetPos.x, config.prx);
+		targetPos.x = Math.max(targetPos.x, -config.prx);
+		
+		targetPos.y = Math.min(targetPos.y, config.pry);
+		targetPos.y = Math.max(targetPos.y, -config.pry);
 		
 		camera.target.position.x += (targetPos.x - camera.target.position.x) / 2;
 		camera.target.position.y += (targetPos.y - camera.target.position.y) / 2;	
 				
 		for ( var i = 0; i < planes.length; i++ ) {
-
-      planes[i].updateUniform(mouseX, mouseY, mouseSpeed, mouseRad );
+			var p = planes[i];
+			if (progress > p.removeAt && !p.removed) {
+				if (p.locked) 
+					camera.removeChild(p.mesh);
+				scene.removeChild(p.mesh);
+				p.stop();
+				p.removed = true;
+				//console.log(p.path + " removed at " + progress + " (planned at " + p.removeAt + ")");
+			}
+			else {
+				p.update(mouseX, mouseY, mouseSpeed, mouseRad);
+			}
 
 		}
 		
 		renderer.render( scene, camera, renderTarget );
-		//renderer.render( scene, camera );
 	};
-	
-	// #####
-	//var windowHalfX = window.innerWidth >> 1;
-	//var windowHalfY = window.innerHeight >> 1;
-	//this.mouseMove = function(e){
-	//	mouseX = (event.clientX - windowHalfX) / -windowHalfX;
-	//	mouseY = (event.clientY - windowHalfY) / windowHalfY;
-	//}
 };
 
 VideoPlayer.prototype = new SequencerItem();

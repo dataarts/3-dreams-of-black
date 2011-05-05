@@ -1,23 +1,3 @@
-/*
-
-2-4 videos
-
-possible shader: opaque, chromakey, distortchromakey, distortopaque
-
-shader needs: aspect, mouseXY, map
-
-the effect gets a config object like this:
-
-{
-	path: "video"
-	shader: 0|1|2|3
-	z: -900
-}
-
-the first element in the array is on the bottom, the next ones come on top
- 
-*/
-
 var VIDEO_OPAQUE = 1;
 var VIDEO_HALFALPHA = 2;
 var VIDEO_OPAQUE_DISTORT = 3;

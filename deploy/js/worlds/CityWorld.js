@@ -2,13 +2,15 @@ var CityWorld = function ( shared ) {
 
 	var that = this;
 	var ENABLE_LENSFLARES = true;
+	var SCALE = 0.1;
 
 	this.scene = new THREE.Scene();
 	this.scene.collisions = new THREE.CollisionSystem();
 	
 	// Portal
 
-	var portal = new THREE.Vector3( 1094.090, -99.358, 246.713  );	
+	that.portals = [];	
+
 
 	// Fog
 
@@ -69,7 +71,7 @@ var CityWorld = function ( shared ) {
 		makeSceneStatic( scene );
 		preInitScene( result, shared.renderer );
 
-		scene.scale.set( 0.1, 0.1, 0.1 );
+		scene.scale.set( SCALE, SCALE, SCALE );
 		scene.updateMatrix();
 		that.scene.addChild( scene );
 		
@@ -85,6 +87,15 @@ var CityWorld = function ( shared ) {
 		
 		result.objects[ "Backdrop_City" ].materials[ 0 ].map.wrapS = THREE.RepeatWrapping;
 		result.objects[ "Backdrop_City" ].materials[ 0 ].map.wrapT = THREE.RepeatWrapping;
+		
+		
+		// add portals 
+		
+		that.portals.push( { object: result.objects[ "Portal"     ], radius: 100, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 100, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.002" ], radius: 100, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.003" ], radius: 100, currentDistance: 9999999 } );
+
 		
 		// setup custom materials
 
@@ -108,19 +119,25 @@ var CityWorld = function ( shared ) {
 		
 		cameraPosition = camera.matrixWorld.getPosition();		
 
-		TriggerUtils.effectorRadius = 300;
+		TriggerUtils.effectorRadius = 300000;
 		TriggerUtils.update();
 
 		updateCityShader( delta );
 
 		
-		if ( portalsActive ) {
+		if( portalsActive ) {
 			
-			d = portal.distanceTo( cameraPosition );
+			var currentPosition = camera.matrixWorld.getPosition();
 			
-			if ( d < 100 ) {
+			for( var i = 0; i < that.portals.length; i++ ) {
 				
-				shared.signals.startexploration.dispatch( "dunes" );
+				that.portals[ i ].currentDistance = that.portals[ i ].object.matrixWorld.getPosition().distanceTo( currentPosition );
+				
+				if( that.portals[ i ].currentDistance < that.portals[ i ].radius ) {
+					
+					shared.signals.startexploration.dispatch( "dunes" );
+					
+				}
 
 			}
 			

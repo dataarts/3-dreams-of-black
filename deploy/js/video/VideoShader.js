@@ -141,6 +141,45 @@ var VideoShaderSource = {
 
 	},
 	
+	keyedInverse: {
+
+		uniforms: {
+			"map" : { type: "t", value: 0, texture: null },
+			"colorScale": { type: "f", value: 1 },
+			"threshold": { type: "f", value: 0.5 },
+			"alphaFadeout": { type: "f", value: 0.5 }
+		},
+
+		vertexShader: [
+			"varying vec2 vUv;",
+			"uniform bool flip;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+			"uniform float colorScale;",
+			"uniform float threshold;",
+			"uniform float alphaFadeout;",
+			
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec3 cs = vec3(colorScale);",				
+				"vec4 c = texture2D( map, vUv );",
+				"float t = c.x + c.y + c.z;",
+				"float alpha = 1.0;",
+				"if( t > threshold )",
+					"alpha = 0.0;//(1.0 - (t - 2.0)) * alphaFadeout;",
+				"gl_FragColor = vec4( c.xyz * cs, alpha );",
+			"}"
+		].join("\n")
+	},
+	
 	halfAlpha : {
 
 		uniforms: {
@@ -166,6 +205,68 @@ var VideoShaderSource = {
 			"void main() {",
 				"vec4 c = texture2D( map, vec2( vUv.x * 0.5, vUv.y ) );",
 				"vec4 a = texture2D( map, vec2( 0.5 + vUv.x * 0.5, vUv.y ) );",
+				"gl_FragColor = vec4(c.rgb, a.r);",
+			"}"
+
+		].join("\n")
+
+	},
+	
+	distortSmartalpha: {
+
+		uniforms:DistortUniforms,
+
+		vertexShader: DistortVertexShader,
+
+		fragmentShader: [
+
+      		DistortShaderFragmentPars,
+
+			"void main() {",
+				"vec4 c = texture2D( map, vec2( vUv.x * 0.6666, vUv.y ) );",
+				"vec4 a = texture2D( map, vec2( 0.6666 + vUv.x * 0.3333, vUv.y ) );",
+				"c.a = a.r;",
+
+				"vec4 cPoly = texture2D( map, vec2( vUvPoly.x * 0.6666, vUvPoly.y ) );",
+				"vec4 aPoly = texture2D( map, vec2( 0.6666 + vUvPoly.x * 0.3333, vUvPoly.y ) );",
+				"cPoly.a = aPoly.r;",
+				
+				"if ((distancePoly)>0.7) c = cPoly; ",
+				
+                
+                "if (c.a<=0.2) discard;",
+                "else gl_FragColor = c;",
+			"}"
+
+		].join("\n")
+
+	},
+
+	smartAlpha : {
+
+		uniforms: {
+			"map": { type: "t", value: 0, texture: null }
+		},
+
+		vertexShader: [
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+				"vUv = uv;",
+			"}"
+
+		].join("\n"),
+
+		fragmentShader: [
+			"uniform sampler2D map;",
+
+			"varying vec2 vUv;",
+
+			"void main() {",
+				"vec4 c = texture2D( map, vec2( vUv.x * 0.6666, vUv.y ) );",
+				"vec4 a = texture2D( map, vec2( 0.6666 + vUv.x * 0.3333, vUv.y ) );",
 				"gl_FragColor = vec4(c.rgb, a.r);",
 			"}"
 

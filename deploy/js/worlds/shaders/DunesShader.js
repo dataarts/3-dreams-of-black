@@ -179,12 +179,13 @@ var DunesShader = {
 };
 
 
-function applyDunesShader( result, excludeMap, invertLightY ) {
+function applyDunesShader( result, excludeMap, invertLightY, opacity ) {
 
 	var i, name, geometry, obj, mat;
 
 	invertLightY = invertLightY !== undefined ? invertLightY : {};
 	excludeMap   = excludeMap   !== undefined ? excludeMap   : {};
+	opacity      = opacity      !== undefined ? opacity      : {};
 
 	var shaderParams = {
 
@@ -204,7 +205,7 @@ function applyDunesShader( result, excludeMap, invertLightY ) {
 	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
 	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
 
-	function createDunesMaterial( invLight ) {
+	function createDunesMaterial( invLight, opa ) {
 
 		mat = new THREE.MeshShaderMaterial( shaderParams );
 
@@ -216,21 +217,9 @@ function applyDunesShader( result, excludeMap, invertLightY ) {
 		mat.uniforms.grassImage.texture   = shaderParams.uniforms.grassImage.texture;
 		mat.uniforms.surfaceImage.texture = shaderParams.uniforms.surfaceImage.texture;
 		mat.uniforms.invertLightY.value = invLight;
-		
-		var opacity = 1.0;
-		
-		if( obj.materials[ 0 ] !== undefined && !( obj.materials[ 0 ] instanceof THREE.MeshFaceMaterial )) {
-			
-			opacity = obj.materials[ 0 ].opacity;
-			
-		} else if( obj.geometry.materials && obj.geometry.materials[ 0 ] && obj.geometry.materials[ 0 ][ 0 ] ) {
-			
-			opacity = obj.geometry.materials[ 0 ][ 0 ].opacity;
-		}
-		
-		mat.uniforms.dunesOpacity.value = opacity;
+		mat.uniforms.dunesOpacity.value = opa;
 
-		obj.materials[ 0 ] = mat;
+		obj.materials = [ mat ];
 		DunesShaderEffectors.materials.push( mat );
 
 	}
@@ -239,6 +228,7 @@ function applyDunesShader( result, excludeMap, invertLightY ) {
 	// set materials
 
 	var invertLightYOnThisObject = 1.0;
+	var opacityOnThisObject = 1.0;
 
 	for( name in result.objects ) {
 
@@ -246,18 +236,13 @@ function applyDunesShader( result, excludeMap, invertLightY ) {
 
 		obj = result.objects[ name ];
 		
-		if( invertLightY[ name ] ) {
-			
-			invertLightYOnThisObject = invertLightY[ name ];
-			
-		} else {
-			
-			invertLightYOnThisObject = 1.0;	
-		}
+		invertLightYOnThisObject = invertLightY[ name ] ? invertLightY[ name ] : 1.0;
+		opacityOnThisObject      = opacity[ name ] ? opacity[ name ] : 1.0;
+		
 
 		if( obj.geometry && obj.geometry.morphTargets.length === 0 ) {
 
-			createDunesMaterial( invertLightYOnThisObject );
+			createDunesMaterial( invertLightYOnThisObject, opacityOnThisObject );
 
 		}
 

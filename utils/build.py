@@ -19,8 +19,10 @@ files = [
 'js/lib/RequestAnimationFrame.js',
 'js/lib/Sequencer.js',
 'js/lib/Tune.js',
-'js/lib/UgcHandler.js',
 'js/lib/Utils.js',
+
+'js/lib/UgcObject.js',
+'js/lib/UgcHandler.js',
 
 'js/lib/Gee.js',
 'js/lib/Swell.js',
@@ -38,6 +40,7 @@ files = [
 'js/effects/PaintEffect.js',
 'js/effects/PaintEffectPrairie.js',
 'js/effects/PaintEffectDunes.js',
+'js/effects/PaintEffectVideo.js',
 'js/effects/PaintDarkEffect.js',
 'js/effects/OverlayEffect.js',
 
@@ -49,6 +52,10 @@ files = [
 'js/worlds/shaders/CityShader.js',
 'js/worlds/shaders/DunesShader.js',
 'js/worlds/shaders/CloudsShader.js',
+'js/worlds/cameras/DunesCamera.js',
+'js/worlds/cameras/DunesCameraFreeExplore.js',
+'js/worlds/cameras/PrairieCameraFreeExplore.js',
+'js/worlds/cameras/CityCameraFreeExplore.js',
 'js/worlds/triggers/Trigger.js',
 
 'js/soups/CitySoup.js',
@@ -108,4 +115,4 @@ tmp_file.write(string)
 tmp_file.close()
 
 os.system("java -jar compiler.jar --language_in=ECMASCRIPT5 --js main.js --js_output_file ../deploy/main.min.js")
-# os.unlink("main.js") #comment this line if you want to make sense of the errors
+os.unlink("main.js") #comment this line if you want to make sense of the errors
