@@ -186,13 +186,19 @@ var VideoShots = {
 		paralaxVertical: 100
     },{
         path: "files/videos/dunes/s01_layer02.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        shaderId: VIDEO_KEYED_DISTORT,
         z: -800,
+		colorScale: .9,
+        threshold: .20,
+        alphaFadeout: .35,
 		width: 1.56, height: 1.22,
 		paralax: true
     },{
         path: "files/videos/dunes/s01_layer01.webm",
-        shaderId: VIDEO_SMARTALPHA,
+        shaderId: VIDEO_KEYED,
+		colorScale: 0,
+        threshold: .5,
+        alphaFadeout: .5,
         z: -100,
 		locked: true
     }],	
@@ -204,7 +210,10 @@ var VideoShots = {
 		duration: 3500
     },{
         path: "files/videos/dunes/s02_layer01.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        shaderId: VIDEO_KEYED_DISTORT,
+		colorScale: .9,
+        threshold: .20,
+        alphaFadeout: .35,
         z: -1000
     }],
 	// DUNES - TRANSITION
