@@ -9,9 +9,10 @@
   <meta name="author" content="">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	<script type="text/javascript" src="/js/Error.js"></script>
   <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
   <script type="text/javascript" src="js/gallery.js"></script>
+	<script type="text/javascript" src="/js/Footer.js"></script>
 
   <script type="text/javascript">
 
@@ -31,7 +32,9 @@
       GALLERY.API_BASE = '/ugc/';
       GALLERY({ page: GALLERY.GET['p'], category: GALLERY.GET['c'] });
 
-
+			var footer = new Footer( document.getElementById('footer'), '/files/footer' );
+			footer.load();
+			
     };
 
   </script>
@@ -67,6 +70,9 @@
 
   <ul id="pagination">
   </ul>
+
+	<div id="footer">
+	</div>
 
 </div>
 
