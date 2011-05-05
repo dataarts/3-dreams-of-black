@@ -24,6 +24,7 @@ var DunesShader = {
 		"target": { type: "fv", value: [] },
 		"radius": { type: "fv1", value: [] },
 		"darkness": { type: "fv1", value: [] },
+		"skyWhite": { type: "f", value: 1 },
 		
 		"dunesOpacity" : { type: "f", value: 1.0 },
 		"invertLightY" : { type: "f", value: 1.0 },
@@ -99,6 +100,8 @@ var DunesShader = {
 		"uniform vec3 	target[ NUMTARGETS ];",
 		"uniform float 	radius[ NUMTARGETS ];",
 		"uniform float 	darkness[ NUMTARGETS ];",
+		
+		"uniform float  skyWhite;",
 
 		"uniform sampler2D grassImage;",
 		"uniform sampler2D surfaceImage;",
@@ -173,7 +176,7 @@ var DunesShader = {
 			// mix sky color and fog
 
 			"f = max( 0.0, normalize( vWorldVector ).y + cameraPosition.y * 0.0002 - 0.255 );",
-			"sky_color = mix( vec3( 1.0 ), skyBlue, f );",
+			"sky_color = mix( vec3( skyWhite ), skyBlue, f );",
 
 			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.w ), fogFactor );",
 			"gl_FragColor.a = dunesOpacity;",
@@ -256,7 +259,9 @@ function applyDunesShader( result, excludeMap, invertLightY, opacity ) {
 };
 
 
-function updateDunesShader( delta ) {
+function updateDunesShader( delta, skyWhite ) {
+
+	skyWhite = skyWhite !== undefined ? skyWhite : 1.0;
 
 	// update effectors
 
@@ -280,6 +285,7 @@ function updateDunesShader( delta ) {
 	for( e = 0, el = DunesShaderEffectors.materials.length; e < el; e++ ) {
 		
 		DunesShaderEffectors.materials[ e ].uniforms.time.value = time;
+		DunesShaderEffectors.materials[ e ].uniforms.skyWhite.value = skyWhite;
 	}
 	
 

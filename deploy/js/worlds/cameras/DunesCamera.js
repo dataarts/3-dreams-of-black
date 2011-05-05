@@ -125,8 +125,8 @@ DunesCamera = function( shared ) {
 
 			camera.position.y = camera.target.position.y = wantedCameraTarget.position.y = wantedCamera.position.y;
 
-			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.25 * delta;
-			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.25 * delta;
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.15 * delta;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.15 * delta;
 
 						
 		} else if( progress < CAMERA_START_LIFT ) {
@@ -144,14 +144,13 @@ DunesCamera = function( shared ) {
 				
 				recalculatedDistance = c.distance * 0.1;
 				wantedCamera.position.y = ray.origin.y - recalculatedDistance + CAMERA_LOWEST_Y * 0.5;
-				
 			}
 			
 			// handle up/down (cap lowest, highest)
 	
 			if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT * 2 ) {
 				
-				wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR * 0.5;
+				wantedCameraTarget.position.y += Math.max( 0, -mouseY ) * CAMERA_VERTICAL_FACTOR * 0.5;
 				
 			} else {
 				
@@ -174,20 +173,24 @@ DunesCamera = function( shared ) {
 
 
 			// move forward
+
+			var localProgress = ( progress - CAMERA_STATIC_END ) / ( CAMERA_START_LIFT - CAMERA_STATIC_END );
 				
-			cameraSpeed = CAMERA_FORWARD_SPEED * 0.7 * ( progress - CAMERA_STATIC_END ) / ( CAMERA_START_LIFT - CAMERA_STATIC_END );
+			cameraSpeed = CAMERA_FORWARD_SPEED * 0.6 * localProgress;
 			wantedCamera.position.z -= cameraSpeed * delta;
+			wantedCamera.position.y += Math.sin( wantedCamera.position.z * 0.07 ) * 2.0 * ( 1 - localProgress );
 
 
 			// position intertia
 	
 			camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * 0.5 * delta;
-			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * 0.5 * delta;
+			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * 0.75 * delta;
 			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * 0.5 * delta;
 	
 			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.25 * delta;
 			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * 0.25 * delta;
 			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.25 * delta;
+
 
 		} else {
 			
