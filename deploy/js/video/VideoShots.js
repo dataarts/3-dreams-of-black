@@ -33,7 +33,7 @@ var VideoShots = {
 	{
         path: "files/videos/city/s03_layer03.webm",
         shaderId: VIDEO_OPAQUE,
-        z: -1200,
+        z: -1100,
 		width: 1.56, height: 1.59,
 		paralax: true,
 		duration: 8120,
@@ -99,20 +99,23 @@ var VideoShots = {
         z: -1400,
 		width: 1, height: 1.83,
 		paralax: true,
+		bendForce: 200,
 		duration: 9230,
 		paralaxHorizontal: 600,
-		paralaxVertical: 100
+		paralaxVertical: 200
     },{
         path: "files/videos/prairie/s01_layer03.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
-        z: -1100,
+		bendForce: 200,
+        z: -1300,
 		width: 1.56, height: 1.22,
 		paralax: true
     },{
         path: "files/videos/prairie/s01_layer02.webm",
         shaderId: VIDEO_SMARTALPHA,
-        z: -700,
+        z: -1000,
 		paralax: true,
+		bendForce: 200,
 		width: 1.56, height: 1.83
     },{
         path: "files/videos/prairie/s01_layer01.webm",
