@@ -3,7 +3,7 @@
 	var logger, stats, renderer, renderTarget, shared,
 	Signal = signals.Signal, currentSection,
 	launcher, film, relauncher, exploration, ugc,
-	shortcuts;
+	shortcuts, lastBeta = 0, lastGamma = 0;
 
 	// debug
 
@@ -106,6 +106,9 @@
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'keyup', onDocumentKeyUp, false );
 
+	window.addEventListener( 'deviceorientation', onWindowDeviceOrientation, false );
+	window.addEventListener( 'MozOrientation', onWindowDeviceOrientation, false);
+
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	setSection( launcher );
@@ -155,6 +158,57 @@
 		shared.mouse.y = event.clientY;
 
 		shared.signals.mousemoved.dispatch( event );
+
+	}
+
+	// Acceleromter data in question
+	function onWindowDeviceOrientation( event ) {
+
+		if( !event.gamma && !event.beta ) {
+
+			event.gamma = -(event.x * (180 / Math.PI));
+			event.beta = -(event.y * (180 / Math.PI));
+
+		} else if( event.alpha == null && event.beta == null && event.gamma == null ) {
+
+			window.removeEventListener( "deviceorientation", onWindowDeviceOrientation, false );
+			window.removeEventListener( "MozOrientation", onWindowDeviceOrientation, false );
+
+		}
+
+		var overThreshold = Math.abs(event.gamma) > 4 || Math.abs(event.beta) > 4;
+		var gamma = overThreshold ? event.gamma : 0;
+		var beta = overThreshold ? event.beta : 0;
+
+		if(lastGamma != gamma || lastBeta != beta) {
+
+			var x = Math.round(1.5 * gamma) + shared.mouse.x;
+			var y = (-Math.round(1.5 * beta)) + shared.mouse.y;
+
+			if(Math.abs(x) > window.innerWidth) {
+				if(x < 0) {
+					x = -window.innerWidth;
+				} else {
+					x = window.innerWidth;
+				}
+			}
+
+			if(Math.abs(y) > window.innerHeight) {
+				if(y < 0) {
+					y = -window.innerHeight;
+				} else {
+					y = window.innerHeight;
+				}
+			}
+
+			shared.mouse.x = x;
+			shared.mouse.y = y;
+
+			lastGamma = gamma;
+			lastBeta = beta;
+
+			shared.signals.mousemoved.dispatch( event );
+		}
 
 	}
 

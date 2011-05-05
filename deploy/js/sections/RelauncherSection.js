@@ -266,7 +266,6 @@ var RelauncherSection = function( shared ) {
 
 		clouds.show();
 		updateDomElementsPosition();
-		if(footNav.isSetup()) footNav.setupEmiBuyButton();
 		domElement.style.display = 'block';
 
 	};
