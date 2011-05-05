@@ -13,28 +13,32 @@ var UgcObjectCreator = function ( shared ) {
 	isDeleteMode = false, isRotateMode = false,
 	isMouseDown = false, radius = 1500, theta = 45, phi = 15;
 
-	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 200;
 
 	// Background
 
 	that.scene = new THREE.Scene();
-
-	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.000135 );
+	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.000175 );
 	that.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
 
-	//this.scene.fog = new THREE.Fog( 0xffffff, 1000, 10000 );
-	//this.scene.fog.color.setHSV( 0.6, 0.1235, 1 );
+	// Lights
 
-	light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
-	light1.position.set( 0.5, 0.75, 1 );
-	light1.color.setHSV( 0, 0, 1 );
-	that.scene.addLight( light1 );
+	var ambient = new THREE.AmbientLight( 0x221100 );
+	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
+	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
 
-	light2 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
-	light2.position.set( - 0.5, - 0.75, - 1 );
-	light2.color.setHSV( 0, 0, 0.306 );
-	that.scene.addLight( light2 );
+	ambient.color.setHSV( 0, 0, 0.1 );
+
+	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
+	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
+
+	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
+	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+
+	that.scene.addLight( ambient );
+	that.scene.addLight( directionalLight1 );
+	that.scene.addLight( directionalLight2 );
 
 	if ( ENABLE_LENSFLARES ) {
 
@@ -43,23 +47,33 @@ var UgcObjectCreator = function ( shared ) {
 
 		var flaresPosition = new THREE.Vector3( 0, 0, -7500 );
 		var sx = 60, sy = 292;
-		initLensFlares( that, flaresPosition, sx, sy );		
+
+		initLensFlares( that, flaresPosition, sx, sy );
 
 	}
 
-	loader = new THREE.JSONLoader();
-	loader.load( { model: "files/models/ugc/D_tile_1.D_tile_1.js", callback: function ( geometry ) {
+	var loader = new THREE.SceneLoader();
+	loader.load( "files/models/dunes/D_tile_1.js", function ( result ) {
 
-		mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-		mesh.position.x = 1500;
-		mesh.position.y = - 50;
-		mesh.rotation.x = - 90 * Math.PI / 180;
-		mesh.scale.x = mesh.scale.y = mesh.scale.z = 0.5;
+		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
 
-		that.scene.addChild( mesh );
+			var object = result.scene.objects[ i ];
 
-	} } );
+			if ( object.visible ) {
 
+				object.rotation.x = - 90 * Math.PI / 180;
+				object.position.y = - 100;
+				object.position.x = 1750;
+				object.scale.x = object.scale.y = object.scale.z = 0.5;
+				that.scene.addObject( object );
+
+			}
+
+		}
+
+		render();
+
+	} );
 
 	// Renderer
 
@@ -102,7 +116,7 @@ var UgcObjectCreator = function ( shared ) {
 		var paintEffectDunes = new PaintEffectDunes( shared );
 		paintEffectDunes.init();
 
-	}	
+	}
 
 	// Painter
 
@@ -138,11 +152,15 @@ var UgcObjectCreator = function ( shared ) {
 
 		painter.setMode( !isDeleteMode ? VoxelPainter.MODE_DRAW : VoxelPainter.MODE_ERASE );
 
+		render();
+
 	}
 
 	function onMouseUp( event ) {
 
 		painter.setMode( VoxelPainter.MODE_IDLE );
+
+		render();
 
 	}
 
@@ -158,11 +176,15 @@ var UgcObjectCreator = function ( shared ) {
 
 		}
 
+		render();
+
 	}
 
 	function onMouseWheel( event ) {
 
 		radius -= event.wheelDeltaY;
+
+		render();
 
 	}
 
@@ -187,6 +209,42 @@ var UgcObjectCreator = function ( shared ) {
 			// case 18: isDeleteMode = false; break;
 
 		}
+	}
+
+	function render() {
+
+		if ( isRotateMode ) {
+
+			theta += ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
+
+			phi -= ( shared.mouse.y / shared.screenHeight ) * 2 - 1;
+			phi = phi > 90 ? 90 :
+				phi < 0 ? 0 :
+				phi;
+
+		}
+
+		camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+		camera.position.y = radius * Math.sin( phi * DEG2RAD );
+		camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+
+		painter.update();
+
+		shared.renderer.clear();
+
+		if ( USE_POSTPROCESS ) {
+
+			shared.renderer.render( that.scene, camera, shared.renderTarget, true );
+			shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
+			paintEffectDunes.update( 0, 0, 0 );
+
+		} else {
+
+			shared.renderer.render( that.scene, camera );
+			shared.renderer.render( painter.getScene(), camera );
+
+		}
+	
 	}
 
 	//
@@ -260,37 +318,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.update = function () {
 
-		if ( isRotateMode ) {
-
-			theta += ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
-
-			phi -= ( shared.mouse.y / shared.screenHeight ) * 2 - 1;
-			phi = phi > 90 ? 90 :
-						phi < - 90 ? - 90 :
-						phi;
-
-		}
-
-		camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
-		camera.position.y = radius * Math.sin( phi * DEG2RAD );
-		camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
-
-		painter.update();
-
-		shared.renderer.clear();
-
-		if ( USE_POSTPROCESS ) {
-
-			shared.renderer.render( that.scene, camera, shared.renderTarget, true );
-			shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
-			paintEffectDunes.update( 0, 0, 0 );
-
-		} else {
-
-			shared.renderer.render( that.scene, camera );
-			shared.renderer.render( painter.getScene(), camera );
-
-		}
+		
 
 	};
 

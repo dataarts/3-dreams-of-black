@@ -6,15 +6,23 @@ var VoxelPainter = function ( camera ) {
 
 	var _scene = new THREE.Scene();
 
-	var _light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
-	_light1.position.set( 0.5, 0.75, 1 );
-	_light1.color.setHSV( 0, 0, 1 );
-	_scene.addLight( _light1 );
+	// Lights
 
-	var _light2 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
-	_light2.position.set( - 0.5, - 0.75, - 1 );
-	_light2.color.setHSV( 0, 0, 0.306 );
-	_scene.addLight( _light2 );
+	var ambient = new THREE.AmbientLight( 0x221100 );
+	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
+	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
+
+	ambient.color.setHSV( 0, 0, 0.1 );
+
+	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
+	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
+
+	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
+	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+
+	_scene.addLight( ambient );
+	_scene.addLight( directionalLight1 );
+	_scene.addLight( directionalLight2 );
 
 	// Colliders
 
@@ -69,8 +77,7 @@ var VoxelPainter = function ( camera ) {
 
 	// Preview
 
-	var _preview = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: 0x00ff00, opacity: 0, transparent: true } ) );
-	// _preview.doubleSided = true;
+	var _preview = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0, transparent: true } ) );
 	_preview.matrixAutoUpdate = false;
 	_scene.addObject( _preview );
 
@@ -113,7 +120,7 @@ var VoxelPainter = function ( camera ) {
 		var y = toGridScale( voxel.position.y );
 		var z = toGridScale( voxel.position.z );
 
-		_grid[ x + "." + y + "." + z ] = null;
+		delete _grid[ x + "." + y + "." + z ];
 
 		_sceneVoxels.removeObject( voxel );
 		_scene.removeObject( voxel ); // This shouldn't be needed :/
