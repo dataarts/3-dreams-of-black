@@ -247,7 +247,7 @@ var VideoShaderSource = {
 	smartAlpha : {
 
 		uniforms: {
-			"map": { type: "t", value: 0, texture: null },
+			"map": { type: "t", value: 0, texture: null }
 		},
 
 		vertexShader: [
