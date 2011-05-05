@@ -17,46 +17,22 @@
 
     window.onload = function() {
 
-      var pageNum = 0; // TODO pull from get vars
-      var category = 0; // TODO pull from get vars
+      GALLERY.GET = (function() {
+        var vars = [], hash;
+        var hashes = window.location.href.replace(/#/g, '').slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+          hash = hashes[i].split('=');
+          vars.push(hash[0]);
+          vars[hash[0]] = hash[1];
+        }
+        return vars;
+      })();
 
+      GALLERY.API_BASE = '/ugc/';
+      GALLERY({ page: GALLERY.GET['p'], category: GALLERY.GET['c'] });
 
-//      $.getJSON( GALLERY.API_BASE + '/objects?offset=' + GALLERY
-//          .OBJECTS_PER_PAGE * pageNum + '&limit=' + GALLERY.OBJECTS_PER_PAGE
-//          + '&category=' + category, GALLERY)
-
-      GALLERY();
 
     };
-
-    /**
-     * We use this to construct our REST urls for API operations.
-     */
-    GALLERY.API_BASE = '';
-
-    GALLERY.OBJECTS_PER_PAGE = 15;
-
-    /**
-     * Fires when a user clicks "thumbs up."
-     * Please return true if this operation succeeds and false if it fails.
-     *
-     * @param objectID
-     */
-    GALLERY.onupvote = function(objectID) {
-      // TODO
-      return true;
-    }
-
-    /**
-     * Fires when a user clicks "thumbs down."
-     * Please return true if this operation succeeds and false if it fails.
-     *
-     * @param objectID
-     */
-    GALLERY.ondownvote = function(objectID) {
-      // TODO
-      return true;
-    }
 
   </script>
 
@@ -69,327 +45,66 @@
 
 <div id="container">
 
-<ul id="nav">
-  <li id="everyone" class="selected"><a href="#"><span>Everyone's
+  <ul id="nav">
+    <li id="everyone"><a href="/gallery/"><span>Everyone's
     Dreams</span></a></li>
-  <li id="ground"><a href="#"><span>Ground Dreams</span></a></li>
-  <li id="sky"><a href="#"><span>Sky Dreams</span></a></li>
-  <li id="favorite"><a href="#"><span>Favorite Dreams</span></a></li>
-</ul>
+    <li id="ground"><a href="/gallery/?c=ground"><span>Ground Dreams</span></a></li>
+    <li id="sky"><a href="/gallery/?c=sky"><span>Sky Dreams</span></a></li>
+    <li id="favorite"><a href="/gallery/?c=favorite"><span>Favorite Dreams</span></a></li>
+  </ul>
 
-<div class="clear"></div>
+  <div class="clear"></div>
 
-<div id="gallery">
+  <div id="gallery">
 
-<div class="inner">
+    <div class="inner">
 
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
 
-  <div class="object-title">
-    Object Title 00
+    </div>
+
+    <div class="clear"></div>
   </div>
 
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="object">
- <div class="img-wrapper"><img src="images/place-holder.gif" alt="object title 00"/></div>
-
-  <div class="object-title">
-    Object Title 00
-  </div>
-
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
-
-    </a>
-    <a href="#" class="downvote vote">
-
-    </a>
-  </div>
-</div>
-
-<div class="clear"></div>
-
-</div>
-
-</div>
-
-<ul id="pagination">
-  <li><a href="#">1</a></li>
-  <li class="hellip"> &hellip; </li>
-  <li><a href="#">16</a></li>
-  <li class="selected"><a href="#">17</a></li>
-  <li><a href="#">18</a></li>
-  <li class="hellip"> &hellip; </li>
-  <li><a href="#">244</a></li>
-</ul>
+  <ul id="pagination">
+  </ul>
 
 </div>
 
 <div id="lightbox">
 
-<div id="shade">
-
-</div>
-
-<div id="object-viewer">
-  <div id="webgl">
+  <div id="shade">
 
   </div>
 
-  <div class="object-title">
-    Object Title 01 &nbsp;&bull;&nbsp; <a href="#">Experience this in "3 Dreams of
-    Black"</a>
+  <div id="object-viewer">
+    <div id="webgl">
+
+    </div>
+
+    <div class="object-title">
+      <span id="lightbox-title">Object Title 01</span> &nbsp;&bull;&nbsp; <a href="#">Experience this in "3
+      Dreams of
+      Black"</a>
+    </div>
+
+    <div class="vote-box">
+      <a href="#" id="lightbox-upvote" class="upvote vote">
+
+      </a>
+      <a href="#" id="lightbox-downvote" class="downvote vote">
+
+      </a>
+    </div>
+
   </div>
 
-  <div class="vote-box">
-    <a href="#" class="upvote vote">
+  <div id="lightbox-buttons">
 
-    </a>
-    <a href="#" class="downvote vote">
+    <div id="lightbox-prev"></div>
+    <div id="lightbox-next"></div>
+    <div id="lightbox-close"></div>
 
-    </a>
   </div>
-
-</div>
-
-<div id="lightbox-buttons">
-
-  <div id="lightbox-prev"></div>
-  <div id="lightbox-next"></div>
-  <div id="lightbox-close"></div>
-
-</div>
 
 </div>
 
@@ -400,9 +115,12 @@
   _gaq.push(['_trackPageview']);
 
   (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
   })();
 
 </script>

@@ -7,7 +7,7 @@ div.object-title {
 
 ul#pagination li {
   font: 9.5px/29px "Gotham Medium", sans-serif;
-  float: left;
+display: inline-block;
   text-align: center;
   height: 28px;
   width: 28px;
@@ -82,14 +82,13 @@ div#container {
 }
 
 div#gallery {
-  max-width: 1621px;
+  max-width: 1620px;
   margin: 0 auto;
 }
 
 div#gallery .inner {
-  border: 1px solid #c3c0b7;
-  border-top: 0;
-  border-left: 0;
+  border-top: 1px solid #c3c0b7;
+  border-left: 1px solid #c3c0b7;
   margin: 0 auto;
 }
 
@@ -108,9 +107,8 @@ div.object {
   padding: 12px;
   width: 299px;
   height: 215px;
-  border: 1px solid #c3c0b7;
-  border-bottom: 0;
-  border-right: 0;
+  border-right: 1px solid #c3c0b7;
+  border-bottom: 1px solid #c3c0b7;
   float: left;
 }
 
@@ -189,8 +187,8 @@ div#webgl {
 }
 
 ul#pagination {
-  width: 230px;
-  margin: 0 auto;
+	text-align: center;
+	width: 100%;
   margin-top: 40px;
   list-style: none;
 }
