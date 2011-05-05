@@ -331,6 +331,8 @@ ROME.AnimalShader = {
 			"gl_FragColor = gl_FragColor * vec4( vColor, 1.0 ) * vec4( 0.9, 0.85, 0.8, 1.0 );",
 			
 			THREE.ShaderChunk[ "fog_fragment" ],
+			
+			//"gl_FragColor = gl_FragColor * vec4( 1.0, 0.0, 0.0, 1.0 );",
 
 		"}"
 
@@ -345,8 +347,9 @@ ROME.AnimalAnimationData = {
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
 	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
-	animalNames: [ "tarbuffalo", "horse", "bearbrown", "mountainlion", "deer", "goldenRetreiver", "fox", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "scorp", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "bearblack", "panther", "wolf", "toad", "eagle", "owl", "parrot", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "raven", "vulture", "bison", "sickle", "armHand" ],
-	
+	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "vulture", "raven", "bison", "sickle" ],
+	animalNames: [ "tarbuffalo", "bearbrown", "horse", "deer", "mountainlion", "goldenRetreiver", "fox", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "blackWidow", "crab", "scorp", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "wolf", "panther", "bearblack", "toad", "eagle", "owl", "parrot", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "raven", "vulture", "bison", "sickle", "armHand", "sickle", "centipede", "shdw2", "shdw5", "drownArm_A", "drownArm_C" ],
+
 	colorVariations: {
 		
 	"armhand": { hRange:  0.02, sRange:  0.10,  vRange: 0.05,
@@ -712,7 +715,7 @@ ROME.AnimalAnimationData = {
 					if ( this.animalVariationMap[ morphTargetName ] !== undefined ) {
 						
 						variations = this.colorVariations[  this.animalVariationMap[ morphTargetName ] ];
-						//console.log( morphColor.name, morphTargetName );
+						console.log( morphColor.name, morphTargetName );
 
 					}
 					
@@ -736,7 +739,7 @@ ROME.AnimalAnimationData = {
 
 					}		
 					
-					//console.log( morphTargetName );
+					console.log( morphTargetName );
 
 					randomizeColors( attributes[ morphTargetName ].value, variations );
 					

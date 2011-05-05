@@ -35,42 +35,42 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -1210 ] ];
-		//waypointsA = [ [ 0, 20, 0 ], [ 0, 20, -3350 ] ];
+		waypointsA = [ [ 0, 18, -300 ], [ 0, 18, -1210 ] ];
+		//waypointsA = [ [ 0, 18, -300 ], [ 0, 18, -3350 ] ];
 
-		/*
+		
 		startCamera = new THREE.PathCamera( {
 
-			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsA, duration: 9.2, 
+			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+			waypoints: waypointsA, duration: 7.8, 
 			useConstantSpeed: true, resamplingCoef: 30,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
-			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
+			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.8 ] },
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
 		 } );
-		*/
+		
 
 
-		/*
-		startCamera = new THREE.PathCamera( {
+		
+		/*startCamera = new THREE.PathCamera( {
 
-			fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			waypoints: waypointsA, duration: 26, 
 			useConstantSpeed: true, resamplingCoef: 30,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
-			lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
+			lookSpeed: 0.0060, lookVertical: true, lookHorizontal: true,
+			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 3.0 ] },
+			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.2, Math.PI-0.2 ] }
 
 		 } );
-
+		*/
 		startCamera.position.set( 0, 0, 0 );
 		startCamera.lon = 90;
 
 		camera = startCamera;
-		*/
+		
 
 		/*
 		camera = new THREE.QuakeCamera( {
@@ -84,8 +84,8 @@ var City = function ( shared ) {
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
 
-		camera = new THREE.Camera( 60, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
-		camera.position.set( 0, 20, -300 );
+		//camera = new THREE.Camera( 60, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+		//camera.position.set( 0, 20, -300 );
 
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
@@ -93,7 +93,7 @@ var City = function ( shared ) {
 		shared.worlds.city = world;
 		shared.sequences.city = this;
 		 
-		/*
+		
 		if ( shared.debug ) {
 
 			world.scene.addObject( camera.debugPath );
@@ -101,7 +101,7 @@ var City = function ( shared ) {
 		}
 
 		world.scene.addObject( camera.animationParent );
-		*/
+		
 		
 		console.log( "city init" );
 		
@@ -109,8 +109,8 @@ var City = function ( shared ) {
 
 	this.resetCamera = function() {
 		
-		camera.position.set( 0, 20, -300 );
-		//camera.animation.play( false, 0 );
+		//camera.position.set( 0, 20, -300 );
+		camera.animation.play( false, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
 		renderer.setStencilShadowDarkness( 0.7 );
@@ -133,49 +133,53 @@ var City = function ( shared ) {
 
 	this.update = function ( progress, delta, time ) {
 		
-		THREE.AnimationHandler.update( delta );
+		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
+			delta = 1000/60;
+		}
 
-		soup.update( delta );
-
-		camera.position.z -= 0.9 * delta / 8;
+		/*camera.position.z -= 0.9 * delta / 8;
 
 		if ( camera.position.z < -3300 ) {
 
 			camera.position.z = -300;
 
-		}
+		}*/
 
 		// choose path
-		/*
-		var camz = camera.matrixWorld.n34;
+		
+		//var camz = camera.matrixWorld.n34;
+		var camz = camera.animationParent.position.z;
 
 		if (camz < -1200 && !switchedCamera ) {
 
-			waypointsB = [ [ 0, 20, camz ], [ 0, 20, -3350 ] ];
+			waypointsB = [ [ 0, 18, camz ], [ 0, 18, -3350 ] ];
 
-			if (camera.theta < 1.2) {
+			/*if (camera.theta < 1.2) {
 				// turn left
-				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ -110, 20, -1740 ], [ -1670, 20, -1740 ] ];
+				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1600 ], [ -110, 18, -1740 ], [ -1670, 18, -1740 ] ];
 			}
 			if (camera.theta > 1.8) {
 				// turn right
-				waypointsB = [ [ 0, 20, camz ], [ 0, 20, -1600 ], [ 110, 20, -1740 ], [ 1670, 20, -1740 ] ];
-			}
+				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1600 ], [ 110, 18, -1740 ], [ 1670, 18, -1740 ] ];
+			}*/
 
 			switchCamera = new THREE.PathCamera( {
 
-				fov: 50, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+				fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 				waypoints: waypointsB, duration: 14.3, 
 				useConstantSpeed: true, resamplingCoef: 5,
 				createDebugPath: false, createDebugDummy: false,
-				lookSpeed: 0.0020, lookVertical: true, lookHorizontal: true,
-				verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 1.0, 1.9 ] },
-				horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0.4, Math.PI-0.4 ] }
+				lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+				verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.8 ] },
+				horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
 			 } );
 		
 			switchCamera.lat = startCamera.lat;
 			switchCamera.lon = startCamera.lon;
+
+			//switchCamera.mouseX = startCamera.mouseX;
+			//switchCamera.mouseY = startCamera.mouseY;
 
 			world.scene.addObject( switchCamera.animationParent );
 			switchCamera.animation.play( false, 0 );
@@ -189,18 +193,21 @@ var City = function ( shared ) {
 			switchedCamera = true;
 
 		}
-		*/
+		
+		THREE.AnimationHandler.update( delta );
+
+		soup.update( delta );
 
 
 		// slight camera roll
 
-		/*
+		
 		if ( camera.animationParent ) {
 
-			camera.animationParent.rotation.z = ( camera.target.position.x ) / 700;
+			camera.animationParent.rotation.z = ( camera.target.position.x ) / 400;
 
 		}
-		*/
+		
 
 		renderer.render( world.scene, camera, renderTarget );
 
