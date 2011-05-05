@@ -136,16 +136,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 		}
 		
 		renderer.render( scene, camera, renderTarget );
-		//renderer.render( scene, camera );
 	};
-	
-	// #####
-	//var windowHalfX = window.innerWidth >> 1;
-	//var windowHalfY = window.innerHeight >> 1;
-	//this.mouseMove = function(e){
-	//	mouseX = (event.clientX - windowHalfX) / -windowHalfX;
-	//	mouseY = (event.clientY - windowHalfY) / windowHalfY;
-	//}
 };
 
 VideoPlayer.prototype = new SequencerItem();
