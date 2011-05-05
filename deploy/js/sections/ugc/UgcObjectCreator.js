@@ -134,13 +134,27 @@ var UgcObjectCreator = function ( shared ) {
 
 	shared.ugcSignals.submit.add( function () {
 
-		var thumbnail = renderer.domElement.toDataURL('image/png');
+		var c = document.createElement('canvas');
+		c.width = 300;
+		c.height = 180;
+		var ctx = c.getContext('2d');
+		ctx.drawImage(renderer.domElement,0,0,c.width,c.height);
+		var thumbnail = c.toDataURL('image/png');
+		delete c;
+		console.log(thumbnail);
 
-		ugcHandler.submitUGO( 'this is a test', 'test@tes.com', 1, painter.getObject().getJSON(), thumbnail, function ( json ) {
+		var submission = {
+			title: 'Amorphous Building',
+			email: 'romepreview@gmail.com',
+			category: 'ground',
+			data: painter.getObject().getJSON(),
+			thumbnail: thumbnail
+		};
 
-			console.log( json );
-
-		} );
+		ugcHandler.submitUGO( submission, function ( json ) {
+			var id = json['id'];
+			console.log(id);
+		});
 
 	} );
 
@@ -240,7 +254,7 @@ var UgcObjectCreator = function ( shared ) {
 			shared.renderer.render( painter.getScene(), camera );
 
 		}
-	
+
 	}
 
 	//
@@ -314,7 +328,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.update = function () {
 
-		
+
 
 	};
 
