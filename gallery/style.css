@@ -78,7 +78,7 @@ body {
 }
 
 div#container {
-  padding: 120px 0px 50px;
+  padding: 120px 0px 0px;
 }
 
 div#gallery {
@@ -150,6 +150,10 @@ a.downvote:hover {
 
 a.downvote.selected {
   background-position: top right;
+}
+
+div#footer { 
+margin-top: 50px;
 }
 
 div#lightbox {

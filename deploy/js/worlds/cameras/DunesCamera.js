@@ -13,7 +13,7 @@ DunesCamera = function( shared ) {
 	var CAMERA_FORWARD_SPEED_MAX = 15;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 15;
-	var CAMERA_VERTICAL_LIMIT = 50;
+	var CAMERA_VERTICAL_LIMIT = 80;
 	var CAMERA_HORIZONTAL_FACTOR = 12;
 	var CAMERA_INERTIA = 0.02;
 	var CAMERA_ROLL_FACTOR = 0.3;
@@ -23,9 +23,10 @@ DunesCamera = function( shared ) {
 	var CAMERA_COLLISION_DISTANCE_DOWN = 50;
 	var CAMERA_COLLISION_DISTANCE_UP = 40;
 	var CAMERA_TARGET_ADJUSTMENT_FACTOR = 15;
-	var CAMERA_LIFT_SPEED = 4.5;
-	var CAMERA_START_LIFT = 0.29;
-	var CAMERA_END_LIFT = 0.375;
+	var CAMERA_LIFT_SPEED = 7.5;
+	var CAMERA_STATIC_END = 0.1;
+	var CAMERA_START_LIFT = 0.39;
+	var CAMERA_END_LIFT = 0.475;
 	var CAMERA_DOWN_COLLISION_OFFSET = 100;
 
 
@@ -85,260 +86,352 @@ DunesCamera = function( shared ) {
 		
 		delta = delta * ( 1000 / 30 ) / 1000; 
 		
-		// check collision round-robin (can't afford to do all every frame)
-
-		var minDistance, beginSlowDownDistance, direction;
-
-		switch( cameraCollisionSwitcher ) {
-			
-			case 0:	
-				
-				direction = "forward";
-				ray.origin.copy( wantedCamera.matrixWorld.getPosition());
-				ray.direction.copy( camera.matrixWorld.getColumnZ().negate());
-				
-				minDistance = CAMERA_COLLISION_DISTANCE;
-				beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
-				break;
-			
-			case 1:
-				
-				direction = "left";
-				ray.origin.copy( wantedCamera.matrixWorld.getPosition());
-				ray.direction.copy( camera.matrixWorld.getColumnX().negate());
-				
-				minDistance = CAMERA_COLLISION_DISTANCE_SIDES;
-				beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
-				break;
-			
-			case 2:	
-				
-				direction = "right";
-				ray.origin.copy( wantedCamera.matrixWorld.getPosition());
-				ray.direction.copy( camera.matrixWorld.getColumnX());
-				
-				minDistance = CAMERA_COLLISION_DISTANCE_SIDES;
-				beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
-				break;
-			
-			case 3:	
-				
-				direction = "down";
-				ray.origin.copy( wantedCamera.matrixWorld.getPosition()).y += CAMERA_DOWN_COLLISION_OFFSET;
-				ray.direction.copy( camera.matrixWorld.getColumnY().negate());
-				
-				minDistance = CAMERA_COLLISION_DISTANCE_DOWN;
-				beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
-				break;
-			
-			case 4:
-				
-				direction = "up";
-				ray.origin.copy( wantedCamera.matrixWorld.getPosition());
-				ray.direction.copy( camera.matrixWorld.getColumnY());
-
-				minDistance = CAMERA_COLLISION_DISTANCE_UP;
-				beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
-				break;
-			
-		}
-
-
-		cameraCollisionSwitcher++;
-		
-		if( cameraCollisionSwitcher > 4 ) {
-			
-			cameraCollisionSwitcher = 0;
-			
-		}
-
-
-		// raycast and modulate camera speed factor
-
-		wantedCameraSpeedFactor[ direction ] = 1;
-
-
-		var c = world.scene.collisions.rayCastNearest( ray );
-		var recalculatedDistance = -1;
-
-		if( c && c.distance !== -1 ) {
-			
-			recalculatedDistance = c.distance * 0.1;
-			
-			if( direction !== "down" ) {
-				
-				if( recalculatedDistance < minDistance + beginSlowDownDistance ) {
-					
-					if( recalculatedDistance < minDistance ) {
-						
-						wantedCameraSpeedFactor[ direction ] = 0;
-						
-					} else {
-						
-						wantedCameraSpeedFactor[ direction ] = 1 - ( recalculatedDistance - minDistance ) / beginSlowDownDistance;
-						
-					}
-					
-				}
-				
-			}
-
-		}
-
-
 		// get mouse
 		
 		var mouseX = shared.mouse.x / shared.screenWidth - 0.5;
 		var mouseY = shared.mouse.y / shared.screenHeight - 0.5;
 
 
-		// special case if collision isn't forward (adjust target and bump up factor so you don't stop)
+		// different updates dependent on time
 
-		if( direction !== "forward" && wantedCameraSpeedFactor[ direction ] < 1 ) {
+		if( progress < CAMERA_STATIC_END ) {
 			
-			var adjust = new THREE.Vector3();
-			adjust.copy( ray.direction ).negate().multiplyScalar(( 1 - wantedCameraSpeedFactor[ direction ] ) * CAMERA_TARGET_ADJUSTMENT_FACTOR );
-			
-			if( direction === "left" || direction === "right" ) {
+			// handle sun rise
+			// glue to ground
+
+			ray.origin.copy( wantedCamera.matrixWorld.getPosition()).y += CAMERA_DOWN_COLLISION_OFFSET;
+			ray.direction.set( 0, -1, 0 );
+
+			var c = world.scene.collisions.rayCastNearest( ray );
+			var recalculatedDistance = -1;
+	
+			if( c && c.distance !== -1 ) {
 				
-				adjust.y = 0;
-				
-			} else {
-				
-				adjust.x = 0;
-				adjust.z = 0;
+				recalculatedDistance = c.distance * 0.1;
+				wantedCamera.position.y = ray.origin.y - recalculatedDistance + CAMERA_LOWEST_Y * 0.5;
 				
 			}
 			
-			wantedCameraTarget.position.addSelf( adjust );
-			wantedCameraSpeedFactor[ direction ] = Math.max( wantedCameraSpeedFactor[ direction ], 0.3 );
-
-			mouseX *= 0.1;
-			mouseY *= 0.1;
-		}
-
-
-		// special case if collision is with ground (no speed attenuation)
-
-		if( direction === "down" && recalculatedDistance < CAMERA_COLLISION_DISTANCE_DOWN ) {
 			
-			var oldY = wantedCamera.position.y;
+			// handle left/right		
+	
+			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
+	
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+			wantedCameraTarget.position.x = Math.min( 300, Math.max( -300, wantedCameraTarget.position.x ));
+			wantedCameraTarget.position.z = wantedCamera.position.z - CAMERA_COLLISION_DISTANCE;
+
+			// set values
+
+			camera.position.y = camera.target.position.y = wantedCameraTarget.position.y = wantedCamera.position.y;
+
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.25 * delta;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.25 * delta;
+
+						
+		} else if( progress < CAMERA_START_LIFT ) {
+
+			// handle walk
+			// glue to ground
+
+			ray.origin.copy( wantedCamera.matrixWorld.getPosition()).y += CAMERA_DOWN_COLLISION_OFFSET;
+			ray.direction.set( 0, -1, 0 );
+
+			var c = world.scene.collisions.rayCastNearest( ray );
+			var recalculatedDistance = -1;
+	
+			if( c && c.distance !== -1 ) {
+				
+				recalculatedDistance = c.distance * 0.1;
+				wantedCamera.position.y = ray.origin.y - recalculatedDistance + CAMERA_LOWEST_Y * 0.5;
+				
+			}
 			
-			wantedCamera.position.y = ray.origin.addSelf( ray.direction.multiplyScalar( recalculatedDistance )).y + CAMERA_LOWEST_Y;
-			wantedCameraTarget.position.y += ( wantedCamera.position.y - oldY );
-			
-		} else if( ray.origin.addSelf( ray.direction.multiplyScalar( recalculatedDistance )).y < CAMERA_LOWEST_Y_NULL_ATTENUATION ) {
-			
-			wantedCameraSpeedFactor[ direction ] = 1;
-			
-		}
+			// handle up/down (cap lowest, highest)
+	
+			if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT * 2 ) {
+				
+				wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR * 0.5;
+				
+			} else {
+				
+				if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR * 0.5;
+				if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR * 0.5;
+				
+			}
+
+			wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y * 0.5 );
+			wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
+	
+	
+			// handle left/right		
+	
+			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
+	
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+			wantedCameraTarget.position.x = Math.min( 300, Math.max( -300, wantedCameraTarget.position.x ));
+			wantedCameraTarget.position.z = wantedCamera.position.z - CAMERA_COLLISION_DISTANCE;
 
 
-		// calculate sum of all factors 
-
-		var cameraSpeedFactor = wantedCameraSpeedFactor.forward *
-							    wantedCameraSpeedFactor.up *
-								wantedCameraSpeedFactor.down *
-								wantedCameraSpeedFactor.right *
-								wantedCameraSpeedFactor.left;
+			// move forward
+				
+			cameraSpeed = CAMERA_FORWARD_SPEED * 0.7 * ( progress - CAMERA_STATIC_END ) / ( CAMERA_START_LIFT - CAMERA_STATIC_END );
+			wantedCamera.position.z -= cameraSpeed * delta;
 
 
+			// position intertia
+	
+			camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * 0.5 * delta;
+			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * 0.5 * delta;
+			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * 0.5 * delta;
+	
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.25 * delta;
+			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * 0.25 * delta;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.25 * delta;
 
-		// handle up/down (cap lowest, highest)
-
-		if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
-			
-			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
-			
-		}
-
-		wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
-		wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
-
-
-		// handle left/right		
-
-		wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
-
-		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
-		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
-
-
-		// handle walk
-		
-		if( progress < CAMERA_START_LIFT ) {
-			
-			cameraSpeed = CAMERA_FORWARD_SPEED * 0.3;
-			shared.cameraSlowDown = true;
-			wantedCameraDirection.y = 0;
-			wantedCameraDirection.normalize();
-			wantedCameraTarget.position.y = wantedCamera.position.y;
-			
 		} else {
-		
+			
+			// handle free flight			
+			// check collision round-robin (can't afford to do all every frame)
+	
+			var minDistance, beginSlowDownDistance, direction;
+	
+			switch( cameraCollisionSwitcher ) {
+				
+				case 0:	
+					
+					direction = "forward";
+					ray.origin.copy( wantedCamera.matrixWorld.getPosition());
+					ray.direction.copy( camera.matrixWorld.getColumnZ().negate());
+					
+					minDistance = CAMERA_COLLISION_DISTANCE;
+					beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
+					break;
+				
+				case 1:
+					
+					direction = "left";
+					ray.origin.copy( wantedCamera.matrixWorld.getPosition());
+					ray.direction.copy( camera.matrixWorld.getColumnX().negate());
+					
+					minDistance = CAMERA_COLLISION_DISTANCE_SIDES;
+					beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
+					break;
+				
+				case 2:	
+					
+					direction = "right";
+					ray.origin.copy( wantedCamera.matrixWorld.getPosition());
+					ray.direction.copy( camera.matrixWorld.getColumnX());
+					
+					minDistance = CAMERA_COLLISION_DISTANCE_SIDES;
+					beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
+					break;
+				
+				case 3:	
+					
+					direction = "down";
+					ray.origin.copy( wantedCamera.matrixWorld.getPosition()).y += CAMERA_DOWN_COLLISION_OFFSET;
+					ray.direction.copy( camera.matrixWorld.getColumnY().negate());
+					
+					minDistance = CAMERA_COLLISION_DISTANCE_DOWN;
+					beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
+					break;
+				
+				case 4:
+					
+					direction = "up";
+					ray.origin.copy( wantedCamera.matrixWorld.getPosition());
+					ray.direction.copy( camera.matrixWorld.getColumnY());
+	
+					minDistance = CAMERA_COLLISION_DISTANCE_UP;
+					beginSlowDownDistance = CAMERA_COLLISION_SLOWDOWN_DISTANCE;
+					break;
+				
+			}
+	
+	
+			cameraCollisionSwitcher++;
+			
+			if( cameraCollisionSwitcher > 4 ) {
+				
+				cameraCollisionSwitcher = 0;
+				
+			}
+	
+	
+			// raycast and modulate camera speed factor
+	
+			wantedCameraSpeedFactor[ direction ] = 1;
+	
+	
+			var c = world.scene.collisions.rayCastNearest( ray );
+			var recalculatedDistance = -1;
+	
+			if( c && c.distance !== -1 ) {
+				
+				recalculatedDistance = c.distance * 0.1;
+				
+				if( direction !== "down" ) {
+					
+					if( recalculatedDistance < minDistance + beginSlowDownDistance ) {
+						
+						if( recalculatedDistance < minDistance ) {
+							
+							wantedCameraSpeedFactor[ direction ] = 0;
+							
+						} else {
+							
+							wantedCameraSpeedFactor[ direction ] = 1 - ( recalculatedDistance - minDistance ) / beginSlowDownDistance;
+							
+						}
+						
+					}
+					
+				}
+	
+			}
+	
+	
+	
+			// special case if collision isn't forward (adjust target and bump up factor so you don't stop)
+	
+			if( direction !== "forward" && wantedCameraSpeedFactor[ direction ] < 1 ) {
+				
+				var adjust = new THREE.Vector3();
+				adjust.copy( ray.direction ).negate().multiplyScalar(( 1 - wantedCameraSpeedFactor[ direction ] ) * CAMERA_TARGET_ADJUSTMENT_FACTOR );
+				
+				if( direction === "left" || direction === "right" ) {
+					
+					adjust.y = 0;
+					
+				} else {
+					
+					adjust.x = 0;
+					adjust.z = 0;
+					
+				}
+				
+				wantedCameraTarget.position.addSelf( adjust );
+				wantedCameraSpeedFactor[ direction ] = Math.max( wantedCameraSpeedFactor[ direction ], 0.3 );
+	
+				mouseX *= 0.1;
+				mouseY *= 0.1;
+			}
+	
+	
+			// special case if collision is with ground (no speed attenuation)
+	
+			if( direction === "down" && recalculatedDistance < CAMERA_COLLISION_DISTANCE_DOWN ) {
+				
+				var oldY = wantedCamera.position.y;
+				
+				wantedCamera.position.y = ray.origin.addSelf( ray.direction.multiplyScalar( recalculatedDistance )).y + CAMERA_LOWEST_Y;
+				wantedCameraTarget.position.y += ( wantedCamera.position.y - oldY );
+				
+			} else if( ray.origin.addSelf( ray.direction.multiplyScalar( recalculatedDistance )).y < CAMERA_LOWEST_Y_NULL_ATTENUATION ) {
+				
+				wantedCameraSpeedFactor[ direction ] = 1;
+				
+			}
+	
+	
+			// calculate sum of all factors 
+	
+			var cameraSpeedFactor = wantedCameraSpeedFactor.forward *
+								    wantedCameraSpeedFactor.up *
+									wantedCameraSpeedFactor.down *
+									wantedCameraSpeedFactor.right *
+									wantedCameraSpeedFactor.left;
+	
+	
+	
+			// handle up/down (cap lowest, highest)
+	
+			if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
+				
+				wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
+				
+			} else {
+				
+				if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR;
+				if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR;
+				
+			}
+	
+			wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
+			wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
+	
+	
+			// handle left/right		
+	
+			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
+	
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+	
+	
+	
+			// calc camera speed (dependent on hight)
+
 			cameraSpeed = CAMERA_FORWARD_SPEED;
 			
-		}
-
-
-		// calc camera speed (dependent on hight)
-		
-		if( !shared.cameraSlowDown )  {
+			if( !shared.cameraSlowDown )  {
+				
+				var cameraHightFactor = ( Math.min( Math.max( wantedCamera.position.y, CAMERA_LOWEST_Y ), CAMERA_FORWARD_SPEED_MAX_Y ) - CAMERA_LOWEST_Y ) / ( CAMERA_FORWARD_SPEED_MAX_Y - CAMERA_LOWEST_Y );
+				cameraSpeed += ( CAMERA_FORWARD_SPEED_MAX - CAMERA_FORWARD_SPEED ) * cameraHightFactor;
+				
+			}
 			
-			var cameraHightFactor = ( Math.min( Math.max( wantedCamera.position.y, CAMERA_LOWEST_Y ), CAMERA_FORWARD_SPEED_MAX_Y ) - CAMERA_LOWEST_Y ) / ( CAMERA_FORWARD_SPEED_MAX_Y - CAMERA_LOWEST_Y );
-			cameraSpeed += ( CAMERA_FORWARD_SPEED_MAX - CAMERA_FORWARD_SPEED ) * cameraHightFactor;
-			
-		}
-		
-
-		// move forward
-
-		wantedCamera.position.addSelf( wantedCameraDirection.multiplyScalar( cameraSpeed * cameraSpeedFactor * delta ));
-
-
-		// lift off
-
-		if( progress > CAMERA_START_LIFT && progress < CAMERA_END_LIFT ) {
-
-			wantedCamera.position.y += CAMERA_LIFT_SPEED * delta;
-			wantedCameraTarget.position.y += CAMERA_LIFT_SPEED * delta * 0.9;
 	
+			// move forward
+	
+			wantedCamera.position.addSelf( wantedCameraDirection.multiplyScalar( cameraSpeed * cameraSpeedFactor * delta ));
+	
+	
+			// lift off
+	
+			if( progress < CAMERA_END_LIFT ) {
+	
+				wantedCamera.position.y += CAMERA_LIFT_SPEED * delta;
+				wantedCameraTarget.position.y += CAMERA_LIFT_SPEED * delta * 0.9;
+		
+			}
+	
+	
+			// cap height
+	
+			wantedCamera.position.y = Math.max( wantedCamera.position.y, CAMERA_LOWEST_Y );
+			wantedCamera.position.y = Math.min( wantedCamera.position.y, CAMERA_HIGHEST_Y );
+	
+	
+			// position intertia
+	
+			camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * delta;
+			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * delta;
+			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * delta;
+	
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA * delta;
+			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA * delta;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA * delta;
+			
+			
+			// roll
+			
+			var currentCameraZ = camera.matrixWorld.getColumnZ();
+			
+			wantedCameraDirection.normalize();
+			wantedCameraDirection.y = currentCameraZ.y;
+			wantedCameraDirection.subSelf( currentCameraZ ).normalize();
+			wantedCameraDirection.multiplyScalar( CAMERA_ROLL_FACTOR * delta );
+			
+			wantedCamera.up.set( 0, 1, 0 );
+			wantedCamera.up.subSelf( wantedCameraDirection ).normalize();
+			
+			camera.up.x += ( wantedCamera.up.x - camera.up.x ) * CAMERA_INERTIA;
+			camera.up.y += ( wantedCamera.up.y - camera.up.y ) * CAMERA_INERTIA;
+			camera.up.z += ( wantedCamera.up.z - camera.up.z ) * CAMERA_INERTIA;
 		}
-
-
-		// cap height
-
-		wantedCamera.position.y = Math.max( wantedCamera.position.y, CAMERA_LOWEST_Y );
-		wantedCamera.position.y = Math.min( wantedCamera.position.y, CAMERA_HIGHEST_Y );
-
-
-
-		// position intertia
-
-		camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * delta;
-		camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * delta;
-		camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * delta;
-
-		camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA * delta;
-		camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA * delta;
-		camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA * delta;
-		
-		
-		// roll
-		
-		var currentCameraZ = camera.matrixWorld.getColumnZ();
-		
-		wantedCameraDirection.normalize();
-		wantedCameraDirection.y = currentCameraZ.y;
-		wantedCameraDirection.subSelf( currentCameraZ ).normalize();
-		wantedCameraDirection.multiplyScalar( CAMERA_ROLL_FACTOR * delta );
-		
-		wantedCamera.up.set( 0, 1, 0 );
-		wantedCamera.up.subSelf( wantedCameraDirection ).normalize();
-		
-		camera.up.x += ( wantedCamera.up.x - camera.up.x ) * CAMERA_INERTIA;
-		camera.up.y += ( wantedCamera.up.y - camera.up.y ) * CAMERA_INERTIA;
-		camera.up.z += ( wantedCamera.up.z - camera.up.z ) * CAMERA_INERTIA;
 
 	}
 

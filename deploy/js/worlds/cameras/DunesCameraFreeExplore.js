@@ -13,7 +13,7 @@ DunesCameraFreeExplore = function( shared ) {
 	var CAMERA_FORWARD_SPEED_MAX = 25;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 60;
+	var CAMERA_VERTICAL_LIMIT = 100;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
 	var CAMERA_INERTIA = 0.02;
 	var CAMERA_ROLL_FACTOR = 0.4;
@@ -247,10 +247,15 @@ DunesCameraFreeExplore = function( shared ) {
 			
 			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
 			
+		} else {
+			
+			if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR;
+			if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR;
+			
 		}
 
-		wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
-		wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
+		wantedCameraTarget.position.y = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
+		wantedCameraTarget.position.y = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
 
 
 		// handle left/right		
