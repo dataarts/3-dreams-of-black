@@ -23,6 +23,8 @@ function initMouse(){
   document.addEventListener('mouseup', mouseUp, false);
   document.addEventListener('mousemove', mouseMove, false);
   document.getElementById('viewerCanvas').addEventListener('mousewheel', mouseWheel, false);
+  document.getElementById('viewerCanvas').addEventListener('DOMMouseScroll', mouseWheel, false);
+
   document.getElementById('viewerCanvas').addEventListener('mousedown', mouseDown, false);
   document.getElementById('viewerCanvas').addEventListener('mouseout', mouseOut, false);
 
@@ -42,8 +44,8 @@ function mouseUp(e) {
   drag = false;
 }
 function mouseMove(e) {
-  var currentX = (event.clientX - container.offsetLeft - width / 2) / width * 2
-  var currentY = (event.clientY - container.offsetTop - height / 2) / height * 2
+  var currentX = (e.clientX - container.offsetLeft - width / 2) / width * 2
+  var currentY = (e.clientY - container.offsetTop - height / 2) / height * 2
   var deltaX = mouseX - currentX;
   var deltaY = mouseY - currentY;
   if (drag) {
@@ -55,18 +57,26 @@ function mouseMove(e) {
 }
 function mouseWheel(e) {
   e.preventDefault();
-  firstDraw = true;
-  var steps = e.wheelDeltaY ? e.wheelDeltaY : -e.detail * 13;
 
-  maxZ = 800;
+        var delta = 0;
+        if (!e)
+                e = window.e;
+        if (e.wheelDelta) {
+                delta = e.wheelDelta/120;
+                if (window.opera)
+                        delta = -delta;
+        } else if (e.detail) {
+                delta = -e.detail/3;
+        }
+
+  var steps = delta*13;
+
+  maxZ = 500;
   minZ = -200;
 
   zoom -= steps;
-  if (zoom < minZ) {
-    zoom = minZ;
-  } else if (zoom > maxZ) {
-    zoom = maxZ;
-  }
+  zoom = Math.max(minZ,Math.min(maxZ,zoom));
+
 }
 
 function animate() {
@@ -90,7 +100,7 @@ function animate() {
   plane.position.y = -riseY;
 
   camera.position.x -= ( cameraDistance + zoom + camera.position.x) / 20;
-
+  sky.position.x = camera.position.x;
   THREE.AnimationHandler.update(delta * params.speed);
 
   if (typeof(effector) != "undefined"){
@@ -121,7 +131,7 @@ function animate() {
 
 
 function moveModelStrip(e) {
-  stripSpeedX = (event.clientX - viewerModelsStrip.offsetLeft - 970 / 2) / 970 * 2;
+  stripSpeedX = (e.clientX - viewerModelsStrip.offsetLeft - 970 / 2) / 970 * 2;
   (stripSpeedX < 0) ? viewerModelsGoalX = 0 : viewerModelsGoalX = Math.max(0,viewerModels.clientWidth-970);
 }
 function animateStrip(){
