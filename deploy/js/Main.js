@@ -169,6 +169,11 @@
 			event.gamma = -(event.x * (180 / Math.PI));
 			event.beta = -(event.y * (180 / Math.PI));
 
+		} else if( event.alpha == null && event.beta == null && event.gamma == null ) {
+
+			window.removeEventListener( "deviceorientation", onWindowDeviceOrientation, false );
+			window.removeEventListener( "MozOrientation", onWindowDeviceOrientation, false );
+
 		}
 
 		var overThreshold = Math.abs(event.gamma) > 4 || Math.abs(event.beta) > 4;
@@ -202,9 +207,8 @@
 			lastGamma = gamma;
 			lastBeta = beta;
 
+			shared.signals.mousemoved.dispatch( event );
 		}
-
-		shared.signals.mousemoved.dispatch( event );
 
 	}
 
