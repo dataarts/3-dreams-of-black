@@ -14,8 +14,8 @@ var PrairieWorld = function ( shared, camera ) {
 
 	// Fog
 
-	// this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0 );
-	// this.scene.fog.color.setHSV( 0.559, 0.741, 0.588 );
+	this.scene.fog = new THREE.FogExp2( 0xffffff, 0.0 );
+	this.scene.fog.color.setHSV( 0.559, 0.741, 0.588 );
 
 	// Lights
 
