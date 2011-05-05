@@ -1,4 +1,4 @@
-var camera, scene, stats, renderer, postRenderer, container;
+var camera, scene, skyScene, stats, renderer, postRenderer, container, gl;
 var postprocessing = {};
 
 var width = 970;
@@ -23,6 +23,7 @@ function initRenderer() {
 
   renderer = new THREE.WebGLRenderer({ antialias: false, clearColor: 0x000000, clearAlpha: 0 });
   renderer.setSize(width, height);
+  gl = renderer.getContext();
 
   renderer.autoClear = false;
 
@@ -80,7 +81,21 @@ function initPostprocessingNoise( effect ) {
     "focus":    { type: "f", value: 0.33 },
 		"aspect":   { type: "f", value: aspect },
 		"aperture": { type: "f", value: 0.025 },
-		"maxblur":  { type: "f", value: 1.0 }
+		"maxblur":  { type: "f", value: 1.0 },
+		"vignette":  { type: "f", value: 1.0 },
+    "screenWidth": { type: "f", value:width },
+		"screenHeight": { type: "f", value:height },
+		"vingenettingOffset": { type: "f", value: 0.94 },
+		"vingenettingDarkening": { type: "f", value: 0.64 },
+		"colorOffset": { type: "f", value: 0 },
+		"colorFactor": { type: "f", value: 0 },
+		"colorBrightness": { type: "f", value: 0 },
+		"sampleDistance": { type: "f", value: 0.4 },
+		"waveFactor": { type: "f", value: 0.00756 },
+		"colorA": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
+		"colorB": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
+		"colorC": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) }
+
     };
 
     effect.materialHeat = new THREE.MeshShaderMaterial( {
@@ -115,12 +130,24 @@ function initPostprocessingNoise( effect ) {
         "uniform vec3 samplerSphere[42];",
         "uniform float focus;",
         "uniform float aspect;",
+        "uniform float vignette;",
+
+				"uniform float screenWidth;",
+				"uniform float screenHeight;",
+				"uniform float vingenettingOffset;",
+				"uniform float vingenettingDarkening;",
+				"uniform float colorOffset;",
+				"uniform float colorFactor;",
+				"uniform float sampleDistance;",
+				"uniform float colorBrightness;",
+				"uniform float waveFactor;",
 
 				"varying vec2 vUv;",
 
 				"void main() {",
 
-          "vec4 col = texture2D( tColor, vUv.xy );",
+					"vec4 col = texture2D( tColor, vUv.xy );",
+          "if (col.a == 0.) col.rgb = vec3(0.5);",
 
           "vec4 normal = texture2D(tNormal, vUv);",
           "if(normal.a == 0.0) normal.xyz = vec3(0.,0.,1.);",
@@ -131,16 +158,15 @@ function initPostprocessingNoise( effect ) {
           "if(depthRGB.a == 0.0) depth = 1.;",
 
           "vec3 rndVec = texture2D( tNoise, vUv*vec2(300.0,200.0) ).rgb * vec3(0.2);",
-          //"rndVec = rndVec*2.0 - vec4(1.0);",
 
           "float ao = (1.0);",
           "vec3 rndUv = vec3(0.0);",
 
           "if (ssao == 1.0 && depth != 1.) {",
+
             "ao = 0.0;",
             "for( int i=1; i<42; i++ ){",
               "rndUv = vec3(vUv,depth) + ssaoRad*reflect(samplerSphere[i].xyz,normal.xyz);",
-              //"rndUv = vec3(vUv,depth) + ssaoRad*(samplerSphere[i].xyz);",
 
               "vec4 rndDepthRGB = texture2D(tDepth,rndUv.xy);",
               "float rndDepth = rndDepthRGB.r/3.+rndDepthRGB.g/3.+rndDepthRGB.b/3.;",
@@ -153,7 +179,9 @@ function initPostprocessingNoise( effect ) {
             "ao = ao/42.0;",
             "gl_FragColor = vec4(col.rgb*ao,col.a);",
             "gl_FragColor.rgb *= 1./gl_FragColor.a;",
+
           "} else if (dof == 1.0) {",
+
             "col = vec4(0.);",
             "vec2 aspectcorrect = vec2( 1.0, aspect );",
             "float factor = depth - focus;",
@@ -164,15 +192,19 @@ function initPostprocessingNoise( effect ) {
             "}",
             "gl_FragColor = col/18.;",
             "gl_FragColor.rgb *= 1./gl_FragColor.a;",
+
           "} else {",
-            //ANTIALIASING
+
             "gl_FragColor = texture2D( tColor, vUv );",
-            // frame buffer resolution is hard coded
-            "gl_FragColor += texture2D( tColor, vUv+vec2(.5/960.,0.) );",
-            "gl_FragColor += texture2D( tColor, vUv+vec2(.0,.5/360.) );",
-            "gl_FragColor += texture2D( tColor, vUv+vec2(.5/960.,.5/360.) );",
-            "gl_FragColor *= 0.25;",
             "gl_FragColor.rgb *= 1./gl_FragColor.a;",
+
+          "}",
+
+          "if (vignette == 1.){",
+
+            "gl_FragColor = vec4( mix(gl_FragColor.rgb, gl_FragColor.ggg * colorFactor - vec3( vingenettingDarkening ), vec3( dot( (vUv - vec2(0.5)), (vUv - vec2(0.5)) ))), 1.0 );",
+					  "gl_FragColor = vec4(1.0) - (vec4(1.0) - gl_FragColor) * (vec4(1.0) - gl_FragColor);",
+
           "}",
 				"}"
 
@@ -192,7 +224,12 @@ function render(){
     triggerShader.uniforms['shaderDebug'].value = params.component;
     animalShader.uniforms['shaderDebug'].value = params.component;
     wireMat.opacity = .3*params.grid;
-    renderer.render( scene, camera, postprocessing.textureColor, true );
+
+    renderer.render( sceneSky, camera, postprocessing.textureColor, true );
+    gl.clearDepth(true);// bug in three.js ??
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    renderer.render( scene, camera, postprocessing.textureColor, false );
+
 
     lightmapShader.uniforms['shaderDebug'].value = 3;
     triggerShader.uniforms['shaderDebug'].value = 3;
@@ -225,9 +262,9 @@ function render(){
 }
 
 function updateCamera(){
-    near = (-camera.position.x) - Math.max(meshRadius+100, 650);
+    near = 100;//(-camera.position.x) - Math.max(meshRadius+100, 1000);
     var negNear = Math.min(0,near);
     near = Math.max(1,near);
-    far = (-camera.position.x) + Math.max(meshRadius+100, 650)-negNear;
+    far = (-camera.position.x) + Math.max(meshRadius+100, 1000)-negNear;
     camera.projectionMatrix = THREE.Matrix4.makePerspective(45, aspect, near, far);
 }

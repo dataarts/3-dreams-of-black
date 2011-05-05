@@ -3,9 +3,9 @@
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
- * objects:    204
- * geometries: 36
- * materials:  38
+ * objects:    203
+ * geometries: 33
+ * materials:  40
  * textures:   3
  */
 
@@ -17,48 +17,6 @@ var scene = {
 
 "objects" :
 {
-    "Mountains" : {
-        "geometry"  : "geo_Mountains",
-        "groups"    : [  ],
-        "materials" : [ "GroundLit.003" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Reflection" : {
-        "geometry"  : "geo_Reflection",
-        "groups"    : [  ],
-        "materials" : [ "GroundLit.002" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Backdrop" : {
-        "geometry"  : "geo_Backdrop.001",
-        "groups"    : [  ],
-        "materials" : [ "lambert3.001" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
     "Collision4" : {
         "geometry"  : "geo_Collision4",
         "groups"    : [  ],
@@ -115,46 +73,64 @@ var scene = {
         "trigger"       : "None"
     },
 
-    "Portal.001" : {
-        "geometry"  : "geo_Portal.001",
+    "Mountains" : {
+        "geometry"  : "geo_Mountains",
         "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ -527.824829, -78.182457, 24.133329 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 9.640689, 9.640689, 9.640689 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Portal" : {
-        "geometry"  : "geo_Portal",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 1102.207031, -253.000702, -57.944214 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 9.640689, 9.640689, 9.640689 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Exploration_Collision" : {
-        "geometry"  : "geo_Exploration_Collision",
-        "groups"    : [  ],
-        "materials" : [ "Collision.001" ],
+        "materials" : [ "GroundLit.003" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
+        "visible"       : true,
         "castsShadow"   : false,
-        "meshCollider"  : true,
+        "meshCollider"  : false,
         "trigger"       : "None"
+    },
+
+    "Reflection" : {
+        "geometry"  : "geo_Reflection",
+        "groups"    : [  ],
+        "materials" : [ "GroundLit.002" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "None"
+    },
+
+    "Backdrop" : {
+        "geometry"  : "geo_Backdrop.001",
+        "groups"    : [  ],
+        "materials" : [ "lambert3.001" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "None"
+    },
+
+    "Portal.001" : {
+        "groups"    : [  ],
+        "position"  : [ -527.824829, -78.182457, 24.133329 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 9.640689, 9.640689, 9.640689 ],
+        "trigger"   : "None"
+    },
+
+    "Portal" : {
+        "groups"    : [  ],
+        "position"  : [ 1102.207031, -253.000702, -57.944214 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 9.640689, 9.640689, 9.640689 ],
+        "trigger"   : "None"
     },
 
     "Ground" : {
@@ -2777,21 +2753,6 @@ var scene = {
 
 "geometries" :
 {
-    "geo_Mountains" : {
-        "type" : "ascii_mesh",
-        "url"  : "Prairie.Mountains.js"
-    },
-
-    "geo_Reflection" : {
-        "type" : "ascii_mesh",
-        "url"  : "Prairie.Reflection.js"
-    },
-
-    "geo_Backdrop.001" : {
-        "type" : "ascii_mesh",
-        "url"  : "Prairie.Backdrop.001.js"
-    },
-
     "geo_Collision4" : {
         "type" : "ascii_mesh",
         "url"  : "Prairie.Collision4.js"
@@ -2812,19 +2773,19 @@ var scene = {
         "url"  : "Prairie.Collision1.js"
     },
 
-    "geo_Portal.001" : {
+    "geo_Mountains" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Portal.001.js"
+        "url"  : "Prairie.Mountains.js"
     },
 
-    "geo_Portal" : {
+    "geo_Reflection" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Portal.js"
+        "url"  : "Prairie.Reflection.js"
     },
 
-    "geo_Exploration_Collision" : {
+    "geo_Backdrop.001" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Exploration_Collision.js"
+        "url"  : "Prairie.Backdrop.001.js"
     },
 
     "geo_Ground.001" : {
@@ -2982,11 +2943,6 @@ var scene = {
         "parameters": { color: 0, opacity: 1.00, vertexColors: "vertex" }
     },
 
-    "12 - Default.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 0, opacity: 1.00 }
-    },
-
     "blinn1SG.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 12162908, opacity: 1.00, vertexColors: "vertex" }
@@ -3038,6 +2994,21 @@ var scene = {
     },
 
     "Collision.004" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16721610, opacity: 1.00 }
+    },
+
+    "Collision.005" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16721610, opacity: 1.00 }
+    },
+
+    "Collision.006" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16721610, opacity: 1.00 }
+    },
+
+    "Collision.007" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16721610, opacity: 1.00 }
     },
