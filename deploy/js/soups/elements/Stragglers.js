@@ -66,7 +66,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 				count = 0;
 			}
 	
-			var obj = { c: mesh, a: animal, active: false, startMorph: startMorph, speeda: speeda, speedb: speedb, normal: new THREE.Vector3(0,-1,0), position: new THREE.Vector3(0,0,0), toVector: new THREE.Vector3(0,0,0) , count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier };
+			var obj = { c: mesh, a: animal, active: false, startMorph: startMorph, lifetime: 0, speeda: speeda, speedb: speedb, normal: new THREE.Vector3(0,-1,0), position: new THREE.Vector3(0,0,0), toVector: new THREE.Vector3(0,0,0) , count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier };
 
 			that.array[i] = obj;
 
@@ -85,10 +85,14 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].c.position.copy(position);
 			that.array[i].c.visible = true;
 			that.array[i].toVector = toPosition.subSelf(position).normalize();
+			that.array[i].lifetime = 0;
 
 			that.array[i].toVector.x *= 1-Math.abs(normal.x);
 			that.array[i].toVector.y *= 1-Math.abs(normal.y);
 			that.array[i].toVector.z *= 1-Math.abs(normal.z);
+			
+			that.array[i].toVector.z = Math.random();
+			that.array[i].toVector.x = Math.random()-0.5;
 			
 			// tween scale
 			that.array[i].scale = 0.01;
@@ -126,6 +130,13 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			var position = obj.position;
 			var toVector = obj.toVector;
 
+			that.array[i].lifetime += delta;
+
+			if (that.array[i].lifetime > 4000) {
+				that.array[i].active = false;
+				that.array[i].c.visible = false;
+				continue;
+			}
 
 			var tox = position.x+(toVector.x*10);
 			var toy = position.y+(toVector.y*10);
@@ -141,7 +152,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// morph
-			that.array[i].count += 0.05;
+			that.array[i].count += 0.03;
 			var morph = Math.max(Math.cos(that.array[i].count),0);
 			morph = Math.min(morph, 1)
 			that.array[i].a.morph = morph;
@@ -152,6 +163,7 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			var animalSpeed = obj.speeda;
+			
 			if (Math.round(morph) == 1) {
 				animalSpeed = obj.speedb;
 			}
@@ -194,10 +206,10 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].position.copy(animal.position);
 
 			// hack..
-			if (animal.position.z > camPos.z+100) {
+			/*if (animal.position.z > camPos.z+100) {
 				that.array[i].active = false;
 				that.array[i].c.visible = false;
-			}
+			}*/
 
 		}
 

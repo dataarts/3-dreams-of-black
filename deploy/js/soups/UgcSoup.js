@@ -94,9 +94,9 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	particles = new Particles(20, scene, 5, particleSprites, 55, 200);
 */
 	// stragglers
-	//var stragglers = new Stragglers(4, scene, vectors.array);
-	//stragglers.settings.constantSpeed = 0.7;
-	//stragglers.settings.capy = 0;
+	var stragglers = new Stragglers(5, scene, vectors.array);
+	stragglers.settings.constantSpeed = 0.7;
+	stragglers.settings.capy = 0;
 
 	// some tests
 	this.addMoose = function () { that.addAnimal("moose") }
@@ -250,6 +250,9 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	allAnimals.rabbit = {geometry: null, index: 9, speed: 5.52, scale: 1.5};
 	allAnimals.frog = {geometry: null, index: 10, speed: 5.576, scale: 1.5};
 
+	allAnimals.sockpuppet_jump = {geometry: null, index: 0, speed: 1, scale: 1.5};
+	allAnimals.sockpuppet_popup = {geometry: null, index: 0, speed: 0.1, scale: 1.5};
+
 	allAnimals.bearblack = {geometry: null, index: 0, speed: 13.12, scale: 1.7};
 	allAnimals.panther = {geometry: null, index: 1, speed: 9.73, scale: 1.7};
 	allAnimals.wolf = {geometry: null, index: 2, speed: 6.7, scale: 1.7};
@@ -292,14 +295,17 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	// preoccupy slots for specific animals - hack...
 	// life
 	runningAnimals.array[0] = "moose";
+	runningAnimals.array[22] = "moose";
+	runningAnimals.array[2] = "elk";
 	runningAnimals.array[10] = "elk";
-	runningAnimals.array[20] = "elk";
 	runningAnimals.array[1] = "elk";
-	runningAnimals.array[4] = "moose";
-	runningAnimals.array[14] = "moose";
+	runningAnimals.array[25] = "elk";
+
 	runningAnimals.array[8] = "fish";
 	runningAnimals.array[16] = "fish";
-	runningAnimals.array[24] = "fish";
+	runningAnimals.array[5] = "sockjump";
+	runningAnimals.array[26] = "sockjump";
+	runningAnimals.array[28] = "sockpopup";
 
 	// dark
 /*	runningAnimals.array[0] = "gator";
@@ -340,7 +346,8 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoadedProxy } );
 	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
 	loader.load( { model: "files/models/soup/fish_life.js", callback: fishLoadedProxy } );
-	//loader.load( { model: "files/models/soup/sock_jump_life.js", callback: sockLoadedProxy } );
+	loader.load( { model: "files/models/soup/sockpuppet_jump.js", callback: sockjumpLoadedProxy } );
+	loader.load( { model: "files/models/soup/sockpuppet_popup.js", callback: sockpopupLoadedProxy } );
 	
 	loader.load( { model: "files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
 	loader.load( { model: "files/models/soup/animals_A_black.js", callback: blackAnimalsLoadedProxy } );
@@ -366,14 +373,14 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		// regular
 		var animal;
-		var morphArray = [0,0,4,3,2,1,0,5,2,7,8,9,10,0,0,3,3,9,2,3];
+		var morphArray = [0,1,0,9,2,2,3,3,4,8,7,9,1,9,5,1,3,0];
 		var speedArray = [6.5, 13.12, 9.76, 7.47, 4.74, 4.94, 0.777, 6.252, 3.412, 5.52, 5.576];
 		animal = runningAnimals.addAnimal( geometry, null, 1.5, morphArray, speedArray );
 
 		preinitAnimal( animal, shared.renderer, scene );
 		// stragglers
-		//morphArray = [5,6,9,2];
-		//stragglers.addAnimal( geometry, null, 1.8, morphArray, speedArray );
+		morphArray = [8,5,7,9,10];
+		stragglers.addAnimal( geometry, null, 1.6, morphArray, speedArray );
 	}
 
 	function elkLoadedProxy( geometry ) {
@@ -402,7 +409,10 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 		var animal;
 		var morphArray = [0,1,2,3];
-		animal = runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray, [2] );
+		animal = runningAnimals.addAnimal( geometry, "fish", 1.6, morphArray, [6] );
+
+		runningAnimals.array[8].isFish = true;
+		runningAnimals.array[16].isFish = true;
 
 		preinitAnimal( animal, shared.renderer, scene );
 	}
@@ -490,10 +500,23 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 	};
 
-	/*function sockLoadedProxy( geometry ) {
-		runningAnimals.addAnimal( geometry, "sock", 1.5, null );
-	}*/
+	function sockjumpLoadedProxy( geometry ) {
+		allAnimals.sockpuppet_jump.geometry = geometry;
 
+		var animal;
+		animal = runningAnimals.addAnimal( geometry, "sockjump", 1.8, null, [1], true );
+
+		preinitAnimal( animal, shared.renderer, scene );
+	}
+
+	function sockpopupLoadedProxy( geometry ) {
+		allAnimals.sockpuppet_popup.geometry = geometry;
+
+		var animal;
+		animal = runningAnimals.addAnimal( geometry, "sockpopup", 2.0, null, [0.1], true );
+
+		preinitAnimal( animal, shared.renderer, scene );
+	}
 
 
 	// flying animals
@@ -501,12 +524,10 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 65;
 
-	for (var i=0; i<10; ++i ) {
-		var odd = i%2;
-		if (odd == 0) {
-			flyingAnimals.array[i] = "b";
-		}
-	}
+	flyingAnimals.array[0] = "b";
+	flyingAnimals.array[1] = "b";
+	flyingAnimals.array[2] = "b";
+	flyingAnimals.array[3] = "b";
 
 	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
@@ -518,7 +539,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		allAnimals.parrot.geometry = geometry;
 		allAnimals.hummingbird.geometry = geometry;
 
-		var morphArray = [0,1,2,3,0,1,2,3,0,1];
+		var morphArray = [0,1,2,3,1,2];
 		var speedArray = [4.848, 7, 7.5, 3.5];
 		flyingAnimals.addAnimal( geometry, null, 1.3, morphArray, speedArray );
 	}
@@ -527,7 +548,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		allAnimals.flamingo.geometry = geometry;
 		allAnimals.stork.geometry = geometry;
 
-		var morphArray = [1,1,0,0,1,0,0,1,0,0];
+		var morphArray = [0,1,0,1];
 		var speedArray = [8.5, 8.623];
 		flyingAnimals.addAnimal( geometry, "b", 1.3, morphArray, speedArray );
 	}
@@ -555,12 +576,14 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	// life trail - of grass/trees/etc
 	var trail = new Trail(80, scene);
 	trail.settings.freeRotation = false;
-	trail.settings.offsetAmount = 4;
+	trail.settings.offsetAmount = 10;
 	
 	// preoccupy for differnt grass
 	for (i=0; i<80; ++i ) {
 		var type = i%4;
 		trail.array[i] = "0"+(type+1);
+		//trail.array[i] = "05";
+
 	}
 	// preoccupy slots for trees and lighthouse
 	for (i=0; i<80; i+=8 ) {
@@ -572,8 +595,8 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	loader.load( { model: "files/models/soup/grass01.js", callback: grass01LoadedProxy } );
 	loader.load( { model: "files/models/soup/grass02.js", callback: grass02LoadedProxy } );
 	loader.load( { model: "files/models/soup/grass03.js", callback: grass03LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass04.js", callback: grass04LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass05.js", callback: grass05LoadedProxy } );
+	loader.load( { model: "files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
+	//loader.load( { model: "files/models/soup/grassFlower.js", callback: grass05LoadedProxy } );
 	
 	loader.load( { model: "files/models/soup/evergreen_low.js", callback: treeALoadedProxy } );
 	loader.load( { model: "files/models/soup/evergreen_high.js", callback: treeBLoadedProxy } );
@@ -684,6 +707,8 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		if (spawnBird >= 300) {
 			flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			spawnBird = 0;
+
+			stragglers.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position);
 		}
 
 		// update the soup parts	
@@ -703,6 +728,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		particles.update(delta, vectors.array[0].position, shared.camPos);
 		runningAnimals.update(delta, shared.camPos);
 		flyingAnimals.update(delta, shared.camPos);
+		stragglers.update(delta, shared.camPos);
 		//butterflysC.update(shared.camPos, camera.theta, delta);
 		//butterflysD.update(shared.camPos, camera.theta, delta, true);
 

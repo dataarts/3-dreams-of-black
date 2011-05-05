@@ -1,11 +1,11 @@
-/* Converted from: Prairie_export3.blend
+/* Converted from: Prairie_export4.blend
  *
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
  * objects:    203
  * geometries: 33
- * materials:  40
+ * materials:  36
  * textures:   3
  */
 
@@ -2973,27 +2973,7 @@ var scene = {
         "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
     },
 
-    "Collision" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16721610, opacity: 1.00 }
-    },
-
     "Collision.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16721610, opacity: 1.00 }
-    },
-
-    "Collision.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16721610, opacity: 1.00 }
-    },
-
-    "Collision.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16721610, opacity: 1.00 }
-    },
-
-    "Collision.004" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16721610, opacity: 1.00 }
     },

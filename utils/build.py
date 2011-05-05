@@ -63,6 +63,8 @@ files = [
 'js/soups/DunesSoup.js',
 'js/soups/elements/Ribbon.js',
 'js/soups/elements/AnimalRandom.js',
+'js/soups/elements/AnimalRandom_old.js',
+
 
 'js/soups/elements/Ribbons.js',
 'js/soups/elements/Vectors.js',

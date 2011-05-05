@@ -1,198 +1,198 @@
 // Add EMI content
 var emiBuyButtonUrl = 'http://widgets.platform.emi.com/widget/1.0/';
 var emiBuyButtonUuids = ["c9e456919b824bdeb2e3a326b122db43"];
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl.": "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 document.writeln(unescape("%3Cscript src='" + emiBuyButtonUrl + "js/emi_buy_button.js' type='text/javascript'%3E%3C/script%3E"));
 
-function Footer( container, prefix ) {
+var Footer = function(container, prefix) {
 
-	var path = prefix || "files/footer";
-	var init = true;
-	var emiButton;
+    var path = prefix || "files/footer";
+    var init = true;
+    var emiButton;
 
-	this.id = Footer.multipleInstances;
-	var divReplacement = "rome_footer_buy_album-" + this.id;
+    this.id = Footer.multipleInstances;
+    var divReplacement = "rome_footer_buy_album-" + this.id;
 
-	this.getDomElement = function() {
+    this.getDomElement = function() {
 
-		return container;
+        return container;
 
-	};
+    };
 
-	window.addEventListener("load", function() {
+    this.load = function() {
 
-		if(EMIBuyButton) {
-			emiButton = new EMIBuyButton({
+        if (EMIBuyButton) {
+            emiButton = new EMIBuyButton({
 
-				buttonID: "c9e456919b824bdeb2e3a326b122db43",
-				buttonImageUrl: path + "/buy_button-trans.png",
-				useVendorImages: true
+                buttonID: "c9e456919b824bdeb2e3a326b122db43",
+                buttonImageUrl: path + "/buy_button-trans.png",
+                useVendorImages: true
 
-			}).replaceDiv( divReplacement );
+            }).replaceDiv(divReplacement);
 
-			init = false;
+            init = false;
 
-		}
+        }
 
-		return this;
+        return this;
 
-	}, false);
+    };
 
-	// Add html
-	var html =  '';
-			html += '<div class = "rome-footer">';
-			html += '<div class = "shout-out">';
-			html += '  <ul>';
-			html += '    <li><a href = "http://chromeexperiments.com/"><img src = "' + path + '/chrome-trans.png" alt = "This is a Chrome Experiment" border = "0" /></a></li>';
-			html += '    <li class = "divider">&nbsp;</li>';
-			html += '    <li><a href = "http://google.com/"><img src = "' + path + '/google-trans.png" alt = "Made With Friends From Google" border = "0" /></a></li>';
-			html += '    <li class = "clear">&nbsp;</li>';
-			html += '  </ul>';
-			html += '</div>';
-			html += '';
-			html += '<div class = "navigation">';
-			html += '  <ul class = "primary">';
-			html += '    <li class = "first"><a href = "http://ro.me/tech">Technology</a></li>';
-			html += '    <li><a href = "http://ro.me/credits">Credits</a></li>';
-			html += '    <li><a href = "http://ro.me/album">Rome Album</a></li>';
-			html += '    <li id = "' + divReplacement + '" class = "rome_footer_buy_album">';
-			html += '    </li>';
-			html += '    <li class = "last">Share</li>';
-			html += '    <li class = "last icons"><a href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src = "' + path + '/fb-trans.png" alt = "facebook" border = "0"  /></a></li>';
-			html += '    <li class = "last icons"><a href="http://twitter.com/share?text=“ROME”&amp;url=http://ro.me" target="_blank"><img src = "' + path + '/twitter-trans.png" alt = "twitter" border = "0" /></a></li>';
-			html += '    <li class = "clear last">&nbsp;</li>';
-			html += '  </ul>';
-			html += '  <ul class = "secondary">';
-			html += '    <li class = "first"><a href = "http://ro.me/terms">Terms</a></li>';
-			html += '    <li class = "last"><a href = "http://ro.me/privacy">Privacy</a></li>';
-			html += '    <li class = "clear last">&nbsp;</li>';
-			html += '  </ul>';
-			html += '</div>';
-			html += '<div class = "clear">&nbsp;</div>';
-			html += '</div>';
-			html += '</div>';
+    window.addEventListener("load", this.load, false);
 
-	var css = '';
-			css += '.rome-footer * {';
-			css += '  margin: 0;';
-			css += '  padding: 0;';
-			css += '}';
-			css += '.rome-footer {';
-			css += '  font: 500 10px/18px "Futura", Arial, sans-serif;';
-			css += '  color: #434343;';
-			css += '  text-transform: uppercase;';
-			css += '  letter-spacing: 1px;';
-			css += '}';
-			css += '.rome-footer .shout-out {';
-			css += '  float: left;';
-			css += '  margin: 0 0 0 18px;';
-			css += '}';
-			css += '.rome-footer .navigation {';
-			css += '  float: right;';
-			css += '  margin: 20px 26px 0 0;';
-			css += '  vertical-align: middle;';
-			css += '}';
-			css += '.rome-footer ul li {';
-			css += '  height: 16px;';
-			css += '  border-right: 1px solid #a0a0a0;';
-			css += '  padding: 0 10px 0 10px;';
-			css += '  width: auto;';
-			css += '  float: left;';
-			css += '  list-style: none;';
-			css += '}';
-			css += '.rome-footer ul li.last,';
-			css += '.rome-footer ul li.last li {';
-			css += '  border: none;';
-			css += '  padding: 0 0 0 10px;';
-			css += '}';
-			css += '.rome-footer .shout-out ul li {';
-			css += '  margin: 0;';
-			css += '  border: 0;';
-			css += '}';
-			css += '.rome-footer .shout-out li.divider {';
-			css += '  margin: 15px 0 15px 15px;';
-			css += '  height: 24px;';
-			css += '  border-left: 1px solid #a0a0a0;';
-			css += '}';
-			css += '.rome-footer a img {';
-			css += '  border: 0;';
-			css += '}';
-			css += '.rome-footer .secondary a:link, .rome-footer .secondary a:visited {';
-			css += '  color: #777;';
-			css += '}';
-			css += '.rome-footer a:link, .rome-footer a:visited,';
-			css += '.rome-footer .secondary a:hover, .rome-footer .secondary a:active {';
-			css += '  color: #434343;';
-			css += '  text-decoration: none;';
-			css += '}';
-			css += '.rome-footer a:hover, .rome-footer a:active {';
-			css += '  color: #000;';
-			css += '}';
-			css += '.emi_buy_button_link {';
-			css += '  margin-top: 2px;';
-			css += '  height: 8px;';
-			css += '  line-height: 8px;';
-			css += '  overflow: hidden;';
-			css += '}';
-			css += '.rome-footer .rome_footer_buy_album img {';
-			css += '  display: block;';
-			css += '  margin-top: 0;';
-			css += '}';
-			css += '.rome-footer .rome_footer_buy_album a:hover img {';
-			css += '  margin-top: -8px;';
-			css += '}';
-			css += '.emi_vendor_menu.using_image a:hover img {';
-			css += '  margin-top: 0;';
-			css += '}';
-			css += '.emi_vendor_menu.using_image {';
-			css += '  margin-top: -145px;';
-			css += '  margin-left: -11px;';
-			css += '  padding: 10px;';
-			css += '}';
-			css += '.emi_vendor_menu.using_image * {';
-			css += '  text-transform: none;';
-			css += '}';
-			css += '.emi_vendor_menu.using_image .emi_vendor_link {';
-			css += '  margin-top: 5px;';
-			css += '}';
-			css += '.rome-footer .secondary {';
-			css += '  margin: 10px 0 0 0;';
-			css += '  float: right;';
-			css += '}';
-			css += '.clear {';
-			css += '  clear: both;';
-			css += '  display: block;';
-			css += '  overflow: hidden;';
-			css += '  visibility: hidden;';
-			css += '  width: 0;';
-			css += '  height: 0;';
-			css += '}';
+    // Add html
+    var html = ['<div class="rome-footer">',
+		'<div class="shout-out">',
+		'  <ul>',
+		'    <li><a href="http://chromeexperiments.com/"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
+		'    <li class="divider">&nbsp;</li>',
+		'    <li><a href="http://google.com/"><img src="' + path + '/google-trans.png" alt="Made With Friends From Google" border="0" /></a></li>',
+		'    <li class="clear">&nbsp;</li>',
+		'  </ul>',
+		'</div>',
+		'<div class="navigation">',
+		'  <ul class="primary">',
+		'    <li class="first"><a href="http://ro.me/tech">Technology</a></li>',
+		'    <li><a href="http://ro.me/credits">Credits</a></li>',
+		'    <li><a href="http://ro.me/album">Rome Album</a></li>',
+		'    <li id="' + divReplacement + '" class="rome_footer_buy_album">',
+		'    </li>',
+		'    <li class="last">Share</li>',
+		'    <li class="last icons"><a href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
+		'    <li class="last icons"><a href="http://twitter.com/share?text=“ROME”&amp;url=http://ro.me" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
+		'    <li class="clear last">&nbsp;</li>',
+		'  </ul>',
+		'  <ul class="secondary">',
+		'    <li class="first"><a href="http://ro.me/terms">Terms</a></li>',
+		'    <li class="last"><a href="http://ro.me/privacy">Privacy</a></li>',
+		'    <li class="clear last">&nbsp;</li>',
+		'  </ul>',
+		'</div>',
+		'<div class="clear">&nbsp;</div>',
+		'</div>',
+		'</div>'].join("\n");
 
-	// Handle dom and html content
-	container.innerHTML = html;
+    var css = ['.rome-footer * {',
+		'  margin: 0;',
+		'  padding: 0;',
+		'}',
+		'.rome-footer {',
+		'  font: 500 10px/18px "Futura", Arial, sans-serif;',
+		'  color: #434343;',
+		'  text-transform: uppercase;',
+		'  letter-spacing: 1px;',
+		'}',
+		'.rome-footer .shout-out {',
+		'  float: left;',
+		'  margin: 0 0 0 18px;',
+		'}',
+		'.rome-footer .navigation {',
+		'  float: right;',
+		'  margin: 20px 26px 0 0;',
+		'  vertical-align: middle;',
+		'}',
+		'.rome-footer ul li {',
+		'  height: 16px;',
+		'  border-right: 1px solid #a0a0a0;',
+		'  padding: 0 10px 0 10px;',
+		'  width: auto;',
+		'  float: left;',
+		'  line-height: 18px;',
+		'  list-style: none;',
+		'}',
+		'.rome-footer ul li.last,',
+		'.rome-footer ul li.last li {',
+		'  border: none;',
+		'  padding: 0 0 0 10px;',
+		'}',
+		'.rome-footer .shout-out ul li {',
+		'  margin: 0;',
+		'  border: 0;',
+		'}',
+		'.rome-footer .shout-out li.divider {',
+		'  margin: 15px 0 15px 15px;',
+		'  height: 24px;',
+		'  border-left: 1px solid #a0a0a0;',
+		'}',
+		'.rome-footer a img {',
+		'  border: 0;',
+		'}',
+		'.rome-footer .secondary a:link, .rome-footer .secondary a:visited {',
+		'  color: #777;',
+		'}',
+		'.rome-footer a:link, .rome-footer a:visited,',
+		'.rome-footer .secondary a:hover, .rome-footer .secondary a:active {',
+		'  color: #434343;',
+		'  text-decoration: none;',
+		'}',
+		'.rome-footer a:hover, .rome-footer a:active {',
+		'  color: #000;',
+		'}',
+		'.emi_buy_button_link {',
+		'  margin-top: 2px;',
+		'  height: 8px;',
+		'  line-height: 8px;',
+		'  overflow: hidden;',
+		'}',
+		'.rome-footer .rome_footer_buy_album img {',
+		'  display: block;',
+		'  margin-top: 0;',
+		'}',
+		'.rome-footer .rome_footer_buy_album a:hover img {',
+		'  margin-top: -8px;',
+		'}',
+		'.emi_vendor_menu.using_image a:hover img {',
+		'  margin-top: 0;',
+		'}',
+		'.emi_vendor_menu.using_image {',
+		'  margin-top: -145px;',
+		'  margin-left: -11px;',
+		'  padding: 10px;',
+		'}',
+		'.emi_vendor_menu.using_image * {',
+		'  text-transform: none;',
+		'}',
+		'.emi_vendor_menu.using_image .emi_vendor_link {',
+		'  margin-top: 5px;',
+		'}',
+		'.rome-footer .secondary {',
+		'  margin: 10px 0 0 0;',
+		'  float: right;',
+		'}',
+		'.clear {',
+		'  clear: both;',
+		'  display: block;',
+		'  overflow: hidden;',
+		'  visibility: hidden;',
+		'  width: 0;',
+		'  height: 0;',
+		'}'].join("\n");
 
-	// Append stylesheet
-	if(Footer.multipleInstances < 1) {
+    // Handle dom and html content
+    container.innerHTML = html;
 
-		var rule  = document.createTextNode( css );
-		var head  = document.getElementsByTagName( 'head' )[ 0 ];
-		var style = document.createElement( 'style' );
+    // Append stylesheet
+    if (Footer.multipleInstances < 1) {
 
-		if( style.stylesheet ) {
+        var rule = document.createTextNode(css);
+        var head = document.getElementsByTagName('head')[0];
+        var style = document.createElement('style');
 
-			style.styleSheet.cssText = rule.nodeValue;
+        if (style.stylesheet) {
 
-		} else {
+            style.styleSheet.cssText = rule.nodeValue;
 
-			style.appendChild( rule );
+        } else {
 
-		}
+            style.appendChild(rule);
 
-		head.appendChild( style );
+        }
 
-	}
+        head.appendChild(style);
 
-	Footer.multipleInstances++;
+    }
+
+    Footer.multipleInstances++;
 }
 Footer.multipleInstances = 0;
