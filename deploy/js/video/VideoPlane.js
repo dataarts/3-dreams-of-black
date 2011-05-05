@@ -6,10 +6,8 @@ var VideoPlane = function( shared, layer, conf ) {
 	var hasKey = false;
 	var isStatic = layer.path.match("png$") || layer.path.match("jpg$");
 
-  var polyTrail = new PolyTrail(shared.mouse.x,shared.mouse.y);
+	var polyTrail = new PolyTrail(shared.mouse.x,shared.mouse.y);
     
-	VideoLoadRegister[ layer.path ] = 1;
-	
 	var fps = layer.fps || 20;
 	
 	this.locked = layer.locked;
@@ -116,6 +114,8 @@ var VideoPlane = function( shared, layer, conf ) {
 
 		uniforms['mouseXY'].value = new THREE.Vector2( 0, 0 );
 		uniforms['aspect'].value = config.aspect;
+		uniforms['mouseSpeed'].value = 0;
+    	uniforms['mouseRad'].value = 0;
 
 	}
 	
@@ -206,8 +206,8 @@ var VideoPlane = function( shared, layer, conf ) {
     
 		material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
 		material.uniforms['mouseXY'].value.y = -mouseY;
-    material.uniforms['mouseSpeed'].value = mouseSpeed;
-    material.uniforms['mouseRad'].value = mouseRad;
+    	material.uniforms['mouseSpeed'].value = mouseSpeed;
+    	material.uniforms['mouseRad'].value = mouseRad;
 
 	}
 
