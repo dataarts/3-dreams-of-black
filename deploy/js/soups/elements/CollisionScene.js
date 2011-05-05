@@ -79,14 +79,14 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		scene.addObject( right );
 		scene.addObject( top );
 		scene.addObject( bottom );
-
+/*
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( front ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( back ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( left ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( right ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( top ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( bottom ) );
-
+*/
 		front.visible = false;
 		back.visible = false;
 		left.visible = false;
@@ -110,6 +110,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 	};
 
 	this.update = function ( camPos, delta ) {
+		
 		right.position.x = camPos.x + that.settings.collisionDistance;
 		left.position.x  = camPos.x - that.settings.collisionDistance;
 		right.position.z = camPos.z;
@@ -163,70 +164,87 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 			ray.direction.subSelf( camPos );
 
 			var c = scene.collisions.rayCastNearest( ray );
+			var distance;
 
 			if( c && c.distance > that.settings.minDistance ) {
 
-				var distance = c.distance*that.settings.scale;
+				distance = c.distance*that.settings.scale;
 
 				if ( distance > that.settings.collisionDistance ) {
 
 					distance = that.settings.collisionDistance;
 
 				}
-
-				that.distance = distance;
-
-				positionVector.copy( ray.origin );
-				positionVector.addSelf( ray.direction.multiplyScalar( distance ) );
 				
-				that.emitter.position = positionVector;
+			} else {
 				
-				if ( c.normal != undefined ) {
+				c = { mesh: right };						// simulate that we've hit surrounding box
+				distance = that.settings.collisionDistance	// if no collision, assume max distance
+				
+			}
 
-					var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
-					that.currentNormal = normal;
-					that.emitterNormal = normal;
+			that.distance = distance;
 
+			positionVector.copy( ray.origin );
+			positionVector.addSelf( ray.direction.multiplyScalar( distance ) );
+			
+			that.emitter.position = positionVector;
+			
+			if ( c.normal != undefined ) {
+
+				var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
+				that.currentNormal = normal;
+				that.emitterNormal = normal;
+
+			}
+
+			if ( c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top || c.mesh == bottom ) {
+
+				that.currentNormal.set( 0, 1, 0 );
+
+				// not to be airborne
+
+				if ( !that.settings.allowFlying && !that.settings.shootRayDown ) {
+
+					that.emitter.position.y = bottom.position.y;
+					
 				}
 
-				if ( c.mesh == right || c.mesh == front || c.mesh == back || c.mesh == left || c.mesh == top || c.mesh == bottom ) {
+				if ( that.settings.shootRayDown ) {
 
-					that.currentNormal.set( 0, 1, 0 );
+					ray.origin.copy( that.emitter.position );
+					ray.direction.set( 0, -1, 0 );
 
-					// not to be airborne
+					var c = scene.collisions.rayCastNearest( ray );
+				
+					if( c && c.distance !== -1 ) {
 
-					if ( !that.settings.allowFlying && !that.settings.shootRayDown ) {
-
-						that.emitter.position.y = bottom.position.y;
-						
-					}
-
-					if ( that.settings.shootRayDown ) {
-
-						ray.origin.copy( that.emitter.position );
-						ray.direction.set( 0, -1, 0 );
-
-						var c = scene.collisions.rayCastNearest( ray );
-					
 						that.emitter.position.y -= c.distance * that.settings.scale;
-
+	
 						var normal = c.mesh.matrixRotationWorld.multiplyVector3( c.normal ).normalize();
 						that.currentNormal = normal;
 
+					} else {
+						
+						that.emitter.position.y = -that.settings.collisionDistance;
+						that.currentNormal.set( 0, 1, 0 );
+						
 					}
 
 				}
 
-				that.emitter.position.x += that.currentNormal.x * that.settings.normalOffsetAmount;
-				that.emitter.position.y += that.currentNormal.y * that.settings.normalOffsetAmount;
-				that.emitter.position.z += that.currentNormal.z * that.settings.normalOffsetAmount;
+			}
+
+			that.emitter.position.x += that.currentNormal.x * that.settings.normalOffsetAmount;
+			that.emitter.position.y += that.currentNormal.y * that.settings.normalOffsetAmount;
+			that.emitter.position.z += that.currentNormal.z * that.settings.normalOffsetAmount;
 				
-			} else {
+/*			} else {
 			
 				// no collsion
 
 			}
-		
+	*/	
 		} else {
 			
 			// emitter

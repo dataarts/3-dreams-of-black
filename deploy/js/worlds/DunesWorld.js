@@ -4,7 +4,7 @@ var DunesWorld = function ( shared ) {
 
 	var that = this;
 	var	SCALE = 0.20;
-	var TILE_SIZE = 30000 * SCALE;
+	var TILE_SIZE = 29990 * SCALE;
 	var scenePrairie, sceneCity, sceneWalk;
 	
 	shared.influenceSpheres = [];
@@ -178,7 +178,7 @@ var DunesWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -1.0 } );
+		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -1.0 }, { "D_tile_Prairie_Water": 0.65 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
@@ -190,7 +190,7 @@ var DunesWorld = function ( shared ) {
 
 	function cityLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 } );
+		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 },  { "D_tile_City_Water": 0.65 } );
 		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
 		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2000, type: 0, destination: "city" } );
@@ -216,8 +216,8 @@ var DunesWorld = function ( shared ) {
 		tileColliders[ numTilesLoaded ].scale.set( SCALE, SCALE, SCALE );
 		
 		// shows collision meshes
-		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
-		//tileColliders[ numTilesLoaded ].visible= true;
+		tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+		tileColliders[ numTilesLoaded ].visible = true;
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
 		that.scene.collisions.merge( scene.collisions );
 
@@ -446,6 +446,11 @@ var DunesWorld = function ( shared ) {
 
 				node.visible = visible; 
 
+			} else {
+				
+				//node.materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+				//node.visible = true;
+				
 			}
 			
 		} );
