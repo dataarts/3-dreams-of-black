@@ -1,12 +1,12 @@
 div.object-title {
-  font: 9.5px/29px "Gotham Medium", sans-serif;
+  font: 9.5px/29px FuturaBT-Medium, sans-serif;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   float: left;
 }
 
 ul#pagination li {
-  font: 9.5px/29px "Gotham Medium", sans-serif;
+  font: 9.5px/29px FuturaBT-Medium, sans-serif;
 display: inline-block;
   text-align: center;
   height: 28px;
@@ -24,7 +24,7 @@ a:hover {
 }
 
 div.object .img-wrapper:hover:before {
-  font: 11px/0px "Gotham Medium", sans-serif;
+  font: 11px/0px FuturaBT-Medium, sans-serif;
   letter-spacing: 0.15em;
   color: #fff;
   content: 'PREVIEW';
@@ -32,7 +32,7 @@ div.object .img-wrapper:hover:before {
   display: block;
   padding: 20px;
   margin-top: 73px;
-  margin-left: 100px;
+  margin-left: 105px;
   background-color: rgba(246, 88, 36, 0.9);
 }
 
@@ -223,8 +223,6 @@ ul#pagination {
   background-position: center top;
   margin-left: -19px;
   margin-top: -37px !important;
-  
-
 }
 
 #lightbox-next:hover {
