@@ -13,7 +13,7 @@ function initGui(){
     "depth_of_field": false,
     "focus": 0.33,
     "aperture": 0.005,
-    "occlusion": false,
+    "occlusion": true,
     "radius": 0.02
   };
   gui = new GUI({domElement:  document.getElementById('viewerSettings')});
@@ -24,10 +24,24 @@ function initGui(){
   gui.add(params, 'texture', true).listen();
   gui.add(params, 'lighting', true).listen();
   gui.add(params, 'component').options({'Composit': 1, 'Normal': 2, 'Depth': 3}).listen();
-  gui.add(params, 'depth_of_field', false).listen();
+  gui.add(params, 'depth_of_field', false).listen().onChange(function(){toggleOpacity('guidat-focus', params.depth_of_field);toggleOpacity('guidat-aperture', params.depth_of_field);});
   gui.add(params, "focus", 0, 1).listen();
   gui.add(params, "aperture", 0, 0.01).listen();
-  gui.add(params, "occlusion", false).listen();
+  gui.add(params, "occlusion", false).listen().onChange(function(){ toggleOpacity('guidat-radius', params.occlusion)});
   gui.add(params, "radius", 0.001, 0.05).listen();
   gui.show();
+
+toggleOpacity('guidat-radius', params.occlusion);
+toggleOpacity('guidat-focus', params.depth_of_field);
+toggleOpacity('guidat-aperture', params.depth_of_field);
+
+}
+
+
+
+function toggleOpacity(target, param){
+  var children = document.getElementById(target).getElementsByTagName('*');
+  for (var i in children){
+    if (children[i].style) children[i].style.opacity = 0.2+0.8*param;
+  }
 }

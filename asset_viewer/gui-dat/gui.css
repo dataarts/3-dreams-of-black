@@ -6,7 +6,7 @@
 
 .guidat { 
     color: #333;
-    opacity: 0.97;
+    opacity: 0.9;
     text-align: left;
 }
 
@@ -21,16 +21,15 @@
     overflow-x: hidden;
 }
 
-a.guidat-toggle { 
+a.guidat-toggle {
     text-decoration: none;
     width:970px;
     cursor: pointer;
     color: #333;
     background-color: #aaa;
     text-align: center;
-    display: block;
-    padding: 5px 0;
-
+    display: none;
+    padding: 5px 0
 }
 
 a.guidat-toggle:hover { 

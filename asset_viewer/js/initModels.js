@@ -7,62 +7,57 @@ var models = [];
 function initModels(){
 
   //MORPHS
-  models.push({"file": '/files/models/soup/birds_B_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/animals_A_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/animals_A_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/arm_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/birds_A_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/birds_A_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/butterfly_hiA.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/elk_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/fish_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/gator_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/goat_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/moose_life.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/octo_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/shadow_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/shdw2.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
-  models.push({"file": '/files/models/soup/taruffalo_black.js', "type": 'animal', "centerY": 0, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/birds_B_life.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.8});
+  models.push({"file": '/files/models/soup/animals_A_black.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.7});
+  models.push({"file": '/files/models/soup/animals_A_life.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.7});
+  models.push({"file": '/files/models/soup/arm_black.js', "type": 'animal', "centerY": 0, "riseY" : 0, "speed": 0});
+  models.push({"file": '/files/models/soup/birds_A_black.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.8});
+  models.push({"file": '/files/models/soup/birds_A_life.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.8});
+  models.push({"file": '/files/models/soup/butterfly_hiA.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.2});
+  models.push({"file": '/files/models/soup/elk_life.js', "type": 'animal', "centerY": 50, "riseY" : 1, "speed": 0.7});
+  models.push({"file": '/files/models/soup/fish_life.js', "type": 'animal', "centerY": 80, "riseY" : -180, "speed": 0.1});
+  models.push({"file": '/files/models/soup/gator_black.js', "type": 'animal', "centerY": 10, "riseY" : 0, "speed": 0.35});
+  models.push({"file": '/files/models/soup/goat_black.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.55});
+  models.push({"file": '/files/models/soup/moose_life.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.85});
+  models.push({"file": '/files/models/soup/octo_black.js', "type": 'animal', "centerY": 20, "riseY" : 0, "speed": 0.18});
+  models.push({"file": '/files/models/soup/shadow_black.js', "type": 'animal', "centerY": 30, "riseY" : 50, "speed": 0});
+  models.push({"file": '/files/models/soup/shdw2.js', "type": 'animal', "centerY": 20, "riseY" : 1, "speed": 0});
+  models.push({"file": '/files/models/soup/taruffalo_black.js', "type": 'animal', "centerY": 90, "riseY" : 0, "speed": 0.5});
 
   //Triggers
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Bus_.js', "base": '/asset_viewer/files/models/city/City.Bus_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2500,0,0,1000]});
-  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Car_.js', "base": '/asset_viewer/files/models/city/City.Car_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2800,0,0,1000]});
-  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_CarNiss_.js', "base": '/asset_viewer/files/models/city/City.CarNiss_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2800,0,0,1000]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Car_.js', "base": '/asset_viewer/files/models/city/City.Car_.js', "type": 'trigger', "centerY": 90, "effector": [0,0,2800,0,0,1000]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_CarNiss_.js', "base": '/asset_viewer/files/models/city/City.CarNiss_.js', "type": 'trigger', "centerY": 90, "effector": [0,0,2800,0,0,1000]});
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_nsole_10_.js', "base": '/asset_viewer/files/models/city/City.Console_10_.js', "type": 'trigger', "centerY": 1000, "effector": [-1500,1000,-4500,-1500,1000,4500]});
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_LampPost_.js', "base": '/asset_viewer/files/models/city/City.LampPost_.js', "type": 'trigger', "centerY": 610, "effector": [0,-2200,0,0,1000,0]});
-  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_ailTrain_.js', "base": '/asset_viewer/files/models/city/City.RailTrain_.js', "type": 'trigger', "centerY": 210, "effector": [0,-2000,0,0,800,0]});
+  models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_ailTrain_.js', "base": '/asset_viewer/files/models/city/City.RailTrain_.js', "type": 'trigger', "centerY": 200, "effector": [0,-2000,0,0,800,0]});
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_SignMany_.js', "base": '/asset_viewer/files/models/city/City.SignMany_.js', "type": 'trigger', "centerY": 260, "effector": [0,-2500,0,0,-500,0]});
+
+  for (var i in models){
+    link = document.createElement('a');
+    link.setAttribute('class', 'modelLink');
+    link.setAttribute('href', 'javascript:modelLoader('+i+')');
+  
+    models[i].name = models[i].file.replace(/\\/g,'/').replace( /.*\//, '' );
+    models[i].name = models[i].name.replace(".js", "");
+    link.innerHTML = models[i].name.replace("_", "<br />");
+
+    document.getElementById('viewerModels').appendChild(link);
+  }
 
   modelLoader(0);
 
 }
 
 function modelLoader(id) {
-  loader = new THREE.JSONLoader();
-  loader.load({ model: models[id].file, callback: function(g) {
-    addModel(g, id);
-  } });
-}
+  if(models[id].geometry !== 'undefined' ){
+    loader = new THREE.JSONLoader();
+    loader.load({ model: models[id].file, callback: function(g) {
+      models[id].geometry = g;
+      switchModel(id);
+    } });
+  } else switchModel(id);
 
-function addModel(geometry, id) {
-  models[id].geometry = geometry;
-
-  link = document.createElement('a');
-  link.setAttribute('class', 'modelLink');
-  link.setAttribute('href', 'javascript:switchModel('+id+')');
-
-  models[id].name = models[id].file.replace(/\\/g,'/').replace( /.*\//, '' );
-  models[id].name = models[id].name.replace(".js", "");
-  link.innerHTML = models[id].name.replace("_", "<br />");
-
-  document.getElementById('viewerModels').appendChild(link);
-
-  if (id == 0){
-    switchModel(0);
-  }
-  if (id < models.length-1) {
-    modelLoader(id+1);
-  }
 }
 
 function switchModel(id) {
@@ -94,8 +89,8 @@ function switchModel(id) {
       effector = new THREE.Mesh( new THREE.Sphere( 1500, 8, 8 ), wireMat);
       effector.start = new THREE.Vector3(models[id].effector[0],models[id].effector[1],models[id].effector[2]);
       effector.end = new THREE.Vector3(models[id].effector[3],models[id].effector[4],models[id].effector[5]);
-      document.getElementById('guidat-morph').style.opacity = 1;
-      document.getElementById('guidat-speed').style.opacity = 0.3;
+      toggleOpacity('guidat-morph', 1);
+      toggleOpacity('guidat-speed', 0);
       //rootY.addChild( effector );
     }});
     models[id].speed = models[id].riseY = 0;
@@ -110,12 +105,12 @@ function switchModel(id) {
 
     nameA = morphObject.availableAnimals[ 0 ];
 
-    document.getElementById('guidat-speed').style.opacity = 1;
+    toggleOpacity('guidat-speed', 1);
     if (morphObject.availableAnimals.length == 1){
-      document.getElementById('guidat-morph').style.opacity = 0.3;
+      toggleOpacity('guidat-morph', 0);
       nameB = morphObject.availableAnimals[0];
     } else {
-      document.getElementById('guidat-morph').style.opacity = 1;
+      toggleOpacity('guidat-morph', 1);
       nameB = morphObject.availableAnimals[1];
     }
     rootY.addChild(morphObject.mesh);

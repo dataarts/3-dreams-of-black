@@ -5,57 +5,54 @@
 #viewerCanvas {
   display: block;
   width: 970px;
+  height:540px;
   float:left;
   z-index: 100;
   cursor: move;
+  margin-bottom:-135px;
+
 }
 #viewerModelsWrapper{
   width: 970px;
-  overflow:hidden;
+  height:68px;
+  overflow-x:hidden;
+  float:left;
 }
 
 #viewerModelsStrip {
+
   float:left;
   width: 3000px;
   height: auto;
-  margin:0 0 0 5px;
+  margin:0;
 }
 #viewerModels{
   position:relative;
   float:left;
   left:0px;
   width: auto;
-  height: auto;
+  height: 66px;
 }
 
 a.modelLink{
   display:block;
   font-size:10px;
-  width:60px;
-  height:60px;
-  background:#fff;
+  width:64px;
+  height:64px;
+  background:#9cA;
   float:left;
-  margin:0 2px 5px 2px;
+  margin:0 2px 0 2px;
   overflow:hidden;
   z-index:200;
+  border:1px solid #eee;
+  border-right:1px solid #999;
+  border-bottom:1px solid #999;
 }
 
 #viewerSettings {
   float:left;
   width:960px;
   height:auto;
-}
-
-#viewerModels img {
-  width: 42px;
-  height: 42px;
-  opacity: 0.4;
-  filter: alpha(opacity = 40);
-}
-
-#viewerModels img:hover {
-  opacity: 1;
-  filter: alpha(opacity = 100)
 }
 
 #model-viewer div.clear {
