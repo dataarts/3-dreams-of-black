@@ -1,5 +1,5 @@
 var VideoPlane = function( shared, layer, conf ) {
-	
+
 	var video, texture, interval, shader, material, wireMaterial;
 	var config = conf;
 	var hasDistortion = false;
@@ -94,7 +94,7 @@ var VideoPlane = function( shared, layer, conf ) {
 			hasDistortion = true;
             break;
 		
-		case VIDEO_KEYED_INVERSE: // a.k.a white key
+		case VIDEO_KEYED_INVERSE: // aka white key
             shader = VideoShaderSource.keyedInverse;
 			hasKey = true;
             break;
@@ -167,70 +167,74 @@ var VideoPlane = function( shared, layer, conf ) {
 	//this.mesh.doubleSided = true;
 
 	this.start = function(t) {
+
 		if(isStatic) return;
 		
-		video.currentTime = video.duration * t;
-		video.play();
-		
-		texture.needsUpdate = true;
+		try {
+			video.currentTime = video.duration * t;
+		} catch (err) {
+			console.log(err);
+			video.currentTime = 0;
+		}
+			
+		video.play();		
+		texture.needsUpdate = true;		
 		
 		interval = setInterval(function(){
-	        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-	            texture.needsUpdate = true;
-	        }
-
-	    }, 1000 / 24);
-
+			if (video.readyState === video.HAVE_ENOUGH_DATA) {
+				texture.needsUpdate = true;
+			}
+				
+		}, 1000 / fps);
 	};
 	
 	this.stop = function() {
-	
+		
 		if(isStatic) return;
 		video.pause();
+		video.currentTime = 0;
 		clearInterval( interval );
-
+		
 	};
-	
-	this.updateUniform = function(mouseX, mouseY, mouseSpeed, mouseRad) {
-
-
-		if( !hasDistortion ) return;
-
-    polyTrail.target.x = -mouseX * config.aspect;
-    polyTrail.target.y = -mouseY;
-    polyTrail.update();
-
-    for (i = 0; i <= 4; i++) {
-      material.uniforms[ 'trail'+i ].value = polyTrail.s[i];
-    }
     
-		material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
-		material.uniforms['mouseXY'].value.y = -mouseY;
-    	material.uniforms['mouseSpeed'].value = mouseSpeed;
-    	material.uniforms['mouseRad'].value = mouseRad;
-
-	}
+    this.update = function(mouseX, mouseY, mouseSpeed, mouseRad){
+        if (!hasDistortion) 
+            return;
+        
+        polyTrail.target.x = -mouseX * config.aspect;
+        polyTrail.target.y = -mouseY;
+        polyTrail.update();
+        
+        for (i = 0; i <= 4; i++) {
+            material.uniforms['trail' + i].value = polyTrail.s[i];
+        }
+        
+        material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
+        material.uniforms['mouseXY'].value.y = -mouseY;
+        material.uniforms['mouseSpeed'].value = mouseSpeed;
+        material.uniforms['mouseRad'].value = mouseRad;
+    }
 
 };
 
-function PolyTrail(x,y){
-  this.target = new THREE.Vector2(0,0);
-  this.s = [];
-    for(var i = 0; i<=4; i++){
-    this.s[i] = new THREE.Vector2(0,0);
-  }
+function PolyTrail(x, y){
+    this.target = new THREE.Vector2(0, 0);
+    this.s = [];
+    for (var i = 0; i <= 4; i++) {
+        this.s[i] = new THREE.Vector2(0, 0);
+    }
 }
+
 PolyTrail.prototype.update = function(){
-  var trailDelay = 10;
-  for(var i = 4; i>=1; i = i - 1){
-    this.s[i].x += (this.s[i-1].x - this.s[i].x)/trailDelay;
-    this.s[i].y += (this.s[i-1].y - this.s[i].y)/trailDelay;
-  }
-  this.s[0].x += (this.target.x - this.s[0].x)/trailDelay;
-  this.s[0].y += (this.target.y - this.s[0].y)/trailDelay;
+    var trailDelay = 10;
+    for (var i = 4; i >= 1; i = i - 1) {
+        this.s[i].x += (this.s[i - 1].x - this.s[i].x) / trailDelay;
+        this.s[i].y += (this.s[i - 1].y - this.s[i].y) / trailDelay;
+    }
+    this.s[0].x += (this.target.x - this.s[0].x) / trailDelay;
+    this.s[0].y += (this.target.y - this.s[0].y) / trailDelay;
 };
 
-var VideoLoadRegister = {
-};
+var VideoLoadRegister = {};
 
 

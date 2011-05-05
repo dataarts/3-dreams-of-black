@@ -169,15 +169,13 @@ var VideoShaderSource = {
 			"varying vec2 vUv;",
 
 			"void main() {",
-				"vec3 cd = vec3(1.0 - colorScale);",
 				"vec3 cs = vec3(colorScale);",				
 				"vec4 c = texture2D( map, vUv );",
 				"float t = c.x + c.y + c.z;",
 				"float alpha = 1.0;",
 				"if( t > threshold )",
-					"alpha = (1.0 - (t - threshold)) / alphaFadeout;",
-				"gl_FragColor = vec4( (c.xyz - cd) * cs, alpha );",
-				//"gl_FragColor = vec4( c.xyz, alpha );",
+					"alpha = 0.0;//(1.0 - (t - 2.0)) * alphaFadeout;",
+				"gl_FragColor = vec4( c.xyz * cs, alpha );",
 			"}"
 		].join("\n")
 	},

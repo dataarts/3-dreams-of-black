@@ -12,6 +12,9 @@ var DunesWorld = function ( shared ) {
 	shared.cameraSlowDown = false;
 
 
+	var cloudMaterials = [];
+	var cloudsStart = new THREE.Vector3(), cloudsEnd = new THREE.Vector3();
+
 	// create scene
 
 	that.scene = new THREE.Scene();
@@ -409,6 +412,16 @@ var DunesWorld = function ( shared ) {
 		
 			that.scene.collisions.merge( scene.collisions );
 
+		}
+		
+		for ( var o in result.objects ) {
+			
+			if ( o.toLowerCase().indexOf( "cloud" ) >= 0 ) {
+				
+				applyCloudsShader( result.objects[ o ], CloudsShader, cloudsStart, cloudsEnd, cloudMaterials );
+
+			}
+			
 		}
 		
 		return scene;
