@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+	<script>
+		window.addEventListener('deviceorientation', function(event) {
+			var a = event.alpha;
+			var b = event.beta;
+			var g = event.gamma;
+			console.log(a + ', ' + b + ', ' + g);
+		}, false);
+	</script>
+</head>
+<body>
+</body>
+</html>

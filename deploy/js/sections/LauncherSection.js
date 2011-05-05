@@ -145,7 +145,6 @@ var LauncherSection = function ( shared ) {
 
 		clouds.show();
 		domElement.style.display = 'block';
-		if(footNav.isSetup()) footNav.setupEmiBuyButton();
 
 	};
 

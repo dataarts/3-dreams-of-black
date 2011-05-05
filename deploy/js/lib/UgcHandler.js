@@ -37,8 +37,6 @@ var UgcHandler = function () {
 
 		var params = 'title=' + title + '&email=' + email + '&type=' + type + '&data=' + data + '&image=' + image;
 
-		console.log( data );
-
 		var request = new XMLHttpRequest();
 		request.open( 'POST', url, true );
 		request.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );

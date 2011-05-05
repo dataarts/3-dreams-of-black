@@ -4,9 +4,10 @@ var DunesWorld = function ( shared ) {
 
 	var that = this;
 	var	SCALE = 0.20;
-	var TILE_SIZE = 30000 * SCALE;
+	var TILE_SIZE = 29990 * SCALE;
 	var scenePrairie, sceneCity, sceneWalk;
 	
+	that.portals = [];
 	shared.influenceSpheres = [];
 	shared.cameraSlowDown = false;
 
@@ -117,51 +118,32 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", tileLoaded );
 
 
+	// UGC
 
-	// UGC - TODO: Temp implementation
-
-/*	var ugcHandler = new UgcHandler();
-
+	var ugcHandler = new UgcHandler();
 	ugcHandler.getLatestUGOs( function ( objects ) {
-
-		var geometry = new THREE.Cube( 50, 50, 50 );
-		var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var data = eval( objects[ i ] );
+			var object = new UgcObject( objects[ i ] );
 
-			if ( data instanceof Array ) {
+			if ( ! object.isEmpty() ) {
 
-				var group = new THREE.Object3D();
-				group.position.x = Math.random() * 10000 - 5000;
-				group.position.z = Math.random() * 10000 - 5000;
+				var mesh = object.getMesh();
 
-				for ( var j = 0, jl = data.length; j < jl; j += 4 ) {
+				mesh.position.x = Math.random() * 10000 - 5000;
+				mesh.position.z = Math.random() * 10000 - 5000;
 
-					var voxel = new THREE.Mesh( geometry, material );
-					voxel.position.x = data[ j ];
-					voxel.position.y = data[ j + 1 ];
-					voxel.position.z = data[ j + 2 ];
-					voxel.matrixAutoUpdate = false;
-					voxel.updateMatrix();
-					voxel.update();
-
-					group.addChild( voxel );
-
-				}
-
-				that.scene.addObject( group );
+				that.scene.addObject( mesh );
 
 			}
 
 		}
 
 	} );
-*/
 
 
 	//--- walk loaded ---
@@ -178,7 +160,7 @@ var DunesWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -1.0 } );
+		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -1.0 }, { "D_tile_Prairie_Water": 0.65 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
@@ -190,7 +172,7 @@ var DunesWorld = function ( shared ) {
 
 	function cityLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 } );
+		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 },  { "D_tile_City_Water": 0.65 } );
 		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
 		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2000, type: 0, destination: "city" } );
@@ -217,7 +199,8 @@ var DunesWorld = function ( shared ) {
 		
 		// shows collision meshes
 		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
-		//tileColliders[ numTilesLoaded ].visible= true;
+		//tileColliders[ numTilesLoaded ].visible = true;
+
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
 		that.scene.collisions.merge( scene.collisions );
 
@@ -261,8 +244,9 @@ var DunesWorld = function ( shared ) {
 			
 			influenceSphere = shared.influenceSpheres[ i ];
 			distance = influenceSphere.object.matrixWorld.getPosition().distanceTo( currentPosition );
+			influenceSphere.currentDistance = distance;
 			
-			if( distance < influenceSphere.radius * SCALE ) {
+			if( distance < influenceSphere.radius ) {
 				
 				// portal
 				
@@ -446,6 +430,11 @@ var DunesWorld = function ( shared ) {
 
 				node.visible = visible; 
 
+			} else {
+				
+				//node.materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+				//node.visible = true;
+				
 			}
 			
 		} );
@@ -475,7 +464,18 @@ var DunesWorld = function ( shared ) {
 	function addInfluenceSphere( info ) {
 	
 		info.state = 0;
+		info.radius *= SCALE;
+		
 		shared.influenceSpheres.push( info );
+		
+		if( info.type === 0 ) {
+			
+			that.portals.push( info );
+
+		}
+
+
+		// show
 
 		if( false ) {
 			

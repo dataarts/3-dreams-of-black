@@ -1,8 +1,7 @@
 var UgcSection = function ( shared ) {
 
 	var objectCreator, ui;
-	var nativeWidth = 1342;
-	
+
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
@@ -17,21 +16,23 @@ var UgcSection = function ( shared ) {
 		var Signal = signals.Signal;
 
 		shared.ugcSignals = {};
+		shared.ugcSignals.object_createmode = new Signal();
+		shared.ugcSignals.object_erasemode = new Signal();
+		shared.ugcSignals.object_changecolor = new Signal();
 		shared.ugcSignals.submit = new Signal();
 
 		objectCreator = new UgcObjectCreator( shared );
 		domElement.appendChild( objectCreator.getDomElement() );
 
 		ui = new UgcUI( shared );
-		
-		domElement.appendChild( ui.getDomElement() );
-		
 		ui.getDomElement().style.position = 'absolute';
 		ui.getDomElement().style.left = '20px';
 		ui.getDomElement().style.top = '50%';
+		domElement.appendChild( ui.getDomElement() );
 
 		ui.addListeners();
 		ui.HANDLERS.updateCapacity(0);
+
 	};
 
 	this.show = function () {
@@ -50,10 +51,10 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		
-		ui.scale(width/nativeWidth);
-		
-		ui.getDomElement().style.marginTop = -255*width/nativeWidth+'px';
+		var nativeWidth = 1342;
+
+		ui.scale( width / nativeWidth );
+		ui.getDomElement().style.marginTop = - 255 * width / nativeWidth + 'px';
 
 		objectCreator.resize( width, height );
 

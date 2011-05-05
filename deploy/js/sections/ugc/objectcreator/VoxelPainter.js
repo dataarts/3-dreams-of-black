@@ -1,20 +1,31 @@
 var VoxelPainter = function ( camera ) {
 
+	var _size = 50, _color = 0xffffff, _mode = VoxelPainter.MODE_IDLE,
+	_object = new UgcObject();
+
 	var _intersectPoint, _intersectFace, _intersectObject;
 
 	// Scene
 
 	var _scene = new THREE.Scene();
 
-	var _light1 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
-	_light1.position.set( 0.5, 0.75, 1 );
-	_light1.color.setHSV( 0, 0, 1 );
-	_scene.addLight( _light1 );
+	// Lights
 
-	var _light2 = new THREE.DirectionalLight( 0xffeedd, 1.5 );
-	_light2.position.set( - 0.5, - 0.75, - 1 );
-	_light2.color.setHSV( 0, 0, 0.306 );
-	_scene.addLight( _light2 );
+	var ambient = new THREE.AmbientLight( 0x221100 );
+	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
+	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
+
+	ambient.color.setHSV( 0, 0, 0.1 );
+
+	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
+	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
+
+	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
+	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+
+	_scene.addLight( ambient );
+	_scene.addLight( directionalLight1 );
+	_scene.addLight( directionalLight2 );
 
 	// Colliders
 
@@ -62,15 +73,11 @@ var VoxelPainter = function ( camera ) {
 	_ground.rotation.x = - 90 * Math.PI / 180;
 	_sceneVoxels.addObject( _ground );
 
-	var _mode = VoxelPainter.MODE_IDLE, _size = 50, _grid = {};
-
 	var _geometry = new THREE.Cube( _size, _size, _size );
-	var _material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
 
 	// Preview
 
-	var _preview = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: 0x00ff00, opacity: 0, transparent: true } ) );
-	// _preview.doubleSided = true;
+	var _preview = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: _color, opacity: 0, transparent: true } ) );
 	_preview.matrixAutoUpdate = false;
 	_scene.addObject( _preview );
 
@@ -86,13 +93,13 @@ var VoxelPainter = function ( camera ) {
 
 	function addVoxel( vector ) {
 
-		var x = toGridScale( vector.x );
-		var y = toGridScale( vector.y );
-		var z = toGridScale( vector.z );
+		var x = toGridScale( vector.x ), y = toGridScale( vector.y ), z = toGridScale( vector.z );
 
-		if ( _grid[ x + "." + y + "." + z ] == null ) {
+		if ( !_object.checkVoxel( x, y, z ) ) {
 
-			var voxel = new THREE.Mesh( _geometry, _material );
+			_object.addVoxel( x, y, z, _color );
+
+			var voxel = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: _color } ) );
 			voxel.position.x = x * _size;
 			voxel.position.y = y * _size;
 			voxel.position.z = z * _size;
@@ -101,19 +108,15 @@ var VoxelPainter = function ( camera ) {
 			voxel.update();
 			_sceneVoxels.addObject( voxel );
 
-			_grid[ x + "." + y + "." + z ] = voxel;
-
 		}
 
 	}
 
 	function removeVoxel( voxel ) {
 
-		var x = toGridScale( voxel.position.x );
-		var y = toGridScale( voxel.position.y );
-		var z = toGridScale( voxel.position.z );
+		var x = toGridScale( voxel.position.x ), y = toGridScale( voxel.position.y ), z = toGridScale( voxel.position.z );
 
-		_grid[ x + "." + y + "." + z ] = null;
+		_object.removeVoxel( x, y, z );
 
 		_sceneVoxels.removeObject( voxel );
 		_scene.removeObject( voxel ); // This shouldn't be needed :/
@@ -121,6 +124,13 @@ var VoxelPainter = function ( camera ) {
 	}
 
 	//
+
+	this.setColor = function ( hex ) {
+
+		_color = hex;
+		_preview.materials[ 0 ].color.setHex( _color );
+
+	};
 
 	this.setMode = function ( mode ) {
 
@@ -180,7 +190,7 @@ var VoxelPainter = function ( camera ) {
 
 			break;
 
-			case VoxelPainter.MODE_DRAW:
+			case VoxelPainter.MODE_CREATE:
 
 				_preview.materials[ 0 ].opacity = 0;
 
@@ -221,14 +231,14 @@ var VoxelPainter = function ( camera ) {
 
 	};
 
-	this.getGrid = function () {
+	this.getObject = function () {
 
-		return _grid;
+		return _object;
 
 	};
 
 }
 
 VoxelPainter.MODE_IDLE = 'VoxelPainter.MODE_IDLE';
-VoxelPainter.MODE_DRAW = 'VoxelPainter.MODE_DRAW';
+VoxelPainter.MODE_CREATE = 'VoxelPainter.MODE_CREATE';
 VoxelPainter.MODE_ERASE = 'VoxelPainter.MODE_ERASE';
