@@ -6,8 +6,8 @@ PrairieCameraFreeExplore = function( shared ) {
 	
 	// setttings
 	
-	var CAMERA_Y = 30;
-	var CAMERA_FORWARD_SPEED = 3;
+	var CAMERA_Y = 25;
+	var CAMERA_FORWARD_SPEED = 2;
 	var CAMERA_VERTICAL_FACTOR = 20;
 	var CAMERA_VERTICAL_LIMIT = 200;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
@@ -22,12 +22,15 @@ PrairieCameraFreeExplore = function( shared ) {
 	var wantedCameraTarget;
 	var wantedCameraDirection = new THREE.Vector3();
 	var world;
+	var portals;
 	var camera;
 	var center;
+	var portalDirectionDot = new THREE.Vector3();
 	
 	// construct
 
 	world = shared.worlds.prairie;
+	portals = world.portals;
 	center = new THREE.Vector3( 350, 0, -300);
 	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 
@@ -97,26 +100,51 @@ PrairieCameraFreeExplore = function( shared ) {
 		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * 350 + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 
 			
-		// calc camera speed (dependent how aligned you are with directio)
-
-		var cameraSpeedFactor = 1;// - Math.max( 1, camera.matrixWorld.getColumnZ().subSelf( wantedCameraDirection ).length());
-				
-
 		// move forward
+		// if moving towards portal, home in on it
 
-		var movement = wantedCameraDirection.multiplyScalar( CAMERA_FORWARD_SPEED * cameraSpeedFactor * delta );
-		movement.y = 0;
-	
-		wantedCamera.position.addSelf( movement );
+		var closestPortal;
+		var closestDistance = 9999999999;
 
-		var x = wantedCamera.position.x - center.x;
-		var z = wantedCamera.position.z - center.z;
-
-		if( Math.sqrt( x * x + z * z ) > CAMERA_RADIUS ) {
+		for( var p = 0; p < portals.length; p++ ) {
 			
-			wantedCamera.position.subSelf( movement );
+			var portal = portals[ p ];
+			var dot = portalDirectionDot.sub( portal.object.matrixWorld.getPosition(), wantedCamera.position ).normalize().dot( wantedCameraDirection );
 	
+			if( dot > 0.7 && portal.currentDistance < closestDistance ) {
+				
+				closestDistance = portal.currentDistance;
+				closestPortal   = portal;
+				
+			}			
+			
 		}
+		
+		if( closestPortal && closestDistance < closestPortal.radius * 2 ) {
+			
+			var distance = portalDirectionDot.sub( closestPortal.object.matrixWorld.getPosition(), wantedCamera.position ).length() / ( closestPortal.radius * 2 );
+			wantedCamera.position.addSelf( portalDirectionDot.normalize().multiplyScalar( CAMERA_FORWARD_SPEED * delta ));
+			
+		} else {
+			
+			var movement = wantedCameraDirection.multiplyScalar( CAMERA_FORWARD_SPEED * delta );
+			movement.y = ( CAMERA_Y - wantedCamera.position.y ) * 0.03;
+		
+			wantedCamera.position.addSelf( movement );
+	
+			var x = wantedCamera.position.x - center.x;
+			var z = wantedCamera.position.z - center.z;
+	
+			var dot = portalDirectionDot.sub( center, wantedCamera.position ).normalize().dot( wantedCameraDirection );
+	
+			if( Math.sqrt( x * x + z * z ) > CAMERA_RADIUS && dot < 0 ) {
+				
+				wantedCamera.position.subSelf( movement );
+		
+			}
+			
+		}
+		
 
 
 

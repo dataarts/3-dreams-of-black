@@ -179,7 +179,7 @@ var DunesWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -1.0 }, { "D_tile_Prairie_Water": 0.65 } );
+		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -0.5 }, { "D_tile_Prairie_Water": 0.65 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
@@ -194,7 +194,7 @@ var DunesWorld = function ( shared ) {
 		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 },  { "D_tile_City_Water": 0.65 } );
 		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
-		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2000, type: 0, destination: "city" } );
+		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2500, type: 0, destination: "city" } );
 		addInfluenceSphere( { name: "citySlowDown", object: result.empties.City_Center, radius: 10000, type: 1 } );
 	};
 	
