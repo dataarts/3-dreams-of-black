@@ -46,7 +46,11 @@ var GALLERY = function(params) {
     $.ajax({
           url: GALLERY.API_BASE + 'metadata/' + params['category'],
           success: function(data) {
-            console.log('There are ' + data.count + ' objects in this category.');
+						if (!data.success) {
+							error(data.error);
+						} else { 
+						  //console.log(data, 'There are ' + data.count + ' objects in this category.');
+						}
           },
           error: error('Error fetching object totals.')
 
@@ -152,13 +156,6 @@ var GALLERY = function(params) {
 
   function doVote(objectID, up) {
 
-    /**
-     * Upvote or downvote.
-     *
-     * @param index int relative to start of page where 0 is first object
-     * @param up boolean, true = upvote, false = downvote
-     * @param onComplete function should take in one boolean param indicating success
-     */
     var sendVote = function(objectID, up, onComplete) {
 
       var url = GALLERY.API_BASE + 'object/' + objectID + '/' + ( up ? 'up' : 'down' ) + 'vote';
