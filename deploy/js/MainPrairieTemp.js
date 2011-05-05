@@ -74,7 +74,8 @@ function init() {
 
 		},
 
-		worlds: { },
+		worlds: {},
+		soups: {},
 		sequences: {},
 		started: { "city": false, "prairie": false, "dunes" : false },
 

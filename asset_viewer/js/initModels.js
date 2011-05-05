@@ -18,7 +18,7 @@ function initModels(){
   models.push({"file": '/files/models/soup/fish_life.js', "type": 'animal', "centerY": 80, "riseY" : -180, "speed": 0.1});
   models.push({"file": '/files/models/soup/gator_black.js', "type": 'animal', "centerY": 10, "riseY" : 0, "speed": 0.35});
   models.push({"file": '/files/models/soup/goat_black.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.55});
-  models.push({"file": '/files/models/soup/moose_life.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.85});
+  models.push({"file": '/files/models/soup/moose_life.js', "type": 'animal', "centerY": 140, "riseY" : 0, "speed": 0.85});
   models.push({"file": '/files/models/soup/octo_black.js', "type": 'animal', "centerY": 20, "riseY" : 0, "speed": 0.18});
   models.push({"file": '/files/models/soup/shadow_black.js', "type": 'animal', "centerY": 30, "riseY" : 50, "speed": 0});
   models.push({"file": '/files/models/soup/shdw2.js', "type": 'animal', "centerY": 20, "riseY" : 1, "speed": 0});
@@ -37,10 +37,13 @@ function initModels(){
     link = document.createElement('a');
     link.setAttribute('class', 'modelLink');
     link.setAttribute('href', 'javascript:modelLoader('+i+')');
+
   
     models[i].name = models[i].file.replace(/\\/g,'/').replace( /.*\//, '' );
     models[i].name = models[i].name.replace(".js", "");
-    link.innerHTML = models[i].name.replace("_", "<br />");
+    //link.innerHTML = models[i].name.replace("_", "<br />");
+
+    link.style.backgroundImage = 'url("/asset_viewer/files/thumbnails/'+models[i].name+'.png")';
 
     document.getElementById('viewerModels').appendChild(link);
   }
@@ -65,6 +68,7 @@ function switchModel(id) {
   makeScene();
 
   if (models[id].type == "trigger"){
+    params.texture = true;
 
     triggerMat = new TriggerMat();
     lightmapMat = new LightmapMat();
