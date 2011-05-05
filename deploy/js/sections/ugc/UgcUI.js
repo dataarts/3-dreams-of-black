@@ -414,6 +414,10 @@ var UgcUI = function ( shared ) {
 	
 		onundo: function() {
 	
+			// temporary for douglas
+			alert('saved');
+			shared.ugcSignals.submit.dispatch();
+
 		},
 	
 		oncolorchange: function(hexString) {

@@ -122,7 +122,7 @@ var Prairie = function ( shared ) {
 
 		camera.animation.play( true, 0 );
 
-		renderer.setClearColor( world.scene.fog.color );
+		//renderer.setClearColor( world.scene.fog.color );
 
 	};
 	
