@@ -91,6 +91,7 @@ var City = function ( shared ) {
 		soup = new CitySoup( camera, world.scene, shared );
 		
 		shared.worlds.city = world;
+		shared.soups.city = soup;
 		shared.sequences.city = this;
 		 
 		

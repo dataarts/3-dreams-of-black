@@ -87,6 +87,7 @@ var Prairie = function ( shared ) {
 		soup = new PrairieSoup( camera, world.scene, shared );
 
 		shared.worlds.prairie = world;
+		shared.soups.prairie = soup;
 		shared.sequences.prairie = this;
 
 		//world.scene.addObject( cameraPath.debugPath );

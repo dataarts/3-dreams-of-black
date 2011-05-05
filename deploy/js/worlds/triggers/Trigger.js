@@ -380,84 +380,88 @@ var TriggerUtils = (function() {
 	
 	//--- update ---
 	
-	that.update = function() {
+	that.update = function( worldId ) {
 		
 		var s, sl, pos;
 		var e, el, effectors = that.effectors;
 		var x, y, z;
 		var manhattanRadius = that.effectorRadius * 1.5;
 		
-		for( s = 0, sl = smallTriggersCity.length; s < sl; s++ ) {
+		if( worldId === "city" ) {
 			
-			pos = smallTriggersCity[ s ].mesh.matrixWorld.getPosition();
-			
-			for( e = 0, el = effectors.length; e < el; e += 3 ) {
+			for( s = 0, sl = smallTriggersCity.length; s < sl; s++ ) {
 				
-				x = Math.abs( effectors[ e + 0 ] - pos.x );
-				y = Math.abs( effectors[ e + 1 ] - pos.y ); 
-				z = Math.abs( effectors[ e + 2 ] - pos.z ); 
+				pos = smallTriggersCity[ s ].mesh.matrixWorld.getPosition();
 				
-				if( x + y + z < manhattanRadius ) {
+				for( e = 0, el = effectors.length; e < el; e += 3 ) {
 					
-					smallTriggersCity[ s ].play( 0.1 + Math.random() * 0.05 );
-					smallTriggersCity.splice( s, 1 );
-					s--;
-					sl--;
+					x = Math.abs( effectors[ e + 0 ] - pos.x );
+					y = Math.abs( effectors[ e + 1 ] - pos.y ); 
+					z = Math.abs( effectors[ e + 2 ] - pos.z ); 
 					
-					break;
+					if( x + y + z < manhattanRadius ) {
+						
+						smallTriggersCity[ s ].play( 0.1 + Math.random() * 0.05 );
+						smallTriggersCity.splice( s, 1 );
+						s--;
+						sl--;
+						
+						break;
+						
+					}
 					
 				}
 				
 			}
+	
 			
-		}
-
-		
-		for( s = 0, sl = bigTriggersCity.length; s < sl; s++ ) {
-			
-			pos = bigTriggersCity[ s ].mesh.matrixWorld.getPosition();
-			
-			for( e = 0, el = effectors.length; e < el; e += 3 ) {
+			for( s = 0, sl = bigTriggersCity.length; s < sl; s++ ) {
 				
-				x = Math.abs( effectors[ e + 0 ] - pos.x );
-				y = Math.abs( effectors[ e + 1 ] - pos.y ); 
-				z = Math.abs( effectors[ e + 2 ] - pos.z ); 
+				pos = bigTriggersCity[ s ].mesh.matrixWorld.getPosition();
 				
-				if( x + y + z < manhattanRadius ) {
+				for( e = 0, el = effectors.length; e < el; e += 3 ) {
 					
-					bigTriggersCity[ s ].play( 0.2 + Math.random() * 0.1 );
-					bigTriggersCity.splice( s, 1 );
-					s--;
-					sl--;
+					x = Math.abs( effectors[ e + 0 ] - pos.x );
+					y = Math.abs( effectors[ e + 1 ] - pos.y ); 
+					z = Math.abs( effectors[ e + 2 ] - pos.z ); 
 					
-					break;
+					if( x + y + z < manhattanRadius ) {
+						
+						bigTriggersCity[ s ].play( 0.2 + Math.random() * 0.1 );
+						bigTriggersCity.splice( s, 1 );
+						s--;
+						sl--;
+						
+						break;
+						
+					}
 					
 				}
-				
+	
 			}
-
-		}
 		
-		
-
-		for( s = 0, sl = smallTriggersPrairie.length; s < sl; s++ ) {
+		} else {
 			
-			pos = smallTriggersPrairie[ s ].mesh.matrixWorld.getPosition();
-			
-			for( e = 0, el = effectors.length; e < el; e += 3 ) {
+			for( s = 0, sl = smallTriggersPrairie.length; s < sl; s++ ) {
 				
-				x = Math.abs( effectors[ e + 0 ] - pos.x );
-				y = Math.abs( effectors[ e + 1 ] - pos.y ); 
-				z = Math.abs( effectors[ e + 2 ] - pos.z ); 
+				pos = smallTriggersPrairie[ s ].mesh.matrixWorld.getPosition();
 				
-				if( x + y + z < manhattanRadius ) {
+				for( e = 0, el = effectors.length; e < el; e += 3 ) {
 					
-					smallTriggersPrairie[ s ].play( 0.1 + Math.random() * 0.05 );
-					smallTriggersPrairie.splice( s, 1 );
-					s--;
-					sl--;
+					x = Math.abs( effectors[ e + 0 ] - pos.x );
+					y = Math.abs( effectors[ e + 1 ] - pos.y ); 
+					z = Math.abs( effectors[ e + 2 ] - pos.z ); 
 					
-					break;
+					if( x + y + z < manhattanRadius ) {
+						
+						smallTriggersPrairie[ s ].play( 0.1 + Math.random() * 0.05 );
+						smallTriggersPrairie.splice( s, 1 );
+						s--;
+						sl--;
+						
+						break;
+						
+					}
 					
 				}
 				
