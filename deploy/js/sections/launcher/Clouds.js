@@ -29,7 +29,8 @@ var Clouds = function ( shared, isRelaunch ) {
 	//////////////////////////////////////////////////////////////////
 
 	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
-	camera, postCamera, scene, postScene, birdsScene, renderer, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos;
+	camera, postCamera, scene, postScene, birdsScene, renderer, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos, 
+	wantedCameraUpX = 0;
 	
 	fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
   
@@ -281,15 +282,20 @@ var Clouds = function ( shared, isRelaunch ) {
     delta = time - oldTime;
     oldTime = time;
 
-		camera.position.x += ( mouse.x - camera.target.position.x ) * 0.01;
-		camera.position.y += ( - mouse.y - camera.target.position.y ) * 0.01;
+		camera.position.x += (  mouse.x - camera.position.x ) * 0.009;
+		camera.position.y += ( -mouse.y - camera.position.y ) * 0.009;
 		camera.position.z = - position + 4000;
     birdsGroup.position.z = camera.position.z - 500;
     birdsGroup.position.y = - 50;
 
-		camera.target.position.x =  camera.position.x;
+		wantedCameraUpX = Math.min( Math.max( -0.3, ( mouse.x - camera.position.x ) * 0.005 ), 0.3 );
+		camera.up.x += ( wantedCameraUpX - camera.up.x ) * 0.005;
+		camera.up.normalize();
+
+		camera.target.position.x = camera.position.x;
 		camera.target.position.y = camera.position.y;
 		camera.target.position.z = camera.position.z - 1000;
+
 
 		renderer.clear();
 
