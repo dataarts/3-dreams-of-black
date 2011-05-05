@@ -88,8 +88,8 @@ var PrairieWorld = function ( shared, camera ) {
 		result.objects[ "Backdrop" ].materials[ 0 ].map.wrapS = THREE.RepeatWrapping;
 		result.objects[ "Backdrop" ].materials[ 0 ].map.wrapT = THREE.RepeatWrapping;
 
-		that.portals.push( { object: result.objects[ "Portal"     ], radius: 200, currentDistance: 9999999 } );
-		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 200, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal"     ], radius: 120, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 120, currentDistance: 9999999 } );
 
 		that.portals[ 0 ].object.visible = false;		// hack, should not have geo in content, should be object3d
 		that.portals[ 1 ].object.visible = false;

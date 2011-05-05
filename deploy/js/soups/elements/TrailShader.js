@@ -141,11 +141,11 @@ ROME.TrailShaderUtils = ( function() {
 
 	//	ROME.TrailShader.uniforms.lavaTime.value += 0.000001 * deltaTime;
 		ROME.TrailShader.uniforms.lavaTime.value += deltaTime;
-		if(ROME.TrailShader.uniforms.lavaTime.value > 1.0)	
+		/*if(ROME.TrailShader.uniforms.lavaTime.value > 1.0)	
 			ROME.TrailShader.uniforms.lavaTime.value = 0.0;	
 		if(ROME.TrailShader.uniforms.lavaTime.value < 0.0)	
 			ROME.TrailShader.uniforms.lavaTime.value = 0.0;	
-
+*/
 	}
 	
 	
@@ -260,7 +260,7 @@ ROME.TrailShader = {
 				"}",
 	
 			"#endif",
-	
+	/*
 			"#if MAX_POINT_LIGHTS > 0",
 	
 				/*"for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {",
@@ -277,10 +277,10 @@ ROME.TrailShader = {
 					"float pointLightWeighting = max( dot( transformedNormal, lVector ), 0.0 );",
 					"vLightWeighting.xyz += pointLightColor[ i ] * pointLightWeighting * lDistance;",
 	
-				"}",*/
+				"}",
 	
 			"#endif",
-
+*/
 			"vUV = uv;",
 			"vTrailUV = trailUV;",
 			"vColor = color;",
@@ -342,17 +342,17 @@ ROME.TrailShader = {
 			//"mixValue = dot(vPos - lavaHeadPosition.xz,  vPos - lavaHeadPosition.xz);",
 			"if(mixValue > 0.5)",
 			"{",
-				"gl_FragColor = gl_FragColor.gggg * vec4(0.27, 0.25, 0.3, 1.0) - vec4(0.1, 0.1, 0.1, 1.0);",
+//				"gl_FragColor = gl_FragColor.gggg * vec4(0.27, 0.25, 0.3, 1.0) - vec4(0.1, 0.1, 0.1, 1.0);",
 				"mixValue = abs((texture2D(lavaNoiseMap, vTrailUV.yx * vec2(40.0, -40.0)).r - 0.5));",
 				"mixValue = max(max(1.0 - mixValue * 32.0, 0.0) * (lookup.r - 0.5) * 8.0, 0.0);",
-				"gl_FragColor += vec4(mixValue) * texture2D( lavaMap, vTrailUV * vec2(200.0) - vec2( lavaTime * 2.5)) * texture2D(lavaNoiseMap, vTrailUV * vec2(10.0) - vec2( lavaTime * 2.5)).rrrr * vec4(2.0);",
-			"}",
+				"gl_FragColor = vec4(mixValue) * texture2D( lavaMap, vTrailUV * vec2(200.0) - vec2( lavaTime * 2.5)) * texture2D(lavaNoiseMap, vTrailUV * vec2(10.0) - vec2( lavaTime * 2.5)).rrrr * vec4(2.0);",
+			"}/* else {",
+			"}*/",
 
-
+			"gl_FragColor = gl_FragColor * vLightWeighting;",
 
 			// add up
 			
-			"gl_FragColor = gl_FragColor * vLightWeighting;",
 			//"gl_FragColor = lookup.rrrr;",
 			"gl_FragColor.a = 1.0;",
 
