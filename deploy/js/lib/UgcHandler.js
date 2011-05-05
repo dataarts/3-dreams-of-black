@@ -6,16 +6,16 @@ var UgcHandler = function () {
 
 		var url = base_url + '/latest';
 
-		var request = new XMLHttpRequest();
-		request.open( 'GET', url, true );
+		var xhr = new XMLHttpRequest();
+		xhr.open( 'GET', url, true );
 
-		request.onreadystatechange = function () {
+		xhr.onreadystatechange = function () {
 
-			if ( request.readyState == 4 ) {
+			if ( xhr.readyState == 4 ) {
 
-				if ( request.status == 200 ) {
+				if ( xhr.status == 200 ) {
 
-					callback( JSON.parse( request.responseText ) );
+					callback( JSON.parse( xhr.responseText ) );
 
 				} else {
 
@@ -25,44 +25,46 @@ var UgcHandler = function () {
 
 			}
 
-		}
+		};
 
-		request.send( null );
+		xhr.send( null );
 
 	};
 
-	this.submitUGO = function ( title, email, type, data, image, callback ) {
+	this.getUGO = function( id, callback ) {
+		var url = '/ugc/object/'+id;
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url);
+		xhr.onreadystatechange = function () {
+			if ( xhr.readyState == 4 ) {
+				if ( xhr.status == 200 ) {
+					var obj = JSON.parse(xhr.responseText);
+					callback( obj );
+				} else {
+					console.log( 'Could not fetch '+id );
+				}
+			}
+		};
+		xhr.send( null );
+	};
+
+	this.submitUGO = function ( submission, callback ) {
 
 		var url = base_url;
 
-		var params = 'title=' + title + '&email=' + email + '&type=' + type + '&data=' + data + '&image=' + image;
-
-		var request = new XMLHttpRequest();
-		request.open( 'POST', url, true );
-		request.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
-//		request.setRequestHeader( 'Content-length', params.length );
-//		request.setRequestHeader( 'Connection', 'close' );
-
-		request.onreadystatechange = function () {
-
-			if ( request.readyState == 4 ) {
-
-				if ( request.status == 200 ) {
-
-					callback( request.responseText );
-
+		var xhr = new XMLHttpRequest();
+		xhr.open( 'POST', url );
+		xhr.onreadystatechange = function () {
+			if ( xhr.readyState == 4 ) {
+				if ( xhr.status == 200 ) {
+					var obj = JSON.parse(xhr.responseText);
+					callback( obj );
 				} else {
-
 					console.log( 'Submission of model failed' );
-
 				}
-
 			}
-
-		}
-
-		request.send( params );
-
+		};
+		xhr.send( JSON.stringify(submission) );
 	};
 
 };
