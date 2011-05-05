@@ -61,8 +61,13 @@ function HandleErrors(d) {
           // go ahead darling
           if(!localStorage["RomeError"]) {
             // overlay our condition
-
             window.addEventListener("load", function() {
+
+              console.log(document.getElementById('ui-container'));
+              var uiContainer = document.getElementById('ui-container');
+              if(uiContainer) {
+                uiContainer.style.display = "none";
+              }
 
               var shade = document.createElement("div");
               var errorContainer = document.createElement("div");
@@ -90,6 +95,7 @@ function HandleErrors(d) {
                 document.body.removeChild(shade);
                 document.body.removeChild(errorContainer);
                 window.removeEventListener("resize", windowResize, false);
+                LauncherSection.showUI();
               };
               shade.addEventListener("click", function() {
                 removeErrors();
@@ -107,6 +113,7 @@ function HandleErrors(d) {
                   }, false);
             }, false);
 
+            HandleErrors.isWebGLAndFireFox = true;
             localStorage["RomeError"] = true;
           }
         }
@@ -135,6 +142,7 @@ function HandleErrors(d) {
     }
   }
 }
+HandleErrors.isWebGLAndFireFox = false;
 
 // if has get contents of case then dont run else run HandleErrors
 // Read a page's GET URL variables and return them as an associative array.
