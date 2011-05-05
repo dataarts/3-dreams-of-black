@@ -13,11 +13,15 @@ var ExplorationSection = function ( shared ) {
 	var progress = 0, start = 0, lastTime = 0;
 	var renderer = shared.renderer;
 	var renderTarget = shared.renderTarget;
-	var world, scene;
-	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes;
+	var world, scene, portals;
+	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes, fadeOutEffect;
+	var fadeInTime = 0;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
+
+	fadeOutEffect = new FadeOutEffect( 0x000000, shared );
+	fadeOutEffect.init();
 
 	paintEffect = new PaintEffect( shared );
 	paintEffect.init();
@@ -48,12 +52,13 @@ var ExplorationSection = function ( shared ) {
 
 	function startExplore( worldId ) {
 
-		domElement.appendChild( renderer.domElement );
-
-		world  = shared.worlds[ worldId ];
-		scene  = world.scene;
-		camera = cameras[ worldId ];
+		world   = shared.worlds[ worldId ];
+		portals = world.portals;
+		scene   = world.scene;
+		camera  = cameras[ worldId ];
 		camera.resetCamera();
+		
+		fadeInTime = 0;
 		
 		if( worldId == "city" ) {
 			
@@ -137,6 +142,7 @@ var ExplorationSection = function ( shared ) {
 	this.show = function () {
 
 		domElement.style.display = 'block';
+		domElement.appendChild( renderer.domElement );
 
 	};
 
@@ -156,7 +162,7 @@ var ExplorationSection = function ( shared ) {
 
 		// just flying around worlds using new RollCamera
 		
-		if( world ) {
+		if( world && world.scene ) {
 
 			time = new Date().getTime() - start;
 			delta = time - lastTime;
@@ -172,8 +178,25 @@ var ExplorationSection = function ( shared ) {
 
 			clearEffect.update( progress, delta, time );
 
-			renderer.setClearColor( world.scene.fog.color );
+			renderer.setClearColor( world.scene.fog ? world.scene.fog.color : 0xffffff );
 			renderer.render( world.scene, camera.camera, renderTarget );
+
+			if( fadeInTime < 1000 ) {
+				
+				fadeInTime += delta;
+				fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
+
+			}
+
+			for( var i = 0; i < portals.length; i++ ) {
+				
+				if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+					
+					fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+					
+				}
+				
+			}
 
 			postEffect.update( progress, delta, time );
 

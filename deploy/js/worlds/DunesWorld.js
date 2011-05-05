@@ -7,6 +7,7 @@ var DunesWorld = function ( shared ) {
 	var TILE_SIZE = 29990 * SCALE;
 	var scenePrairie, sceneCity, sceneWalk;
 	
+	that.portals = [];
 	shared.influenceSpheres = [];
 	shared.cameraSlowDown = false;
 
@@ -115,9 +116,9 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_city.js", cityLoaded );
 
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
+	//loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
+	//loader.load( "files/models/dunes/D_tile_4.js", tileLoaded );
 
 
 
@@ -218,6 +219,7 @@ var DunesWorld = function ( shared ) {
 		// shows collision meshes
 		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
 		//tileColliders[ numTilesLoaded ].visible = true;
+
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
 		that.scene.collisions.merge( scene.collisions );
 
@@ -261,8 +263,9 @@ var DunesWorld = function ( shared ) {
 			
 			influenceSphere = shared.influenceSpheres[ i ];
 			distance = influenceSphere.object.matrixWorld.getPosition().distanceTo( currentPosition );
+			influenceSphere.currentDistance = distance;
 			
-			if( distance < influenceSphere.radius * SCALE ) {
+			if( distance < influenceSphere.radius ) {
 				
 				// portal
 				
@@ -480,7 +483,18 @@ var DunesWorld = function ( shared ) {
 	function addInfluenceSphere( info ) {
 	
 		info.state = 0;
+		info.radius *= SCALE;
+		
 		shared.influenceSpheres.push( info );
+		
+		if( info.type === 0 ) {
+			
+			that.portals.push( info );
+
+		}
+
+
+		// show
 
 		if( false ) {
 			

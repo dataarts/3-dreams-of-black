@@ -7,9 +7,10 @@ var PrairieWorld = function ( shared, camera ) {
 	this.scene = new THREE.Scene();
 	this.scene.collisions = new THREE.CollisionSystem();
 
-	// Portal
+	// Portals
 
-	var portal = new THREE.Vector3( 1094.090, -99.358, 246.713  );
+	this.portals = [];
+
 
 	// Fog
 
@@ -86,6 +87,12 @@ var PrairieWorld = function ( shared, camera ) {
 
 		result.objects[ "Backdrop" ].materials[ 0 ].map.wrapS = THREE.RepeatWrapping;
 		result.objects[ "Backdrop" ].materials[ 0 ].map.wrapT = THREE.RepeatWrapping;
+
+		that.portals.push( { object: result.objects[ "Portal"     ], radius: 200, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 200, currentDistance: 9999999 } );
+
+		that.portals[ 0 ].object.visible = false;		// hack, should not have geo in content, should be object3d
+		that.portals[ 1 ].object.visible = false;
 
 		preInitScene( result, shared.renderer );
 		
@@ -166,21 +173,27 @@ var PrairieWorld = function ( shared, camera ) {
 		TriggerUtils.effectorRadius = 50;
 		TriggerUtils.update();
 		
-		if ( portalsActive ) {
+		
+		// check portals
+		
+		if( portalsActive ) {
 			
 			var currentPosition = camera.matrixWorld.getPosition();
 			
-			var d = portal.distanceTo( currentPosition );
-			
-			if ( d < 100 ) {
+			for( var i = 0; i < that.portals.length; i++ ) {
 				
-				shared.signals.startexploration.dispatch( "dunes" );
+				that.portals[ i ].currentDistance = that.portals[ i ].object.matrixWorld.getPosition().distanceTo( currentPosition );
+				
+				if( that.portals[ i ].currentDistance < that.portals[ i ].radius ) {
+					
+					shared.signals.startexploration.dispatch( "dunes" );
+					
+				}
 
 			}
 			
 		}
 
-	};
-
-
+	}
+	
 };
