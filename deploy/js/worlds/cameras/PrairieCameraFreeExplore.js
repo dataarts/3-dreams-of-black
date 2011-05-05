@@ -6,14 +6,14 @@ PrairieCameraFreeExplore = function( shared ) {
 	
 	// setttings
 	
-	var CAMERA_Y = 35;
-	var CAMERA_FORWARD_SPEED = 5;
+	var CAMERA_Y = 30;
+	var CAMERA_FORWARD_SPEED = 3;
 	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 100;
+	var CAMERA_VERTICAL_LIMIT = 200;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
 	var CAMERA_INERTIA = 0.02;
-	var CAMERA_ROLL_FACTOR = 0.5;
-	var CAMERA_RADIUS = 775;
+	var CAMERA_ROLL_FACTOR = 0.4;
+	var CAMERA_RADIUS = 795;
 
 
 	// variables
@@ -27,8 +27,8 @@ PrairieCameraFreeExplore = function( shared ) {
 	
 	// construct
 
-	world = shared.worlds.dunes;
-	center = new THREE.Vector3( 300, 0, -300);
+	world = shared.worlds.prairie;
+	center = new THREE.Vector3( 350, 0, -300);
 	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 
 	camera.target.position.set( 0, 0, -100 );

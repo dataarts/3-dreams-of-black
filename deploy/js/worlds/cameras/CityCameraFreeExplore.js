@@ -16,7 +16,7 @@ CityCameraFreeExplore = function( shared ) {
 	var CAMERA_ROLL_FACTOR = 0.4;
 	
 	var boundingX = { start: new THREE.Vector3( -3000, 10, -1500 ), end: new THREE.Vector3( 3000, 200, -1500 ) };
-	var boundingZ = { start: new THREE.Vector3( 0, 10, -300 ), end: new THREE.Vector3( 0, 250, -3000 ) };
+	var boundingZ = { start: new THREE.Vector3( 0, 10, -300 ), end: new THREE.Vector3( 0, 250, -3200 ) };
 
 
 	// variables
@@ -55,8 +55,8 @@ CityCameraFreeExplore = function( shared ) {
 	
 	that.resetCamera = function() {
 		
-		wantedCamera.position.copy( boundingZ.start );
-		wantedCameraTarget.position.set( boundingZ.start.x, boundingZ.start.y, boundingZ.end.z );
+		wantedCamera.position.set( boundingZ.start.x, boundingZ.start.y, ( boundingZ.end.z + boundingZ.start.z ) * 0.5 );
+		wantedCameraTarget.position.set( boundingX.start.x, boundingZ.start.y, wantedCamera.position.z );
 		
 		camera.position.copy( wantedCamera.position );
 		camera.target.position.copy( wantedCameraTarget.position );
