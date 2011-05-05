@@ -16,6 +16,9 @@ var UgcSection = function ( shared ) {
 		var Signal = signals.Signal;
 
 		shared.ugcSignals = {};
+		shared.ugcSignals.object_createmode = new Signal();
+		shared.ugcSignals.object_erasemode = new Signal();
+		shared.ugcSignals.object_changecolor = new Signal();
 		shared.ugcSignals.submit = new Signal();
 
 		objectCreator = new UgcObjectCreator( shared );

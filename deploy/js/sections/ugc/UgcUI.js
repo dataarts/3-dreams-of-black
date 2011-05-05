@@ -427,9 +427,9 @@ var UgcUI = function ( shared ) {
 
 		},
 
-		oncolorchange: function ( hexString ) {
+		oncolorchange: function ( hex ) {
 
-			
+			shared.ugcSignals.object_changecolor.dispatch( hex );
 
 		},
 
@@ -528,13 +528,19 @@ var UgcUI = function ( shared ) {
 		var colorOptions = document.getElementById('color').getElementsByClassName('options')[0].getElementsByTagName('polygon');
 		
 		for (var i = 0; i < colorOptions.length; i++) {
+
 			onClick(colorOptions[i], function() {
-			  var fill = this.getAttribute('fill');
+
+			  var hex = parseInt( this.getAttribute( 'fill' ).substr( 1 ), 16 );
+
 			  for (var j = 0; j < colorOptions.length; j++) {
 			  	colorOptions[j].setAttribute('class', '');
 			  }
+
 			  this.setAttribute('class', 'selected');
-			  HANDLERS.oncolorchange(fill);
+
+			  HANDLERS.oncolorchange( hex );
+
 			});
 		}
 	

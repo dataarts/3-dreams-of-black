@@ -1,6 +1,6 @@
 var UgcObject = function ( data ) {
 
-	var VERSION = 2,
+	var VERSION = 3,
 	_type = null, _grid = {}, _count = 0;
 
 	this.addVoxel = function ( x, y, z, color ) {
@@ -36,25 +36,25 @@ var UgcObject = function ( data ) {
 		for ( i in _grid ) {
 
 			item = _grid[ i ];
-			array.push( item.x, item.y, item.z );
+			array.push( item.x, item.y, item.z, item.color );
 
 		}
 
-		return JSON.stringify( array );
-
+		var json = JSON.stringify( array );
+		console.log( json );
+		return json;
 	};
 
 	this.getMesh = function () {
 
 		var geometry = new THREE.Cube( 50, 50, 50 );
-		var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
 
 		var group = new THREE.Object3D();
 
 		for ( var i in _grid ) {
 
 			var item = _grid[ i ];
-			var voxel = new THREE.Mesh( geometry, material );
+			var voxel = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: item.color } ) );
 			voxel.position.x = item.x * 50;
 			voxel.position.y = item.y * 50;
 			voxel.position.z = item.z * 50;
@@ -78,7 +78,7 @@ var UgcObject = function ( data ) {
 
 		while ( i < l ) {
 
-			this.addVoxel( data[ i ++ ], data[ i ++ ], data[ i ++ ] );
+			this.addVoxel( data[ i ++ ], data[ i ++ ], data[ i ++ ], data[ i ++ ] );
 
 		}
 

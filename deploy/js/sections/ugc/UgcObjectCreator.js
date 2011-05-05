@@ -120,7 +120,17 @@ var UgcObjectCreator = function ( shared ) {
 
 	// Painter
 
-	var painter = new VoxelPainter( camera ), ugcHandler = new UgcHandler();
+	var painter = new VoxelPainter( camera );
+
+	// Signals
+
+	var ugcHandler = new UgcHandler();
+
+	shared.ugcSignals.object_changecolor.add( function ( hex ) {
+
+		painter.setColor( hex );
+
+	} );
 
 	shared.ugcSignals.submit.add( function () {
 
@@ -136,7 +146,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	function onMouseDown( event ) {
 
-		painter.setMode( !isDeleteMode ? VoxelPainter.MODE_DRAW : VoxelPainter.MODE_ERASE );
+		painter.setMode( !isDeleteMode ? VoxelPainter.MODE_CREATE : VoxelPainter.MODE_ERASE );
 
 		render();
 
