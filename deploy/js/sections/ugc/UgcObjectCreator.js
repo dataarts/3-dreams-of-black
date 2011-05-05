@@ -143,6 +143,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	var thumbstr = renderer.domElement.toDataURL('image/png');
     var context = renderer.getContext();
+    window.img = renderer.domElement.toDataURL('image/png');
     var d = renderer.domElement;
     console.log(d.width);
     var readBuffer = new Uint8Array(d.width * d.height * 4);

@@ -88,31 +88,32 @@ var UgcHandler = function () {
    * @param callback
    */
   submitImage = function(id, upload_url, name, image) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/ugc/object/'+id+'/image');
-    console.log(image.length);
-    xhr.send(image.buffer);
-//      function byteValue(x) {
-//        return x.charCodeAt(0) & 0xff;
-//      }
-//      var xhr = new XMLHttpRequest(),
-//          boundary = 'AJAX------------------------AJAX',
-//          contentType = "multipart/form-data; boundary=" + boundary,
-//          postHead = '--' + boundary + '\r\n' +
-//              'Content-Disposition: form-data; name="file"; filename="' + name + '"\r\n' +
-//              'Content-Type: application/octet-stream\r\n\r\n',
-//          postTail = '\r\n--' + boundary + '--';
-//      var head = Array.prototype.map.call(postHead, byteValue);
-//      var tail = Array.prototype.map.call(postTail, byteValue);
-//      xhr.open('POST', upload_url);
-//      var lh = head.length;
-//      var li = image.length;
-//      var lt = tail.length;
-//      var byteArray = new Uint8Array(lh+li+lt);
-//      byteArray.set(head, 0);
-//      byteArray.set(image,lh);
-//      byteArray.set(tail,lh+li);
-//      xhr.send(byteArray.buffer);
+//    var xhr = new XMLHttpRequest();
+//    xhr.open('POST', '/ugc/object/'+id+'/image');
+//    console.log(image.length);
+//    xhr.send(image.buffer);
+      function byteValue(x) {
+        return x.charCodeAt(0) & 0xff;
+      }
+      var xhr = new XMLHttpRequest(),
+          boundary = 'AJAX------------------------AJAX',
+          contentType = "multipart/form-data; boundary=" + boundary,
+          postHead = '--' + boundary + '\r\n' +
+              'Content-Disposition: form-data; name="file"; filename="' + name + '"\r\n' +
+              'Content-Type: application/octet-stream\r\n\r\n',
+          postTail = '\r\n--' + boundary + '--';
+      var head = Array.prototype.map.call(postHead, byteValue);
+      var tail = Array.prototype.map.call(postTail, byteValue);
+      xhr.open('POST', upload_url);
+      xhr.setRequestHeader('Content-Type', contentType);
+      var lh = head.length;
+      var li = image.length;
+      var lt = tail.length;
+      var byteArray = new Uint8Array(lh+li+lt);
+      byteArray.set(head, 0);
+      byteArray.set(image,lh);
+      byteArray.set(tail,lh+li);
+      xhr.send(byteArray.buffer);
   };
 
 	this.submitUGO = function ( submission, images, callback ) {
@@ -129,6 +130,7 @@ var UgcHandler = function () {
 //      }
 //    };
 //    xhr.send(JSON.stringify(submission));
+    window.images = images
 
 //    xhr.setRequestHeader( 'Content-type', 'multipart/form-data' );
     xhr.onreadystatechange = function () {
