@@ -197,8 +197,8 @@ var DunesWorld = function ( shared ) {
 		tileColliders[ numTilesLoaded ].scale.set( SCALE, SCALE, SCALE );
 		
 		// shows collision meshes
-		tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
-		tileColliders[ numTilesLoaded ].visible = true;
+		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+		//tileColliders[ numTilesLoaded ].visible = true;
 		that.scene.addChild( tileColliders[ numTilesLoaded ] );
 		that.scene.collisions.merge( scene.collisions );
 
