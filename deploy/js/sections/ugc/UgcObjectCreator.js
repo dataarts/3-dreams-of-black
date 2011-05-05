@@ -45,7 +45,7 @@ var UgcObjectCreator = function ( shared ) {
 		that.lensFlare = null;
 		that.lensFlareRotate = null;
 
-		var flaresPosition = new THREE.Vector3( 0, 0, -7500 );
+		var flaresPosition = new THREE.Vector3( 0, 0, - 7500 );
 		var sx = 60, sy = 292;
 
 		initLensFlares( that, flaresPosition, sx, sy );
@@ -120,27 +120,13 @@ var UgcObjectCreator = function ( shared ) {
 
 	// Painter
 
-	var painter = new VoxelPainter( camera );
-
-	// TODO: Temp implementation
-
-	var ugcHandler = new UgcHandler();
+	var painter = new VoxelPainter( camera ), ugcHandler = new UgcHandler();
 
 	shared.ugcSignals.submit.add( function () {
 
-		var data = '', grid = painter.getGrid();
-
-		for ( var item in grid ) {
-
-			data += grid[ item ].position.x + ',' + grid[ item ].position.y + ',' + grid[ item ].position.z + ',16777215,';
-
-		}
-
-		data = '[' + data.slice( 0, - 1 ) + ']';
-
 		var thumbnail = renderer.domElement.toDataURL('image/png');
 
-		ugcHandler.submitUGO( 'this is a test', 'test@tes.com', 1, data, thumbnail, function ( json ) {
+		ugcHandler.submitUGO( 'this is a test', 'test@tes.com', 1, painter.getObject().getJSON(), thumbnail, function ( json ) {
 
 			console.log( json );
 

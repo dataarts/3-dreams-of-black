@@ -120,48 +120,29 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
 
 
+	// UGC
 
-	// UGC - TODO: Temp implementation
-
-/*	var ugcHandler = new UgcHandler();
-
+	var ugcHandler = new UgcHandler();
 	ugcHandler.getLatestUGOs( function ( objects ) {
-
-		var geometry = new THREE.Cube( 50, 50, 50 );
-		var material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var data = eval( objects[ i ] );
+			var object = new UgcObject( objects[ i ] );
 
-			if ( data instanceof Array ) {
+			if ( ! object.isEmpty() ) {
 
-				var group = new THREE.Object3D();
-				group.position.x = Math.random() * 10000 - 5000;
-				group.position.z = Math.random() * 10000 - 5000;
+				var mesh = object.getMesh();
 
-				for ( var j = 0, jl = data.length; j < jl; j += 4 ) {
+				mesh.position.x = Math.random() * 10000 - 5000;
+				mesh.position.z = Math.random() * 10000 - 5000;
 
-					var voxel = new THREE.Mesh( geometry, material );
-					voxel.position.x = data[ j ];
-					voxel.position.y = data[ j + 1 ];
-					voxel.position.z = data[ j + 2 ];
-					voxel.matrixAutoUpdate = false;
-					voxel.updateMatrix();
-					voxel.update();
-
-					group.addChild( voxel );
-
-				}
-
-				that.scene.addObject( group );
+				that.scene.addObject( mesh );
 
 			}
 
 		}
 
 	} );
-*/
 
 
 	//--- walk loaded ---

@@ -70,7 +70,7 @@ var VoxelPainter = function ( camera ) {
 	_ground.rotation.x = - 90 * Math.PI / 180;
 	_sceneVoxels.addObject( _ground );
 
-	var _mode = VoxelPainter.MODE_IDLE, _size = 50, _grid = {};
+	var _object = new UgcObject(), _mode = VoxelPainter.MODE_IDLE, _size = 50;
 
 	var _geometry = new THREE.Cube( _size, _size, _size );
 	var _material = new THREE.MeshLambertMaterial( { color: 0xffffff } );
@@ -97,7 +97,8 @@ var VoxelPainter = function ( camera ) {
 		var y = toGridScale( vector.y );
 		var z = toGridScale( vector.z );
 
-		if ( _grid[ x + "." + y + "." + z ] == null ) {
+		// if ( _grid[ x + "." + y + "." + z ] == null ) {
+		if ( !_object.checkVoxel( x, y, z ) ) {
 
 			var voxel = new THREE.Mesh( _geometry, _material );
 			voxel.position.x = x * _size;
@@ -108,7 +109,8 @@ var VoxelPainter = function ( camera ) {
 			voxel.update();
 			_sceneVoxels.addObject( voxel );
 
-			_grid[ x + "." + y + "." + z ] = voxel;
+			// _grid[ x + "." + y + "." + z ] = true;
+			_object.addVoxel( x, y, z );
 
 		}
 
@@ -120,7 +122,8 @@ var VoxelPainter = function ( camera ) {
 		var y = toGridScale( voxel.position.y );
 		var z = toGridScale( voxel.position.z );
 
-		delete _grid[ x + "." + y + "." + z ];
+		// delete _grid[ x + "." + y + "." + z ];
+		_object.removeVoxel( x, y, z );
 
 		_sceneVoxels.removeObject( voxel );
 		_scene.removeObject( voxel ); // This shouldn't be needed :/
@@ -228,9 +231,9 @@ var VoxelPainter = function ( camera ) {
 
 	};
 
-	this.getGrid = function () {
+	this.getObject = function () {
 
-		return _grid;
+		return _object;
 
 	};
 
