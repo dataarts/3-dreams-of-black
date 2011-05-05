@@ -19,6 +19,7 @@ window.onload = function(){
 
 function makeScene(){
   scene = new THREE.Scene();
+  sceneSky = new THREE.Scene();
   rootY = new THREE.Object3D();
   rootZ = new THREE.Object3D();
   scene.addObject(rootZ);
@@ -29,7 +30,7 @@ function makeScene(){
   light[1] = new THREE.DirectionalLight( 0xffcc99, 0.6 );
   light[1].position.set( 0, 2, 1 );
 
-  light[2] = new THREE.DirectionalLight( 0xffcc66, 0.1 );
+  light[2] = new THREE.DirectionalLight( 0xffffff, 1 );
   light[2].position.set( -1, 0, 0.5 );
 
   scene.addLight( light[0] );
@@ -37,9 +38,13 @@ function makeScene(){
   //scene.addLight( light[2] );
 
   //gound plane
-  wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xffffff, lighting:false, opacity:0.5, wireframe: true });
+  wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0x222222, lighting:false, opacity:0.5, wireframe: true });
+  skyMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xd9dae0, lighting:false, opacity:1, wireframe: false });
   plane = new THREE.Mesh(new THREE.Plane(1000, 1000, 10, 10), wireMat);
+  sky = new THREE.Mesh(new THREE.Sphere(200, 32, 32), skyMat);
+  sky.flipSided = true;
   plane.rotation.x = -Math.PI / 2;
 
+  sceneSky.addChild(sky);
   rootY.addChild(plane);
 }
