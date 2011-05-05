@@ -219,7 +219,7 @@ function applyDunesShader( result, excludeMap, invertLightY, opacity ) {
 		mat.uniforms.invertLightY.value = invLight;
 		mat.uniforms.dunesOpacity.value = opa;
 
-		obj.materials[ 0 ] = mat;
+		obj.materials = [ mat ];
 		DunesShaderEffectors.materials.push( mat );
 
 	}

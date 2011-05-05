@@ -116,9 +116,9 @@ var DunesWorld = function ( shared ) {
 	loader.load( "files/models/dunes/D_tile_city.js", cityLoaded );
 
 	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
-	//loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
+	loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
 	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
-	//loader.load( "files/models/dunes/D_tile_4.js", tileLoaded );
+	loader.load( "files/models/dunes/D_tile_4.js", tileLoaded );
 
 
 
