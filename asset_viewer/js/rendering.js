@@ -29,25 +29,11 @@ function initRenderer() {
 
   container.appendChild(renderer.domElement);
 
-  stats = new Stats();
-  stats.domElement.style.position = 'fixed';
-  stats.domElement.style.right = '0px';
-  stats.domElement.style.top = '0px';
-  container.appendChild( stats.domElement );
-
-  canvas = document.createElement( 'canvas' );
-  canvas.width = 32;
-  canvas.height = window.innerHeight;
-  context = canvas.getContext( '2d' );
-  gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-  gradient.addColorStop( 0, "#6788b1" );
-  gradient.addColorStop( 1., "#ffffff" );
-
-  context.fillStyle = gradient;
-  context.fillRect( 0, 0, canvas.width, canvas.height );
-
-  document.getElementById('model-viewer').style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
-  document.getElementById('model-viewer').style.backgroundRepeat = 'repeat-x';
+//  stats = new Stats();
+//  stats.domElement.style.position = 'fixed';
+//  stats.domElement.style.right = '0px';
+//  stats.domElement.style.top = '0px';
+//  container.appendChild( stats.domElement );
 
   initPostprocessingNoise(postprocessing);
 }
@@ -69,7 +55,7 @@ function initPostprocessingNoise( effect ) {
     effect.textureNoise.wrapT = THREE.RepeatWrapping;
     var heatUniforms = {
     "time": { type: "f", value: 0 },
-    "samplerSphere": { type: "fv", value: [0.000000,0.000000,-1.000000,0.000000,0.525731,-0.850651,0.500000,0.162460,-0.850651,0.000000,0.894427,-0.447213,0.500000,0.688191,-0.525731,0.850651,0.276394,-0.447213,0.309017,-0.425325,-0.850651,0.809017,-0.262865,-0.525731,0.525731,-0.723607,-0.447213,-0.309017,-0.425325,-0.850651,0.000000,-0.850651,-0.525731,-0.525731,-0.723607,-0.447213,-0.500000,0.162460,-0.850651,-0.809017,-0.262865,-0.525731,-0.850651,0.276394,-0.447213,-0.500000,0.688191,-0.525731,-0.309017,0.951057,0.000000,-0.809017,0.587785,0.000000,-0.525731,0.723607,0.447213,-1.000000,0.000000,0.000000,-0.809017,-0.587785,0.000000,-0.850651,-0.276394,0.447213,-0.309017,-0.951057,0.000000,0.309017,-0.951057,0.000000,0.000000,-0.894427,0.447213,0.809017,-0.587785,0.000000,1.000000,0.000000,0.000000,0.850651,-0.276394,0.447213,0.809017,0.587785,0.000000,0.309017,0.951057,0.000000,0.525731,0.723607,0.447213,0.000000,0.850651,0.525731,-0.809017,0.262865,0.525731,-0.500000,-0.688191,0.525731,0.500000,-0.688191,0.525731,0.809017,0.262865,0.525731,0.000000,0.000000,1.000000,0.309017,0.425325,0.850651,-0.309017,0.425325,0.850651,0.500000,-0.162460,0.850651,0.000000,-0.525731,0.850651,-0.500000,-0.162460,0.850651]},
+    "samplerSphere": { type: "fv", value: [0,0,0,0,0,-1.0,0,0.894427359104,-0.44721314311,0.850650846958,0.276393681765,-0.447213202715,0.52573120594,-0.723606944084,-0.44721326232,-0.52573120594,-0.723606944084,-0.44721326232,-0.850650846958,0.276393681765,-0.447213202715,-0.52573120594,0.723606944084,0.44721326232,-0.850650846958,-0.276393681765,0.447213202715,0,-0.894427359104,0.44721314311,0.850650846958,-0.276393681765,0.447213202715,0.52573120594,0.723606944084,0.44721326232,0,0,1]},
     "samplerBokehHex": { type: "fv", value: [0.500000,0.000000,0.866025,0.166667,0.000000,0.866025,-0.166667,0.000000,0.866025,-0.500000,0.000000,0.866025,-0.666667,0.000000,0.577350,-0.833333,0.000000,0.288675,-1.000000,0.000000,0.000000,-0.833333,0.000000,-0.288675,-0.666667,0.000000,-0.577350,-0.500000,0.000000,-0.866025,-0.166667,0.000000,-0.866025,0.166667,0.000000,-0.866025,0.500000,0.000000,-0.866025,0.666667,0.000000,-0.577350,0.833333,0.000000,-0.288675,1.000000,0.000000,0.000000,0.833333,0.000000,0.288675,0.666667,0.000000,0.577350]},
     "tColor": { type: "t", value: 0, texture: effect.textureColor },
     "tDepth": { type: "t", value: 1, texture: effect.textureDepth },
@@ -85,13 +71,8 @@ function initPostprocessingNoise( effect ) {
 		"vignette":  { type: "f", value: 1.0 },
     "screenWidth": { type: "f", value:width },
 		"screenHeight": { type: "f", value:height },
-		"vingenettingOffset": { type: "f", value: 0.94 },
 		"vingenettingDarkening": { type: "f", value: 0.64 },
-		"colorOffset": { type: "f", value: 0 },
-		"colorFactor": { type: "f", value: 0 },
-		"colorBrightness": { type: "f", value: 0 },
 		"sampleDistance": { type: "f", value: 0.4 },
-		"waveFactor": { type: "f", value: 0.00756 },
 		"colorA": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 		"colorB": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) },
 		"colorC": { type: "v3", value: new THREE.Vector3( 1, 1, 1 ) }
@@ -127,20 +108,15 @@ function initPostprocessingNoise( effect ) {
         "uniform float ssao;",
         "uniform float ssaoRad;",
         "uniform vec3 samplerBokehHex[18];",
-        "uniform vec3 samplerSphere[42];",
+        "uniform vec3 samplerSphere[13];",
         "uniform float focus;",
         "uniform float aspect;",
         "uniform float vignette;",
 
 				"uniform float screenWidth;",
 				"uniform float screenHeight;",
-				"uniform float vingenettingOffset;",
 				"uniform float vingenettingDarkening;",
-				"uniform float colorOffset;",
-				"uniform float colorFactor;",
 				"uniform float sampleDistance;",
-				"uniform float colorBrightness;",
-				"uniform float waveFactor;",
 
 				"varying vec2 vUv;",
 
@@ -165,7 +141,7 @@ function initPostprocessingNoise( effect ) {
           "if (ssao == 1.0 && depth != 1.) {",
 
             "ao = 0.0;",
-            "for( int i=1; i<42; i++ ){",
+            "for( int i=1; i<13; i++ ){",
               "rndUv = vec3(vUv,depth) + ssaoRad*reflect(samplerSphere[i].xyz,normal.xyz);",
 
               "vec4 rndDepthRGB = texture2D(tDepth,rndUv.xy);",
@@ -173,10 +149,10 @@ function initPostprocessingNoise( effect ) {
               "if(rndDepthRGB.a == 0.0) rndDepth = 1.;",
 
               "float zd = (rndUv.z-rndDepth);",
-              "zd = max(min(zd-0.01,0.07-zd), 0.0);",
-              "ao += 1.2/(1.0+50000.0*zd*zd);",
+              "zd = max(min(zd-0.02,0.1-zd), 0.0);",
+              "ao += 1./(1.+(100000.0*zd));",
             "}",
-            "ao = ao/42.0;",
+            "ao = ao/13.0;",
             "gl_FragColor = vec4(col.rgb*ao,col.a);",
             "gl_FragColor.rgb *= 1./gl_FragColor.a;",
 
@@ -202,7 +178,7 @@ function initPostprocessingNoise( effect ) {
 
           "if (vignette == 1.){",
 
-            "gl_FragColor = vec4( mix(gl_FragColor.rgb, gl_FragColor.ggg * colorFactor - vec3( vingenettingDarkening ), vec3( dot( (vUv - vec2(0.5)), (vUv - vec2(0.5)) ))), 1.0 );",
+            "gl_FragColor = vec4( mix(gl_FragColor.rgb, - vec3( vingenettingDarkening ), vec3( dot( (vUv - vec2(0.5)), (vUv - vec2(0.5)) ))), 1.0 );",
 					  "gl_FragColor = vec4(1.0) - (vec4(1.0) - gl_FragColor) * (vec4(1.0) - gl_FragColor);",
 
           "}",
@@ -247,6 +223,7 @@ function render(){
     postprocessing.materialHeat.uniforms.ssaoRad.value = params.radius;
     postprocessing.materialHeat.uniforms.aperture.value = params.aperture;
     postprocessing.materialHeat.uniforms.dof.value = params.depth_of_field;
+    postprocessing.materialHeat.uniforms.vignette.value = params.vignette;
     postprocessing.materialHeat.uniforms.focus.value = params.focus;
 
     postprocessing.materialHeat.uniforms.time.value += 0.01 * delta;
@@ -257,7 +234,7 @@ function render(){
     postprocessing.materialHeat.uniforms.tNormal.texture = postprocessing.textureNormal;
     renderer.render( postprocessing.scene, postprocessing.camera );
 
-    stats.update();
+//    stats.update();
     updateCamera();
 }
 
