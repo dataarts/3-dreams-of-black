@@ -136,6 +136,8 @@ var CloudsShader = {
 			"gl_FragColor = gl_FragColor + vec4( vLightWeighting, 1.0 );",
 
 			// fog
+
+
 			
 			"depth = gl_FragCoord.z / gl_FragCoord.w;",
 			"depth *= 50.0;",
