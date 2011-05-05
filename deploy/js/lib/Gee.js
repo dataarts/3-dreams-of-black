@@ -242,6 +242,8 @@
  		_this['keyup']();
  	}, false);
 
+	/*
+
  	// Internal loop.
 
  	var requestAnimationFrame = (function() {
@@ -257,7 +259,7 @@
 
  	_idraw = function() {
 
- 		if ( _this['loop'] ) {
+ 		if ( _this['loop'] === true ) {
  			requestAnimationFrame( _idraw );
  		}
 
@@ -277,5 +279,7 @@
  	};
 
  	_idraw();
+
+ 	*/
 
  }
