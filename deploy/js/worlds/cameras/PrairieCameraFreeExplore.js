@@ -7,9 +7,9 @@ PrairieCameraFreeExplore = function( shared ) {
 	// setttings
 	
 	var CAMERA_Y = 35;
-	var CAMERA_FORWARD_SPEED = 8;
+	var CAMERA_FORWARD_SPEED = 5;
 	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 200;
+	var CAMERA_VERTICAL_LIMIT = 100;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
 	var CAMERA_INERTIA = 0.02;
 	var CAMERA_ROLL_FACTOR = 0.5;
@@ -80,6 +80,11 @@ PrairieCameraFreeExplore = function( shared ) {
 		if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
 			
 			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
+			
+		} else {
+			
+			if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR;
+			if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR;
 			
 		}
 
