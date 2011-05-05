@@ -196,26 +196,24 @@ var VideoPlane = function( shared, layer, conf ) {
 		clearInterval( interval );
 		
 	};
-	
-	this.updateUniform = function(mouseX, mouseY, mouseSpeed, mouseRad) {
-
-
-		if( !hasDistortion ) return;
-
-    polyTrail.target.x = -mouseX * config.aspect;
-    polyTrail.target.y = -mouseY;
-    polyTrail.update();
-
-    for (i = 0; i <= 4; i++) {
-      material.uniforms[ 'trail'+i ].value = polyTrail.s[i];
-    }
     
-		material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
-		material.uniforms['mouseXY'].value.y = -mouseY;
-    	material.uniforms['mouseSpeed'].value = mouseSpeed;
-    	material.uniforms['mouseRad'].value = mouseRad;
-
-	}
+    this.update = function(mouseX, mouseY, mouseSpeed, mouseRad){
+        if (!hasDistortion) 
+            return;
+        
+        polyTrail.target.x = -mouseX * config.aspect;
+        polyTrail.target.y = -mouseY;
+        polyTrail.update();
+        
+        for (i = 0; i <= 4; i++) {
+            material.uniforms['trail' + i].value = polyTrail.s[i];
+        }
+        
+        material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
+        material.uniforms['mouseXY'].value.y = -mouseY;
+        material.uniforms['mouseSpeed'].value = mouseSpeed;
+        material.uniforms['mouseRad'].value = mouseRad;
+    }
 
 };
 

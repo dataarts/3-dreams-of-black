@@ -1,16 +1,6 @@
 
 var VideoShots = {
 
-    confParalax: {
-        paralaxHorizontal: 600,
-        paralaxVertical: 100
-    },
-    
-    confStill: {
-        paralaxHorizontal: 0,
-        paralaxVertical: 0
-    },
-    
     introLayers: [
 	{
         path: "files/videos/intro.webm",
@@ -20,7 +10,6 @@ var VideoShots = {
 		duration: 22000
     }
 	],
-
 	// CITY - FEATHER
 	s01_01: [
 	{
@@ -47,7 +36,9 @@ var VideoShots = {
         z: -1200,
 		width: 1.56, height: 1.59,
 		paralax: true,
-		duration: 8120
+		duration: 8120,
+		paralaxHorizontal: 600,
+		paralaxVertical: 200
 	},{
         path: "files/videos/city/s03_layer02.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
@@ -79,12 +70,14 @@ var VideoShots = {
 	    path: "files/videos/city/s09_layer04.webm",
         shaderId: VIDEO_KEYED,
         z: -1000,
-		duration: 8230,
 		colorScale: .99,
         threshold: .45,
         alphaFadeout: .35,
 		paralax: true,
-		width: 1.5625, height: 1.1627
+		width: 1.5625, height: 1.1627,
+		duration: 8230,
+		paralaxHorizontal: 600,
+		paralaxVertical: 100
 	},{       
 	    path: "files/videos/city/s09_layer02.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
@@ -98,8 +91,7 @@ var VideoShots = {
         z: -500,
 		locked: true,
         removeAt : 0.3
-	}],
-	
+	}],	
 	// PRAIRIE - BOXCAR
     s02_01: [{
         path: "files/videos/prairie/s01_layer04.webm",
@@ -107,7 +99,9 @@ var VideoShots = {
         z: -1400,
 		width: 1, height: 1.83,
 		paralax: true,
-		duration: 9230
+		duration: 9230,
+		paralaxHorizontal: 600,
+		paralaxVertical: 100
     },{
         path: "files/videos/prairie/s01_layer03.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
@@ -126,14 +120,7 @@ var VideoShots = {
         z: -30,
         locked: true
     }],
-    
-	
-	
-	
-	
-	
-	
-	
+    // PRAIRIE - TRAIN LADDER
     s02_02: [{
         path: "files/videos/prairie/s02_layer03.jpg",
         shaderId: VIDEO_OPAQUE,
@@ -148,8 +135,7 @@ var VideoShots = {
         shaderId: VIDEO_SMARTALPHA,
         z: -990	
     }],
-    
-	
+    // PRAIRIE - BUFFALOS
     s02_03: [{
         path: "files/videos/prairie/s03_layer03.webm",
         shaderId: VIDEO_OPAQUE,
@@ -160,9 +146,7 @@ var VideoShots = {
         shaderId: VIDEO_SMARTALPHA_DISTORT,
         z: -1000
     }],
-    
-	
-	
+	// PRAIRIE - OVERHEAD
     s02_04: [{
         path: "files/videos/prairie/s04_layer02.webm",
         shaderId: VIDEO_OPAQUE,
@@ -186,24 +170,20 @@ var VideoShots = {
     },{
         path: "files/videos/prairie/s06_layer01.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
-		removeAt: 0.5,
+		removeAt: 0.6,
         z: -1000
     }
 	],
-
+	// DUNES - TRAIN
 	s03_01: [{
-        path: "files/videos/dunes/s01_layer04.webm",
-        shaderId: VIDEO_OPAQUE,
-        z: -1200,
-		width: 1.56, height: 1.22,
-		paralax: true,
-		duration: 8000
-    },{
         path: "files/videos/dunes/s01_layer03.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        shaderId: VIDEO_OPAQUE,
         z: -1000,
 		width: 1.56, height: 1.22,
-		paralax: true
+		paralax: true,
+		duration: 8000,
+		paralaxHorizontal: 600,
+		paralaxVertical: 100
     },{
         path: "files/videos/dunes/s01_layer02.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
@@ -215,9 +195,8 @@ var VideoShots = {
         shaderId: VIDEO_SMARTALPHA,
         z: -100,
 		locked: true
-    }],
-	
-	
+    }],	
+	// DUNES - BED
 	s03_02: [{
         path: "files/videos/dunes/s02_layer02.webm",
         shaderId: VIDEO_OPAQUE,
@@ -228,18 +207,20 @@ var VideoShots = {
         shaderId: VIDEO_SMARTALPHA_DISTORT,
         z: -1000
     }],
-	
+	// DUNES - TRANSITION
 	s03_03: [{
         path: "files/videos/dunes/s03_layer02.webm",
         shaderId: VIDEO_SMARTALPHA,
-        z: -1400,
+        z: -400,
 		paralax: true,
 		width: 1.526, height: 1.11,
-		duration: 11000
+		duration: 11000,
+		paralaxHorizontal: 600,
+		paralaxVertical: 100
     },{
         path: "files/videos/dunes/s03_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
-        z: -1000,
+        z: -100,
 		locked: true
     }]
 };

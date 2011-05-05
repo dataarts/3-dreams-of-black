@@ -32,9 +32,9 @@ var VideoPlayer = function( shared, layers, conf ) {
 	
 	this.init = function(){
 		
-		config.prx = conf.paralaxHorizontal || 0;
-		config.pry = conf.paralaxVertical || 0;
-		config.tgd = conf.targetDistance || 1500;
+		config.prx = layers[0].paralaxHorizontal || 0;
+		config.pry = layers[0].paralaxVertical || 0;
+		config.tgd = layers[0].targetDistance || 1500;
 		
 		onGrid = function(geometry){
 
@@ -130,8 +130,18 @@ var VideoPlayer = function( shared, layers, conf ) {
 		camera.target.position.y += (targetPos.y - camera.target.position.y) / 2;	
 				
 		for ( var i = 0; i < planes.length; i++ ) {
-
-      planes[i].updateUniform(mouseX, mouseY, mouseSpeed, mouseRad );
+			var p = planes[i];
+			if (progress > p.removeAt && !p.removed) {
+				if (p.locked) 
+					camera.removeChild(p.mesh);
+				scene.removeChild(p.mesh);
+				p.stop();
+				p.removed = true;
+				//console.log(p.path + " removed at " + progress + " (planned at " + p.removeAt + ")");
+			}
+			else {
+				p.update(mouseX, mouseY, mouseSpeed, mouseRad);
+			}
 
 		}
 		
