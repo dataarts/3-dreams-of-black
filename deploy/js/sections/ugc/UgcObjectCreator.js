@@ -139,18 +139,18 @@ var UgcObjectCreator = function ( shared ) {
 		c.height = 180;
 		var ctx = c.getContext('2d');
 		ctx.drawImage(renderer.domElement,0,0,c.width,c.height);
-		var thumbnail = c.toDataURL('image/png');
+    var thumbnail = ctx.createImageData(c.width,c.height);
+    thumbnail = thumbnail.data;
 		delete c;
 
 		var submission = {
 			title: 'Amorphous Building',
 			email: 'romepreview@gmail.com',
 			category: 'ground',
-			data: painter.getObject().getJSON(),
-			thumbnail: thumbnail
+			data: painter.getObject().getJSON()
 		};
 
-		ugcHandler.submitUGO( submission, function ( json ) {
+		ugcHandler.submitUGO( submission, thumbnail, function ( json ) {
 			var id = json['id'];
 			console.log(id);
 		});

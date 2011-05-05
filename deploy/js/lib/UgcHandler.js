@@ -48,7 +48,7 @@ var UgcHandler = function () {
 		xhr.send( null );
 	};
 
-  var submitImage = function(id, upload_url, name, image) {
+  var submitImage = function(upload_url, image, name, callback) {
       function byteValue(x) {
         return x.charCodeAt(0) & 0xff;
       }
@@ -57,11 +57,11 @@ var UgcHandler = function () {
           contentType = "multipart/form-data; boundary=" + boundary,
           postHead = '--' + boundary + '\r\n' +
               'Content-Disposition: form-data; name="file"; filename="' + name + '"\r\n' +
-              'Content-Type: application/octet-stream\r\n\r\n',
+              'Content-Type: image/png\r\n\r\n',
           postTail = '\r\n--' + boundary + '--';
       var head = Array.prototype.map.call(postHead, byteValue);
       var tail = Array.prototype.map.call(postTail, byteValue);
-      xhr.open('POST', upload_url);
+      xhr.open('POST', upload_url, true);
       xhr.setRequestHeader('Content-Type', contentType);
       var lh = head.length;
       var li = image.length;
@@ -70,10 +70,19 @@ var UgcHandler = function () {
       byteArray.set(head, 0);
       byteArray.set(image,lh);
       byteArray.set(tail,lh+li);
+      xhr.onreadystatechange = function () {
+        if ( xhr.readyState == 4 ) {
+          if ( xhr.status == 200 ) {
+            callback();
+          } else {
+            console.log('Error uploading image.');
+          }
+        }
+      };
       xhr.send(byteArray.buffer);
   };
 
-	this.submitUGO = function ( submission, callback ) {
+	this.submitUGO = function ( submission, image, callback ) {
 
 		var url = base_url;
 
@@ -83,7 +92,11 @@ var UgcHandler = function () {
 			if ( xhr.readyState == 4 ) {
 				if ( xhr.status == 200 ) {
 					var obj = JSON.parse(xhr.responseText);
-					callback( obj );
+          var upload_url = obj.upload_url;
+          submitImage(upload_url, image, 'perspective', function() {
+            delete obj.upload_url;
+            callback( obj );
+          });
 				} else {
 					console.log( 'Submission of model failed' );
 				}
