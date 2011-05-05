@@ -121,6 +121,7 @@ CityCameraFreeExplore = function( shared ) {
 		
 		if( closestPortal && closestDistance < closestPortal.radius * 4 ) {
 			
+			portalDirectionDot.sub( closestPortal.object.matrixWorld.getPosition(), wantedCamera.position );
 			wantedCamera.position.addSelf( portalDirectionDot.normalize().multiplyScalar( CAMERA_FORWARD_SPEED * delta ));
 			
 		} else {

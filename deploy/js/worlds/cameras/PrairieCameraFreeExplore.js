@@ -122,6 +122,7 @@ PrairieCameraFreeExplore = function( shared ) {
 		
 		if( closestPortal && closestDistance < closestPortal.radius * 2 ) {
 			
+			portalDirectionDot.sub( closestPortal.object.matrixWorld.getPosition(), wantedCamera.position );
 			wantedCamera.position.addSelf( portalDirectionDot.normalize().multiplyScalar( CAMERA_FORWARD_SPEED * delta ));
 			
 		} else {

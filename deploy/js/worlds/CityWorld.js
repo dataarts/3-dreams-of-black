@@ -91,10 +91,10 @@ var CityWorld = function ( shared ) {
 		
 		// add portals 
 		
-		that.portals.push( { object: result.objects[ "Portal"     ], radius: 250, currentDistance: 9999999 } );
-		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 250, currentDistance: 9999999 } );
-		that.portals.push( { object: result.objects[ "Portal.002" ], radius: 250, currentDistance: 9999999 } );
-		that.portals.push( { object: result.objects[ "Portal.003" ], radius: 250, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal"     ], radius: 150, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 150, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.002" ], radius: 150, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.003" ], radius: 150, currentDistance: 9999999 } );
 
 		
 		// setup custom materials

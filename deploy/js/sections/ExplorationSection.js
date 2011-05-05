@@ -194,7 +194,7 @@ var ExplorationSection = function ( shared ) {
 				
 				if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
 					
-				//	fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+					fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
 					
 				}
 				
