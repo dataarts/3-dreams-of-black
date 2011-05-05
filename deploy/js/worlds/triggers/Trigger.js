@@ -46,7 +46,7 @@ Trigger = function( geometry, wantedDarkness ) {
 
 	that.play = function( _timeScale ) {
 	
-		timeScale = _timeScale || 1;
+		timeScale = _timeScale || 1;
 		currentTime = 0;
 
 		that.mesh.visible = true;
@@ -165,7 +165,7 @@ var TriggerBig = function( geometry ) {
 
 	that.play = function( _timeScale ) {
 	
-		timeScale = _timeScale || 1;
+		timeScale = _timeScale || 1;
 		currentTime = 0;
 
 		THREE.AnimationHandler.addToUpdate( that );
