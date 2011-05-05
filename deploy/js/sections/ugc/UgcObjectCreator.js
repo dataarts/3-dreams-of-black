@@ -134,26 +134,26 @@ var UgcObjectCreator = function ( shared ) {
 
 	shared.ugcSignals.submit.add( function () {
 
+		var c = document.createElement('canvas');
+		c.width = 300;
+		c.height = 180;
+		var ctx = c.getContext('2d');
+		ctx.drawImage(renderer.domElement,0,0,c.width,c.height);
+		var thumbnail = c.toDataURL('image/png');
+		delete c;
+		console.log(thumbnail);
+
 		var submission = {
 			title: 'Amorphous Building',
 			email: 'romepreview@gmail.com',
 			category: 'ground',
-			data: painter.getObject().getJSON()
+			data: painter.getObject().getJSON(),
+			thumbnail: thumbnail
 		};
 
-	var thumbstr = renderer.domElement.toDataURL('image/png');
-    var context = renderer.getContext();
-    window.img = renderer.domElement.toDataURL('image/png');
-    var d = renderer.domElement;
-    console.log(d.width);
-    var readBuffer = new Uint8Array(d.width * d.height * 4);
-    context.readPixels(0, 0, d.width, d.height, context.RGBA, context.UNSIGNED_BYTE, readBuffer);
-
-    var thumbnail = readBuffer;
-
-		ugcHandler.submitUGO( submission, [thumbnail], function ( json ) {
-      var id = json['id'];
-      console.log(id);
+		ugcHandler.submitUGO( submission, function ( json ) {
+			var id = json['id'];
+			console.log(id);
 		});
 
 	} );
