@@ -4,6 +4,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 	that.array = [];
 	var scene = scene;
+	var spawnedLighthouse = false;
 
 	that.initSettings = {
 
@@ -205,7 +206,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 				if (tree) {
 					var treeRotateTween = new TWEEN.Tween(c.rotation)
-								.to({x: torotx, y: toroty, z: torotz}, that.settings.tweenTime)
+								.to({x: torotx, y: toroty, z: torotz}, that.settings.tweenTime*2)
 								.easing(TWEEN.Easing.Elastic.EaseOut);
 					treeRotateTween.start();				
 				}
@@ -218,17 +219,21 @@ var Trail = function ( numOfInstances, scene ) {
 					}
 				}
 
-
 				c.scale.x = c.scale.y= c.scale.z = 0.001*that.settings.scale;
 				var xscale = zscale = yscale = 0.1*that.settings.scale;
+
 				if (lightHouse) {
 					var xscale = zscale = yscale = 0.4*that.settings.scale;
 					if (Math.abs(normal.y) < 0.9) {
 						continue;
 					}
+					c.visible = false;
+					spawnedLighthouse = true;
+
 				}
 				if (!tree && !lightHouse) {
-					yscale = 0.3*that.settings.scale;
+					yscale = 0.12*that.settings.scale;
+					//yscale = 0.3*that.settings.scale;
 					xscale = zscale = 0.4*that.settings.scale;
 				}
 
@@ -248,7 +253,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 			that.array[i].alivetime = alivetime;
 
-			c.visible = that.settings.visible;
+			//c.visible = that.settings.visible;
 
 		}
 

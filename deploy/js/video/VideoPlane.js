@@ -5,6 +5,7 @@ var VideoPlane = function( shared, layer, conf ) {
 	var hasDistortion = false;
 	var hasKey = false;
 	var isStatic = layer.path.match("png$") || layer.path.match("jpg$");
+	var bendForce = layer.bendForce || 400;
 
 	var polyTrail = new PolyTrail(shared.mouse.x,shared.mouse.y);
     
@@ -15,6 +16,8 @@ var VideoPlane = function( shared, layer, conf ) {
 	
 	this.removed = false;
 	this.removeAt = layer.removeAt || 1;
+	
+	
 	
 	if(isStatic) {
 		texture = THREE.ImageUtils.loadTexture(layer.path);
@@ -144,15 +147,18 @@ var VideoPlane = function( shared, layer, conf ) {
 	
     if (hasDistortion) {
 		plane = config.grid;
+	} else if(layer.paralax) {
+		plane = new THREE.Plane(1, 1, 50, 10);
 	} else {
-		plane = new THREE.Plane(1, 1, 40, 1);
+		plane = new THREE.Plane(1, 1, 1, 1);
 	}
 	
 	if(layer.paralax) {
 		for (var i = 0; i < plane.vertices.length; ++i) {
 			var px = plane.vertices[i].position.x;
 			var sin = Math.sin( (px + 0.5) * Math.PI );
-			plane.vertices[i].position.z = (1-sin) * 500;
+			plane.vertices[i].position.z = (1-sin) * bendForce * layer.width;
+			plane.vertices[i].position.y *= 1 + (1-sin) * .35 * layer.height;
 		}
 	}
 		

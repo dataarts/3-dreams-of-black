@@ -91,10 +91,10 @@ var CityWorld = function ( shared ) {
 		
 		// add portals 
 		
-		that.portals.push( { object: result.objects[ "Portal"     ], radius: 100, currentDistance: 9999999 } );
-		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 100, currentDistance: 9999999 } );
-		that.portals.push( { object: result.objects[ "Portal.002" ], radius: 100, currentDistance: 9999999 } );
-		that.portals.push( { object: result.objects[ "Portal.003" ], radius: 100, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal"     ], radius: 150, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 150, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.002" ], radius: 150, currentDistance: 9999999 } );
+		that.portals.push( { object: result.objects[ "Portal.003" ], radius: 150, currentDistance: 9999999 } );
 
 		
 		// setup custom materials
@@ -119,8 +119,8 @@ var CityWorld = function ( shared ) {
 		
 		cameraPosition = camera.matrixWorld.getPosition();		
 
-		TriggerUtils.effectorRadius = 300000;
-		TriggerUtils.update();
+		TriggerUtils.effectorRadius = 300;
+		TriggerUtils.update( "city" );
 
 		updateCityShader( delta );
 
