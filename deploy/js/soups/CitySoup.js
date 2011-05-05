@@ -289,7 +289,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	// flying animals 2
-/*	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
+	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
 	flyingAnimals2.settings.flying = true;
 	flyingAnimals2.settings.divider = 1;
 	flyingAnimals2.settings.flyingDistance = 30;
@@ -306,7 +306,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		var morphArray = [0,1,2,3];
 		flyingAnimals2.addAnimal( geometry, null, 5, morphArray, 5, null, true );
 	}
-*/
+
 
 	// butterflys
 
@@ -343,12 +343,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	trail.array[60] = "tree4";
 	trail.array[75] = "tree5";
 
-	/*for ( i = 0; i < 80; i += 8 ) {
+	for ( i = 0; i < 80; i += 8 ) {
 
 		var type = (i/8)%4;
 		trail.array[i] = "tree"+(type+1);
 
-	}*/
+	}
 	
 	trail.array[70] = "light";
 
@@ -511,11 +511,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		particles.update(delta, vectors.array[0].position, shared.camPos);
 		//runningAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		//runningAnimals.update(delta, shared.camPos);
+		runningAnimals.update(delta, shared.camPos);
 		stragglers.update(delta, shared.camPos);
 		//flyingAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		//flyingAnimals.update(delta, shared.camPos);
-		//flyingAnimals2.update();
+		flyingAnimals.update(delta, shared.camPos);
+		flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
 		//butterflysC.update(shared.camPos, angleRad, delta);
 		//butterflysD.update(shared.camPos, angleRad, delta, true);
@@ -553,7 +553,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		vectors.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		runningAnimals.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		flyingAnimals.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
-		//flyingAnimals2.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
+		flyingAnimals2.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		particles.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		stragglers.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 
