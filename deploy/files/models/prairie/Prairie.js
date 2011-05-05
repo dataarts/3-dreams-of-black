@@ -18,9 +18,9 @@ var scene = {
 "objects" :
 {
     "Collision4" : {
-        "geometry"  : "geo_Collision4",
+        "geometry"  : "geo_Collision4.001",
         "groups"    : [  ],
-        "materials" : [ "Collision.004" ],
+        "materials" : [ "Collision.007" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -32,9 +32,9 @@ var scene = {
     },
 
     "Collision3" : {
-        "geometry"  : "geo_Collision3",
+        "geometry"  : "geo_Collision3.001",
         "groups"    : [  ],
-        "materials" : [ "Collision.003" ],
+        "materials" : [ "Collision.006" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -46,9 +46,9 @@ var scene = {
     },
 
     "Collision2" : {
-        "geometry"  : "geo_Collision2",
+        "geometry"  : "geo_Collision2.001",
         "groups"    : [  ],
-        "materials" : [ "Collision.002" ],
+        "materials" : [ "Collision.005" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -60,9 +60,9 @@ var scene = {
     },
 
     "Collision1" : {
-        "geometry"  : "geo_Collision1",
+        "geometry"  : "geo_Collision1.001",
         "groups"    : [  ],
-        "materials" : [ "Collision" ],
+        "materials" : [ "Collision.001" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -2753,24 +2753,24 @@ var scene = {
 
 "geometries" :
 {
-    "geo_Collision4" : {
+    "geo_Collision4.001" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Collision4.js"
+        "url"  : "Prairie.Collision4.001.js"
     },
 
-    "geo_Collision3" : {
+    "geo_Collision3.001" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Collision3.js"
+        "url"  : "Prairie.Collision3.001.js"
     },
 
-    "geo_Collision2" : {
+    "geo_Collision2.001" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Collision2.js"
+        "url"  : "Prairie.Collision2.001.js"
     },
 
-    "geo_Collision1" : {
+    "geo_Collision1.001" : {
         "type" : "ascii_mesh",
-        "url"  : "Prairie.Collision1.js"
+        "url"  : "Prairie.Collision1.001.js"
     },
 
     "geo_Mountains" : {
