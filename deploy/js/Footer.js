@@ -78,7 +78,7 @@ var Footer = function(container, prefix) {
 		'  padding: 0;',
 		'}',
 		'.rome-footer {',
-		'  font: 500 10px/18px "Futura", Arial, sans-serif;',
+		'  font: 500 10px/18px FuturaBT-Medium, Arial, sans-serif;',
 		'  color: #434343;',
 		'  text-transform: uppercase;',
 		'  letter-spacing: 1px;',
@@ -173,12 +173,17 @@ var Footer = function(container, prefix) {
     // Handle dom and html content
     container.innerHTML = html;
 
-    // Append stylesheet
+    // Append stylesheets
     if (Footer.multipleInstances < 1) {
 
         var rule = document.createTextNode(css);
         var head = document.getElementsByTagName('head')[0];
         var style = document.createElement('style');
+
+				var link = document.createElement('link');
+				link.setAttribute('rel', 'stylesheet');
+				link.setAttribute('type', 'text/css');
+				link.setAttribute('href', '/files/futura.css');
 
         if (style.stylesheet) {
 

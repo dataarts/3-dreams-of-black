@@ -338,7 +338,7 @@ ROME.TrailShader = {
 			"gl_FragColor = vec4( vColor, 1.0 ) * texture2D(faceMap, vUV);",
 			"lookup = texture2D(lavaNoiseMap, vTrailUV * vec2(65.0)).rg;",
 			"f = texture2D(trailMap, vTrailUV + vec2(0.01) * lookup).r;",
-			"mixValue = f + max(1.0 - length(vec2(0.015) * vec2(vPos.xy - lavaHeadPosition.xz) + lookup * vec2(0.4)), 0.0);",
+			"mixValue = f + max(1.0 - length(vec2(0.030) * vec2(vPos.xy - lavaHeadPosition.xz) + lookup * vec2(0.4)), 0.0);",
 			//"mixValue = dot(vPos - lavaHeadPosition.xz,  vPos - lavaHeadPosition.xz);",
 			"if(mixValue > 0.5)",
 			"{",

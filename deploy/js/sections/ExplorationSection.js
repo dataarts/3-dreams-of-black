@@ -13,7 +13,7 @@ var ExplorationSection = function ( shared ) {
 	var progress = 0, start = 0, lastTime = 0;
 	var renderer = shared.renderer;
 	var renderTarget = shared.renderTarget;
-	var world, scene, portals;
+	var world, scene, soup, portals;
 	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes, fadeOutEffect;
 	var fadeInTime = 0;
 
@@ -55,6 +55,7 @@ var ExplorationSection = function ( shared ) {
 		world   = shared.worlds[ worldId ];
 		portals = world.portals;
 		scene   = world.scene;
+		soup    = shared.soups[ worldId ];
 		camera  = cameras[ worldId ];
 		camera.resetCamera();
 		
@@ -174,7 +175,8 @@ var ExplorationSection = function ( shared ) {
 
 			camera.updateCamera( progress, delta, time );
 			world.update( delta, camera.camera, true );
-
+			
+			if( soup ) soup.update( delta, camera.camera );
 
 			clearEffect.update( progress, delta, time );
 
