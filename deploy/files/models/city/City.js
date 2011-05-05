@@ -1,11 +1,11 @@
-/* Converted from: City3_Export_all_triggers_21b.blend
+/* Converted from: City3_Export_all_triggers_23b.blend
  *
  * File generated with Blender 2.56 Exporter
  * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
  *
  * objects:    344
  * geometries: 46
- * materials:  267
+ * materials:  266
  * textures:   19
  */
 
@@ -18,9 +18,9 @@ var scene = {
 "objects" :
 {
     "5" : {
-        "geometry"  : "geo_5",
+        "geometry"  : "geo_5.001",
         "groups"    : [  ],
-        "materials" : [ "assets" ],
+        "materials" : [ "assets.004" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -366,7 +366,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_10_.009" : {
@@ -690,7 +690,7 @@ var scene = {
         "rotation"  : [ 3.141591, -0.000000, 1.570796 ],
         "quaternion": [ 0.000000, 0.707107, 0.707107, 0.000001 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_14.014" : {
@@ -1477,7 +1477,7 @@ var scene = {
         "rotation"  : [ -3.141591, -0.000000, -1.570796 ],
         "quaternion": [ -0.000000, 0.707107, -0.707107, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_15_.003" : {
@@ -1513,7 +1513,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 3.141591 ],
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "Small"
     },
 
     "Shadow.019" : {
@@ -2241,7 +2241,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "Large"
+        "trigger"   : "None"
     },
 
     "Console_2_.023" : {
@@ -2250,7 +2250,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000001 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "None"
+        "trigger"   : "Large"
     },
 
     "Console_11_.016" : {
@@ -3073,8 +3073,8 @@ var scene = {
         "groups"    : [ "Hide_Mesh" ],
         "materials" : [ "Rail_Console.002" ],
         "position"  : [ 6895.792480, 18366.144531, 878.688843 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.009132, 0.000000, -3.009339 ],
+        "quaternion": [ 0.066078, 0.000302, -0.004556, -0.997804 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -3086,9 +3086,9 @@ var scene = {
         "geometry"  : "geo_RailTrain_",
         "groups"    : [ "Hide_Mesh" ],
         "materials" : [ "Rail_Console.002" ],
-        "position"  : [ 6392.623535, 16941.318359, 446.167816 ],
-        "rotation"  : [ 0.553697, 0.000000, -1.101964 ],
-        "quaternion": [ 0.819568, 0.232876, -0.143093, -0.503589 ],
+        "position"  : [ 6372.057129, 16930.875000, 483.448517 ],
+        "rotation"  : [ -0.557674, 0.201146, 1.986753 ],
+        "quaternion": [ 0.498974, -0.230359, -0.176759, 0.816527 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "visible"       : true,
         "castsShadow"   : false,
@@ -3537,9 +3537,9 @@ var scene = {
 
 "geometries" :
 {
-    "geo_5" : {
+    "geo_5.001" : {
         "type" : "ascii_mesh",
-        "url"  : "City.5.js"
+        "url"  : "City.5.001.js"
     },
 
     "geo_4.001" : {
@@ -3854,11 +3854,6 @@ var scene = {
     "19 - Default.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg" }
-    },
-
-    "assets" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },
 
     "assets.002" : {
