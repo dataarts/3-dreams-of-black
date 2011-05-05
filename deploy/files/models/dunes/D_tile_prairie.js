@@ -5,7 +5,7 @@
  *
  * objects:    9
  * geometries: 7
- * materials:  63
+ * materials:  65
  * textures:   2
  */
 
@@ -266,6 +266,16 @@ var scene = {
     "Cloud1.009" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+    },
+
+    "Collision" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11876351, opacity: 1.00 }
+    },
+
+    "Collision.001" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 11876351, opacity: 1.00 }
     },
 
     "Collision.002" : {
