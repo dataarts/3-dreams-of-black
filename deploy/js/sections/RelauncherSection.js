@@ -238,7 +238,7 @@ var RelauncherSection = function( shared ) {
 		add.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			shared.signals.showugc.dispatch();
+			shared.signals.showugcintro.dispatch();
 
 		}, false);
 
