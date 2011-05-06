@@ -9,18 +9,17 @@
   float:left;
   z-index: 100;
   cursor: move;
-  margin-bottom:-135px;
+  margin-bottom:-66px;
 
 }
 #viewerModelsWrapper{
   width: 970px;
-  height:68px;
+  height:66px;
   overflow-x:hidden;
   float:left;
 }
 
 #viewerModelsStrip {
-
   float:left;
   width: 3000px;
   height: auto;
@@ -29,9 +28,9 @@
 #viewerModels{
   position:relative;
   float:left;
-  left:0px;
+  left:0;
   width: auto;
-  height: 66px;
+  height: 64px;
 }
 
 a.modelLink{
@@ -39,14 +38,16 @@ a.modelLink{
   font-size:10px;
   width:64px;
   height:64px;
-  background:#9cA;
+  background-size: 64px;
+  background-color:#fff;
+  opacity:0.66;
   float:left;
   margin:0 2px 0 2px;
   overflow:hidden;
   z-index:200;
-  border:1px solid #eee;
-  border-right:1px solid #999;
-  border-bottom:1px solid #999;
+}
+a:hover.modelLink{
+  opacity:1;
 }
 
 #viewerSettings {

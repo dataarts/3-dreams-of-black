@@ -381,7 +381,7 @@ var GUI = function(parameters) {
 
     this.show = function() {
         toggleButton.innerHTML = name || "Hide Controls";
-        resizeTo = 68;
+        resizeTo = 102;
         clearTimeout(resizeTimeout);
         beginResize();
         open = true;

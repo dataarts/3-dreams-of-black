@@ -14,7 +14,9 @@ function initGui(){
     "focus": 0.33,
     "aperture": 0.005,
     "occlusion": true,
-    "radius": 0.02
+    "radius": 0.02,
+    "vignette": true,
+    "background": 0.8
   };
   gui = new GUI({domElement:  document.getElementById('viewerSettings')});
   gui.add(params, "morph", 0, 1).listen().onChange(function(){ params.auto = false; });
@@ -24,16 +26,18 @@ function initGui(){
   gui.add(params, 'texture', true).listen();
   gui.add(params, 'lighting', true).listen();
   gui.add(params, 'component').options({'Composit': 1, 'Normal': 2, 'Depth': 3}).listen();
+  gui.add(params, "background",0.0,1.0).listen().onChange(function(){skyMat.color.setRGB(params.background,params.background,params.background);});
   gui.add(params, 'depth_of_field', false).listen().onChange(function(){toggleOpacity('guidat-focus', params.depth_of_field);toggleOpacity('guidat-aperture', params.depth_of_field);});
   gui.add(params, "focus", 0, 1).listen();
   gui.add(params, "aperture", 0, 0.01).listen();
   gui.add(params, "occlusion", false).listen().onChange(function(){ toggleOpacity('guidat-radius', params.occlusion)});
   gui.add(params, "radius", 0.001, 0.05).listen();
+  gui.add(params, "vignette",true).listen();
   gui.show();
 
-toggleOpacity('guidat-radius', params.occlusion);
-toggleOpacity('guidat-focus', params.depth_of_field);
-toggleOpacity('guidat-aperture', params.depth_of_field);
+  toggleOpacity('guidat-radius', params.occlusion);
+  toggleOpacity('guidat-focus', params.depth_of_field);
+  toggleOpacity('guidat-aperture', params.depth_of_field);
 
 }
 
