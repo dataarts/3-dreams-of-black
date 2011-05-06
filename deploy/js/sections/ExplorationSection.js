@@ -16,6 +16,7 @@ var ExplorationSection = function ( shared ) {
 	var world, scene, soup, portals;
 	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes, fadeOutEffect;
 	var fadeInTime = 0;
+	var lastWorldId = "";
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -54,12 +55,42 @@ var ExplorationSection = function ( shared ) {
 
 		world   = shared.worlds[ worldId ];
 		portals = world.portals;
-		scene   = world.scene;
-		soup    = shared.soups[ worldId ];
 		camera  = cameras[ worldId ];
-		camera.resetCamera();
 		
+		if( worldId === "dunes" && lastWorldId !== "" && lastWorldId !== "dunes" && portals ) {
+			
+			// find closest portal
+			
+			var closestDistance = 99999999999;
+			var closestPortal;
+			
+			for( var p = 0; p < portals.length; p++ ) {
+				
+				if( portals[ p ].currentDistance < closestDistance ) {
+					
+					closestDistance = portals[ p ].currentDistance;
+					closestPortal = portals[ p ];
+				}
+				
+			}
+			
+			// switch camera
+			
+			camera.switchDirection( closestPortal );
+			
+		} else {
+			
+			camera.resetCamera();
+			
+		}
+		
+		lastWorldId = worldId;
+		
+		scene = world.scene;
+		soup  = shared.soups[ worldId ];
 		fadeInTime = 0;
+		
+		
 		
 		if( worldId == "city" ) {
 			
@@ -72,6 +103,14 @@ var ExplorationSection = function ( shared ) {
 		} else {
 
 			postEffect = paintEffectDunes;
+			
+			// set lights
+			
+			world.skyWhite = 1;
+			world.ambient.color.setHSV( 0, 0, 0.1 );
+			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, 1 );
+			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+			world.lensFlare.position.y = 3500;
 			
 		}
 
@@ -170,35 +209,40 @@ var ExplorationSection = function ( shared ) {
 			lastTime = time;
 			delta = 33;
 
-
-			THREE.AnimationHandler.update( delta );
+			// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
+			//if( soup ) soup.update( delta, camera.camera );
+			//THREE.AnimationHandler.update( delta );
 
 			camera.updateCamera( progress, delta, time );
 			world.update( delta, camera.camera, true );
 			
-			if( soup ) soup.update( delta, camera.camera );
 
 			clearEffect.update( progress, delta, time );
 
 			renderer.setClearColor( world.scene.fog ? world.scene.fog.color : 0xffffff );
 			renderer.render( world.scene, camera.camera, renderTarget );
 
+			// fade in/out
+
 			if( fadeInTime < 1000 ) {
 				
 				fadeInTime += delta;
 				fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
 
-			}
-
-			for( var i = 0; i < portals.length; i++ ) {
+			} else {
 				
-				if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+				for( var i = 0; i < portals.length; i++ ) {
 					
-					fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+					if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+						
+						fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+						
+					}
 					
 				}
 				
 			}
+
 
 			postEffect.update( progress, delta, time );
 

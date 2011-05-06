@@ -24,7 +24,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var mouseX = 0, mouseY = 0;
 	var mouseOldX = 0, mouseOldY = 0;
 	var mouseNewX = 0, mouseNewY = 0;
-	var mouseRad = 0;
+	var mouseRad = 1.;
 	var mouseSpeed = new THREE.Vector2(0,0);
 	var targetPos;
 
@@ -108,7 +108,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 
       mouseSpeed.x += (1000*limitSpeed(mouseNewX-mouseOldX,0.05)/delta - mouseSpeed.x)/12;
       mouseSpeed.y += (1000*limitSpeed(mouseNewY-mouseOldY,0.05)/delta - mouseSpeed.y)/12;
-      mouseRad += (Math.max(Math.min((Math.abs(mouseSpeed.x)+Math.abs(mouseSpeed.y)),3),0.4)-mouseRad)/2;
+      //mouseRad += (Math.max(Math.min((Math.abs(mouseSpeed.x)+Math.abs(mouseSpeed.y)),3),0.4)-mouseRad)/2;
 
       mouseOldX = mouseX;
       mouseOldY = mouseY;

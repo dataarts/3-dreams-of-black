@@ -54,6 +54,14 @@ var RelauncherSection = function( shared ) {
 	container.setAttribute("style", "position: absolute;");
 	domElement.appendChild(container);
 
+	var fadeIn = document.createElement( 'div' );
+			fadeIn.setAttribute("style", "-webkit-transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750); -moz-transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750); -o-transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750); transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750);");
+			fadeIn.style.position = "absolute";
+			fadeIn.style.width = "100%";
+			fadeIn.style.height = "100%";
+			fadeIn.style.backgroundColor = "#000";
+			domElement.appendChild( fadeIn );
+
 	var gee = new GEE({
 		fullscreen: true,
 		container: container,
@@ -230,7 +238,7 @@ var RelauncherSection = function( shared ) {
 		add.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			shared.signals.showugc.dispatch();
+			shared.signals.showugcintro.dispatch();
 
 		}, false);
 
@@ -267,6 +275,9 @@ var RelauncherSection = function( shared ) {
 		clouds.show();
 		updateDomElementsPosition();
 		domElement.style.display = 'block';
+		setTimeout( function() {
+			fadeIn.style.opacity = 0.0;
+		}, 1 );
 
 	};
 
@@ -285,6 +296,7 @@ var RelauncherSection = function( shared ) {
 
 		clouds.hide();
 		domElement.style.display = "none";
+		fadeIn.style.opacity = 1.0;
 
 	};
 
@@ -300,6 +312,18 @@ var RelauncherSection = function( shared ) {
 		gee.draw();
 
 	};
+
+	function ease(cur, tar, inc) {
+
+		var dif = tar - cur;
+		if(Math.abs(dif) < inc / 100.0) {
+			cur = tar;
+		} else {
+			cur += dif * inc;
+		}
+		return cur;
+
+	}
 
 };
 

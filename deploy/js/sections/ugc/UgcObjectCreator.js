@@ -4,14 +4,10 @@ var UgcObjectCreator = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 
-	var USE_POSTPROCESS = true;
-	var ENABLE_LENSFLARES = true;
-
 	var DEG2RAD = Math.PI / 180,
 	camera, light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isDeleteMode = false, isRotateMode = false,
-	isMouseDown = false, radius = 1500, theta = 45, phi = 15;
+	isRotateMode = false, isMouseDown = false, radius = 1500, theta = 45, phi = 15;
 
 	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 200;
@@ -40,17 +36,13 @@ var UgcObjectCreator = function ( shared ) {
 	that.scene.addLight( directionalLight1 );
 	that.scene.addLight( directionalLight2 );
 
-	if ( ENABLE_LENSFLARES ) {
+	that.lensFlare = null;
+	that.lensFlareRotate = null;
 
-		that.lensFlare = null;
-		that.lensFlareRotate = null;
+	var flaresPosition = new THREE.Vector3( 0, 0, - 7500 );
+	var sx = 60, sy = 292;
 
-		var flaresPosition = new THREE.Vector3( 0, 0, - 7500 );
-		var sx = 60, sy = 292;
-
-		initLensFlares( that, flaresPosition, sx, sy );
-
-	}
+	initLensFlares( that, flaresPosition, sx, sy );
 
 	var loader = new THREE.SceneLoader();
 	loader.load( "files/models/dunes/D_tile_1.js", function ( result ) {
@@ -92,43 +84,63 @@ var UgcObjectCreator = function ( shared ) {
 
 	// Postprocess
 
-	if ( USE_POSTPROCESS ) {
+	var offset = 0;
 
-		var offset = 0;
+	shared.baseWidth = 1024;
+	shared.baseHeight = 436;
+	shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
+	shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
 
-		shared.baseWidth = 1024;
-		shared.baseHeight = 436;
-		shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
-		shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
+	shared.renderer.setSize( shared.viewportWidth, shared.baseHeight );
 
-		shared.renderer.setSize( shared.viewportWidth, shared.baseHeight );
+	if ( !shared.renderTarget ) {
 
-		if ( !shared.renderTarget ) {
+		var renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
+		renderTarget.minFilter = THREE.LinearFilter;
+		renderTarget.magFilter = THREE.LinearFilter;
 
-			var renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
-			renderTarget.minFilter = THREE.LinearFilter;
-			renderTarget.magFilter = THREE.LinearFilter;
-
-			shared.renderTarget = renderTarget;
-
-		}
-
-		var paintEffectDunes = new PaintEffectDunes( shared );
-		paintEffectDunes.init();
+		shared.renderTarget = renderTarget;
 
 	}
+
+	var paintEffectDunes = new PaintEffectDunes( shared );
+	paintEffectDunes.init();
 
 	// Painter
 
 	var painter = new VoxelPainter( camera );
 
-	// Signals
+	// Signal listeners
 
 	var ugcHandler = new UgcHandler();
+
+	shared.ugcSignals.object_createmode.add( function () {
+
+		painter.setMode( VoxelPainter.MODE_CREATE );
+
+	} );
+
+	shared.ugcSignals.object_erasemode.add( function () {
+
+		painter.setMode( VoxelPainter.MODE_ERASE );
+
+	} );
+
+	shared.ugcSignals.object_symmetrymode.add( function ( bool ) {
+
+		painter.setSymmetry( bool );
+
+	} );
 
 	shared.ugcSignals.object_changecolor.add( function ( hex ) {
 
 		painter.setColor( hex );
+
+	} );
+
+	shared.ugcSignals.object_changesize.add( function ( size ) {
+
+		painter.setSize( size );
 
 	} );
 
@@ -147,7 +159,7 @@ var UgcObjectCreator = function ( shared ) {
 			email: 'romepreview@gmail.com',
 			category: 'ground',
 			data: painter.getObject().getJSON(),
-      thumbnail: thumbnail
+			thumbnail: thumbnail
 		};
 
 		ugcHandler.submitUGO( submission, thumbnail, function ( json ) {
@@ -159,32 +171,21 @@ var UgcObjectCreator = function ( shared ) {
 
 	function onMouseDown( event ) {
 
-		painter.setMode( !isDeleteMode ? VoxelPainter.MODE_CREATE : VoxelPainter.MODE_ERASE );
-
+		isMouseDown = true;
 		render();
 
 	}
 
 	function onMouseUp( event ) {
 
-		painter.setMode( VoxelPainter.MODE_IDLE );
-
+		isMouseDown = false;
 		render();
 
 	}
 
 	function onMouseMove( event ) {
 
-		if ( USE_POSTPROCESS ) {
-
-			painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
-
-		} else {
-
-			painter.moveMouse( shared.mouse.x / shared.screenWidth, shared.mouse.y / shared.screenHeight );
-
-		}
-
+		painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
 		render();
 
 	}
@@ -192,7 +193,6 @@ var UgcObjectCreator = function ( shared ) {
 	function onMouseWheel( event ) {
 
 		radius -= event.wheelDeltaY;
-
 		render();
 
 	}
@@ -202,8 +202,8 @@ var UgcObjectCreator = function ( shared ) {
 		switch ( event.keyCode ) {
 
 			case 16: isRotateMode = true; break;
-			case 17: isDeleteMode = true; break;
-			// case 18: isDeleteMode = true; break;
+			// case 17: isEraseMode = true; break;
+			// case 18: isEraseMode = true; break;
 
 		}
 
@@ -214,8 +214,8 @@ var UgcObjectCreator = function ( shared ) {
 		switch ( event.keyCode ) {
 
 			case 16: isRotateMode = false; break;
-			case 17: isDeleteMode = false; break;
-			// case 18: isDeleteMode = false; break;
+			// case 17: isEraseMode = false; break;
+			// case 18: isEraseMode = false; break;
 
 		}
 	}
@@ -224,12 +224,9 @@ var UgcObjectCreator = function ( shared ) {
 
 		if ( isRotateMode ) {
 
-			theta += ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
-
-			phi -= ( shared.mouse.y / shared.screenHeight ) * 2 - 1;
-			phi = phi > 90 ? 90 :
-				phi < 0 ? 0 :
-				phi;
+			theta += ( shared.mouse.x / shared.screenWidth ) * 4 - 2;
+			phi += - ( shared.mouse.y / shared.screenHeight ) * 4 + 2;
+			phi = phi > 90 ? 90 : phi < 0 ? 0 : phi;
 
 		}
 
@@ -237,22 +234,14 @@ var UgcObjectCreator = function ( shared ) {
 		camera.position.y = radius * Math.sin( phi * DEG2RAD );
 		camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 
-		painter.update();
+		painter.update( isMouseDown );
+
+		//
 
 		shared.renderer.clear();
-
-		if ( USE_POSTPROCESS ) {
-
-			shared.renderer.render( that.scene, camera, shared.renderTarget, true );
-			shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
-			paintEffectDunes.update( 0, 0, 0 );
-
-		} else {
-
-			shared.renderer.render( that.scene, camera );
-			shared.renderer.render( painter.getScene(), camera );
-
-		}
+		shared.renderer.render( that.scene, camera, shared.renderTarget, true );
+		shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
+		paintEffectDunes.update( 0, 0, 0 );
 
 	}
 
@@ -293,35 +282,21 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		if ( USE_POSTPROCESS ) {
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
 
-			camera.aspect = shared.viewportWidth / shared.viewportHeight;
-			camera.updateProjectionMatrix();
+		shared.viewportWidth = width;
+		shared.viewportHeight = height;
 
-			shared.viewportWidth = shared.baseWidth * ( width / shared.baseWidth );
-			shared.viewportHeight = shared.baseHeight * ( width / shared.baseWidth );
+		// TODO: Hacky...
 
-			shared.renderer.setSize( shared.viewportWidth, shared.viewportHeight );
+		shared.renderTarget.width = width;
+		shared.renderTarget.height = height;
+		delete shared.renderTarget.__webglFramebuffer;
 
-			// TODO: Hacky...
-
-			shared.renderTarget.width = shared.viewportWidth;
-			shared.renderTarget.height = shared.viewportHeight;
-			delete shared.renderTarget.__webglFramebuffer;
-
-			offset = ( ( height - shared.viewportHeight  ) / 2 );
-
-			shared.renderer.domElement.style.left = '0px';
-			shared.renderer.domElement.style.top = offset + 'px';
-
-		} else {
-
-			camera.aspect = width / height;
-			camera.updateProjectionMatrix();
-
-			shared.renderer.setSize( width, height );
-
-		}
+		shared.renderer.setSize( width, height );
+		shared.renderer.domElement.style.left = '0px';
+		shared.renderer.domElement.style.top = '0px';
 
 	};
 
