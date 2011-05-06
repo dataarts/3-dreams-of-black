@@ -81,7 +81,6 @@ var ExplorationSection = function ( shared ) {
 		} else {
 			
 			camera.resetCamera();
-			fadeInTime = 0;
 			
 		}
 		
@@ -89,6 +88,7 @@ var ExplorationSection = function ( shared ) {
 		
 		scene = world.scene;
 		soup  = shared.soups[ worldId ];
+		fadeInTime = 0;
 		
 		
 		
@@ -214,22 +214,27 @@ var ExplorationSection = function ( shared ) {
 			renderer.setClearColor( world.scene.fog ? world.scene.fog.color : 0xffffff );
 			renderer.render( world.scene, camera.camera, renderTarget );
 
+			// fade in/out
+
 			if( fadeInTime < 1000 ) {
 				
 				fadeInTime += delta;
 				fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
 
-			}
-
-			for( var i = 0; i < portals.length; i++ ) {
+			} else {
 				
-				if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+				for( var i = 0; i < portals.length; i++ ) {
 					
-					fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+					if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+						
+						fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+						
+					}
 					
 				}
 				
 			}
+
 
 			postEffect.update( progress, delta, time );
 
