@@ -44,6 +44,7 @@ var Shortcuts = function ( shared ) {
 
 	// Tool
 
+	addUgcIntroShortcut( 'Ugc Intro' );
 	addUgcShortcut( 'Ugc' );
 
 	function addSeparator() {
@@ -114,6 +115,16 @@ var Shortcuts = function ( shared ) {
 		addLink( text, function () {
 
 			shared.signals.showugc.dispatch();
+
+		} );
+
+	};
+
+	function addUgcIntroShortcut( text ) {
+
+		addLink( text, function () {
+
+			shared.signals.showugcintro.dispatch();
 
 		} );
 

@@ -3,7 +3,7 @@
 	var logger, stats, renderer, renderTarget, shared,
 	Signal = signals.Signal, currentSection,
 	launcher, film, relauncher, exploration, ugc,
-	shortcuts, lastBeta = 0, lastGamma = 0;
+	ugcIntro, shortcuts, lastBeta = 0, lastGamma = 0;
 
 	// debug
 
@@ -46,6 +46,7 @@
 			showfilm : new Signal(),
 			showrelauncher : new Signal(),
 			showexploration : new Signal(),
+			showugcintro : new Signal(),
 			showugc : new Signal(),
 
 			loadBegin : new Signal(),
@@ -77,6 +78,9 @@
 	ugc = new UgcSection( shared );
 	document.body.appendChild( ugc.getDomElement() );
 
+	ugcIntro = new UgcIntro( shared );
+	document.body.appendChild( ugcIntro.getDomElement() );
+
 	shortcuts = new Shortcuts( shared );
 	document.body.appendChild( shortcuts.getDomElement() );
 
@@ -98,6 +102,7 @@
 	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
 	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
 	shared.signals.showugc.add( function () { setSection( ugc ); } );
+	shared.signals.showugcintro.add( function () { setSection( ugcIntro ); } );
 
 	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
