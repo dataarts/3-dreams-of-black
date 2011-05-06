@@ -80,7 +80,7 @@ var DistortVertexShader = [
         "vec2 projPos = vec2(aspect,1.)*vec2(gl_Position.x/gl_Position.z,gl_Position.y/gl_Position.z);",
         "vec2 projPosPoly = vec2(aspect,1.)*vec2(glPosPoly.x/glPosPoly.z,glPosPoly.y/glPosPoly.z);",
 
-        "float distRand = normal.z+1.;",
+        "float distRand = normal.z+.5;",
         "vec2 closestTrailPoly1 = getClosest(projPosPoly,trail0,trail1);",
         "vec2 closestTrailPoly2 = getClosest(projPosPoly,trail1,trail2);",
         "vec2 closestTrailPoly3 = getClosest(projPosPoly,trail2,trail3);",
