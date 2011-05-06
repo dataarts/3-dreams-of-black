@@ -4,12 +4,9 @@
 
 var UgcIntro = function( shared ) {
 
-	Section.call( this );
-
 	var domElement = document.createElement( 'div' );
 			domElement.style.width = window.innerWidth + 'px';
 			domElement.style.height = window.innerHeight + 'px';
-			domElement.style.display = 'none';
 			domElement.style.backgroundColor = "#000";
 
 	var instructions = document.createElement( 'div' );
@@ -72,7 +69,7 @@ var UgcIntro = function( shared ) {
 	}, false);
 	sky.addEventListener("click", function() {
 
-		alert( 'Go to Voxel Editor Sky.' );	// TODO
+		shared.ugcSignals.showobjectcreator.dispatch( 1 );
 
 	}, false);
 
@@ -88,7 +85,7 @@ var UgcIntro = function( shared ) {
 	}, false);
 	ground.addEventListener("click", function() {
 
-		alert( 'Go to Voxel Editor Ground.' );	// TODO
+		shared.ugcSignals.showobjectcreator.dispatch( 0 );
 
 	}, false);
 
@@ -105,7 +102,7 @@ var UgcIntro = function( shared ) {
 
 	this.show = function() {
 
-		domElement.style.display = 'block';
+		
 
 	};
 
@@ -127,7 +124,7 @@ var UgcIntro = function( shared ) {
 
 	this.hide = function() {
 
-		domElement.style.display = "none";
+		
 
 	};
 
@@ -144,6 +141,3 @@ var UgcIntro = function( shared ) {
 	};
 
 };
-
-UgcIntro.prototype = new Section();
-UgcIntro.prototype.constructor = UgcIntro;

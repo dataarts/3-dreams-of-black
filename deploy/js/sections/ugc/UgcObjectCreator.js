@@ -4,9 +4,6 @@ var UgcObjectCreator = function ( shared ) {
 
 	var domElement = document.createElement( 'div' );
 
-	var USE_POSTPROCESS = true;
-	var ENABLE_LENSFLARES = true;
-
 	var DEG2RAD = Math.PI / 180,
 	camera, light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
@@ -40,17 +37,13 @@ var UgcObjectCreator = function ( shared ) {
 	that.scene.addLight( directionalLight1 );
 	that.scene.addLight( directionalLight2 );
 
-	if ( ENABLE_LENSFLARES ) {
+	that.lensFlare = null;
+	that.lensFlareRotate = null;
 
-		that.lensFlare = null;
-		that.lensFlareRotate = null;
+	var flaresPosition = new THREE.Vector3( 0, 0, - 7500 );
+	var sx = 60, sy = 292;
 
-		var flaresPosition = new THREE.Vector3( 0, 0, - 7500 );
-		var sx = 60, sy = 292;
-
-		initLensFlares( that, flaresPosition, sx, sy );
-
-	}
+	initLensFlares( that, flaresPosition, sx, sy );
 
 	var loader = new THREE.SceneLoader();
 	loader.load( "files/models/dunes/D_tile_1.js", function ( result ) {
@@ -92,31 +85,27 @@ var UgcObjectCreator = function ( shared ) {
 
 	// Postprocess
 
-	if ( USE_POSTPROCESS ) {
+	var offset = 0;
 
-		var offset = 0;
+	shared.baseWidth = 1024;
+	shared.baseHeight = 436;
+	shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
+	shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
 
-		shared.baseWidth = 1024;
-		shared.baseHeight = 436;
-		shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
-		shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
+	shared.renderer.setSize( shared.viewportWidth, shared.baseHeight );
 
-		shared.renderer.setSize( shared.viewportWidth, shared.baseHeight );
+	if ( !shared.renderTarget ) {
 
-		if ( !shared.renderTarget ) {
+		var renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
+		renderTarget.minFilter = THREE.LinearFilter;
+		renderTarget.magFilter = THREE.LinearFilter;
 
-			var renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
-			renderTarget.minFilter = THREE.LinearFilter;
-			renderTarget.magFilter = THREE.LinearFilter;
-
-			shared.renderTarget = renderTarget;
-
-		}
-
-		var paintEffectDunes = new PaintEffectDunes( shared );
-		paintEffectDunes.init();
+		shared.renderTarget = renderTarget;
 
 	}
+
+	var paintEffectDunes = new PaintEffectDunes( shared );
+	paintEffectDunes.init();
 
 	// Painter
 
@@ -147,7 +136,7 @@ var UgcObjectCreator = function ( shared ) {
 			email: 'romepreview@gmail.com',
 			category: 'ground',
 			data: painter.getObject().getJSON(),
-      thumbnail: thumbnail
+			thumbnail: thumbnail
 		};
 
 		ugcHandler.submitUGO( submission, thumbnail, function ( json ) {
@@ -175,16 +164,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	function onMouseMove( event ) {
 
-		if ( USE_POSTPROCESS ) {
-
-			painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
-
-		} else {
-
-			painter.moveMouse( shared.mouse.x / shared.screenWidth, shared.mouse.y / shared.screenHeight );
-
-		}
-
+		painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
 		render();
 
 	}
@@ -241,18 +221,9 @@ var UgcObjectCreator = function ( shared ) {
 
 		shared.renderer.clear();
 
-		if ( USE_POSTPROCESS ) {
-
-			shared.renderer.render( that.scene, camera, shared.renderTarget, true );
-			shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
-			paintEffectDunes.update( 0, 0, 0 );
-
-		} else {
-
-			shared.renderer.render( that.scene, camera );
-			shared.renderer.render( painter.getScene(), camera );
-
-		}
+		shared.renderer.render( that.scene, camera, shared.renderTarget, true );
+		shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
+		paintEffectDunes.update( 0, 0, 0 );
 
 	}
 
