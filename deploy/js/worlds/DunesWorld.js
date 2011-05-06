@@ -161,6 +161,7 @@ var DunesWorld = function ( shared ) {
 		applyDunesShader( result );
 		tileMeshes[ 4 ][ 0 ] = addDunesPart( result );
 
+		that.scene.update( undefined, true );
 	};
 
 
@@ -173,6 +174,8 @@ var DunesWorld = function ( shared ) {
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
 		addInfluenceSphere( { name: "prairieSlowDown", object: result.empties.Prairie_Center, radius: 8000, type: 1 } );
+
+		that.scene.update( undefined, true );
 	};
 	
 	
@@ -185,6 +188,8 @@ var DunesWorld = function ( shared ) {
 
 		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2500, type: 0, destination: "city" } );
 		addInfluenceSphere( { name: "citySlowDown", object: result.empties.City_Center, radius: 10000, type: 1 } );
+
+		that.scene.update( undefined, true );
 	};
 	
 	
@@ -223,6 +228,8 @@ var DunesWorld = function ( shared ) {
 
 		numTilesLoaded++;
 
+		that.scene.update( undefined, true );
+	
 	};
 	
 	

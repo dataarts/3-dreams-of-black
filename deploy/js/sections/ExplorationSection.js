@@ -57,7 +57,7 @@ var ExplorationSection = function ( shared ) {
 		portals = world.portals;
 		camera  = cameras[ worldId ];
 		
-		if( worldId === "dunes" && lastWorldId !== "" && portals ) {
+		if( worldId === "dunes" && lastWorldId !== "" && lastWorldId !== "dunes" && portals ) {
 			
 			// find closest portal
 			
@@ -103,6 +103,14 @@ var ExplorationSection = function ( shared ) {
 		} else {
 
 			postEffect = paintEffectDunes;
+			
+			// set lights
+			
+			world.skyWhite = 1;
+			world.ambient.color.setHSV( 0, 0, 0.1 );
+			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, 1 );
+			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+			world.lensFlare.position.y = 3500;
 			
 		}
 
