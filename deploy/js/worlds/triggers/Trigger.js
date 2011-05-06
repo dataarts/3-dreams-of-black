@@ -364,7 +364,7 @@ var TriggerUtils = (function() {
 					
 					trigger = new Trigger( objects[ name ].geometry, Math.random() * 0.25 + 0.5 );
 					
-					objects[ name ].addChild( trigger.mesh );			
+					objects[ name ].addChild( trigger.mesh );
 					objects[ name ].visible = false;
 					
 					smallTriggersPrairie.push( trigger );
@@ -401,7 +401,7 @@ var TriggerUtils = (function() {
 					
 					if( x + y + z < manhattanRadius ) {
 						
-						smallTriggersCity[ s ].play( 0.1 + Math.random() * 0.05 );
+						smallTriggersCity[ s ].play( 0.2 + Math.random() * 0.05 );
 						smallTriggersCity.splice( s, 1 );
 						s--;
 						sl--;
