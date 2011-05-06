@@ -42,7 +42,7 @@ var City = function ( shared ) {
 		startCamera = new THREE.PathCamera( {
 
 			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsA, duration: 7.8, 
+			waypoints: waypointsA, duration: 10.5, 
 			useConstantSpeed: true, resamplingCoef: 30,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,

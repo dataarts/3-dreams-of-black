@@ -75,8 +75,6 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, delta, time ) {
 
-		console.log( progress );
-
 		// handle sun rise / sun set
 
 		if( progress > 0.05 && progress < 0.15 ) {
