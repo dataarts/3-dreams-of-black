@@ -3,14 +3,14 @@ var UgcObject = function ( data ) {
 	var VERSION = 4,
 	_type = null, _grid = {}, _count = 0;
 
-	this.addVoxel = function ( x, y, z, color ) {
+	this.addVoxel = function ( x, y, z, color, object ) {
 
-		_grid[ x + "." + y + "." + z ] = { x: x, y: y, z: z, color: color };
+		_grid[ x + "." + y + "." + z ] = { x: x, y: y, z: z, color: color, object: object };
 		_count ++;
 
 	};
 
-	this.checkVoxel = function ( x, y, z ) {
+	this.getVoxel = function ( x, y, z ) {
 
 		return _grid[ x + "." + y + "." + z ];
 

@@ -6,7 +6,7 @@ var VoxelPainter = function ( camera ) {
 	_object = new UgcObject();
 
 	var _intersectPoint, _intersectFace, _intersectObject,
-	_intersectEraseObject;
+	_intersectEraseObjects = [];
 
 	// Scene
 
@@ -104,9 +104,7 @@ var VoxelPainter = function ( camera ) {
 
 		var x = toGridScale( vector.x ), y = toGridScale( vector.y ), z = toGridScale( vector.z );
 
-		if ( !_object.checkVoxel( x, y, z ) ) {
-
-			_object.addVoxel( x, y, z, _color );
+		if ( !_object.getVoxel( x, y, z ) ) {
 
 			var voxel = new THREE.Mesh( _brushGeometries[ _size ], new THREE.MeshLambertMaterial( { color: _color } ) );
 			voxel.position.x = x * UNIT_SIZE;
@@ -116,6 +114,8 @@ var VoxelPainter = function ( camera ) {
 			voxel.updateMatrix();
 			voxel.update();
 			_sceneVoxels.addObject( voxel );
+
+			_object.addVoxel( x, y, z, _color, voxel );
 
 		}
 
@@ -180,7 +180,11 @@ var VoxelPainter = function ( camera ) {
 		var intersects;
 
 		// Restore opacity of last intesected object.
-		if ( _intersectEraseObject ) _intersectEraseObject.materials[ 0 ].opacity = 1;
+		for ( var i = 0, l = _intersectEraseObjects.length; i < l; i ++ ) {
+
+			_intersectEraseObjects[ i ].materials[ 0 ].opacity = 1;
+
+		}
 
 		switch ( _mode ) {
 
@@ -260,14 +264,39 @@ var VoxelPainter = function ( camera ) {
 
 				if ( intersects.length > 0 && intersects[ 0 ].object != _ground ) {
 
+					_intersectObject = intersects[ 0 ].object;
+
 					if ( ! mousedown ) {
 
-						_intersectEraseObject = intersects[ 0 ].object;
-						_intersectEraseObject.materials[ 0 ].opacity = 0.5;
+						_intersectObject.materials[ 0 ].opacity = 0.5;
+
+						_intersectEraseObjects = [];
+						_intersectEraseObjects.push( _intersectObject );
+
+						if ( _symmetry ) {
+
+							var voxel = _object.getVoxel( - toGridScale( _intersectObject.position.x ), toGridScale( _intersectObject.position.y ), toGridScale( _intersectObject.position.z ) );
+
+							if ( voxel !== undefined ) {
+
+								voxel.object.materials[ 0 ].opacity = 0.5;
+								_intersectEraseObjects.push( voxel.object );
+
+							}
+
+						}
 
 					} else {
 
-						deleteVoxel( intersects[ 0 ].object );
+						deleteVoxel( _intersectObject );
+
+						if ( _symmetry ) {
+
+							var voxel = _object.getVoxel( - toGridScale( _intersectObject.position.x ), toGridScale( _intersectObject.position.y ), toGridScale( _intersectObject.position.z ) );
+
+							if ( voxel !== undefined ) deleteVoxel( voxel.object );
+
+						}
 
 					}
 
