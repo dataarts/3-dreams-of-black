@@ -27,7 +27,8 @@ var DistortShaderFragmentPars = [
     "varying vec2 vUv;",
     "varying vec2 vUvPoly;",
     "varying float distancePoly;",
-    "varying float distance;"
+    "varying float distance;",
+    "varying vec2 closestPoly;"
 
 ].join("\n");
 
@@ -48,34 +49,24 @@ var DistortVertexShader = [
     "varying float distance;",
     "varying float distancePoly;",
 
-    "float getDistance(vec2 p, vec2 l1, vec2 l2){",
-        "float A = p.x - l1.x;",
-        "float B = p.y - l1.y;",
-        "float C = l2.x - l1.x;",
-        "float D = l2.y - l1.y;",
+    "varying vec2 closestPoly;",
 
-        "float dot = A * C + B * D;",
-        "float len_sq = C * C + D * D;",
+    "vec2 getClosest(vec2 p, vec2 l1, vec2 l2){",
+    
+        "vec2 pl1 = p - l1;",
+        "vec2 l2l1 = l2 - l1;",
+
+        "float dot = pl1.x * l2l1.x + pl1.y * l2l1.y;",
+        "float len_sq = pow(length(l2l1),2.);",
         "float param = dot / len_sq;",
 
-        "float xx,yy;",
+        "if(param < 0.) return l1;",
+        "else if(param > 1.) return l2;",
+        "else return (l1 + l2l1 * param);",
+    "}",
 
-        "if(param < 0.)",
-        "{",
-        "   xx = l1.x;",
-        "   yy = l1.y;",
-        "}",
-        "else if(param > 1.)",
-        "{",
-        "    xx = l2.x;",
-        "    yy = l2.y;",
-        "}",
-        "else",
-        "{",
-        "    xx = l1.x + param * C;",
-        "    yy = l1.y + param * D;",
-        "}",
-        "return 1. - sqrt( ((p.x - xx) * (p.x - xx)) + ((p.y - yy) * (p.y - yy)) );",
+    "float getDistance(vec2 p, vec2 li){",
+        "return max(0., 1. - sqrt( (p.x-li.x)*(p.x-li.x) + (p.y-li.y)*(p.y-li.y) ) );",
     "}",
 
     "void main() {",
@@ -88,24 +79,40 @@ var DistortVertexShader = [
 
         "vec2 projPos = vec2(aspect,1.)*vec2(gl_Position.x/gl_Position.z,gl_Position.y/gl_Position.z);",
         "vec2 projPosPoly = vec2(aspect,1.)*vec2(glPosPoly.x/glPosPoly.z,glPosPoly.y/glPosPoly.z);",
-        //"distance = getDistance(projPos,mouseXY,trail5);",
-        "distance = max(0.,1.-length(vec2(projPos)-vec2(mouseXY.x, mouseXY.y)));",
-        "distance *= mouseRad;",
 
-        "float distFade = normal.z*0.9+0.4;",
-        //"distancePoly = max(0.,distFade-length(vec2(projPosPoly)-vec2(mouseXY.x, mouseXY.y)));",
-        //"distancePoly *= mouseRad;",
+        "float distRand = normal.z+1.;",
+        "vec2 closestTrailPoly1 = getClosest(projPosPoly,trail0,trail1);",
+        "vec2 closestTrailPoly2 = getClosest(projPosPoly,trail1,trail2);",
+        "vec2 closestTrailPoly3 = getClosest(projPosPoly,trail2,trail3);",
+        "vec2 closestTrailPoly4 = getClosest(projPosPoly,trail3,trail4);",
 
-        "float distanceTrail0 = distFade*getDistance(projPosPoly,mouseXY,trail0);",
-        "float distanceTrail1 = -0.3+1.3*distFade*getDistance(projPosPoly,trail0,trail1);",
-        "float distanceTrail2 = -0.5+1.5*distFade*getDistance(projPosPoly,trail1,trail2);",
-        "float distanceTrail3 = -0.7+1.7*distFade*getDistance(projPosPoly,trail2,trail3);",
-        "float distanceTrail4 = -0.9+1.9*distFade*getDistance(projPosPoly,trail3,trail4);",
-        "distancePoly = max(distanceTrail0,max(distanceTrail1,max(distanceTrail2,max(distanceTrail3,distanceTrail4))));",
-//
-        "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-vec2(mouseXY.x, mouseXY.y))*vec2(distance*100.);",
+        "float distanceTrailPoly1 = 1.0*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly1);",
+        "float distanceTrailPoly2 = 0.9*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly2);",
+        "float distanceTrailPoly3 = 0.8*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly3);",
+        "float distanceTrailPoly4 = 0.7*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly4);",
+
+        "distancePoly = max(distanceTrailPoly1,max(distanceTrailPoly2,max(distanceTrailPoly3,distanceTrailPoly4)));",
+
+        //"vec2 closestTrail1 = getClosest(projPos,trail0,trail1);",
+        //"vec2 closestTrail2 = getClosest(projPos,trail1,trail2);",
+        //"vec2 closestTrail3 = getClosest(projPos,trail2,trail3);",
+        //"vec2 closestTrail4 = getClosest(projPos,trail3,trail4);",
+
+        //"float distanceTrail1 = 0.9*mouseRad * getDistance(projPos,closestTrail1);",
+        //"float distanceTrail2 = 0.8*mouseRad * getDistance(projPos,closestTrail2);",
+        //"float distanceTrail3 = 0.7*mouseRad * getDistance(projPos,closestTrail3);",
+        //"float distanceTrail4 = 0.6*mouseRad * getDistance(projPos,closestTrail4);",
+
+
+        //+normalize(closestTrail2)+normalize(closestTrail3)+normalize(closestTrail4);",
+        //"gl_Position.xy = gl_Position.xy + normalize(projPos-trail0)*vec2(distanceTrail1*100.);",
+        //"gl_Position.xy += normalize(projPos-closestTrail2)*vec2((distanceTrail2)*100.);",
+        //"gl_Position.xy += normalize(projPos-closestTrail3)*vec2((distanceTrail3)*100.);",
+        //"gl_Position.xy += normalize(projPos-closestTrail4)*vec2((distanceTrail4)*100.);",
+
+        "distance = mouseRad*max(0.,1.-length(projPos-trail0));",
+        "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-trail0)*vec2(distance*100.);",
         "gl_Position.xy = gl_Position.xy -mouseSpeed.xy*pow(distance,2.)*100.;",
-        "gl_Position.z -= distance;",
 
     "}"
 
@@ -231,11 +238,8 @@ var VideoShaderSource = {
 				"vec4 aPoly = texture2D( map, vec2( 0.6666 + vUvPoly.x * 0.3333, vUvPoly.y ) );",
 				"cPoly.a = aPoly.r;",
 				
-				"if ((distancePoly)>0.7) c = cPoly; ",
-				
-                
-                "if (c.a<=0.2) discard;",
-                "else gl_FragColor = c;",
+				"if ((distancePoly)>0.5) c = cPoly; ",
+        "gl_FragColor = c;",//vec4(vec3(distancePoly),1.);//
 			"}"
 
 		].join("\n")
@@ -328,8 +332,7 @@ var VideoShaderSource = {
 			"void main() {",
 				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
                 "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.7) c = cPoly; ",
-                "if (c.a<=0.1) discard;",
+                "if ((distancePoly)>0.5) c = cPoly; ",
                 "else gl_FragColor = c;",
 			"}"
 
@@ -349,7 +352,7 @@ var VideoShaderSource = {
 			"void main() {",
 				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
                 "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.6) c = cPoly; ",
+                "if ((distancePoly)>0.5) c = cPoly; ",
                 "if (c.a<=0.1) {",
 				"	discard;",
 				"} else {",
@@ -365,47 +368,6 @@ var VideoShaderSource = {
 
 		].join("\n")
 
-	},
-	
-	distortWire : {
-
-		uniforms: DistortUniforms,
-
-		vertexShader: DistortVertexShader,
-
-		fragmentShader: [
-
-      DistortShaderFragmentPars,
-
-			"void main() {",
-                "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.3 && cPoly.a>0.05) cPoly = vec4(cPoly.rgb*2.,distancePoly/4.); ",
-                "else cPoly = vec4(1.,1.,1.,0.); ",
-                "gl_FragColor = cPoly;",
-			"}"
-
-		].join("\n")
-
-	},
-
-	distortWireKeyed : {
-
-		uniforms: DistortUniforms,
-
-		vertexShader: DistortVertexShader,
-
-		fragmentShader: [
-
-      DistortShaderFragmentPars,
-
-			"void main() {",
-                "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.8 && cPoly.a>0.) cPoly = vec4(1.,1.,1.,distancePoly/16.); ",
-                "else cPoly = vec4(1.,1.,1.,0.); ",
-                "gl_FragColor = cPoly;",
-			"}"
-
-		].join("\n")
-
 	}
+
 };
