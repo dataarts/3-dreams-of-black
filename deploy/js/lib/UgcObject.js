@@ -16,7 +16,7 @@ var UgcObject = function ( data ) {
 
 	};
 
-	this.removeVoxel = function ( x, y, z ) {
+	this.deleteVoxel = function ( x, y, z ) {
 
 		delete _grid[ x + "." + y + "." + z ];
 		_count --;
