@@ -523,9 +523,9 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		//shared.trigger.copy(vectors.array[10].position);
 
-		TriggerUtils.effectors[0] = vectors.array[25].position.x;
-		TriggerUtils.effectors[1] = vectors.array[25].position.y;
-		TriggerUtils.effectors[2] = vectors.array[25].position.z;
+		TriggerUtils.effectors[0] = vectors.array[1].position.x;
+		TriggerUtils.effectors[1] = vectors.array[1].position.y;
+		TriggerUtils.effectors[2] = vectors.array[1].position.z;
 
 		CityShaderEffectors[0].set(vectors.array[8].position.x,vectors.array[8].position.y,vectors.array[8].position.z,40);
 		CityShaderEffectors[1].set(vectors.array[12].position.x,vectors.array[12].position.y,vectors.array[12].position.z,80);
