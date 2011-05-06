@@ -66,6 +66,7 @@ var City = function ( shared ) {
 		*/
 		startCamera.position.set( 0, 0, 0 );
 		startCamera.lon = 180;
+		startCamera.lat = 4.5;
 
 		camera = startCamera;
 		
