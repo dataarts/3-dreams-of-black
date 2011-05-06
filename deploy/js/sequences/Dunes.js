@@ -45,6 +45,12 @@ var Dunes = function ( shared ) {
 
 		camera.resetCamera();
 		shared.started.dunes = true;
+
+		world.ambient.color.setHSV( 0, 0, 0 );
+		world.directionalLight1.color.setHSV( 0.08823529411764706, 0, 0 );
+		world.directionalLight2.color.setHSV( 0, 0, 0 );
+		world.lensFlare.position.y = -500;
+		world.skyWhite = 0.02;
 		
 		console.log( "show dunes" );
 
@@ -69,12 +75,45 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, delta, time ) {
 
+		console.log( progress );
+
+		// handle sun rise / sun set
+
+		if( progress > 0.05 && progress < 0.15 ) {
+			
+			var localProgress = Math.sin( ( progress - 0.05 ) / ( 0.15 - 0.05 ) * Math.PI * 0.5 );
+			
+			world.lensFlare.position.y = -1000 + 4500 * localProgress;
+
+			world.skyWhite = 0.05 + 0.95 * localProgress;
+			world.ambient.color.setHSV( 0, 0, 0.1 * localProgress );
+			world.directionalLight1.color.setHSV( 0.08823529411764706,  0, localProgress );
+			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 * localProgress );
+			
+		} else if( progress > 0.90 ) {
+			
+			var localProgress = Math.sin(( 1.0 - ( progress - 0.90 ) / 0.1 ) * Math.PI * 0.5 );
+			localProgress *= localProgress;
+			
+			world.lensFlare.position.y = -1000 + 4500 * localProgress;
+
+			world.skyWhite = 0.05 + 0.95 * localProgress;
+			world.ambient.color.setHSV( 0, 0, 0.1 * localProgress );
+			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, localProgress );
+			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 * localProgress );
+			
+		}
+
+
+
+		// update everything
+
 		camera.updateCamera( progress, delta, time );
 
 		THREE.AnimationHandler.update( delta );
 
 		world.update( delta, camera.camera, false );
-		soup.update( delta );
+		//soup.update( delta );
 
 		renderer.render( world.scene, camera.camera, renderTarget );
 

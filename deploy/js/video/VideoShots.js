@@ -24,8 +24,7 @@ var VideoShots = {
 	},{
         path: "files/videos/city/s01_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
-        z: -800,
-		fps: 18
+        z: -800
 	}
 	],
 	// CITY - ROOM
@@ -41,17 +40,17 @@ var VideoShots = {
 		paralaxVertical: 200
 	},{
         path: "files/videos/city/s03_layer02.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
+        shaderId: VIDEO_SMARTALPHA,
         z: -1100,
-		width: 1.30, height: 1.16,
+		width: 1.56, height: 1.59,
+		//width: 1.30, height: 1.16,
 		paralax: true
 	},{
         path: "files/videos/city/s03_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
         z: -100,
 		locked: true,
-		removeAt: 0.3,
-		fps: 18
+		removeAt: 0.3
 	}
 	],
 	// CITY - PARROT
@@ -101,7 +100,7 @@ var VideoShots = {
 		paralax: true,
 		bendForce: 200,
 		duration: 9230,
-		paralaxHorizontal: 600,
+		paralaxHorizontal: 400,
 		paralaxVertical: 200
     },{
         path: "files/videos/prairie/s01_layer03.webm",

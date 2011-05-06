@@ -45,9 +45,9 @@ var Footer = function(container, prefix) {
     var html = ['<div class="rome-footer">',
 		'<div class="shout-out">',
 		'  <ul>',
-		'    <li><a href="http://chromeexperiments.com/"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
+		'    <li class="last"><a href="http://chromeexperiments.com/"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
 		'    <li class="divider">&nbsp;</li>',
-		'    <li><a href="http://google.com/"><img src="' + path + '/google-trans.png" alt="Made With Friends From Google" border="0" /></a></li>',
+		'    <li class="last"><a href="http://google.com/"><img src="' + path + '/google-trans.png" alt="Made With Friends From Google" border="0" /></a></li>',
 		'    <li class="clear">&nbsp;</li>',
 		'  </ul>',
 		'</div>',
@@ -78,7 +78,7 @@ var Footer = function(container, prefix) {
 		'  padding: 0;',
 		'}',
 		'.rome-footer {',
-		'  font: 500 10px/18px "Futura", Arial, sans-serif;',
+		'  font: 500 10px/18px FuturaBT-Medium, Arial, sans-serif;',
 		'  color: #434343;',
 		'  text-transform: uppercase;',
 		'  letter-spacing: 1px;',
@@ -114,6 +114,7 @@ var Footer = function(container, prefix) {
 		'  margin: 15px 0 15px 15px;',
 		'  height: 24px;',
 		'  border-left: 1px solid #a0a0a0;',
+		'  border-right: 0 !important;',
 		'}',
 		'.rome-footer a img {',
 		'  border: 0;',
@@ -172,7 +173,7 @@ var Footer = function(container, prefix) {
     // Handle dom and html content
     container.innerHTML = html;
 
-    // Append stylesheet
+    // Append stylesheets
     if (Footer.multipleInstances < 1) {
 
         var rule = document.createTextNode(css);
