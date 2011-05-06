@@ -42,9 +42,8 @@ var Shortcuts = function ( shared ) {
 	addExplorationShortcut( 'Explore Dunes', 'dunes' );
 	addSeparator();
 
-	// Tool
+	// UGC
 
-	addUgcIntroShortcut( 'Ugc Intro' );
 	addUgcShortcut( 'Ugc' );
 
 	function addSeparator() {
@@ -119,17 +118,6 @@ var Shortcuts = function ( shared ) {
 		} );
 
 	};
-
-	function addUgcIntroShortcut( text ) {
-
-		addLink( text, function () {
-
-			shared.signals.showugcintro.dispatch();
-
-		} );
-
-	};
-
 
 	this.getDomElement = function () {
 
