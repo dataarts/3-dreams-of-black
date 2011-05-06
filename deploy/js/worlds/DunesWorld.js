@@ -31,6 +31,7 @@ var DunesWorld = function ( shared ) {
 	that.ambient = ambient;
 	that.directionalLight1 = directionalLight1;
 	that.directionalLight2 = directionalLight2;
+	that.skyWhite = 1;
 
 	ambient.color.setHSV( 0, 0, 0.1 );
 
@@ -50,7 +51,7 @@ var DunesWorld = function ( shared ) {
 	that.lensFlare = null;
 	that.lensFlareRotate = null;
 
-	initLensFlares( that, new THREE.Vector3( -3500, 2000, -10000 ), 0, 0 );		
+	initLensFlares( that, new THREE.Vector3( -5500, 3500, -10000 ), 0, 0 );		
 
 
 
@@ -231,7 +232,7 @@ var DunesWorld = function ( shared ) {
 		
 		that.checkInfluenceSpheres( camera, portalsActive );
 		that.updateTiles( camera ); 
-		updateDunesShader( delta );
+		updateDunesShader( delta, that.skyWhite );
 		
 		skydome.position.copy( camera.matrixWorld.getPosition() );
 		skydome.updateMatrix();
