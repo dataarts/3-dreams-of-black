@@ -70,7 +70,7 @@ DunesCamera = function( shared ) {
 	
 	that.resetCamera = function() {
 		
-		wantedCamera.position.set( 0, 50, 800 );
+		wantedCamera.position.set( 0, 50, 1000 );
 		wantedCameraTarget.position.set( 0, 50, 300 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
 		

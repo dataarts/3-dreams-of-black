@@ -82,11 +82,11 @@ var DunesWorld = function ( shared ) {
 				
 				tileRow.push( 4 );										// walk
 				
-			} else if( x === 0 && z === 4 ) {
+			} else if( x === 1 && z === 4 ) {
 				
 				tileRow.push( 5 );										// prairie
 				
-			} else if( x === 1 && z === 3 ) {
+			} else if( x === 3 && z === 3 ) {
 				
 				tileRow.push( 6 );										// city
 				
@@ -168,7 +168,7 @@ var DunesWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -0.5 }, { "D_tile_Prairie_Water": 0.65 } );
+		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -0.05 }, { "D_tile_Prairie_Water": 0.65 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
