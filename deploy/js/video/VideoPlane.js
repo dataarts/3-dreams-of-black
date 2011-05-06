@@ -1,13 +1,13 @@
 var VideoPlane = function( shared, layer, conf ) {
 
-	var video, texture, interval, shader, material, wireMaterial;
+	var video, texture, interval, shader, material;
 	var config = conf;
 	var hasDistortion = false;
 	var hasKey = false;
 	var isStatic = layer.path.match("png$") || layer.path.match("jpg$");
 	var bendForce = layer.bendForce || 400;
 
-	var polyTrail = new PolyTrail(shared.mouse.x,shared.mouse.y);
+	var polyTrail = new PolyTrail(-shared.mouse.x*config.aspect, -shared.mouse.y);
     
 	var fps = layer.fps || 20;
 	
@@ -118,7 +118,7 @@ var VideoPlane = function( shared, layer, conf ) {
 		uniforms['mouseXY'].value = new THREE.Vector2( 0, 0 );
 		uniforms['aspect'].value = config.aspect;
 		uniforms['mouseSpeed'].value = 0;
-    	uniforms['mouseRad'].value = 0;
+    uniforms['mouseRad'].value = 1;
 
 	}
 	
@@ -212,7 +212,7 @@ var VideoPlane = function( shared, layer, conf ) {
         polyTrail.update();
         
         for (i = 0; i <= 4; i++) {
-            material.uniforms['trail' + i].value = polyTrail.s[i];
+            material.uniforms['trail' + i].value = polyTrail.s[i*4];
         }
         
         material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
@@ -223,22 +223,27 @@ var VideoPlane = function( shared, layer, conf ) {
 
 };
 
-function PolyTrail(x, y){
-    this.target = new THREE.Vector2(0, 0);
+function PolyTrail(x,y){
+    this.target = new THREE.Vector2(x,y);
     this.s = [];
-    for (var i = 0; i <= 4; i++) {
-        this.s[i] = new THREE.Vector2(0, 0);
+    this.g = [];
+    for (var i = 0; i <= 16; i++) {
+        this.s[i] = new THREE.Vector2(x,y);
+        this.g[i] = new THREE.Vector2(x,y);
     }
 }
-
 PolyTrail.prototype.update = function(){
-    var trailDelay = 10;
-    for (var i = 4; i >= 1; i = i - 1) {
-        this.s[i].x += (this.s[i - 1].x - this.s[i].x) / trailDelay;
-        this.s[i].y += (this.s[i - 1].y - this.s[i].y) / trailDelay;
+    var trailDelay = 2;
+    for (var i = 16; i >= 1; i = i - 1) {
+        this.s[i].x += (this.g[i].x - this.s[i].x);// / trailDelay;
+        this.s[i].y += (this.g[i].y - this.s[i].y);// / trailDelay;
+        
+        if (this.s[i].x == this.g[i].x) this.g[i].x = this.s[i - 1].x;
+        if (this.s[i].y == this.g[i].y) this.g[i].y = this.s[i - 1].y;
+
     }
-    this.s[0].x += (this.target.x - this.s[0].x) / trailDelay;
-    this.s[0].y += (this.target.y - this.s[0].y) / trailDelay;
+    this.s[0].x = this.target.x;
+    this.s[0].y = this.target.y;
 };
 
 var VideoLoadRegister = {};

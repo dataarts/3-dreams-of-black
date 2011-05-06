@@ -32,7 +32,7 @@ var UgcHandler = function () {
 	};
 
 	this.getUGO = function( id, callback ) {
-		var url = '/ugc/object/'+id;
+		var url = base_url+"/"+id;
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', url);
 		xhr.onreadystatechange = function () {
@@ -48,8 +48,7 @@ var UgcHandler = function () {
 		xhr.send( null );
 	};
 
-	this.submitUGO = function ( submission, callback ) {
-
+  this.submitUGO = function( submission, image, callback ) {
 		var url = base_url;
 
 		var xhr = new XMLHttpRequest();
@@ -65,6 +64,7 @@ var UgcHandler = function () {
 			}
 		};
 		xhr.send( JSON.stringify(submission) );
-	};
+
+  }
 
 };
