@@ -87,7 +87,7 @@ var UgcUI = function ( shared ) {
 		
 		'<g class="menu-buttons">',
 		
-		'<g id="reflect" name="hover" title="reflect" class="toggle">',
+		'<g id="reflect" name="hover" title="mirror mode" class="toggle">',
 		
 		'  <polygon class="hex" fill="rgba(255, 255, 255,',
 		'      0.4)" points="13.128,',
@@ -112,7 +112,7 @@ var UgcUI = function ( shared ) {
 		'c0,0.426,0.343,0.772,0.771,0.772s0.771-0.346,0.771-0.772v-1.158C26.802,67.412,26.459,67.066,26.031,67.066"></path>',
 		'</g>',
 		
-		'<g id="create" name="hover" title="create"  class="active">',
+		'<g id="create" name="hover" title="draw"  class="active">',
 		'  <polygon class="hex" fill="rgba(255, 255, 255,',
 		'      0.4)" points="54.578,',
 		'      69.401 41.452,46.666 54.578,23.932 80.83,23.932 93.956,46.666',
@@ -156,7 +156,7 @@ var UgcUI = function ( shared ) {
 		'	97.297,144.71 83.48,168.642 97.297,192.572 83.479,216.504 97.655,241.057 126.006,241.057 140.182,216.504 126.366,192.573',
 		'	140.183,168.642 "></polygon>',
 		
-		'  <g class="size" name="hover" title="size"  id="icon-size-small">',
+		'  <g class="size" name="hover" title="1 x 1"  id="icon-size-small">',
 		'    <g>',
 		'      <polygon class="active bg" fill="rgba(255, 255, 255, 0.4)" points="96.028,',
 		'  141.194 82.902,',
@@ -174,7 +174,7 @@ var UgcUI = function ( shared ) {
 		
 		'  <g class="options">',
 		
-		'    <g class="size" id="icon-size-med">',
+		'    <g class="size" name="hover" title="3 x 3" id="icon-size-med">',
 		'      <!-- Hex -->',
 		'      <polygon class="bg" fill="rgba(255, 255, 255, 0.4)"',
 		'               points="96.028,189.057 82.902,166.323 96.028,143.588 122.28,143.588 135.405,166.323 122.279,189.057 "></polygon>',
@@ -187,7 +187,7 @@ var UgcUI = function ( shared ) {
 		'								l5.383,3.297l-5.454,3.364l-5.449-3.385L96.836,167.04z M103.258,177.734l5.52-3.381l5.519,3.381l-5.519,3.43L103.258,177.734z"></path>',
 		'    </g>',
 		
-		'    <g class="size" id="icon-size-large">',
+		'    <g class="size" name="hover" title="5 x 5" id="icon-size-large">',
 		'      <!-- Hex -->',
 		'      <polygon class="bg" fill="rgba(255, 255, 255, 0.4)"',
 		'               points="96.027,236.919 82.901,214.186 96.027,191.451 122.279,191.451 135.404,214.186 122.278,236.919 "></polygon>',

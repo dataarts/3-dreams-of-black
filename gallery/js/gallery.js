@@ -11,7 +11,7 @@ var GALLERY = function(params) {
 
 console.log(params);
 
-  var OBJECTS_PER_PAGE = 10;
+  var OBJECTS_PER_PAGE = 15;
   var LOCAL_STORAGE_VOTE_PREFIX = 'vote';
 
   var gallery = $('#gallery');
