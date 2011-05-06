@@ -75,8 +75,6 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, delta, time ) {
 
-		//console.log( progress );
-
 		// handle sun rise / sun set
 
 		if( progress > 0.05 && progress < 0.15 ) {
@@ -87,8 +85,8 @@ var Dunes = function ( shared ) {
 
 			world.skyWhite = 0.05 + 0.95 * localProgress;
 			world.ambient.color.setHSV( 0, 0, 0.1 * localProgress );
-			world.directionalLight1.color.setHSV( 0.08823529411764706,  0, localProgress );
-			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 * localProgress );
+			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, localProgress );
+			world.directionalLight2.color.setHSV( 0, 0, 0.8647058823529412 * localProgress );
 			
 		} else if( progress > 0.90 ) {
 			
@@ -102,6 +100,14 @@ var Dunes = function ( shared ) {
 			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, localProgress );
 			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 * localProgress );
 			
+		} else if( progress > 0.05 ) {
+			
+			world.skyWhite = 1;
+			world.ambient.color.setHSV( 0, 0, 0.1 );
+			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, 1 );
+			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+			world.lensFlare.position.y = 3500;
+			
 		}
 
 
@@ -109,6 +115,7 @@ var Dunes = function ( shared ) {
 		// update everything
 
 		if( progress > 0.38 ) soup.update( delta );
+
 
 		camera.updateCamera( progress, delta, time );
 
