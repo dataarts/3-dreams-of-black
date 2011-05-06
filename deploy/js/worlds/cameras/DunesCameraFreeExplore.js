@@ -13,7 +13,7 @@ DunesCameraFreeExplore = function( shared ) {
 	var CAMERA_FORWARD_SPEED_MAX = 25;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 60;
+	var CAMERA_VERTICAL_LIMIT = 100;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
 	var CAMERA_INERTIA = 0.02;
 	var CAMERA_ROLL_FACTOR = 0.4;
@@ -75,12 +75,25 @@ DunesCameraFreeExplore = function( shared ) {
 		
 	}
 	
+	that.switchDirection = function( portal ) {
+		
+		wantedCameraDirection.sub( camera.position, camera.target.position ).normalize().multiplyScalar( portal.radius * 1.5 ).addSelf( portal.object.matrixWorld.getPosition());
+		wantedCamera.position.copy( wantedCameraDirection );
+
+		wantedCameraDirection.sub( camera.position, camera.target.position ).normalize().multiplyScalar( portal.radius * 1.5 + CAMERA_COLLISION_DISTANCE ).addSelf( portal.object.matrixWorld.getPosition());
+		wantedCameraTarget.position.copy( wantedCameraDirection );
+
+		camera.position.copy( wantedCamera.position );
+		camera.target.position.copy( wantedCameraTarget.position );
+	}
+	
 	
 	//--- update camera ---
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = 1;// delta * ( 1000 / 30 ) / 1000; 
+		delta = 1;// delta * ( 1000 / 30 ) / 1000; // switched off because of strange values in delta
+		
 		
 		// check collision round-robin (can't afford to do all every frame)
 
@@ -247,10 +260,15 @@ DunesCameraFreeExplore = function( shared ) {
 			
 			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
 			
+		} else {
+			
+			if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR;
+			if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR;
+			
 		}
 
-		wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
-		wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
+		wantedCameraTarget.position.y = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
+		wantedCameraTarget.position.y = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
 
 
 		// handle left/right		

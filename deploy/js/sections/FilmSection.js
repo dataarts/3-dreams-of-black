@@ -158,8 +158,7 @@ var FilmSection = function ( shared ) {
 
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 23.5 ), tune.getPatternMS( 24 ), 3 );  // Below painter effect which renders directly to screen
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 39.5 ), tune.getPatternMS( 40 ), 3 );  // Below painter effect which renders directly to screen
-
-	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72 ), tune.getPatternMS( 73.25 ), 5 );
+	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 73.0 ), tune.getPatternMS( 73.25 ), 3 ); // Below painter effect which renders directly to screen
 
 	// pointers
 	
