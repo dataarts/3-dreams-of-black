@@ -52,7 +52,7 @@ var CloudsShader = {
 		"varying vec3 vNormal;",
 		"varying vec3 vNormalsquare;",
 		"varying vec3 vLightWeighting;",
-		"varying vec3 worldVector;",
+		"varying vec3 vWorldVector;",
 
 		"void main() {",
 
@@ -77,7 +77,7 @@ var CloudsShader = {
 
 			"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-			"worldVector = (vWorldPosition - cameraPosition) * vec3(0.01, 0.02, 0.01);",
+			"vWorldVector = (vWorldPosition - cameraPosition) * vec3(0.01, 0.02, 0.01);",
 
 		"}"
 
@@ -85,6 +85,8 @@ var CloudsShader = {
 
 	fragmentShader: [
 
+		"const   vec3 	skyBlue = vec3( -0.37, -0.05, 0.15 );",
+		
 		"uniform sampler2D grassImage;",
 		"uniform sampler2D surfaceImage;",
 		"uniform sampler2D map;",
@@ -107,60 +109,34 @@ var CloudsShader = {
 		"uniform vec3 vectorB;",
 		"uniform vec3 vectorC;",
 
-		"varying vec3 worldVector;",
+		"varying vec3 vWorldVector;",
 
 		"void main() {",
 
-			"float distance, f;",
+			"float f;",
 			"vec3 normal;",
 			"vec3 sky_color;",
-			"vec4 surface;",
-			"vec4 grass;",
-			"f = normalize(worldVector).y;",
-			"f = max(f, 0.0);",
-			"sky_color = mix(vectorA, vectorB, f);",			
-			"vec3 worldPosition = vWorldPosition * 0.0005;",
-
-			"surface = vec4( vec3( 0.5 ), 1.0 );",
-
-			"float depth = gl_FragCoord.z / gl_FragCoord.w;",
-			"depth *= 0.0001;",
-
-			"gl_FragColor = vec4( vColor, 1.0 ) + vec4(2.0);",
-			"gl_FragColor = mix(gl_FragColor * texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time)), gl_FragColor, vec4(vectorC.rgb, 0.1));",
-			//"gl_FragColor = mix(vec4(gl_FragColor.rgb, 1.0), vec4(/*colorB*/0.64, 0.88, 1, 1.0), vec4(depth));",	
-
-
+			
 			// lights
 			
-			"gl_FragColor = gl_FragColor + vec4( vLightWeighting, 1.0 );",
+			"gl_FragColor = vec4(vec3(vLightWeighting) * vec3(0.9, 0.5, 0.3) + vec3(0.7, 0.6, 0.6), vLightWeighting * 0.95 + 0.05 );",
+
 
 			// fog
 			
-			"depth = gl_FragCoord.z / gl_FragCoord.w;",
-			"depth *= 50.0;",
 			"const float LOG2 = 1.442695;",
-			"float fogFactor = exp2( - fogDensity * fogDensity * depth * depth * LOG2 );",
+			"float depth = ( gl_FragCoord.z / gl_FragCoord.w ) * 50.0;",
+			"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
 			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
 
 
-			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.w ), fogFactor/*min(length(worldVector) * 0.02, 1.0) */);",
-			//"gl_FragColor = vec4( gl_FragColor.rgb * vectorA * vectorB * vectorC, 1.0 );",
+			// mix sky color and fog
 
-			//"gl_FragColor = vec4(distance, distance, distance, 1.0);",
-			//"gl_FragColor *= vec4( 0.0, 1.0, 0.0, 1.0 );",
+			"f = max( 0.0, normalize( vWorldVector ).y + cameraPosition.y * 0.0002 - 0.255 );",
+			"sky_color = mix( vec3( 1.0 ), skyBlue, f );",
 
-			/*time laps only*/
-			//"gl_FragColor = texture2D(surfaceImage, worldPosition.zx * vec2(0.4) + vec2(time));",
+			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.a ), fogFactor );",
 
-			/*grass only*/
-			//"gl_FragColor = grass;",
-
-			/*grass only*/
-			//"gl_FragColor = texture2D( grassImage, worldPosition.zx * vec2(10.0));",
-			//"gl_FragColor = vec4(vNormalsquare.yyy, 1.0);",
-			
-			"gl_FragColor = vec4(vec3(vLightWeighting) * vec3(0.9, 0.5, 0.3) + vec3(0.7, 0.6, 0.6), vLightWeighting * 0.9 + 0.1);",
 
 		"}"
 
