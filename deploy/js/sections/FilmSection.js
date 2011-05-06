@@ -168,15 +168,16 @@ var FilmSection = function ( shared ) {
 	// final render
 
 	sequencer.add( new RenderEffect( shared ),     tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 6 ); 		// intro
-	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 6 ); // city animation
+	sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 6 ); // city animation
 
+	// PaintEffectVideo
 	// !!!!!!!!! Here PaintEffect draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new PaintEffectVideo( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 6 ); // prairie animation
+	sequencer.add( new PaintEffectPrairie( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 6 ); // prairie animation
 	
 	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new PaintEffectVideo( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
+	sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
 	
 	// !!!!!!!!! Here PaintEffectDunes draws directly to frame buffer !!!!!!!!!!!!
 
