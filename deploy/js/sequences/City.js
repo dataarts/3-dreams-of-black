@@ -42,7 +42,7 @@ var City = function ( shared ) {
 		startCamera = new THREE.PathCamera( {
 
 			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsA, duration: 7.9, 
+			waypoints: waypointsA, duration: 8, 
 			useConstantSpeed: true, resamplingCoef: 30,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
@@ -152,7 +152,7 @@ var City = function ( shared ) {
 
 		if (camz < -1200 && !switchedCamera ) {
 
-			waypointsB = [ [ 0, 18, camz ], [ 0, 18, -3350 ] ];
+			waypointsB = [ [ 0, 18, camz ], [ 0, 18, -3400 ] ];
 
 			if (camera.theta < 1.2) {
 				// turn left
@@ -166,7 +166,7 @@ var City = function ( shared ) {
 			switchCamera = new THREE.PathCamera( {
 
 				fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-				waypoints: waypointsB, duration: 14.8, 
+				waypoints: waypointsB, duration: 15, 
 				useConstantSpeed: true, resamplingCoef: 5,
 				createDebugPath: false, createDebugDummy: false,
 				lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
