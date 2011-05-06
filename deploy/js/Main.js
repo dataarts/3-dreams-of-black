@@ -162,7 +162,8 @@
 
 	}
 
-	// Acceleromter data in question
+	// Accelerometer data in question
+
 	function onWindowDeviceOrientation( event ) {
 
 		if( !event.gamma && !event.beta ) {
@@ -183,23 +184,35 @@
 
 		if(lastGamma != gamma || lastBeta != beta) {
 
-			var x = Math.round(1.5 * gamma) + shared.mouse.x;
-			var y = (-Math.round(1.5 * beta)) + shared.mouse.y;
+			var x = Math.round( 1.5 * gamma ) + shared.mouse.x;
+			var y = ( -Math.round( 1.5 * beta ) ) + shared.mouse.y;
 
-			if(Math.abs(x) > window.innerWidth) {
-				if(x < 0) {
+			if( Math.abs( x ) > window.innerWidth ) {
+
+				if( x < 0 ) {
+
 					x = -window.innerWidth;
+
 				} else {
+
 					x = window.innerWidth;
+
 				}
+
 			}
 
-			if(Math.abs(y) > window.innerHeight) {
-				if(y < 0) {
+			if( Math.abs( y ) > window.innerHeight ) {
+
+				if( y < 0 ) {
+
 					y = -window.innerHeight;
+
 				} else {
+
 					y = window.innerHeight;
+
 				}
+
 			}
 
 			shared.mouse.x = x;
@@ -209,6 +222,7 @@
 			lastBeta = beta;
 
 			shared.signals.mousemoved.dispatch( event );
+
 		}
 
 	}

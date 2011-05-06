@@ -121,7 +121,7 @@ console.log(params);
                 $.each(data, function(key, value) {
                   var toAdd = itemHTML;
                   toAdd = toAdd.replace(/%title%/g, value.title);
-                  toAdd = toAdd.replace(/%img%/g, GALLERY.API_BASE + 'objects/' + value.id + '/thumbnail');
+                  toAdd = toAdd.replace(/%img%/g, value.thumbnail_url || '/gallery/not-found.jpg');
                   toAdd = toAdd.replace(/%id%/g, value.id);
 
                   var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + value.id);
@@ -211,10 +211,11 @@ console.log(params);
 
     var sendVote = function(objectID, up, onComplete) {
 
-      var url = GALLERY.API_BASE + 'object/' + objectID + '/' + ( up ? 'up' : 'down' ) + 'vote';
+      var url = GALLERY.API_BASE + 'objects/' + objectID + '/' + ( up ? 'up' : 'down' ) + 'vote';
 
       $.ajax({
             url: url,
+            type: 'POST',
             success: function() {
               onComplete(true)
             },
