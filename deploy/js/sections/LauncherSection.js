@@ -5,7 +5,7 @@ var LauncherSection = function ( shared ) {
 	var domElement,
 	canvas, context, gradient,
 	clouds, title, buttonEnter, buttonStart,
-	buttonEnterImg,
+	buttonEnterImg, uiContainer, ffTitle,
 	loading, footer, footNav;
 
 	domElement = document.createElement( 'div' );
@@ -48,39 +48,15 @@ var LauncherSection = function ( shared ) {
 
 		// UI
 
+		uiContainer = document.createElement( 'div' );
+		uiContainer.style.position = 'absolute';
+		uiContainer.setAttribute("id", "ui-container");
+
 		title = document.createElement( 'div' );
 		title.style.position = 'absolute';
 		title.innerHTML = '<img src="files/logo_heart.png">';
-		domElement.appendChild( title );
+		uiContainer.appendChild( title );
 
-		function createRolloverButton( margin, imgIdle, imgRoll ) {
-			
-			var button = document.createElement( 'div' );
-			button.style.position = 'absolute';
-			button.style.cursor = 'pointer';
-			button.style.margin = margin;
-			
-			var buttonImg = document.createElement( 'img' );
-			buttonImg.src = imgIdle;
-			
-			button.appendChild( buttonImg );
-
-			button.addEventListener( 'mouseout', function () {
-
-				buttonImg.src = imgIdle;
-
-			}, false );
-
-			button.addEventListener( 'mouseover', function () {
-
-				buttonImg.src = imgRoll;
-
-			}, false );
-			
-			return button;
-			
-		};
-		
 		buttonEnter = createRolloverButton( "10px 0 0 85px", "files/enter_idle.png", "files/enter_rollover.png" );
 		buttonEnter.addEventListener( 'click', function () {
 
@@ -88,11 +64,11 @@ var LauncherSection = function ( shared ) {
 			buttonEnter.style.display = 'none';
 
 			isLoading = true;
-			
+
 			shared.signals.load.dispatch();
 
 		}, false );
-		domElement.appendChild( buttonEnter );
+		uiContainer.appendChild( buttonEnter );
 
 		buttonStart = createRolloverButton( "10px 0 0 85px", "files/start_idle.png", "files/start_rollover.png" );
 		buttonStart.style.display = 'none';
@@ -107,17 +83,17 @@ var LauncherSection = function ( shared ) {
 				shared.signals.startfilm.dispatch( 0, 1 );
 
 			}, 1000 );
-			
+
 		}, false );
-		domElement.appendChild( buttonStart );
-		
+		uiContainer.appendChild( buttonStart );
+
 		loading = new LoadingBar( function () {
-			
+
 			loading.getDomElement().style.display = 'none';
 			buttonStart.style.display = 'block';
-			
+
 			isLoading = false;
-			
+
 			shared.signals.initscenes.dispatch();
 
 		} );
@@ -125,10 +101,24 @@ var LauncherSection = function ( shared ) {
 		loading.getDomElement().style.position = 'absolute';
 		loading.getDomElement().style.display = 'none';
 
-		domElement.appendChild( loading.getDomElement() );
+		uiContainer.appendChild( loading.getDomElement() );
 
 		shared.signals.loadItemAdded.add( loading.addItem );
 		shared.signals.loadItemCompleted.add( loading.completeItem );
+
+		if(!HandleErrors.isWebGLAndFireFox) {
+
+			domElement.appendChild( uiContainer );
+
+		} else {
+
+			ffTitle = document.createElement( 'div' );
+			ffTitle.style.paddingTop = "60px";
+			ffTitle.style.marginLeft = "-2px";	// Ugly
+			ffTitle.innerHTML = "<img src = 'files/footer/header-trans.png' alt = 'ROME' />";
+			domElement.appendChild( ffTitle );
+
+		}
 
 		// Implemented Footer.js
 		footer = document.createElement( 'div' );
@@ -138,6 +128,34 @@ var LauncherSection = function ( shared ) {
 		footer.style.width = "100%";
 		footNav = new Footer( footer );
 		domElement.appendChild( footer );
+
+		function createRolloverButton( margin, imgIdle, imgRoll ) {
+
+			var button = document.createElement( 'div' );
+			button.style.position = 'absolute';
+			button.style.cursor = 'pointer';
+			button.style.margin = margin;
+
+			var buttonImg = document.createElement( 'img' );
+			buttonImg.src = imgIdle;
+
+			button.appendChild( buttonImg );
+
+			button.addEventListener( 'mouseout', function () {
+
+				buttonImg.src = imgIdle;
+
+			}, false );
+
+			button.addEventListener( 'mouseover', function () {
+
+				buttonImg.src = imgRoll;
+
+			}, false );
+
+			return button;
+
+		}
 
 	}
 
@@ -152,14 +170,26 @@ var LauncherSection = function ( shared ) {
 
 		clouds.resize( width, height );
 
-		title.style.top = '60px';
-		title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+		if( title ) {
 
-		buttonEnter.style.top = buttonStart.style.top = '210px';
-		buttonEnter.style.left = buttonStart.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+			title.style.top = '60px';
+			title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
 
-		loading.getDomElement().style.top = '215px';
-		loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
+		}
+
+		if( buttonEnter ) {
+
+			buttonEnter.style.top = buttonStart.style.top = '210px';
+			buttonEnter.style.left = buttonStart.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+
+		}
+
+		if( loading ) {
+
+			loading.getDomElement().style.top = '215px';
+			loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
+
+		}
 
 		domElement.style.width = width + 'px';
 		domElement.style.height = height + 'px';
@@ -180,6 +210,13 @@ var LauncherSection = function ( shared ) {
 			clouds.update();
 			
 		}
+
+	};
+
+	LauncherSection.showUI = function() {
+
+		domElement.removeChild( ffTitle );
+		domElement.appendChild( uiContainer );
 
 	};
 

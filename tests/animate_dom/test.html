@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+	<head>
+		<script>
+
+			var container = document.createElement( 'div' );
+					container.setAttribute("id", "container");
+					container.setAttribute("style", "-webkit-transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750); -moz-transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750); -o-transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750); transition: all 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750);");
+					container.style.width = "100px";
+					container.style.height = "100px";
+					container.style.backgroundColor = "#000";
+
+			window.onload = function() {
+
+				document.body.appendChild( container );
+
+			};
+
+			window.addEventListener("click", function() {
+
+				if( container.style.opacity < 1 ) {
+
+					// container.style.backgroundColor = "rgba(0, 0, 0, 1.0)";
+					container.style.opacity = 1.0;
+
+				} else {
+
+					// container.style.backgroundColor = "rgba(0, 0, 0, 0.0)";
+					container.style.opacity = 0.0;
+
+				}
+
+			}, false);
+
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
