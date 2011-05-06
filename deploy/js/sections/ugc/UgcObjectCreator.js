@@ -156,15 +156,13 @@ var UgcObjectCreator = function ( shared ) {
 
 		var submission = {
 			title: 'Amorphous Building',
-			email: 'romepreview@gmail.com',
+			email: 'dougfritz@gmail.com',
 			category: 'ground',
-			data: painter.getObject().getJSON(),
-			thumbnail: thumbnail
+			data: painter.getObject().getJSON()
 		};
 
-		ugcHandler.submitUGO( submission, thumbnail, function ( json ) {
-			var id = json['id'];
-			console.log(id);
+		ugcHandler.submitUGO( submission, thumbnail, function ( rsp ) {
+			console.log(rsp);
 		});
 
 	} );
