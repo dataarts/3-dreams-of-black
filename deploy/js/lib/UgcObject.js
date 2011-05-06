@@ -1,6 +1,6 @@
 var UgcObject = function ( data ) {
 
-	var VERSION = 3,
+	var VERSION = 4,
 	_type = null, _grid = {}, _count = 0;
 
 	this.addVoxel = function ( x, y, z, color ) {
@@ -31,14 +31,40 @@ var UgcObject = function ( data ) {
 
 	this.getJSON = function () {
 
-		var i, item, array = [ VERSION ];
+		var i, item, array = [ VERSION ], currentColor = null, items = [], itemsCount = 0;
+
+		function pushItems() {
+
+			if ( items.length ) {
+
+				array.push( currentColor );
+				array.push( itemsCount );
+				array = array.concat( items );
+
+			}
+
+		}
 
 		for ( i in _grid ) {
 
 			item = _grid[ i ];
-			array.push( item.x, item.y, item.z, item.color );
+
+			if ( item.color != currentColor ) {
+
+				pushItems();
+
+				currentColor = item.color;
+				itemsCount = 0;
+				items = [];
+
+			}
+
+			items.push( item.x, item.y, item.z );
+			itemsCount ++;
 
 		}
+
+		pushItems();
 
 		return JSON.stringify( array );
 	};
@@ -72,11 +98,18 @@ var UgcObject = function ( data ) {
 
 	if ( data && data[ 0 ] == VERSION ) {
 
-		var i = 1, l = data.length;
+		var i = 1, l = data.length, currentColor = 0, itemsCount = 0;
 
 		while ( i < l ) {
 
-			this.addVoxel( data[ i ++ ], data[ i ++ ], data[ i ++ ], data[ i ++ ] );
+			currentColor = data[ i ++ ];
+			itemsCount = data[ i ++ ];
+
+			for ( j = 0; j < itemsCount; j ++ ) {
+
+				this.addVoxel( data[ i ++ ], data[ i ++ ], data[ i ++ ], currentColor );
+
+			}
 
 		}
 

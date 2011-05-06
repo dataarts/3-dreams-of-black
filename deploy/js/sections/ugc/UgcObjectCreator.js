@@ -293,35 +293,19 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		if ( USE_POSTPROCESS ) {
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
 
-			camera.aspect = shared.viewportWidth / shared.viewportHeight;
-			camera.updateProjectionMatrix();
+		shared.viewportWidth = width;
+		shared.viewportHeight = height;
 
-			shared.viewportWidth = shared.baseWidth * ( width / shared.baseWidth );
-			shared.viewportHeight = shared.baseHeight * ( width / shared.baseWidth );
+		// TODO: Hacky...
 
-			shared.renderer.setSize( shared.viewportWidth, shared.viewportHeight );
+		shared.renderTarget.width = width;
+		shared.renderTarget.height = height;
+		delete shared.renderTarget.__webglFramebuffer;
 
-			// TODO: Hacky...
-
-			shared.renderTarget.width = shared.viewportWidth;
-			shared.renderTarget.height = shared.viewportHeight;
-			delete shared.renderTarget.__webglFramebuffer;
-
-			offset = ( ( height - shared.viewportHeight  ) / 2 );
-
-			shared.renderer.domElement.style.left = '0px';
-			shared.renderer.domElement.style.top = offset + 'px';
-
-		} else {
-
-			camera.aspect = width / height;
-			camera.updateProjectionMatrix();
-
-			shared.renderer.setSize( width, height );
-
-		}
+		shared.renderer.setSize( width, height );
 
 	};
 
