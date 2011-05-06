@@ -39,9 +39,10 @@ function makeScene(){
 
   //gound plane
   wireMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0x222222, lighting:false, opacity:0.5, wireframe: true });
-  skyMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xd9dae0, lighting:false, opacity:1, wireframe: false });
+  skyMat = new THREE.MeshBasicMaterial({blending: THREE.BillboardBlending, color:0xcccccc, lighting:false, opacity:1, wireframe: false });
   plane = new THREE.Mesh(new THREE.Plane(1000, 1000, 10, 10), wireMat);
   sky = new THREE.Mesh(new THREE.Sphere(200, 32, 32), skyMat);
+  skyMat.color.setRGB(params.background,params.background,params.background);
   sky.flipSided = true;
   plane.rotation.x = -Math.PI / 2;
 
