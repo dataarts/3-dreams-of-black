@@ -1,0 +1,51 @@
+moose
+moose
+elk
+elk
+horse
+horse
+bear
+bear
+mountainlion
+mountainlion
+deer
+deer
+raccoon
+golden
+chowchow
+bunny
+bunny
+bunny
+fox
+bear
+elk
+deer
+fish
+horse
+elk
+fish
+sockpuppet jumping
+sockpuppet jumping
+sockpuppet popup
+
+
+
+flamingo
+flamingo
+stork
+stork
+eagle
+owl
+owl
+hummingbird
+parrot
+parrot
+
+
+
+Stragglers
+raccoon
+fox
+chowchow -> seal
+bunny
+frog

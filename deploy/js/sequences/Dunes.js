@@ -75,7 +75,7 @@ var Dunes = function ( shared ) {
 
 	this.update = function ( progress, delta, time ) {
 
-		console.log( progress );
+		//console.log( progress );
 
 		// handle sun rise / sun set
 
@@ -108,8 +108,7 @@ var Dunes = function ( shared ) {
 
 		// update everything
 
-		if( progress > 0.15 ) soup.update( delta );
-
+		if( progress > 0.38 ) soup.update( delta );
 
 		camera.updateCamera( progress, delta, time );
 

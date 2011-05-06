@@ -5,7 +5,7 @@
  *
  * objects:    344
  * geometries: 46
- * materials:  267
+ * materials:  266
  * textures:   19
  */
 
@@ -18,9 +18,9 @@ var scene = {
 "objects" :
 {
     "5" : {
-        "geometry"  : "geo_5",
+        "geometry"  : "geo_5.001",
         "groups"    : [  ],
-        "materials" : [ "assets" ],
+        "materials" : [ "assets.004" ],
         "position"  : [ 0.000000, 0.000000, 0.000000 ],
         "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
@@ -1935,7 +1935,7 @@ var scene = {
         "rotation"  : [ 0.000000, 0.000000, -2.266780 ],
         "quaternion": [ 0.423591, 0.000000, 0.000000, -0.905853 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "None"
+        "trigger"   : "Small"
     },
 
     "Console_13_.047" : {
@@ -1958,7 +1958,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "LampPost_.315" : {
@@ -2106,7 +2106,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 1.570795 ],
         "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707106 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "None"
+        "trigger"   : "Large"
     },
 
     "Console_10_.013" : {
@@ -2259,7 +2259,7 @@ var scene = {
         "rotation"  : [ 0.000000, -0.000000, 0.000001 ],
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "trigger"   : "None"
+        "trigger"   : "Large"
     },
 
     "Console_12_.020" : {
@@ -3079,7 +3079,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "RailTrain_.003" : {
@@ -3233,7 +3233,7 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "LampPost_.247" : {
@@ -3537,9 +3537,9 @@ var scene = {
 
 "geometries" :
 {
-    "geo_5" : {
+    "geo_5.001" : {
         "type" : "ascii_mesh",
-        "url"  : "City.5.js"
+        "url"  : "City.5.001.js"
     },
 
     "geo_4.001" : {
@@ -3854,11 +3854,6 @@ var scene = {
     "19 - Default.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg" }
-    },
-
-    "assets" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },
 
     "assets.002" : {
