@@ -5,7 +5,7 @@
  *
  * objects:    344
  * geometries: 46
- * materials:  267
+ * materials:  268
  * textures:   19
  */
 
@@ -3069,9 +3069,9 @@ var scene = {
     },
 
     "RailTrain_.004" : {
-        "geometry"  : "geo_RailTrain_",
+        "geometry"  : "geo_RailTrain_.001",
         "groups"    : [ "Hide_Mesh" ],
-        "materials" : [ "Rail_Console.002" ],
+        "materials" : [ "assets.001" ],
         "position"  : [ 6895.792480, 18366.144531, 878.688843 ],
         "rotation"  : [ 0.009132, 0.000000, -3.009339 ],
         "quaternion": [ 0.066078, 0.000302, -0.004556, -0.997804 ],
@@ -3079,13 +3079,13 @@ var scene = {
         "visible"       : true,
         "castsShadow"   : false,
         "meshCollider"  : false,
-        "trigger"       : "None"
+        "trigger"       : "Small"
     },
 
     "RailTrain_.003" : {
-        "geometry"  : "geo_RailTrain_",
+        "geometry"  : "geo_RailTrain_.001",
         "groups"    : [ "Hide_Mesh" ],
-        "materials" : [ "Rail_Console.002" ],
+        "materials" : [ "assets.001" ],
         "position"  : [ 6372.057129, 16930.875000, 483.448517 ],
         "rotation"  : [ -0.557674, 0.201146, 1.986753 ],
         "quaternion": [ 0.498974, -0.230359, -0.176759, 0.816527 ],
@@ -3762,9 +3762,9 @@ var scene = {
         "url"  : "City.LampPost_.js"
     },
 
-    "geo_RailTrain_" : {
+    "geo_RailTrain_.001" : {
         "type" : "ascii_mesh",
-        "url"  : "City.RailTrain_.js"
+        "url"  : "City.RailTrain_.001.js"
     }
 },
 
@@ -3857,6 +3857,11 @@ var scene = {
     },
 
     "assets" : {
+        "type": "MeshLambertMaterial",
+        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
+    },
+
+    "assets.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
     },

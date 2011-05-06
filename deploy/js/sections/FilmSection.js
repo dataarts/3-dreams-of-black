@@ -177,7 +177,8 @@ var FilmSection = function ( shared ) {
 	
 	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
 	
-	sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
+	//sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
 	
 	// !!!!!!!!! Here PaintEffectDunes draws directly to frame buffer !!!!!!!!!!!!
 
