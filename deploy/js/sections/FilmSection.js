@@ -163,7 +163,7 @@ var FilmSection = function ( shared ) {
 	// pointers
 	
 	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerImageEffect( shared, "files/cursor_arrow.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ), 1 );
+	sequencer.add( new PointerImageEffect( shared, "files/cursor_arrow.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1 );
 	sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1 );
 
 	// final render
