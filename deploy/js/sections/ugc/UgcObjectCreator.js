@@ -295,6 +295,8 @@ var UgcObjectCreator = function ( shared ) {
 		delete shared.renderTarget.__webglFramebuffer;
 
 		shared.renderer.setSize( width, height );
+		shared.renderer.domElement.style.left = '0px';
+		shared.renderer.domElement.style.top = '0px';
 
 	};
 
