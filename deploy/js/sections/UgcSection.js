@@ -85,7 +85,8 @@ var UgcSection = function ( shared ) {
 		var nativeWidth = 1342;
 
 		ui.scale( width / nativeWidth );
-		ui.getDomElement().style.marginTop = - 255 * width / nativeWidth + 'px';
+		ui.getDomElement().style.marginTop = - Math.round(300 * width /
+        nativeWidth) + 'px';
 
 		objectCreator.resize( width, height );
 
