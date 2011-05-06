@@ -18,9 +18,11 @@ var DunesWorld = function ( shared ) {
 	// create scene
 
 	that.scene = new THREE.Scene();
+	
 	that.scene.collisions = new THREE.CollisionSystem();
+	
 	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.00000275 );
-	that.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
+	that.scene.fog.color.setHSV( 0.576, 0.382, 0.9 );
 
 	// Lights
 
@@ -35,11 +37,11 @@ var DunesWorld = function ( shared ) {
 
 	ambient.color.setHSV( 0, 0, 0.1 );
 
-	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
-	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
+	directionalLight1.position.set( 0.81, 0.31, -0.5 );
+	directionalLight1.color.setHSV( 0.088, 0, 1 );
 
-	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
-	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+	directionalLight2.position.set( 0.094, 0.98, 0.158 );
+	directionalLight2.color.setHSV( 0, 0, 0.86 );
 
 	that.scene.addLight( ambient );
 	that.scene.addLight( directionalLight1 );
@@ -52,7 +54,6 @@ var DunesWorld = function ( shared ) {
 	that.lensFlareRotate = null;
 
 	initLensFlares( that, new THREE.Vector3( -5500, 3500, -10000 ), 0, 0 );		
-
 
 
 	// generate base grid (rotations depend on where the grid is in space)
@@ -269,8 +270,6 @@ var DunesWorld = function ( shared ) {
 				// portal
 				
 				if( influenceSphere.type === 0 && influenceSphere.state === 0 ) {
-					
-					console.log( "entered portal [" + influenceSphere.name + "]" );
 
 					influenceSphere.state = 1;
 					
@@ -297,7 +296,7 @@ var DunesWorld = function ( shared ) {
 			
 		}
 	
-	}
+	};
 	
 
 	//--- update tiles ---
@@ -310,7 +309,7 @@ var DunesWorld = function ( shared ) {
 		var camZ = gridCenterPosition.z;
 		
 
-		gridCenterPosition.addSelf( camera.matrixWorld.getColumnZ().multiplyScalar( -TILE_SIZE * 1.5 ));
+		gridCenterPosition.addSelf( camera.matrixWorld.getColumnZ().multiplyScalar( -TILE_SIZE * 1.5 ) );
 
 		var cameraTileGridX = Math.floor( gridCenterPosition.x / TILE_SIZE ) % tileGridSize;
 		var cameraTileGridZ = Math.floor( gridCenterPosition.z / TILE_SIZE ) % tileGridSize;
@@ -345,7 +344,7 @@ var DunesWorld = function ( shared ) {
 					tileMesh.position.x = px; 
 					tileMesh.position.z = pz;
 					tileMesh.rotation.z = getRotation( px, pz );
-											
+
 				}
 				
 				// set colliders around the user
@@ -379,12 +378,12 @@ var DunesWorld = function ( shared ) {
 			
 		}
 		
-	}
+	};
 
 
 	//--- helpers ---
 
-	//--- duplicate mesh (dublicates the mesh of the tile) ---
+	//--- duplicate mesh (duplicates the mesh of the tile) ---
 	
 	function duplicateMesh( scene ) {
 		
@@ -399,7 +398,7 @@ var DunesWorld = function ( shared ) {
 				mesh.scale.set( SCALE, SCALE, SCALE );
 				
 				that.scene.addChild( mesh );
-						
+
 				return mesh;
 			}
 		
@@ -440,6 +439,7 @@ var DunesWorld = function ( shared ) {
 		}
 		
 		return scene;
+
 	};
 
 
@@ -458,11 +458,6 @@ var DunesWorld = function ( shared ) {
 
 				node.visible = visible; 
 
-			} else {
-				
-				//node.materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
-				//node.visible = true;
-				
 			}
 			
 		} );
@@ -502,31 +497,7 @@ var DunesWorld = function ( shared ) {
 
 		}
 
-
-		// show
-
-		if( false ) {
-			
-			var sphere = new THREE.Sphere( 1, 32, 32 );
-			var sprite = THREE.ImageUtils.loadTexture( "files/textures/circle-outline.png" );
-	
-			var particleMaterial = new THREE.ParticleBasicMaterial( { size: 50, color:0xff7700, map: sprite, transparent: true } );
-			var sphereObject = new THREE.ParticleSystem( sphere, particleMaterial );
-			
-			sphereObject.sortParticles = true;
-			sphereObject.scale.set( info.radius, info.radius, info.radius );
-			
-			info.object.scale.set( 1, 1, 1 );
-			info.object.addChild( sphereObject );
-			info.object.update( info.object.parent, true );
-
-			info.mesh = sphereObject;
-				
-		}
-		
 	}
-
-
 
 };
 
