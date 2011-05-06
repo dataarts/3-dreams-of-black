@@ -465,10 +465,9 @@ var UgcUI = function ( shared ) {
 
 		},
 
-		// 0 = smallest, 1 = med, 2 = largest
 		onsize: function ( size ) {
 
-			
+			shared.ugcSignals.object_changesize.dispatch( size );
 
 		},
 
@@ -617,19 +616,19 @@ var UgcUI = function ( shared ) {
 		onClick('icon-size-small', function() {
 		  iconSizeClearActive();
 		  findBG('icon-size-small').setAttribute('class', 'active bg');
-		  HANDLERS.onsize(0);
+		  HANDLERS.onsize(1);
 		});
 	
 		onClick('icon-size-med', function() {
 		  iconSizeClearActive();
 		  findBG('icon-size-med').setAttribute('class', 'active bg');
-		  HANDLERS.onsize(1);
+		  HANDLERS.onsize(3);
 		});
 	
 		onClick('icon-size-large', function() {
 		  iconSizeClearActive();
 		  findBG('icon-size-large').setAttribute('class', 'active bg');
-		  HANDLERS.onsize(2);
+		  HANDLERS.onsize(5);
 		});
 	
 	

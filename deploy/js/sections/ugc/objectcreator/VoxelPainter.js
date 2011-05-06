@@ -1,6 +1,6 @@
 var VoxelPainter = function ( camera ) {
 
-	var _size = 50, _color = 0xffffff,
+	var UNIT_SIZE = 50, _size = 1, _color = 0xffffff,
 	_mode = VoxelPainter.MODE_CREATE,
 	_symmetry = false,
 	_object = new UgcObject();
@@ -76,11 +76,11 @@ var VoxelPainter = function ( camera ) {
 	_ground.rotation.x = - 90 * Math.PI / 180;
 	_sceneVoxels.addObject( _ground );
 
-	var _geometry = new THREE.Cube( _size, _size, _size );
+	var _geometry = new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE );
 
 	// Preview
 
-	var _brushes = [], _brushMaterial = new THREE.MeshLambertMaterial( { color: _color, opacity: 0.5, transparent: true } );
+	var _brushes = [], _brushMaterial = [ new THREE.MeshLambertMaterial( { color: _color, opacity: 0.25, transparent: true } ), new THREE.MeshBasicMaterial( { color: _color, opacity: 0.75, wireframe: true, transparent: true } ) ];
 
 	_brushes[ 0 ] = new THREE.Mesh( _geometry, _brushMaterial );
 	_scene.addObject( _brushes[ 0 ] );
@@ -94,7 +94,7 @@ var VoxelPainter = function ( camera ) {
 
 	function toGridScale( value ) {
 
-		return Math.round( value / _size );
+		return Math.round( value / UNIT_SIZE );
 
 	}
 
@@ -107,9 +107,9 @@ var VoxelPainter = function ( camera ) {
 			_object.addVoxel( x, y, z, _color );
 
 			var voxel = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: _color } ) );
-			voxel.position.x = x * _size;
-			voxel.position.y = y * _size;
-			voxel.position.z = z * _size;
+			voxel.position.x = x * UNIT_SIZE;
+			voxel.position.y = y * UNIT_SIZE;
+			voxel.position.z = z * UNIT_SIZE;
 			voxel.matrixAutoUpdate = false;
 			voxel.updateMatrix();
 			voxel.update();
@@ -141,7 +141,15 @@ var VoxelPainter = function ( camera ) {
 	this.setColor = function ( hex ) {
 
 		_color = hex;
-		_brushMaterial.color.setHex( _color );
+		_brushMaterial[ 0 ].color.setHex( _color );
+		_brushMaterial[ 1 ].color.setHex( _color );
+
+	};
+
+	this.setSize = function ( size ) {
+
+		// _brushes[ 0 ].scale.set( _size, _size, _size );
+		// _brushes[ 1 ].scale.set( _size, _size, _size );
 
 	};
 
@@ -189,9 +197,9 @@ var VoxelPainter = function ( camera ) {
 						_collider.update();
 
 						_brushes[ 0 ].position.copy( _collider.position );
-						_brushes[ 0 ].position.x = toGridScale( _brushes[ 0 ].position.x ) * _size;
-						_brushes[ 0 ].position.y = toGridScale( _brushes[ 0 ].position.y ) * _size;
-						_brushes[ 0 ].position.z = toGridScale( _brushes[ 0 ].position.z ) * _size;
+						_brushes[ 0 ].position.x = toGridScale( _brushes[ 0 ].position.x ) * UNIT_SIZE;
+						_brushes[ 0 ].position.y = toGridScale( _brushes[ 0 ].position.y ) * UNIT_SIZE;
+						_brushes[ 0 ].position.z = toGridScale( _brushes[ 0 ].position.z ) * UNIT_SIZE;
 						_brushes[ 0 ].visible = true;
 
 						if ( _symmetry ) {

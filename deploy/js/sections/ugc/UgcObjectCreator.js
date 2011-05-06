@@ -138,6 +138,12 @@ var UgcObjectCreator = function ( shared ) {
 
 	} );
 
+	shared.ugcSignals.object_changesize.add( function ( size ) {
+
+		painter.setSize( size );
+
+	} );
+
 	shared.ugcSignals.submit.add( function () {
 
 		var c = document.createElement('canvas');
