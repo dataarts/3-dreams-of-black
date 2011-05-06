@@ -6,6 +6,7 @@ var PointerImageEffect = function ( shared, url ) {
 	imgElement.src = url;
 	imgElement.style.position = "absolute";
 	imgElement.style.zIndex = 1000;
+	imgElement.style.pointerEvents = "none";
 	imgElement.style.display = "none";
 	
 	document.body.appendChild( imgElement );

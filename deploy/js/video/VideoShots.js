@@ -258,16 +258,3 @@ var VideoShots = {
 		locked: true
     }]
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
