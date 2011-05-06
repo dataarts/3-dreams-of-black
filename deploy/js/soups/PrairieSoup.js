@@ -36,7 +36,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	collisionScene.settings.maxSpeedDivider = 1;
 	collisionScene.settings.allowFlying = false;
-	collisionScene.settings.emitterDivider = 2;
+	collisionScene.settings.emitterDivider = 1;
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.keepEmitterFollowDown = true;
 	collisionScene.settings.normalOffsetAmount = 7;
@@ -327,6 +327,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	trail.settings.tweenTime = 800;
 	trail.settings.scale = 0.3;
 	trail.settings.offsetAmount = 10;
+	trail.settings.yscale = 0.15;
 
 	loader.load( { model: "files/models/soup/darkblob01.js", callback: blob01LoadedProxy } );
 	loader.load( { model: "files/models/soup/darkblob02.js", callback: blob02LoadedProxy } );
@@ -373,6 +374,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	this.update = function ( delta, otherCamera ) {
 
+		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
+			return;
+		}
+
 		// update to reflect _real_ camera position
 
 		if( !otherCamera ) {
@@ -412,7 +417,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		runningAnimals.update( delta, shared.camPos );
 		flyingAnimals.update( delta, shared.camPos );
 
-		trail.update( collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta );
+		trail.update( collisionScene.emitterFollow.position, collisionScene.emitterNormal, shared.camPos, delta );
 
 		// spawn animal test
 		if ( spawnAnimal >= 100 ) {
@@ -446,18 +451,12 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		var pos = new THREE.Vector3(collisionScene.emitter.position.x, collisionScene.emitter.position.y, collisionScene.emitter.position.z);
 		oldEmitterPos.unshift(pos);
 
-		if (oldEmitterPos.length > 50) {
-			var pos = oldEmitterPos[50];
+		if (oldEmitterPos.length > 40) {
+			var pos = oldEmitterPos[40];
 			
 			shared.lavatrailx = pos.x;
 			shared.lavatrailz = pos.z;
 
-			//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( pos.x, 0, -pos.z );
-		}
-
-		if (oldEmitterPos.length > 40) {
-			var pos = oldEmitterPos[40];
-			
 			ROME.TrailShader.uniforms.lavaHeadPosition.value.set( pos.x, 0, -pos.z );
 		}
 

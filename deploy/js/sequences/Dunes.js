@@ -114,7 +114,7 @@ var Dunes = function ( shared ) {
 
 		// update everything
 
-		if( progress > 0.15 ) soup.update( delta );
+		if( progress > 0.38 ) soup.update( delta );
 
 
 		camera.updateCamera( progress, delta, time );

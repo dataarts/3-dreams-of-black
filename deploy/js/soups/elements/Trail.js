@@ -5,6 +5,7 @@ var Trail = function ( numOfInstances, scene ) {
 	that.array = [];
 	var scene = scene;
 	var spawnedLighthouse = false;
+	var time = 0;
 
 	that.initSettings = {
 
@@ -20,8 +21,8 @@ var Trail = function ( numOfInstances, scene ) {
 		tweenTime: 2500,
 		scale: 1,
 		offsetAmount: 6,
-		freeRotation: true
-
+		freeRotation: true,
+		yscale: 0.3
 	};
 
 	var i;
@@ -67,6 +68,8 @@ var Trail = function ( numOfInstances, scene ) {
 			delta = 1000/60;
 		}
 
+		time += delta;
+
 		var multiplier = delta/that.settings.aliveDivider;
 		
 		// grass
@@ -80,11 +83,17 @@ var Trail = function ( numOfInstances, scene ) {
 			var tree = obj.tree;
 			var lightHouse = obj.lightHouse;
 			var maxHeight = obj.maxHeight;
-			
+
 			alivetime += multiplier;
 			
 			// respawn
 			if (alivetime > that.initSettings.numOfInstances) {
+
+
+				if (lightHouse && (spawnedLighthouse || time < 4000)) {
+					c.visible = false;
+					continue;
+				}
 
 				c.position.x = position.x;
 				c.position.y = position.y;
@@ -212,10 +221,16 @@ var Trail = function ( numOfInstances, scene ) {
 				}
 
 				// keep away from camera path - hack
-				if (tree && c.position.x < camPos.x+60 && c.position.x > camPos.x-60) {
-					c.position.x = camPos.x+60;
+				if ((tree || lightHouse) && c.position.x < camPos.x+80 && c.position.x > camPos.x-80) {
+					c.position.x = camPos.x+80;
 					if (c.position.x < camPos.x) {
-						c.position.x = camPos.x-60;
+						c.position.x = camPos.x-80;
+					}
+				}
+				if ((tree || lightHouse) && c.position.z < camPos.z+80 && c.position.z > camPos.z-80) {
+					c.position.z = camPos.z+80;
+					if (c.position.z < camPos.z) {
+						c.position.z = camPos.z-80;
 					}
 				}
 
@@ -226,14 +241,15 @@ var Trail = function ( numOfInstances, scene ) {
 					var xscale = zscale = yscale = 0.4*that.settings.scale;
 					if (Math.abs(normal.y) < 0.9) {
 						continue;
+					} else {
+						c.visible = true;
+						spawnedLighthouse = true;
 					}
-					c.visible = false;
-					spawnedLighthouse = true;
-
 				}
+				
 				if (!tree && !lightHouse) {
-					yscale = 0.12*that.settings.scale;
-					//yscale = 0.3*that.settings.scale;
+					//yscale = 0.12*that.settings.scale;
+					yscale = that.settings.yscale*that.settings.scale;
 					xscale = zscale = 0.4*that.settings.scale;
 				}
 

@@ -31,7 +31,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		startPosition : new THREE.Vector3( 0, 0, 0 ),
 		switchPosition : false,
 		respawn : true,
-		gravity : false
+		gravity : false,
+		avoidCamera : false,
+		killAtDistance : false
 		//butterfly : false
 
 	};
@@ -280,9 +282,9 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 			
 			var scale = that.array[i].scale;
-			that.array[i].c.position.x -= (normal.x)*(scale*300);
-			that.array[i].c.position.y -= (normal.y)*(scale*300);
-			that.array[i].c.position.z -= (normal.z)*(scale*300);
+			that.array[i].c.position.x -= (normal.x)*(scale*multiplier);
+			that.array[i].c.position.y -= (normal.y)*(scale*multiplier);
+			that.array[i].c.position.z -= (normal.z)*(scale*multiplier);
 
 			that.array[i].lastToy = that.array[i].c.position.y;
 
@@ -299,7 +301,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 		}
 	}
 
-	this.update = function (delta, camPos) {
+	this.update = function (delta, camPos, emitterPos) {
 
 		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
 			delta = 1000/60;
@@ -354,7 +356,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 				// change follow index
 				//var changeTime = Math.max(animalSpeed*18, 80);
-				var changeTime = Math.max(animalSpeed*20, 40);
+				var changeTime = Math.max(animalSpeed*40, 70);
 				//var changeTime = Math.max(animalSpeed*30, 110);
 
 				//var dx = animal.position.x - vectorArray[f].position.x, dy = animal.position.y - vectorArray[f].position.y, dz = animal.position.z - vectorArray[f].position.z;
@@ -523,30 +525,38 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				ydivider = 20;
 			}
 
-			if (that.array[i].isFish) {
+			// this just looks weird...
+			/*if (that.array[i].isFish) {
 				r += 0.06;
 				var fishjump = Math.sin(r)*50;
-				if (i==8) {
-					//console.log(fishjump);
-					//console.log(cNormal.y);
-				}
-
-				toy = animal.position.y*fishjump;
-				/*toy -= cNormal.y*fishjump;
+	
+				toy -= cNormal.y*fishjump;
 				tox -= cNormal.x*fishjump;
-				toz -= cNormal.z*fishjump;*/
-			}
+				toz -= cNormal.z*fishjump;
+			}*/
 
 			var moveX = (tox-animal.position.x)/divider;
 			var moveY = (toy-animal.position.y)/ydivider;
 			var moveZ = (toz-animal.position.z)/divider;
 
+			// distance to big - kill em
+			if (that.settings.killAtDistance) {
+				var dx = animal.position.x - emitterPos.x, dy = animal.position.y - emitterPos.y, dz = animal.position.z - emitterPos.z;
+				var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
+				/*if (i==0) {
+					console.log(distance);
+				}*/
+				if (distance > 25000) {
+					that.array[i].dead = true;
+				}
+			}
+
 			// in city only
-			/*if (animal.position.x+moveX < camPos.x+40 && animal.position.x+moveX > camPos.x-40 && animal.position.z+moveZ < camPos.z+40 && animal.position.z+moveZ > camPos.z-40) {
-				that.array[i].dead = true;
-				//that.array[i].active = false;
-				//that.array[i].c.visible = false;
-			}*/
+			if (that.settings.avoidCamera) {
+				if (animal.position.x+moveX < camPos.x+40 && animal.position.x+moveX > camPos.x-40 && animal.position.z+moveZ < camPos.z+40 && animal.position.z+moveZ > camPos.z-40) {
+					that.array[i].dead = true;
+				}
+			}
 
 			if (that.array[i].dead && !wasDead) {
 				// tween scale
