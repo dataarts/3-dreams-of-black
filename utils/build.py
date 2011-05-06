@@ -45,6 +45,7 @@ files = [
 'js/effects/OverlayEffect.js',
 
 'js/effects/PointerEffect.js',
+'js/effects/PointerImageEffect.js',
 
 'js/worlds/CityWorld.js',
 'js/worlds/PrairieWorld.js',
