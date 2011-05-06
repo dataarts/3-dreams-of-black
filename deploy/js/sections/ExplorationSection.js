@@ -16,6 +16,7 @@ var ExplorationSection = function ( shared ) {
 	var world, scene, soup, portals;
 	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes, fadeOutEffect;
 	var fadeInTime = 0;
+	var lastWorldId = "";
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -54,12 +55,42 @@ var ExplorationSection = function ( shared ) {
 
 		world   = shared.worlds[ worldId ];
 		portals = world.portals;
-		scene   = world.scene;
-		soup    = shared.soups[ worldId ];
 		camera  = cameras[ worldId ];
-		camera.resetCamera();
 		
-		fadeInTime = 0;
+		if( worldId === "dunes" && lastWorldId !== "" && portals ) {
+			
+			// find closest portal
+			
+			var closestDistance = 99999999999;
+			var closestPortal;
+			
+			for( var p = 0; p < portals.length; p++ ) {
+				
+				if( portals[ p ].currentDistance < closestDistance ) {
+					
+					closestDistance = portals[ p ].currentDistance;
+					closestPortal = portals[ p ];
+				}
+				
+			}
+			
+			// switch camera
+			
+			camera.switchDirection( closestPortal );
+			
+		} else {
+			
+			camera.resetCamera();
+			fadeInTime = 0;
+			
+		}
+		
+		lastWorldId = worldId;
+		
+		scene = world.scene;
+		soup  = shared.soups[ worldId ];
+		
+		
 		
 		if( worldId == "city" ) {
 			
@@ -170,13 +201,13 @@ var ExplorationSection = function ( shared ) {
 			lastTime = time;
 			delta = 33;
 
-
-			THREE.AnimationHandler.update( delta );
+			// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
+			//if( soup ) soup.update( delta, camera.camera );
+			//THREE.AnimationHandler.update( delta );
 
 			camera.updateCamera( progress, delta, time );
 			world.update( delta, camera.camera, true );
 			
-			if( soup ) soup.update( delta, camera.camera );
 
 			clearEffect.update( progress, delta, time );
 

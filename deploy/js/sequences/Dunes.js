@@ -108,12 +108,14 @@ var Dunes = function ( shared ) {
 
 		// update everything
 
+		if( progress > 0.15 ) soup.update( delta );
+
+
 		camera.updateCamera( progress, delta, time );
 
 		THREE.AnimationHandler.update( delta );
 
 		world.update( delta, camera.camera, false );
-		//soup.update( delta );
 
 		renderer.render( world.scene, camera.camera, renderTarget );
 

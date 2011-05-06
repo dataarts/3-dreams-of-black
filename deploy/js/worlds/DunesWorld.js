@@ -168,7 +168,7 @@ var DunesWorld = function ( shared ) {
 
 	function prairieLoaded( result ) {
 
-		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -0.5 }, { "D_tile_Prairie_Water": 0.65 } );
+		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -0.05 }, { "D_tile_Prairie_Water": 0.65 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );

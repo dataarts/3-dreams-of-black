@@ -75,12 +75,25 @@ DunesCameraFreeExplore = function( shared ) {
 		
 	}
 	
+	that.switchDirection = function( portal ) {
+		
+		wantedCameraDirection.sub( camera.position, camera.target.position ).normalize().multiplyScalar( portal.radius * 1.5 ).addSelf( portal.object.matrixWorld.getPosition());
+		wantedCamera.position.copy( wantedCameraDirection );
+
+		wantedCameraDirection.sub( camera.position, camera.target.position ).normalize().multiplyScalar( portal.radius * 1.5 + CAMERA_COLLISION_DISTANCE ).addSelf( portal.object.matrixWorld.getPosition());
+		wantedCameraTarget.position.copy( wantedCameraDirection );
+
+		camera.position.copy( wantedCamera.position );
+		camera.target.position.copy( wantedCameraTarget.position );
+	}
+	
 	
 	//--- update camera ---
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = 1;// delta * ( 1000 / 30 ) / 1000; 
+		delta = 1;// delta * ( 1000 / 30 ) / 1000; // switched off because of strange values in delta
+		
 		
 		// check collision round-robin (can't afford to do all every frame)
 
