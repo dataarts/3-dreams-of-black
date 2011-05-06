@@ -1,6 +1,8 @@
 var VoxelPainter = function ( camera ) {
 
-	var _size = 50, _color = 0xffffff, _mode = VoxelPainter.MODE_CREATE,
+	var _size = 50, _color = 0xffffff,
+	_mode = VoxelPainter.MODE_CREATE,
+	_symmetry = false,
 	_object = new UgcObject();
 
 	var _intersectPoint, _intersectFace, _intersectObject,
@@ -78,13 +80,17 @@ var VoxelPainter = function ( camera ) {
 
 	// Preview
 
-	var _preview = new THREE.Mesh( _geometry, new THREE.MeshLambertMaterial( { color: _color, opacity: 0, transparent: true } ) );
-	_preview.matrixAutoUpdate = false;
-	_scene.addObject( _preview );
+	var _brushes = [], _brushMaterial = new THREE.MeshLambertMaterial( { color: _color, opacity: 0.5, transparent: true } );
+
+	_brushes[ 0 ] = new THREE.Mesh( _geometry, _brushMaterial );
+	_scene.addObject( _brushes[ 0 ] );
+
+	_brushes[ 1 ] = new THREE.Mesh( _geometry, _brushMaterial );
+	_scene.addObject( _brushes[ 1 ] );
 
 	//
 
-	addVoxel( new THREE.Vector3() );
+	// addVoxel( new THREE.Vector3() );
 
 	function toGridScale( value ) {
 
@@ -126,16 +132,22 @@ var VoxelPainter = function ( camera ) {
 
 	//
 
-	this.setColor = function ( hex ) {
-
-		_color = hex;
-		_preview.materials[ 0 ].color.setHex( _color );
-
-	};
-
 	this.setMode = function ( mode ) {
 
 		_mode = mode;
+
+	};
+
+	this.setColor = function ( hex ) {
+
+		_color = hex;
+		_brushMaterial.color.setHex( _color );
+
+	};
+
+	this.setSymmetry = function ( bool ) {
+
+		_symmetry = bool;
 
 	};
 
@@ -155,7 +167,6 @@ var VoxelPainter = function ( camera ) {
 		var intersects;
 
 		// Restore opacity of last intesected object.
-
 		if ( _intersectEraseObject ) _intersectEraseObject.materials[ 0 ].opacity = 1;
 
 		switch ( _mode ) {
@@ -172,32 +183,39 @@ var VoxelPainter = function ( camera ) {
 						_intersectObject = intersects[ 0 ].object;
 						_intersectFace = intersects[ 0 ].face;
 
-						_preview.materials[ 0 ].opacity = 0.5;
-
 						_collider.position.copy( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ) );
 						_collider.position.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
 						_collider.updateMatrix();
 						_collider.update();
 
-						_preview.position.copy( _collider.position );
-						_preview.position.x = toGridScale( _preview.position.x ) * _size;
-						_preview.position.y = toGridScale( _preview.position.y ) * _size;
-						_preview.position.z = toGridScale( _preview.position.z ) * _size;
-						_preview.updateMatrix();
-						_preview.update();
+						_brushes[ 0 ].position.copy( _collider.position );
+						_brushes[ 0 ].position.x = toGridScale( _brushes[ 0 ].position.x ) * _size;
+						_brushes[ 0 ].position.y = toGridScale( _brushes[ 0 ].position.y ) * _size;
+						_brushes[ 0 ].position.z = toGridScale( _brushes[ 0 ].position.z ) * _size;
+						_brushes[ 0 ].visible = true;
+
+						if ( _symmetry ) {
+
+							_brushes[ 1 ].position.copy( _brushes[ 0 ].position );
+							_brushes[ 1 ].position.x = -_brushes[ 1 ].position.x;
+							_brushes[ 1 ].visible = true;
+
+						}
 
 					} else {
 
-						_preview.materials[ 0 ].opacity = 0;
-
 						_intersectObject = null;
 						_intersectFace = null;
+
+						_brushes[ 0 ].visible = false;
+						_brushes[ 1 ].visible = false;
 
 					}
 
 				} else {
 
-					_preview.materials[ 0 ].opacity = 0;
+					_brushes[ 0 ].visible = false;
+					_brushes[ 1 ].visible = false;
 
 					intersects = ray.intersectScene( _sceneCollider );
 
@@ -209,6 +227,13 @@ var VoxelPainter = function ( camera ) {
 						pointInNormal = centroidWorld.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ).multiplyScalar( distance ) );
 
 						addVoxel( pointInNormal );
+
+						if ( _symmetry ) {
+
+							pointInNormal.x = - pointInNormal.x;
+							addVoxel( pointInNormal );
+
+						}
 
 					}
 

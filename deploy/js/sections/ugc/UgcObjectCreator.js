@@ -126,6 +126,12 @@ var UgcObjectCreator = function ( shared ) {
 
 	} );
 
+	shared.ugcSignals.object_symmetrymode.add( function ( bool ) {
+
+		painter.setSymmetry( bool );
+
+	} );
+
 	shared.ugcSignals.object_changecolor.add( function ( hex ) {
 
 		painter.setColor( hex );
@@ -213,11 +219,8 @@ var UgcObjectCreator = function ( shared ) {
 		if ( isRotateMode ) {
 
 			theta += ( shared.mouse.x / shared.screenWidth ) * 4 - 2;
-
-			phi -= ( shared.mouse.y / shared.screenHeight ) * 4 - 2;
-			phi = phi > 90 ? 90 :
-				phi < 0 ? 0 :
-				phi;
+			phi += - ( shared.mouse.y / shared.screenHeight ) * 4 + 2;
+			phi = phi > 90 ? 90 : phi < 0 ? 0 : phi;
 
 		}
 

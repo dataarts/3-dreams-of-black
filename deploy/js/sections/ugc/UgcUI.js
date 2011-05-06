@@ -436,7 +436,7 @@ var UgcUI = function ( shared ) {
 
 		onreflectmode: function ( bool ) {
 
-			shared.ugcSignals.object_reflectmode.dispatch( bool );
+			shared.ugcSignals.object_symmetrymode.dispatch( bool );
 
 		},
 
@@ -576,7 +576,6 @@ var UgcUI = function ( shared ) {
 		onClick('reflect', function() {
 		  if (this.getAttribute('class') == 'toggle') {
 			this.setAttribute('class', 'toggle active');
-			console.log(this);
 			HANDLERS.onreflectmode(true);
 		  } else {
 			this.setAttribute('class', 'toggle');

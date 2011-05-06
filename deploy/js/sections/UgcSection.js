@@ -21,7 +21,7 @@ var UgcSection = function ( shared ) {
 
 		shared.ugcSignals.object_createmode = new Signal();
 		shared.ugcSignals.object_erasemode = new Signal();
-		shared.ugcSignals.object_reflectmode = new Signal();
+		shared.ugcSignals.object_symmetrymode = new Signal();
 		shared.ugcSignals.object_changecolor = new Signal();
 
 		shared.ugcSignals.submit = new Signal();
