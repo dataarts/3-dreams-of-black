@@ -139,19 +139,18 @@ var UgcObjectCreator = function ( shared ) {
 		c.height = 180;
 		var ctx = c.getContext('2d');
 		ctx.drawImage(renderer.domElement,0,0,c.width,c.height);
-		var thumbnail = c.toDataURL('image/png');
+		var thumbnail = c.toDataURL();
 		delete c;
-		console.log(thumbnail);
 
 		var submission = {
 			title: 'Amorphous Building',
 			email: 'romepreview@gmail.com',
 			category: 'ground',
 			data: painter.getObject().getJSON(),
-			thumbnail: thumbnail
+      thumbnail: thumbnail
 		};
 
-		ugcHandler.submitUGO( submission, function ( json ) {
+		ugcHandler.submitUGO( submission, thumbnail, function ( json ) {
 			var id = json['id'];
 			console.log(id);
 		});
@@ -294,35 +293,19 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		if ( USE_POSTPROCESS ) {
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
 
-			camera.aspect = shared.viewportWidth / shared.viewportHeight;
-			camera.updateProjectionMatrix();
+		shared.viewportWidth = width;
+		shared.viewportHeight = height;
 
-			shared.viewportWidth = shared.baseWidth * ( width / shared.baseWidth );
-			shared.viewportHeight = shared.baseHeight * ( width / shared.baseWidth );
+		// TODO: Hacky...
 
-			shared.renderer.setSize( shared.viewportWidth, shared.viewportHeight );
+		shared.renderTarget.width = width;
+		shared.renderTarget.height = height;
+		delete shared.renderTarget.__webglFramebuffer;
 
-			// TODO: Hacky...
-
-			shared.renderTarget.width = shared.viewportWidth;
-			shared.renderTarget.height = shared.viewportHeight;
-			delete shared.renderTarget.__webglFramebuffer;
-
-			offset = ( ( height - shared.viewportHeight  ) / 2 );
-
-			shared.renderer.domElement.style.left = '0px';
-			shared.renderer.domElement.style.top = offset + 'px';
-
-		} else {
-
-			camera.aspect = width / height;
-			camera.updateProjectionMatrix();
-
-			shared.renderer.setSize( width, height );
-
-		}
+		shared.renderer.setSize( width, height );
 
 	};
 
