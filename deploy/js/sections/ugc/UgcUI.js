@@ -424,19 +424,19 @@ var UgcUI = function ( shared ) {
 
 		oncreatemode: function () {
 
-			
+			shared.ugcSignals.object_createmode.dispatch();
 
 		},
 
 		onerasemode: function () {
 
-			
+			shared.ugcSignals.object_erasemode.dispatch();
 
 		},
 
 		onreflectmode: function ( bool ) {
 
-			
+			shared.ugcSignals.object_reflectmode.dispatch( bool );
 
 		},
 

@@ -7,8 +7,7 @@ var UgcObjectCreator = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	camera, light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isDeleteMode = false, isRotateMode = false,
-	isMouseDown = false, radius = 1500, theta = 45, phi = 15;
+	isRotateMode = false, isMouseDown = false, radius = 1500, theta = 45, phi = 15;
 
 	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 200;
@@ -111,9 +110,21 @@ var UgcObjectCreator = function ( shared ) {
 
 	var painter = new VoxelPainter( camera );
 
-	// Signals
+	// Signal listeners
 
 	var ugcHandler = new UgcHandler();
+
+	shared.ugcSignals.object_createmode.add( function () {
+
+		painter.setMode( VoxelPainter.MODE_CREATE );
+
+	} );
+
+	shared.ugcSignals.object_erasemode.add( function () {
+
+		painter.setMode( VoxelPainter.MODE_ERASE );
+
+	} );
 
 	shared.ugcSignals.object_changecolor.add( function ( hex ) {
 
@@ -148,16 +159,14 @@ var UgcObjectCreator = function ( shared ) {
 
 	function onMouseDown( event ) {
 
-		painter.setMode( !isDeleteMode ? VoxelPainter.MODE_CREATE : VoxelPainter.MODE_ERASE );
-
+		isMouseDown = true;
 		render();
 
 	}
 
 	function onMouseUp( event ) {
 
-		painter.setMode( VoxelPainter.MODE_IDLE );
-
+		isMouseDown = false;
 		render();
 
 	}
@@ -172,7 +181,6 @@ var UgcObjectCreator = function ( shared ) {
 	function onMouseWheel( event ) {
 
 		radius -= event.wheelDeltaY;
-
 		render();
 
 	}
@@ -182,8 +190,8 @@ var UgcObjectCreator = function ( shared ) {
 		switch ( event.keyCode ) {
 
 			case 16: isRotateMode = true; break;
-			case 17: isDeleteMode = true; break;
-			// case 18: isDeleteMode = true; break;
+			// case 17: isEraseMode = true; break;
+			// case 18: isEraseMode = true; break;
 
 		}
 
@@ -194,8 +202,8 @@ var UgcObjectCreator = function ( shared ) {
 		switch ( event.keyCode ) {
 
 			case 16: isRotateMode = false; break;
-			case 17: isDeleteMode = false; break;
-			// case 18: isDeleteMode = false; break;
+			// case 17: isEraseMode = false; break;
+			// case 18: isEraseMode = false; break;
 
 		}
 	}
@@ -204,9 +212,9 @@ var UgcObjectCreator = function ( shared ) {
 
 		if ( isRotateMode ) {
 
-			theta += ( shared.mouse.x / shared.screenWidth ) * 2 - 1;
+			theta += ( shared.mouse.x / shared.screenWidth ) * 4 - 2;
 
-			phi -= ( shared.mouse.y / shared.screenHeight ) * 2 - 1;
+			phi -= ( shared.mouse.y / shared.screenHeight ) * 4 - 2;
 			phi = phi > 90 ? 90 :
 				phi < 0 ? 0 :
 				phi;
@@ -217,10 +225,11 @@ var UgcObjectCreator = function ( shared ) {
 		camera.position.y = radius * Math.sin( phi * DEG2RAD );
 		camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 
-		painter.update();
+		painter.update( isMouseDown );
+
+		//
 
 		shared.renderer.clear();
-
 		shared.renderer.render( that.scene, camera, shared.renderTarget, true );
 		shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
 		paintEffectDunes.update( 0, 0, 0 );

@@ -1,9 +1,10 @@
 var VoxelPainter = function ( camera ) {
 
-	var _size = 50, _color = 0xffffff, _mode = VoxelPainter.MODE_IDLE,
+	var _size = 50, _color = 0xffffff, _mode = VoxelPainter.MODE_CREATE,
 	_object = new UgcObject();
 
-	var _intersectPoint, _intersectFace, _intersectObject;
+	var _intersectPoint, _intersectFace, _intersectObject,
+	_intersectEraseObject;
 
 	// Scene
 
@@ -149,61 +150,67 @@ var VoxelPainter = function ( camera ) {
 
 	};
 
-	this.update = function () {
+	this.update = function ( mousedown ) {
 
 		var intersects;
 
+		// Restore opacity of last intesected object.
+
+		if ( _intersectEraseObject ) _intersectEraseObject.materials[ 0 ].opacity = 1;
+
 		switch ( _mode ) {
 
-			case VoxelPainter.MODE_IDLE:
+			case VoxelPainter.MODE_CREATE:
 
 				intersects = ray.intersectScene( _sceneVoxels );
 
-				if ( intersects.length > 0 ) {
+				if ( ! mousedown ) {
 
-					_intersectPoint = intersects[ 0 ].point;
-					_intersectObject = intersects[ 0 ].object;
-					_intersectFace = intersects[ 0 ].face;
+					if ( intersects.length > 0 ) {
 
-					_preview.materials[ 0 ].opacity = 0.5;
+						_intersectPoint = intersects[ 0 ].point;
+						_intersectObject = intersects[ 0 ].object;
+						_intersectFace = intersects[ 0 ].face;
 
-					_collider.position.copy( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ) );
-					_collider.position.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
-					_collider.updateMatrix();
-					_collider.update();
+						_preview.materials[ 0 ].opacity = 0.5;
 
-					_preview.position.copy( _collider.position );
-					_preview.position.x = toGridScale( _preview.position.x ) * _size;
-					_preview.position.y = toGridScale( _preview.position.y ) * _size;
-					_preview.position.z = toGridScale( _preview.position.z ) * _size;
-					_preview.updateMatrix();
-					_preview.update();
+						_collider.position.copy( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ) );
+						_collider.position.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
+						_collider.updateMatrix();
+						_collider.update();
+
+						_preview.position.copy( _collider.position );
+						_preview.position.x = toGridScale( _preview.position.x ) * _size;
+						_preview.position.y = toGridScale( _preview.position.y ) * _size;
+						_preview.position.z = toGridScale( _preview.position.z ) * _size;
+						_preview.updateMatrix();
+						_preview.update();
+
+					} else {
+
+						_preview.materials[ 0 ].opacity = 0;
+
+						_intersectObject = null;
+						_intersectFace = null;
+
+					}
 
 				} else {
 
 					_preview.materials[ 0 ].opacity = 0;
 
-					_intersectObject = null;
-					_intersectFace = null;
+					intersects = ray.intersectScene( _sceneCollider );
 
-				}
+					if ( _intersectFace && intersects.length > 0 ) {
 
-			break;
+						var point = intersects[ 0 ].point,
+						centroidWorld = _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ),
+						distance = centroidWorld.distanceTo( point ),
+						pointInNormal = centroidWorld.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ).multiplyScalar( distance ) );
 
-			case VoxelPainter.MODE_CREATE:
+						addVoxel( pointInNormal );
 
-				_preview.materials[ 0 ].opacity = 0;
-
-				intersects = ray.intersectScene( _sceneCollider );
-
-				if ( _intersectFace && intersects.length > 0 ) {
-
-					var point = intersects[ 0 ].point,
-					centroidWorld = _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ),
-					distance = centroidWorld.distanceTo( point ),
-					pointInNormal = centroidWorld.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ).multiplyScalar( distance ) );
-
-					addVoxel( pointInNormal );
+					}
 
 				}
 
@@ -215,7 +222,16 @@ var VoxelPainter = function ( camera ) {
 
 				if ( intersects.length > 0 && intersects[ 0 ].object != _ground ) {
 
-					removeVoxel( intersects[ 0 ].object );
+					if ( ! mousedown ) {
+
+						_intersectEraseObject = intersects[ 0 ].object;
+						_intersectEraseObject.materials[ 0 ].opacity = 0.5;
+
+					} else {
+
+						removeVoxel( intersects[ 0 ].object );
+
+					}
 
 				}
 
@@ -239,6 +255,5 @@ var VoxelPainter = function ( camera ) {
 
 }
 
-VoxelPainter.MODE_IDLE = 'VoxelPainter.MODE_IDLE';
 VoxelPainter.MODE_CREATE = 'VoxelPainter.MODE_CREATE';
 VoxelPainter.MODE_ERASE = 'VoxelPainter.MODE_ERASE';
