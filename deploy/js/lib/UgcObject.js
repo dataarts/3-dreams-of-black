@@ -40,9 +40,7 @@ var UgcObject = function ( data ) {
 
 		}
 
-		var json = JSON.stringify( array );
-		console.log( json );
-		return json;
+		return JSON.stringify( array );
 	};
 
 	this.getMesh = function () {

@@ -1,0 +1,134 @@
+<html>
+	<head>
+		<style>
+			body {
+
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="/js/lib/Three.js"></script>
+		<script src="/js/lib/RequestAnimationFrame.js"></script>
+
+		<script src="/js/lib/UgcObject.js"></script>
+		<script src="/js/lib/UgcHandler.js"></script>
+
+		<script>
+
+			( function() {
+
+				var WIDTH = window.innerWidth, HEIGHT = window.innerHeight,
+				DEG2RAD = Math.PI / 180, radius = 1500,
+				mouse = { x: 0, y: 0 }, theta = 45, phi = 15;
+
+				var camera = new THREE.Camera( 50, WIDTH / HEIGHT, 1, 20000 );
+				camera.target.position.y = 200;
+
+				var scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0xffffff, 0.000175 );
+				scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
+
+				// Lights
+
+				var ambient = new THREE.AmbientLight();
+				ambient.color.setHSV( 0, 0, 0.1 );
+				scene.addLight( ambient );
+
+				var directionalLight1 = new THREE.DirectionalLight();
+				directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  - 0.500335766130914 );
+				directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
+				scene.addLight( directionalLight1 );
+
+				var directionalLight2 = new THREE.DirectionalLight();
+				directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
+				directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+				scene.addLight( directionalLight2 );
+
+				// Renderer
+
+				var renderer = new THREE.WebGLRenderer();
+				renderer.domElement.style.position = 'absolute';
+				renderer.setSize( WIDTH, HEIGHT );
+				renderer.setClearColor( scene.fog.color );
+				renderer.sortObjects = false;
+				document.body.appendChild( renderer.domElement );
+
+				// Environment
+
+				var loader = new THREE.SceneLoader();
+				loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {
+
+					for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
+
+						var object = result.scene.objects[ i ];
+
+						if ( object.visible ) {
+
+							object.rotation.x = - 90 * Math.PI / 180;
+							object.position.y = - 100;
+							object.position.x = 1750;
+							object.scale.x = object.scale.y = object.scale.z = 0.5;
+							scene.addObject( object );
+
+						}
+
+					}
+
+				} );
+
+				// Object
+
+				var id = parseInt( window.location.hash.substr( 1 ) );
+
+				var ugcHandler = new UgcHandler();
+				ugcHandler.getUGO( id, function ( object ) {
+
+					var ugo = new UgcObject( JSON.parse( object.data ) );
+
+					if ( ! ugo.isEmpty() ) {
+
+						scene.addObject( ugo.getMesh() );
+
+					}
+
+				} );
+
+				document.addEventListener( 'mousemove', function onDocumentMouseMove( event ) {
+
+					mouse.x = event.clientX;
+					mouse.y = event.clientY;
+
+				}, false );
+
+				animate();
+
+				//
+
+				function animate() {
+
+					requestAnimationFrame( animate );
+
+					theta += ( mouse.x / WIDTH ) - 0.5;
+
+					phi -= ( mouse.y / HEIGHT ) - 0.5;
+					phi = phi > 90 ? 90 : phi < 0 ? 0 : phi;
+
+					camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+					camera.position.y = radius * Math.sin( phi * DEG2RAD );
+					camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+
+					renderer.render( scene, camera );
+
+				}
+
+			} )();
+
+		</script>
+
+	</body>
+</html>
