@@ -16,7 +16,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	that.scene = new THREE.Scene();
 	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.000175 );
-	that.scene.fog.color.setHSV( 0.576,  0.382,  0.9  );
+	that.scene.fog.color.setHSV( 0.576, 0.382, 0.9 );
 
 	// Lights
 
@@ -26,11 +26,11 @@ var UgcObjectCreator = function ( shared ) {
 
 	ambient.color.setHSV( 0, 0, 0.1 );
 
-	directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  -0.500335766130914 );
-	directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
+	directionalLight1.position.set( 0.808, 0.309, - 0.5 );
+	directionalLight1.color.setHSV( 0.088, 0, 1 );
 
-	directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
-	directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+	directionalLight2.position.set( 0.093, 0.982, 0.157 );
+	directionalLight2.color.setHSV( 0, 0, 0.864 );
 
 	that.scene.addLight( ambient );
 	that.scene.addLight( directionalLight1 );
@@ -108,7 +108,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	// Painter
 
-	var painter = new VoxelPainter( camera );
+	var painter = new VoxelPainter( camera, that.scene );
 
 	// Signal listeners
 
@@ -236,10 +236,15 @@ var UgcObjectCreator = function ( shared ) {
 
 		//
 
+		/*
 		shared.renderer.clear();
 		shared.renderer.render( that.scene, camera, shared.renderTarget, true );
 		shared.renderer.render( painter.getScene(), camera, shared.renderTarget );
 		paintEffectDunes.update( 0, 0, 0 );
+		*/
+
+		shared.renderer.clear();
+		shared.renderer.render( that.scene, camera );
 
 	}
 
