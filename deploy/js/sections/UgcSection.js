@@ -19,6 +19,9 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals.showintro = new Signal();
 		shared.ugcSignals.showobjectcreator = new Signal();
 
+    // @doob, I killed the HANDLERS property, so these signals are being dispatched directly.
+    // Cuttin' out the middle man ...
+
 		shared.ugcSignals.object_createmode = new Signal();
 		shared.ugcSignals.object_erasemode = new Signal();
 		shared.ugcSignals.object_symmetrymode = new Signal();
@@ -27,9 +30,37 @@ var UgcSection = function ( shared ) {
 
 		shared.ugcSignals.submit = new Signal();
 
-		intro = new UgcIntro( shared );
-		domElement.appendChild( intro.getDomElement() );
+    // These are signals I added, following your conventions. They're being dispatched currently.
 
+		shared.ugcSignals.object_smoothup = new Signal();
+    shared.ugcSignals.object_smoothdown = new Signal();
+    shared.ugcSignals.object_undo = new Signal();
+
+
+    // Its important that we respond to these two signals, we should disable voxel functionality when we're hovering on the UI!
+    
+    shared.ugcSignals.ui_mouseover = new Signal();
+    shared.ugcSignals.ui_mouseover.add( function() { } );
+
+    shared.ugcSignals.ui_mouseout = new Signal();
+    shared.ugcSignals.ui_mouseover.add( function() { } );
+
+
+    // What do we do about the animals? ... signal-wise ...
+
+    
+
+
+
+
+
+
+
+
+    
+		intro = new UgcIntro( shared );
+
+		domElement.appendChild( intro.getDomElement() );
 		objectCreator = new UgcObjectCreator( shared );
 		objectCreator.getDomElement().style.display = 'none';
 		domElement.appendChild( objectCreator.getDomElement() );
@@ -42,7 +73,12 @@ var UgcSection = function ( shared ) {
 		domElement.appendChild( ui.getDomElement() );
 
 		ui.addListeners();
-		ui.HANDLERS.updateCapacity(0);
+
+    // Made this a function of UI as opposed to HANDLERS
+		ui.updateCapacity(0);
+
+
+
 
 		// Signals listeners
 
@@ -82,12 +118,11 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
+    // Pretty janky - George
 		var nativeWidth = 1342;
-
 		ui.scale( width / nativeWidth );
 		ui.getDomElement().style.marginTop = - Math.round(300 * width /
         nativeWidth) + 'px';
-
 		objectCreator.resize( width, height );
 
 	};
@@ -95,6 +130,7 @@ var UgcSection = function ( shared ) {
 	this.update = function () {
 
 		objectCreator.update();
+    ui.update();
 
 	};
 

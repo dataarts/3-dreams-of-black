@@ -1,77 +1,280 @@
 var UgcUI = function (shared) {
 
-  var animalContainerHeight = 165;
+  var _this = this;
+  var ANIMAL_CONTAINER_HEIGHT = 165;
+  var numAnimals = 10; // TODO
+  var animalSlideTarget = 0;
+  var animalSlide = 0;
 
-  var css = [
-    '.ugcui g {',
-    '  cursor: pointer;',
-    '}',
-    '.ugcui g.menu polygon.hitbox {',
-    '  display: none;',
-    '}',
-    '.ugcui g.menu:hover polygon.hitbox {',
-    '  display: inherit;',
-    '}',
-    '.ugcui g.folder polygon.folder-hitbox {',
-    '  display: none;',
-    '}',
-    '.ugcui g.folder:hover polygon.folder-hitbox {',
-    '  display: inherit;',
-    '}',
-    '.ugcui g.menu g.menu-buttons {',
-    '  display: none;',
-    '}',
-    //'.ugcui g.menu:hover g.menu-buttons {',
-    //'  display: block;',
-    //'}',
-    '.ugcui g.active polygon.hex {',
-    '  fill: #f65824;',
-    '}',
-    '.ugcui g#color g.options polygon.selected {',
-    '  stroke: #fff;',
-    '  stroke-width: 4; z-index: 100',
-    '}',
-    '.ugcui g#color g.options polygon#white.selected {',
-    '  stroke: #000;',
-    '}',
-    '.ugcui g#color g.options polygon:not(.selected):hover {',
-    '  stroke: #fff;',
-    '  stroke-width: 4; z-index: 200',
-    '}',
-    '.ugcui g#color g.options polygon#white:not(.selected):hover {',
-    '  stroke: #000;',
-    '}',
-    '.ugcui g.menu-buttons g:hover:not(.active) .hex {',
-    '  fill: #fff;',
-    '}',
-    '.ugcui g.folder g.options {',
-    '  display: none;',
-    '}',
-    '.ugcui g.folder:hover g.options {',
-    '  display: block;',
-    '}',
-    '.ugcui g#size g g:hover polygon.bg {',
-    '  fill: #fff;',
-    '}',
-    '.ugcui g#size:hover g g polygon.bg.active {',
-    '  fill: #f65824;',
-    '}',
-    '.ugcui g#smoother g.options g:hover polygon.bg {',
-    '  fill: #fff;',
-    '}',
-    '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (animalContainerHeight - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 200px; margin-right: 10px; }',
-    '.animal:hover { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #fff; }',
-    '.animal-controls { height: 21px; overflow:hidden; line-height: 0px; border-right: 1px solid #fff; opacity: 0; display: inline-block; position: relative; margin-top: 122px; }',
-    '.animal:hover .animal-controls { opacity: 1; }',
-    '.animal-controls div { display: none; text-align: center; border: 1px solid #fff; border-right: 0; border-bottom: 0; display: inline-block; width: 20px;}',
-    '.animal-controls div.animal-add:hover, .animal-controls div.animal-remove:hover { cursor: pointer; background-color: #f65824; }',
-    '.animal-controls div.animal-count { background-color: #fff; color: #777; width: 25px; }'
-  ].join("\n");
+  var css = getCSS();
 
-  console.log(animalContainerHeight - 22);
+  var svgLeftContents = getSvgLeftContents();
 
-  var svgLeft;
-  var svgLeftContents = [
+  var domElement = document.createElement('div');
+
+  var styleSheet = document.createElement('style');
+  styleSheet.setAttribute('type', 'text/css');
+  styleSheet.innerHTML = css;
+  document.getElementsByTagName('head')[0].appendChild(styleSheet);
+
+  domElement.innerHTML = svgLeftContents;
+  var svgLeft = domElement.firstChild;
+
+  var tooltip = document.createElement('div');
+  tooltip.style.position = 'fixed';
+  tooltip.style.font = '12px/0px FuturaBT-Medium';
+  tooltip.style.padding = '13px 7px 10px 7px';
+  tooltip.style.display = 'none';
+  tooltip.style.backgroundColor = '#fff';
+  tooltip.style.boxShadow = '-1px 1px 0px rgba(0,0,0,0.4)';
+  tooltip.style.textTransform = 'uppercase';
+  tooltip.style.color = '#000';
+  tooltip.innerHTML = 'CREATE';
+
+  domElement.appendChild(tooltip);
+
+  var animalContainerDiv = classedElement('div', 'animal-container');
+  animalContainerDiv.style.overflow = 'hidden';
+  animalContainerDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+  animalContainerDiv.style.width = '100%';
+  animalContainerDiv.style.height = ANIMAL_CONTAINER_HEIGHT + 'px';
+  animalContainerDiv.style.position = 'fixed';
+  animalContainerDiv.style.top = '100%';
+  animalContainerDiv.style.left = 0;
+  animalContainerDiv.style.marginTop = -ANIMAL_CONTAINER_HEIGHT + 'px';
+
+  var animalInnerDiv = classedElement('div', 'animal-inner');
+  var animalInnerDivWidth = ((numAnimals)*220);
+  animalInnerDiv.style.padding = '10px';
+  animalInnerDiv.style.width = animalInnerDivWidth+'px';
+  animalInnerDiv.style.height = '100%';
+  animalInnerDiv.style.position = 'absolute';
+  animalContainerDiv.appendChild(animalInnerDiv);
+
+  for (var i = 0; i < numAnimals; i++) {
+    animalInnerDiv.appendChild(makeAnimalDiv());
+  }
+
+  domElement.appendChild(animalContainerDiv);
+
+  this.updateCapacity = function (i) {
+    document.getElementById('capacity').textContent = ( Math.round(i * 100) + '%' );
+  };
+
+  this.addListeners = function() {
+
+    // Make the tooltip follow
+    domElement.addEventListener('mousemove', function(e) {
+      tooltip.style.top = e.pageY - 40 + 'px';
+      tooltip.style.left = e.pageX + 20 + 'px';
+    }, true);
+
+    // Scroll the animal container div
+    animalContainerDiv.addEventListener('mousemove', function(e) {
+      var padding = window.innerWidth/5;
+      animalSlideTarget = -((e.pageX-padding/2)/(window.innerWidth-padding))*(animalInnerDivWidth-window.innerWidth);
+    });
+
+    animalContainerDiv.addEventListener('mouseover', function() { shared.ugcSignals.ui_mouseover.dispatch() }, false);
+    svgLeft.addEventListener('mouseover', function() { shared.ugcSignals.ui_mouseover.dispatch() }, false);
+
+    animalContainerDiv.addEventListener('mouseout', function() { shared.ugcSignals.ui_mouseout.dispatch() }, false);
+    svgLeft.addEventListener('mouseout', function() { shared.ugcSignals.ui_mouseout.dispatch() }, false);
+
+    var menus = svgLeft.getElementsByClassName('menu');
+
+    for (var i = 0; i < menus.length; i++) {
+
+      menus[i].addEventListener('mouseover', function() {
+        clearTimeout(this.hideTimeout);
+        var buttons = this.getElementsByClassName('menu-buttons');
+        for (var j = 0; j < buttons.length; j++) {
+          buttons[j].style.display = 'block';
+        }
+      }, false);
+
+      menus[i].addEventListener('mouseout', function() {
+        clearTimeout(this.hideTimeout);
+        var buttons = this.getElementsByClassName('menu-buttons');
+        this.hideTimeout = setTimeout(function() {
+          for (var j = 0; j < buttons.length; j++) {
+            buttons[j].style.display = 'none';
+          }
+        }, 550);
+      }, false);
+
+    }
+
+    var named = document.getElementsByName('hover');
+    for (var i = 0; i < named.length; i++) {
+      named[i].addEventListener('mouseover', function() {
+        tooltip.style.display = 'inline-block';
+        tooltip.innerHTML = this.getAttribute('title');
+      }, false);
+      named[i].addEventListener('mouseout', function() {
+        tooltip.style.display = 'none';
+      }, false);
+    }
+
+    onClick('create', function() {
+      this.setAttribute('class', 'active');
+      document.getElementById('erase').setAttribute('class', '');
+      shared.ugcSignals.object_createmode.dispatch();
+    });
+
+    onClick('erase', function() {
+      this.setAttribute('class', 'active');
+      document.getElementById('create').setAttribute('class', '');
+      shared.ugcSignals.object_erasemode.dispatch();
+    });
+
+    onClick('life', function() {
+      this.setAttribute('class', 'active');
+      document.getElementById('dark').setAttribute('class', '');
+      // TODO
+    });
+
+    onClick('dark', function() {
+      this.setAttribute('class', 'active');
+      document.getElementById('life').setAttribute('class', '');
+      // TODO
+    });
+
+    onClick('reflect', function() {
+      if (this.getAttribute('class') == 'toggle') {
+        this.setAttribute('class', 'toggle active');
+        shared.ugcSignals.object_symmetrymode.dispatch(true);
+      } else {
+        this.setAttribute('class', 'toggle');
+        shared.ugcSignals.object_symmetrymode.dispatch(false);
+      }
+    });
+
+    // TODO TODO TODO TODO TODO
+    onClick('undo', function() { shared.ugcSignals.submit.dispatch() });
+
+    var colorOptions = document.getElementById('color').getElementsByClassName('options')[0].getElementsByTagName('polygon');
+
+    for (var i = 0; i < colorOptions.length; i++) {
+
+      onClick(colorOptions[i], function() {
+
+        var hex = parseInt(this.getAttribute('fill').substr(1), 16);
+
+        for (var j = 0; j < colorOptions.length; j++) {
+          colorOptions[j].setAttribute('class', '');
+        }
+
+        this.setAttribute('class', 'selected');
+
+        shared.ugcSignals.object_changecolor.dispatch(hex);
+
+      });
+    }
+
+    onClick('smoother-up', function() { shared.ugcSignals.object_smoothup.dispatch() });
+    onClick('smoother-down', function() { shared.ugcSignals.object_smoothdown.dispatch() });
+
+    var iconSizeClearActive = function() {
+      findBG('icon-size-small').setAttribute('class', 'bg');
+      findBG('icon-size-med').setAttribute('class', 'bg');
+      findBG('icon-size-large').setAttribute('class', 'bg');
+    }
+
+    onClick('icon-size-small', function() {
+      iconSizeClearActive();
+      findBG('icon-size-small').setAttribute('class', 'active bg');
+      shared.ugcSignals.object_changesize.dispatch(1);
+    });
+
+    onClick('icon-size-med', function() {
+      iconSizeClearActive();
+      findBG('icon-size-med').setAttribute('class', 'active bg');
+      shared.ugcSignals.object_changesize.dispatch(3);
+    });
+
+    onClick('icon-size-large', function() {
+      iconSizeClearActive();
+      findBG('icon-size-large').setAttribute('class', 'active bg');
+      shared.ugcSignals.object_changesize.dispatch(5);
+    });
+
+
+  };
+
+  this.scale = function(s) {
+    svgLeft.firstChild.setAttribute('transform', 'translate(10, 0) scale(' + s + ')');
+  };
+
+  this.update = function() {
+
+    animalSlide += (animalSlideTarget - animalSlide) * 0.5;
+
+    //console.log(animalSlide);
+
+    animalInnerDiv.style.left = Math.round(animalSlide) + 'px';
+
+
+  }
+
+  this.getDomElement = function () {
+    return domElement;
+  }
+
+  function classedElement(nodeType, clazz) {
+    var div = document.createElement(nodeType);
+    div.setAttribute('class', clazz);
+    return div;
+  }
+
+  function onClick(id, fnc) {
+    var elem;
+    if (typeof id == 'string') {
+      elem = document.getElementById(id);
+    } else {
+      elem = id;
+    }
+    elem.addEventListener('mouseup', fnc, false);
+  }
+
+  function findBG(containerId) {
+    var c = document.getElementById(containerId);
+    return c.getElementsByClassName('bg')[0];
+  }
+
+  function makeAnimalDiv() {
+
+    var div = classedElement('div', 'animal');
+    var img = classedElement('img', 'animal-thumb');
+    img.src = '/files/soupthumbs/test.png';
+    img.style.position = 'absolute';
+
+    var controls = classedElement('div', 'animal-controls');
+
+    var count = classedElement('div', 'animal-count');
+    count.style.font = '12px/22px FuturaBT-Bold';
+    count.innerHTML = '0';
+
+    var add = classedElement('div', 'animal-add');
+    add.style.font = '12px/22px FuturaBT-Bold';
+    add.innerHTML = '+';
+
+    var remove = classedElement('div', 'animal-remove');
+    remove.style.font = '12px/22px FuturaBT-Bold';
+    remove.innerHTML = '-';
+
+    div.appendChild(img);
+    controls.appendChild(remove);
+    controls.appendChild(count);
+    controls.appendChild(add);
+    div.appendChild(controls);
+
+    return div;
+
+  }
+
+  function getSvgLeftContents() {
+    return [
     '<svg class="ugcui" ',
     '		version="1.1"',
     '     xmlns="http://www.w3.org/2000/svg"',
@@ -405,314 +608,74 @@ var UgcUI = function (shared) {
 
     '</svg>'].join("\n");
 
-  var svgRight;
-  var svgRightContents = [].join("\n");
-
-  var HANDLERS = {
-
-    updateCapacity: function (i) {
-
-      document.getElementById('capacity').textContent = ( Math.round(i * 100) + '%' );
-
-    },
-
-    oncreatemode: function () {
-
-      shared.ugcSignals.object_createmode.dispatch();
-
-    },
-
-    onerasemode: function () {
-
-      shared.ugcSignals.object_erasemode.dispatch();
-
-    },
-
-    onreflectmode: function (bool) {
-
-      shared.ugcSignals.object_symmetrymode.dispatch(bool);
-
-    },
-
-    onundo: function () {
-
-      alert('saved');
-      shared.ugcSignals.submit.dispatch();
-
-    },
-
-    oncolorchange: function (hex) {
-
-      shared.ugcSignals.object_changecolor.dispatch(hex);
-
-    },
-
-    onsmoothup: function () {
-
-
-    },
-
-    onsmoothdown: function() {
-
-
-    },
-
-    onsize: function (size) {
-
-      shared.ugcSignals.object_changesize.dispatch(size);
-
-    },
-
-    onlife: function () {
-
-
-    },
-
-    ondark: function () {
-
-
-    }
-
-  };
-
-  this.__defineGetter__('HANDLERS', function() {
-    return HANDLERS;
-  });
-
-  var domElement = document.createElement('div');
-
-  var classedElement = function(nodeType, clazz) {
-    var div = document.createElement(nodeType);
-    div.setAttribute('class', clazz);
-    return div;
   }
 
-
-  var onClick = function(id, fnc) {
-    var elem;
-    if (typeof id == 'string') {
-      elem = document.getElementById(id);
-    } else {
-      elem = id;
-    }
-    elem.addEventListener('mouseup', fnc, false);
-  }
-
-  var findBG = function(containerId) {
-    var c = document.getElementById(containerId);
-    return c.getElementsByClassName('bg')[0];
-  };
-
-
-  var styleSheet = document.createElement('style');
-  styleSheet.setAttribute('type', 'text/css');
-  styleSheet.innerHTML = css;
-  document.getElementsByTagName('head')[0].appendChild(styleSheet);
-
-  domElement.innerHTML = svgLeftContents;
-  svgLeft = domElement.firstChild;
-
-  var tooltip = document.createElement('div');
-  tooltip.style.position = 'fixed';
-  tooltip.style.font = '12px/0px FuturaBT-Medium';
-  tooltip.style.padding = '13px 7px 10px 7px';
-  tooltip.style.display = 'none';
-  tooltip.style.backgroundColor = '#fff';
-  tooltip.style.boxShadow = '-1px 1px 0px rgba(0,0,0,0.4)';
-  tooltip.style.textTransform = 'uppercase';
-  tooltip.style.color = '#000';
-  tooltip.innerHTML = 'CREATE';
-
-  domElement.appendChild(tooltip);
-
-  var makeAnimalDiv = function() {
-
-    var div = classedElement('div', 'animal');
-    var img = classedElement('img', 'animal-thumb');
-    img.src = '/files/soupthumbs/test.png';
-    img.style.position = 'absolute';
-
-    var controls = classedElement('div', 'animal-controls');
-
-    var count = classedElement('div', 'animal-count');
-    count.style.font = '12px/22px FuturaBT-Bold';
-    count.innerHTML = '0';
-
-    var add = classedElement('div', 'animal-add');
-    add.style.font = '12px/22px FuturaBT-Bold';
-    add.innerHTML = '+';
-
-    var remove = classedElement('div', 'animal-remove');
-    remove.style.font = '12px/22px FuturaBT-Bold';
-    remove.innerHTML = '-';
-
-
-    div.appendChild(img);
-    controls.appendChild(remove);
-    controls.appendChild(count);
-    controls.appendChild(add);
-    div.appendChild(controls);
-
-    return div;
-
-  }
-
-  var animalContainerDiv = classedElement('div', 'animal-container');
-  animalContainerDiv.style.overflow = 'hidden';
-  animalContainerDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
-  animalContainerDiv.style.width = '100%';
-  animalContainerDiv.style.height = animalContainerHeight + 'px';
-  animalContainerDiv.style.position = 'fixed';
-  animalContainerDiv.style.top = '100%';
-  animalContainerDiv.style.left = 0;
-  animalContainerDiv.style.marginTop = -animalContainerHeight + 'px';
-
-  var animalInnerDiv = classedElement('div', 'animal-inner');
-  animalInnerDiv.style.padding = '10px';
-  animalInnerDiv.style.width = '3000px';
-  animalInnerDiv.style.height = '100%';
-  animalContainerDiv.appendChild(animalInnerDiv);
-
-  for (var i = 0; i < 20; i++) {
-    animalInnerDiv.appendChild(makeAnimalDiv());
-  }
-
-  domElement.appendChild(animalContainerDiv);
-
-  this.addListeners = function() {
-
-    domElement.addEventListener('mousemove', function(e) {
-      tooltip.style.top = e.pageY - 40 + 'px';
-      tooltip.style.left = e.pageX + 20 + 'px';
-    }, true);
-
-    var menus = svgLeft.getElementsByClassName('menu');
-
-    for (var i = 0; i < menus.length; i++) {
-
-      menus[i].addEventListener('mouseover', function() {
-        clearTimeout(this.hideTimeout);
-        var buttons = this.getElementsByClassName('menu-buttons');
-        for (var j = 0; j < buttons.length; j++) {
-          buttons[j].style.display = 'block';
-        }
-      }, false);
-
-      menus[i].addEventListener('mouseout', function() {
-        clearTimeout(this.hideTimeout);
-        var buttons = this.getElementsByClassName('menu-buttons');
-        this.hideTimeout = setTimeout(function() {
-          for (var j = 0; j < buttons.length; j++) {
-            buttons[j].style.display = 'none';
-          }
-        }, 550);
-      }, false);
-
-    }
-
-    var named = document.getElementsByName('hover');
-    for (var i = 0; i < named.length; i++) {
-      named[i].addEventListener('mouseover', function() {
-        tooltip.style.display = 'inline-block';
-        tooltip.innerHTML = this.getAttribute('title');
-      }, false);
-      named[i].addEventListener('mouseout', function() {
-        tooltip.style.display = 'none';
-      }, false);
-    }
-
-    onClick('create', function() {
-      this.setAttribute('class', 'active');
-      document.getElementById('erase').setAttribute('class', '');
-      HANDLERS.oncreatemode();
-    });
-
-    onClick('erase', function() {
-      this.setAttribute('class', 'active');
-      document.getElementById('create').setAttribute('class', '');
-      HANDLERS.onerasemode();
-    });
-
-    onClick('life', function() {
-      this.setAttribute('class', 'active');
-      document.getElementById('dark').setAttribute('class', '');
-      HANDLERS.onlife();
-    });
-
-    onClick('dark', function() {
-      this.setAttribute('class', 'active');
-      document.getElementById('life').setAttribute('class', '');
-      HANDLERS.ondark();
-    });
-
-    onClick('reflect', function() {
-      if (this.getAttribute('class') == 'toggle') {
-        this.setAttribute('class', 'toggle active');
-        HANDLERS.onreflectmode(true);
-      } else {
-        this.setAttribute('class', 'toggle');
-        HANDLERS.onreflectmode(false);
-      }
-    });
-
-    onClick('undo', HANDLERS.onundo);
-
-    var colorOptions = document.getElementById('color').getElementsByClassName('options')[0].getElementsByTagName('polygon');
-
-    for (var i = 0; i < colorOptions.length; i++) {
-
-      onClick(colorOptions[i], function() {
-
-        var hex = parseInt(this.getAttribute('fill').substr(1), 16);
-
-        for (var j = 0; j < colorOptions.length; j++) {
-          colorOptions[j].setAttribute('class', '');
-        }
-
-        this.setAttribute('class', 'selected');
-
-        HANDLERS.oncolorchange(hex);
-
-      });
-    }
-
-    onClick('smoother-up', HANDLERS.onsmoothup);
-    onClick('smoother-down', HANDLERS.onsmoothdown);
-
-    var iconSizeClearActive = function() {
-      findBG('icon-size-small').setAttribute('class', 'bg');
-      findBG('icon-size-med').setAttribute('class', 'bg');
-      findBG('icon-size-large').setAttribute('class', 'bg');
-    }
-
-    onClick('icon-size-small', function() {
-      iconSizeClearActive();
-      findBG('icon-size-small').setAttribute('class', 'active bg');
-      HANDLERS.onsize(1);
-    });
-
-    onClick('icon-size-med', function() {
-      iconSizeClearActive();
-      findBG('icon-size-med').setAttribute('class', 'active bg');
-      HANDLERS.onsize(3);
-    });
-
-    onClick('icon-size-large', function() {
-      iconSizeClearActive();
-      findBG('icon-size-large').setAttribute('class', 'active bg');
-      HANDLERS.onsize(5);
-    });
-
-
-  };
-
-  this.scale = function(s) {
-    svgLeft.firstChild.setAttribute('transform', 'translate(10, 0) scale(' + s + ')');
-  };
-
-  this.getDomElement = function () {
-    return domElement;
+  function getCSS() {
+    return [
+    '.ugcui g {',
+    '  cursor: pointer;',
+    '}',
+    '.ugcui g.menu polygon.hitbox {',
+    '  display: none;',
+    '}',
+    '.ugcui g.menu:hover polygon.hitbox {',
+    '  display: inherit;',
+    '}',
+    '.ugcui g.folder polygon.folder-hitbox {',
+    '  display: none;',
+    '}',
+    '.ugcui g.folder:hover polygon.folder-hitbox {',
+    '  display: inherit;',
+    '}',
+    '.ugcui g.menu g.menu-buttons {',
+    '  display: none;',
+    '}',
+    //'.ugcui g.menu:hover g.menu-buttons {',
+    //'  display: block;',
+    //'}',
+    '.ugcui g.active polygon.hex {',
+    '  fill: #f65824;',
+    '}',
+    '.ugcui g#color g.options polygon.selected {',
+    '  stroke: #fff;',
+    '  stroke-width: 4; z-index: 100',
+    '}',
+    '.ugcui g#color g.options polygon#white.selected {',
+    '  stroke: #000;',
+    '}',
+    '.ugcui g#color g.options polygon:not(.selected):hover {',
+    '  stroke: #fff;',
+    '  stroke-width: 4; z-index: 200',
+    '}',
+    '.ugcui g#color g.options polygon#white:not(.selected):hover {',
+    '  stroke: #000;',
+    '}',
+    '.ugcui g.menu-buttons g:hover:not(.active) .hex {',
+    '  fill: #fff;',
+    '}',
+    '.ugcui g.folder g.options {',
+    '  display: none;',
+    '}',
+    '.ugcui g.folder:hover g.options {',
+    '  display: block;',
+    '}',
+    '.ugcui g#size g g:hover polygon.bg {',
+    '  fill: #fff;',
+    '}',
+    '.ugcui g#size:hover g g polygon.bg.active {',
+    '  fill: #f65824;',
+    '}',
+    '.ugcui g#smoother g.options g:hover polygon.bg {',
+    '  fill: #fff;',
+    '}',
+    '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 200px; margin-right: 10px; }',
+    '.animal:hover { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #fff; }',
+    '.animal-controls { height: 21px; overflow:hidden; line-height: 0px; border-right: 1px solid #fff; opacity: 0; display: inline-block; position: relative; margin-top: 122px; }',
+    '.animal:hover .animal-controls { opacity: 1; }',
+    '.animal-controls div { display: none; text-align: center; border: 1px solid #fff; border-right: 0; border-bottom: 0; display: inline-block; width: 20px;}',
+    '.animal-controls div.animal-add:hover, .animal-controls div.animal-remove:hover { cursor: pointer; background-color: #f65824; }',
+    '.animal-controls div.animal-count { background-color: #fff; color: #777; width: 25px; }'
+  ].join("\n");
   }
 
 }
-	
