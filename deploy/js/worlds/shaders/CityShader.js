@@ -168,10 +168,10 @@ function updateCityShader( delta ) {
 		
 		effector = CityShaderEffectors[ e ];
 		
-		pos[ p++ ] = effector.x;
-		pos[ p++ ] = effector.y;
-		pos[ p++ ] = effector.z;
-		rad[ r++ ] = effector.w;
+		pos[ p++ ] = effector.x;
+		pos[ p++ ] = effector.y;
+		pos[ p++ ] = effector.z;
+		rad[ r++ ] = effector.w;
 		
 	}
 	
