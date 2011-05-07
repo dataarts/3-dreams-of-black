@@ -26,11 +26,13 @@ var UgcObjectCreator = function ( shared ) {
 
 	ambient.color.setHSV( 0, 0, 0.1 );
 
-	directionalLight1.position.set( 0.808, 0.309, - 0.5 );
 	directionalLight1.color.setHSV( 0.088, 0, 1 );
+	directionalLight1.position.set( 0.8, 0.3, - 0.5 );
+	directionalLight1.position.normalize();
 
-	directionalLight2.position.set( 0.093, 0.982, 0.157 );
 	directionalLight2.color.setHSV( 0, 0, 0.864 );
+	directionalLight2.position.set( 0.1, 1, 0.2 );
+	directionalLight2.position.normalize();
 
 	that.scene.addLight( ambient );
 	that.scene.addLight( directionalLight1 );
