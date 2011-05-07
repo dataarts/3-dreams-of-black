@@ -115,7 +115,7 @@ var CityWorld = function ( shared ) {
 
 		cameraPosition = camera.matrixWorld.getPosition();
 
-		TriggerUtils.effectorRadius = 300;
+		TriggerUtils.effectorRadius = 50;
 		TriggerUtils.update( "city" );
 
 		updateCityShader( delta );

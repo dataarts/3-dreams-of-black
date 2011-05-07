@@ -12,7 +12,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	shared.trigger = new THREE.Vector3( 0, 0, 0 );
+	//shared.trigger = new THREE.Vector3( 0, 0, 0 );
 
 	var shake = 0;
 
@@ -28,21 +28,21 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// collision scene
 
-	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 500, true );
+	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 500, true, scene );
 
 	collisionScene.settings.maxSpeedDivider = 2;
 	collisionScene.settings.capBottom = 3;
 	collisionScene.settings.capTop = 1000;
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.allowFlying = false;
-	collisionScene.settings.emitterDivider = 8;
+	collisionScene.settings.emitterDivider = 4;
 	collisionScene.settings.normalOffsetAmount = 8;
 	collisionScene.settings.minDistance = 100;
 	collisionScene.settings.keepEmitterFollowDown = true;
 
 	collisionScene.emitter.position.z = -100;
 	collisionScene.emitterFollow.position.z = -100;
-	collisionScene.cameraTarget.position.z = -100;
+	//collisionScene.cameraTarget.position.z = -100;
 
 
 	loader.load( { model: "files/models/city/collision/City.Collision_Big.js", callback: mesh0LoadedProxy } );
@@ -50,19 +50,14 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "files/models/city/collision/City.Collision_Big.002.js", callback: mesh2LoadedProxy } );
 	loader.load( { model: "files/models/city/collision/City.Collision_Big.003.js", callback: mesh3LoadedProxy } );
 
-/*	loader.load( { model: "files/models/city/collision/City.Collision_Big.000.js", callback: mesh0LoadedProxy } );
-	loader.load( { model: "files/models/city/collision/City.Collision_Big.004.js", callback: mesh1LoadedProxy } );
-	loader.load( { model: "files/models/city/collision/City.Collision_Big.005.js", callback: mesh2LoadedProxy } );
-	loader.load( { model: "files/models/city/collision/City.Collision_Big.006.js", callback: mesh3LoadedProxy } );
-*/
-	camera.target = collisionScene.cameraTarget;
+	//camera.target = collisionScene.cameraTarget;
 
 	function mesh0LoadedProxy( geometry ) {
 
 		var scale = 0.1;
-		var rotation = new THREE.Vector3( -1.570796,0,3.141591 );
-		var position = new THREE.Vector3();
-
+		//var rotation = new THREE.Vector3( -1.570796,0,3.141591 );
+		var rotation = new THREE.Vector3( -1.570796,0,0 );
+		var position = new THREE.Vector3(0,0,0);
 		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
 
 	}
@@ -71,7 +66,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		var scale = 0.1;
 		var rotation = new THREE.Vector3( -1.570796,0,0 );
-		var position = new THREE.Vector3();
+		var position = new THREE.Vector3(0,0,0);
 		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
 
 	}
@@ -80,7 +75,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		var scale = 0.1;
 		var rotation = new THREE.Vector3(-1.570796,0,0);
-		var position = new THREE.Vector3();
+		var position = new THREE.Vector3(0,0,0);
 		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
 
 	}
@@ -88,8 +83,9 @@ var CitySoup = function ( camera, scene, shared ) {
 	function mesh3LoadedProxy( geometry ) {
 
 		var scale = 0.1;
-		var rotation = new THREE.Vector3(-1.570796,0,1.570797);
-		var position = new THREE.Vector3();
+		//var rotation = new THREE.Vector3(-1.570796,0,1.570797);
+		var rotation = new THREE.Vector3(-1.570796,0,0);
+		var position = new THREE.Vector3(0,0,0);
 		collisionScene.addLoaded( geometry, scale, rotation, position, scene );
 
 	}
@@ -97,9 +93,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// vector trail
 
-	var startPosition = new THREE.Vector3( 0,0,100 );
-	var vectors = new Vectors( 50,2,2,startPosition );
-
+	var startPosition = new THREE.Vector3( 0,0,-250 );
+	var vectors = new Vectors( 50,3,8,startPosition );
 	//vectors.settings.divider = 4;
 	//vectors.settings.normaldivider = 4;
 	//vectors.settings.absoluteTrail = true;
@@ -154,7 +149,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	runningAnimals.settings.capy = 0;
 	runningAnimals.settings.startPosition = startPosition;
 	runningAnimals.settings.constantSpeed = 0.75;
-	//runningAnimals.settings.switchPosition = true;
+	runningAnimals.settings.avoidCamera = true;
+	runningAnimals.settings.killAtDistance = true;
 
 	// preoccupy slots for specific animals - hack...
 
@@ -343,12 +339,12 @@ var CitySoup = function ( camera, scene, shared ) {
 	trail.array[60] = "tree4";
 	trail.array[75] = "tree5";
 
-	for ( i = 0; i < 80; i += 8 ) {
+	/*for ( i = 0; i < 80; i += 8 ) {
 
 		var type = (i/8)%4;
 		trail.array[i] = "tree"+(type+1);
 
-	}
+	}*/
 	
 	trail.array[70] = "light";
 
@@ -441,7 +437,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		var object = trail.addInstance( geometry, "light", false, true );
 		preInitModel( geometry, renderer, scene, object );
 
-		trail.array[4].maxHeight = 12;
+		trail.array[70].maxHeight = 12;
 
 	}
 
@@ -497,7 +493,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		//camera.updateProjectionMatrix();
 
 		// spawn animal test
-		if (shake%15 == 14) {
+		if (shake%4 == 3) {
 			//runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
 			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			//flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
@@ -511,11 +507,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		particles.update(delta, vectors.array[0].position, shared.camPos);
 		//runningAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		runningAnimals.update(delta, shared.camPos);
+		runningAnimals.update(delta, shared.camPos, collisionScene.emitter.position);
 		stragglers.update(delta, shared.camPos);
 		//flyingAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		flyingAnimals.update(delta, shared.camPos);
-		flyingAnimals2.update();
+		//flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
 		//butterflysC.update(shared.camPos, angleRad, delta);
 		//butterflysD.update(shared.camPos, angleRad, delta, true);
@@ -527,9 +523,14 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		//shared.trigger.copy(vectors.array[10].position);
 
-		TriggerUtils.effectors[ 0 ] = collisionScene.emitter.position.x;
-		TriggerUtils.effectors[ 1 ] = collisionScene.emitter.position.y;
-		TriggerUtils.effectors[ 2 ] = collisionScene.emitter.position.z;
+		TriggerUtils.effectors[0] = vectors.array[1].position.x;
+		TriggerUtils.effectors[1] = vectors.array[1].position.y;
+		TriggerUtils.effectors[2] = vectors.array[1].position.z;
+
+		CityShaderEffectors[0].set(vectors.array[8].position.x,vectors.array[8].position.y,vectors.array[8].position.z,40);
+		CityShaderEffectors[1].set(vectors.array[12].position.x,vectors.array[12].position.y,vectors.array[12].position.z,80);
+		CityShaderEffectors[2].set(vectors.array[25].position.x,vectors.array[25].position.y,vectors.array[25].position.z,150);
+		CityShaderEffectors[3].set(vectors.array[49].position.x,vectors.array[49].position.y,vectors.array[49].position.z,250);
 
 		// pointlight
 		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*100;
@@ -547,7 +548,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	function reset () {
-		shared.camPos = new THREE.Vector3( 0, 0, -300 );
+		shared.camPos = new THREE.Vector3( 0, 0, -350 );
 
 		collisionScene.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		vectors.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);

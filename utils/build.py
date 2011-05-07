@@ -71,6 +71,7 @@ files = [
 'js/soups/elements/Vectors.js',
 'js/soups/elements/Particles.js',
 'js/soups/elements/AnimalSwarm.js',
+'js/soups/elements/AnimalSwarm_dunes.js',
 'js/soups/elements/AnimalInFrontOfCamera.js',
 'js/soups/elements/Trail.js',
 'js/soups/elements/CollisionScene.js',
