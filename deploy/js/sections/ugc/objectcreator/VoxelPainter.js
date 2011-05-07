@@ -213,7 +213,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 			case VoxelPainter.MODE_CREATE:
 
-				intersects = ray.intersectArray( _voxelsArray );
+				intersects = ray.intersectObjects( _voxelsArray );
 
 				if ( ! mousedown ) {
 
@@ -257,7 +257,7 @@ var VoxelPainter = function ( camera, scene ) {
 					_brush[ 0 ].visible = false;
 					_brush[ 1 ].visible = false;
 
-					intersects = ray.intersectArray( _colliderArray );
+					intersects = ray.intersectObjects( _colliderArray );
 
 					if ( _intersectFace && intersects.length > 0 ) {
 
@@ -284,7 +284,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 			case VoxelPainter.MODE_ERASE:
 
-				intersects = ray.intersectArray( _voxelsArray );
+				intersects = ray.intersectObjects( _voxelsArray );
 
 				if ( intersects.length > 0 && intersects[ 0 ].object != _ground ) {
 
