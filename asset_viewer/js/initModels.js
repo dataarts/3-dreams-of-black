@@ -3,10 +3,12 @@ var wireMat, trigger, morphObject, mesh;
 var meshRadius = 2000;
 
 var models = [];
+var link = {};
 
 function initModels(){
 
-  //MORPHS
+//  //MORPHS
+//  //DEPLOYED
   models.push({"file": '/files/models/soup/birds_B_life.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.8});
   models.push({"file": '/files/models/soup/animals_A_black.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.7});
   models.push({"file": '/files/models/soup/animals_A_life.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.7});
@@ -20,11 +22,18 @@ function initModels(){
   models.push({"file": '/files/models/soup/goat_black.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.55});
   models.push({"file": '/files/models/soup/moose_life.js', "type": 'animal', "centerY": 140, "riseY" : 0, "speed": 0.85});
   models.push({"file": '/files/models/soup/octo_black.js', "type": 'animal', "centerY": 20, "riseY" : 0, "speed": 0.18});
-  models.push({"file": '/files/models/soup/shadow_black.js', "type": 'animal', "centerY": 30, "riseY" : 50, "speed": 0});
-  models.push({"file": '/files/models/soup/shdw2.js', "type": 'animal', "centerY": 20, "riseY" : 1, "speed": 0});
   models.push({"file": '/files/models/soup/taruffalo_black.js', "type": 'animal', "centerY": 90, "riseY" : 0, "speed": 0.5});
-
-  //Triggers
+//  //CUSTOM
+  //models.push({"file": '/asset_viewer/files/models/animals/tarbuffaloA_tarbuffaloB.js', "type": 'animal', "centerY": 80, "riseY" : 0, "speed": 0.65});
+  models.push({"file": '/asset_viewer/files/models/animals/sealRun_bearBrown.js', "type": 'animal', "centerY": 60, "riseY" : 0, "speed": 0.45});
+  models.push({"file": '/asset_viewer/files/models/animals/parrot.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.7});
+  models.push({"file": '/asset_viewer/files/models/animals/fox.js', "type": 'animal', "centerY": 50, "riseY" : 0, "speed": 0.5});
+  models.push({"file": '/asset_viewer/files/models/animals/rabbit.js', "type": 'animal', "centerY": 50, "riseY" : 0, "speed": 0.5});
+  models.push({"file": '/asset_viewer/files/models/animals/retreiver_bearBlack.js', "type": 'animal', "centerY": 50, "riseY" : 0, "speed": 0.5});
+  models.push({"file": '/asset_viewer/files/models/animals/toad.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.2});
+  models.push({"file": '/asset_viewer/files/models/animals/treefrog.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.2});
+  models.push({"file": '/asset_viewer/files/models/animals/hummingbird.js', "type": 'animal', "centerY": 0, "riseY" : 70, "speed": 0.2});
+  //TRIGGERS
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Bus_.js', "base": '/asset_viewer/files/models/city/City.Bus_.js', "type": 'trigger', "centerY": 160, "effector": [0,0,2500,0,0,1000]});
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_Car_.js', "base": '/asset_viewer/files/models/city/City.Car_.js', "type": 'trigger', "centerY": 90, "effector": [0,0,2800,0,0,1000]});
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_CarNiss_.js', "base": '/asset_viewer/files/models/city/City.CarNiss_.js', "type": 'trigger', "centerY": 90, "effector": [0,0,2800,0,0,1000]});
@@ -34,18 +43,17 @@ function initModels(){
   models.push({"file": '/asset_viewer/files/models/city/City.TriggerMesh_SignMany_.js', "base": '/asset_viewer/files/models/city/City.SignMany_.js', "type": 'trigger', "centerY": 260, "effector": [0,-2500,0,0,-500,0]});
 
   for (var i in models){
-    link = document.createElement('a');
-    link.setAttribute('class', 'modelLink');
-    link.setAttribute('href', 'javascript:modelLoader('+i+')');
-
-  
     models[i].name = models[i].file.replace(/\\/g,'/').replace( /.*\//, '' );
     models[i].name = models[i].name.replace(".js", "");
     //link.innerHTML = models[i].name.replace("_", "<br />");
 
-    link.style.backgroundImage = 'url("/asset_viewer/files/thumbnails/'+models[i].name+'.png")';
+    link[models[i].name] = document.createElement('a');
+    link[models[i].name].setAttribute('class', 'modelLink');
+    link[models[i].name].setAttribute('href', 'javascript:modelLoader('+i+')');
 
-    document.getElementById('viewerModels').appendChild(link);
+    link[models[i].name].style.backgroundImage = 'url("/asset_viewer/files/thumbnails/'+models[i].name+'.png")';
+
+    document.getElementById('viewerModels').appendChild(link[models[i].name]);
   }
 
   modelLoader(0);
@@ -54,10 +62,12 @@ function initModels(){
 
 function modelLoader(id) {
   if(models[id].geometry !== 'undefined' ){
+    link[models[id].name].style.backgroundImage = 'url("/asset_viewer/files/thumbnails/loading64.gif")';
     loader = new THREE.JSONLoader();
     loader.load({ model: models[id].file, callback: function(g) {
       models[id].geometry = g;
       switchModel(id);
+      link[models[id].name].style.backgroundImage = 'url("/asset_viewer/files/thumbnails/'+models[id].name+'.png")';
     } });
   } else switchModel(id);
 
@@ -79,12 +89,12 @@ function switchModel(id) {
     var baseLoader = new THREE.JSONLoader();
     baseLoader.load( { model: models[id].base, callback: function( geometry ) {
       triggerBase = new THREE.Mesh( geometry, lightmapMat);
-      //if (models[id].file.search("city") != -1) mesh.scale.set(0.1,0.1,0.1);
-      //if (models[id].file.search("country") != -1) mesh.scale.set(10,10,10);
       triggerBase.rotation.x = -90 * Math.PI / 180;
       triggerBase.addChild( trigger.mesh );
       trigger.mesh.rotation.x = 90 * Math.PI / 180;
       trigger.mesh.scale.set( 1, 1, 1 );
+      //if (models[id].file.search("city") != -1) mesh.scale.set(0.1,0.1,0.1);
+      if (models[id].file.search("country") != -1) trigger.mesh.scale.set(10,10,10);
 
       rootY.addChild( triggerBase );
 
@@ -126,6 +136,7 @@ function switchModel(id) {
     meshRadius = morphObject.mesh.boundRadius;
 
     animalShader.uniforms["animalLength"].value = meshRadius*3;
+
   }
 
   centerY = models[id].centerY;
