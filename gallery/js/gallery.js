@@ -51,8 +51,10 @@ console.log(params);
 						if (!data.success) {
 							error(data.error);
 						} else { 
-						  
+
+                            console.log(data);
 							var numPages = Math.ceil(data.count/OBJECTS_PER_PAGE);
+                            console.log(numPages);
 							
 							if (numPages == 1) return;
 							
@@ -278,12 +280,15 @@ console.log(params);
       $('#lightbox-upvote').removeClass('selected');
       $('#lightbox-downvote').removeClass('selected');
     }
+    console.log(activeObject.id);
+    $('#webgl').html($('<iframe style="border: 0;" width="100%" height="100%" src="/gallery/viewer.html#'+activeObject.id+'"></iframe>'));
   }
 
   function closeLightbox() {
     lightboxOpen = true;
     lightbox.fadeOut(200);
     shade.get(0).removeEventListener('mousedown', closeLightbox, false);
+    $('#webgl').html('');
   }
 
   function error(message) {

@@ -1,4 +1,4 @@
-var CollisionScene = function ( camera, scene, scale, shared, collisionDistance, useOldRay ) {
+var CollisionScene = function ( camera, scene, scale, shared, collisionDistance, useOldRay, realscene ) {
 	
 	var that = this;
 	that.currentNormal = new THREE.Vector3( 0, 1, 0 );
@@ -42,13 +42,18 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 
 	that.emitter = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0xFFFF33, opacity: 0.4 } ) );
 	that.emitterFollow = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FFFF, opacity: 0.4 } ) );
-	if (that.settings.useOldRay) {
+	/*if (that.settings.useOldRay) {
 		that.cameraTarget = addMesh( cube, 1, shared.camPos.x, shared.camPos.y, shared.camPos.z, 0,0,0, new THREE.MeshBasicMaterial( { color: 0x33FF33, opacity: 0.4 } ) );
-	}
+	}*/
 
 	that.emitter.visible = false;
 	that.emitterFollow.visible = false;
 
+/*	var emitterReal = new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0xFFFF33, opacity: 0.4 } ) );
+	var emitterFollowReal = new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0x33FFFF, opacity: 0.4 } ) );
+	realscene.addObject( emitterReal );
+	realscene.addObject( emitterFollowReal );
+*/
 	// collision boxes
 
 	var cube = new THREE.Cube( 50000,50000,10, 1,1,1 );
@@ -107,6 +112,14 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 
 		collisionScene.addObject( mesh );
 
+		/*var mesh2 = new THREE.Mesh( geometry, material );
+
+		mesh2.scale.x = mesh2.scale.y = mesh2.scale.z = scale;
+		mesh2.rotation = rotation || new THREE.Vector3();
+		mesh2.position = position || new THREE.Vector3();
+				
+		realscene.addObject( mesh2 );
+		*/
 	};
 
 	this.update = function ( camPos, delta ) {
@@ -265,28 +278,32 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 
 						that.emitter.position = intersects[i].point;
 
-						var dx = camPos.x-that.emitter.position.x;
+						/*var dx = camPos.x-that.emitter.position.x;
 						var dz = camPos.z-that.emitter.position.z;
 
 						var angleRad = Math.atan2(dz, dx);
 						that.emitter.position.x -= Math.cos( angleRad )*that.settings.minDistance/10;
-						that.emitter.position.z -= Math.sin( angleRad )*that.settings.minDistance;					
-
+						that.emitter.position.z -= Math.sin( angleRad )*that.settings.minDistance/10;					
+						*/
 						// hack for now...
-						if (that.emitter.position.z > camPos.z-20) {
+						/*if (that.emitter.position.z > camPos.z-20) {
 							that.emitter.position.z = camPos.z-20;
-						}
+						}*/
 
 						var face = intersects[i].face;
 						var object = intersects[i].object;
 						var normal = object.matrixRotationWorld.multiplyVector3( face.normal.clone() );
 						that.emitterNormal = normal;
+						that.currentNormal = normal;
 						
 						// walls
 						if (intersects[i].object == right || intersects[i].object == front || intersects[i].object == back || intersects[i].object == left || intersects[i].object == top) {
 							that.emitterNormal.x = 0;
 							that.emitterNormal.y = 1;
 							that.emitterNormal.z = 0;
+							that.currentNormal.x = 0;
+							that.currentNormal.y = 1;
+							that.currentNormal.z = 0;
 							// not to be airbourne
 							if (!that.settings.allowFlying) {
 								that.emitter.position.y = bottom.position.y+5;					
@@ -353,9 +370,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		}
 
 		if (that.settings.useOldRay) {
-
+	
 			// shoot rays in all directions from emitterFollow, clamp in the direction of the shortest distance
-			var direction = new THREE.Vector3();
+/*			var direction = new THREE.Vector3();
 			var rayOld = new THREE.Ray( that.emitterFollow.position, direction );
 			var shortestDistance = 10000;
 			var shortestPoint = that.emitterFollow.position;
@@ -422,7 +439,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 
 
 			// z forward
-			/*direction.set(0,0,-1);
+			direction.set(0,0,-1);
 			rayOld.direction = direction;
 			var intersects = rayOld.intersectScene( collisionScene );
 
@@ -457,7 +474,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 						break;
 					}
 				}
-			}*/
+			}
 
 			// clamp to the closest "hit"
 			that.emitterFollow.position = shortestPoint;
@@ -466,7 +483,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 				var normal = shortestObject.matrixRotationWorld.multiplyVector3( shortestFace.normal.clone() );
 				that.currentNormal = normal;
 			}
-
+*/
 			/*var amount = 5;
 
 			that.emitterFollow.position.x += that.currentNormal.x*amount;
@@ -474,7 +491,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 			that.emitterFollow.position.z += that.currentNormal.z*amount;
 			*/
 
-			var toy = that.emitterFollow.position.y;
+			/*var toy = that.emitterFollow.position.y;
 			var moveY = ( toy - that.cameraTarget.position.y ) / that.settings.cameraTargetDivider;
 
 			var tox = that.emitterFollow.position.x;
@@ -498,15 +515,14 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 			that.cameraTarget.position.x += moveX;
 			that.cameraTarget.position.y += moveY;
 			that.cameraTarget.position.z += moveZ;
-
+			
 			// hack for now...
 			if (that.cameraTarget.position.z > camPos.z-80) {
 				that.cameraTarget.position.z = camPos.z-80;
 			}
-
+			*/
 	/*		emitterReal.position = that.emitter.position;
 			emitterFollowReal.position = that.emitterFollow.position;
-			cameraTargetReal.position = that.cameraTarget.position;
 	*/
 			shared.renderer.render( collisionScene, that.settings.camera );
 			//shared.renderer.render( scene, camera, renderTarget );
@@ -539,9 +555,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 
 		that.emitter.position.set( x, y, z );
 		that.emitterFollow.position.set( x, y, z );
-		if (that.settings.useOldRay) {
+		/*if (that.settings.useOldRay) {
 			that.cameraTarget.position.set( x, y, z );
-		}
+		}*/
 
 	};
 
