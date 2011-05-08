@@ -300,6 +300,7 @@ var RelauncherSection = function( shared ) {
 			x: (window.innerWidth / 2.0 - 225),
 			y: (window.innerHeight / 2.0 - 175)
 		};
+		container.setAttribute("style", "position: absolute; top: " + offset.y + "px; left: " + offset.x + "px;");
 		updateDomElementsPosition();
 
 	};
