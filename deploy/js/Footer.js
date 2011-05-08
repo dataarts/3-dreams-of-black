@@ -15,6 +15,9 @@ var Footer = function(container, prefix) {
     var divReplacement = "rome_footer_buy_album-" + this.id;
     var terms          = "rome_terms-" + this.id;
     var privacy        = "rome_privacy-" + this.id;
+    var facebook       = "rome_facebook-" + this.id;
+    var twitter        = "rome_twitter-" + this.id;
+    var credits        = "rome_credits-" + this.id;
 
     if(!window.screenX && !window.screenY) {
       window.screenX = window.screenLeft;
@@ -26,6 +29,7 @@ var Footer = function(container, prefix) {
       y: (window.screenY + window.innerHeight / 2.0)
     };
     var DEFAULT_POPUP_PROPERTIES = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, left=' + (popupPosition.x - 150) + ', top=' + (popupPosition.y - 300) + ', width=300, height=600';
+    var DEFAULT_POPUP_SHARING = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, left=' + (popupPosition.x - 225) + ', top=' + (popupPosition.y - 250) + ', width=550, height=500';
 
     this.getDomElement = function() {
 
@@ -47,33 +51,29 @@ var Footer = function(container, prefix) {
             init = false;
 
         }
-        var termsDom = document.getElementById(terms);
-        
-        termsDom.addEventListener("click", function(e) {
 
-          e.preventDefault();
+        handleLinkListeners(credits, "Credits", DEFAULT_POPUP_PROPERTIES);
+        handleLinkListeners(privacy, "Privacy", DEFAULT_POPUP_PROPERTIES);
+        handleLinkListeners(terms, "Terms", DEFAULT_POPUP_PROPERTIES);
 
-          var url = this.getAttribute("href");
-          var win = window.open(url, url.replace(/\//, ""), DEFAULT_POPUP_PROPERTIES);
-              win.settings = { x: (window.innerWidth / 2.0 - 150), y: (window.innerHeight / 2.0 - 300), width: 300, height: 600};
-
-        }, false);
-
-        var privacyDom = document.getElementById(terms);
-        
-        privacyDom.addEventListener("click", function(e) {
-
-          e.preventDefault();
-
-          var url = this.getAttribute("href");
-          var win = window.open(url, url.replace(/\//, ""), DEFAULT_POPUP_PROPERTIES);
-              win.settings = { x: (window.innerWidth / 2.0 - 150), y: (window.innerHeight / 2.0 - 300), width: 300, height: 600};
-
-        }, false);
+        handleLinkListeners(twitter, "Twitter", DEFAULT_POPUP_SHARING);
+        handleLinkListeners(facebook, "Facebook", DEFAULT_POPUP_SHARING);
 
         return this;
 
     };
+
+    function handleLinkListeners(id, title, properties) {
+
+      var dom = document.getElementById(id);
+
+      dom.addEventListener("click", function(e) {
+        e.preventDefault();
+        var url = this.getAttribute("href");
+        var win = window.open(url, title, properties);
+      }, false);
+      
+    }
 
     window.addEventListener("load", this.load, false);
 
@@ -90,13 +90,13 @@ var Footer = function(container, prefix) {
 		'<div class="navigation">',
 		'  <ul class="primary">',
 		'    <li class="first"><a href="/tech">Technology</a></li>',
-		'    <li><a href="/credits">Credits</a></li>',
+		'    <li><a id = "' + credits + '" href="/credits">Credits</a></li>',
 		'    <li><a href="/album">Rome Album</a></li>',
 		'    <li id="' + divReplacement + '" class="rome_footer_buy_album">',
 		'    </li>',
 		'    <li class="last">Share</li>',
-		'    <li class="last icons"><a href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
-		'    <li class="last icons"><a href="http://twitter.com/share?text=“ROME”&amp;url=http://ro.me" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
+		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
+		'    <li class="last icons"><a id = "' + twitter + '" href="http://twitter.com/share?text=“ROME”&amp;url=http://ro.me" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
 		'    <li class="clear last">&nbsp;</li>',
 		'  </ul>',
 		'  <ul class="secondary">',
