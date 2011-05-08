@@ -13,6 +13,19 @@ var Footer = function(container, prefix) {
 
     this.id = Footer.multipleInstances;
     var divReplacement = "rome_footer_buy_album-" + this.id;
+    var terms          = "rome_terms-" + this.id;
+    var privacy        = "rome_privacy-" + this.id;
+
+    if(!window.screenX && !window.screenY) {
+      window.screenX = window.screenLeft;
+      window.screenY = window.screenTop;
+    }
+
+    var popupPosition = {
+      x: (window.screenX + window.innerWidth / 2.0),
+      y: (window.screenY + window.innerHeight / 2.0)
+    };
+    var DEFAULT_POPUP_PROPERTIES = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, left=' + (popupPosition.x - 150) + ', top=' + (popupPosition.y - 300) + ', width=300, height=600';
 
     this.getDomElement = function() {
 
@@ -34,6 +47,29 @@ var Footer = function(container, prefix) {
             init = false;
 
         }
+        var termsDom = document.getElementById(terms);
+        
+        termsDom.addEventListener("click", function(e) {
+
+          e.preventDefault();
+
+          var url = this.getAttribute("href");
+          var win = window.open(url, url.replace(/\//, ""), DEFAULT_POPUP_PROPERTIES);
+              win.settings = { x: (window.innerWidth / 2.0 - 150), y: (window.innerHeight / 2.0 - 300), width: 300, height: 600};
+
+        }, false);
+
+        var privacyDom = document.getElementById(terms);
+        
+        privacyDom.addEventListener("click", function(e) {
+
+          e.preventDefault();
+
+          var url = this.getAttribute("href");
+          var win = window.open(url, url.replace(/\//, ""), DEFAULT_POPUP_PROPERTIES);
+              win.settings = { x: (window.innerWidth / 2.0 - 150), y: (window.innerHeight / 2.0 - 300), width: 300, height: 600};
+
+        }, false);
 
         return this;
 
@@ -64,8 +100,8 @@ var Footer = function(container, prefix) {
 		'    <li class="clear last">&nbsp;</li>',
 		'  </ul>',
 		'  <ul class="secondary">',
-		'    <li class="first"><a href="/terms">Terms</a></li>',
-		'    <li class="last"><a href="/privacy">Privacy</a></li>',
+		'    <li class="first"><a id = "' + terms + '" href="/terms">Terms</a></li>',
+		'    <li class="last"><a id = "' + privacy + '" href="/privacy">Privacy</a></li>',
 		'    <li class="clear last">&nbsp;</li>',
 		'  </ul>',
 		'</div>',
@@ -78,7 +114,7 @@ var Footer = function(container, prefix) {
 		'  padding: 0;',
 		'}',
 		'.rome-footer {',
-		'  font: 500 10px/18px FuturaBT-Medium, Arial, sans-serif;',
+		'  font: 500 10px/18px "FuturaBT-Medium", Arial, sans-serif;',
 		'  color: #434343;',
 		'  text-transform: uppercase;',
 		'  letter-spacing: 1px;',

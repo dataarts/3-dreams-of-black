@@ -6,7 +6,7 @@ body {
   width: 100%;
   height: 100%;
   /* The gradient comes from testCapture.html which takes an alpha picture of the clouds WebGL */
-  background: #4584b4 url("footer/gradient.png") 0 -400px;
+  background: #4584b4 url("files/footer/gradient.png") 0 -400px;
   font-family: "Futura", Arial, sans-serif;
 }
 #container {
@@ -29,11 +29,11 @@ body {
   height: 119px;
   margin: 50px 0;
   overflow: hidden;
-  background: url("footer/header-trans.png") center center no-repeat;
+  background: url("files/footer/header-trans.png") center center no-repeat;
 }
 #error {
   padding: 50px 35px;
-  background: url("footer/bg-trans.png");
+  background: url("files/ooter/bg-trans.png");
 }
 #trailer {
   width: auto;
