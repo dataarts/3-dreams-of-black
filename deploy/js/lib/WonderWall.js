@@ -22,12 +22,12 @@ WonderWall.Point = function(gee, x, y) {
   this.updating = false;
   this.angle = 0;
 
-  this.update = function() {
+  this.update = function(offset) {
 
     if(this.updating) {
       
-      var dx = gee.mouseX - ox;
-      var dy = gee.mouseY - oy;
+      var dx = gee.mouseX - ox - offset.x;
+      var dy = gee.mouseY - oy - offset.y;
       var d = Math.sqrt(dx * dx + dy * dy);
 
         var s = dx;
@@ -98,7 +98,7 @@ WonderWall.Pentagon = function(gee, x, y, r) {
     points.push(new WonderWall.Point(gee, coord.x, coord.y));
   }
 
-  this.update = function() {
+  this.update = function(offset) {
 
     this.x = gee.width / 2.0;
     this.y = gee.height / 2.0;
@@ -109,7 +109,7 @@ WonderWall.Pentagon = function(gee, x, y, r) {
     for(var i = 0; i < points.length; i++) {
       var point = points[i];
       var coord = coords[i];
-      point.update();
+      point.update(offset);
       var op = point.getOriginPosition();
       if(coord.x != op.x || coord.y != op.y) {
         point.setPosition(coord.x, coord.y);
