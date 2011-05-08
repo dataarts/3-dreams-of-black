@@ -1,25 +1,6 @@
 var CloudsShader = {
-
-	colors:{
-	
-		colorA: new THREE.Vector3( 1, 1, 1 ),
-		colorB: new THREE.Vector3( 1, 1, 1 ),
-		colorC: new THREE.Vector3( 1, 1, 1 )
-
-	},
 	
 	uniforms: {
-
-		"grassImage": { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' ) },
-		"surfaceImage": { type: "t", value: 1, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' ) },
-		"map": { type: "t", value:2, texture:null },
-		"map2": { type: "t", value:3, texture:null },
-		"map3": { type: "t", value:4, texture:null },
-
-		"time": { type: "f", value:0.0 },
-
-		"targetStart": { type: "v3", value: new THREE.Vector3() },
-		"targetEnd": { type: "v3", value: new THREE.Vector3() },
 		
 		"fogColor": { type: "c", value: new THREE.Color() },
 		"fogDensity": { type: "f", value: 0 },
@@ -30,11 +11,7 @@ var CloudsShader = {
 		"directionalLightColor" : { type: "fv", value: [] },
 		"pointLightColor" : { type: "fv", value: [] },
 		"pointLightPosition" : { type: "fv", value: [] },
-		"pointLightDistance" : { type: "fv1", value: [] },
-
-		"colorA": { type: "v3", value: new THREE.Vector3() },
-		"colorB": { type: "v3", value: new THREE.Vector3() },
-		"colorC": { type: "v3", value: new THREE.Vector3() }
+		"pointLightDistance" : { type: "fv1", value: [] }
 
 	},
 
@@ -43,9 +20,6 @@ var CloudsShader = {
 		"uniform vec3 ambientLightColor;",
 		"uniform vec3 directionalLightColor[ MAX_DIR_LIGHTS ];",
 		"uniform vec3 directionalLightDirection[ MAX_DIR_LIGHTS ];",
-
-		"uniform vec3 targetStart;",
-		"uniform vec3 targetEnd;",
 		
 		"varying vec3 vWorldPosition;",
 		"varying vec3 vColor;",
@@ -77,7 +51,7 @@ var CloudsShader = {
 
 			"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-			"vWorldVector = (vWorldPosition - cameraPosition) * vec3(0.01, 0.02, 0.01);",
+			"vWorldVector = ( vWorldPosition - cameraPosition ) * vec3( 0.01, 0.02, 0.01 );",
 
 		"}"
 
@@ -85,17 +59,7 @@ var CloudsShader = {
 
 	fragmentShader: [
 
-		"const   vec3 	skyBlue = vec3( -0.37, -0.05, 0.15 );",
-		
-		"uniform sampler2D grassImage;",
-		"uniform sampler2D surfaceImage;",
-		"uniform sampler2D map;",
-		"uniform sampler2D map2;",
-		"uniform sampler2D map3;",
-		"uniform vec3 targetStart;",
-		"uniform vec3 targetEnd;",
-
-		"uniform float time;",
+		"const vec3 skyBlue = vec3( -0.37, -0.05, 0.15 );",
 
 		"uniform vec3 fogColor;",
 		"uniform float fogDensity;",
@@ -119,7 +83,7 @@ var CloudsShader = {
 			
 			// lights
 			
-			"gl_FragColor = vec4(vec3(vLightWeighting) * vec3(0.9, 0.5, 0.3) + vec3(0.7, 0.6, 0.6), vLightWeighting * 0.95 + 0.05 );",
+			"gl_FragColor = vec4( vec3( vLightWeighting ) * vec3( 0.9, 0.5, 0.3 ) + vec3( 0.7, 0.6, 0.6 ), vLightWeighting * 0.95 + 0.05 );",
 
 
 			// fog
@@ -137,14 +101,13 @@ var CloudsShader = {
 
 			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.a ), fogFactor );",
 
-
 		"}"
 
 	].join("\n")
 
 };
 
-function applyCloudsShader( obj, shader, start, end, materials ) {
+function applyCloudsShader( obj, shader ) {
 
 	var shaderParams = {
 
@@ -161,26 +124,9 @@ function applyCloudsShader( obj, shader, start, end, materials ) {
 
 		
 	var mat = new THREE.MeshShaderMaterial( shaderParams );
-
 	mat.uniforms = THREE.UniformsUtils.clone( shaderParams.uniforms );
 	
-	mat.uniforms[ 'targetStart'  ].value   = start;
-	mat.uniforms[ 'targetEnd'    ].value   = end;
-	mat.uniforms[ 'grassImage'   ].texture = shaderParams.uniforms[ 'grassImage'   ].texture;
-	mat.uniforms[ 'surfaceImage' ].texture = shaderParams.uniforms[ 'surfaceImage' ].texture;
-
-	mat.uniforms.colorA.value = shader.colors.colorA;
-	mat.uniforms.colorB.value = shader.colors.colorB;
-	mat.uniforms.colorC.value = shader.colors.colorC;
-	
 	obj.materials[ 0 ] = mat;
-	materials.push( mat );
-	
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
-	
 	
 };
 
