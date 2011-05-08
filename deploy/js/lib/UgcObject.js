@@ -1,6 +1,6 @@
 var UgcObject = function ( data ) {
 
-	var VERSION = 4,
+	var VERSION = 4, UNIT_SIZE = 50,
 	_type = null, _grid = {}, _count = 0;
 
 	this.addVoxel = function ( x, y, z, color, object ) {
@@ -31,7 +31,8 @@ var UgcObject = function ( data ) {
 
 	this.getJSON = function () {
 
-		var i, item, array = [ VERSION ], currentColor = null, items = [], itemsCount = 0;
+		var i, item, array = [ VERSION ],
+		currentColor = null, items = [], itemsCount = 0;
 
 		function pushItems() {
 
@@ -71,17 +72,18 @@ var UgcObject = function ( data ) {
 
 	this.getMesh = function () {
 
-		var geometry = new THREE.Cube( 50, 50, 50 );
+		var i, item, voxel,
+		geometry = new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ),
+		group = new THREE.Object3D();
 
-		var group = new THREE.Object3D();
+		for ( i in _grid ) {
 
-		for ( var i in _grid ) {
+			item = _grid[ i ];
 
-			var item = _grid[ i ];
-			var voxel = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: item.color } ) );
-			voxel.position.x = item.x * 50;
-			voxel.position.y = item.y * 50;
-			voxel.position.z = item.z * 50;
+			voxel = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: item.color } ) );
+			voxel.position.x = item.x * UNIT_SIZE;
+			voxel.position.y = item.y * UNIT_SIZE;
+			voxel.position.z = item.z * UNIT_SIZE;
 			voxel.matrixAutoUpdate = false;
 			voxel.updateMatrix();
 			voxel.update();

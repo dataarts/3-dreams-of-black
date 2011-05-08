@@ -142,18 +142,18 @@ function initPostprocessingNoise( effect ) {
 
             "ao = 0.0;",
             "for( int i=1; i<13; i++ ){",
-              "rndUv = vec3(vUv,depth) + ssaoRad*samplerSphere[i].xyz;",
+              "rndUv = vec3(vUv,depth) + ssaoRad*reflect(samplerSphere[i].xyz,normal.xyz);",
 
               "vec4 rndDepthRGB = texture2D(tDepth,rndUv.xy);",
               "float rndDepth = rndDepthRGB.r/3.+rndDepthRGB.g/3.+rndDepthRGB.b/3.;",
               "if(rndDepthRGB.a == 0.0) rndDepth = 1.;",
 
               "float zd = (rndUv.z-rndDepth);",
-              "zd = max(min(zd-0.018,0.1-zd), 0.0);",
-              "ao += 1./(1.+(10000.0*sqrt(zd)));",
+              "zd = max(min(zd-0.025,0.975-zd), 0.0);",
+              "ao += 1./(1.+1000.*(sqrt(10.*zd)));",
             "}",
             "ao = ao/13.0;",
-            "gl_FragColor = vec4(col.rgb*ao,col.a);",
+            "gl_FragColor = vec4(col.rgb*ao*ao,col.a);",
             "gl_FragColor.rgb *= 1./gl_FragColor.a;",
 
           "} else if (dof == 1.0) {",
