@@ -9,7 +9,7 @@
 		"film",
 		"explore",
 		"relauncher",
-		"tool"
+		"tool",
 	];
 	var historyDispatches = [];
 
@@ -19,13 +19,13 @@
 	logger.domElement.style.position = 'fixed';
 	logger.domElement.style.right = '100px';
 	logger.domElement.style.top = '0px';
-	document.body.appendChild( logger.domElement );
+	//document.body.appendChild( logger.domElement );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
 	stats.domElement.style.right = '0px';
 	stats.domElement.style.top = '0px';
-	document.body.appendChild( stats.domElement );
+	//document.body.appendChild( stats.domElement );
 
 	shared = {
 
@@ -86,7 +86,7 @@
 	document.body.appendChild( ugc.getDomElement() );
 
 	shortcuts = new Shortcuts( shared );
-	document.body.appendChild( shortcuts.getDomElement() );
+	//document.body.appendChild( shortcuts.getDomElement() );
 
 	shared.signals.load.add( function () {
 
@@ -125,7 +125,8 @@
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
-	setSection( launcher );
+	handleHistory();
+	// setSection( launcher );
 	animate();
 
 	//
@@ -133,21 +134,35 @@
 	// Main listener for History API
 	window.onpopstate = function(e) {
 
+		handleHistory();
+
+	};
+
+	function handleHistory() {
+
 		// Handle History API stuff
 		var folder = window.location.pathname.toString();
 
-		for(var i = 0; i < historySections.length; i++) {
+		if(folder === "\/") {
 
-			if(folder.match(historySections[i])) {
+			shared.signals.showlauncher.dispatch();
 
-				historyDispatches[i].dispatch();
-				break;
+		} else {
+
+			for(var i = 0; i < historySections.length; i++) {
+
+				if(folder.match(historySections[i])) {
+
+					historyDispatches[i].dispatch();
+					break;
+
+				}
 
 			}
 
 		}
 
-	};
+	}
 
 	function setSection( section, title, path ) {
 
@@ -177,8 +192,8 @@
 
 		shared.signals.mousedown.dispatch( event );
 
-		event.preventDefault();
-		event.stopPropagation();
+		//event.preventDefault();
+		//event.stopPropagation();
 
 	}
 
@@ -186,8 +201,8 @@
 
 		shared.signals.mouseup.dispatch( event );
 
-		event.preventDefault();
-		event.stopPropagation();
+		//event.preventDefault();
+		//event.stopPropagation();
 
 	}
 

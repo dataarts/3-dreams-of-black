@@ -146,7 +146,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	} );
 
-	shared.ugcSignals.submit.add( function () {
+	shared.ugcSignals.submit.add( function (title, email) {
 
 		var c = document.createElement('canvas');
 		c.width = 300;
@@ -156,9 +156,10 @@ var UgcObjectCreator = function ( shared ) {
 		var thumbnail = c.toDataURL();
 		delete c;
 
+
 		var submission = {
-			title: 'Amorphous Building',
-			email: 'dougfritz@gmail.com',
+			title: title,
+			email: email,
 			category: 'ground',
 			data: painter.getObject().getJSON()
 		};
