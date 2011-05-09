@@ -175,7 +175,7 @@ var Clouds = function ( shared, isRelaunch ) {
 	function onMouseMove () {
 		if(!isRelaunch) {
 			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
-			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
+			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 60 - 30;
 			vector = new THREE.Vector3( shared.mouse.x - shared.screenWidth/2, - shared.mouse.y + shared.screenHeight/2, 0 );
 		}
 	}
