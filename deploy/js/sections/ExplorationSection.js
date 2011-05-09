@@ -7,7 +7,6 @@ var ExplorationSection = function ( shared ) {
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
-
 	// renderer and post effects
 
 	var progress = 0, start = 0, lastTime = 0;
@@ -17,6 +16,7 @@ var ExplorationSection = function ( shared ) {
 	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes, fadeOutEffect;
 	var fadeInTime = 0;
 	var lastWorldId = "";
+	var paused = false;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -146,7 +146,22 @@ var ExplorationSection = function ( shared ) {
 
 	//--- stop ---
 
-	function stop() {
+	function stop(e) {
+
+		// Depracated for research on
+		// History API in HTML5 spec.
+		// Return + Enter
+		// if(e.keyCode == 13) {
+		// 
+		// 	paused = !paused;
+		// 	if(pause) {
+		// 
+		// 		// Show UI
+		// 		
+		// 
+		// 	}
+		// 
+		// }
 
 	};
 
@@ -161,8 +176,6 @@ var ExplorationSection = function ( shared ) {
 		shared.viewportHeight = shared.baseHeight * scale
 
 		renderer.setSize( shared.viewportWidth, shared.viewportHeight );
-
-		// TODO: Hacky...
 
 		renderTarget.width = shared.viewportWidth;
 		renderTarget.height = shared.viewportHeight;
@@ -183,68 +196,80 @@ var ExplorationSection = function ( shared ) {
 
 		domElement.style.display = 'block';
 		domElement.appendChild( renderer.domElement );
+		shared.signals.keyup.add( stop );
 
 	};
 
 	this.hide = function () {
 
 		domElement.style.display = 'none';
+		shared.signals.keyup.remove( stop );
 
 	};
 
 	this.resize = function ( width, height ) {
 
-		console.log( "Exploration Resize" );
+		// console.log( "Exploration Resize" );
 
 	};
 
 	this.update = function () {
 
-		// just flying around worlds using new RollCamera
+		// update time
+
+		time = new Date().getTime() - start;
+		delta = time - lastTime;
+		lastTime = time;
+
+		delta = Math.min( 1000, Math.max( 0, delta ));
+
 		
-		if( world && world.scene ) {
+		
+		// update world
 
-			time = new Date().getTime() - start;
-			delta = time - lastTime;
-			lastTime = time;
-			delta = 33;
+		if(!paused) {
 
-			// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
-			//if( soup ) soup.update( delta, camera.camera );
-			//THREE.AnimationHandler.update( delta );
+			if( world && world.scene ) {
 
-			camera.updateCamera( progress, delta, time );
-			world.update( delta, camera.camera, true );
-			
 
-			clearEffect.update( progress, delta, time );
+				// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
+				//if( soup ) soup.update( delta, camera.camera );
+				//THREE.AnimationHandler.update( delta );
 
-			renderer.setClearColor( world.scene.fog ? world.scene.fog.color : 0xffffff );
-			renderer.render( world.scene, camera.camera, renderTarget );
+				camera.updateCamera( progress, delta, time );
+				world.update( delta, camera.camera, true );
 
-			// fade in/out
 
-			if( fadeInTime < 1000 ) {
-				
-				fadeInTime += delta;
-				fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
+				clearEffect.update( progress, delta, time );
 
-			} else {
-				
-				for( var i = 0; i < portals.length; i++ ) {
-					
-					if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
-						
-						fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
-						
+				renderer.setClearColor( world.scene.fog ? world.scene.fog.color : 0xffffff );
+				renderer.render( world.scene, camera.camera, renderTarget );
+
+				// fade in/out
+
+				if( fadeInTime < 1000 ) {
+
+					fadeInTime += delta;
+					fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
+
+				} else {
+
+					for( var i = 0; i < portals.length; i++ ) {
+
+						if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+
+							fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+
+						}
+
 					}
-					
+
 				}
-				
+
+
+				postEffect.update( progress, delta, time );
+
 			}
-
-
-			postEffect.update( progress, delta, time );
 
 		}
 

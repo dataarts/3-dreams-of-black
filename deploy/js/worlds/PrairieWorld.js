@@ -46,6 +46,12 @@ var PrairieWorld = function ( shared, camera ) {
 	this.directionalLight1.position.set( this.settings.directionalLight1.x, this.settings.directionalLight1.y, this.settings.directionalLight1.z );
 	this.directionalLight2.position.set( this.settings.directionalLight2.x, this.settings.directionalLight2.y, this.settings.directionalLight2.z );
 	
+	
+	// Init shader
+	
+	ROME.TrailShader.init();
+	
+	
 	// Lens flares
 
 	if ( ENABLE_LENSFLARES ) {

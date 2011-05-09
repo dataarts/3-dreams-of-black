@@ -2,9 +2,16 @@ var UgcHandler = function () {
 
 	var base_url = '/ugc/objects';
 
-	this.getLatestUGOs = function ( callback ) {
+	this.getLatestUGOs = function ( callback, index ) {
 
 		var url = base_url + '/latest';
+
+		// START TEMPORARY, PLEASE REMOVE ON LAUNCH
+
+		if( window.location.host === "localhost" ) url = "temporaryProxies/latest.php?index=" + index;
+
+		// END TEMPORARY, PLEASE REMOVE ON LAUNCH
+
 
 		var xhr = new XMLHttpRequest();
 		xhr.open( 'GET', url, true );
@@ -33,6 +40,15 @@ var UgcHandler = function () {
 
 	this.getUGO = function( id, callback ) {
 		var url = base_url+"/"+id;
+		
+		// START TEMPORARY, PLEASE REMOVE ON LAUNCH
+
+		if( window.location.host === "localhost" ) url = "temporaryProxies/get.php?index=" + id;
+
+		// END TEMPORARY, PLEASE REMOVE ON LAUNCH
+		
+		
+		
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', url);
 		xhr.onreadystatechange = function () {

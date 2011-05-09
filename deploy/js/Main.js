@@ -117,6 +117,13 @@
 
 	//
 
+	// Main listener for History API
+	window.onpopstate = function(e) {
+
+		console.log("popstate: " + e);
+
+	};
+
 	function setSection( section ) {
 
 		if ( currentSection ) currentSection.hide();
@@ -139,8 +146,8 @@
 
 		shared.signals.mousedown.dispatch( event );
 
-		event.preventDefault();
-		event.stopPropagation();
+		//event.preventDefault();
+		//event.stopPropagation();
 
 	}
 
@@ -148,8 +155,8 @@
 
 		shared.signals.mouseup.dispatch( event );
 
-		event.preventDefault();
-		event.stopPropagation();
+		//event.preventDefault();
+		//event.stopPropagation();
 
 	}
 
@@ -163,7 +170,6 @@
 	}
 
 	// Accelerometer data in question
-
 	function onWindowDeviceOrientation( event ) {
 
 		if( !event.gamma && !event.beta ) {

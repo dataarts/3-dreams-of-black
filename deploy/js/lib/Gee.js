@@ -143,6 +143,7 @@
  	getter('pmouseX');
  	getter('pmouseY');
  	getter('mousePressed');
+	getter('domElement');
 
  	var n = function() {};
 
@@ -212,35 +213,35 @@
  	window.addEventListener('mousemove', updateMousePosition, false);
  	window.addEventListener('mousemove', fireMouseMove, false);
 
- 	d.addEventListener('mousedown', function() {
- 		_privateParts['mousePressed'] = true;
- 		_this['mousedown']();
- 		d.addEventListener('mousemove', _this['mousedrag'], false);
- 		d.removeEventListener('mousemove', fireMouseMove, false);
- 	}, false);
-
- 	d.addEventListener('mouseup', function() {
- 		_privateParts['mousePressed'] = false;
- 		_this['mouseup']();
- 		d['removeEventListener']('mousemove', _this['mousedrag'], false);
- 		d.addEventListener('mousemove', fireMouseMove, false);
- 	}, false);
-
- 	window.addEventListener('keydown', function(e) {
- 		var kc = e.keyCode;
- 		_privateParts['key'] = String.fromCharCode(kc); // Kinda busted.
- 		_privateParts['keyCode'] = kc;
- 		_keysDown[kc] = true;
- 		_this['keydown']();
- 	}, false);
-
- 	window.addEventListener('keyup', function(e) {
- 		var kc = e.keyCode;
- 		_privateParts['key'] = String.fromCharCode(kc); // Kinda busted.
- 		_privateParts['keyCode'] = kc;
- 		_keysDown[kc] = false;
- 		_this['keyup']();
- 	}, false);
+ 	// d.addEventListener('mousedown', function() {
+ 	// 	_privateParts['mousePressed'] = true;
+ 	// 	_this['mousedown']();
+ 	// 	d.addEventListener('mousemove', _this['mousedrag'], false);
+ 	// 	d.removeEventListener('mousemove', fireMouseMove, false);
+ 	// }, false);
+ 	// 
+ 	// d.addEventListener('mouseup', function() {
+ 	// 	_privateParts['mousePressed'] = false;
+ 	// 	_this['mouseup']();
+ 	// 	d['removeEventListener']('mousemove', _this['mousedrag'], false);
+ 	// 	d.addEventListener('mousemove', fireMouseMove, false);
+ 	// }, false);
+ 	// 
+ 	// window.addEventListener('keydown', function(e) {
+ 	// 	var kc = e.keyCode;
+ 	// 	_privateParts['key'] = String.fromCharCode(kc); // Kinda busted.
+ 	// 	_privateParts['keyCode'] = kc;
+ 	// 	_keysDown[kc] = true;
+ 	// 	_this['keydown']();
+ 	// }, false);
+ 	// 
+ 	// window.addEventListener('keyup', function(e) {
+ 	// 	var kc = e.keyCode;
+ 	// 	_privateParts['key'] = String.fromCharCode(kc); // Kinda busted.
+ 	// 	_privateParts['keyCode'] = kc;
+ 	// 	_keysDown[kc] = false;
+ 	// 	_this['keyup']();
+ 	// }, false);
 
 	/*
 
