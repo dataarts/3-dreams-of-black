@@ -3,38 +3,19 @@ var LauncherSection = function ( shared ) {
 	Section.call( this );
 
 	var domElement,
-	canvas, context, gradient,
 	clouds, title, buttonEnter, buttonStart,
 	buttonEnterImg, uiContainer, ffTitle,
 	loading, footer, footNav;
 
 	domElement = document.createElement( 'div' );
-	domElement.style.width = window.innerWidth + 'px';
-	domElement.style.height = window.innerHeight + 'px';
-	domElement.style.backgroundColor = '#4584b4';
+	domElement.style.background = '-moz-linear-gradient(top, #0e223a 0%, #4584b4 50%)';
+	domElement.style.background = '-webkit-linear-gradient(top, #0e223a 0%, #4584b4 50%)';
+	domElement.style.background = 'linear-gradient(top, #0e223a 0%, #4584b4 50%)';
 	domElement.style.textAlign = 'center';
 
 	var isLoading = false;
-	
+
 	this.load = function () {
-
-		// Background
-
-		canvas = document.createElement( 'canvas' );
-		canvas.width = 32;
-		canvas.height = window.innerHeight;
-
-		context = canvas.getContext( '2d' );
-
-		gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-		gradient.addColorStop( 0, "#0e223a" );
-		gradient.addColorStop( 0.5, "#4584b4" );
-
-		context.fillStyle = gradient;
-		context.fillRect( 0, 0, canvas.width, canvas.height );
-
-		domElement.style.backgroundImage = 'url(' + canvas.toDataURL('image/png') + ')';
-		domElement.style.backgroundRepeat = 'repeat-x';
 
 		// Clouds
 
