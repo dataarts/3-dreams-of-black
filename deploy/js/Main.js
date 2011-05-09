@@ -117,6 +117,13 @@
 
 	//
 
+	// Main listener for History API
+	window.onpopstate = function(e) {
+
+		console.log("popstate: " + e);
+
+	};
+
 	function setSection( section ) {
 
 		if ( currentSection ) currentSection.hide();
