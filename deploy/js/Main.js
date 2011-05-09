@@ -19,13 +19,13 @@
 	logger.domElement.style.position = 'fixed';
 	logger.domElement.style.right = '100px';
 	logger.domElement.style.top = '0px';
-	document.body.appendChild( logger.domElement );
+	//document.body.appendChild( logger.domElement );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
 	stats.domElement.style.right = '0px';
 	stats.domElement.style.top = '0px';
-	document.body.appendChild( stats.domElement );
+	//document.body.appendChild( stats.domElement );
 
 	shared = {
 
@@ -86,7 +86,7 @@
 	document.body.appendChild( ugc.getDomElement() );
 
 	shortcuts = new Shortcuts( shared );
-	document.body.appendChild( shortcuts.getDomElement() );
+	//document.body.appendChild( shortcuts.getDomElement() );
 
 	shared.signals.load.add( function () {
 
