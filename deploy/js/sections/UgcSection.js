@@ -18,6 +18,7 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals = {};
 		shared.ugcSignals.showintro = new Signal();
 		shared.ugcSignals.showobjectcreator = new Signal();
+		shared.ugcSignals.showsoupcreator = new Signal();
 
 		shared.ugcSignals.object_createmode = new Signal();
 		shared.ugcSignals.object_erasemode = new Signal();
@@ -49,7 +50,7 @@ var UgcSection = function ( shared ) {
 
 		// Signals listeners
 
-		shared.ugcSignals.showintro.add( function ( mode ) {
+		shared.ugcSignals.showintro.add( function () {
 
 			intro.getDomElement().style.display = 'block';
 
@@ -64,6 +65,11 @@ var UgcSection = function ( shared ) {
 
 			objectCreator.getDomElement().style.display = 'block';
 			ui.getDomElement().style.display = 'block';
+
+		} );
+
+		shared.ugcSignals.showsoupcreator.add( function ( mode ) {
+
 
 		} );
 
