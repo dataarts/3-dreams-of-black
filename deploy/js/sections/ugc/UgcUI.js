@@ -125,6 +125,7 @@ var UgcUI = function (shared) {
 
     onClick('animals', function() {
       document.getElementById('animal-container').style.opacity = 1;
+      shared.ugcSignals.soup_mode.dispatch();
     }, false);
 
     /**
@@ -232,7 +233,7 @@ var UgcUI = function (shared) {
     shared.ugcSignals.object_erasemode.add(function() {
       document.getElementById('erase').setAttribute('class', 'active');
       document.getElementById('create').setAttribute('class', '');
-    })
+    });
 
     shared.ugcSignals.object_createmode.add(function() {
       document.getElementById('create').setAttribute('class', 'active');
@@ -256,6 +257,7 @@ var UgcUI = function (shared) {
 
   function closeAnimals() {
     document.getElementById('animal-container').style.opacity = 0;
+    shared.ugcSignals.object_mode.dispatch();
   }
 
   function closeAllMenus() {

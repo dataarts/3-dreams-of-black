@@ -250,7 +250,7 @@ var Soup = function ( camera, scene, shared ) {
 			running_function: function() { for( var i = 0; i < running_array.length; i++ ) toggle( running_array[ i ].domElement ); },
 			flying_function: function() { for( var i = 0; i < flying_array.length; i++ ) toggle( flying_array[ i ].domElement ); },
 			particle_function: function() { for( var i = 0; i < particle_array.length; i++ ) toggle( particle_array[ i ].domElement ); },
-			trail_function: function() { for( var i = 0; i < trail_array.length; i++ ) toggle( trail_array[ i ].domElement ); },
+			trail_function: function() { for( var i = 0; i < trail_array.length; i++ ) toggle( trail_array[ i ].domElement ); }
 			
 		};
 

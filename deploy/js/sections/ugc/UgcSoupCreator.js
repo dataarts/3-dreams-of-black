@@ -1,15 +1,18 @@
 var UgcSoupCreator = function ( shared ) {
 
-	var camera, scene, renderer;
+	var soup, soupGroup;
 
-	domElement = document.createElement( 'div' );
+	this.init = function () {
 
-	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
-	camera.position.z = 6000;
+    shared.ugc.scene.collisions = new THREE.CollisionSystem();
+		soupGroup = new THREE.Object3D();
+    soup = new UgcSoup( shared.ugc.camera, shared.ugc.scene, shared, true );
+
+  };
 
 	this.getDomElement = function () {
 
-		return renderer.domElement;
+		return shared.renderer.domElement;
 
 	};
 
@@ -26,17 +29,19 @@ var UgcSoupCreator = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
+		//camera.aspect = width / height;
+		//camera.updateProjectionMatrix();
 
-		renderer.setSize( width, height );
+		//renderer.setSize( width, height );
 
 	};
 
 	this.update = function () {
-
-		renderer.clear();
-		renderer.render( scene, camera );
+    //TODO add real delta
+    soup.update( 20 );
+    THREE.AnimationHandler.update( 20 );
+		//renderer.clear();
+		//renderer.render( scene, camera );
 
 	};
 
