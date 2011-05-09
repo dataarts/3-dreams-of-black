@@ -50,6 +50,10 @@ var DunesWorld = function ( shared ) {
 
 	initLensFlares( that, new THREE.Vector3( -5500, 3500, -10000 ), 0, 0 );		
 
+	// init shader
+	
+	DunesShader.init();
+
 
 	// generate base grid (rotations depend on where the grid is in space)
 	// 0-3 = tiles
@@ -78,11 +82,11 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 4 );										// walk
 
-			} else if( x === 1 && z === 4 ) {
+			} else if( x === 3 && z === 3 ) {
 
 				tileRow.push( 5 );										// prairie
 
-			} else if( x === 3 && z === 3 ) {
+			} else if( x === 1 && z === 4 ) {
 
 				tileRow.push( 6 );										// city
 

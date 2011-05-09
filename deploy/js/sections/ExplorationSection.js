@@ -177,8 +177,6 @@ var ExplorationSection = function ( shared ) {
 
 		renderer.setSize( shared.viewportWidth, shared.viewportHeight );
 
-		// TODO: Hacky...
-
 		renderTarget.width = shared.viewportWidth;
 		renderTarget.height = shared.viewportHeight;
 		delete renderTarget.__webglFramebuffer;
@@ -217,16 +215,22 @@ var ExplorationSection = function ( shared ) {
 
 	this.update = function () {
 
-		// just flying around worlds using new RollCamera
+		// update time
+
+		time = new Date().getTime() - start;
+		delta = time - lastTime;
+		lastTime = time;
+
+		delta = Math.min( 1000, Math.max( 0, delta ));
+
 		
+		
+		// update world
+
 		if(!paused) {
 
 			if( world && world.scene ) {
 
-				time = new Date().getTime() - start;
-				delta = time - lastTime;
-				lastTime = time;
-				delta = 33;
 
 				// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
 				//if( soup ) soup.update( delta, camera.camera );
