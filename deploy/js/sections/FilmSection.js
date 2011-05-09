@@ -294,7 +294,7 @@ var FilmSection = function ( shared ) {
 
 		if ( ! playing ) return;
 
-		if ( audio.currentTime > audio.duration - 3 ) {
+		if ( audio.currentTime > audio.duration - 2 ) {
 
 			shared.signals.showrelauncher.dispatch();
 			stop();
