@@ -9,7 +9,7 @@
 		"film",
 		"explore",
 		"relauncher",
-		"tool"
+		"tool",
 	];
 	var historyDispatches = [];
 
@@ -125,7 +125,8 @@
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
-	setSection( launcher );
+	handleHistory();
+	// setSection( launcher );
 	animate();
 
 	//
@@ -133,21 +134,35 @@
 	// Main listener for History API
 	window.onpopstate = function(e) {
 
+		handleHistory();
+
+	};
+
+	function handleHistory() {
+
 		// Handle History API stuff
 		var folder = window.location.pathname.toString();
 
-		for(var i = 0; i < historySections.length; i++) {
+		if(folder === "\/") {
 
-			if(folder.match(historySections[i])) {
+			shared.signals.showlauncher.dispatch();
 
-				historyDispatches[i].dispatch();
-				break;
+		} else {
+
+			for(var i = 0; i < historySections.length; i++) {
+
+				if(folder.match(historySections[i])) {
+
+					historyDispatches[i].dispatch();
+					break;
+
+				}
 
 			}
 
 		}
 
-	};
+	}
 
 	function setSection( section, title, path ) {
 
