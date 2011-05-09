@@ -73,11 +73,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// particles
 
-	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/dark_0.png" );
-	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/dark_1.png" );
-	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/dark_2.png" );
-	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/dark_3.png" );
-	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/dark_4.png" );
+	var sprite0 = THREE.ImageUtils.loadTexture( "/files/textures/dark_0.png" );
+	var sprite1 = THREE.ImageUtils.loadTexture( "/files/textures/dark_1.png" );
+	var sprite2 = THREE.ImageUtils.loadTexture( "/files/textures/dark_2.png" );
+	var sprite3 = THREE.ImageUtils.loadTexture( "/files/textures/dark_3.png" );
+	var sprite4 = THREE.ImageUtils.loadTexture( "/files/textures/dark_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 	particles = new Particles(20, scene, 1.5, particleSprites, 70, 60);
@@ -144,19 +144,19 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 
 
-	loader.load( { model: "files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
-	loader.load( { model: "files/models/soup/animals_A_black.js", callback: animalsLoadedProxy } );
-	loader.load( { model: "files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
-	loader.load( { model: "files/models/soup/goat_black.js", callback: goatLoadedProxy } );
-	//loader.load( { model: "files/models/soup/shdw2emergeA.js", callback: shadow2LoadedProxy } );
-	//loader.load( { model: "files/models/soup/shdw5walk.js", callback: shadow5LoadedProxy } );
-	//loader.load( { model: "files/models/soup/hand1.js", callback: hand1LoadedProxy } );
-	//loader.load( { model: "files/models/soup/hand2.js", callback: hand2LoadedProxy } );
-	loader.load( { model: "files/models/soup/arm_black.js", callback: armLoadedProxy } );
-	loader.load( { model: "files/models/soup/octo_black.js", callback: octoLoadedProxy } );
-	loader.load( { model: "files/models/soup/sickle.js", callback: sickleLoadedProxy } );
-	loader.load( { model: "files/models/soup/centipede.js", callback: centipedeLoadedProxy } );
-	//loader.load( { model: "files/models/soup/drownArmC.js", callback: drownLoadedProxy } );
+	loader.load( { model: "/files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
+	loader.load( { model: "/files/models/soup/animals_A_black.js", callback: animalsLoadedProxy } );
+	loader.load( { model: "/files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
+	loader.load( { model: "/files/models/soup/goat_black.js", callback: goatLoadedProxy } );
+	//loader.load( { model: "/files/models/soup/shdw2emergeA.js", callback: shadow2LoadedProxy } );
+	//loader.load( { model: "/files/models/soup/shdw5walk.js", callback: shadow5LoadedProxy } );
+	//loader.load( { model: "/files/models/soup/hand1.js", callback: hand1LoadedProxy } );
+	//loader.load( { model: "/files/models/soup/hand2.js", callback: hand2LoadedProxy } );
+	loader.load( { model: "/files/models/soup/arm_black.js", callback: armLoadedProxy } );
+	loader.load( { model: "/files/models/soup/octo_black.js", callback: octoLoadedProxy } );
+	loader.load( { model: "/files/models/soup/sickle.js", callback: sickleLoadedProxy } );
+	loader.load( { model: "/files/models/soup/centipede.js", callback: centipedeLoadedProxy } );
+	//loader.load( { model: "/files/models/soup/drownArmC.js", callback: drownLoadedProxy } );
 
 	function animalsLoadedProxy( geometry ) {
 
@@ -294,7 +294,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.divider = 4;
 	flyingAnimals.settings.flyingDistance = -15;
 
-	loader.load( { model: "files/models/soup/birds_A_black.js", callback: birdsALoadedProxy } );
+	loader.load( { model: "/files/models/soup/birds_A_black.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		
@@ -329,11 +329,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	trail.settings.offsetAmount = 10;
 	trail.settings.yscale = 0.15;
 
-	loader.load( { model: "files/models/soup/darkblob01.js", callback: blob01LoadedProxy } );
-	loader.load( { model: "files/models/soup/darkblob02.js", callback: blob02LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass03.js", callback: blob03LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass04.js", callback: blob04LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass05.js", callback: blob05LoadedProxy } );
+	loader.load( { model: "/files/models/soup/darkblob01.js", callback: blob01LoadedProxy } );
+	loader.load( { model: "/files/models/soup/darkblob02.js", callback: blob02LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass03.js", callback: blob03LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass04.js", callback: blob04LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass05.js", callback: blob05LoadedProxy } );
 
 
 	function blob01LoadedProxy( geometry ) {

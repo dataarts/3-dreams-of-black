@@ -46,11 +46,11 @@ var DunesSoup = function ( camera, scene, shared ) {
 	ribbons.settings.ribbonMax = 0.1;
 
 	// particles
-/*	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
-	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
-	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
-	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/particle_3.png" );
-	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/particle_4.png" );
+/*	var sprite0 = THREE.ImageUtils.loadTexture( "/files/textures/particle_0.png" );
+	var sprite1 = THREE.ImageUtils.loadTexture( "/files/textures/particle_1.png" );
+	var sprite2 = THREE.ImageUtils.loadTexture( "/files/textures/particle_2.png" );
+	var sprite3 = THREE.ImageUtils.loadTexture( "/files/textures/particle_3.png" );
+	var sprite4 = THREE.ImageUtils.loadTexture( "/files/textures/particle_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
@@ -82,8 +82,8 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	}
 
-	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
-	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
+	loader.load( { model: "/files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
+	loader.load( { model: "/files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 

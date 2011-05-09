@@ -35,10 +35,10 @@ var LauncherSection = function ( shared ) {
 
 		title = document.createElement( 'div' );
 		title.style.position = 'absolute';
-		title.innerHTML = '<img src="files/logo_heart.png">';
+		title.innerHTML = '<img src="/files/logo_heart.png">';
 		uiContainer.appendChild( title );
 
-		buttonEnter = createRolloverButton( "10px 0 0 85px", "files/enter_idle.png", "files/enter_rollover.png" );
+		buttonEnter = createRolloverButton( "10px 0 0 85px", "/files/enter_idle.png", "/files/enter_rollover.png" );
 		buttonEnter.addEventListener( 'click', function () {
 
 			loading.getDomElement().style.display = 'block';
@@ -51,7 +51,7 @@ var LauncherSection = function ( shared ) {
 		}, false );
 		uiContainer.appendChild( buttonEnter );
 
-		buttonStart = createRolloverButton( "10px 0 0 85px", "files/start_idle.png", "files/start_rollover.png" );
+		buttonStart = createRolloverButton( "10px 0 0 85px", "/files/start_idle.png", "/files/start_rollover.png" );
 		buttonStart.style.display = 'none';
 		buttonStart.addEventListener( 'click', function () {
 
@@ -96,7 +96,7 @@ var LauncherSection = function ( shared ) {
 			ffTitle = document.createElement( 'div' );
 			ffTitle.style.paddingTop = "60px";
 			ffTitle.style.marginLeft = "-2px";	// Ugly
-			ffTitle.innerHTML = "<img src = 'files/footer/header-trans.png' alt = 'ROME' />";
+			ffTitle.innerHTML = "<img src = '/files/footer/header-trans.png' alt = 'ROME' />";
 			domElement.appendChild( ffTitle );
 
 		}

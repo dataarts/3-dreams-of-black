@@ -47,7 +47,7 @@ var UgcObjectCreator = function ( shared ) {
 	initLensFlares( that, flaresPosition, sx, sy );
 
 	var loader = new THREE.SceneLoader();
-	loader.load( "files/models/dunes/D_tile_1.js", function ( result ) {
+	loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {
 
 		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
 

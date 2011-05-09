@@ -42,8 +42,9 @@
 			objects.push(objectFour);
 
 			function pushed(object) {
-				var url = "./" + object.title + ".html";
-				if(history.pushState) history.pushState({"id" : object.id}, "", url);
+				var url = "/" + object.title;
+				if(history.pushState) history.replaceState({"id" : object.id}, "", url);
+				
 			}
 
 			function popped(object) {
@@ -76,7 +77,9 @@
 
 			// Only called when back or first time on it
 			window.onpopstate = function(e) {
+				console.log(e);
 				if(e.state) {
+					console.log(e.state.id);
 					var object = objects[e.state.id];
 							object.popped.dispatch( object );
 				}
