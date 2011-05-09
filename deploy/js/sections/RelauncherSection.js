@@ -246,8 +246,6 @@ var RelauncherSection = function( shared ) {
 
 			e.preventDefault();
 			shared.signals.showugc.dispatch();
-			// Abstract to be able to attach to certain shared signals.
-			if(history) history.pushState({"title": "tool"}, "tool", "/tool");
 
 		}, false);
 
