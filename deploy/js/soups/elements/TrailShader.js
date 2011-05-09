@@ -181,9 +181,9 @@ ROME.TrailShader = {
 	
 	init: function() {
 
-		ROME.TrailShader.textures.faceMap = THREE.ImageUtils.loadTexture( "files/textures/PaintDubs.jpg" );
-		ROME.TrailShader.textures.lavaMap = THREE.ImageUtils.loadTexture( "files/textures/lava.jpg" );
-		ROME.TrailShader.textures.lavaNoiseMap = THREE.ImageUtils.loadTexture( "files/textures/Color_noise.jpg" );
+		ROME.TrailShader.textures.faceMap = THREE.ImageUtils.loadTexture( "/files/textures/PaintDubs.jpg" );
+		ROME.TrailShader.textures.lavaMap = THREE.ImageUtils.loadTexture( "/files/textures/lava.jpg" );
+		ROME.TrailShader.textures.lavaNoiseMap = THREE.ImageUtils.loadTexture( "/files/textures/Color_noise.jpg" );
 
 	},
 	

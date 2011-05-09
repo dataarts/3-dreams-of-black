@@ -17,8 +17,8 @@ var CityShader = {
 
 	init: function() {
 		
-		CityShader.uniforms.grassImage.texture = THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' );
-		CityShader.uniforms.surfaceImage.texture = THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' );
+		CityShader.uniforms.grassImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Grass.jpg' );
+		CityShader.uniforms.surfaceImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Clouds.jpg' );
 		
 	},
 

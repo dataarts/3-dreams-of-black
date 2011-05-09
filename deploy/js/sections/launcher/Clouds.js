@@ -1,22 +1,5 @@
 var Clouds = function ( shared, isRelaunch ) {
 
-	/*
-	var canvas = document.createElement( 'canvas' );
-	canvas.width = 32;
-	canvas.height = window.innerHeight;
-
-	var context = canvas.getContext( '2d' );
-
-	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-	gradient.addColorStop(0, "#1e4877");
-	gradient.addColorStop(0.5, "#4584b4");
-
-	context.fillStyle = gradient;
-	context.fillRect(0, 0, canvas.width, canvas.height);
-
-	document.body.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
-	*/
-
 	// Clouds
 
 	var boid, bird;
@@ -27,9 +10,9 @@ var Clouds = function ( shared, isRelaunch ) {
 	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
 	camera, postCamera, scene, postScene, birdsScene, renderer, context, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos,
 	wantedCameraUpX = 0;
-	
-	fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
-  
+
+	fog = new THREE.Fog( 0x75B4E4, - 100, 3000 );
+
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
 
@@ -39,7 +22,7 @@ var Clouds = function ( shared, isRelaunch ) {
 
 	geometry = new THREE.Geometry();
 
-	var texture = THREE.ImageUtils.loadTexture( 'files/cloud256.png', null, function () {
+	var texture = THREE.ImageUtils.loadTexture( '/files/cloud256.png', null, function () {
 
 		material = new THREE.MeshShaderMaterial( {
 
@@ -113,7 +96,7 @@ var Clouds = function ( shared, isRelaunch ) {
     mesh2 = new THREE.Mesh( geometry, material );
 
     var loader = new THREE.JSONLoader();
-    loader.load( { model: "./files/models/soup/birds_B_life.js", callback: makeScene } );
+    loader.load( { model: "/files/models/soup/birds_B_life.js", callback: makeScene } );
 
 	} );
 
@@ -122,32 +105,32 @@ var Clouds = function ( shared, isRelaunch ) {
 
 	renderer = new THREE.WebGLRenderer({ antialias: false, clearColor: 0x000000, clearAlpha: 0 });
 	renderer.domElement.style.position = 'absolute';
-  renderer.domElement.style.left = '0px';
-  renderer.domElement.style.top = '0px';
-  context = renderer.getContext();
+	renderer.domElement.style.left = '0px';
+	renderer.domElement.style.top = '0px';
+	context = renderer.getContext();
 
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
-  renderTargetClouds = new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight/2, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
-  renderTargetFlamingos = new THREE.WebGLRenderTarget( window.innerWidth*2, window.innerHeight*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
-  renderTargetClouds.depthBuffer = false;
-  renderTargetClouds.stencilBuffer = false;
-  renderTargetFlamingos.depthBuffer = false;
-  renderTargetFlamingos.stencilBuffer = false;
+	renderTargetClouds = new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight/2, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
+	renderTargetFlamingos = new THREE.WebGLRenderTarget( window.innerWidth*2, window.innerHeight*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
+	renderTargetClouds.depthBuffer = false;
+	renderTargetClouds.stencilBuffer = false;
+	renderTargetFlamingos.depthBuffer = false;
+	renderTargetFlamingos.stencilBuffer = false;
 
-  window.renderTargetClouds = renderTargetClouds;
-  postCamera = new THREE.Camera();
-  postCamera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
-  postScene = new THREE.Scene();
+	window.renderTargetClouds = renderTargetClouds;
+	postCamera = new THREE.Camera();
+	postCamera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
+	postScene = new THREE.Scene();
 
-  var postUniforms = {
-    "tClouds": { type: "t", value: 0, texture: renderTargetClouds },
-    "tFlamingos": { type: "t", value: 1, texture: renderTargetFlamingos },
-    "width": { type: "f", value: window.innerWidth },
-    "height": { type: "f", value: window.innerHeight },
-    "fogColor" : {type: "c", value: fog.color}
-  };
-  postMaterial = new THREE.MeshShaderMaterial( {
+	var postUniforms = {
+	"tClouds": { type: "t", value: 0, texture: renderTargetClouds },
+	"tFlamingos": { type: "t", value: 1, texture: renderTargetFlamingos },
+	"width": { type: "f", value: window.innerWidth },
+	"height": { type: "f", value: window.innerHeight },
+	"fogColor" : {type: "c", value: fog.color}
+	};
+	postMaterial = new THREE.MeshShaderMaterial( {
         uniforms: postUniforms,
         vertexShader: [
           "varying vec2 vUv;",
@@ -186,10 +169,10 @@ var Clouds = function ( shared, isRelaunch ) {
 
         ].join("\n")
       } );
-  postScene.addObject( new THREE.Mesh( new THREE.Plane( window.innerWidth, window.innerHeight ), postMaterial ) );
+	postScene.addObject( new THREE.Mesh( new THREE.Plane( window.innerWidth, window.innerHeight ), postMaterial ) );
 
 
-  function onMouseMove () {
+	function onMouseMove () {
 		if(!isRelaunch) {
 			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
 			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
@@ -197,10 +180,10 @@ var Clouds = function ( shared, isRelaunch ) {
 		}
 	}
 
-  function makeScene(geometry){
+	function makeScene(geometry) {
 
     for ( var i = 0; i < 2; i ++ ) {
-      /////Bioids
+      /////Boids
       boid = boids[ i ] = new Boid();
       boid.position.x = 320;
       boid.position.y = 20 + Math.random() * 10;
@@ -287,9 +270,11 @@ var Clouds = function ( shared, isRelaunch ) {
     birdsGroup.position.z = camera.position.z - 500;
     birdsGroup.position.y = - 50;
 
+		/*
 		wantedCameraUpX = Math.min( Math.max( -0.3, ( mouse.x - camera.position.x ) * 0.005 ), 0.3 );
 		camera.up.x += ( wantedCameraUpX - camera.up.x ) * 0.005;
 		camera.up.normalize();
+		*/
 
 		camera.target.position.x = camera.position.x;
 		camera.target.position.y = camera.position.y;

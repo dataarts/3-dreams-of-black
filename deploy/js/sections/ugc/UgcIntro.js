@@ -16,7 +16,7 @@ var UgcIntro = function( shared ) {
 			instructions.style.top = (window.innerHeight / 2.0 - 97) + "px";
 			instructions.style.width = "272px";
 			instructions.style.height = "137px";
-			instructions.style.background = 'url(files/ugcIntro/instructions.png) 0 0 no-repeat';
+			instructions.style.background = 'url(/files/ugcIntro/instructions.png) 0 0 no-repeat';
 
 	domElement.appendChild( instructions )
 
@@ -30,7 +30,7 @@ var UgcIntro = function( shared ) {
 			sky.style.cursor = "pointer";
 
 	var skyImage = document.createElement( 'img' );
-			skyImage.setAttribute('src', 'files/ugcIntro/sky.png');
+			skyImage.setAttribute('src', '/files/ugcIntro/sky.png');
 			// skyImage.setAttribute('title', 'Create a daydream of the future.');
 			skyImage.setAttribute('alt', 'SKY');
 			skyImage.style.display = "block";
@@ -47,7 +47,7 @@ var UgcIntro = function( shared ) {
 			ground.style.cursor = "pointer";
 
 	var groundImage = document.createElement( 'img' );
-			groundImage.setAttribute('src', 'files/ugcIntro/ground.png');
+			groundImage.setAttribute('src', '/files/ugcIntro/ground.png');
 			// groundImage.setAttribute('title', 'Build a memory of the past');
 			groundImage.setAttribute('alt', 'GROUND');
 			groundImage.style.display = "block";

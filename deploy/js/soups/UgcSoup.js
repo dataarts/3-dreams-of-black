@@ -72,11 +72,11 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	ribbons.settings.ribbonMax = 8;
 */
 	// light particles
-	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/particle_0.png" );
-	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/particle_1.png" );
-	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/particle_2.png" );
-	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/particle_3.png" );
-	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/particle_4.png" );
+	var sprite0 = THREE.ImageUtils.loadTexture( "/files/textures/particle_0.png" );
+	var sprite1 = THREE.ImageUtils.loadTexture( "/files/textures/particle_1.png" );
+	var sprite2 = THREE.ImageUtils.loadTexture( "/files/textures/particle_2.png" );
+	var sprite3 = THREE.ImageUtils.loadTexture( "/files/textures/particle_3.png" );
+	var sprite4 = THREE.ImageUtils.loadTexture( "/files/textures/particle_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 
@@ -342,20 +342,20 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	runningAnimals.array[30] = "arm";
 */
 
-	loader.load( { model: "files/models/soup/animals_A_life.js", callback: lifeAnimalsLoadedProxy } );
-	loader.load( { model: "files/models/soup/elk_life.js", callback: elkLoadedProxy } );
-	loader.load( { model: "files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
-	loader.load( { model: "files/models/soup/fish_life.js", callback: fishLoadedProxy } );
-	loader.load( { model: "files/models/soup/sockpuppet_jump.js", callback: sockjumpLoadedProxy } );
-	loader.load( { model: "files/models/soup/sockpuppet_popup.js", callback: sockpopupLoadedProxy } );
+	loader.load( { model: "/files/models/soup/animals_A_life.js", callback: lifeAnimalsLoadedProxy } );
+	loader.load( { model: "/files/models/soup/elk_life.js", callback: elkLoadedProxy } );
+	loader.load( { model: "/files/models/soup/moose_life.js", callback: mooseLoadedProxy } );
+	loader.load( { model: "/files/models/soup/fish_life.js", callback: fishLoadedProxy } );
+	loader.load( { model: "/files/models/soup/sockpuppet_jump.js", callback: sockjumpLoadedProxy } );
+	loader.load( { model: "/files/models/soup/sockpuppet_popup.js", callback: sockpopupLoadedProxy } );
 	
-	loader.load( { model: "files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
-	loader.load( { model: "files/models/soup/animals_A_black.js", callback: blackAnimalsLoadedProxy } );
-	loader.load( { model: "files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
-	loader.load( { model: "files/models/soup/goat_black.js", callback: goatLoadedProxy } );
-	loader.load( { model: "files/models/soup/shdw2.js", callback: shadowLoadedProxy } );
-	loader.load( { model: "files/models/soup/arm_black.js", callback: armLoadedProxy } );
-	loader.load( { model: "files/models/soup/octo_black.js", callback: octoLoadedProxy } );
+	loader.load( { model: "/files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
+	loader.load( { model: "/files/models/soup/animals_A_black.js", callback: blackAnimalsLoadedProxy } );
+	loader.load( { model: "/files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
+	loader.load( { model: "/files/models/soup/goat_black.js", callback: goatLoadedProxy } );
+	loader.load( { model: "/files/models/soup/shdw2.js", callback: shadowLoadedProxy } );
+	loader.load( { model: "/files/models/soup/arm_black.js", callback: armLoadedProxy } );
+	loader.load( { model: "/files/models/soup/octo_black.js", callback: octoLoadedProxy } );
 
 
 	function lifeAnimalsLoadedProxy( geometry ) {
@@ -529,9 +529,9 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	flyingAnimals.array[2] = "b";
 	flyingAnimals.array[3] = "b";
 
-	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
-	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
-	loader.load( { model: "files/models/soup/birds_A_black.js", callback: birdsABlackLoadedProxy } );
+	loader.load( { model: "/files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
+	loader.load( { model: "/files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
+	loader.load( { model: "/files/models/soup/birds_A_black.js", callback: birdsABlackLoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		allAnimals.eagle.geometry = geometry;
@@ -568,9 +568,9 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 	// butterflys
 /*	var butterflysD = new AnimalInFrontOfCamera(15, scene);
-	loader.load( { model: "files/models/soup/butterfly_hiD.js", callback: butterflysD.addAnimal } );
+	loader.load( { model: "/files/models/soup/butterfly_hiD.js", callback: butterflysD.addAnimal } );
 	var butterflysC = new AnimalInFrontOfCamera(15, scene);
-	loader.load( { model: "files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
+	loader.load( { model: "/files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
 */	
 	
 	// life trail - of grass/trees/etc
@@ -592,20 +592,20 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	}
 	trail.array[4] = "light";
 
-	loader.load( { model: "files/models/soup/grass01.js", callback: grass01LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass02.js", callback: grass02LoadedProxy } );
-	loader.load( { model: "files/models/soup/grass03.js", callback: grass03LoadedProxy } );
-	loader.load( { model: "files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
-	//loader.load( { model: "files/models/soup/grassFlower.js", callback: grass05LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass01.js", callback: grass01LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass02.js", callback: grass02LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass03.js", callback: grass03LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
+	//loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass05LoadedProxy } );
 	
-	loader.load( { model: "files/models/soup/evergreen_low.js", callback: treeALoadedProxy } );
-	loader.load( { model: "files/models/soup/evergreen_high.js", callback: treeBLoadedProxy } );
-	loader.load( { model: "files/models/soup/treeGeneric.js", callback: treeCLoadedProxy } );
-	loader.load( { model: "files/models/soup/treeGenericLower.js", callback: treeDLoadedProxy } );
-	loader.load( { model: "files/models/soup/treeOrange.js", callback: treeELoadedProxy } );
+	loader.load( { model: "/files/models/soup/evergreen_low.js", callback: treeALoadedProxy } );
+	loader.load( { model: "/files/models/soup/evergreen_high.js", callback: treeBLoadedProxy } );
+	loader.load( { model: "/files/models/soup/treeGeneric.js", callback: treeCLoadedProxy } );
+	loader.load( { model: "/files/models/soup/treeGenericLower.js", callback: treeDLoadedProxy } );
+	loader.load( { model: "/files/models/soup/treeOrange.js", callback: treeELoadedProxy } );
 
 	// lighthouse
-	loader.load( { model: "files/models/soup/lighthouse.js", callback: ligthhouseLoadedProxy } );
+	loader.load( { model: "/files/models/soup/lighthouse.js", callback: ligthhouseLoadedProxy } );
 
 	function grass01LoadedProxy( geometry ) {
 		trail.addInstance( geometry, "01", false );
@@ -672,7 +672,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	trail.settings.scale = 25.0;
 	trail.settings.offsetAmount = 10;
 
-	loader.load( { model: "files/models/soup/darkBlob4.js", callback: blob04LoadedProxy } );
+	loader.load( { model: "/files/models/soup/darkBlob4.js", callback: blob04LoadedProxy } );
 
 	function blob04LoadedProxy( geometry ) {
 

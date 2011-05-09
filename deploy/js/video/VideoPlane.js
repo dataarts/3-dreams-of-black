@@ -215,18 +215,10 @@ var VideoPlane = function( shared, layer, conf ) {
         polyTrail.target.y = -mouseY;
         polyTrail.update();
 
-//        for (i = 0; i <= 4; i++) {
-//            material.uniforms['trail' + i].value.x = polyTrail.s[i*4].x;
-//            material.uniforms['trail' + i].value.y = polyTrail.s[i*4].y+0.0001*i;
-//        }
-        //var trail = [];
         for (i = 0; i <= 4; i++) {
-            //trail.push(polyTrail.s[i].x);
-            //trail.push(polyTrail.s[i].y+0.0001*i);
             material.uniforms['trail' + i].value.x = polyTrail.s[i*4].x;
             material.uniforms['trail' + i].value.y = polyTrail.s[i*4].y+0.0001*i;
         }
-        //material.uniforms['trail'].value = trail;
         material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
         material.uniforms['mouseXY'].value.y = -mouseY;
         material.uniforms['mouseSpeed'].value = mouseSpeed;

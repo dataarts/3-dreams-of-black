@@ -67,7 +67,7 @@ var PrairieWorld = function ( shared, camera ) {
 
 	// Trail
 
-	var markTexture = THREE.ImageUtils.loadTexture( "files/textures/trailMarkTexture.jpg" );
+	var markTexture = THREE.ImageUtils.loadTexture( "/files/textures/trailMarkTexture.jpg" );
 
 	// Scene
 
@@ -134,7 +134,7 @@ var PrairieWorld = function ( shared, camera ) {
 
 	};
 
-	loader.load( "files/models/prairie/Prairie.js", prairieLoaded );
+	loader.load( "/files/models/prairie/Prairie.js", prairieLoaded );
 
 	this.update = function ( delta, camera, portalsActive ) {
 
