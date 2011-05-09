@@ -2,7 +2,8 @@ var UgcUI = function (shared) {
 
   var _this = this;
 
-  var ANIMAL_CONTAINER_HEIGHT = 165;
+  var ANIMAL_CONTAINER_HEIGHT = 114;
+  var NATIVE_ASPECT = 1.28005657708628;
   var SIZE_SMALL = 1;
   var SIZE_MED = 3;
   var SIZE_LARGE = 5;
@@ -50,7 +51,7 @@ var UgcUI = function (shared) {
   animalContainerDiv.style.marginTop = -ANIMAL_CONTAINER_HEIGHT + 'px';
 
   var animalInnerDiv = classedElement('div', 'animal-inner');
-  var animalInnerDivWidth = ((numAnimals) * 220);
+  var animalInnerDivWidth = ((numAnimals) * 140);
   animalInnerDiv.style.padding = '10px';
   animalInnerDiv.style.width = animalInnerDivWidth + 'px';
   animalInnerDiv.style.height = '100%';
@@ -62,6 +63,101 @@ var UgcUI = function (shared) {
   }
 
   domElement.appendChild(animalContainerDiv);
+
+  var submitShade = document.createElement('div');
+  submitShade.setAttribute('id', 'voxel-submit-shade');
+  domElement.appendChild(submitShade);
+
+  var submit = document.createElement('div');
+
+  submit.addEventListener('mousemove', function(e) {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  });
+  submit.addEventListener('mouseup', function(e) {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  });
+  submit.addEventListener('mousedown', function(e) {
+
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  });
+  submitShade.addEventListener('mousemove', function(e) {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  });
+  submitShade.addEventListener('mouseup', function(e) {
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  });
+  submitShade.addEventListener('mousedown', function(e) {
+    hideSubmitDialogue();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  });
+
+
+  var submitText = idElement('div', 'voxel-submit-text');
+
+  submitText.innerHTML = 'Beautiful! Thank you for contributing. If you give us your email, then we will email you when your object is approved.';
+
+  var submitImage = idElement('div', 'voxel-submit-image');
+  var submitInputs = idElement('div', 'voxel-submit-inputs');
+
+  var submitTitle = idElement('input', 'voxel-submit-title');
+  submitTitle.setAttribute('type', 'text');
+  submitTitle.setAttribute('value', 'GIVE A TITLE TO YOUR DREAM');
+
+  submitTitle.addEventListener('focus', function() {
+    this.value = '';
+  }, false);
+
+  var submitEmail = idElement('input', 'voxel-submit-email');
+
+  submitEmail.setAttribute('type', 'text');
+  submitEmail.setAttribute('value', 'YOUR EMAIL ADDRESS');
+
+  submitEmail.addEventListener('focus', function() {
+    this.value = '';
+  }, false);
+
+  var submitSubmit = idElement('div', 'voxel-submit-submit');
+
+  submitSubmit.innerHTML = 'SUBMIT';
+
+  submitSubmit.addEventListener('click', function() {
+
+    var title = document.getElementById('voxel-submit-title').value;
+    var email = document.getElementById('voxel-submit-email').value;
+
+    shared.ugcSignals.submit.dispatch(title, email);
+    hideSubmitDialogue();
+  }, false);
+
+  submit.appendChild(submitImage);
+  submit.appendChild(submitText);
+  submit.appendChild(submitInputs);
+  submit.appendChild(submitSubmit);
+
+
+  submit.setAttribute('id', 'voxel-submit');
+  submit.style.position = 'fixed';
+  submit.style.top = '200%'
+  submit.style.left = '50%';
+
+
+  domElement.appendChild(submit);
+
+  var theBR = document.createElement('span');
+  theBR.innerHTML += '<br/>';
+
+  submitInputs.appendChild(submitEmail);
+  submitInputs.appendChild(theBR);
+  submitInputs.appendChild(submitTitle);
+
+  //submitInputs.innerHTML = submitInputs.innerHTML.replace(/type\=\"text\" /, 'type="text" x-webkit-speech ');
+
 
   this.updateCapacity = function (i) {
     document.getElementById('capacity').textContent = ( Math.round(i * 100) + '%' );
@@ -79,36 +175,39 @@ var UgcUI = function (shared) {
     animalContainerDiv.addEventListener('mousemove', function(e) {
       var padding = window.innerWidth / 5;
       animalSlideTarget = -((e.pageX - padding / 2) / (window.innerWidth - padding)) * (animalInnerDivWidth - window.innerWidth);
+      e.stopPropagation();
+      e.stopImmediatePropagation();
     });
 
-//    animalContainerDiv.addEventListener('mouseover', function() {
-//      shared.ugcSignals.ui_mouseover.dispatch();
-//    }, false);
-//
-//    svgLeft.addEventListener('mouseover', function() {
-//      shared.ugcSignals.ui_mouseover.dispatch();
-//    }, false);
-//
-//    animalContainerDiv.addEventListener('mouseout', function() {
-//      shared.ugcSignals.ui_mouseout.dispatch();
-//    }, false);
-//
-//    svgLeft.addEventListener('mouseout', function() {
-//      shared.ugcSignals.ui_mouseout.dispatch();
-//    }, false);
+    /**
+     * Submit behavior
+     */
 
-    var menus = svgLeft.getElementsByClassName('menu');
+    shared.ugcSignals.submit_dialogue.add(function() {
+      shared.ugcSignals.object_requestsnapshot.dispatch();
+    });
+
+    shared.ugcSignals.object_requestsnapshot.add(function() {
+      shared.ugcSignals.object_receivesnapshot.dispatch();
+    });
+
+    shared.ugcSignals.object_receivesnapshot.add(function() {
+      submitShade.style.zIndex = '20';
+      submit.style.top = '50%';
+      submit.style.opacity = 1;
+    });
 
     /**
      * Hover behavior
      */
+
+    var menus = svgLeft.getElementsByClassName('menu');
 
     for (var i = 0; i < menus.length; i++) {
       var open = makeOpenMenuFunction(menus[i]);
       menus[i].open = open;
       menus[i].addEventListener('click', open, false);
     }
-
 
     var named = document.getElementsByName('hover');
     for (var i = 0; i < named.length; i++) {
@@ -153,7 +252,7 @@ var UgcUI = function (shared) {
 
     onClick('undo', function() {
       shared.ugcSignals.object_undo.dispatch();
-      shared.ugcSignals.submit.dispatch(); // TODO Give this its own button
+      shared.ugcSignals.submit_dialogue.dispatch(); // TODO Give this its own button
     });
 
     onClick('create', function() {
@@ -241,7 +340,12 @@ var UgcUI = function (shared) {
 
   };
 
-  this.scale = function(s) {
+  this.resize = function(width, height) {
+
+    var aspect = width / height;
+    var s = aspect / NATIVE_ASPECT;
+
+    domElement.style.marginTop = - Math.round(250) * s + 'px';
     svgLeft.firstChild.setAttribute('transform', 'translate(10, 0) scale(' + s + ')');
   };
 
@@ -285,6 +389,12 @@ var UgcUI = function (shared) {
     return div;
   }
 
+  function idElement(nodeType, id) {
+    var div = document.createElement(nodeType);
+    div.setAttribute('id', id);
+    return div;
+  }
+
   function onClick(id, fnc, stopPropagation) {
     stopPropagation = stopPropagation || true;
     var elem;
@@ -308,6 +418,14 @@ var UgcUI = function (shared) {
       }
       fnc.call(elem);
     }, false);
+  }
+
+  function hideSubmitDialogue() {
+    submitShade.style.zIndex = '-20';
+    submit.style.top = '200%';
+    submit.style.opacity = 0;
+    submitTitle.value = 'GIVE A TITLE TO YOUR DREAM';
+    submitEmail.value = 'YOUR EMAIL ADDRESS';
   }
 
   function findBG(containerId) {
@@ -718,7 +836,7 @@ var UgcUI = function (shared) {
       '}',
       '.ugcui g#color g.options polygon:not(.selected):hover {',
       '  stroke: #fff;',
-      '  stroke-width: 4; z-index: 200',
+      // '  stroke-width: 4; z-index: 200',
       '}',
       '.ugcui g#color g.options polygon#white:not(.selected):hover {',
       '  stroke: #000;',
@@ -741,10 +859,20 @@ var UgcUI = function (shared) {
       '.ugcui g#smoother g.options g:hover polygon.bg {',
       '  fill: #fff;',
       '}',
+      '#voxel-submit-text { float: left; width: 300px; margin-right: 10px; }',
+      '#voxel-submit-inputs { margin-right: 10px; margin-top: -4px; float: left; }',
+
+      '#voxel-submit-submit { cursor: pointer; letter-spacing: 0.025em; font: 17px/65px FuturaBT-Bold, sans-serif; float: left; border: 1px solid #d6d1c2; width: 200px; text-align: center; margin-top: -2px;  }',
+      '#voxel-submit-submit:hover { border-color: #404040; background-color: #404040; color: #f4f1e8; }',
+      '#voxel-submit input { margin-bottom: 3px; color: #404040; font: 11px/22px FuturaBT-Bold, sans-serif; width: 200px; padding: 2px 4px  }',
+
+      '#voxel-submit-image { margin-bottom: 20px; width: 735px; height: 465px; background-color: #000; }',
+      '#voxel-submit-shade { z-index: -12; opacity: 0.4; -webkit-transition: opacity 0.2s linear; background-color: #f4f1e8; position: fixed; top: 0; left: 0; width: 100%; height: 100% }',
+      '#voxel-submit { font: 12px/18px FuturaBT-Medium; color: #404040; z-index: 21; opacity: 0; -webkit-transition: opacity 0.2s linear; width: 735px; height: 556px; padding: 13px; margin-left: -380px; margin-top: -291px; background-color: #f4f1e8; box-shadow: 0px 0px 10px rgba(0,0,0,0.3) }',
       '.animal-container { opacity: 0; -webkit-transition: opacity 0.3s linear; }',
-      '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 200px; margin-right: 10px; }',
+      '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 120px; margin-right: 10px; }',
       '.animal:hover { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #fff; }',
-      '.animal-controls { height: 21px; overflow:hidden; line-height: 0px; border-right: 1px solid #fff; opacity: 0; display: inline-block; position: relative; margin-top: 122px; }',
+      '.animal-controls { height: 21px; overflow:hidden; line-height: 0px; border-right: 1px solid #fff; opacity: 0; display: inline-block; position: relative; margin-top: 71px; }',
       '.animal:hover .animal-controls { opacity: 1; }',
       '.animal-controls div { display: none; text-align: center; border: 1px solid #fff; border-right: 0; border-bottom: 0; display: inline-block; width: 20px;}',
       '.animal-controls div.animal-add:hover, .animal-controls div.animal-remove:hover { cursor: pointer; background-color: #f65824; }',
