@@ -35,7 +35,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	collisionScene.settings.capTop = 1000;
 	collisionScene.settings.shootRayDown = false;
 	collisionScene.settings.allowFlying = false;
-	collisionScene.settings.emitterDivider = 4;
+	collisionScene.settings.emitterDivider = 2;
 	collisionScene.settings.normalOffsetAmount = 8;
 	collisionScene.settings.minDistance = 100;
 	collisionScene.settings.keepEmitterFollowDown = true;
@@ -143,7 +143,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	// running animals
 
-	var runningAnimals = new AnimalSwarm( 30, scene, vectors.array );
+	var runningAnimals = new AnimalSwarm2( 30, scene, vectors.array );
 
 	runningAnimals.settings.addaptiveSpeed = true;
 	runningAnimals.settings.capy = 0;
@@ -245,10 +245,11 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	// flying animals
-	var flyingAnimals = new AnimalSwarm( 10, scene, vectors.array );
+	var flyingAnimals = new AnimalSwarm2( 10, scene, vectors.array );
 
 	flyingAnimals.settings.flying = true;
-	flyingAnimals.settings.flyingDistance = 45;
+	//flyingAnimals.settings.flyingDistance = 45;
+	flyingAnimals.settings.flyingDistance = 60;
 
 	for (var i=0; i<10; ++i ) {
 
@@ -285,7 +286,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	// flying animals 2
-	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
+/*	var flyingAnimals2 = new AnimalSwarm(70, scene, vectors.array);
 	flyingAnimals2.settings.flying = true;
 	flyingAnimals2.settings.divider = 1;
 	flyingAnimals2.settings.flyingDistance = 30;
@@ -302,7 +303,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		var morphArray = [0,1,2,3];
 		flyingAnimals2.addAnimal( geometry, null, 5, morphArray, 5, null, true );
 	}
-
+*/
 
 	// butterflys
 
@@ -494,11 +495,16 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		// spawn animal test
 		if (shake%4 == 3) {
-			//runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
-			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
+			runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
+			//runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			//flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
-			flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
+			//flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 		}
+		if (shake%8 == 7) {
+			flyingAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitterFollow.position);
+			//flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
+		}
+
 
 		// update the soup parts
 		collisionScene.update(shared.camPos, delta);
@@ -506,11 +512,11 @@ var CitySoup = function ( camera, scene, shared ) {
 		ribbons.update(collisionScene.emitterFollow.position);
 
 		particles.update(delta, vectors.array[0].position, shared.camPos);
-		//runningAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		runningAnimals.update(delta, shared.camPos, collisionScene.emitter.position);
+		runningAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
+		//runningAnimals.update(delta, shared.camPos, collisionScene.emitter.position);
 		stragglers.update(delta, shared.camPos);
-		//flyingAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
-		flyingAnimals.update(delta, shared.camPos);
+		flyingAnimals.update(delta, shared.camPos, collisionScene.emitterFollow.position, collisionScene.currentNormal);
+		//flyingAnimals.update(delta, shared.camPos);
 		//flyingAnimals2.update();
 		//butterflys.update(camPos, that.camera.theta, delta);
 		//butterflysC.update(shared.camPos, angleRad, delta);
@@ -527,10 +533,10 @@ var CitySoup = function ( camera, scene, shared ) {
 		TriggerUtils.effectors[1] = vectors.array[1].position.y;
 		TriggerUtils.effectors[2] = vectors.array[1].position.z;
 
-		CityShaderEffectors[0].set(vectors.array[8].position.x,vectors.array[8].position.y,vectors.array[8].position.z,40);
-		CityShaderEffectors[1].set(vectors.array[12].position.x,vectors.array[12].position.y,vectors.array[12].position.z,80);
-		CityShaderEffectors[2].set(vectors.array[25].position.x,vectors.array[25].position.y,vectors.array[25].position.z,150);
-		CityShaderEffectors[3].set(vectors.array[49].position.x,vectors.array[49].position.y,vectors.array[49].position.z,250);
+		CityShaderEffectors[0].set(vectors.array[7].position.x,vectors.array[7].position.y,vectors.array[7].position.z,40);
+		CityShaderEffectors[1].set(vectors.array[10].position.x,vectors.array[10].position.y,vectors.array[10].position.z,60);
+		CityShaderEffectors[2].set(vectors.array[16].position.x,vectors.array[16].position.y,vectors.array[16].position.z,120);
+		CityShaderEffectors[3].set(vectors.array[35].position.x,vectors.array[35].position.y,vectors.array[35].position.z,200);
 
 		// pointlight
 		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*100;
@@ -554,7 +560,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		vectors.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		runningAnimals.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		flyingAnimals.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
-		flyingAnimals2.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
+		//flyingAnimals2.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		particles.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		stragglers.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 

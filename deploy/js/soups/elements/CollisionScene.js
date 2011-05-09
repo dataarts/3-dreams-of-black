@@ -54,6 +54,20 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 	realscene.addObject( emitterReal );
 	realscene.addObject( emitterFollowReal );
 */
+
+// follow test with turn constraints
+var pi = Math.PI;
+var pi2 = pi*2;
+var degToRad = pi/180;
+
+var rotationLimit = 12;
+var innerRadius = 0;
+var outerRadius = 30;
+
+that.emitterFollow.rotationx = 0;
+that.emitterFollow.rotationy = 0;
+that.emitterFollow.rotationz = 0;
+
 	// collision boxes
 
 	var cube = new THREE.Cube( 50000,50000,10, 1,1,1 );
@@ -326,7 +340,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 
 		var maxSpeed = delta / that.settings.maxSpeedDivider;
 
-		var tox = that.emitter.position.x;
+/*		var tox = that.emitter.position.x;
 		var moveX = ( tox - that.emitterFollow.position.x ) / that.settings.emitterDivider;
 
 		var toy = that.emitter.position.y;
@@ -347,6 +361,164 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		that.emitterFollow.position.x += moveX;
 		that.emitterFollow.position.y += moveY;
 		that.emitterFollow.position.z += moveZ;	
+*/
+
+
+
+//var maxSpeed = 10;
+
+// test turn constraints...
+// Y
+if (that.currentNormal.y > 0.5 || that.currentNormal.y < -0.5) {
+
+var rotationy = that.emitterFollow.rotationy/180*pi;
+var oldRy = rotationy;
+rotationy += pi*0*0.5-pi*0*Math.random();
+
+var tx = that.emitter.position.x;
+var tz = that.emitter.position.z;
+var dx = tx-that.emitterFollow.position.x;
+var dz = tz-that.emitterFollow.position.z;
+var d = Math.sqrt(dx*dx+dz*dz);
+var a = Math.atan2(dz,dx);
+var pstr = 0;
+
+if (outerRadius > 0) {
+var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+if (dstr > 1) { dstr = 1; }
+if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+}
+rotationy += getShortRotation(a-rotationy)*pstr;
+
+var rotationD = rotationy-oldRy;
+if (Math.abs(rotationD) > rotationLimit*degToRad) {
+rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
+}
+
+//var speed = delta/2;
+var speed = d/4;
+if (speed > maxSpeed) {
+speed = maxSpeed;
+}
+that.emitterFollow.position.x += Math.cos(rotationy)*speed;
+that.emitterFollow.position.z += Math.sin(rotationy)*speed;
+that.emitterFollow.rotationy = rotationy/degToRad;
+
+var toy = that.emitter.position.y;
+
+var moveY = (toy-that.emitterFollow.position.y)/that.settings.emitterDivider;
+if (moveY > maxSpeed) {
+moveY = maxSpeed;
+}
+if (moveY < -maxSpeed) {
+moveY = -maxSpeed;
+}
+that.emitterFollow.position.y += moveY;
+
+}
+
+// X
+if (that.currentNormal.x > 0.5 || that.currentNormal.x < -0.5) {
+
+var rotationx = that.emitterFollow.rotationx/180*pi;
+var oldRx = rotationx;
+rotationx += pi*0*0.5-pi*0*Math.random();
+
+var ty = that.emitter.position.y;
+var tz = that.emitter.position.z;
+var dy = ty-that.emitterFollow.position.y;
+var dz = tz-that.emitterFollow.position.z;
+var d = Math.sqrt(dz*dz+dy*dy);
+var a = Math.atan2(dz,dy);
+var pstr = 0;
+
+if (outerRadius > 0) {
+var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+if (dstr > 1) { dstr = 1; }
+if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+}
+rotationx += getShortRotation(a-rotationx)*pstr;
+
+var rotationD = rotationx-oldRx;
+if (Math.abs(rotationD) > rotationLimit*degToRad) {
+rotationx = oldRx+rotationLimit*degToRad*(rotationD<0?-1:1);
+}
+
+//var speed = delta/2;
+var speed = d/4;
+if (speed > maxSpeed) {
+speed = maxSpeed;
+}
+
+that.emitterFollow.position.y += Math.cos(rotationx)*speed;
+that.emitterFollow.position.z += Math.sin(rotationx)*speed;
+that.emitterFollow.rotationx = rotationx/degToRad;
+
+var tox = that.emitter.position.x;
+
+var moveX = (tox-that.emitterFollow.position.x)/that.settings.emitterDivider;
+if (moveX > maxSpeed) {
+moveX = maxSpeed;
+}
+if (moveX < -maxSpeed) {
+moveX = -maxSpeed;
+}
+
+that.emitterFollow.position.x += moveX;
+
+}
+
+// Z
+if (that.currentNormal.z > 0.5 || that.currentNormal.z < -0.5) {
+
+var rotationz = that.emitterFollow.rotationz/180*pi;
+var oldRz = rotationz;
+rotationz += pi*0*0.5-pi*0*Math.random();
+
+var tx = that.emitter.position.x;
+var ty = that.emitter.position.y;
+var dx = tx-that.emitterFollow.position.x;
+var dy = ty-that.emitterFollow.position.y;
+var d = Math.sqrt(dx*dx+dy*dy);
+var a = Math.atan2(dx,dy);
+var pstr = 0;
+
+if (outerRadius > 0) {
+var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+if (dstr > 1) { dstr = 1; }
+if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+}
+rotationz += getShortRotation(a-rotationz)*pstr;
+
+var rotationD = rotationz-oldRz;
+if (Math.abs(rotationD) > rotationLimit*degToRad) {
+rotationz = oldRz+rotationLimit*degToRad*(rotationD<0?-1:1);
+}
+
+//var speed = delta/2;
+var speed = d/4;
+if (speed > maxSpeed) {
+speed = maxSpeed;
+}
+
+that.emitterFollow.position.y += Math.cos(rotationz)*speed;
+that.emitterFollow.position.x += Math.sin(rotationz)*speed;
+that.emitterFollow.rotationz = rotationz/degToRad;
+
+var toz = that.emitter.position.z;
+
+var moveZ = (toz-that.emitterFollow.position.z)/that.settings.emitterDivider;
+if (moveZ > maxSpeed) {
+moveZ = maxSpeed;
+}
+if (moveZ < -maxSpeed) {
+moveZ = -maxSpeed;
+}
+
+that.emitterFollow.position.z += moveZ;
+
+}
+
 
 
 		if ( that.settings.keepEmitterFollowDown && !that.settings.useOldRay ) {
@@ -521,9 +693,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 				that.cameraTarget.position.z = camPos.z-80;
 			}
 			*/
-	/*		emitterReal.position = that.emitter.position;
+/*			emitterReal.position = that.emitter.position;
 			emitterFollowReal.position = that.emitterFollow.position;
-	*/
+*/	
 			shared.renderer.render( collisionScene, that.settings.camera );
 			//shared.renderer.render( scene, camera, renderTarget );
 			shared.renderer.clear();
@@ -531,6 +703,13 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		}
 
 	};
+
+	function getShortRotation(rot) {
+		rot %= pi2;
+		if (rot > pi) { rot -= pi2; }
+		else if (rot < -pi) { rot += pi2; }
+		return rot;
+	}
 
 	function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
 

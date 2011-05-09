@@ -327,7 +327,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	trail.settings.tweenTime = 800;
 	trail.settings.scale = 0.3;
 	trail.settings.offsetAmount = 10;
-	trail.settings.yscale = 0.15;
+	trail.settings.yscale = 0.25;
 
 	loader.load( { model: "files/models/soup/darkblob01.js", callback: blob01LoadedProxy } );
 	loader.load( { model: "files/models/soup/darkblob02.js", callback: blob02LoadedProxy } );

@@ -579,7 +579,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 
 			var scalecheck = 0.1;
 			if (that.array[i].keepRunning) {
-				scalecheck = 0.01;
+				scalecheck = 0.005;
 			}
 
 			if (that.array[i].dead && scale <= scalecheck) {
@@ -592,7 +592,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				var falloffDivider = 2+(f/10);
 				var maxSpeed = animalSpeed/falloffDivider;
 			} else {
-				var maxSpeed = animalSpeed/32;
+				var maxSpeed = animalSpeed/20;
 				//var maxSpeed = animalSpeed/3;				
 			}
 
