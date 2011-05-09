@@ -49,13 +49,7 @@ var FilmSection = function ( shared ) {
 	shared.signals.startfilm.add( start );
 	shared.signals.stopfilm.add( stop );
 
-	// effects
-
-	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
-	
-	
 	// Sequence
-	var intro = new VideoPlayer( shared, VideoShots.introLayers );
 
 	var s01_01 = new VideoPlayer( shared, VideoShots.s01_01 );
 	var s01_03 = new VideoPlayer( shared, VideoShots.s01_03 );
@@ -82,7 +76,7 @@ var FilmSection = function ( shared ) {
 	
 	// intro
 	
-	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new VideoPlayer( shared, VideoShots.introLayers ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 
 	// city animation
 
