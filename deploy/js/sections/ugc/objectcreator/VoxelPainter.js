@@ -32,6 +32,13 @@ var VoxelPainter = function ( camera, scene ) {
 	_collider.addChild( _plane );
 	_colliderArray.push( _plane );
 
+	_plane = new THREE.Mesh( _geometry, _material );
+	_plane.rotation.x = - 90 * Math.PI / 180;
+	_plane.doubleSided = true;
+	_plane.visible = _collider.visible;
+	_collider.addChild( _plane );
+	_colliderArray.push( _plane );
+
 	scene.addObject( _collider );
 
 	// Mouse projection
@@ -204,9 +211,7 @@ var VoxelPainter = function ( camera, scene ) {
 						_intersectObject = intersects[ 0 ].object;
 						_intersectFace = intersects[ 0 ].face;
 
-						_intersectPoint.addSelf( _intersectFace.normal );
-
-						_collider.position.copy( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ) );
+						_collider.position.copy( _intersectPoint );
 						_collider.position.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
 						_collider.updateMatrix();
 						_collider.update();
@@ -244,17 +249,20 @@ var VoxelPainter = function ( camera, scene ) {
 
 					if ( _intersectFace && intersects.length > 0 ) {
 
-						var vector, x, y, z, dx, dy, dz;
+						var vector, x, y, z, dx, dy, dz, dmax;
 
-						vector = intersects[ 0 ].point.clone().addSelf( _intersectFace.normal );
+						vector = intersects[ 0 ].point.clone();
+						vector.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
 
 						dx = _intersectPoint.distanceTo( _tempVector.set( vector.x, _intersectPoint.y, _intersectPoint.z ) );
 						dy = _intersectPoint.distanceTo( _tempVector.set( _intersectPoint.x, vector.y, _intersectPoint.z ) );
 						dz = _intersectPoint.distanceTo( _tempVector.set( _intersectPoint.x, _intersectPoint.y, vector.z ) );
 
-						if ( dx > dy && dx > dz ) vector.set( vector.x, _intersectPoint.y, _intersectPoint.z );
-						else if ( dy > dx && dy > dz ) vector.set( _intersectPoint.x, vector.y, _intersectPoint.z );
-						else vector.set( _intersectPoint.x, _intersectPoint.y, vector.z );
+						dmax = Math.max( dx, Math.max( dy, dz ) );
+
+						if ( dx == dmax ) vector.set( vector.x, _intersectPoint.y, _intersectPoint.z );
+						else if ( dy == dmax ) vector.set( _intersectPoint.x, vector.y, _intersectPoint.z );
+						else if ( dz == dmax ) vector.set( _intersectPoint.x, _intersectPoint.y, vector.z );
 
 						x = toGridScale( vector.x );
 						y = toGridScale( vector.y );

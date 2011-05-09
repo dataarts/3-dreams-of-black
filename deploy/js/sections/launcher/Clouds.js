@@ -1,22 +1,5 @@
 var Clouds = function ( shared, isRelaunch ) {
 
-	/*
-	var canvas = document.createElement( 'canvas' );
-	canvas.width = 32;
-	canvas.height = window.innerHeight;
-
-	var context = canvas.getContext( '2d' );
-
-	var gradient = context.createLinearGradient( 0, 0, 0, canvas.height );
-	gradient.addColorStop(0, "#1e4877");
-	gradient.addColorStop(0.5, "#4584b4");
-
-	context.fillStyle = gradient;
-	context.fillRect(0, 0, canvas.width, canvas.height);
-
-	document.body.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
-	*/
-
 	// Clouds
 
 	var boid, bird;
@@ -27,9 +10,9 @@ var Clouds = function ( shared, isRelaunch ) {
 	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
 	camera, postCamera, scene, postScene, birdsScene, renderer, context, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos,
 	wantedCameraUpX = 0;
-	
-	fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
-  
+
+	fog = new THREE.Fog( 0x75B4E4, - 100, 3000 );
+
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;
 
@@ -287,9 +270,11 @@ var Clouds = function ( shared, isRelaunch ) {
     birdsGroup.position.z = camera.position.z - 500;
     birdsGroup.position.y = - 50;
 
+		/*
 		wantedCameraUpX = Math.min( Math.max( -0.3, ( mouse.x - camera.position.x ) * 0.005 ), 0.3 );
 		camera.up.x += ( wantedCameraUpX - camera.up.x ) * 0.005;
 		camera.up.normalize();
+		*/
 
 		camera.target.position.x = camera.position.x;
 		camera.target.position.y = camera.position.y;
