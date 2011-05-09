@@ -148,18 +148,20 @@ var ExplorationSection = function ( shared ) {
 
 	function stop(e) {
 
+		// Depracated for research on
+		// History API in HTML5 spec.
 		// Return + Enter
-		if(e.keyCode == 13) {
-
-			paused = !paused;
-			if(pause) {
-
-				// Show UI
-				
-
-			}
-
-		}
+		// if(e.keyCode == 13) {
+		// 
+		// 	paused = !paused;
+		// 	if(pause) {
+		// 
+		// 		// Show UI
+		// 		
+		// 
+		// 	}
+		// 
+		// }
 
 	};
 
