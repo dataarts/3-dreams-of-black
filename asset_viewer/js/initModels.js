@@ -12,7 +12,6 @@ function initModels(){
   models.push({"file": '/files/models/soup/birds_B_life.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.8});
   models.push({"file": '/files/models/soup/animals_A_black.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.7});
   models.push({"file": '/files/models/soup/animals_A_life.js', "type": 'animal', "centerY": 70, "riseY" : 0, "speed": 0.7});
-  models.push({"file": '/files/models/soup/arm_black.js', "type": 'animal', "centerY": 0, "riseY" : 0, "speed": 0});
   models.push({"file": '/files/models/soup/birds_A_black.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.8});
   models.push({"file": '/files/models/soup/birds_A_life.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.8});
   models.push({"file": '/files/models/soup/butterfly_hiA.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.2});
@@ -22,9 +21,10 @@ function initModels(){
   models.push({"file": '/files/models/soup/goat_black.js', "type": 'animal', "centerY": 30, "riseY" : 0, "speed": 0.55});
   models.push({"file": '/files/models/soup/moose_life.js', "type": 'animal', "centerY": 140, "riseY" : 0, "speed": 0.85});
   models.push({"file": '/files/models/soup/octo_black.js', "type": 'animal', "centerY": 20, "riseY" : 0, "speed": 0.18});
-  models.push({"file": '/files/models/soup/taruffalo_black.js', "type": 'animal', "centerY": 90, "riseY" : 0, "speed": 0.5});
+  //models.push({"file": '/files/models/soup/taruffalo_black.js', "type": 'animal', "centerY": 90, "riseY" : 0, "speed": 0.5});
 //  //CUSTOM
-  //models.push({"file": '/asset_viewer/files/models/animals/tarbuffaloA_tarbuffaloB.js', "type": 'animal', "centerY": 80, "riseY" : 0, "speed": 0.65});
+  
+  models.push({"file": '/asset_viewer/files/models/animals/tarbuffaloA_tarbuffaloB.js', "type": 'animal', "centerY": 80, "riseY" : 0, "speed": 0.65});
   models.push({"file": '/asset_viewer/files/models/animals/sealRun_bearBrown.js', "type": 'animal', "centerY": 60, "riseY" : 0, "speed": 0.45});
   models.push({"file": '/asset_viewer/files/models/animals/parrot.js', "type": 'animal', "centerY": 0, "riseY" : 80, "speed": 0.7});
   models.push({"file": '/asset_viewer/files/models/animals/fox.js', "type": 'animal', "centerY": 50, "riseY" : 0, "speed": 0.5});
@@ -45,7 +45,6 @@ function initModels(){
   for (var i in models){
     models[i].name = models[i].file.replace(/\\/g,'/').replace( /.*\//, '' );
     models[i].name = models[i].name.replace(".js", "");
-    //link.innerHTML = models[i].name.replace("_", "<br />");
 
     link[models[i].name] = document.createElement('a');
     link[models[i].name].setAttribute('class', 'modelLink');

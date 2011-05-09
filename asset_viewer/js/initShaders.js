@@ -1,6 +1,5 @@
 var triggerMat, depthMat, lightmapMat, animalMat;
 
-
 var depthShader = depthShaderSource[ 'depthShader' ];
 
 depthShader.uniforms = THREE.UniformsUtils.clone(depthShader.uniforms);
