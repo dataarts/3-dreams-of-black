@@ -49,13 +49,13 @@ function initPostprocessingNoise( effect ) {
     effect.textureColor = new THREE.WebGLRenderTarget( width*2, height*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
     effect.textureDepth = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter } );
     effect.textureNormal = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter } );
-    effect.textureNoise = THREE.ImageUtils.loadTexture( '/files/textures/Color_noise.jpg', { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
+    effect.textureNoise = THREE.ImageUtils.loadTexture( '/asset_viewer/files/textures/noise.png', { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
     effect.textureNoise.minFilter = THREE.NearestFilter;
     effect.textureNoise.wrapS = THREE.RepeatWrapping;
     effect.textureNoise.wrapT = THREE.RepeatWrapping;
     var heatUniforms = {
     "time": { type: "f", value: 0 },
-    "samplerSphere": { type: "fv", value: [0,0,0,0,0,-1.0,0,0.894427359104,-0.44721314311,0.850650846958,0.276393681765,-0.447213202715,0.52573120594,-0.723606944084,-0.44721326232,-0.52573120594,-0.723606944084,-0.44721326232,-0.850650846958,0.276393681765,-0.447213202715,-0.52573120594,0.723606944084,0.44721326232,-0.850650846958,-0.276393681765,0.447213202715,0,-0.894427359104,0.44721314311,0.850650846958,-0.276393681765,0.447213202715,0.52573120594,0.723606944084,0.44721326232,0,0,1]},
+    "samplerSphere": { type: "fv", value: [0.000000,0.000000,-1.000000,0.000000,0.525731,-0.850651,0.500000,0.162460,-0.850651,0.000000,0.894427,-0.447213,0.500000,0.688191,-0.525731,0.850651,0.276394,-0.447213,0.309017,-0.425325,-0.850651,0.809017,-0.262865,-0.525731,0.525731,-0.723607,-0.447213,-0.309017,-0.425325,-0.850651,0.000000,-0.850651,-0.525731,-0.525731,-0.723607,-0.447213,-0.500000,0.162460,-0.850651,-0.809017,-0.262865,-0.525731,-0.850651,0.276394,-0.447213,-0.500000,0.688191,-0.525731,-0.309017,0.951057,0.000000,-0.809017,0.587785,0.000000,-0.525731,0.723607,0.447213,-1.000000,0.000000,0.000000,-0.809017,-0.587785,0.000000,-0.850651,-0.276394,0.447213,-0.309017,-0.951057,0.000000,0.309017,-0.951057,0.000000,0.000000,-0.894427,0.447213,0.809017,-0.587785,0.000000,1.000000,0.000000,0.000000,0.850651,-0.276394,0.447213,0.809017,0.587785,0.000000,0.309017,0.951057,0.000000,0.525731,0.723607,0.447213,0.000000,0.850651,0.525731,-0.809017,0.262865,0.525731,-0.500000,-0.688191,0.525731,0.500000,-0.688191,0.525731,0.809017,0.262865,0.525731,0.000000,0.000000,1.000000,0.309017,0.425325,0.850651,-0.309017,0.425325,0.850651,0.500000,-0.162460,0.850651,0.000000,-0.525731,0.850651,-0.500000,-0.162460,0.850651]},
     "samplerBokehHex": { type: "fv", value: [0.500000,0.000000,0.866025,0.166667,0.000000,0.866025,-0.166667,0.000000,0.866025,-0.500000,0.000000,0.866025,-0.666667,0.000000,0.577350,-0.833333,0.000000,0.288675,-1.000000,0.000000,0.000000,-0.833333,0.000000,-0.288675,-0.666667,0.000000,-0.577350,-0.500000,0.000000,-0.866025,-0.166667,0.000000,-0.866025,0.166667,0.000000,-0.866025,0.500000,0.000000,-0.866025,0.666667,0.000000,-0.577350,0.833333,0.000000,-0.288675,1.000000,0.000000,0.000000,0.833333,0.000000,0.288675,0.666667,0.000000,0.577350]},
     "tColor": { type: "t", value: 0, texture: effect.textureColor },
     "tDepth": { type: "t", value: 1, texture: effect.textureDepth },
@@ -108,7 +108,7 @@ function initPostprocessingNoise( effect ) {
         "uniform float ssao;",
         "uniform float ssaoRad;",
         "uniform vec3 samplerBokehHex[18];",
-        "uniform vec3 samplerSphere[13];",
+        "uniform vec3 samplerSphere[42];",
         "uniform float focus;",
         "uniform float aspect;",
         "uniform float vignette;",
@@ -133,7 +133,7 @@ function initPostprocessingNoise( effect ) {
           "float depth = depthRGB.r/3.+depthRGB.g/3.+depthRGB.b/3.;",
           "if(depthRGB.a == 0.0) depth = 1.;",
 
-          "vec3 rndVec = texture2D( tNoise, vUv*vec2(300.0,200.0) ).rgb * vec3(0.2);",
+          "vec3 rndVec = texture2D( tNoise, vUv*vec2(30.0+depth,30.0-depth) ).rgb;",
 
           "float ao = (1.0);",
           "vec3 rndUv = vec3(0.0);",
@@ -141,7 +141,7 @@ function initPostprocessingNoise( effect ) {
           "if (ssao == 1.0 && depth != 1.) {",
 
             "ao = 0.0;",
-            "for( int i=1; i<13; i++ ){",
+            "for( int i=1; i<42; i++ ){",
               "rndUv = vec3(vUv,depth) + ssaoRad*reflect(samplerSphere[i].xyz,normal.xyz);",
 
               "vec4 rndDepthRGB = texture2D(tDepth,rndUv.xy);",
@@ -149,11 +149,11 @@ function initPostprocessingNoise( effect ) {
               "if(rndDepthRGB.a == 0.0) rndDepth = 1.;",
 
               "float zd = (rndUv.z-rndDepth);",
-              "zd = max(min(zd-0.025,0.975-zd), 0.0);",
-              "ao += 1./(1.+1000.*(sqrt(10.*zd)));",
+              "zd = max(min(zd-0.02,0.1-zd), 0.0);",
+              "ao += 1./(1.+10000.*(sqrt(10.*zd)));",
             "}",
-            "ao = ao/13.0;",
-            "gl_FragColor = vec4(col.rgb*ao*ao,col.a);",
+            "ao = ao/42.0;",
+            "gl_FragColor = vec4(col.rgb*ao,col.a);",
             "gl_FragColor.rgb *= 1./gl_FragColor.a;",
 
           "} else if (dof == 1.0) {",
@@ -182,6 +182,7 @@ function initPostprocessingNoise( effect ) {
 					  "gl_FragColor = vec4(1.0) - (vec4(1.0) - gl_FragColor) * (vec4(1.0) - gl_FragColor);",
 
           "}",
+          //"gl_FragColor = vec4(rndVec,1.);",
 				"}"
 
             ].join("\n")
