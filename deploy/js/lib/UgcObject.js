@@ -60,7 +60,7 @@ var UgcObject = function ( data ) {
 
 			}
 
-			items.push( item.x, item.y, item.z );
+			items.push( item.x + 20, item.y, item.z + 20 );
 			itemsCount ++;
 
 		}
@@ -109,7 +109,12 @@ var UgcObject = function ( data ) {
 
 			for ( j = 0; j < itemsCount; j ++ ) {
 
-				this.addVoxel( data[ i ++ ], data[ i ++ ], data[ i ++ ], currentColor );
+				this.addVoxel(
+					Math.min( 40, Math.max( 0, data[ i ++ ] ) ) - 20,
+					Math.min( 40, Math.max( 0, data[ i ++ ] ) ),
+					Math.min( 40, Math.max( 0, data[ i ++ ] ) ) - 20,
+					currentColor
+				);
 
 			}
 

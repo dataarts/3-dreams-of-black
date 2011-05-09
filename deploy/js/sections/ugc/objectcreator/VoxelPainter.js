@@ -110,9 +110,11 @@ var VoxelPainter = function ( camera, scene ) {
 
 	}
 
-	function addVoxel( x, y, z ) { // vector ) {
+	function addVoxel( x, y, z ) {
 
-		if ( y < 0 ) return;
+		if ( x < - 20 || x > 20 ) return;
+		if ( y < 0 || y > 40 ) return;
+		if ( z < - 20 || z > 20 ) return;
 
 		var voxel = _object.getVoxel( x, y, z );
 
