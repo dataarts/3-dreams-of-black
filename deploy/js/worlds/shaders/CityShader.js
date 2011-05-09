@@ -15,10 +15,17 @@ var CityShaderEffectors = [ new THREE.Vector4( 0, 0, -1000, 50 ),
 
 var CityShader = {
 
+	init: function() {
+		
+		CityShader.uniforms.grassImage.texture = THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' );
+		CityShader.uniforms.surfaceImage.texture = THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' );
+		
+	},
+
 	uniforms: {
 
-		"grassImage": { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' ) },
-		"surfaceImage": { type: "t", value: 1, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' ) },
+		"grassImage": { type: "t", value: 0, texture: undefined },
+		"surfaceImage": { type: "t", value: 1, texture: undefined },
 
 		"time": { type: "f", value:0.0 },
 

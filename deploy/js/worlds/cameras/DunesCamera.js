@@ -70,8 +70,8 @@ DunesCamera = function( shared ) {
 	
 	that.resetCamera = function() {
 		
-		wantedCamera.position.set( 0, 50, 1000 );
-		wantedCameraTarget.position.set( 0, 50, 300 );
+		wantedCamera.position.set( 0, 50, 300 );
+		wantedCameraTarget.position.set( 0, 50, -300 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
 		
 		camera.position.copy( wantedCamera.position );
@@ -165,11 +165,17 @@ DunesCamera = function( shared ) {
 	
 			// handle left/right		
 	
-			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
+/*			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 	
 			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
 			wantedCameraTarget.position.x = Math.min( 300, Math.max( -300, wantedCameraTarget.position.x ));
 			wantedCameraTarget.position.z = wantedCamera.position.z - CAMERA_COLLISION_DISTANCE;
+*/
+			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
+	
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+
 
 
 			// move forward
@@ -177,8 +183,15 @@ DunesCamera = function( shared ) {
 			var localProgress = ( progress - CAMERA_STATIC_END ) / ( CAMERA_START_LIFT - CAMERA_STATIC_END );
 				
 			cameraSpeed = CAMERA_FORWARD_SPEED * 0.6 * localProgress;
-			wantedCamera.position.z -= cameraSpeed * delta;
-			wantedCamera.position.y += Math.sin( wantedCamera.position.z * 0.07 ) * 2.0 * ( 1 - localProgress );
+			wantedCameraDirection.multiplyScalar( cameraSpeed * delta );
+
+			wantedCamera.position.x += wantedCameraDirection.x;
+			wantedCamera.position.y += Math.sin(( wantedCamera.position.x + wantedCamera.position.z ) * 0.035 ) * 2.0 * ( 1 - localProgress );
+			wantedCamera.position.z += wantedCameraDirection.z;
+
+			//wantedCamera.position.z -= cameraSpeed * delta;
+
+			
 
 
 			// position intertia
