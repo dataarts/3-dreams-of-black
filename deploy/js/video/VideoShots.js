@@ -34,17 +34,16 @@ var VideoShots = {
         shaderId: VIDEO_OPAQUE,
         z: -1100,
 		width: 1.56, height: 1.59,
-		//paralax: true,
-		duration: 8120//,
-		//paralaxHorizontal: 600,
-		//paralaxVertical: 200
+		paralax: true,
+		duration: 8120,
+		paralaxHorizontal: 600,
+		paralaxVertical: 200
 	},{
         path: "files/videos/city/s03_layer02.webm",
         shaderId: VIDEO_SMARTALPHA,
         z: -1100,
 		width: 1.56, height: 1.59,
-		//width: 1.30, height: 1.16,
-		//paralax: true
+		paralax: true
 	},{
         path: "files/videos/city/s03_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
