@@ -13,24 +13,16 @@ var VideoShots = {
 	// CITY - FEATHER
 	s01_01: [
 	{
-        path: "files/videos/city/s01_layer03.webm",
+        path: "files/videos/city/s01.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1000,
 		duration: 3120
-	},{
-        path: "files/videos/city/s01_layer02.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
-        z: -900
-	},{
-        path: "files/videos/city/s01_layer01.webm",
-        shaderId: VIDEO_SMARTALPHA,
-        z: -800
 	}
 	],
 	// CITY - ROOM
 	s01_03: [
 	{
-        path: "files/videos/city/s03_layer03.webm",
+        path: "files/videos/city/s03_layer02.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1100,
 		width: 1.56, height: 1.59,
@@ -38,12 +30,6 @@ var VideoShots = {
 		duration: 8120,
 		paralaxHorizontal: 600,
 		paralaxVertical: 200
-	},{
-        path: "files/videos/city/s03_layer02.webm",
-        shaderId: VIDEO_SMARTALPHA,
-        z: -1100,
-		width: 1.56, height: 1.59,
-		paralax: true
 	},{
         path: "files/videos/city/s03_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
@@ -65,7 +51,7 @@ var VideoShots = {
 	}],
 	// CITY - CAR
 	s01_09: [{       
-	    path: "files/videos/city/s09_layer04.webm",
+	    path: "files/videos/city/s09_layer02.webm",
         shaderId: VIDEO_KEYED,
         z: -1000,
 		colorScale: .99,
@@ -77,13 +63,6 @@ var VideoShots = {
 		paralaxHorizontal: 600,
 		paralaxVertical: 100
 	},{       
-	    path: "files/videos/city/s09_layer02.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
-        z: -800,
-		paralax: true,
-		removeAt: 0.8,
-		width: 1.5625, height: 1.1627
-	},{       
 	    path: "files/videos/city/s09_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
         z: -500,
@@ -92,34 +71,20 @@ var VideoShots = {
 	}],	
 	// PRAIRIE - BOXCAR
     s02_01: [{
-        path: "files/videos/prairie/s01_layer04.webm",
-        shaderId: VIDEO_OPAQUE,
-        z: -1400,
-		width: 1, height: 1.83,
-		paralax: true,
-		bendForce: 200,
-		duration: 9230,
-		paralaxHorizontal: 400,
-		paralaxVertical: 200
-    },{
-        path: "files/videos/prairie/s01_layer03.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
-		bendForce: 200,
-        z: -1300,
-		width: 1.56, height: 1.22,
-		paralax: true
-    },{
         path: "files/videos/prairie/s01_layer02.webm",
-        shaderId: VIDEO_SMARTALPHA,
-        z: -1000,
+        shaderId: VIDEO_OPAQUE,
+		width: 1.5625, height: 1,
 		paralax: true,
-		bendForce: 200,
-		width: 1.56, height: 1.83
+		paralaxHorizontal: 600,
+		paralaxVertical: 0,
+        z: -700,
+		duration: 9230
     },{
         path: "files/videos/prairie/s01_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
-        z: -30,
-        locked: true
+		width: 1.05, height: 1.05,
+		locked: true,
+        z: -100
     }],
     // PRAIRIE - TRAIN LADDER
     s02_02: [{
@@ -161,18 +126,13 @@ var VideoShots = {
 	
     // PRAIRIE - TRANSITION
     s02_06: [{
-        path: "files/videos/prairie/s06_layer02.webm",
+        path: "files/videos/prairie/s06_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
 		colorScale: 1.0,
         threshold: 2.4,
         alphaFadeout: 1,
         z: -1010,
 		duration: 6060
-    },{
-        path: "files/videos/prairie/s06_layer01.webm",
-        shaderId: VIDEO_SMARTALPHA_DISTORT,
-		removeAt: 0.7,
-        z: -1000
     }
 	],
 	// DUNES - TRAIN
