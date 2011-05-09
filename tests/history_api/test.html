@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+	<head>
+		<script src = "dist/js-signals.min.js"></script>
+		<script>
+		
+			var Signal = signals.Signal;
+
+			var objects = [];
+
+			var objectOne = {
+				title: "objectOne",
+				id: 1,
+				pushed: new Signal(),
+				popped: new Signal()
+			};
+			
+			var objectTwo = {
+				title: "objectTwo",
+				id: 2,
+				pushed: new Signal(),
+				popped: new Signal()
+			};
+			
+			var objectThree = {
+				title: "objectThree",
+				id: 3,
+				pushed: new Signal(),
+				popped: new Signal()
+			};
+			
+			var objectFour = {
+				title: "objectFour",
+				id: 4,
+				pushed: new Signal(),
+				popped: new Signal()
+			};
+
+			objects.push(objectOne);
+			objects.push(objectTwo);
+			objects.push(objectThree);
+			objects.push(objectFour);
+
+			function pushed(object) {
+				var url = "./" + object.title + ".html";
+				if(history.pushState) history.pushState({"id" : object.id}, "", url);
+			}
+
+			function popped(object) {
+				alert(object.title + " popped!");
+			}
+
+			var setup = function() {
+
+				for(var i = 0; i < objects.length; i++) {
+
+					var object = objects[i];
+							object.pushed.add( pushed );
+							object.popped.add( popped );
+
+							object.domElement = document.createElement( "a" );
+							object.domElement.innerHTML = object.title;
+							object.domElement.setAttribute("href", object.id);
+
+							document.body.appendChild( object.domElement );
+							document.body.appendChild(document.createElement( 'br' ));
+
+							object.domElement.addEventListener("click", function(e) {
+								e.preventDefault();
+								var id = this.getAttribute("href");
+								var object = objects[parseInt(id) - 1];
+								object.pushed.dispatch( object );
+							}, false);
+				}
+			};
+
+			// Only called when back or first time on it
+			window.onpopstate = function(e) {
+				if(e.state) {
+					var object = objects[e.state.id];
+							object.popped.dispatch( object );
+				}
+			};
+
+			window.onload = function() {
+				setup();
+			};
+
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>

@@ -163,7 +163,6 @@
 	}
 
 	// Accelerometer data in question
-
 	function onWindowDeviceOrientation( event ) {
 
 		if( !event.gamma && !event.beta ) {
