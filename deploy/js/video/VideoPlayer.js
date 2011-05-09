@@ -24,7 +24,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var mouseX = 0, mouseY = 0;
 	var mouseOldX = 0, mouseOldY = 0;
 	var mouseNewX = 0, mouseNewY = 0;
-	var mouseRad = 1.;
+	var mouseRad = 1;
 	var mouseSpeed = 1;
 	var targetPos;
 
