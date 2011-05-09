@@ -19,17 +19,13 @@ var Clouds = function ( shared, isRelaunch ) {
 
 	// Clouds
 
-	//////////////////////////////////////////////////////////////////
-	// BIRDS                                                        //
-	//////////////////////////////////////////////////////////////////
 	var boid, bird;
 	var birds = [];
 	var boids = [];
 	var morphObject = [];
-	//////////////////////////////////////////////////////////////////
 
 	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
-	camera, postCamera, scene, postScene, birdsScene, renderer, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos, 
+	camera, postCamera, scene, postScene, birdsScene, renderer, context, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos,
 	wantedCameraUpX = 0;
 	
 	fog = new THREE.Fog( 0x4584b4, - 100, 3000 );
@@ -128,11 +124,16 @@ var Clouds = function ( shared, isRelaunch ) {
 	renderer.domElement.style.position = 'absolute';
   renderer.domElement.style.left = '0px';
   renderer.domElement.style.top = '0px';
+  context = renderer.getContext();
 
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
   renderTargetClouds = new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight/2, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
   renderTargetFlamingos = new THREE.WebGLRenderTarget( window.innerWidth*2, window.innerHeight*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
+  renderTargetClouds.depthBuffer = false;
+  renderTargetClouds.stencilBuffer = false;
+  renderTargetFlamingos.depthBuffer = false;
+  renderTargetFlamingos.stencilBuffer = false;
 
   window.renderTargetClouds = renderTargetClouds;
   postCamera = new THREE.Camera();
@@ -241,7 +242,6 @@ var Clouds = function ( shared, isRelaunch ) {
     scene.addObject( mesh2 );
 
     birdsScene.addObject( birdsGroup );
-//    scene.addObject( birdsGroup );
   }
 
 	this.getDomElement = function () {
@@ -269,7 +269,6 @@ var Clouds = function ( shared, isRelaunch ) {
 
     renderer.setSize( width, height );
 
-//    renderer.setViewport(0,0,width, height);
     renderer.domElement.style.width = width + 'px';
 		renderer.domElement.style.height = height + 'px';
 
@@ -295,7 +294,6 @@ var Clouds = function ( shared, isRelaunch ) {
 		camera.target.position.x = camera.position.x;
 		camera.target.position.y = camera.position.y;
 		camera.target.position.z = camera.position.z - 1000;
-
 
 		renderer.clear();
 
@@ -331,7 +329,7 @@ var Boid = function() {
 
   var vector = new THREE.Vector3(),
   _acceleration, _width = 500, _height = 500, _depth = 200, _goal, _neighborhoodRadius = 3000,
-  _maxSpeed = 1, _maxSteerForce = 0.03, _avoidWalls = false;
+  _maxSpeed = 0.6, _maxSteerForce = 0.03, _avoidWalls = false;
 
   this.position = new THREE.Vector3();
   this.velocity = new THREE.Vector3();

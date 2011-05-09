@@ -9,7 +9,7 @@ var DunesShaderEffectors = {
 
 	positionFlat: [],
 	materials: []
-}
+};
 
 
 var DunesShader = {
@@ -180,6 +180,7 @@ var DunesShader = {
 
 			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.w ), fogFactor );",
 			"gl_FragColor.a = dunesOpacity;",
+
 		"}"
 
 	].join("\n")
@@ -227,7 +228,7 @@ function applyDunesShader( result, excludeMap, invertLightY, opacity ) {
 		mat.uniforms.invertLightY.value = invLight;
 		mat.uniforms.dunesOpacity.value = opa;
 
-		obj.materials = [ mat ];
+		obj.materials = [ mat ];
 		DunesShaderEffectors.materials.push( mat );
 
 	}
@@ -272,9 +273,10 @@ function updateDunesShader( delta, skyWhite ) {
 		
 		effector = DunesShaderEffectors.position[ e ];
 		
-		pos[ p++ ] = effector.x;
-		pos[ p++ ] = effector.y;
-		pos[ p++ ] = effector.z;
+		pos[ p++ ] = effector.x;
+		pos[ p++ ] = effector.y;
+		pos[ p++ ] = effector.z;
+
 	}
 
 
@@ -286,6 +288,7 @@ function updateDunesShader( delta, skyWhite ) {
 		
 		DunesShaderEffectors.materials[ e ].uniforms.time.value = time;
 		DunesShaderEffectors.materials[ e ].uniforms.skyWhite.value = skyWhite;
+
 	}
 	
 

@@ -25,6 +25,7 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 
 		var ribbon = new Ribbon( 15, 6, vectorArray.length - 20 );
 		var ribbonMesh = new THREE.Mesh( ribbon, ribbonMaterials[ i % ribbonMaterials.length ] );
+		ribbonMesh.dynamic = true;
 		ribbonMesh.doubleSided = true;
 		scene.addObject( ribbonMesh );
 
