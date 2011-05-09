@@ -529,7 +529,7 @@ ROME.AnimalAnimationData = {
 		"moose"		: "moose",
 		
 		"mountainlion" 		: "mountainlion",
-		"mountainlionblack" : "panther",
+		"panther" : "panther",
 		
 		"owl"		: "owl",
 		"parrot"	: "parrot",
