@@ -5,6 +5,14 @@
 	launcher, film, relauncher, exploration, ugc,
 	shortcuts, lastBeta = 0, lastGamma = 0;
 
+	var historySections = [
+		"film",
+		"explore",
+		"relauncher",
+		"tool"
+	];
+	var historyDispatches = [];
+
 	// debug
 
 	logger = new Logger();
@@ -90,14 +98,19 @@
 		exploration = new ExplorationSection( shared );
 		document.body.appendChild( exploration.getDomElement() );
 
-		shared.signals.showfilm.add( function () { setSection( film ); } );
-		shared.signals.showexploration.add( function () { setSection( exploration ); } );
+		shared.signals.showfilm.add( function () { setSection( film, historySections[0], "/" + historySections[0] ); } );
+		shared.signals.showexploration.add( function () { setSection( exploration, historySections[1], "/" + historySections[1] ); } );
 
 	} );
 
 	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
-	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
-	shared.signals.showugc.add( function () { setSection( ugc ); } );
+	shared.signals.showrelauncher.add( function () { setSection( relauncher, historySections[2], "/" + historySections[2] ); } );
+	shared.signals.showugc.add( function () { setSection( ugc, historySections[3], "/" + historySections[3] ); } );
+
+	historyDispatches.push( shared.signals.showfilm );
+	historyDispatches.push( shared.signals.showexploration );
+	historyDispatches.push( shared.signals.showrelauncher );
+	historyDispatches.push( shared.signals.showugc );
 
 	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
@@ -120,11 +133,23 @@
 	// Main listener for History API
 	window.onpopstate = function(e) {
 
-		console.log("popstate: " + e);
+		// Handle History API stuff
+		var folder = window.location.pathname.toString();
+
+		for(var i = 0; i < historySections.length; i++) {
+
+			if(folder.match(historySections[i])) {
+
+				historyDispatches[i].dispatch();
+				break;
+
+			}
+
+		}
 
 	};
 
-	function setSection( section ) {
+	function setSection( section, title, path ) {
 
 		if ( currentSection ) currentSection.hide();
 
@@ -137,6 +162,12 @@
 
 		section.resize( window.innerWidth, window.innerHeight );
 		section.show();
+
+		if(title && path) {
+
+			if(history) history.pushState( null, title, path );
+
+		}
 
 		currentSection = section;
 

@@ -91,7 +91,7 @@ var Footer = function(container, prefix) {
 		'  <ul class="primary">',
 		'    <li class="first"><a href="/tech">Technology</a></li>',
 		'    <li><a id = "' + credits + '" href="/credits">Credits</a></li>',
-		'    <li><a href="/album">Rome Album</a></li>',
+		'    <li><a href="http://romealbum.com/">Rome Album</a></li>',
 		'    <li id="' + divReplacement + '" class="rome_footer_buy_album">',
 		'    </li>',
 		'    <li class="last">Share</li>',
