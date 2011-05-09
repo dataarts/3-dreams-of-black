@@ -39,11 +39,8 @@ var UgcSection = function ( shared ) {
 
     // Its important that we respond to these two signals, we should disable voxel functionality when we're hovering on the UI!
     
-    shared.ugcSignals.ui_mouseover = new Signal();
-    shared.ugcSignals.ui_mouseover.add( function() { } );
-
-    shared.ugcSignals.ui_mouseout = new Signal();
-    shared.ugcSignals.ui_mouseover.add( function() { } );
+//    shared.ugcSignals.ui_mouseover = new Signal();
+//    shared.ugcSignals.ui_mouseout = new Signal();
 
 
     // What do we do about the animals? ... signal-wise ...

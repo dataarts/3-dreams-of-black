@@ -1,0 +1,36 @@
+* {
+  margin:  0;
+  padding: 0;
+}
+
+body {
+  width: 300px;
+  margin: 0 auto;
+  font: 500 11px/20px "FuturaBT-Medium", Arial, sans-serif;
+  background: url('files/footer/clouds-trans.png') center;
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-align: center;
+}
+
+a {
+  color: #000;
+}
+
+li, p {
+  margin: 7.5px 0;
+}
+
+ol ul, ol ol, ul ul, ul ol {
+  padding: 0 0 0 15px;
+}
+
+ul li {
+  list-style: none;
+}
+
+blockquote {
+  padding: 5px 15px;
+}
