@@ -110,9 +110,11 @@ var VoxelPainter = function ( camera, scene ) {
 
 	}
 
-	function addVoxel( x, y, z ) { // vector ) {
+	function addVoxel( x, y, z ) {
 
-		if ( y < 0 ) return;
+		if ( x < - 20 || x > 20 ) return;
+		if ( y < 0 || y > 40 ) return;
+		if ( z < - 20 || z > 20 ) return;
 
 		var voxel = _object.getVoxel( x, y, z );
 
@@ -261,11 +263,14 @@ var VoxelPainter = function ( camera, scene ) {
 
 					if ( _intersectFace && intersects.length > 0 ) {
 
+						/*
 						var point = intersects[ 0 ].point,
 						centroidWorld = _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ),
 						distance = centroidWorld.distanceTo( point ),
 						vector = centroidWorld.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ).multiplyScalar( distance ) );
+						*/
 
+						var vector = intersects[ 0 ].point;
 						var x = toGridScale( vector.x ), y = toGridScale( vector.y ), z = toGridScale( vector.z );
 
 						addVoxel( x, y, z );

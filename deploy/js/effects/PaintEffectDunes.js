@@ -105,7 +105,7 @@ var PaintEffectDunes = function ( shared ) {
 					"uv = (uv - vec2(0.5)) * vec2( 0.94/* vingenettingOffset*/ );",
 				//	"color = color + (add / vec4(8.0) - color) * (vec4(1.0) - vec4(sample_dist * 0.1));",
 					"color = (add / vec4(8.0));",
-					"gl_FragColor = vec4( mix(color.rgb, color.ggg * colorFactor - vec3( vingenettingDarkening ), vec3( dot( uv, uv ))), 1.0 );",
+					"gl_FragColor = vec4( mix(color.rgb, color.ggg * colorFactor /* - vec3( vingenettingDarkening )*/, vec3( dot( uv, uv ))), 1.0 );",
 					"gl_FragColor = vec4(1.0) - (vec4(1.0) - gl_FragColor) * (vec4(1.0) - gl_FragColor);",
 				"}"
 

@@ -71,7 +71,7 @@ CityCameraFreeExplore = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = 1;// delta * ( 1000 / 30 ) / 1000; 
+		delta = delta * ( 1000 / 30 ) / 1000; 
 		
 		// get mouse
 		
@@ -171,9 +171,9 @@ CityCameraFreeExplore = function( shared ) {
 		wantedCamera.up.set( 0, 1, 0 );
 		wantedCamera.up.subSelf( wantedCameraDirection ).normalize();
 		
-		camera.up.x += ( wantedCamera.up.x - camera.up.x ) * CAMERA_INERTIA;
-		camera.up.y += ( wantedCamera.up.y - camera.up.y ) * CAMERA_INERTIA;
-		camera.up.z += ( wantedCamera.up.z - camera.up.z ) * CAMERA_INERTIA;
+		camera.up.x += ( wantedCamera.up.x - camera.up.x ) * CAMERA_INERTIA * delta;
+		camera.up.y += ( wantedCamera.up.y - camera.up.y ) * CAMERA_INERTIA * delta;
+		camera.up.z += ( wantedCamera.up.z - camera.up.z ) * CAMERA_INERTIA * delta;
 
 	}
 

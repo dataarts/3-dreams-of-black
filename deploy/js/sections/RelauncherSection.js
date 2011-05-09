@@ -227,9 +227,6 @@ var RelauncherSection = function( shared ) {
 		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "<img src = 'files/relaunch_section/explore_dreams.png' alt = 'Explore Other Dreams' />");
 		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "<img src = 'files/relaunch_section/continue.png' alt = 'Continue To Explore' />");
 
-		var enter = createDomElement(container, "div", "return-to-pause", "", "<img src = 'files/relaunch_section.return.png' alt = 'Press ENTER to pause the experience and access additional controls.' />");
-				enter.style.display = 'none';
-
 		start.addEventListener("click", function(e) {
 
 			e.preventDefault();
@@ -249,6 +246,8 @@ var RelauncherSection = function( shared ) {
 
 			e.preventDefault();
 			shared.signals.showugc.dispatch();
+			// Abstract to be able to attach to certain shared signals.
+			if(history) history.pushState({"title": "tool"}, "tool", "/tool");
 
 		}, false);
 

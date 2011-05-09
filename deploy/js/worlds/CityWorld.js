@@ -55,6 +55,11 @@ var CityWorld = function ( shared ) {
 
 	}
 
+	// Init City Shader
+	
+	CityShader.init();
+
+
 	// Scene
 
 	var loader = new THREE.SceneLoader();
