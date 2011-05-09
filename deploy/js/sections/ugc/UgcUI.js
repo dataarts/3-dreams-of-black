@@ -2,7 +2,7 @@ var UgcUI = function (shared) {
 
   var _this = this;
 
-  var ANIMAL_CONTAINER_HEIGHT = 165;
+  var ANIMAL_CONTAINER_HEIGHT = 114;
   var NATIVE_ASPECT = 1.28005657708628;
   var SIZE_SMALL = 1;
   var SIZE_MED = 3;
@@ -51,7 +51,7 @@ var UgcUI = function (shared) {
   animalContainerDiv.style.marginTop = -ANIMAL_CONTAINER_HEIGHT + 'px';
 
   var animalInnerDiv = classedElement('div', 'animal-inner');
-  var animalInnerDivWidth = ((numAnimals) * 220);
+  var animalInnerDivWidth = ((numAnimals) * 140);
   animalInnerDiv.style.padding = '10px';
   animalInnerDiv.style.width = animalInnerDivWidth + 'px';
   animalInnerDiv.style.height = '100%';
@@ -69,6 +69,7 @@ var UgcUI = function (shared) {
   domElement.appendChild(submitShade);
 
   var submit = document.createElement('div');
+
   submit.addEventListener('mousemove', function(e) {
     e.stopImmediatePropagation();
     e.stopPropagation();
@@ -108,7 +109,7 @@ var UgcUI = function (shared) {
   submitTitle.setAttribute('type', 'text');
   submitTitle.setAttribute('value', 'GIVE A TITLE TO YOUR DREAM');
 
-  submitTitle.addEventListener('click', function() {
+  submitTitle.addEventListener('focus', function() {
     this.value = '';
   }, false);
 
@@ -117,13 +118,22 @@ var UgcUI = function (shared) {
   submitEmail.setAttribute('type', 'text');
   submitEmail.setAttribute('value', 'YOUR EMAIL ADDRESS');
 
-  submitEmail.addEventListener('click', function() {
+  submitEmail.addEventListener('focus', function() {
     this.value = '';
   }, false);
 
   var submitSubmit = idElement('div', 'voxel-submit-submit');
 
   submitSubmit.innerHTML = 'SUBMIT';
+
+  submitSubmit.addEventListener('click', function() {
+
+    var title = document.getElementById('voxel-submit-title').value;
+    var email = document.getElementById('voxel-submit-email').value;
+
+    shared.ugcSignals.submit.dispatch(title, email);
+    hideSubmitDialogue();
+  }, false);
 
   submit.appendChild(submitImage);
   submit.appendChild(submitText);
@@ -145,6 +155,10 @@ var UgcUI = function (shared) {
   submitInputs.appendChild(submitEmail);
   submitInputs.appendChild(theBR);
   submitInputs.appendChild(submitTitle);
+
+  //submitInputs.innerHTML = submitInputs.innerHTML.replace(/type\=\"text\" /, 'type="text" x-webkit-speech ');
+
+
   this.updateCapacity = function (i) {
     document.getElementById('capacity').textContent = ( Math.round(i * 100) + '%' );
   };
@@ -161,6 +175,8 @@ var UgcUI = function (shared) {
     animalContainerDiv.addEventListener('mousemove', function(e) {
       var padding = window.innerWidth / 5;
       animalSlideTarget = -((e.pageX - padding / 2) / (window.innerWidth - padding)) * (animalInnerDivWidth - window.innerWidth);
+      e.stopPropagation();
+      e.stopImmediatePropagation();
     });
 
     /**
@@ -405,10 +421,11 @@ var UgcUI = function (shared) {
   }
 
   function hideSubmitDialogue() {
-
     submitShade.style.zIndex = '-20';
     submit.style.top = '200%';
     submit.style.opacity = 0;
+    submitTitle.value = 'GIVE A TITLE TO YOUR DREAM';
+    submitEmail.value = 'YOUR EMAIL ADDRESS';
   }
 
   function findBG(containerId) {
@@ -853,9 +870,9 @@ var UgcUI = function (shared) {
       '#voxel-submit-shade { z-index: -12; opacity: 0.4; -webkit-transition: opacity 0.2s linear; background-color: #f4f1e8; position: fixed; top: 0; left: 0; width: 100%; height: 100% }',
       '#voxel-submit { font: 12px/18px FuturaBT-Medium; color: #404040; z-index: 21; opacity: 0; -webkit-transition: opacity 0.2s linear; width: 735px; height: 556px; padding: 13px; margin-left: -380px; margin-top: -291px; background-color: #f4f1e8; box-shadow: 0px 0px 10px rgba(0,0,0,0.3) }',
       '.animal-container { opacity: 0; -webkit-transition: opacity 0.3s linear; }',
-      '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 200px; margin-right: 10px; }',
+      '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 120px; margin-right: 10px; }',
       '.animal:hover { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #fff; }',
-      '.animal-controls { height: 21px; overflow:hidden; line-height: 0px; border-right: 1px solid #fff; opacity: 0; display: inline-block; position: relative; margin-top: 122px; }',
+      '.animal-controls { height: 21px; overflow:hidden; line-height: 0px; border-right: 1px solid #fff; opacity: 0; display: inline-block; position: relative; margin-top: 71px; }',
       '.animal:hover .animal-controls { opacity: 1; }',
       '.animal-controls div { display: none; text-align: center; border: 1px solid #fff; border-right: 0; border-bottom: 0; display: inline-block; width: 20px;}',
       '.animal-controls div.animal-add:hover, .animal-controls div.animal-remove:hover { cursor: pointer; background-color: #f65824; }',
