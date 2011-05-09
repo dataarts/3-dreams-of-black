@@ -18,6 +18,7 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals = {};
 		shared.ugcSignals.showintro = new Signal();
 		shared.ugcSignals.showobjectcreator = new Signal();
+		shared.ugcSignals.showsoupcreator = new Signal();
 
 		shared.ugcSignals.object_createmode = new Signal();
 		shared.ugcSignals.object_erasemode = new Signal();
@@ -25,11 +26,15 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals.object_changecolor = new Signal();
 		shared.ugcSignals.object_changesize = new Signal();
 
+		shared.ugcSignals.submit_dialogue = new Signal();
 		shared.ugcSignals.submit = new Signal();
 
 		shared.ugcSignals.object_smoothup = new Signal();
 		shared.ugcSignals.object_smoothdown = new Signal();
 		shared.ugcSignals.object_undo = new Signal();
+
+    shared.ugcSignals.object_requestsnapshot = new Signal();
+    shared.ugcSignals.object_receivesnapshot = new Signal();
 
 		intro = new UgcIntro( shared );
 
@@ -49,7 +54,7 @@ var UgcSection = function ( shared ) {
 
 		// Signals listeners
 
-		shared.ugcSignals.showintro.add( function ( mode ) {
+		shared.ugcSignals.showintro.add( function () {
 
 			intro.getDomElement().style.display = 'block';
 
@@ -64,6 +69,11 @@ var UgcSection = function ( shared ) {
 
 			objectCreator.getDomElement().style.display = 'block';
 			ui.getDomElement().style.display = 'block';
+
+		} );
+
+		shared.ugcSignals.showsoupcreator.add( function ( mode ) {
+
 
 		} );
 
@@ -85,10 +95,7 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		// Pretty janky - George
-		var nativeWidth = 1342;
-		ui.scale( width / nativeWidth );
-		ui.getDomElement().style.marginTop = - Math.round(300 * width / nativeWidth) + 'px';
+    ui.resize(width, height);
 		objectCreator.resize( width, height );
 
 	};

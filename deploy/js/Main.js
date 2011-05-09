@@ -152,8 +152,10 @@
 			for(var i = 0; i < historySections.length; i++) {
 
 				if(folder.match(historySections[i])) {
-
 					historyDispatches[i].dispatch();
+					if(i == 0) {
+						shared.signals.startfilm.dispatch( 0, 1 );
+					}
 					break;
 
 				}
@@ -192,8 +194,8 @@
 
 		shared.signals.mousedown.dispatch( event );
 
-		event.preventDefault();
-		event.stopPropagation();
+		//event.preventDefault();
+		//event.stopPropagation();
 
 	}
 
@@ -201,8 +203,8 @@
 
 		shared.signals.mouseup.dispatch( event );
 
-		event.preventDefault();
-		event.stopPropagation();
+		//event.preventDefault();
+		//event.stopPropagation();
 
 	}
 
