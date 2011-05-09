@@ -238,7 +238,6 @@ var RelauncherSection = function( shared ) {
 
 		enter.addEventListener("click", function(e) {
 
-			// Doesn't work at the moment
 			shared.signals.showexploration.dispatch();
 			shared.signals.startexploration.dispatch( 'dunes' );
 			var divs = container.getElementsByTagName('div');
