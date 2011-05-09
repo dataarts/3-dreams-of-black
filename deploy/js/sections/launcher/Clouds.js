@@ -39,7 +39,7 @@ var Clouds = function ( shared, isRelaunch ) {
 
 	geometry = new THREE.Geometry();
 
-	var texture = THREE.ImageUtils.loadTexture( 'files/cloud256.png', null, function () {
+	var texture = THREE.ImageUtils.loadTexture( '/files/cloud256.png', null, function () {
 
 		material = new THREE.MeshShaderMaterial( {
 
@@ -113,7 +113,7 @@ var Clouds = function ( shared, isRelaunch ) {
     mesh2 = new THREE.Mesh( geometry, material );
 
     var loader = new THREE.JSONLoader();
-    loader.load( { model: "./files/models/soup/birds_B_life.js", callback: makeScene } );
+    loader.load( { model: "/files/models/soup/birds_B_life.js", callback: makeScene } );
 
 	} );
 
@@ -122,32 +122,32 @@ var Clouds = function ( shared, isRelaunch ) {
 
 	renderer = new THREE.WebGLRenderer({ antialias: false, clearColor: 0x000000, clearAlpha: 0 });
 	renderer.domElement.style.position = 'absolute';
-  renderer.domElement.style.left = '0px';
-  renderer.domElement.style.top = '0px';
-  context = renderer.getContext();
+	renderer.domElement.style.left = '0px';
+	renderer.domElement.style.top = '0px';
+	context = renderer.getContext();
 
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
-  renderTargetClouds = new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight/2, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
-  renderTargetFlamingos = new THREE.WebGLRenderTarget( window.innerWidth*2, window.innerHeight*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
-  renderTargetClouds.depthBuffer = false;
-  renderTargetClouds.stencilBuffer = false;
-  renderTargetFlamingos.depthBuffer = false;
-  renderTargetFlamingos.stencilBuffer = false;
+	renderTargetClouds = new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight/2, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
+	renderTargetFlamingos = new THREE.WebGLRenderTarget( window.innerWidth*2, window.innerHeight*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
+	renderTargetClouds.depthBuffer = false;
+	renderTargetClouds.stencilBuffer = false;
+	renderTargetFlamingos.depthBuffer = false;
+	renderTargetFlamingos.stencilBuffer = false;
 
-  window.renderTargetClouds = renderTargetClouds;
-  postCamera = new THREE.Camera();
-  postCamera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
-  postScene = new THREE.Scene();
+	window.renderTargetClouds = renderTargetClouds;
+	postCamera = new THREE.Camera();
+	postCamera.projectionMatrix = THREE.Matrix4.makeOrtho( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
+	postScene = new THREE.Scene();
 
-  var postUniforms = {
-    "tClouds": { type: "t", value: 0, texture: renderTargetClouds },
-    "tFlamingos": { type: "t", value: 1, texture: renderTargetFlamingos },
-    "width": { type: "f", value: window.innerWidth },
-    "height": { type: "f", value: window.innerHeight },
-    "fogColor" : {type: "c", value: fog.color}
-  };
-  postMaterial = new THREE.MeshShaderMaterial( {
+	var postUniforms = {
+	"tClouds": { type: "t", value: 0, texture: renderTargetClouds },
+	"tFlamingos": { type: "t", value: 1, texture: renderTargetFlamingos },
+	"width": { type: "f", value: window.innerWidth },
+	"height": { type: "f", value: window.innerHeight },
+	"fogColor" : {type: "c", value: fog.color}
+	};
+	postMaterial = new THREE.MeshShaderMaterial( {
         uniforms: postUniforms,
         vertexShader: [
           "varying vec2 vUv;",
@@ -186,10 +186,10 @@ var Clouds = function ( shared, isRelaunch ) {
 
         ].join("\n")
       } );
-  postScene.addObject( new THREE.Mesh( new THREE.Plane( window.innerWidth, window.innerHeight ), postMaterial ) );
+	postScene.addObject( new THREE.Mesh( new THREE.Plane( window.innerWidth, window.innerHeight ), postMaterial ) );
 
 
-  function onMouseMove () {
+	function onMouseMove () {
 		if(!isRelaunch) {
 			mouse.x = ( shared.mouse.x / shared.screenWidth ) * 100 - 50;
 			mouse.y = ( shared.mouse.y / shared.screenHeight ) * 100 - 50;
@@ -197,10 +197,10 @@ var Clouds = function ( shared, isRelaunch ) {
 		}
 	}
 
-  function makeScene(geometry){
+	function makeScene(geometry) {
 
     for ( var i = 0; i < 2; i ++ ) {
-      /////Bioids
+      /////Boids
       boid = boids[ i ] = new Boid();
       boid.position.x = 320;
       boid.position.y = 20 + Math.random() * 10;

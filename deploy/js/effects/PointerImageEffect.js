@@ -13,7 +13,7 @@ var PointerImageEffect = function ( shared, url ) {
 	
 	this.show = function ( progress ) {
 		
-		document.body.style.cursor = 'url("files/pointer-transparent.png"), auto';
+		document.body.style.cursor = 'url("/files/pointer-transparent.png"), auto';
 		imgElement.style.display = "block";
 
 	};

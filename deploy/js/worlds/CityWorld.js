@@ -110,7 +110,7 @@ var CityWorld = function ( shared ) {
 
 	if ( !shared.debug ) {
 
-		loader.load( "files/models/city/City.js", sceneLoaded );
+		loader.load( "/files/models/city/City.js", sceneLoaded );
 
 	}
 

@@ -4,7 +4,7 @@ var PointerEffect = function ( shared, visible ) {
 
 	this.show = function ( progress ) {
 
-		document.body.style.cursor = visible ? 'url("files/pointer.png"), auto' : 'none';
+		document.body.style.cursor = visible ? 'url("/files/pointer.png"), auto' : 'none';
 
 	};
 

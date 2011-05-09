@@ -87,7 +87,7 @@ var ExplorationSection = function ( shared ) {
 		lastWorldId = worldId;
 		
 		scene = world.scene;
-		soup  = shared.soups[ worldId ];
+		soup  = shared.soups[ worldId ];
 		fadeInTime = 0;
 		
 		

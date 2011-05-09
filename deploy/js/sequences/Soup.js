@@ -32,7 +32,7 @@ var Soup = function ( camera, scene, shared ) {
 	// collision scene
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 2500 );
 	collisionScene.settings.capBottom = 0;
-/*	loader.load( { model: "files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
+/*	loader.load( { model: "/files/models/city/City_Shadow.js", callback: collisionLoadedProxy } );
 
 	function collisionLoadedProxy( geometry ) {
 		collisionScene.addLoaded( geometry, 0.1 );
@@ -58,11 +58,11 @@ var Soup = function ( camera, scene, shared ) {
 	ribbons.settings.ribbonMax = 8;
 
 	// particles
-	var sprite0 = THREE.ImageUtils.loadTexture( "files/textures/dark_0.png" );
-	var sprite1 = THREE.ImageUtils.loadTexture( "files/textures/dark_1.png" );
-	var sprite2 = THREE.ImageUtils.loadTexture( "files/textures/dark_2.png" );
-	var sprite3 = THREE.ImageUtils.loadTexture( "files/textures/dark_3.png" );
-	var sprite4 = THREE.ImageUtils.loadTexture( "files/textures/dark_4.png" );
+	var sprite0 = THREE.ImageUtils.loadTexture( "/files/textures/dark_0.png" );
+	var sprite1 = THREE.ImageUtils.loadTexture( "/files/textures/dark_1.png" );
+	var sprite2 = THREE.ImageUtils.loadTexture( "/files/textures/dark_2.png" );
+	var sprite3 = THREE.ImageUtils.loadTexture( "/files/textures/dark_3.png" );
+	var sprite4 = THREE.ImageUtils.loadTexture( "/files/textures/dark_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
 	particles = new Particles(20, scene, 8, particleSprites, 15, 80);
@@ -87,11 +87,11 @@ var Soup = function ( camera, scene, shared ) {
 	runningAnimals.array[25] = "goat";
 	runningAnimals.array[21] = "arm";
 
-	loader.load( { model: "files/models/soup/bison.js", callback: bisonLoadedProxy } );
-	loader.load( { model: "files/models/soup/gator.js", callback: gatorLoadedProxy } );
-	loader.load( { model: "files/models/soup/wolf.js", callback: wolfLoadedProxy } );
-	loader.load( { model: "files/models/soup/goat.js", callback: goatLoadedProxy } );
-	loader.load( { model: "files/models/soup/arm.js", callback: armLoadedProxy } );
+	loader.load( { model: "/files/models/soup/bison.js", callback: bisonLoadedProxy } );
+	loader.load( { model: "/files/models/soup/gator.js", callback: gatorLoadedProxy } );
+	loader.load( { model: "/files/models/soup/wolf.js", callback: wolfLoadedProxy } );
+	loader.load( { model: "/files/models/soup/goat.js", callback: goatLoadedProxy } );
+	loader.load( { model: "/files/models/soup/arm.js", callback: armLoadedProxy } );
 
 	var colorArray = [ new THREE.Color( 0x101010 ),
 					   new THREE.Color( 0x111111 ),
@@ -127,7 +127,7 @@ var Soup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.constantSpeed = 2.0;
 	flyingAnimals.settings.divider = 4;
 
-	loader.load( { model: "files/models/soup/vulture_raven.js", callback: birdsALoadedProxy } );
+	loader.load( { model: "/files/models/soup/vulture_raven.js", callback: birdsALoadedProxy } );
 	
 	function birdsALoadedProxy( geometry ) {
 		var morphArray = [1,1,0,0,1,0,0,1,0,0];
@@ -136,7 +136,7 @@ var Soup = function ( camera, scene, shared ) {
 
 	// butterflys
 	var butterflys = new AnimalInFrontOfCamera(30, scene);
-	loader.load( { model: "files/models/soup/butterfly_hiA.js", callback: butterflys.addAnimal } );
+	loader.load( { model: "/files/models/soup/butterfly_hiA.js", callback: butterflys.addAnimal } );
 	
 	// trail - of grass/trees/etc
 	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading } ),
@@ -155,7 +155,7 @@ var Soup = function ( camera, scene, shared ) {
 	trail.settings.aliveDivider = 100;
 	trail.settings.tweenTime = 4000;
 
-	loader.load( { model: "files/models/soup/grass.js", callback: grassLoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass.js", callback: grassLoadedProxy } );
 
 	function grassLoadedProxy( geometry ) {
 		trail.addInstance( geometry, null, false, trailMaterials );

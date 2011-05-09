@@ -17,7 +17,7 @@ var FilmSection = function ( shared ) {
 	domElement.appendChild( audio );
 
 	source = document.createElement( 'source' );
-	source.src = "files/Black.ogg";
+	source.src = "/files/Black.ogg";
 	audio.appendChild( source );
 
 	tune = new Tune( audio );
@@ -157,7 +157,7 @@ var FilmSection = function ( shared ) {
 	// pointers
 	
 	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerImageEffect( shared, "files/cursor_arrow.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1 );
+	sequencer.add( new PointerImageEffect( shared, "/files/cursor_arrow.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1 );
 	sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1 );
 
 	// final render

@@ -221,11 +221,11 @@ var RelauncherSection = function( shared ) {
 
 		var navigation = {};
 
-		var start = createDomElement(container, "div", "start-over", "after-experience", "<img src = 'files/relaunch_section/start_over.png' alt = 'Start Over' />");
-		var technology = createDomElement(container, "div", "technology", "after-experience", "<img src = 'files/relaunch_section/technology.png' alt = 'Technology' />");
-		var add = createDomElement(container, "div", "add-to-the-dream", "after-experience", "<img src = 'files/relaunch_section/add_dreams.png' alt = 'Add to the Dream' />");
-		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "<img src = 'files/relaunch_section/explore_dreams.png' alt = 'Explore Other Dreams' />");
-		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "<img src = 'files/relaunch_section/continue.png' alt = 'Continue To Explore' />");
+		var start = createDomElement(container, "div", "start-over", "after-experience", "<img src = '/files/relaunch_section/start_over.png' alt = 'Start Over' />");
+		var technology = createDomElement(container, "div", "technology", "after-experience", "<img src = '/files/relaunch_section/technology.png' alt = 'Technology' />");
+		var add = createDomElement(container, "div", "add-to-the-dream", "after-experience", "<img src = '/files/relaunch_section/add_dreams.png' alt = 'Add to the Dream' />");
+		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "<img src = '/files/relaunch_section/explore_dreams.png' alt = 'Explore Other Dreams' />");
+		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "<img src = '/files/relaunch_section/continue.png' alt = 'Continue To Explore' />");
 
 		start.addEventListener("click", function(e) {
 

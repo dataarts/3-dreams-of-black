@@ -44,7 +44,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 		};
 		
 		gridLoader = new THREE.JSONLoader();
-		gridLoader.load( { model: "files/models/VideoDistortGrid.js", callback: onGrid } );
+		gridLoader.load( { model: "/files/models/VideoDistortGrid.js", callback: onGrid } );
 
 	};
 	
