@@ -13,7 +13,8 @@ files = [
 
 'js/lib/js-signals.min.js',
 'js/lib/Tween.js',
-'js/lib/Three.js',
+'js/lib/ThreeWebGL.js',
+'js/lib/ThreeExtras.js',
 
 'js/lib/LoadingBar.js',
 'js/lib/RequestAnimationFrame.js',
@@ -45,6 +46,7 @@ files = [
 'js/effects/OverlayEffect.js',
 
 'js/effects/PointerEffect.js',
+'js/effects/PointerImageEffect.js',
 
 'js/worlds/CityWorld.js',
 'js/worlds/PrairieWorld.js',
@@ -70,6 +72,7 @@ files = [
 'js/soups/elements/Vectors.js',
 'js/soups/elements/Particles.js',
 'js/soups/elements/AnimalSwarm.js',
+'js/soups/elements/AnimalSwarm_dunes.js',
 'js/soups/elements/AnimalInFrontOfCamera.js',
 'js/soups/elements/Trail.js',
 'js/soups/elements/CollisionScene.js',
@@ -93,6 +96,8 @@ files = [
 'js/sections/UgcSection.js',
 
 'js/sections/launcher/Clouds.js',
+
+'js/sections/ugc/UgcIntro.js',
 'js/sections/ugc/UgcUI.js',
 'js/sections/ugc/UgcObjectCreator.js',
 'js/sections/ugc/UgcSoupCreator.js',

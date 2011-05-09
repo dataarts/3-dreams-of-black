@@ -41,6 +41,11 @@ var RelauncherSection = function( shared ) {
 
 	head.appendChild( style );
 
+	var offset = {
+		x: (window.innerWidth / 2.0 - 225),
+		y: (window.innerHeight / 2.0 - 175)
+	};
+
 	var clouds = new Clouds( shared, true );
 	clouds.getDomElement().style.position = 'absolute';
 	clouds.getDomElement().style.left = "0px";
@@ -51,7 +56,7 @@ var RelauncherSection = function( shared ) {
 
 	var container = document.createElement("div");
 	container.setAttribute("id", "container");
-	container.setAttribute("style", "position: absolute;");
+	container.setAttribute("style", "position: absolute; top: " + offset.y + "px; left: " + offset.x + "px;");
 	domElement.appendChild(container);
 
 	var fadeIn = document.createElement( 'div' );
@@ -63,8 +68,10 @@ var RelauncherSection = function( shared ) {
 			domElement.appendChild( fadeIn );
 
 	var gee = new GEE({
-		fullscreen: true,
+		fullscreen: false,
 		container: container,
+		width: 450,
+		height: 350,
 		loop: false
 	});
 	var g = gee.ctx;
@@ -137,7 +144,7 @@ var RelauncherSection = function( shared ) {
 
 	gee.draw = function() {
 
-		inner.update();
+		inner.update(offset);
 		var points = inner.getPoints();
 
 		g.clearRect(0, 0, gee.width, gee.height);
@@ -146,10 +153,10 @@ var RelauncherSection = function( shared ) {
 
 		g.strokeStyle = rome.color.black;
 		g.lineWidth = 0.5;
-		outer.update().render();
+		outer.update(offset).render();
 
 		g.globalCompositeOperation = "destination-out";
-		core.update().render();
+		core.update(offset).render();
 
 		g.globalCompositeOperation = "xor";
 		g.lineWidth = 24;
@@ -173,8 +180,8 @@ var RelauncherSection = function( shared ) {
 			var point = points[i].getOriginPosition();
 			// these are the center points of the objects
 			var navItem = navigation.list[i];
-			var xpos = point.x;
-			var ypos = point.y;
+			var xpos = point.x + offset.x;
+			var ypos = point.y + offset.y;
 
 			if (i == 0) {
 				xpos -= 113;
@@ -220,6 +227,9 @@ var RelauncherSection = function( shared ) {
 		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "<img src = 'files/relaunch_section/explore_dreams.png' alt = 'Explore Other Dreams' />");
 		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "<img src = 'files/relaunch_section/continue.png' alt = 'Continue To Explore' />");
 
+		var enter = createDomElement(container, "div", "return-to-pause", "", "<img src = 'files/relaunch_section.return.png' alt = 'Press ENTER to pause the experience and access additional controls.' />");
+				enter.style.display = 'none';
+
 		start.addEventListener("click", function(e) {
 
 			e.preventDefault();
@@ -238,7 +248,7 @@ var RelauncherSection = function( shared ) {
 		add.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			shared.signals.showugcintro.dispatch();
+			shared.signals.showugc.dispatch();
 
 		}, false);
 
@@ -250,7 +260,6 @@ var RelauncherSection = function( shared ) {
 		}, false);
 
 		explore.addEventListener("click", function(e) {
-
 			e.preventDefault();
 			shared.signals.showexploration.dispatch();
 			shared.signals.startexploration.dispatch( 'dunes' );
@@ -288,6 +297,12 @@ var RelauncherSection = function( shared ) {
 
 		clouds.resize( width, height );
 		footer.style.top = (window.innerHeight - 78) + "px";
+
+		offset = {
+			x: (window.innerWidth / 2.0 - 225),
+			y: (window.innerHeight / 2.0 - 175)
+		};
+		container.setAttribute("style", "position: absolute; top: " + offset.y + "px; left: " + offset.x + "px;");
 		updateDomElementsPosition();
 
 	};

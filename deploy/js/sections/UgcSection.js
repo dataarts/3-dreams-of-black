@@ -27,9 +27,13 @@ var UgcSection = function ( shared ) {
 
 		shared.ugcSignals.submit = new Signal();
 
-		intro = new UgcIntro( shared );
-		domElement.appendChild( intro.getDomElement() );
+		shared.ugcSignals.object_smoothup = new Signal();
+		shared.ugcSignals.object_smoothdown = new Signal();
+		shared.ugcSignals.object_undo = new Signal();
 
+		intro = new UgcIntro( shared );
+
+		domElement.appendChild( intro.getDomElement() );
 		objectCreator = new UgcObjectCreator( shared );
 		objectCreator.getDomElement().style.display = 'none';
 		domElement.appendChild( objectCreator.getDomElement() );
@@ -42,7 +46,6 @@ var UgcSection = function ( shared ) {
 		domElement.appendChild( ui.getDomElement() );
 
 		ui.addListeners();
-		ui.HANDLERS.updateCapacity(0);
 
 		// Signals listeners
 
@@ -82,11 +85,10 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
+		// Pretty janky - George
 		var nativeWidth = 1342;
-
 		ui.scale( width / nativeWidth );
-		ui.getDomElement().style.marginTop = - 255 * width / nativeWidth + 'px';
-
+		ui.getDomElement().style.marginTop = - Math.round(300 * width / nativeWidth) + 'px';
 		objectCreator.resize( width, height );
 
 	};
@@ -94,6 +96,7 @@ var UgcSection = function ( shared ) {
 	this.update = function () {
 
 		objectCreator.update();
+		ui.update();
 
 	};
 

@@ -25,7 +25,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 	var mouseOldX = 0, mouseOldY = 0;
 	var mouseNewX = 0, mouseNewY = 0;
 	var mouseRad = 1.;
-	var mouseSpeed = new THREE.Vector2(0,0);
+	var mouseSpeed = 1;
 	var targetPos;
 
 	this.duration = layers[ 0 ].duration;
@@ -84,7 +84,7 @@ var VideoPlayer = function( shared, layers, conf ) {
 			var p = planes[i];
 			if(p.locked) camera.addChild(p.mesh);
 			else scene.addChild(p.mesh);
-			p.start( progress );
+			p.start( progress, mouseX, mouseY );
 		}
 
 	};
@@ -106,9 +106,10 @@ var VideoPlayer = function( shared, layers, conf ) {
       mouseNewX = mouseX;
       mouseNewY = mouseY;
 
-      mouseSpeed.x += (1000*limitSpeed(mouseNewX-mouseOldX,0.05)/delta - mouseSpeed.x)/12;
-      mouseSpeed.y += (1000*limitSpeed(mouseNewY-mouseOldY,0.05)/delta - mouseSpeed.y)/12;
-      //mouseRad += (Math.max(Math.min((Math.abs(mouseSpeed.x)+Math.abs(mouseSpeed.y)),3),0.4)-mouseRad)/2;
+      var vX = Math.abs(limitSpeed(mouseNewX-mouseOldX,0.05)/delta);
+      var vY = Math.abs(limitSpeed(mouseNewY-mouseOldY,0.05)/delta);
+
+      mouseSpeed += (700*(vX+vY) - mouseSpeed)/20;
 
       mouseOldX = mouseX;
       mouseOldY = mouseY;

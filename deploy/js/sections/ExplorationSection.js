@@ -7,7 +7,6 @@ var ExplorationSection = function ( shared ) {
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
-
 	// renderer and post effects
 
 	var progress = 0, start = 0, lastTime = 0;
@@ -17,6 +16,7 @@ var ExplorationSection = function ( shared ) {
 	var postEffect, clearEffect, paintEffect, paintEffectPrairie, paintEffectDunes, fadeOutEffect;
 	var fadeInTime = 0;
 	var lastWorldId = "";
+	var paused = false;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -57,7 +57,7 @@ var ExplorationSection = function ( shared ) {
 		portals = world.portals;
 		camera  = cameras[ worldId ];
 		
-		if( worldId === "dunes" && lastWorldId !== "" && portals ) {
+		if( worldId === "dunes" && lastWorldId !== "" && lastWorldId !== "dunes" && portals ) {
 			
 			// find closest portal
 			
@@ -104,6 +104,14 @@ var ExplorationSection = function ( shared ) {
 
 			postEffect = paintEffectDunes;
 			
+			// set lights
+			
+			world.skyWhite = 1;
+			world.ambient.color.setHSV( 0, 0, 0.1 );
+			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, 1 );
+			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
+			world.lensFlare.position.y = 3500;
+			
 		}
 
 		updateViewportSize();
@@ -138,7 +146,22 @@ var ExplorationSection = function ( shared ) {
 
 	//--- stop ---
 
-	function stop() {
+	function stop(e) {
+
+		// Depracated for research on
+		// History API in HTML5 spec.
+		// Return + Enter
+		// if(e.keyCode == 13) {
+		// 
+		// 	paused = !paused;
+		// 	if(pause) {
+		// 
+		// 		// Show UI
+		// 		
+		// 
+		// 	}
+		// 
+		// }
 
 	};
 
@@ -175,18 +198,20 @@ var ExplorationSection = function ( shared ) {
 
 		domElement.style.display = 'block';
 		domElement.appendChild( renderer.domElement );
+		shared.signals.keyup.add( stop );
 
 	};
 
 	this.hide = function () {
 
 		domElement.style.display = 'none';
+		shared.signals.keyup.remove( stop );
 
 	};
 
 	this.resize = function ( width, height ) {
 
-		console.log( "Exploration Resize" );
+		// console.log( "Exploration Resize" );
 
 	};
 
@@ -194,49 +219,53 @@ var ExplorationSection = function ( shared ) {
 
 		// just flying around worlds using new RollCamera
 		
-		if( world && world.scene ) {
+		if(!paused) {
 
-			time = new Date().getTime() - start;
-			delta = time - lastTime;
-			lastTime = time;
-			delta = 33;
+			if( world && world.scene ) {
 
-			// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
-			//if( soup ) soup.update( delta, camera.camera );
-			//THREE.AnimationHandler.update( delta );
+				time = new Date().getTime() - start;
+				delta = time - lastTime;
+				lastTime = time;
+				delta = 33;
 
-			camera.updateCamera( progress, delta, time );
-			world.update( delta, camera.camera, true );
-			
+				// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
+				//if( soup ) soup.update( delta, camera.camera );
+				//THREE.AnimationHandler.update( delta );
 
-			clearEffect.update( progress, delta, time );
+				camera.updateCamera( progress, delta, time );
+				world.update( delta, camera.camera, true );
 
-			renderer.setClearColor( world.scene.fog ? world.scene.fog.color : 0xffffff );
-			renderer.render( world.scene, camera.camera, renderTarget );
 
-			// fade in/out
+				clearEffect.update( progress, delta, time );
 
-			if( fadeInTime < 1000 ) {
-				
-				fadeInTime += delta;
-				fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
+				renderer.setClearColor( world.scene.fog ? world.scene.fog.color : 0xffffff );
+				renderer.render( world.scene, camera.camera, renderTarget );
 
-			} else {
-				
-				for( var i = 0; i < portals.length; i++ ) {
-					
-					if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
-						
-						fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
-						
+				// fade in/out
+
+				if( fadeInTime < 1000 ) {
+
+					fadeInTime += delta;
+					fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
+
+				} else {
+
+					for( var i = 0; i < portals.length; i++ ) {
+
+						if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+
+							fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+
+						}
+
 					}
-					
+
 				}
-				
+
+
+				postEffect.update( progress, delta, time );
+
 			}
-
-
-			postEffect.update( progress, delta, time );
 
 		}
 
