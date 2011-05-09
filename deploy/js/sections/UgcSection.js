@@ -71,11 +71,6 @@ var UgcSection = function ( shared ) {
 
 		ui.addListeners();
 
-    // Made this a function of UI as opposed to HANDLERS
-		ui.updateCapacity(0);
-
-
-
 
 		// Signals listeners
 

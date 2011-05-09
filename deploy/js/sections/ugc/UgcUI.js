@@ -81,34 +81,17 @@ var UgcUI = function (shared) {
       animalSlideTarget = -((e.pageX - padding / 2) / (window.innerWidth - padding)) * (animalInnerDivWidth - window.innerWidth);
     });
 
-//    animalContainerDiv.addEventListener('mouseover', function() {
-//      shared.ugcSignals.ui_mouseover.dispatch();
-//    }, false);
-//
-//    svgLeft.addEventListener('mouseover', function() {
-//      shared.ugcSignals.ui_mouseover.dispatch();
-//    }, false);
-//
-//    animalContainerDiv.addEventListener('mouseout', function() {
-//      shared.ugcSignals.ui_mouseout.dispatch();
-//    }, false);
-//
-//    svgLeft.addEventListener('mouseout', function() {
-//      shared.ugcSignals.ui_mouseout.dispatch();
-//    }, false);
-
-    var menus = svgLeft.getElementsByClassName('menu');
-
     /**
      * Hover behavior
      */
+
+    var menus = svgLeft.getElementsByClassName('menu');
 
     for (var i = 0; i < menus.length; i++) {
       var open = makeOpenMenuFunction(menus[i]);
       menus[i].open = open;
       menus[i].addEventListener('click', open, false);
     }
-
 
     var named = document.getElementsByName('hover');
     for (var i = 0; i < named.length; i++) {
