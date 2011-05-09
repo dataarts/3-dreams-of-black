@@ -5,6 +5,7 @@ var LauncherSection = function ( shared ) {
 	var domElement,
 	clouds, title, buttonEnter, buttonStart,
 	buttonEnterImg, uiContainer, ffTitle,
+	exploreDreams, addToTheDream,
 	loading, footer, footNav;
 
 	domElement = document.createElement( 'div' );
@@ -134,30 +135,30 @@ var LauncherSection = function ( shared ) {
 				}
 
 				// Add shortcuts to gallery and tool
-				var addToTheDream = document.createElement( "div" );
-						addToTheDream.setAttribute("class", "seen-before");
-						addToTheDream.setAttribute("style", "background: url('files/launcher/add-trans.png') 0 0 no-repeat; width: 145px; height: 10px;");
-						addToTheDream.style.position = "absolute";
-						addToTheDream.style.top = "248px";
-						addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
-						addToTheDream.addEventListener("click", function(e) {
+				addToTheDream = document.createElement( "div" );
+				addToTheDream.setAttribute("class", "seen-before");
+				addToTheDream.setAttribute("style", "background: url('files/launcher/add-trans.png') 0 0 no-repeat; width: 145px; height: 10px;");
+				addToTheDream.style.position = "absolute";
+				addToTheDream.style.top = "248px";
+				addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
+				addToTheDream.addEventListener("click", function(e) {
 
-							e.preventDefault();
-							shared.signals.showugc.dispatch();
+					e.preventDefault();
+					shared.signals.showugc.dispatch();
 
-						}, false);
-				var exploreDreams = document.createElement( "div" );
-						exploreDreams.setAttribute("class", "seen-before");
-						exploreDreams.setAttribute("style", "background: url('files/launcher/explore-trans.png') 0 0 no-repeat; width: 199px; height: 10px;");
-						exploreDreams.style.position = "absolute";
-						exploreDreams.style.top = "248px";
-						exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
-						exploreDreams.addEventListener("click", function(e) {
+				}, false);
+				exploreDreams = document.createElement( "div" );
+				exploreDreams.setAttribute("class", "seen-before");
+				exploreDreams.setAttribute("style", "background: url('files/launcher/explore-trans.png') 0 0 no-repeat; width: 199px; height: 10px;");
+				exploreDreams.style.position = "absolute";
+				exploreDreams.style.top = "248px";
+				exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
+				exploreDreams.addEventListener("click", function(e) {
 
-							e.preventDefault();
-							window.location = "/gallery";
+					e.preventDefault();
+					window.location = "/gallery";
 
-						}, false);
+				}, false);
 
 				domElement.appendChild( addToTheDream );
 				domElement.appendChild( exploreDreams );
@@ -239,6 +240,11 @@ var LauncherSection = function ( shared ) {
 			loading.getDomElement().style.top = '215px';
 			loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
 
+		}
+
+		if( exploreDreams && addToTheDream ) {
+			exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
+			addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
 		}
 
 		domElement.style.width = width + 'px';

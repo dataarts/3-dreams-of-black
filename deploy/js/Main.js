@@ -152,6 +152,7 @@
 			for(var i = 0; i < historySections.length; i++) {
 
 				if(folder.match(historySections[i])) {
+
 					historyDispatches[i].dispatch();
 					if(i == 0) {
 						shared.signals.startfilm.dispatch( 0, 1 );
