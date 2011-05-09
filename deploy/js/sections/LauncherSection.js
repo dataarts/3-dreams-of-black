@@ -14,6 +14,9 @@ var LauncherSection = function ( shared ) {
 	domElement.style.textAlign = 'center';
 
 	var isLoading = false;
+	var loadedOnce = false;
+
+	// localStorage stuff
 
 	this.load = function () {
 
@@ -98,6 +101,72 @@ var LauncherSection = function ( shared ) {
 			ffTitle.style.marginLeft = "-2px";	// Ugly
 			ffTitle.innerHTML = "<img src = '/files/footer/header-trans.png' alt = 'ROME' />";
 			domElement.appendChild( ffTitle );
+
+		}
+
+		if( hasLocalStorage() ) {
+
+			if( localStorage["RomeSeen"] ) {
+
+				// Append a CSS file
+				if(!loadedOnce) {
+					var css = [
+						".seen-before {",
+						"	opacity: .35;",
+						"	cursor: pointer;",
+						"}",
+						".seen-before:hover {",
+						"	opacity: 1.0;",
+						"}"
+					].join('\n');
+
+					var rule = document.createTextNode(css);
+					var head = document.getElementsByTagName('head')[0];
+					var style = document.createElement('style');
+
+					if (style.stylesheet) {
+							style.styleSheet.cssText = rule.nodeValue;
+					} else {
+							style.appendChild(rule);
+					}
+					head.appendChild(style);
+					loadedOnce = true;
+				}
+
+				// Add shortcuts to gallery and tool
+				var addToTheDream = document.createElement( "div" );
+						addToTheDream.setAttribute("class", "seen-before");
+						addToTheDream.setAttribute("style", "background: url('files/launcher/add-trans.png') 0 0 no-repeat; width: 145px; height: 10px;");
+						addToTheDream.style.position = "absolute";
+						addToTheDream.style.top = "248px";
+						addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
+						addToTheDream.addEventListener("click", function(e) {
+
+							e.preventDefault();
+							shared.signals.showugc.dispatch();
+
+						}, false);
+				var exploreDreams = document.createElement( "div" );
+						exploreDreams.setAttribute("class", "seen-before");
+						exploreDreams.setAttribute("style", "background: url('files/launcher/explore-trans.png') 0 0 no-repeat; width: 199px; height: 10px;");
+						exploreDreams.style.position = "absolute";
+						exploreDreams.style.top = "248px";
+						exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
+						exploreDreams.addEventListener("click", function(e) {
+
+							e.preventDefault();
+							window.location = "/gallery";
+
+						}, false);
+
+				domElement.appendChild( addToTheDream );
+				domElement.appendChild( exploreDreams );
+
+			} else {
+
+				localStorage["RomeSeen"] = true;
+
+			}
 
 		}
 
@@ -206,6 +275,14 @@ var LauncherSection = function ( shared ) {
 		return domElement;
 
 	};
+
+	function hasLocalStorage() {
+		try {
+			return 'localStorage' in window && window['localStorage'] !== null;
+		} catch (e) {
+			return false;
+		}
+	}
 
 };
 
