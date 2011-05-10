@@ -6,14 +6,14 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	// setttings
 	
-	var CAMERA_LOWEST_Y = 150;
+	var CAMERA_LOWEST_Y = 50;
 	var CAMERA_LOWEST_Y_NULL_ATTENUATION = 200;
 	var CAMERA_HIGHEST_Y = 4500;
 	var CAMERA_FORWARD_SPEED = 12;
 	var CAMERA_FORWARD_SPEED_MAX = 25;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 100;
+	var CAMERA_VERTICAL_LIMIT = 120;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
 	var CAMERA_INERTIA = 0.02;
 	var CAMERA_ROLL_FACTOR = 0.4;
@@ -66,8 +66,8 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	that.resetCamera = function() {
 		
-		wantedCamera.position.set( 0, 300, 0 );
-		wantedCameraTarget.position.set( 0, 300, -500 );
+		wantedCamera.position.set( 0, 150, 300 );
+		wantedCameraTarget.position.set( 0, 150, -300 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
 		
 		camera.position.copy( wantedCamera.position );
@@ -92,7 +92,8 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = 1;// delta * ( 1000 / 30 ) / 1000; // switched off because of strange values in delta
+		delta = delta * ( 1000 / 30 ) / 1000;
+		if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
 		
 		
 		// check collision round-robin (can't afford to do all every frame)
@@ -258,7 +259,7 @@ DunesCameraFreeExplore = function( shared ) {
 
 		if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
 			
-			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
+			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR * delta;
 			
 		} else {
 			
@@ -275,8 +276,8 @@ DunesCameraFreeExplore = function( shared ) {
 
 		wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 
-		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
-		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE * delta + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 
 			
 		// calc camera speed (dependent on hight)
@@ -305,13 +306,13 @@ DunesCameraFreeExplore = function( shared ) {
 
 		// position intertia
 
-		camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * delta;
-		camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * delta;
-		camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * delta;
+		camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA;
+		camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA;
+		camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA;
 
-		camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA * delta;
-		camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA * delta;
-		camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA * delta;
+		camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA;
+		camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA;
+		camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA;
 		
 		
 		// roll
@@ -326,10 +327,21 @@ DunesCameraFreeExplore = function( shared ) {
 		wantedCamera.up.set( 0, 1, 0 );
 		wantedCamera.up.subSelf( wantedCameraDirection ).normalize();
 		
-		camera.up.x += ( wantedCamera.up.x - camera.up.x ) * CAMERA_INERTIA;
-		camera.up.y += ( wantedCamera.up.y - camera.up.y ) * CAMERA_INERTIA;
-		camera.up.z += ( wantedCamera.up.z - camera.up.z ) * CAMERA_INERTIA;
+		camera.up.x += ( wantedCamera.up.x - camera.up.x ) * CAMERA_INERTIA * delta;
+		camera.up.y += ( wantedCamera.up.y - camera.up.y ) * CAMERA_INERTIA * delta;
+		camera.up.z += ( wantedCamera.up.z - camera.up.z ) * CAMERA_INERTIA * delta;
 
+
+		// fail checks (seems to happen when a lot of lag)
+		
+		wantedCameraDirection.sub( camera.position, camera.target.position ).y = 0;
+		
+		if( wantedCameraDirection.length() < 1 ) {
+			
+			wantedCamera.position.y = wantedCameraTarget.position.y = camera.target.position.y = camera.position.y;
+			wantedCameraTarget.position.z = camera.target.position.z = -CAMERA_COLLISION_DISTANCE;
+
+		}
 	}
 
 	

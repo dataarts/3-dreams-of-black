@@ -42,7 +42,7 @@ var City = function ( shared ) {
 		startCamera = new THREE.PathCamera( {
 
 			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsA, duration: 8, 
+			waypoints: waypointsA, duration: 9, 
 			useConstantSpeed: true, resamplingCoef: 30,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
@@ -114,7 +114,7 @@ var City = function ( shared ) {
 		//camera.animation.play( true, 0 );
 
 		renderer.setClearColor( world.scene.fog.color );
-		renderer.setStencilShadowDarkness( 0.7 );
+		//renderer.setStencilShadowDarkness( 0.7 );
 
 	};
 	

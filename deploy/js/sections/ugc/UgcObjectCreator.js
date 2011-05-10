@@ -2,21 +2,21 @@ var UgcObjectCreator = function ( shared ) {
 
 	var that = this;
 
-	var domElement = document.createElement( 'div' );
+	shared.ugc.domElement = document.createElement( 'div' );
 
 	var DEG2RAD = Math.PI / 180,
-	camera, light1, light2, loader,
+	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, radius = 1500, theta = 45, phi = 15;
+	isRotateMode = false, isMouseDown = false, radius = 150, oldRadius = 150, newRadius = 150, theta = 45, phi = 15;
 
-	camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
-	camera.target.position.y = 200;
+	shared.ugc.camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
+	shared.ugc.camera.target.position.y = 20;
 
 	// Background
 
-	that.scene = new THREE.Scene();
-	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.000175 );
-	that.scene.fog.color.setHSV( 0.576, 0.382, 0.9 );
+	shared.ugc.scene = new THREE.Scene();
+	shared.ugc.scene.fog = new THREE.FogExp2( 0xffffff, 0.00075 );
+	shared.ugc.scene.fog.color.setHSV( 0.576, 0.382, 0.9 );
 
 	// Lights
 
@@ -30,24 +30,24 @@ var UgcObjectCreator = function ( shared ) {
 	directionalLight1.position.set( 0.8, 0.3, - 0.5 );
 	directionalLight1.position.normalize();
 
-	directionalLight2.color.setHSV( 0, 0, 0.864 );
-	directionalLight2.position.set( 0.1, 1, 0.2 );
+	directionalLight2.color.setHSV( 0, 0, 0.564 );
+	directionalLight2.position.set( 0.1, 0.5, 0.2 );
 	directionalLight2.position.normalize();
 
-	that.scene.addLight( ambient );
-	that.scene.addLight( directionalLight1 );
-	that.scene.addLight( directionalLight2 );
+	shared.ugc.scene.addLight( ambient );
+	shared.ugc.scene.addLight( directionalLight1 );
+	shared.ugc.scene.addLight( directionalLight2 );
 
 	that.lensFlare = null;
 	that.lensFlareRotate = null;
 
-	var flaresPosition = new THREE.Vector3( 0, 0, - 7500 );
+	var flaresPosition = new THREE.Vector3( 0, 0, - 750 );
 	var sx = 60, sy = 292;
 
-	initLensFlares( that, flaresPosition, sx, sy );
+	initLensFlares( shared.ugc, flaresPosition, sx, sy );
 
-	var loader = new THREE.SceneLoader();
-	loader.load( "files/models/dunes/D_tile_1.js", function ( result ) {
+	loader = new THREE.SceneLoader();
+	loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {
 
 		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
 
@@ -56,16 +56,14 @@ var UgcObjectCreator = function ( shared ) {
 			if ( object.visible ) {
 
 				object.rotation.x = - 90 * Math.PI / 180;
-				object.position.y = - 100;
-				object.position.x = 1750;
-				object.scale.x = object.scale.y = object.scale.z = 0.5;
-				that.scene.addObject( object );
+				object.position.y = - 10;
+				object.position.x = 500;
+				object.scale.x = object.scale.y = object.scale.z = 0.1;
+				shared.ugc.scene.addObject( object );
 
 			}
 
 		}
-
-		render();
 
 	} );
 
@@ -76,7 +74,7 @@ var UgcObjectCreator = function ( shared ) {
 		var renderer = new THREE.WebGLRenderer();
 		renderer.domElement.style.position = 'absolute';
 		renderer.setSize( window.innerWidth, window.innerHeight );
-		renderer.setClearColor( that.scene.fog.color );
+		renderer.setClearColor( shared.ugc.scene.fog.color );
 		renderer.sortObjects = false;
 		renderer.autoClear = false;
 
@@ -110,7 +108,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	// Painter
 
-	var painter = new VoxelPainter( camera, that.scene );
+	var painter = new VoxelPainter( shared.ugc.camera, shared.ugc.scene );
 
 	// Signal listeners
 
@@ -146,6 +144,25 @@ var UgcObjectCreator = function ( shared ) {
 
 	} );
 
+	shared.ugcSignals.object_changesize.add( function ( size ) {
+
+		painter.setSize( size );
+
+	} );
+
+  shared.ugcSignals.soup_mode.add( function ( size ) {
+
+    oldRadius = radius;
+    newRadius = 400;
+
+  } );
+
+  shared.ugcSignals.object_mode.add( function ( size ) {
+
+    newRadius = oldRadius;
+
+  } );
+
 	shared.ugcSignals.submit.add( function () {
 
 		var c = document.createElement('canvas');
@@ -172,28 +189,31 @@ var UgcObjectCreator = function ( shared ) {
 	function onMouseDown( event ) {
 
 		isMouseDown = true;
-		render();
+
+		painter.update( isMouseDown );
 
 	}
 
 	function onMouseUp( event ) {
 
 		isMouseDown = false;
-		render();
+
+		painter.update( isMouseDown );
 
 	}
 
 	function onMouseMove( event ) {
 
 		painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
-		render();
+		painter.update( isMouseDown );
 
 	}
 
 	function onMouseWheel( event ) {
 
-		radius -= event.wheelDeltaY;
-		render();
+		newRadius = radius + event.wheelDeltaY;
+
+		painter.update( isMouseDown );
 
 	}
 
@@ -230,11 +250,13 @@ var UgcObjectCreator = function ( shared ) {
 
 		}
 
-		camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
-		camera.position.y = radius * Math.sin( phi * DEG2RAD );
-		camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+		radius += (newRadius-radius)/20;
 
-		painter.update( isMouseDown );
+		shared.ugc.camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+		shared.ugc.camera.position.y = radius * Math.sin( phi * DEG2RAD );
+		shared.ugc.camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
+
+		// painter.update( isMouseDown );
 
 		//
 
@@ -246,7 +268,7 @@ var UgcObjectCreator = function ( shared ) {
 		*/
 
 		shared.renderer.clear();
-		shared.renderer.render( that.scene, camera );
+		shared.renderer.render( shared.ugc.scene, shared.ugc.camera );
 
 	}
 
@@ -254,7 +276,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.getDomElement = function () {
 
-		return domElement;
+		return shared.ugc.domElement;
 
 	};
 
@@ -268,8 +290,8 @@ var UgcObjectCreator = function ( shared ) {
 		shared.signals.keydown.add( onKeyDown );
 		shared.signals.keyup.add( onKeyUp );
 
-		domElement.appendChild( shared.renderer.domElement );
-		shared.renderer.setClearColor( that.scene.fog.color );
+		shared.ugc.domElement.appendChild( shared.renderer.domElement );
+		shared.renderer.setClearColor( shared.ugc.scene.fog.color );
 
 	};
 
@@ -287,8 +309,8 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		camera.aspect = width / height;
-		camera.updateProjectionMatrix();
+		shared.ugc.camera.aspect = width / height;
+		shared.ugc.camera.updateProjectionMatrix();
 
 		shared.viewportWidth = width;
 		shared.viewportHeight = height;
@@ -307,7 +329,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.update = function () {
 
-
+		render();
 
 	};
 

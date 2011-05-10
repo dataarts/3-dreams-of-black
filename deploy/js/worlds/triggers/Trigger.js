@@ -278,7 +278,7 @@ var TriggerUtils = (function() {
 					
 					if( triggerGeometries[ t ].geometry.morphTargets.length ) {
 						
-						if( triggers[ name ].type === "Small" ) {
+						//if( triggers[ name ].type === "Small" ) {
 							
 							trigger = new Trigger( triggerGeometries[ t ].geometry );
 							loadedSceneResult.objects[ name ].addChild( trigger.mesh );
@@ -286,14 +286,14 @@ var TriggerUtils = (function() {
 							
 							smallTriggersCity.push( trigger );
 							
-						} else {
+						/*} else {
 							
 							trigger = new TriggerBig( triggerGeometries[ t ].geometry );
 							loadedSceneResult.objects[ name ].addChild( trigger.mesh );
 	
 							bigTriggersCity.push( trigger );
 							
-						}
+						}*/
 	 					
 						trigger.mesh.rotation.x = 90 * Math.PI / 180;
 						

@@ -14,10 +14,17 @@ var DunesShaderEffectors = {
 
 var DunesShader = {
 
+	init: function() {
+		
+		DunesShader.uniforms.grassImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Grass.jpg' );
+		DunesShader.uniforms.surfaceImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Clouds.jpg' );
+		
+	},
+
 	uniforms: {  
 
-		"grassImage":     { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' ) },
-		"surfaceImage":   { type: "t", value: 1, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' ) },
+		"grassImage":     { type: "t", value: 0, texture: undefined },
+		"surfaceImage":   { type: "t", value: 1, texture: undefined },
 
 		"time": { type: "f", value: 0.0 },
 
@@ -166,16 +173,21 @@ var DunesShader = {
 
 
 			// fog
-			
+			/*
 			"const float LOG2 = 1.442695;",
 			"float depth = ( gl_FragCoord.z / gl_FragCoord.w ) * 50.0;",
 			"float fogFactor = exp2( -fogDensity * fogDensity * depth * depth * LOG2 );",
 			"fogFactor = 1.0 - clamp( fogFactor, 0.0, 1.0 );",
+			*/
+			
+			"const float viewDistance = 6000.0 * 2.0;", // tile size is 6000 and we'd like to see 2 tiles ahead
+			"float fogFactor = clamp(( gl_FragCoord.z / gl_FragCoord.w ) / viewDistance, 0.0, 1.0 );",
+			"fogFactor *= fogFactor;",
 
 
 			// mix sky color and fog
 
-			"f = max( 0.0, normalize( vWorldVector ).y + cameraPosition.y * 0.0002 - 0.255 );",
+			"f = max( 0.0, normalize( vWorldVector ).y + cameraPosition.y * 0.0002 - 0.05 );",
 			"sky_color = mix( vec3( skyWhite ), skyBlue, f );",
 
 			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.w ), fogFactor );",

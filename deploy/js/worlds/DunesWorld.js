@@ -50,6 +50,10 @@ var DunesWorld = function ( shared ) {
 
 	initLensFlares( that, new THREE.Vector3( -5500, 3500, -10000 ), 0, 0 );		
 
+	// init shader
+	
+	DunesShader.init();
+
 
 	// generate base grid (rotations depend on where the grid is in space)
 	// 0-3 = tiles
@@ -78,13 +82,28 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 4 );										// walk
 
-			} else if( x === 1 && z === 4 ) {
+			} else if( x === 3 && z === 4 ) {
 
 				tileRow.push( 5 );										// prairie
 
-			} else if( x === 3 && z === 3 ) {
+			} else if( x === 1 && z === 3 ) {
 
 				tileRow.push( 6 );										// city
+
+			} else if( x === 4 && z === 4 ) {							
+
+				tileRow.push( 0 );										// mountain
+				numTileInstances[ 0 ]++;
+
+			} else if( x === 0 && z === 4 ) {
+
+				tileRow.push( 0 );										// mountain
+				numTileInstances[ 0 ]++;
+
+			} else if( x === 1 && z === 4 ) {							
+
+				tileRow.push( 0 );										// mountain
+				numTileInstances[ 0 ]++;
 
 			} else {
 
@@ -97,6 +116,7 @@ var DunesWorld = function ( shared ) {
 		}
 
 	}
+	
 
 
 	// create skydome
@@ -115,14 +135,14 @@ var DunesWorld = function ( shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( "files/models/dunes/D_tile_walk.js", walkLoaded );
-	loader.load( "files/models/dunes/D_tile_prairie.js", prairieLoaded );
-	loader.load( "files/models/dunes/D_tile_city.js", cityLoaded );
+	loader.load( "/files/models/dunes/D_tile_walk.js", walkLoaded );
+	loader.load( "/files/models/dunes/D_tile_prairie.js", prairieLoaded );
+	loader.load( "/files/models/dunes/D_tile_city.js", cityLoaded );
 
-	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_4.js", tileLoaded );
+	loader.load( "/files/models/dunes/D_tile_1.js", tile0Loaded );
+	loader.load( "/files/models/dunes/D_tile_2.js", tile1Loaded );
+	loader.load( "/files/models/dunes/D_tile_3.js", tile2Loaded );
+	loader.load( "/files/models/dunes/D_tile_4.js", tile3Loaded );
 
 
 	// UGC
@@ -194,7 +214,12 @@ var DunesWorld = function ( shared ) {
 
 	//--- tile loaded ---
 
-	function tileLoaded( result ) {
+	function tile0Loaded( result ) { tileLoaded( result, 0 ); }
+	function tile1Loaded( result ) { tileLoaded( result, 1 ); }
+	function tile2Loaded( result ) { tileLoaded( result, 2 ); }
+	function tile3Loaded( result ) { tileLoaded( result, 3 ); }
+
+	function tileLoaded( result, tileNumber ) {
 
 		var scene = result.scene;
 
@@ -204,27 +229,27 @@ var DunesWorld = function ( shared ) {
 
 		// get collider
 
-		tileColliders[ numTilesLoaded ] = scene.collisions.colliders[ 0 ].mesh;
-		tileColliders[ numTilesLoaded ].rotation.x = -90 * Math.PI / 180;
-		tileColliders[ numTilesLoaded ].scale.set( SCALE, SCALE, SCALE );
+		tileColliders[ tileNumber ] = scene.collisions.colliders[ 0 ].mesh;
+		tileColliders[ tileNumber ].rotation.x = -90 * Math.PI / 180;
+		tileColliders[ tileNumber ].scale.set( SCALE, SCALE, SCALE );
 
 		// shows collision meshes
-		//tileColliders[ numTilesLoaded ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
-		//tileColliders[ numTilesLoaded ].visible = true;
+		//tileColliders[ tileNumber ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
+		//tileColliders[ tileNumber ].visible = true;
 
-		that.scene.addChild( tileColliders[ numTilesLoaded ] );
+		that.scene.addChild( tileColliders[ tileNumber ] );
 		that.scene.collisions.merge( scene.collisions );
 
 
 		// duplicate gfx
 
-		for( var i = 0; i < numTileInstances[ numTilesLoaded ]; i++ ) {
+		for( var i = 0; i < numTileInstances[ tileNumber ]; i++ ) {
 
-			tileMeshes[ numTilesLoaded ].push( duplicateMesh( scene ));
+			tileMeshes[ tileNumber ].push( duplicateMesh( scene ));
 
 		}
 
-		numTilesLoaded++;
+		//numTilesLoaded++;
 
 		that.scene.update( undefined, true );
 
@@ -304,15 +329,16 @@ var DunesWorld = function ( shared ) {
 		var gridCenterPosition = camera.matrixWorld.getPosition();
 		var camX = gridCenterPosition.x;
 		var camZ = gridCenterPosition.z;
-
+		
 		gridCenterPosition.addSelf( camera.matrixWorld.getColumnZ().multiplyScalar( -TILE_SIZE * 1.5 ) );
+		gridCenterPosition.x = Math.floor( gridCenterPosition.x / TILE_SIZE );
+		gridCenterPosition.z = Math.floor( gridCenterPosition.z / TILE_SIZE );
 
-		var cameraTileGridX = Math.floor( gridCenterPosition.x / TILE_SIZE ) % tileGridSize;
-		var cameraTileGridZ = Math.floor( gridCenterPosition.z / TILE_SIZE ) % tileGridSize;
+		var cameraTileGridX = gridCenterPosition.x % tileGridSize;
+		var cameraTileGridZ = gridCenterPosition.z % tileGridSize;
 
 		while( cameraTileGridX < 0 ) cameraTileGridX += tileGridSize;
 		while( cameraTileGridZ < 0 ) cameraTileGridZ += tileGridSize;
-
 
 		var x, z, tx, tz, px, pz, distance, tile, tileMesh;
 		var currentNumberUsed = [ 0, 0, 0, 0, 0, 0, 0 ];
@@ -322,8 +348,8 @@ var DunesWorld = function ( shared ) {
 
 			for( x = -halfGridSize; x < halfGridSize + 1; x++ ) {
 
-				px = ( Math.floor( gridCenterPosition.x / TILE_SIZE ) + x ) * TILE_SIZE;
-				pz = ( Math.floor( gridCenterPosition.z / TILE_SIZE ) + z ) * TILE_SIZE;
+				px = ( gridCenterPosition.x + x ) * TILE_SIZE;
+				pz = ( gridCenterPosition.z + z ) * TILE_SIZE;
 
 				tx = ( cameraTileGridX + x ) % tileGridSize;
 				tz = ( cameraTileGridZ + z ) % tileGridSize;

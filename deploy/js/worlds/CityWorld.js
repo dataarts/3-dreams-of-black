@@ -55,6 +55,11 @@ var CityWorld = function ( shared ) {
 
 	}
 
+	// Init City Shader
+	
+	CityShader.init();
+
+
 	// Scene
 
 	var loader = new THREE.SceneLoader();
@@ -79,6 +84,7 @@ var CityWorld = function ( shared ) {
 			that.scene.collisions.merge( scene.collisions );
 
 		}
+
 
 		TriggerUtils.setupCityTriggers( result );
 
@@ -105,7 +111,7 @@ var CityWorld = function ( shared ) {
 
 	if ( !shared.debug ) {
 
-		loader.load( "files/models/city/City.js", sceneLoaded );
+		loader.load( "/files/models/city/City.js", sceneLoaded );
 
 	}
 
@@ -115,7 +121,7 @@ var CityWorld = function ( shared ) {
 
 		cameraPosition = camera.matrixWorld.getPosition();
 
-		TriggerUtils.effectorRadius = 50;
+		TriggerUtils.effectorRadius = 330;
 		TriggerUtils.update( "city" );
 
 		updateCityShader( delta );

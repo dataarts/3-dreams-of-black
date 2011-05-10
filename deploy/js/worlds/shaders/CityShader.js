@@ -15,32 +15,39 @@ var CityShaderEffectors = [ new THREE.Vector4( 0, 0, -1000, 50 ),
 
 var CityShader = {
 
+	init: function() {
+		
+		//CityShader.uniforms.grassImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Grass.jpg' );
+		//CityShader.uniforms.surfaceImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Clouds.jpg' );
+		
+	},
+
 	uniforms: {
 
-		"grassImage": { type: "t", value: 0, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' ) },
-		"surfaceImage": { type: "t", value: 1, texture: THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' ) },
+		//"grassImage": { type: "t", value: 0, texture: undefined },
+		//"surfaceImage": { type: "t", value: 1, texture: undefined },
 
-		"time": { type: "f", value:0.0 },
+		//"time": { type: "f", value:0.0 },
 
-		"targets": { type: "fv", value: [] },
-		"radiuses": { type: "fv1", value: [] }
+		//"targets": { type: "fv", value: [] },
+		//"radiuses": { type: "fv1", value: [] }
 
 	},
 
 	vertexShader: [
 
-		"varying vec3 vWorldPosition;",
+		//"varying vec3 vWorldPosition;",
 		"varying vec3 vColor;",
-		"varying vec3 vNormalsquare;",
+		//"varying vec3 vNormalsquare;",
 
 		"void main() {",
 
-			"vec3 transformedNormal = normalize( normalMatrix * normal );",
-			"vNormalsquare = transformedNormal * transformedNormal;",
+			//"vec3 transformedNormal = normalize( normalMatrix * normal );",
+			//"vNormalsquare = transformedNormal * transformedNormal;",
 			
 			"vColor = color;",
 
-			"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
+			//"vWorldPosition = vec3( objectMatrix * vec4( position, 1.0 )).xyz;",
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
 		"}"
@@ -49,38 +56,38 @@ var CityShader = {
 
 	fragmentShader: [
 
-		"uniform sampler2D grassImage;",
-		"uniform sampler2D surfaceImage;",
+		//"uniform sampler2D grassImage;",
+		//"uniform sampler2D surfaceImage;",
 
-		"const 	 int  	NUMTARGETS = " + CityShaderEffectors.length + ";",
-		"uniform vec3 	targets[ NUMTARGETS ];",
-		"uniform float 	radiuses[ NUMTARGETS ];",
+		//"const 	 int  	NUMTARGETS = " + CityShaderEffectors.length + ";",
+		//"uniform vec3 	targets[ NUMTARGETS ];",
+		//"uniform float 	radiuses[ NUMTARGETS ];",
 
-		"uniform float time;",
+		//"uniform float time;",
 
-		"varying vec3 vWorldPosition;",
+		//"varying vec3 vWorldPosition;",
 		"varying vec3 vColor;",
-		"varying vec3 vNormalsquare;",
+		//"varying vec3 vNormalsquare;",
 
 		"void main() {",
 
-			"float distance = -9999999.0;",
+			//"float distance = -9999999.0;",
 			
-			"for( int i = 0; i < NUMTARGETS; i++ ) {",
-				"distance = max( distance, length( vWorldPosition - targets[ i ].xyz ) * -1.0 / radiuses[ i ] );",
-			"}",
+			//"for( int i = 0; i < NUMTARGETS; i++ ) {",
+				//"distance = max( distance, length( vWorldPosition - targets[ i ].xyz ) * -1.0 / radiuses[ i ] );",
+			//"}",
 
-			"vec3 worldPosition = vWorldPosition * 0.0005;",
-			"vec4 grass = texture2D( grassImage, worldPosition.yz * vec2(10.0)) * vNormalsquare.xxxx + ",
-			             "texture2D( grassImage, worldPosition.xz * vec2(10.0)) * vNormalsquare.yyyy + ",
-			             "texture2D( grassImage, worldPosition.xy * vec2(10.0)) * vNormalsquare.zzzz;",
+			//"vec3 worldPosition = vWorldPosition * 0.0005;",
+			//"vec4 grass = texture2D( grassImage, worldPosition.yz * vec2(10.0)) * vNormalsquare.xxxx + ",
+			//             "texture2D( grassImage, worldPosition.xz * vec2(10.0)) * vNormalsquare.yyyy + ",
+			//             "texture2D( grassImage, worldPosition.xy * vec2(10.0)) * vNormalsquare.zzzz;",
 			
-			"distance += ( 0.5 + grass.g ) * texture2D( surfaceImage, worldPosition.zx * vec2( 3.0 )).g;",
+			//"distance += ( 0.5 + grass.g ) * texture2D( surfaceImage, worldPosition.zx * vec2( 3.0 )).g;",
 
 			"vec3 surface = vec3( 0.15 * 2.0, 0.18 * 2.0, 0.2 * 2.0 );",
 
-			"if( distance > 0.0 )",
-				"surface = grass.rgb;",
+			//"if( distance > 0.0 )",
+			//	"surface = grass.rgb;",
 
 			"float depth = ( gl_FragCoord.z / gl_FragCoord.w ) * 0.0001;",
 
@@ -114,7 +121,7 @@ function applyCityShader( result, exclude ) {
 
 	var shaderParams = {
 
-		uniforms: CityShader.uniforms,
+//		uniforms: CityShader.uniforms,
 		vertexShader: CityShader.vertexShader,
 		fragmentShader: CityShader.fragmentShader,
 		
@@ -123,10 +130,10 @@ function applyCityShader( result, exclude ) {
 
 	};
 
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
-	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
+//	shaderParams.uniforms[ 'grassImage' ].texture.wrapS = THREE.RepeatWrapping;
+//	shaderParams.uniforms[ 'grassImage' ].texture.wrapT = THREE.RepeatWrapping;
+//	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapS = THREE.RepeatWrapping;
+//	shaderParams.uniforms[ 'surfaceImage' ].texture.wrapT = THREE.RepeatWrapping;
 	
 	mat = new THREE.MeshShaderMaterial( shaderParams );
 	
@@ -160,6 +167,7 @@ function applyCityShader( result, exclude ) {
 
 function updateCityShader( delta ) {
 	
+	/*
 	var effector, e, el = CityShaderEffectors.length;
 	var p, pos = CityShader.uniforms.targets.value;
 	var r, rad = CityShader.uniforms.radiuses.value;
@@ -176,6 +184,6 @@ function updateCityShader( delta ) {
 	}
 	
 	CityShader.uniforms.time.value += delta / 10000;
-
+*/
 };
 
