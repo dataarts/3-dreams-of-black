@@ -82,11 +82,11 @@ var FilmSection = function ( shared ) {
 	
 	// intro
 	
-	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 7.9 ), 1 );
 
 	// city animation
 
-	var s01start = tune.getPatternMS( 8 );
+	var s01start = tune.getPatternMS( 7.9 );
 	var s01end = tune.getPatternMS( 16 );
 	
 	sequencer.add( s01_01, s01start, s01start + s01_01.duration, 1 );
@@ -104,12 +104,12 @@ var FilmSection = function ( shared ) {
 	
 	var cityStart = tune.getPatternMS( 16 ) - cityTransitionTime; // 1 sec is enough for this transition
 	
-	sequencer.add( new City( shared ),        cityStart, tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 24 ), 5 );
+	sequencer.add( new City( shared ),        cityStart, tune.getPatternMS( 23.9 ), 1 );
+	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 23.9 ), 5 );
 
 	// prairie animation
 
-	var s02start = tune.getPatternMS( 24 );
+	var s02start = tune.getPatternMS( 23.9 );
 	var s02end = tune.getPatternMS( 32 );
 	
 	sequencer.add( s02_01, s02start, s02start + s02_01.duration, 1 );
