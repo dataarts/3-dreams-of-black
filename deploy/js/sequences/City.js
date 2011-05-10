@@ -35,18 +35,18 @@ var City = function ( shared ) {
 
 	this.init = function () {
 
-		waypointsA = [ [ 0, 18, -350 ], [ 0, 18, -1230 ] ];
+		waypointsA = [ [ 0, 18, -300 ], [ 0, 18, -1430 ] ];
 		//waypointsA = [ [ 0, 18, -350 ], [ 0, 18, -3350 ] ];
 
 		
 		startCamera = new THREE.PathCamera( {
 
-			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-			waypoints: waypointsA, duration: 8.0, 
-			useConstantSpeed: true, resamplingCoef: 30,
+			fov: 64, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+			waypoints: waypointsA, duration: 9.7, 
+			useConstantSpeed: true, resamplingCoef: 5,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
 			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
-			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.8 ] },
+			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
 		 } );
@@ -151,27 +151,27 @@ var City = function ( shared ) {
 		//var camz = camera.matrixWorld.n34;
 		var camz = camera.animationParent.position.z;
 
-		if (camz < -1200 && !switchedCamera ) {
+		if (camz < -1400 && !switchedCamera ) {
 
 			waypointsB = [ [ 0, 18, camz ], [ 0, 18, -3400 ] ];
 
 			if (camera.theta < 1.2) {
 				// turn left
-				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1600 ], [ -110, 18, -1740 ], [ -1670, 18, -1740 ] ];
+				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1650 ], [ -110, 18, -1740 ], [ -1670, 18, -1740 ] ];
 			}
 			if (camera.theta > 1.8) {
 				// turn right
-				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1600 ], [ 110, 18, -1740 ], [ 1670, 18, -1740 ] ];
+				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1650 ], [ 110, 18, -1740 ], [ 1670, 18, -1740 ] ];
 			}
 
 			switchCamera = new THREE.PathCamera( {
 
-				fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-				waypoints: waypointsB, duration: 16.0, 
+				fov: 64, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+				waypoints: waypointsB, duration: 15.4, 
 				useConstantSpeed: true, resamplingCoef: 5,
 				createDebugPath: false, createDebugDummy: false,
 				lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
-				verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.8 ] },
+				verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.0 ] },
 				horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
 			 } );
@@ -202,7 +202,6 @@ var City = function ( shared ) {
 
 		// slight camera roll
 
-		
 		if ( camera.animationParent ) {
 
 			camera.animationParent.rotation.z = ( camera.target.position.x ) / 400;

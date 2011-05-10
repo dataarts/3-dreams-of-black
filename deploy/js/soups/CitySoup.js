@@ -30,7 +30,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var collisionScene = new CollisionScene( that.camera, scene, 0.1, shared, 500, true, scene );
 
-	collisionScene.settings.maxSpeedDivider = 2;
+	collisionScene.settings.maxSpeedDivider = 1;
 	collisionScene.settings.capBottom = 3;
 	collisionScene.settings.capTop = 1000;
 	collisionScene.settings.shootRayDown = false;
@@ -533,11 +533,11 @@ var CitySoup = function ( camera, scene, shared ) {
 		TriggerUtils.effectors[1] = vectors.array[1].position.y;
 		TriggerUtils.effectors[2] = vectors.array[1].position.z;
 
-		CityShaderEffectors[0].set(vectors.array[7].position.x,vectors.array[7].position.y,vectors.array[7].position.z,40);
+/*		CityShaderEffectors[0].set(vectors.array[7].position.x,vectors.array[7].position.y,vectors.array[7].position.z,40);
 		CityShaderEffectors[1].set(vectors.array[10].position.x,vectors.array[10].position.y,vectors.array[10].position.z,60);
 		CityShaderEffectors[2].set(vectors.array[16].position.x,vectors.array[16].position.y,vectors.array[16].position.z,120);
 		CityShaderEffectors[3].set(vectors.array[35].position.x,vectors.array[35].position.y,vectors.array[35].position.z,200);
-
+*/
 		// pointlight
 		/*pointLight.position.x = collisionScene.emitterFollow.position.x + collisionScene.currentNormal.x*100;
 		pointLight.position.y = collisionScene.emitterFollow.position.y + collisionScene.currentNormal.y*100;
@@ -554,7 +554,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 
 	function reset () {
-		shared.camPos = new THREE.Vector3( 0, 0, -350 );
+		shared.camPos = new THREE.Vector3( 0, 0, -300 );
 
 		collisionScene.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);
 		vectors.reset(shared.camPos.x,shared.camPos.y,shared.camPos.z);

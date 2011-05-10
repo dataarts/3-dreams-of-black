@@ -15,6 +15,7 @@ var Prairie = function ( shared ) {
 	renderTarget = shared.renderTarget,
 	cameraPath, waypoints = [], lookToRight = 0;
 
+
 	function initScene () {
 		
 		console.log( "prairie initScene" );
@@ -68,8 +69,8 @@ var Prairie = function ( shared ) {
 
 		cameraPath = new THREE.PathCamera( {
 
-			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
-			waypoints: waypoints, duration: 28,
+			fov: 64, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
+			waypoints: waypoints, duration: 27.4,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0028, lookVertical: true, lookHorizontal: true,
@@ -155,7 +156,6 @@ var Prairie = function ( shared ) {
 		// slightly bumpy camera, since we're on a train // this feels like a horse or something... // lol ;)
 		// camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
 		camera.animationParent.position.y += (Math.random()-0.5)*0.3;
-
 
 		// make it darker towards the end
 		/*var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );

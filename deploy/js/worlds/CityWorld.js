@@ -57,7 +57,7 @@ var CityWorld = function ( shared ) {
 
 	// Init City Shader
 	
-	CityShader.init();
+	//CityShader.init();
 
 
 	// Scene
@@ -85,7 +85,7 @@ var CityWorld = function ( shared ) {
 
 		}
 
-		TriggerUtils.setupCityTriggers( result );
+		//TriggerUtils.setupCityTriggers( result );
 
 		// fix texture wrapping for skydome
 
@@ -101,8 +101,8 @@ var CityWorld = function ( shared ) {
 
 		// setup custom materials
 
-		var excludeIds = [ "Backdrop_City" ];
-		applyCityShader( result, excludeIds );
+		//var excludeIds = [ "Backdrop_City" ];
+		//applyCityShader( result, excludeIds );
 
 		that.scene.update( undefined, true );
 
@@ -120,10 +120,10 @@ var CityWorld = function ( shared ) {
 
 		cameraPosition = camera.matrixWorld.getPosition();
 
-		TriggerUtils.effectorRadius = 50;
-		TriggerUtils.update( "city" );
+		//TriggerUtils.effectorRadius = 50;
+		//TriggerUtils.update( "city" );
 
-		updateCityShader( delta );
+		//updateCityShader( delta );
 
 		if( portalsActive ) {
 

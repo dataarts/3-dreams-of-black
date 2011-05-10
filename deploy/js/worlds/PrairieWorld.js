@@ -138,9 +138,6 @@ var PrairieWorld = function ( shared, camera ) {
 
 	this.update = function ( delta, camera, portalsActive ) {
 
-		ROME.TrailShaderUtils.updateLava( delta * 0.0001, shared.lavatrailx, -shared.lavatrailz );
-		ROME.TrailShaderUtils.setMarkAtWorldPosition( shared.lavatrailx, -shared.lavatrailz );
-
 		TriggerUtils.effectorRadius = 50;
 		TriggerUtils.update( "prairie" );
 

@@ -61,8 +61,6 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 			mesh.updateMatrix();
 			mesh.doubleSided = doubleSided;
 
-			console.log(that.settings.startPosition.z);
-
 			// test shadow
 			//mesh.addChild( new THREE.ShadowVolume( new THREE.Sphere( 60, 5, 5 )));
 
@@ -223,7 +221,7 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 			}*/
 
 			// morph
-			that.array[i].count += 0.01;
+			that.array[i].count += 0.03;
 			var morph = Math.max(Math.cos(that.array[i].count),0);
 			morph = Math.min(morph, 1)
 			that.array[i].a.morph = morph;

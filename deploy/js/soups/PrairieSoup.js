@@ -6,6 +6,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	shared.camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
 
+	var lastCamPos = new THREE.Vector3();
+	var camPosVector = new THREE.Vector3();
+	var camVector = new THREE.Vector3();
+
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -327,7 +331,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	trail.settings.tweenTime = 800;
 	trail.settings.scale = 0.3;
 	trail.settings.offsetAmount = 10;
-	trail.settings.yscale = 0.25;
+	trail.settings.yscale = 0.15;
 
 	loader.load( { model: "files/models/soup/darkblob01.js", callback: blob01LoadedProxy } );
 	loader.load( { model: "files/models/soup/darkblob02.js", callback: blob02LoadedProxy } );
@@ -394,6 +398,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 			collisionScene.settings.camera = otherCamera;
 		}
 
+		
+		camPosVector.copy(shared.camPos);
+		camVector.copy(camPosVector.subSelf(lastCamPos).normalize());
+		lastCamPos.copy(shared.camPos);
 
 		// temp reset
 
@@ -423,17 +431,19 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		if ( spawnAnimal >= 100 ) {
 
 			//runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
-			var rndx = (Math.random()*20)-10;
-			var rndz = (Math.random()*20)-10;
-			var pos1 = new THREE.Vector3();
+			/*var rndx = (Math.random()*20)-10;
+			var rndz = (Math.random()*20)-10;*/
+			/*var pos1 = new THREE.Vector3();
 			var pos2 = new THREE.Vector3();
 			pos1.copy(collisionScene.emitterFollow.position);
-			pos2.copy(collisionScene.emitter.position);
-			pos1.x += rndx;
+			pos2.copy(collisionScene.emitter.position);*/
+			/*pos1.x += rndx;
 			pos2.x += rndx;
 			pos1.z += rndz;
-			pos2.z += rndz;
-			runningAnimals.create(pos1, collisionScene.currentNormal, pos2);
+			pos2.z += rndz;*/
+			//runningAnimals.create(pos1, collisionScene.currentNormal, pos2);
+			runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, camVector);
+			
 			spawnAnimal = 0;
 
 		}
@@ -441,7 +451,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		if ( spawnBird >= 500 ) {
 
 			//flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
-			flyingAnimals.create( collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position );
+			//flyingAnimals.create( collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position );
+			flyingAnimals.create( collisionScene.emitterFollow.position, collisionScene.currentNormal, camVector );
+
 			spawnBird = 0;
 
 		}			
@@ -453,9 +465,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		if (oldEmitterPos.length > 40) {
 			var pos = oldEmitterPos[40];
-			
-			shared.lavatrailx = pos.x;
-			shared.lavatrailz = pos.z;
+
+			ROME.TrailShaderUtils.updateLava( delta * 0.0001, pos.x, -pos.z );
+			ROME.TrailShaderUtils.setMarkAtWorldPosition( pos.x, -pos.z );
 
 			ROME.TrailShader.uniforms.lavaHeadPosition.value.set( pos.x, 0, -pos.z );
 		}

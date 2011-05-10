@@ -60,9 +60,9 @@ var pi = Math.PI;
 var pi2 = pi*2;
 var degToRad = pi/180;
 
-var rotationLimit = 12;
+var rotationLimit = 15;
 var innerRadius = 0;
-var outerRadius = 30;
+var outerRadius = 5;
 
 that.emitterFollow.rotationx = 0;
 that.emitterFollow.rotationy = 0;
@@ -89,7 +89,7 @@ that.emitterFollow.rotationz = 0;
 		collisionScene.addObject( right );
 		collisionScene.addObject( top );
 		collisionScene.addObject( bottom );
-	
+
 	} else {
 		
 		scene.addObject( front );
@@ -116,7 +116,7 @@ that.emitterFollow.rotationz = 0;
 
 	this.addLoaded = function ( geometry, scale, rotation, position, realscene ) {
 
-		var material = new THREE.MeshLambertMaterial( { color: 0xFF0000, opacity: 0.5 } );
+		var material = new THREE.MeshLambertMaterial( { color: 0xFF00FF, opacity: 1.0 } );
 
 		var mesh = new THREE.Mesh( geometry, material );
 
@@ -132,8 +132,8 @@ that.emitterFollow.rotationz = 0;
 		mesh2.rotation = rotation || new THREE.Vector3();
 		mesh2.position = position || new THREE.Vector3();
 				
-		realscene.addObject( mesh2 );
-		*/
+		realscene.addObject( mesh2 );*/
+		
 	};
 
 	this.update = function ( camPos, delta ) {
@@ -339,187 +339,186 @@ that.emitterFollow.rotationz = 0;
 		}
 
 		var maxSpeed = delta / that.settings.maxSpeedDivider;
+		
+		if (!that.settings.useOldRay) {
 
-/*		var tox = that.emitter.position.x;
-		var moveX = ( tox - that.emitterFollow.position.x ) / that.settings.emitterDivider;
+			var tox = that.emitter.position.x;
+			var moveX = ( tox - that.emitterFollow.position.x ) / that.settings.emitterDivider;
 
-		var toy = that.emitter.position.y;
-		var moveY = ( toy - that.emitterFollow.position.y ) / that.settings.emitterDivider;
+			var toy = that.emitter.position.y;
+			var moveY = ( toy - that.emitterFollow.position.y ) / that.settings.emitterDivider;
 
-		var toz = that.emitter.position.z;
-		var moveZ = ( toz - that.emitterFollow.position.z ) / that.settings.emitterDivider;
+			var toz = that.emitter.position.z;
+			var moveZ = ( toz - that.emitterFollow.position.z ) / that.settings.emitterDivider;
 
-		if ( moveY > maxSpeed ) moveY = maxSpeed;
-		if ( moveY < -maxSpeed ) moveY = -maxSpeed;
+			if ( moveY > maxSpeed ) moveY = maxSpeed;
+			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
 
-		if ( moveX > maxSpeed ) moveX = maxSpeed;
-		if ( moveX < -maxSpeed ) moveX = -maxSpeed;
+			if ( moveX > maxSpeed ) moveX = maxSpeed;
+			if ( moveX < -maxSpeed ) moveX = -maxSpeed;
 
-		if ( moveZ > maxSpeed )	moveZ = maxSpeed;
-		if ( moveZ < -maxSpeed ) moveZ = -maxSpeed;
+			if ( moveZ > maxSpeed )	moveZ = maxSpeed;
+			if ( moveZ < -maxSpeed ) moveZ = -maxSpeed;
 
-		that.emitterFollow.position.x += moveX;
-		that.emitterFollow.position.y += moveY;
-		that.emitterFollow.position.z += moveZ;	
-*/
+			that.emitterFollow.position.x += moveX;
+			that.emitterFollow.position.y += moveY;
+			that.emitterFollow.position.z += moveZ;	
 
+		} else {
+			
+			// test turn constraints...
+			// Y
+			if (that.currentNormal.y > 0.5 || that.currentNormal.y < -0.5) {
 
+			var rotationy = that.emitterFollow.rotationy/180*pi;
+			var oldRy = rotationy;
+			rotationy += pi*0*0.5-pi*0*Math.random();
 
-//var maxSpeed = 10;
+			var tx = that.emitter.position.x;
+			var tz = that.emitter.position.z;
+			var dx = tx-that.emitterFollow.position.x;
+			var dz = tz-that.emitterFollow.position.z;
+			var d = Math.sqrt(dx*dx+dz*dz);
+			var a = Math.atan2(dz,dx);
+			var pstr = 0;
 
-// test turn constraints...
-// Y
-if (that.currentNormal.y > 0.5 || that.currentNormal.y < -0.5) {
+			if (outerRadius > 0) {
+			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+			if (dstr > 1) { dstr = 1; }
+			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationy += getShortRotation(a-rotationy)*pstr;
 
-var rotationy = that.emitterFollow.rotationy/180*pi;
-var oldRy = rotationy;
-rotationy += pi*0*0.5-pi*0*Math.random();
+			var rotationD = rotationy-oldRy;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) {
+			rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
 
-var tx = that.emitter.position.x;
-var tz = that.emitter.position.z;
-var dx = tx-that.emitterFollow.position.x;
-var dz = tz-that.emitterFollow.position.z;
-var d = Math.sqrt(dx*dx+dz*dz);
-var a = Math.atan2(dz,dx);
-var pstr = 0;
+			//var speed = delta/2;
+			var speed = d/4;
+			if (speed > maxSpeed) {
+			speed = maxSpeed;
+			}
+			that.emitterFollow.position.x += Math.cos(rotationy)*speed;
+			that.emitterFollow.position.z += Math.sin(rotationy)*speed;
+			that.emitterFollow.rotationy = rotationy/degToRad;
 
-if (outerRadius > 0) {
-var dstr = (d-innerRadius)/(outerRadius-innerRadius);
-if (dstr > 1) { dstr = 1; }
-if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
-}
-rotationy += getShortRotation(a-rotationy)*pstr;
+			var toy = that.emitter.position.y;
 
-var rotationD = rotationy-oldRy;
-if (Math.abs(rotationD) > rotationLimit*degToRad) {
-rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
-}
+			var moveY = (toy-that.emitterFollow.position.y)/that.settings.emitterDivider;
+			if (moveY > maxSpeed) {
+			moveY = maxSpeed;
+			}
+			if (moveY < -maxSpeed) {
+			moveY = -maxSpeed;
+			}
+			that.emitterFollow.position.y += moveY;
 
-//var speed = delta/2;
-var speed = d/4;
-if (speed > maxSpeed) {
-speed = maxSpeed;
-}
-that.emitterFollow.position.x += Math.cos(rotationy)*speed;
-that.emitterFollow.position.z += Math.sin(rotationy)*speed;
-that.emitterFollow.rotationy = rotationy/degToRad;
+			}
 
-var toy = that.emitter.position.y;
+			// X
+			if (that.currentNormal.x > 0.5 || that.currentNormal.x < -0.5) {
 
-var moveY = (toy-that.emitterFollow.position.y)/that.settings.emitterDivider;
-if (moveY > maxSpeed) {
-moveY = maxSpeed;
-}
-if (moveY < -maxSpeed) {
-moveY = -maxSpeed;
-}
-that.emitterFollow.position.y += moveY;
+			var rotationx = that.emitterFollow.rotationx/180*pi;
+			var oldRx = rotationx;
+			rotationx += pi*0*0.5-pi*0*Math.random();
 
-}
+			var ty = that.emitter.position.y;
+			var tz = that.emitter.position.z;
+			var dy = ty-that.emitterFollow.position.y;
+			var dz = tz-that.emitterFollow.position.z;
+			var d = Math.sqrt(dz*dz+dy*dy);
+			var a = Math.atan2(dz,dy);
+			var pstr = 0;
 
-// X
-if (that.currentNormal.x > 0.5 || that.currentNormal.x < -0.5) {
+			if (outerRadius > 0) {
+			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+			if (dstr > 1) { dstr = 1; }
+			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationx += getShortRotation(a-rotationx)*pstr;
 
-var rotationx = that.emitterFollow.rotationx/180*pi;
-var oldRx = rotationx;
-rotationx += pi*0*0.5-pi*0*Math.random();
+			var rotationD = rotationx-oldRx;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) {
+			rotationx = oldRx+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
 
-var ty = that.emitter.position.y;
-var tz = that.emitter.position.z;
-var dy = ty-that.emitterFollow.position.y;
-var dz = tz-that.emitterFollow.position.z;
-var d = Math.sqrt(dz*dz+dy*dy);
-var a = Math.atan2(dz,dy);
-var pstr = 0;
+			//var speed = delta/2;
+			var speed = d/4;
+			if (speed > maxSpeed) {
+			speed = maxSpeed;
+			}
 
-if (outerRadius > 0) {
-var dstr = (d-innerRadius)/(outerRadius-innerRadius);
-if (dstr > 1) { dstr = 1; }
-if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
-}
-rotationx += getShortRotation(a-rotationx)*pstr;
+			that.emitterFollow.position.y += Math.cos(rotationx)*speed;
+			that.emitterFollow.position.z += Math.sin(rotationx)*speed;
+			that.emitterFollow.rotationx = rotationx/degToRad;
 
-var rotationD = rotationx-oldRx;
-if (Math.abs(rotationD) > rotationLimit*degToRad) {
-rotationx = oldRx+rotationLimit*degToRad*(rotationD<0?-1:1);
-}
+			var tox = that.emitter.position.x;
 
-//var speed = delta/2;
-var speed = d/4;
-if (speed > maxSpeed) {
-speed = maxSpeed;
-}
+			var moveX = (tox-that.emitterFollow.position.x)/that.settings.emitterDivider;
+			if (moveX > maxSpeed) {
+			moveX = maxSpeed;
+			}
+			if (moveX < -maxSpeed) {
+			moveX = -maxSpeed;
+			}
 
-that.emitterFollow.position.y += Math.cos(rotationx)*speed;
-that.emitterFollow.position.z += Math.sin(rotationx)*speed;
-that.emitterFollow.rotationx = rotationx/degToRad;
+			that.emitterFollow.position.x += moveX;
 
-var tox = that.emitter.position.x;
+			}
 
-var moveX = (tox-that.emitterFollow.position.x)/that.settings.emitterDivider;
-if (moveX > maxSpeed) {
-moveX = maxSpeed;
-}
-if (moveX < -maxSpeed) {
-moveX = -maxSpeed;
-}
+			// Z
+			if (that.currentNormal.z > 0.5 || that.currentNormal.z < -0.5) {
 
-that.emitterFollow.position.x += moveX;
+			var rotationz = that.emitterFollow.rotationz/180*pi;
+			var oldRz = rotationz;
+			rotationz += pi*0*0.5-pi*0*Math.random();
 
-}
+			var tx = that.emitter.position.x;
+			var ty = that.emitter.position.y;
+			var dx = tx-that.emitterFollow.position.x;
+			var dy = ty-that.emitterFollow.position.y;
+			var d = Math.sqrt(dx*dx+dy*dy);
+			var a = Math.atan2(dx,dy);
+			var pstr = 0;
 
-// Z
-if (that.currentNormal.z > 0.5 || that.currentNormal.z < -0.5) {
+			if (outerRadius > 0) {
+			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+			if (dstr > 1) { dstr = 1; }
+			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationz += getShortRotation(a-rotationz)*pstr;
 
-var rotationz = that.emitterFollow.rotationz/180*pi;
-var oldRz = rotationz;
-rotationz += pi*0*0.5-pi*0*Math.random();
+			var rotationD = rotationz-oldRz;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) {
+			rotationz = oldRz+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
 
-var tx = that.emitter.position.x;
-var ty = that.emitter.position.y;
-var dx = tx-that.emitterFollow.position.x;
-var dy = ty-that.emitterFollow.position.y;
-var d = Math.sqrt(dx*dx+dy*dy);
-var a = Math.atan2(dx,dy);
-var pstr = 0;
+			//var speed = delta/2;
+			var speed = d/4;
+			if (speed > maxSpeed) {
+			speed = maxSpeed;
+			}
 
-if (outerRadius > 0) {
-var dstr = (d-innerRadius)/(outerRadius-innerRadius);
-if (dstr > 1) { dstr = 1; }
-if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
-}
-rotationz += getShortRotation(a-rotationz)*pstr;
+			that.emitterFollow.position.y += Math.cos(rotationz)*speed;
+			that.emitterFollow.position.x += Math.sin(rotationz)*speed;
+			that.emitterFollow.rotationz = rotationz/degToRad;
 
-var rotationD = rotationz-oldRz;
-if (Math.abs(rotationD) > rotationLimit*degToRad) {
-rotationz = oldRz+rotationLimit*degToRad*(rotationD<0?-1:1);
-}
+			var toz = that.emitter.position.z;
 
-//var speed = delta/2;
-var speed = d/4;
-if (speed > maxSpeed) {
-speed = maxSpeed;
-}
+			var moveZ = (toz-that.emitterFollow.position.z)/that.settings.emitterDivider;
+			if (moveZ > maxSpeed) {
+			moveZ = maxSpeed;
+			}
+			if (moveZ < -maxSpeed) {
+			moveZ = -maxSpeed;
+			}
 
-that.emitterFollow.position.y += Math.cos(rotationz)*speed;
-that.emitterFollow.position.x += Math.sin(rotationz)*speed;
-that.emitterFollow.rotationz = rotationz/degToRad;
+			that.emitterFollow.position.z += moveZ;
 
-var toz = that.emitter.position.z;
+			}
 
-var moveZ = (toz-that.emitterFollow.position.z)/that.settings.emitterDivider;
-if (moveZ > maxSpeed) {
-moveZ = maxSpeed;
-}
-if (moveZ < -maxSpeed) {
-moveZ = -maxSpeed;
-}
-
-that.emitterFollow.position.z += moveZ;
-
-}
-
-
+		}
 
 		if ( that.settings.keepEmitterFollowDown && !that.settings.useOldRay ) {
 
@@ -542,9 +541,9 @@ that.emitterFollow.position.z += moveZ;
 		}
 
 		if (that.settings.useOldRay) {
-	
+
 			// shoot rays in all directions from emitterFollow, clamp in the direction of the shortest distance
-/*			var direction = new THREE.Vector3();
+			var direction = new THREE.Vector3();
 			var rayOld = new THREE.Ray( that.emitterFollow.position, direction );
 			var shortestDistance = 10000;
 			var shortestPoint = that.emitterFollow.position;
@@ -655,7 +654,7 @@ that.emitterFollow.position.z += moveZ;
 				var normal = shortestObject.matrixRotationWorld.multiplyVector3( shortestFace.normal.clone() );
 				that.currentNormal = normal;
 			}
-*/
+
 			/*var amount = 5;
 
 			that.emitterFollow.position.x += that.currentNormal.x*amount;
@@ -695,7 +694,7 @@ that.emitterFollow.position.z += moveZ;
 			*/
 /*			emitterReal.position = that.emitter.position;
 			emitterFollowReal.position = that.emitterFollow.position;
-*/	
+*/				
 			shared.renderer.render( collisionScene, that.settings.camera );
 			//shared.renderer.render( scene, camera, renderTarget );
 			shared.renderer.clear();

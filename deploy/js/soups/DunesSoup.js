@@ -61,7 +61,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// flying animals
 
-	var flyingAnimals = new AnimalSwarm_dunes( 20, scene, vectors.array );
+	var flyingAnimals = new AnimalSwarm_dunes( 12, scene, vectors.array );
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.flyingDistance = 10;
 	flyingAnimals.settings.divider = 1;
@@ -69,12 +69,12 @@ var DunesSoup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.respawn = false;
 	flyingAnimals.settings.startPosition = startPosition;
 	flyingAnimals.settings.xPositionMultiplier = 50;
-	flyingAnimals.settings.zPositionMultiplier = 50;
+	flyingAnimals.settings.zPositionMultiplier = 30;
 
-	for ( var i=0; i<20; ++i ) {
+	for ( var i=0; i<12; ++i ) {
 
-		var odd = i%2;
-		if (odd == 0) {
+		var third = i%3;
+		if (third == 0) {
 
 			flyingAnimals.array[i] = "b";
 
@@ -88,9 +88,9 @@ var DunesSoup = function ( camera, scene, shared ) {
 	function birdsALoadedProxy( geometry ) {
 
 		var animal,
-			morphArray = [1,1,0,0,1,0,0,1,0,0];
+			morphArray = [0,1,2,3];
 
-		animal = flyingAnimals.addAnimal( geometry, null, 2.8, morphArray, 1.2 );
+		animal = flyingAnimals.addAnimal( geometry, null, 2.8, morphArray, 0.7 );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
@@ -98,9 +98,9 @@ var DunesSoup = function ( camera, scene, shared ) {
 	function birdsBLoadedProxy( geometry ) {
 		
 		var animal,
-			morphArray = [1,1,0,0,1,0,0,1,0,0];
+			morphArray = [1,0];
 		
-		animal = flyingAnimals.addAnimal( geometry, "b", 2.8, morphArray, 1.2 );
+		animal = flyingAnimals.addAnimal( geometry, "b", 2.8, morphArray, 0.7 );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};

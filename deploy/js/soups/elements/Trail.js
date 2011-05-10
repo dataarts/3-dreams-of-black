@@ -23,6 +23,7 @@ var Trail = function ( numOfInstances, scene ) {
 		offsetAmount: 6,
 		freeRotation: true,
 		yscale: 0.3
+
 	};
 
 	var i;
@@ -91,7 +92,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 
 				if (lightHouse && (spawnedLighthouse || time < 4000)) {
-					c.visible = false;
+					//c.visible = false;
 					continue;
 				}
 
