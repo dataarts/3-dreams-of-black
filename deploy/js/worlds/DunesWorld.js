@@ -150,8 +150,6 @@ var DunesWorld = function ( shared ) {
 	var ugcHandler = new UgcHandler();
 	ugcHandler.getLatestUGOs( function ( objects ) {
 
-		console.log( objects );
-
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
 			var object = new UgcObject( JSON.parse( objects[ i ].data ) );

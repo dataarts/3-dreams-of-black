@@ -54,35 +54,41 @@ var UgcIntro = function( shared ) {
 
 	ground.appendChild( groundImage );
 
-	domElement.appendChild( sky );
+	// domElement.appendChild( sky );
 	domElement.appendChild( ground );
 
+	/*
 	sky.addEventListener("mouseover", function() {
 
 		skyImage.style.marginTop = "-71px";
 
 	}, false);
+
 	sky.addEventListener("mouseout", function() {
 
 		skyImage.style.marginTop = "0px";
 
 	}, false);
+
 	sky.addEventListener("click", function() {
 
 		shared.ugcSignals.showobjectcreator.dispatch( 1 );
 
 	}, false);
-
+	*/
+	
 	ground.addEventListener("mouseover", function() {
 
 		groundImage.style.marginTop = "-71px";
 
 	}, false);
+
 	ground.addEventListener("mouseout", function() {
 
 		groundImage.style.marginTop = "0px";
 
 	}, false);
+
 	ground.addEventListener("click", function() {
 
 		shared.ugcSignals.showobjectcreator.dispatch( 0 );
@@ -111,14 +117,14 @@ var UgcIntro = function( shared ) {
 		domElement.style.width = width + 'px';
 		domElement.style.height = height + 'px';
 
-		instructions.style.left = (window.innerWidth / 2.0 - 384) + "px";
-		instructions.style.top = (window.innerHeight / 2.0 - 97) + "px";
+		instructions.style.left = (width / 2.0 - 384) + "px";
+		instructions.style.top = (height / 2.0 - 97) + "px";
 
-		sky.style.left = (window.innerWidth / 2.0 + 38) + "px";
-		sky.style.top = (window.innerHeight / 2.0 - 197) + "px";
+		sky.style.left = (width / 2.0 + 38) + "px";
+		sky.style.top = (height / 2.0 - 197) + "px";
 
-		ground.style.left = (window.innerWidth / 2.0 + 54) + "px";
-		ground.style.top = (window.innerHeight / 2.0 + 62) + "px";
+		ground.style.left = (width / 2.0 + 54) + "px";
+		ground.style.top = (height / 2.0 + 62) + "px";
 
 	};
 
