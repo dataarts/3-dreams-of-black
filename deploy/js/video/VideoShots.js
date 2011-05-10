@@ -7,6 +7,7 @@ var VideoShots = {
         shaderId: VIDEO_OPAQUE,
         z: -1000,
 		fps: 48,
+		width: 1.01, height: 1.01,
 		duration: 22000
     }
 	],
@@ -75,8 +76,9 @@ var VideoShots = {
         shaderId: VIDEO_OPAQUE,
 		width: 1.5625, height: 1,
 		paralax: true,
-		paralaxHorizontal: 600,
+		paralaxHorizontal: 900,
 		paralaxVertical: 0,
+		bendForce: 300,
         z: -700,
 		duration: 9230
     },{
