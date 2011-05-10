@@ -1,7 +1,7 @@
 var UgcObject = function ( data ) {
 
 	var VERSION = 4, UNIT_SIZE = 50,
-	_type = null, _grid = {}, _count = 0;
+	_type = UgcObject.TYPE_GROUND, _grid = {}, _count = 0;
 
 	this.addVoxel = function ( x, y, z, color, object ) {
 
@@ -9,6 +9,10 @@ var UgcObject = function ( data ) {
 		_count ++;
 
 	};
+
+  this.getType = function() {
+    return _type;
+  };
 
 	this.getVoxel = function ( x, y, z ) {
 
@@ -124,5 +128,5 @@ var UgcObject = function ( data ) {
 
 };
 
-UgcObject.TYPE_SAND = 'UgcObject.TYPE_SAND';
-UgcObject.TYPE_CLOUD = 'UgcObject.TYPE_CLOUD';
+UgcObject.TYPE_GROUND = 'ground';
+UgcObject.TYPE_SKY = 'sky';
