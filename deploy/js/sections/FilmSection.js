@@ -31,13 +31,13 @@ var FilmSection = function ( shared ) {
 	shared.viewportWidth = shared.baseWidth * ( window.innerWidth / shared.baseWidth );
 	shared.viewportHeight = shared.baseHeight * ( window.innerWidth / shared.baseWidth );
 
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer( { stencil: false } );
 	renderer.domElement.style.position = 'absolute';
 	renderer.setSize( shared.viewportWidth, shared.baseHeight );
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
 
-	renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight );
+	renderTarget = new THREE.WebGLRenderTarget( shared.viewportWidth, shared.baseHeight, { stencilBuffer: false } );
 	renderTarget.minFilter = THREE.LinearFilter;
 	renderTarget.magFilter = THREE.LinearFilter;
 

@@ -99,8 +99,10 @@ var ExplorationSection = function ( shared ) {
 		
 		scene = world.scene;
 		soup  = shared.soups[ worldId ];
+
 		fadeInTime = 0;
-		
+		environmentSound.play();
+		environmentSound.volume = 0;
 		
 		
 		if( worldId == "city" ) {
@@ -126,10 +128,6 @@ var ExplorationSection = function ( shared ) {
 		}
 
 		updateViewportSize();
-		
-		environmentSound.play();
-		environmentSound.volume = 0;
-		
 		start = lastTime = new Date().getTime();
 
 	};
@@ -242,7 +240,7 @@ var ExplorationSection = function ( shared ) {
 
 					fadeInTime += delta;
 					fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
-					environmentSound.volume = fadeInTime / 1000;
+					environmentSound.volume = Math.max( 0, Math.min( 1, fadeInTime / 1000 ));
 
 				} else {
 
