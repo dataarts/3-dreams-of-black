@@ -56,7 +56,7 @@ var UgcSection = function ( shared ) {
 		ui = new UgcUI( shared );
 		ui.getDomElement().style.position = 'absolute';
 		ui.getDomElement().style.left = '20px';
-		ui.getDomElement().style.top = '50%';
+		ui.getDomElement().style.top = '20px';
 		ui.getDomElement().style.display = 'none';
 		domElement.appendChild( ui.getDomElement() );
 
