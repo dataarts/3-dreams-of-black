@@ -17,7 +17,7 @@ var FilmSection = function ( shared ) {
 	domElement.appendChild( audio );
 
 	source = document.createElement( 'source' );
-	source.src = "files/Black.ogg";
+	source.src = "/files/Black.ogg";
 	audio.appendChild( source );
 
 	tune = new Tune( audio );
@@ -49,13 +49,7 @@ var FilmSection = function ( shared ) {
 	shared.signals.startfilm.add( start );
 	shared.signals.stopfilm.add( stop );
 
-	// effects
-
-	var overlayTexture = THREE.ImageUtils.loadTexture( "files/textures/fingerprints.png" );
-	
-	
 	// Sequence
-	var intro = new VideoPlayer( shared, VideoShots.introLayers );
 
 	var s01_01 = new VideoPlayer( shared, VideoShots.s01_01 );
 	var s01_03 = new VideoPlayer( shared, VideoShots.s01_03 );
@@ -82,7 +76,7 @@ var FilmSection = function ( shared ) {
 	
 	// intro
 	
-	sequencer.add( intro, tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new VideoPlayer( shared, VideoShots.introLayers ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
 
 	// city animation
 
@@ -162,18 +156,23 @@ var FilmSection = function ( shared ) {
 
 	// pointers
 	
-	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerImageEffect( shared, "files/cursor_arrow.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1 );
+	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new PointerImageEffect( shared, "/files/cursor_arrow.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1 );
 	sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1 );
 
 	// final render
 
-	sequencer.add( new RenderEffect( shared ),     tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 6 ); 		// intro
+	//sequencer.add( new SharpenEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 6 ); 		// intro
+	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 6 ); 		// intro
+	
+	//sequencer.add( new NoiseEffect( shared, 0.35, 0.0, 1024 ), 	tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 5 ); // city animation
 	sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 6 ); // city animation
 
 	// PaintEffectVideo
 	// !!!!!!!!! Here PaintEffect draws directly to frame buffer !!!!!!!!!!!!
 	
+	//sequencer.add( new SharpenEffect( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 5 ); // prairie animation
+	//sequencer.add( new NoiseEffect( shared, 0.35, 0.0, 1024 ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 5 ); // prairie animation
 	sequencer.add( new PaintEffectPrairie( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 6 ); // prairie animation
 	
 	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
@@ -295,7 +294,7 @@ var FilmSection = function ( shared ) {
 
 		if ( ! playing ) return;
 
-		if ( audio.currentTime > audio.duration - 3 ) {
+		if ( audio.currentTime > audio.duration - 2 ) {
 
 			shared.signals.showrelauncher.dispatch();
 			stop();

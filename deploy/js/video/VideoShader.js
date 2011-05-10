@@ -95,21 +95,21 @@ var DistortVertexShader = [
 
         "distancePoly = max(distanceTrailPoly0,max(distanceTrailPoly1,max(distanceTrailPoly2,distanceTrailPoly3)));",
 
-//        "vec2 closestTrail1 = getClosest(projPos,trail0,trail1);",
-//        "vec2 closestTrail2 = getClosest(projPos,trail1,trail2);",
-//        "vec2 closestTrail3 = getClosest(projPos,trail2,trail3);",
-//        "vec2 closestTrail4 = getClosest(projPos,trail3,trail4);",
-//
-//        "float distanceTrail1 = 0.9*mouseRad * getDistance(projPos,closestTrail1);",
-//        "float distanceTrail2 = 0.8*mouseRad * getDistance(projPos,closestTrail2);",
-//        "float distanceTrail3 = 0.7*mouseRad * getDistance(projPos,closestTrail3);",
-//        "float distanceTrail4 = 0.6*mouseRad * getDistance(projPos,closestTrail4);",
-
-//  "distance = max(distanceTrail1,max(distanceTrail2,max(distanceTrail3,distanceTrail4)));",
-//  "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail1)*vec2(distanceTrail1*100.);",
-//  "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail2)*vec2(distanceTrail2*100.);",
-//  "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail3)*vec2(distanceTrail3*100.);",
-//  "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail4)*vec2(distanceTrail4*100.);",
+        //"vec2 closestTrail1 = getClosest(projPos,trail0,trail1);",
+        //"vec2 closestTrail2 = getClosest(projPos,trail1,trail2);",
+        //"vec2 closestTrail3 = getClosest(projPos,trail2,trail3);",
+        //"vec2 closestTrail4 = getClosest(projPos,trail3,trail4);",
+        //
+        //"float distanceTrail1 = 0.9*mouseRad * getDistance(projPos,closestTrail1);",
+        //"float distanceTrail2 = 0.8*mouseRad * getDistance(projPos,closestTrail2);",
+        //"float distanceTrail3 = 0.7*mouseRad * getDistance(projPos,closestTrail3);",
+        //"float distanceTrail4 = 0.6*mouseRad * getDistance(projPos,closestTrail4);",
+        
+        //"distance = max(distanceTrail1,max(distanceTrail2,max(distanceTrail3,distanceTrail4)));",
+        //"gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail1)*vec2(distanceTrail1*100.);",
+        //"gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail2)*vec2(distanceTrail2*100.);",
+        //"gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail3)*vec2(distanceTrail3*100.);",
+        //"gl_Position.xy = gl_Position.xy + normalize(projPos.xy-closestTrail4)*vec2(distanceTrail4*100.);",
 
 
         //+normalize(closestTrail2)+normalize(closestTrail3)+normalize(closestTrail4);",
@@ -119,7 +119,7 @@ var DistortVertexShader = [
         //"gl_Position.xy += normalize(projPos-closestTrail4)*vec2((distanceTrail4)*100.);",
 
         "distance = mouseRad*max(0.,1.-length(projPos-trail0  ));",
-        "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-trail0)*vec2(distance*mouseSpeed*100.);",
+        "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-trail0)*vec2(distance*mouseSpeed*50.);",
 
     "}"
 

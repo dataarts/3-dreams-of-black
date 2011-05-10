@@ -1,12 +1,12 @@
 var VoxelPainter = function ( camera, scene ) {
 
-	var UNIT_SIZE = 50, _size = 1, _color = 0xffffff,
+	var UNIT_SIZE = 50, _size = 3, _size_half = 1, _color = 0xffffff,
 	_mode = VoxelPainter.MODE_CREATE,
 	_symmetry = false,
 	_object = new UgcObject();
 
 	var _intersectPoint, _intersectFace, _intersectObject,
-	_intersectEraseObjects = [];
+	_intersectEraseObjects = [], _tempVector = new THREE.Vector3();
 
 	// Colliders
 
@@ -27,6 +27,13 @@ var VoxelPainter = function ( camera, scene ) {
 
 	_plane = new THREE.Mesh( _geometry, _material );
 	_plane.rotation.y = - 90 * Math.PI / 180;
+	_plane.doubleSided = true;
+	_plane.visible = _collider.visible;
+	_collider.addChild( _plane );
+	_colliderArray.push( _plane );
+
+	_plane = new THREE.Mesh( _geometry, _material );
+	_plane.rotation.x = - 90 * Math.PI / 180;
 	_plane.doubleSided = true;
 	_plane.visible = _collider.visible;
 	_collider.addChild( _plane );
@@ -67,32 +74,11 @@ var VoxelPainter = function ( camera, scene ) {
 
 	for ( var i = 1; i <= 5; i += 2 ) {
 
-		_brushes[ 0 ][ i ] = new THREE.Mesh( new THREE.Geometry(), _brushMaterial );
+		_brushes[ 0 ][ i ] = new THREE.Mesh( new THREE.Cube( i * UNIT_SIZE, i * UNIT_SIZE, i * UNIT_SIZE, i, i, i ), _brushMaterial );
 		_brushes[ 0 ][ i ].visible = false;
 
-		_brushes[ 1 ][ i ] = new THREE.Mesh( new THREE.Geometry(), _brushMaterial );
+		_brushes[ 1 ][ i ] = new THREE.Mesh( new THREE.Cube( i * UNIT_SIZE, i * UNIT_SIZE, i * UNIT_SIZE, i, i, i ), _brushMaterial );
 		_brushes[ 1 ][ i ].visible = false;
-
-		var half_size = ( ( i * UNIT_SIZE ) / 2 ) - ( UNIT_SIZE / 2 );
-
-		for ( var x = 0; x < i; x ++ ) {
-
-			for ( var y = 0; y < i; y ++ ) {
-
-				for ( var z = 0; z < i; z ++ ) {
-
-					_voxel.position.x = x * UNIT_SIZE - half_size;
-					_voxel.position.y = y * UNIT_SIZE - half_size;
-					_voxel.position.z = z * UNIT_SIZE - half_size;
-
-					GeometryUtils.merge( _brushes[ 0 ][ i ].geometry, _voxel );
-					GeometryUtils.merge( _brushes[ 1 ][ i ].geometry, _voxel );
-
-				}
-
-			}
-
-		}
 
 		scene.addObject( _brushes[ 0 ][ i ] );
 		scene.addObject( _brushes[ 1 ][ i ] );
@@ -102,6 +88,35 @@ var VoxelPainter = function ( camera, scene ) {
 	_brush[ 0 ] = _brushes[ 0 ][ _size ];
 	_brush[ 1 ] = _brushes[ 1 ][ _size ];
 
+	/*
+	var _voxel = new THREE.Mesh( new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ) );
+	var mesh = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
+
+	var i = 40;
+
+	var half_size = ( ( i * UNIT_SIZE ) / 2 ) - ( UNIT_SIZE / 2 );
+
+	for ( var x = 0; x < i; x ++ ) {
+
+		for ( var y = 0; y < i; y ++ ) {
+
+			for ( var z = 0; z < i; z ++ ) {
+
+				_voxel.position.x = x * UNIT_SIZE - half_size;
+				_voxel.position.y = y * UNIT_SIZE - half_size;
+				_voxel.position.z = z * UNIT_SIZE - half_size;
+
+				GeometryUtils.merge( mesh.geometry, _voxel );
+
+			}
+
+		}
+
+	}
+
+	scene.addObject( mesh );
+	*/
+
 	//
 
 	function toGridScale( value ) {
@@ -110,9 +125,11 @@ var VoxelPainter = function ( camera, scene ) {
 
 	}
 
-	function addVoxel( x, y, z ) { // vector ) {
+	function addVoxel( x, y, z ) {
 
-		if ( y < 0 ) return;
+		if ( x < - 20 || x > 20 ) return;
+		if ( y < 0 || y > 40 ) return;
+		if ( z < - 20 || z > 20 ) return;
 
 		var voxel = _object.getVoxel( x, y, z );
 
@@ -175,6 +192,7 @@ var VoxelPainter = function ( camera, scene ) {
 	this.setSize = function ( size ) {
 
 		_size = size;
+		_size_half = Math.floor( _size / 2 );
 
 		_brush[ 0 ] = _brushes[ 0 ][ _size ];
 		_brush[ 1 ] = _brushes[ 1 ][ _size ];
@@ -223,7 +241,7 @@ var VoxelPainter = function ( camera, scene ) {
 						_intersectObject = intersects[ 0 ].object;
 						_intersectFace = intersects[ 0 ].face;
 
-						_collider.position.copy( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ) );
+						_collider.position.copy( _intersectPoint );
 						_collider.position.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
 						_collider.updateMatrix();
 						_collider.update();
@@ -261,21 +279,42 @@ var VoxelPainter = function ( camera, scene ) {
 
 					if ( _intersectFace && intersects.length > 0 ) {
 
-						/*
-						var point = intersects[ 0 ].point,
-						centroidWorld = _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.centroid.clone() ).addSelf( _intersectObject.position ),
-						distance = centroidWorld.distanceTo( point ),
-						vector = centroidWorld.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ).multiplyScalar( distance ) );
-						*/
+						var vector, x, y, z, dx, dy, dz, dmax;
 
-						var vector = intersects[ 0 ].point;
-						var x = toGridScale( vector.x ), y = toGridScale( vector.y ), z = toGridScale( vector.z );
+						vector = intersects[ 0 ].point.clone();
+						vector.addSelf( _intersectObject.matrixRotationWorld.multiplyVector3( _intersectFace.normal.clone() ) );
 
-						addVoxel( x, y, z );
+						dx = _intersectPoint.distanceTo( _tempVector.set( vector.x, _intersectPoint.y, _intersectPoint.z ) );
+						dy = _intersectPoint.distanceTo( _tempVector.set( _intersectPoint.x, vector.y, _intersectPoint.z ) );
+						dz = _intersectPoint.distanceTo( _tempVector.set( _intersectPoint.x, _intersectPoint.y, vector.z ) );
 
-						if ( _symmetry ) {
+						dmax = Math.max( dx, Math.max( dy, dz ) );
 
-							addVoxel( - x, y, z );
+						if ( dx == dmax ) vector.set( vector.x, _intersectPoint.y, _intersectPoint.z );
+						else if ( dy == dmax ) vector.set( _intersectPoint.x, vector.y, _intersectPoint.z );
+						else if ( dz == dmax ) vector.set( _intersectPoint.x, _intersectPoint.y, vector.z );
+
+						x = toGridScale( vector.x );
+						y = toGridScale( vector.y );
+						z = toGridScale( vector.z );
+
+						for ( var xx = - _size_half; xx < _size - _size_half; xx ++ ) {
+
+							for ( var yy = - _size_half; yy < _size - _size_half; yy ++ ) {
+
+								for ( var zz = - _size_half; zz < _size - _size_half; zz ++ ) {
+
+									addVoxel( x + xx, y + yy, z + zz );
+
+									if ( _symmetry ) {
+
+										addVoxel( - x + xx, y + yy, z + zz );
+
+									}
+
+								}
+
+							}
 
 						}
 

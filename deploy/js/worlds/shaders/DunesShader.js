@@ -16,8 +16,8 @@ var DunesShader = {
 
 	init: function() {
 		
-		DunesShader.uniforms.grassImage.texture = THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Grass.jpg' );
-		DunesShader.uniforms.surfaceImage.texture = THREE.ImageUtils.loadTexture( 'files/textures/CityShader_Clouds.jpg' );
+		DunesShader.uniforms.grassImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Grass.jpg' );
+		DunesShader.uniforms.surfaceImage.texture = THREE.ImageUtils.loadTexture( '/files/textures/CityShader_Clouds.jpg' );
 		
 	},
 

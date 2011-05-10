@@ -5,19 +5,27 @@
 	launcher, film, relauncher, exploration, ugc,
 	shortcuts, lastBeta = 0, lastGamma = 0;
 
+	var historySections = [
+		"film",
+		"explore",
+		"relauncher",
+		"tool",
+	];
+	var historyDispatches = [];
+
 	// debug
 
 	logger = new Logger();
 	logger.domElement.style.position = 'fixed';
 	logger.domElement.style.right = '100px';
 	logger.domElement.style.top = '0px';
-	document.body.appendChild( logger.domElement );
+	//document.body.appendChild( logger.domElement );
 
 	stats = new Stats();
 	stats.domElement.style.position = 'fixed';
 	stats.domElement.style.right = '0px';
 	stats.domElement.style.top = '0px';
-	document.body.appendChild( stats.domElement );
+	//document.body.appendChild( stats.domElement );
 
 	shared = {
 
@@ -90,14 +98,19 @@
 		exploration = new ExplorationSection( shared );
 		document.body.appendChild( exploration.getDomElement() );
 
-		shared.signals.showfilm.add( function () { setSection( film ); } );
-		shared.signals.showexploration.add( function () { setSection( exploration ); } );
+		shared.signals.showfilm.add( function () { setSection( film, historySections[0], "/" + historySections[0] ); } );
+		shared.signals.showexploration.add( function () { setSection( exploration, historySections[1], "/" + historySections[1] ); } );
 
 	} );
 
 	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
-	shared.signals.showrelauncher.add( function () { setSection( relauncher ); } );
-	shared.signals.showugc.add( function () { setSection( ugc ); } );
+	shared.signals.showrelauncher.add( function () { setSection( relauncher, historySections[2], "/" + historySections[2] ); } );
+	shared.signals.showugc.add( function () { setSection( ugc, historySections[3], "/" + historySections[3] ); } );
+
+	historyDispatches.push( shared.signals.showfilm );
+	historyDispatches.push( shared.signals.showexploration );
+	historyDispatches.push( shared.signals.showrelauncher );
+	historyDispatches.push( shared.signals.showugc );
 
 	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
@@ -112,12 +125,49 @@
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
-	setSection( launcher );
+	handleHistory();
+	// setSection( launcher );
 	animate();
 
 	//
 
-	function setSection( section ) {
+	// Main listener for History API
+	window.onpopstate = function(e) {
+
+		handleHistory();
+
+	};
+
+	function handleHistory() {
+
+		// Handle History API stuff
+		var folder = window.location.pathname.toString();
+
+		if(folder === "\/") {
+
+			shared.signals.showlauncher.dispatch();
+
+		} else {
+
+			for(var i = 0; i < historySections.length; i++) {
+
+				if(folder.match(historySections[i])) {
+
+					historyDispatches[i].dispatch();
+					if(i == 0) {
+						shared.signals.startfilm.dispatch( 0, 1 );
+					}
+					break;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	function setSection( section, title, path ) {
 
 		if ( currentSection ) currentSection.hide();
 
@@ -130,6 +180,12 @@
 
 		section.resize( window.innerWidth, window.innerHeight );
 		section.show();
+
+		if(title && path) {
+
+			if(history) history.pushState( null, title, path );
+
+		}
 
 		currentSection = section;
 

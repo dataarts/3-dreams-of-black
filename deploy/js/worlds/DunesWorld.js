@@ -130,14 +130,14 @@ var DunesWorld = function ( shared ) {
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-	loader.load( "files/models/dunes/D_tile_walk.js", walkLoaded );
-	loader.load( "files/models/dunes/D_tile_prairie.js", prairieLoaded );
-	loader.load( "files/models/dunes/D_tile_city.js", cityLoaded );
+	loader.load( "/files/models/dunes/D_tile_walk.js", walkLoaded );
+	loader.load( "/files/models/dunes/D_tile_prairie.js", prairieLoaded );
+	loader.load( "/files/models/dunes/D_tile_city.js", cityLoaded );
 
-	loader.load( "files/models/dunes/D_tile_1.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_2.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_3.js", tileLoaded );
-	loader.load( "files/models/dunes/D_tile_4.js", tileLoaded );
+	loader.load( "/files/models/dunes/D_tile_1.js", tileLoaded );
+	loader.load( "/files/models/dunes/D_tile_2.js", tileLoaded );
+	loader.load( "/files/models/dunes/D_tile_3.js", tileLoaded );
+	loader.load( "/files/models/dunes/D_tile_4.js", tileLoaded );
 
 
 	// UGC
