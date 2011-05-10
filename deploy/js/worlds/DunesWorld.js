@@ -86,7 +86,7 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 5 );										// prairie
 
-			} else if( x === 2 && z === 2 ) {
+			} else if( x === 1 && z === 3 ) {
 
 				tileRow.push( 6 );										// city
 
