@@ -236,9 +236,9 @@ var RelauncherSection = function( shared ) {
 		enter.style.display = "none";
 		domElement.appendChild(enter);
 
-		enter.addEventListener("click", function(e) {
+		enter.addEventListener("click", handleReturn, false);
 
-			// Doesn't work at the moment
+		function handleReturn() {
 			shared.signals.showexploration.dispatch();
 			shared.signals.startexploration.dispatch( 'dunes' );
 			var divs = container.getElementsByTagName('div');
@@ -246,8 +246,8 @@ var RelauncherSection = function( shared ) {
 				divs[i].style.display = "block";
 			}
 			enter.style.display = "none";
-
-		}, false);
+			shared.signals.keyup.remove( handleReturn )
+		}
 
 		start.addEventListener("click", function(e) {
 
@@ -286,6 +286,7 @@ var RelauncherSection = function( shared ) {
 				divs[i].style.display = "none";
 			}
 			enter.style.display = "block";
+			shared.signals.keyup.add( handleReturn )
 
 		}, false);
 
