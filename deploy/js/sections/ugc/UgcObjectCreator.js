@@ -190,23 +190,30 @@ var UgcObjectCreator = function ( shared ) {
 
 		isMouseDown = true;
 
+		painter.update( isMouseDown );
+
 	}
 
 	function onMouseUp( event ) {
 
 		isMouseDown = false;
 
+		painter.update( isMouseDown );
+
 	}
 
 	function onMouseMove( event ) {
 
 		painter.moveMouse( shared.mouse.x / shared.viewportWidth, ( shared.mouse.y - offset ) / shared.viewportHeight );
+		painter.update( isMouseDown );
 
 	}
 
 	function onMouseWheel( event ) {
 
 		newRadius = radius + event.wheelDeltaY;
+
+		painter.update( isMouseDown );
 
 	}
 
@@ -249,7 +256,7 @@ var UgcObjectCreator = function ( shared ) {
 		shared.ugc.camera.position.y = radius * Math.sin( phi * DEG2RAD );
 		shared.ugc.camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 
-		painter.update( isMouseDown );
+		// painter.update( isMouseDown );
 
 		//
 

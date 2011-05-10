@@ -1,4 +1,4 @@
-var PrairieWorld = function ( shared, camera ) {
+var PrairieWorld = function ( shared, camera, callbackSoup ) {
 
 	var that = this;
 
@@ -131,6 +131,8 @@ var PrairieWorld = function ( shared, camera ) {
 */		
 
 		that.scene.update( undefined, true );
+		
+		callbackSoup();
 
 	};
 

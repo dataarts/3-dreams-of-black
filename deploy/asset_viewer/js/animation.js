@@ -95,13 +95,13 @@ function animate() {
 
   rootY.position.y = -centerY;
 
-  plane.position.z -= delta * params.speed * gridSpeed;
+  plane.position.z -= delta * params.speed/2 * gridSpeed;
   plane.position.z = plane.position.z % 100;
   plane.position.y = -riseY;
 
   camera.position.x -= ( cameraDistance + zoom + camera.position.x) / 20;
   sky.position.x = camera.position.x;
-  THREE.AnimationHandler.update(delta * params.speed);
+  THREE.AnimationHandler.update(delta * params.speed/2);
 
   if (typeof(effector) != "undefined"){
     effector.position.x = triggerShader.effectors[ 0 ] = effector.start.x * (1-params.morph) + effector.end.x * params.morph;
