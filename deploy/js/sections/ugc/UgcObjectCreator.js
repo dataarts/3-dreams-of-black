@@ -69,7 +69,7 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
         num_images = 12,
         origX = 0, origY = 0,
         dest = document.createElement('canvas'),
-        stashed_cam_pos = shared.ugc.camera.position.clone(),
+        stashed_cam_pos = camera.position.clone(),
         radiusp = 1500,
         thetap = 45, phip = 15;
     var rotationp = 360/num_images;
@@ -90,12 +90,12 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
     console.log(orig, origW, origH, origR, destR, dWidth, dHeight);
     for(var i=0;i<num_images;i++) {
       // move camera
-      shared.ugc.camera.position.x = radiusp * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
-      shared.ugc.camera.position.y = radiusp * Math.sin( phip * DEG2RAD );
-      shared.ugc.camera.position.z = radiusp * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.x = radiusp * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.y = radiusp * Math.sin( phip * DEG2RAD );
+      camera.position.z = radiusp * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
       // draw to canvas
       shared.renderer.clear();
-      shared.renderer.render( shared.ugc.scene, shared.ugc.camera );
+      shared.renderer.render( scene, camera );
       ctx.drawImage(orig, origX, origY, origW, origH, dx, dy, dWidth, dHeight);
       thetap += rotationp;
       dy += dHeight;
@@ -103,9 +103,9 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
     // create thumbnail
     var thumbnail = dest.toDataURL('image/png');
     delete dest;
-    shared.ugc.camera.position = stashed_cam_pos;
+    camera.position = stashed_cam_pos;
     shared.renderer.clear();
-    shared.renderer.render( shared.ugc.scene, shared.ugc.camera );
+    shared.renderer.render( scene, camera );
     return thumbnail;
   }
 
