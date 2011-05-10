@@ -41,6 +41,7 @@ var UgcUI = function (shared) {
 
   var animalContainerDiv = classedElement('div', 'animal-container');
   animalContainerDiv.setAttribute('id', 'animal-container');
+  animalContainerDiv.style.display = 'none';
   animalContainerDiv.style.overflow = 'hidden';
   animalContainerDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
   animalContainerDiv.style.width = '100%';
@@ -223,7 +224,9 @@ var UgcUI = function (shared) {
     onClick('main', closeAnimals);
 
     onClick('animals', function() {
-      document.getElementById('animal-container').style.opacity = 1;
+      // document.getElementById('animal-container').style.opacity = 1;
+      document.getElementById('animal-container').style.display = 'block';
+      shared.ugcSignals.soup_mode.dispatch();
     }, false);
 
     /**
@@ -331,7 +334,7 @@ var UgcUI = function (shared) {
     shared.ugcSignals.object_erasemode.add(function() {
       document.getElementById('erase').setAttribute('class', 'active');
       document.getElementById('create').setAttribute('class', '');
-    })
+    });
 
     shared.ugcSignals.object_createmode.add(function() {
       document.getElementById('create').setAttribute('class', 'active');
@@ -359,7 +362,9 @@ var UgcUI = function (shared) {
   };
 
   function closeAnimals() {
-    document.getElementById('animal-container').style.opacity = 0;
+    // document.getElementById('animal-container').style.opacity = 0;
+    document.getElementById('animal-container').style.display = 'none';
+    shared.ugcSignals.object_mode.dispatch();
   }
 
   function closeAllMenus() {
@@ -869,7 +874,7 @@ var UgcUI = function (shared) {
       '#voxel-submit-image { margin-bottom: 20px; width: 735px; height: 465px; background-color: #000; }',
       '#voxel-submit-shade { z-index: -12; opacity: 0.4; -webkit-transition: opacity 0.2s linear; background-color: #f4f1e8; position: fixed; top: 0; left: 0; width: 100%; height: 100% }',
       '#voxel-submit { font: 12px/18px FuturaBT-Medium; color: #404040; z-index: 21; opacity: 0; -webkit-transition: opacity 0.2s linear; width: 735px; height: 556px; padding: 13px; margin-left: -380px; margin-top: -291px; background-color: #f4f1e8; box-shadow: 0px 0px 10px rgba(0,0,0,0.3) }',
-      '.animal-container { opacity: 0; -webkit-transition: opacity 0.3s linear; }',
+      // '.animal-container { opacity: 1; -webkit-transition: opacity 0.3s linear; }',
       '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 120px; margin-right: 10px; }',
       '.animal:hover { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #fff; }',
       '.animal-controls { height: 21px; overflow:hidden; line-height: 0px; border-right: 1px solid #fff; opacity: 0; display: inline-block; position: relative; margin-top: 71px; }',

@@ -1,6 +1,6 @@
 var VoxelPainter = function ( camera, scene ) {
 
-	var UNIT_SIZE = 50, _size = 1, _color = 0xffffff,
+	var UNIT_SIZE = 50, _size = 3, _size_half = 1, _color = 0xffffff,
 	_mode = VoxelPainter.MODE_CREATE,
 	_symmetry = false,
 	_object = new UgcObject();
@@ -163,6 +163,7 @@ var VoxelPainter = function ( camera, scene ) {
 	this.setSize = function ( size ) {
 
 		_size = size;
+		_size_half = Math.floor( _size / 2 );
 
 		_brush[ 0 ] = _brushes[ 0 ][ _size ];
 		_brush[ 1 ] = _brushes[ 1 ][ _size ];
@@ -268,11 +269,23 @@ var VoxelPainter = function ( camera, scene ) {
 						y = toGridScale( vector.y );
 						z = toGridScale( vector.z );
 
-						addVoxel( x, y, z );
+						for ( var xx = - _size_half; xx < _size - _size_half; xx ++ ) {
 
-						if ( _symmetry ) {
+							for ( var yy = - _size_half; yy < _size - _size_half; yy ++ ) {
 
-							addVoxel( - x, y, z );
+								for ( var zz = - _size_half; zz < _size - _size_half; zz ++ ) {
+
+									addVoxel( x + xx, y + yy, z + zz );
+
+									if ( _symmetry ) {
+
+										addVoxel( - x + xx, y + yy, z + zz );
+
+									}
+
+								}
+
+							}
 
 						}
 
