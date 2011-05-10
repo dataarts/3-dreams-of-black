@@ -233,7 +233,7 @@ ROME.AnimalAnimationData = {
 	// static animal names (please fill in as it's faster than parsing through the geometry.morphTargets
 
 	//animalNames: [ "scorp", "tarbuffalo", "horse", "bear", "mountainlion", "deer", "fox", "goldenRetreiver", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fishD", "sockPuppet", "shdw2", "blackWidow", "crab", "goat", "gator", "tarbuffalo_runB", "tarbuffalo_runA", "wolf", "toad", "parrot", "eagle", "owl", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyD", "butterflyLow", "vulture", "raven", "bison", "sickle" ],
-	animalNames: [ "tarbuffalo", "horse", "bearbrown", "mountainlion", "deer", "goldenRetreiver", "fox", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "scorp", "goat", "gator", "tarbuffalo_runB", "tarbuffalo", "bearblack", "panther", "wolf", "toad", "eagle", "owl", "parrot", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "raven", "vulture", "bison", "sickle", "armHand" ],
+	animalNames: [ "buffalo", "tarantula", "horse", "bearbrown", "mountainlion", "deer", "goldenRetreiver", "fox", "seal", "chow", "raccoon", "bunny", "frog", "elk", "moose", "fishA", "fishB", "fishC", "fish", "sockPuppet", "shdw2", "blackWidow", "crab", "scorp", "goat", "gator", "tarbuffalo_runB", "bearblack", "panther", "wolf", "toad", "eagle", "owl", "parrot", "hummingBird", "flamingo", "stork", "butterflyA", "butterflyB", "butterflyC", "butterflyD", "butterflyLowA", "butterflyLowB", "butterflyLowC", "butterflyLowD", "raven", "vulture", "bison", "sickle", "armHand" ],
 	
 	colorVariations: {
 		
@@ -354,9 +354,12 @@ ROME.AnimalAnimationData = {
 	"stork": { hRange:  0.00, sRange:   0.10, vRange:  0.20,
 			   hOffset: 0.02, sOffset:  -0.05, vOffset: -0.05 },
 			   
-	"tarbuffalo": { hRange:  0.04, sRange:  0.10,  vRange:  0.1,
+	"tarantula": { hRange:  0.04, sRange:  0.10,  vRange:  0.1,
 		            hOffset: -0.015, sOffset: 0.0, vOffset: -0.175 },
-			  
+
+	"buffalo": { hRange:  0.04, sRange:  0.10,  vRange:  0.1,
+		            hOffset: -0.015, sOffset: 0.0, vOffset: -0.175 },
+
 	"toad": { hRange:  0.07, sRange:   0.00, vRange:  0.1,
 			  hOffset: -0.02,  sOffset:  0.0, vOffset: -0.25 },			  
 			  
@@ -427,7 +430,8 @@ ROME.AnimalAnimationData = {
 		"sickle" : "sickle",		
 		"stork"  : "stork",
 		
-		"tarbuffalo": "tarbuffalo",	
+		"tarbuffalo": "tarbuffalo",
+    "buffalo": "buffalo",
 		"toad" 		: "toad",
 		"vulture"   : "vulture",
 		"wolf" 		: "wolf",
