@@ -1,6 +1,6 @@
 var VoxelPainter = function ( camera, scene ) {
 
-	var UNIT_SIZE = 50, _size = 3, _size_half = 1, _color = 0xffffff,
+	var UNIT_SIZE = 5, _size = 3, _size_half = 1, _color = 0xffffff,
 	_mode = VoxelPainter.MODE_CREATE,
 	_symmetry = false,
 	_object = new UgcObject();
@@ -16,7 +16,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _colliderArray = [];
 
-	var _geometry = new THREE.Plane( 2000, 2000, 16, 16 );
+	var _geometry = new THREE.Plane( 200, 200, 16, 16 );
 	var _material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true, wireframe: true } );
 
 	_plane = new THREE.Mesh( _geometry, _material );
@@ -54,10 +54,10 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _voxelsArray = [];
 
-	var _ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
-	_ground.position.x = - 25;
-	_ground.position.y = - 25;
-	_ground.position.z = - 25;
+	var _ground = new THREE.Mesh( new THREE.Plane( 200, 200, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
+	_ground.position.x = - UNIT_SIZE / 2;
+	_ground.position.y = - UNIT_SIZE / 2;
+	_ground.position.z = - UNIT_SIZE / 2;
 	_ground.rotation.x = - 90 * Math.PI / 180;
 	scene.addObject( _ground );
 

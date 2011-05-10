@@ -7,15 +7,15 @@ var UgcObjectCreator = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, radius = 1500, oldRadius = 1500, newRadius = 1500, theta = 45, phi = 15;
+	isRotateMode = false, isMouseDown = false, radius = 150, oldRadius = 150, newRadius = 150, theta = 45, phi = 15;
 
 	shared.ugc.camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
-	shared.ugc.camera.target.position.y = 200;
+	shared.ugc.camera.target.position.y = 20;
 
 	// Background
 
 	shared.ugc.scene = new THREE.Scene();
-	shared.ugc.scene.fog = new THREE.FogExp2( 0xffffff, 0.000175 );
+	shared.ugc.scene.fog = new THREE.FogExp2( 0xffffff, 0.00075 );
 	shared.ugc.scene.fog.color.setHSV( 0.576, 0.382, 0.9 );
 
 	// Lights
@@ -41,7 +41,7 @@ var UgcObjectCreator = function ( shared ) {
 	that.lensFlare = null;
 	that.lensFlareRotate = null;
 
-	var flaresPosition = new THREE.Vector3( 0, 0, - 7500 );
+	var flaresPosition = new THREE.Vector3( 0, 0, - 750 );
 	var sx = 60, sy = 292;
 
 	initLensFlares( shared.ugc, flaresPosition, sx, sy );
@@ -56,9 +56,9 @@ var UgcObjectCreator = function ( shared ) {
 			if ( object.visible ) {
 
 				object.rotation.x = - 90 * Math.PI / 180;
-				object.position.y = - 100;
-				object.position.x = 1750;
-				object.scale.x = object.scale.y = object.scale.z = 0.5;
+				object.position.y = - 10;
+				object.position.x = 500;
+				object.scale.x = object.scale.y = object.scale.z = 0.1;
 				shared.ugc.scene.addObject( object );
 
 			}
@@ -153,7 +153,7 @@ var UgcObjectCreator = function ( shared ) {
   shared.ugcSignals.soup_mode.add( function ( size ) {
 
     oldRadius = radius;
-    newRadius = 3000;
+    newRadius = 400;
 
   } );
 
@@ -243,7 +243,8 @@ var UgcObjectCreator = function ( shared ) {
 
 		}
 
-    radius += (newRadius-radius)/20;
+		radius += (newRadius-radius)/20;
+
 		shared.ugc.camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 		shared.ugc.camera.position.y = radius * Math.sin( phi * DEG2RAD );
 		shared.ugc.camera.position.z = radius * Math.cos( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
@@ -321,7 +322,7 @@ var UgcObjectCreator = function ( shared ) {
 
 	this.update = function () {
 
-      render();
+		render();
 
 	};
 

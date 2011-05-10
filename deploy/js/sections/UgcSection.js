@@ -17,14 +17,14 @@ var UgcSection = function ( shared ) {
 
 		shared.ugc = {};
 		shared.ugcSignals = {};
-    shared.ugcSignals.showintro = new Signal();
+		shared.ugcSignals.showintro = new Signal();
 		shared.ugcSignals.showobjectcreator = new Signal();
 		shared.ugcSignals.showsoupcreator = new Signal();
 
 		shared.ugcSignals.object_mode = new Signal();
-    shared.ugcSignals.soup_mode = new Signal();
+		shared.ugcSignals.soup_mode = new Signal();
 
-    shared.ugcSignals.object_createmode = new Signal();
+		shared.ugcSignals.object_createmode = new Signal();
 		shared.ugcSignals.object_erasemode = new Signal();
 		shared.ugcSignals.object_symmetrymode = new Signal();
 		shared.ugcSignals.object_changecolor = new Signal();
@@ -37,8 +37,8 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals.object_smoothdown = new Signal();
 		shared.ugcSignals.object_undo = new Signal();
 
-    shared.ugcSignals.object_requestsnapshot = new Signal();
-    shared.ugcSignals.object_receivesnapshot = new Signal();
+		shared.ugcSignals.object_requestsnapshot = new Signal();
+		shared.ugcSignals.object_receivesnapshot = new Signal();
 
 		intro = new UgcIntro( shared );
 
@@ -89,7 +89,7 @@ var UgcSection = function ( shared ) {
 
 		domElement.style.display = 'block';
 		objectCreator.show();
-    soupCreator.init();
+		soupCreator.init();
 
 	};
 
@@ -102,7 +102,7 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-    ui.resize(width, height);
+		ui.resize(width, height);
 		objectCreator.resize( width, height );
 
 	};
@@ -110,7 +110,7 @@ var UgcSection = function ( shared ) {
 	this.update = function () {
 
 		objectCreator.update();
-    soupCreator.update();
+		soupCreator.update();
 		ui.update();
 
 	};
