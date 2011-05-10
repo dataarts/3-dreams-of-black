@@ -1,7 +1,9 @@
 var UgcUI = function (shared) {
 
-  var _this = this;
 
+  var VALID_EMAIL = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/;
+  var TITLE_STRING = 'TITLE';
+  var MAX_TITLE_LENGTH = 35;
   var ANIMAL_CONTAINER_HEIGHT = 114;
   var NATIVE_ASPECT = 1.28005657708628;
   var SIZE_SMALL = 1;
@@ -79,7 +81,6 @@ var UgcUI = function (shared) {
     e.stopPropagation();
   });
   submit.addEventListener('mousedown', function(e) {
-
     e.stopImmediatePropagation();
     e.stopPropagation();
   });
@@ -107,7 +108,8 @@ var UgcUI = function (shared) {
 
   var submitTitle = idElement('input', 'voxel-submit-title');
   submitTitle.setAttribute('type', 'text');
-  submitTitle.setAttribute('value', 'GIVE A TITLE TO YOUR DREAM');
+  submitTitle.setAttribute('value', TITLE_STRING);
+  submitTitle.setAttribute('maxlength', MAX_TITLE_LENGTH);
 
   submitTitle.addEventListener('focus', function() {
     this.value = '';
@@ -128,11 +130,45 @@ var UgcUI = function (shared) {
 
   submitSubmit.addEventListener('click', function() {
 
+    var emailInput = document.getElementById('voxel-submit-email');
+
     var title = document.getElementById('voxel-submit-title').value;
-    var email = document.getElementById('voxel-submit-email').value;
+    var email = emailInput.value;
+
+    var invalidEmail = function(email) {
+      return false; // TODO
+      if (email.match(VALID_EMAIL) == null) {
+        alert("")
+      }
+    };
+
+    if ( invalidEmail(email) ) {
+      return;
+    }
+
+    var invalidTitle = function(title) {
+
+      if (title == TITLE_STRING || trim(title) == '') {
+        alert("Please enter a title.");
+        return true;
+      }
+
+      if (title.length < 3) {
+        alert("Please enter a title 3 characters or longer.");
+        return true;
+      }
+
+      return false;
+
+    };
+
+    if ( invalidTitle(title) ) {
+      return;
+    }
 
     shared.ugcSignals.submit.dispatch(title, email);
     hideSubmitDialogue();
+
   }, false);
 
   submit.appendChild(submitImage);
@@ -395,6 +431,10 @@ var UgcUI = function (shared) {
     return div;
   }
 
+  function trim(str) {
+    return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '')
+  }
+
   function onClick(id, fnc, stopPropagation) {
     stopPropagation = stopPropagation || true;
     var elem;
@@ -424,7 +464,7 @@ var UgcUI = function (shared) {
     submitShade.style.zIndex = '-20';
     submit.style.top = '200%';
     submit.style.opacity = 0;
-    submitTitle.value = 'GIVE A TITLE TO YOUR DREAM';
+    submitTitle.value = TITLE_STRING;
     submitEmail.value = 'YOUR EMAIL ADDRESS';
   }
 
@@ -474,8 +514,7 @@ var UgcUI = function (shared) {
       '  	 width="800px" ',
       '  	 height="2000px"',
       '     xml:space="preserve"><g>',
-      '<g id="main" class="menu">',
-
+      '<g id="main" class="menu" name="hover" title="Draw">',
       '<polygon class="hex main" fill="#282828"',
       '         points="13.128,45.47 0.002,22.735 13.128,0 39.379,0 52.505,22.735 39.379,45.47 "></polygon>',
 
@@ -518,7 +557,7 @@ var UgcUI = function (shared) {
       'c0,0.426,0.343,0.772,0.771,0.772s0.771-0.346,0.771-0.772v-1.158C26.802,67.412,26.459,67.066,26.031,67.066"></path>',
       '</g>',
 
-      '<g id="create" name="hover" title="draw"  class="active">',
+      '<g id="create" name="hover" title="draw" class="active">',
       '  <polygon class="hex" fill="rgba(255, 255, 255,',
       '      0.4)" points="54.578,',
       '      69.401 41.452,46.666 54.578,23.932 80.83,23.932 93.956,46.666',
@@ -714,7 +753,7 @@ var UgcUI = function (shared) {
 
 
       '<g id="animals" class="menu" transform="translate(0, -85)">',
-      '  <polygon fill="#282828" points="13.128,508.477 0.002,485.742 13.128,',
+      '  <polygon class="hex main" fill="#282828" points="13.128,508.477 0.002,485.742 13.128,',
       '  463.007 39.379,463.007 52.505,485.742',
       '  39.379,508.477 "></polygon>',
 
@@ -836,7 +875,7 @@ var UgcUI = function (shared) {
       '}',
       '.ugcui g#color g.options polygon:not(.selected):hover {',
       '  stroke: #fff;',
-      // '  stroke-width: 4; z-index: 200',
+      '  stroke-width: 4; z-index: 200',
       '}',
       '.ugcui g#color g.options polygon#white:not(.selected):hover {',
       '  stroke: #000;',
@@ -844,6 +883,8 @@ var UgcUI = function (shared) {
       '.ugcui g.menu-buttons g:hover:not(.active) .hex {',
       '  fill: #fff;',
       '}',
+      '.ugcui polygon.hex.main { fill: #fff; fill-opacity: 0.5 }',
+      '.ugcui g:hover polygon.hex.main { fill-opacity: 1 }',
       '.ugcui g.folder g.options {',
       '  display: none;',
       '}',
