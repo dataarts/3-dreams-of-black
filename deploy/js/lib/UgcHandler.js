@@ -22,7 +22,16 @@ var UgcHandler = function () {
 
 				if ( xhr.status == 200 ) {
 
-					callback( JSON.parse( xhr.responseText ) );
+					if( xhr.responseText !== "" ) {
+						
+						callback( JSON.parse( xhr.responseText ) );
+						
+					} else {
+						
+						console.warn( 'UGC response empty' );
+						callback( {} );
+						
+					}
 
 				} else {
 
