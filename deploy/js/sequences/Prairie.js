@@ -83,11 +83,16 @@ var Prairie = function ( shared ) {
 
 		camera = cameraPath;
 
-		world = new PrairieWorld( shared, camera );
-		soup = new PrairieSoup( camera, world.scene, shared );
+		world = new PrairieWorld( shared, camera, callbackSoup );
+		 
+		function callbackSoup() {
+		
+			soup = new PrairieSoup( camera, world.scene, shared );
+			shared.soups.prairie = soup;
+
+		}
 
 		shared.worlds.prairie = world;
-		shared.soups.prairie = soup;
 		shared.sequences.prairie = this;
 
 		//world.scene.addObject( cameraPath.debugPath );
@@ -163,7 +168,12 @@ var Prairie = function ( shared ) {
 		world.scene.lights[2].color.setRGB(a,a,a);*/
 
 		world.update( delta, camera, false );
-		soup.update( delta );
+		
+		if ( soup ) {
+			
+			soup.update( delta );
+			
+		}
 
 		renderer.render( world.scene, camera, renderTarget );
 
