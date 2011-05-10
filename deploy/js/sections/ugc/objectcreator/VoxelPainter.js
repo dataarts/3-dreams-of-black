@@ -1,6 +1,6 @@
 var VoxelPainter = function ( camera, scene ) {
 
-	var UNIT_SIZE = 5, _size = 3, _size_half = 1, _color = 0xffffff,
+	var UNIT_SIZE = 5, _size = 1, _size_half = 0, _color = 0xffffff,
 	_mode = VoxelPainter.MODE_CREATE,
 	_symmetry = false,
 	_object = new UgcObject();
