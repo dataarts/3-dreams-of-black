@@ -7,6 +7,16 @@ var ExplorationSection = function ( shared ) {
 	var domElement = document.createElement( 'div' );
 	domElement.style.display = 'none';
 
+
+	// init pause meny TODO!
+	
+	var pauseMenu = document.createElement( 'div' );
+	pauseMenu.style.position = "absolute";
+	pauseMenu.style[ "z-index" ] = 100;
+	pauseMenu.innerHTML = "<a href=''>RESUME</a><br/><a href=''>QUIT</a><br/><a href=''>MUTE</a>";
+
+
+
 	// renderer and post effects
 
 	var progress = 0, start = 0, lastTime = 0;
@@ -137,21 +147,23 @@ var ExplorationSection = function ( shared ) {
 
 	function stop(e) {
 
-		// Depracated for research on
-		// History API in HTML5 spec.
-		// Return + Enter
-		// if(e.keyCode == 13) {
-		// 
-		// 	paused = !paused;
-		// 	if(pause) {
-		// 
-		// 		// Show UI
-		// 		
-		// 
-		// 	}
-		// 
-		// }
+		console.log( "STOP!" );
 
+		if(e.keyCode == 13) {
+
+		 	paused = !paused;
+		
+		 	if( paused ) {
+
+				domElement.appendChild( pauseMenu );
+
+		 	} else {
+		 		
+		 		domElement.removeChild( pauseMenu );
+		 		
+		 	}
+		 
+		}
 
 	};
 
@@ -218,7 +230,7 @@ var ExplorationSection = function ( shared ) {
 		
 		// update world
 
-		if(!paused) {
+		if( !paused ) {
 
 			if( world && world.scene ) {
 
