@@ -10,7 +10,9 @@ var UgcSection = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, radius = 150, oldRadius = 150, newRadius = 150, theta = 45, phi = 15;
+	isRotateMode = false, isMouseDown = false, start_radius = 150,
+  radius = start_radius, oldRadius = start_radius, newRadius = start_radius,
+  theta = 45, phi = 15;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 20;
@@ -182,24 +184,55 @@ var UgcSection = function ( shared ) {
 		} );
 		*/
 
+  function gen_thumbnail() {
+    var dWidth = 300,
+        dHeight = 180,
+        num_images = 12,
+        dest = document.createElement('canvas'),
+        stashed_cam_pos = camera.position.clone(),
+        thetap = 45, phip = 15;
+    var rotationp = 360/num_images;
+    dest.width = dWidth;
+    dest.height = dHeight * num_images;
+    var orig = shared.renderer.domElement;
+    var origW = orig.width;
+    var origH = orig.height;
+    var ctx = dest.getContext('2d');
+    that.resize(dWidth, dHeight);
+    for(var i=0;i<num_images;i++) {
+      // move camera
+      camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.y = start_radius * Math.sin( phip * DEG2RAD );
+      camera.position.z = start_radius * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      // draw to canvas
+      shared.renderer.clear();
+      shared.renderer.render( that.scene, camera );
+      ctx.drawImage(orig, 0, 0, dWidth, dHeight, 0, dHeight*i, dWidth, dHeight);
+      thetap += rotationp;
+    }
+    that.resize(origW, origH);
+    // create thumbnail
+    var thumbnail = dest.toDataURL('image/png');
+    delete dest;
+    camera.position = stashed_cam_pos;
+    shared.renderer.clear();
+    shared.renderer.render( that.scene, camera );
+    return thumbnail;
+  }
+
 		var ugcHandler = new UgcHandler();
 
-		shared.ugcSignals.submit.add( function () {
+		shared.ugcSignals.submit.add( function (title, email) {
 
-			var c = document.createElement('canvas');
-			c.width = 300;
-			c.height = 180;
-			var ctx = c.getContext('2d');
-			ctx.drawImage(renderer.domElement,0,0,c.width,c.height);
-			var thumbnail = c.toDataURL();
-			delete c;
+      var thumbnail = gen_thumbnail();
+      var obj = objectCreator.getPainter().getObject();
 
-			var submission = {
-				title: 'Amorphous Building',
-				email: 'dougfritz@gmail.com',
-				category: 'ground',
-				data: objectCreator.getPainter().getObject().getJSON()
-			};
+      var submission = {
+        title: title,
+        email: email,
+        category: obj.getType(),
+        data: obj.getJSON()
+      };
 
 			ugcHandler.submitUGO( submission, thumbnail, function ( rsp ) {
 				console.log(rsp);
