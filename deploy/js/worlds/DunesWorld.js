@@ -454,6 +454,8 @@ var DunesWorld = function ( shared ) {
 			if ( o.toLowerCase().indexOf( "cloud" ) >= 0 ) {
 
 				applyCloudsShader( result.objects[ o ], CloudsShader );
+				result.objects[ o ].position.z += 8000;
+				result.objects[ o ].updateMatrix();
 
 			}
 
