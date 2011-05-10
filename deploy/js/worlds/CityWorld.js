@@ -85,6 +85,7 @@ var CityWorld = function ( shared ) {
 
 		}
 
+
 		TriggerUtils.setupCityTriggers( result );
 
 		// fix texture wrapping for skydome
@@ -120,7 +121,7 @@ var CityWorld = function ( shared ) {
 
 		cameraPosition = camera.matrixWorld.getPosition();
 
-		TriggerUtils.effectorRadius = 50;
+		TriggerUtils.effectorRadius = 330;
 		TriggerUtils.update( "city" );
 
 		updateCityShader( delta );

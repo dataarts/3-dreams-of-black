@@ -84,7 +84,9 @@ DunesCamera = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = delta * ( 1000 / 30 ) / 1000; 
+		delta = delta * ( 1000 / 30 ) / 1000;
+		if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
+		
 		
 		// get mouse
 		
@@ -115,9 +117,7 @@ DunesCamera = function( shared ) {
 			
 			// handle left/right		
 	
-			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
-	
-			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+			wantedCameraTarget.position.x = wantedCamera.position.x + CAMERA_HORIZONTAL_FACTOR * mouseX * 0.5 * delta;
 			wantedCameraTarget.position.x = Math.min( 300, Math.max( -300, wantedCameraTarget.position.x ));
 			wantedCameraTarget.position.z = wantedCamera.position.z - CAMERA_COLLISION_DISTANCE;
 
@@ -125,8 +125,8 @@ DunesCamera = function( shared ) {
 
 			camera.position.y = camera.target.position.y = wantedCameraTarget.position.y = wantedCamera.position.y;
 
-			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.15 * delta;
-			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.15 * delta;
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.15;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.15;
 
 						
 		} else if( progress < CAMERA_START_LIFT ) {
@@ -148,7 +148,7 @@ DunesCamera = function( shared ) {
 			
 			// handle up/down (cap lowest, highest)
 	
-			if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT * 2 ) {
+	/*		if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT * 2 ) {
 				
 				wantedCameraTarget.position.y += Math.max( 0, -mouseY ) * CAMERA_VERTICAL_FACTOR * 0.5;
 				
@@ -161,20 +161,14 @@ DunesCamera = function( shared ) {
 
 			wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y * 0.5 );
 			wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
-	
+	*/
 	
 			// handle left/right		
-	
-/*			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
-	
-			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
-			wantedCameraTarget.position.x = Math.min( 300, Math.max( -300, wantedCameraTarget.position.x ));
-			wantedCameraTarget.position.z = wantedCamera.position.z - CAMERA_COLLISION_DISTANCE;
-*/
+
 			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 	
-			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
-			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 0.5 * delta;
+			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE * delta + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * 0.5 * delta;
 
 
 
@@ -383,8 +377,8 @@ DunesCamera = function( shared ) {
 	
 			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 	
-			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
-			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta- wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE * delta + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 	
 	
 	
@@ -423,13 +417,13 @@ DunesCamera = function( shared ) {
 	
 			// position intertia
 	
-			camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * delta;
-			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * delta;
-			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * delta;
+			camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA;
+			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA;
+			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA;
 	
-			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA * delta;
-			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA * delta;
-			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA * delta;
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA;
+			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA;
 			
 			
 			// roll
@@ -447,6 +441,19 @@ DunesCamera = function( shared ) {
 			camera.up.x += ( wantedCamera.up.x - camera.up.x ) * CAMERA_INERTIA;
 			camera.up.y += ( wantedCamera.up.y - camera.up.y ) * CAMERA_INERTIA;
 			camera.up.z += ( wantedCamera.up.z - camera.up.z ) * CAMERA_INERTIA;
+			
+			
+			// fail checks (seems to happen when a lot of lag)
+			
+			wantedCameraDirection.sub( camera.position, camera.target.position ).y = 0;
+			
+			if( wantedCameraDirection.length() < 1 ) {
+				
+				wantedCamera.position.y = wantedCameraTarget.position.y = camera.target.position.y = camera.position.y;
+				wantedCameraTarget.position.z = camera.target.position.z = -CAMERA_COLLISION_DISTANCE;
+
+			}
+			
 		}
 
 	}

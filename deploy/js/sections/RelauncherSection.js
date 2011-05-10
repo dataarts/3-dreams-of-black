@@ -22,6 +22,7 @@ var RelauncherSection = function( shared ) {
 
 	var navigation = {};
 	var footer, footNav;
+	var enter;
 
 	// add css styling
 	var rule = document.createTextNode( "#relauncher-section div.after-experience { position: absolute; height: 57px; overflow: hidden; cursor: pointer; } #relauncher-section div.after-experience img { display: block; } #relauncher-section div.after-experience:hover img { margin-top: -57px; }" );
@@ -227,6 +228,27 @@ var RelauncherSection = function( shared ) {
 		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "<img src = '/files/relaunch_section/explore_dreams.png' alt = 'Explore Other Dreams' />");
 		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "<img src = '/files/relaunch_section/continue.png' alt = 'Continue To Explore' />");
 
+		enter = document.createElement( "div" );
+		enter.setAttribute("style", "width: 226px; height: 95px; cursor: pointer; background: url('/files/relaunch_section/return.png') 0 0 no-repeat;");
+		enter.style.position = "absolute";
+		enter.style.left = (window.innerWidth / 2.0 - 117) + "px";
+		enter.style.top = (window.innerHeight / 2.0 - 104) + "px";
+		enter.style.display = "none";
+		domElement.appendChild(enter);
+
+		enter.addEventListener("click", handleReturn, false);
+
+		function handleReturn() {
+			shared.signals.showexploration.dispatch();
+			shared.signals.startexploration.dispatch( 'dunes' );
+			var divs = container.getElementsByTagName('div');
+			for(var i = 0; i < divs.length; i++) {
+				divs[i].style.display = "block";
+			}
+			enter.style.display = "none";
+			shared.signals.keyup.remove( handleReturn )
+		}
+
 		start.addEventListener("click", function(e) {
 
 			e.preventDefault();
@@ -257,9 +279,14 @@ var RelauncherSection = function( shared ) {
 		}, false);
 
 		explore.addEventListener("click", function(e) {
+
 			e.preventDefault();
-			shared.signals.showexploration.dispatch();
-			shared.signals.startexploration.dispatch( 'dunes' );
+			var divs = container.getElementsByTagName('div');
+			for(var i = 0; i < divs.length; i++) {
+				divs[i].style.display = "none";
+			}
+			enter.style.display = "block";
+			shared.signals.keyup.add( handleReturn )
 
 		}, false);
 
@@ -300,6 +327,10 @@ var RelauncherSection = function( shared ) {
 			y: (window.innerHeight / 2.0 - 175)
 		};
 		container.setAttribute("style", "position: absolute; top: " + offset.y + "px; left: " + offset.x + "px;");
+
+		enter.style.left = (window.innerWidth / 2.0 - 117) + "px";
+		enter.style.top = (window.innerHeight / 2.0 - 104) + "px";
+
 		updateDomElementsPosition();
 
 	};
