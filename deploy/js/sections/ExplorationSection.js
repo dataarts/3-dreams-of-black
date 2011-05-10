@@ -34,6 +34,17 @@ var ExplorationSection = function ( shared ) {
 	paintEffectDunes.init();
 
 
+	// audio
+	
+	var environmentSound = document.createElement( "audio" );
+	environmentSound.volume = 0;
+	environmentSound.loop = true;
+	environmentSound.src = "files/nature.mp3";
+	environmentSound.autoplay = false;
+
+	document.body.appendChild( environmentSound );
+	
+
 	// init cameras
 
 	var camera, cameras = {};
@@ -74,7 +85,7 @@ var ExplorationSection = function ( shared ) {
 				
 			}
 			
-			// switch camera
+			// switch camera direction
 			
 			camera.switchDirection( closestPortal );
 			
@@ -116,29 +127,9 @@ var ExplorationSection = function ( shared ) {
 
 		updateViewportSize();
 		
-		// hide soup (if it wasn't yet activated)
-
-/*		if ( !shared.started[ worldId ] ) {
-
-			THREE.SceneUtils.traverseHierarchy( world.scene, function( node ) { 
-
-				if ( ! ( node instanceof THREE.Mesh  || node instanceof THREE.Scene ) 
-					|| ( node.geometry && node.geometry.morphTargets.length > 0 ) ) {
-
-					var name = node.name.toLowerCase();
-
-					if ( ! ( name && name.indexOf( "portal" ) >= 0 ) ) {
-
-						node.visible = false;
-
-					}
-
-				}
-
-			} );
-
-		}
-*/
+		environmentSound.play();
+		environmentSound.volume = 0;
+		
 		start = lastTime = new Date().getTime();
 
 	};
@@ -162,6 +153,7 @@ var ExplorationSection = function ( shared ) {
 		// 	}
 		// 
 		// }
+
 
 	};
 
@@ -202,8 +194,9 @@ var ExplorationSection = function ( shared ) {
 
 	this.hide = function () {
 
-		domElement.style.display = 'none';
+		domElement.style.display = 'z';
 		shared.signals.keyup.remove( stop );
+		environmentSound.pause();
 
 	};
 
@@ -231,10 +224,8 @@ var ExplorationSection = function ( shared ) {
 
 			if( world && world.scene ) {
 
-
-				// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
-				//if( soup ) soup.update( delta, camera.camera );
-				//THREE.AnimationHandler.update( delta );
+				if( soup ) soup.update( delta, camera.camera );
+				THREE.AnimationHandler.update( delta );
 
 				camera.updateCamera( progress, delta, time );
 				world.update( delta, camera.camera, true );
@@ -251,6 +242,7 @@ var ExplorationSection = function ( shared ) {
 
 					fadeInTime += delta;
 					fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
+					environmentSound.volume = fadeInTime / 1000;
 
 				} else {
 
@@ -258,7 +250,7 @@ var ExplorationSection = function ( shared ) {
 
 						if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
 
-							fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+							environmentSound.volume = fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
 
 						}
 

@@ -92,7 +92,8 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = delta * ( 1000 / 30 ) / 1000; // switched off because of strange values in delta
+		delta = delta * ( 1000 / 30 ) / 1000;
+		if( delta < 0 || delta > 2 || isNaN( delta )) delta = 1;
 		
 		
 		// check collision round-robin (can't afford to do all every frame)
@@ -275,8 +276,8 @@ DunesCameraFreeExplore = function( shared ) {
 
 		wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 
-		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
-		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE * delta + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 
 			
 		// calc camera speed (dependent on hight)

@@ -84,7 +84,9 @@ DunesCamera = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = delta * ( 1000 / 30 ) / 1000; 
+		delta = delta * ( 1000 / 30 ) / 1000;
+		if( delta < 0 || delta > 2 || isNaN( delta )) delta = 1;
+		
 		
 		// get mouse
 		
@@ -117,7 +119,7 @@ DunesCamera = function( shared ) {
 	
 			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 	
-			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 0.5 * delta;
 			wantedCameraTarget.position.x = Math.min( 300, Math.max( -300, wantedCameraTarget.position.x ));
 			wantedCameraTarget.position.z = wantedCamera.position.z - CAMERA_COLLISION_DISTANCE;
 
@@ -173,8 +175,8 @@ DunesCamera = function( shared ) {
 */
 			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 	
-			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
-			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * 2 * delta;
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * 0.5 * delta;
+			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE * delta + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * 0.5 * delta;
 
 
 
@@ -383,8 +385,8 @@ DunesCamera = function( shared ) {
 	
 			wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 	
-			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
-			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+			wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta- wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+			wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE * delta + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 	
 	
 	

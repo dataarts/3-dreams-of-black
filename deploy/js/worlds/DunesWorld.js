@@ -90,6 +90,16 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 6 );										// city
 
+			} else if( x === 4 && z === 4 ) {							
+
+				tileRow.push( 1 );										// mountain
+				numTileInstances[ 1 ]++;
+
+			} else if( x === 0 && z === 4 ) {
+
+				tileRow.push( 1 );										// mountain
+				numTileInstances[ 1 ]++;
+
 			} else {
 
 				tileNumber = Math.floor( Math.random() * 3.99999 );		// random tile
@@ -101,6 +111,7 @@ var DunesWorld = function ( shared ) {
 		}
 
 	}
+	
 
 
 	// create skydome
