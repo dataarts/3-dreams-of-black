@@ -214,7 +214,7 @@ var LauncherSection = function ( shared ) {
 
 		clouds.show();
 		domElement.style.display = 'block';
-
+		
 	};
 
 	this.resize = function ( width, height ) {
