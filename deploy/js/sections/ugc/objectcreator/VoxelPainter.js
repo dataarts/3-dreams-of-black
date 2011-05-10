@@ -88,25 +88,34 @@ var VoxelPainter = function ( camera, scene ) {
 	_brush[ 0 ] = _brushes[ 0 ][ _size ];
 	_brush[ 1 ] = _brushes[ 1 ][ _size ];
 
+	/*
+	var _voxel = new THREE.Mesh( new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ) );
+	var mesh = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshLambertMaterial( { color: 0xff0000 } ) );
 
-	for ( var x = 0; x < 40; x ++ ) { 
+	var i = 40;
 
-		for ( var y = 0; y < 40; y ++ ) { 
+	var half_size = ( ( i * UNIT_SIZE ) / 2 ) - ( UNIT_SIZE / 2 );
 
-			for ( var z = 0; z < 40; z ++ ) { 
+	for ( var x = 0; x < i; x ++ ) {
 
-				voxel = new THREE.Mesh( _voxel.geometry, new THREE.MeshLambertMaterial( { color: _color } ) );
-				voxel.position.x = x * UNIT_SIZE;
-				voxel.position.y = y * UNIT_SIZE;
-				voxel.position.z = z * UNIT_SIZE;
-				voxel.matrixAutoUpdate = false;
-				voxel.updateMatrix();
-				voxel.update();
-				scene.addObject( voxel );
+		for ( var y = 0; y < i; y ++ ) {
+
+			for ( var z = 0; z < i; z ++ ) {
+
+				_voxel.position.x = x * UNIT_SIZE - half_size;
+				_voxel.position.y = y * UNIT_SIZE - half_size;
+				_voxel.position.z = z * UNIT_SIZE - half_size;
+
+				GeometryUtils.merge( mesh.geometry, _voxel );
 
 			}
+
 		}
+
 	}
+
+	scene.addObject( mesh );
+	*/
 
 	//
 

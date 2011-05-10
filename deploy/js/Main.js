@@ -195,8 +195,8 @@
 
 		shared.signals.mousedown.dispatch( event );
 
-		//event.preventDefault();
-		//event.stopPropagation();
+		event.preventDefault();
+		event.stopPropagation();
 
 	}
 
@@ -204,8 +204,8 @@
 
 		shared.signals.mouseup.dispatch( event );
 
-		//event.preventDefault();
-		//event.stopPropagation();
+		event.preventDefault();
+		event.stopPropagation();
 
 	}
 
