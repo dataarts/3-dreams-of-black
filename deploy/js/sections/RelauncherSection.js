@@ -93,8 +93,8 @@ var RelauncherSection = function( shared ) {
 	outer.showFill = false;
 	outer.insides = true;
 	inner.showFill = false;
-	outer.setRadius(.19);
-	core.setRadius(.12);
+	// outer.setRadius(.19);
+	// core.setRadius(.12);
 
 	var heart = {
 
@@ -240,6 +240,7 @@ var RelauncherSection = function( shared ) {
 
 		function handleReturn(e) {
 
+			e.preventDefault();
 		  if(e.keyCode == 13 || !e.keyCode) {
 
 				shared.signals.showexploration.dispatch();
@@ -254,7 +255,19 @@ var RelauncherSection = function( shared ) {
 
 				enter.style.display = "none";
 				shared.signals.keyup.remove( handleReturn );
-		  }
+		  } else if(e.keyCode == 8 || e.keyCode == 46) {
+
+				var divs = container.getElementsByTagName('div');
+
+				for(var i = 0; i < divs.length; i++) {
+
+					divs[i].style.display = "block";
+
+				}
+
+				enter.style.display = "none";
+				shared.signals.keyup.remove( handleReturn );
+			}
 		}
 
 		start.addEventListener("click", function(e) {
@@ -268,7 +281,8 @@ var RelauncherSection = function( shared ) {
 		technology.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			window.location = "/tech";
+			// window.location = "/tech";
+			window.open("/tech", "Technology");
 
 		}, false);
 
@@ -282,7 +296,8 @@ var RelauncherSection = function( shared ) {
 		otherDreams.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			window.location = "/gallery";
+			// window.location = "/gallery";
+			window.open("/gallery", "Gallery");
 
 		}, false);
 
