@@ -64,7 +64,7 @@
     var layers = [
       {
         path: "../../deploy/files/videos/city/s06_layer02.webm",
-        shaderId: VIDEO_OPAQUE_DISTORT,
+        shaderId: VIDEO_OPAQUE,
         z: -1400
       },
       {
@@ -117,15 +117,13 @@ var params, gui;
 
 function initGui(){
   params = {
-    "radius": 1,
-    "trail": 3,
-    "random": 0.5,
-    "bulge": 0.3,
-    "polyDetail": 0.9,
-    "polyType": 1,
-    "softEdge": 0.6,
-    "softTail": 0,
-    "gridType" : 1
+    "radius": 0.95,
+    "trail": 4,
+    "random": 0.0,
+    "bulge": 0.65,
+    "polyDetail": 0.45,
+    "softEdge": 0.77,
+    "softTail": 0
   };
   gui = new GUI();
   gui.add(params, "radius", 0, 5).listen();
