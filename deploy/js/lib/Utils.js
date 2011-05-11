@@ -77,9 +77,9 @@ LensFlareTextures = {
 	
 };
 
-function initLensFlares( where, position, sx, sy ) {
+function initLensFlares( position, sx, sy ) {
 
-	if( LensFlareTextures.texture0 === undefined ) {
+	if ( LensFlareTextures.texture0 === undefined ) {
 		
 		LensFlareTextures.texture0 = THREE.ImageUtils.loadTexture( "files/textures/lensflare0.png" );
 		LensFlareTextures.texture1 = THREE.ImageUtils.loadTexture( "files/textures/lensflare2.png" );
@@ -87,30 +87,28 @@ function initLensFlares( where, position, sx, sy ) {
 		
 	}
 
-	
-	where.lensFlare = new THREE.LensFlare( LensFlareTextures.texture0, 700, 0.0, THREE.AdditiveBlending );
+	var lensFlare = new THREE.LensFlare( LensFlareTextures.texture0, 700, 0.0, THREE.AdditiveBlending );
 
-	where.lensFlare.add( LensFlareTextures.texture1, 512, 0.0, THREE.AdditiveBlending );
-	where.lensFlare.add( LensFlareTextures.texture1, 512, 0.0, THREE.AdditiveBlending );
-	where.lensFlare.add( LensFlareTextures.texture1, 512, 0.0, THREE.AdditiveBlending );
+	lensFlare.add( LensFlareTextures.texture1, 512, 0.0, THREE.AdditiveBlending );
+	lensFlare.add( LensFlareTextures.texture1, 512, 0.0, THREE.AdditiveBlending );
+	lensFlare.add( LensFlareTextures.texture1, 512, 0.0, THREE.AdditiveBlending );
 
-	where.lensFlare.add( LensFlareTextures.texture2,  60, 0.6, THREE.AdditiveBlending );
-	where.lensFlare.add( LensFlareTextures.texture2,  70, 0.7, THREE.AdditiveBlending );
-	where.lensFlare.add( LensFlareTextures.texture2, 120, 0.9, THREE.AdditiveBlending );
-	where.lensFlare.add( LensFlareTextures.texture2,  70, 1.0, THREE.AdditiveBlending );
+	lensFlare.add( LensFlareTextures.texture2,  60, 0.6, THREE.AdditiveBlending );
+	lensFlare.add( LensFlareTextures.texture2,  70, 0.7, THREE.AdditiveBlending );
+	lensFlare.add( LensFlareTextures.texture2, 120, 0.9, THREE.AdditiveBlending );
+	lensFlare.add( LensFlareTextures.texture2,  70, 1.0, THREE.AdditiveBlending );
 
-	where.lensFlare.customUpdateCallback = lensFlareUpdateCallback;
-	where.lensFlare.position.copy( position );
+	lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+	lensFlare.position.copy( position );
 
-	where.lensFlareRotate = new THREE.Object3D();
-	where.lensFlareRotate.addChild( where.lensFlare );
+	var lensFlareRotate = new THREE.Object3D();
+	lensFlareRotate.addChild( lensFlare );
 
-	where.lensFlareRotate.rotation.x = sx * Math.PI / 180;
-	where.lensFlareRotate.rotation.y = sy * Math.PI / 180;
+	lensFlareRotate.rotation.x = sx * Math.PI / 180;
+	lensFlareRotate.rotation.y = sy * Math.PI / 180;
 
-	where.scene.addChild( where.lensFlareRotate );
+	return lensFlareRotate;
 
-	return where.lensFlareRotate;
 };
 
 

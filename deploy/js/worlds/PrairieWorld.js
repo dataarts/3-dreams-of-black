@@ -2,8 +2,6 @@ var PrairieWorld = function ( shared, camera, callbackSoup ) {
 
 	var that = this;
 
-	var ENABLE_LENSFLARES = true;
-
 	this.scene = new THREE.Scene();
 	this.scene.collisions = new THREE.CollisionSystem();
 
@@ -54,16 +52,9 @@ var PrairieWorld = function ( shared, camera, callbackSoup ) {
 	
 	// Lens flares
 
-	if ( ENABLE_LENSFLARES ) {
 
-		this.lensFlare = null;
-		this.lensFlareRotate = null;
-
-		var flaresPosition = new THREE.Vector3( 0, 0, -3000 );
-		var sx = 14, sy = 311;
-		initLensFlares( that, flaresPosition, sx, sy );		
-
-	}
+	var flares = initLensFlares( new THREE.Vector3( 0, 0, -3000 ), 14, 311 );		
+	that.scene.addChild( flares );
 
 	// Trail
 

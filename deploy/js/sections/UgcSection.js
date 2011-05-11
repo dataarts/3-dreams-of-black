@@ -11,8 +11,8 @@ var UgcSection = function ( shared ) {
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
 	isRotateMode = false, isMouseDown = false, start_radius = 150,
-  radius = start_radius, oldRadius = start_radius, newRadius = start_radius,
-  theta = 45, phi = 15;
+	radius = start_radius, oldRadius = start_radius, newRadius = start_radius,
+	theta = 45, phi = 15;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 20;
@@ -43,7 +43,8 @@ var UgcSection = function ( shared ) {
 	that.scene.addLight( directionalLight1 );
 	that.scene.addLight( directionalLight2 );
 
-	initLensFlares( that, new THREE.Vector3( 0, 0, - 750 ), 60, 292 );
+	var flares = initLensFlares( new THREE.Vector3( 0, 0, - 750 ), 60, 292 );
+	that.scene.addChild( flares );
 
 	var loader = new THREE.SceneLoader();
 	loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {

@@ -1,7 +1,6 @@
 var CityWorld = function ( shared ) {
 
 	var that = this;
-	var ENABLE_LENSFLARES = true;
 	var SCALE = 0.1;
 
 	this.scene = new THREE.Scene();
@@ -44,16 +43,8 @@ var CityWorld = function ( shared ) {
 
 	// Lens flares
 
-	if ( ENABLE_LENSFLARES ) {
-
-		this.lensFlare = null;
-		this.lensFlareRotate = null;
-
-		var flaresPosition = new THREE.Vector3( 0, 0, -5000 );
-		var sx = 20, sy = 358;
-		initLensFlares( that, flaresPosition, sx, sy );
-
-	}
+	var flares = initLensFlares( new THREE.Vector3( 0, 0, -5000 ), 20, 358 );
+	that.scene.addChild( flares );
 
 	// Init City Shader
 	
