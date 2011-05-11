@@ -107,6 +107,25 @@ var PrairieWorld = function ( shared, camera, callbackSoup ) {
 			that.scene.collisions.merge( scene.collisions );
 
 		}
+		
+		var loader = new THREE.JSONLoader();
+		loader.load( { model: "/files/models/soup/cow.js", callback: addCows } );
+		
+		function addCows() {
+			
+			for ( var o in result.objects ) {
+				
+				 if ( o.toLowerCase().indexOf( "cow" ) >= 0 ) {
+					 
+					console.log( o );
+					 
+					result.objects[ o ].visible = false;
+
+				 }
+				 
+			}
+
+		}
 
 		var train  = result.objects[ "Train" ],
 			cargo1 = result.objects[ "cargo1" ],
