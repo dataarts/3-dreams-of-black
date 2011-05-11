@@ -68,7 +68,7 @@ var VideoPlane = function(layer, conf){
   if(hasDistortion)
     this.mesh = new THREE.Mesh( config.grid, material );
   else
-    this.mesh = new THREE.Mesh( new Plane(1,1,1,1), material );
+    this.mesh = new THREE.Mesh( new THREE.Plane(1,1,1,1), material );
 
 
   this.mesh.scale.x = layer.width;
