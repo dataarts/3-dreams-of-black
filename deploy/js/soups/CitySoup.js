@@ -306,12 +306,16 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function grass01LoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "01", false );
 
 	}
 
 	function grass02LoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "02", false );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -319,6 +323,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function grass03LoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "03", false );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -326,6 +332,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function grass04LoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "04", false );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -333,6 +341,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function treeALoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "tree1", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -340,6 +350,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function treeBLoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "tree2", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -347,6 +359,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function treeCLoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "tree3", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -354,6 +368,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function treeDLoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "tree4", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -361,6 +377,8 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	function treeELoadedProxy( geometry ) {
 
+		adjustColors( geometry );
+		
 		var object = trail.addInstance( geometry, "tree5", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -375,6 +393,27 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	}
 
+	function adjustColors( geometry ) {
+	
+		//geometry.materials[ 0 ][ 0 ] = new THREE.MeshLambertMaterial( { color: 0xaaffaa } );
+		
+		var i, il, c, f;
+		
+		for( i = 0, il = geometry.faces.length; i < il; i++ ) {
+			
+			f = geometry.faces[ i ];
+			
+			for ( j = 0; j < f.vertexColors.length; j++ ) {
+			
+				c = f.vertexColors[ j ];
+
+				THREE.ColorUtils.adjustHSV( c, 0, 0.25, -0.1 );
+
+			}
+			
+		}
+
+	};
 	
 	this.update = function ( delta, otherCamera ) {
 
