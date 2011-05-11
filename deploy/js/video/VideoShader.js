@@ -6,14 +6,18 @@ var DistortUniforms = {
   "threshold": { type: "f", value: 0.5 },
   "alphaFadeout": { type: "f", value: 0.5 },
   "mouseXY": { type: "v2", value: new THREE.Vector2() },
-  //"trail": { type: "fv", value: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
   "trail0": { type: "v2", value: new THREE.Vector2() },
   "trail1": { type: "v2", value: new THREE.Vector2() },
   "trail2": { type: "v2", value: new THREE.Vector2() },
   "trail3": { type: "v2", value: new THREE.Vector2() },
   "trail4": { type: "v2", value: new THREE.Vector2() },
   "mouseSpeed": { type: "f", value: 1. },
-  "mouseRad": { type: "f", value: 1. }
+
+  "mouseRad": { type: "f", value: 1. },
+  "polyRandom": { type: "f", value: 1. },
+  "polyDetail": { type: "f", value: 1. },
+  "bulge": { type: "f", value: 1. },
+  "softEdge": { type: "f", value: 0. }
 
 };
 
@@ -24,6 +28,7 @@ var DistortShaderFragmentPars = [
     "uniform float colorScale;",
     "uniform float threshold;",
     "uniform float alphaFadeout;",
+    "uniform float softEdge;",
 
     "varying vec2 vUv;",
     "varying vec2 vUvPoly;",
@@ -45,6 +50,9 @@ var DistortVertexShader = [
     "uniform float aspect;",
     "uniform float mouseSpeed;",
     "uniform float mouseRad;",
+    "uniform float polyRandom;",
+    "uniform float polyDetail;",
+    "uniform float bulge;",
 
     "varying vec2 vUv;",
     "varying vec2 vUvPoly;",
@@ -73,27 +81,33 @@ var DistortVertexShader = [
 
     "void main() {",
 
-        "vUv = uv;",
 
-        "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+
         "vUvPoly = uv+vec2(normal.x,normal.y);",
+
+        "vUv = (uv-vec2(.5))/polyDetail+vec2(.5);",
+
+        "vUvPoly = (vUvPoly-vec2(.5))/polyDetail+vec2(.5);",
+
+        "gl_Position = projectionMatrix * modelViewMatrix * vec4( position*(1./polyDetail), 1.0 );",
+        //"vUvPoly = vUv+vec2(normal.x,normal.y);",
         "vec4 glPosPoly = projectionMatrix * modelViewMatrix * vec4( position-vec3(-normal.x,normal.y,0.), 1.0 );",
 
         "vec2 projPos = vec2(aspect,1.)*vec2(gl_Position.x/gl_Position.z,gl_Position.y/gl_Position.z);",
         "vec2 projPosPoly = vec2(aspect,1.)*vec2(glPosPoly.x/glPosPoly.z,glPosPoly.y/glPosPoly.z);",
 
-        "float distRand = normal.z+.5;",
+        "float dist = (normal.z*2.)*polyRandom + 1.-polyRandom;",
         "vec2 closestTrailPoly0 = getClosest(projPosPoly,trail0,trail1);",
         "vec2 closestTrailPoly1 = getClosest(projPosPoly,trail1,trail2);",
         "vec2 closestTrailPoly2 = getClosest(projPosPoly,trail2,trail3);",
         "vec2 closestTrailPoly3 = getClosest(projPosPoly,trail3,trail4);",
 
-        "float distanceTrailPoly0 = 1.0*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly0);",
-        "float distanceTrailPoly1 = 0.9*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly1);",
-        "float distanceTrailPoly2 = 0.8*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly2);",
-        "float distanceTrailPoly3 = 0.7*mouseRad*distRand * getDistance(projPosPoly,closestTrailPoly3);",
+        "float distanceTrailPoly0 = 1.0*dist * getDistance(projPosPoly,closestTrailPoly0);",
+        "float distanceTrailPoly1 = 0.8*dist * getDistance(projPosPoly,closestTrailPoly1);",
+        "float distanceTrailPoly2 = 0.6*dist * getDistance(projPosPoly,closestTrailPoly2);",
+        "float distanceTrailPoly3 = 0.4*dist * getDistance(projPosPoly,closestTrailPoly3);",
 
-        "distancePoly = max(distanceTrailPoly0,max(distanceTrailPoly1,max(distanceTrailPoly2,distanceTrailPoly3)));",
+        "distancePoly = mouseRad*max(0.,max(distanceTrailPoly0,max(distanceTrailPoly1,max(distanceTrailPoly2,distanceTrailPoly3))));",
 
         //"vec2 closestTrail1 = getClosest(projPos,trail0,trail1);",
         //"vec2 closestTrail2 = getClosest(projPos,trail1,trail2);",
@@ -119,7 +133,7 @@ var DistortVertexShader = [
         //"gl_Position.xy += normalize(projPos-closestTrail4)*vec2((distanceTrail4)*100.);",
 
         "distance = mouseRad*max(0.,1.-length(projPos-trail0  ));",
-        "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-trail0)*vec2(distance*mouseSpeed*50.);",
+        "gl_Position.xy = gl_Position.xy + normalize(projPos.xy-trail0)*vec2(bulge*distance*mouseSpeed*50.);",
 
     "}"
 
@@ -247,7 +261,7 @@ var VideoShaderSource = {
 				"cPoly.a = aPoly.r;",
 				
 				"if ((distancePoly)>0.5) c = cPoly; ",
-        "gl_FragColor = c;",
+        "gl_FragColor = mix(c,cPoly,max(0.,distancePoly*softEdge));",
         debug,
 			"}"
 
@@ -340,10 +354,12 @@ var VideoShaderSource = {
 
 			"void main() {",
 				"vec4 c = texture2D( map, vec2( vUv.x, vUv.y ) );",
-                "vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
-                "if ((distancePoly)>0.5) c = cPoly; ",
-                "else gl_FragColor = c;",
-                debug,
+				"vec4 cPoly = texture2D( map, vec2( vUvPoly.x, vUvPoly.y ) );",
+
+				"if ((distancePoly)>0.5) c = cPoly; ",
+        "gl_FragColor = mix(c,cPoly,max(0.,distancePoly*softEdge));",
+        debug,
+
 			"}"
 
 		].join("\n")
