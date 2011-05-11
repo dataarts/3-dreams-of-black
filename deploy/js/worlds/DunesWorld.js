@@ -63,10 +63,9 @@ var DunesWorld = function ( shared ) {
 
 	// waterfall
 	
+	var waterfallPrairiePosition = new THREE.Object3D();
 	var waterfall = WaterfallShader.createWaterfall();
-	waterfall.position.y = 500;
-	waterfall.position.z = -1000;
-
+	
 	that.scene.addChild( waterfall );
 	
 
@@ -97,7 +96,8 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 4 );										// walk
 
-			} else if( x === 3 && z === 4 ) {
+//			} else if( x === 3 && z === 4 ) {
+			} else if( x === 0 && z === 4 ) {
 
 				tileRow.push( 5 );										// prairie
 
@@ -110,11 +110,11 @@ var DunesWorld = function ( shared ) {
 				tileRow.push( 0 );										// mountain
 				numTileInstances[ 0 ]++;
 
-			} else if( x === 0 && z === 4 ) {
+/*			} else if( x === 0 && z === 4 ) {
 
 				tileRow.push( 0 );										// mountain
 				numTileInstances[ 0 ]++;
-
+*/
 			} else if( x === 1 && z === 4 ) {							
 
 				tileRow.push( 0 );										// mountain
@@ -400,6 +400,9 @@ var DunesWorld = function ( shared ) {
 
 		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -0.05 }, { "D_tile_Prairie_Water": 0.65 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
+
+		waterfallPrairiePosition.position.set( -5165.693848, 1024.796875, 18247.871094 );
+		result.scene.addChild( waterfallPrairiePosition );
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
 		addInfluenceSphere( { name: "prairieSlowDown", object: result.empties.Prairie_Center, radius: 8000, type: 1 } );
@@ -477,7 +480,9 @@ var DunesWorld = function ( shared ) {
 		that.updateTiles( camera ); 
 		updateDunesShader( delta, that.skyWhite );
 		
+		waterfall.position.copy( waterfallPrairiePosition.matrixWorld.getPosition());
 		WaterfallShader.update( delta );
+		//waterfall.rotation.y += 0.1;
 
 		skydome.position.copy( camera.matrixWorld.getPosition() );
 		skydome.updateMatrix();
