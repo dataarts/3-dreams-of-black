@@ -25,7 +25,7 @@ function initGui(){
   gui.add(params, 'wireframe', false).listen();
   gui.add(params, 'texture', true).listen();
   gui.add(params, 'lighting', true).listen();
-  gui.add(params, 'component').options({'Composit': 1, 'Normal': 2, 'Depth': 3}).listen();
+  gui.add(params, 'component').options({'Composite': 1, 'Normal': 2, 'Depth': 3}).listen();
   gui.add(params, "background",0.0,1.0).listen().onChange(function(){skyMat.color.setRGB(params.background,params.background,params.background);});
   gui.add(params, 'depth_of_field', false).listen().onChange(function(){toggleOpacity('guidat-focus', params.depth_of_field);toggleOpacity('guidat-aperture', params.depth_of_field);});
   gui.add(params, "focus", 0, 1).listen();
