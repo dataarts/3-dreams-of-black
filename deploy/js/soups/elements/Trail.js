@@ -23,6 +23,7 @@ var Trail = function ( numOfInstances, scene ) {
 		offsetAmount: 6,
 		freeRotation: true,
 		yscale: 0.3
+
 	};
 
 	var i;
@@ -91,7 +92,7 @@ var Trail = function ( numOfInstances, scene ) {
 
 
 				if (lightHouse && (spawnedLighthouse || time < 4000)) {
-					c.visible = false;
+					//c.visible = false;
 					continue;
 				}
 
@@ -220,17 +221,18 @@ var Trail = function ( numOfInstances, scene ) {
 					treeRotateTween.start();				
 				}
 
-				// keep away from camera path - hack
-				if ((tree || lightHouse) && c.position.x < camPos.x+80 && c.position.x > camPos.x-80) {
-					c.position.x = camPos.x+80;
+				var offset = 60;
+				// keep away from camera path - not sure hwo well this works though...
+				if ((tree || lightHouse) && c.position.x < camPos.x+offset && c.position.x > camPos.x-offset) {
+					c.position.x = camPos.x+offset;
 					if (c.position.x < camPos.x) {
-						c.position.x = camPos.x-80;
+						c.position.x = camPos.x-offset;
 					}
 				}
-				if ((tree || lightHouse) && c.position.z < camPos.z+80 && c.position.z > camPos.z-80) {
-					c.position.z = camPos.z+80;
+				if ((tree || lightHouse) && c.position.z < camPos.z+offset && c.position.z > camPos.z-offset) {
+					c.position.z = camPos.z+offset;
 					if (c.position.z < camPos.z) {
-						c.position.z = camPos.z-80;
+						c.position.z = camPos.z-offset;
 					}
 				}
 
