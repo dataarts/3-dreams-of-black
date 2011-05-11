@@ -118,7 +118,7 @@ WaterfallShader = {
 			"float localTime = time + globalTime;",
 			"float modTime = mod( localTime, 1.0 );",
 			"float sinTime = sin( modTime * PI * 0.5 );",
-			"vec2 pulse = vec2( sin( localTime * 10.0 ) * 100.0, cos( localTime * 10.0 ) * 100.0 );",
+			"vec2 pulse = vec2( sin( localTime * 5.0 ) * 25.0, cos( localTime * 5.0 ) * 25.0 );",
 
 			// color
 			
