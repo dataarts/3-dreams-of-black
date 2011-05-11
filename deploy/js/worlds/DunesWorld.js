@@ -50,7 +50,11 @@ var DunesWorld = function ( shared ) {
 	that.lensFlare = null;
 	that.lensFlareRotate = null;
 
-	initLensFlares( that, new THREE.Vector3( -5500, 3500, -10000 ), 0, 0 );		
+	var flares = initLensFlares( new THREE.Vector3( -5500, 3500, -10000 ), 0, 0 );		
+	that.scene.addChild( flares );
+	
+	that.lensFlareRotate = flares;
+	that.lensFlare = flares.children[ 0 ];
 
 	// init shader
 	
@@ -365,7 +369,7 @@ var DunesWorld = function ( shared ) {
 	
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var object = new UgcObject( JSON.parse( objects[ i ].data ) );
+			var object = new UgcObject( objects[ i ] );
 
 			if ( ! object.isEmpty() ) {
 
@@ -486,7 +490,7 @@ var DunesWorld = function ( shared ) {
 		skydome.position.copy( camera.matrixWorld.getPosition() );
 		skydome.updateMatrix();
 
-		that.lensFlareRotate.position.copy( camera.matrixWorld.getPosition());
+		that.lensFlareRotate.position.copy( camera.matrixWorld.getPosition() );
 		that.lensFlareRotate.updateMatrix();
 
 	//	waterfall.position.copy( camera.target.matrixWorld.getPosition());

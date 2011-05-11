@@ -9,15 +9,13 @@ var VideoPlane = function( shared, layer, conf ) {
 
 	var polyTrail = new PolyTrail();
   this.params = {
-    "radius": 1,
-    "trail": 3,
-    "random": 0.5,
-    "bulge": 0.3,
-    "polyDetail": 0.9,
-    "polyType": 1,
-    "softEdge": 0.6,
-    "softTail": 0,
-    "gridType" : 1
+    "radius": 0.65,
+    "trail": 2,
+    "random": 0.18,
+    "bulge": 0.34,
+    "polyDetail": 0.56,
+    "softEdge": 0.29,
+    "softTail": 0
   };
 
 
