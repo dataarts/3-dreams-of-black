@@ -65,13 +65,15 @@ var LauncherSection = function ( shared ) {
 			shared.loadedContent = true;
 
 			isLoading = true;
+			addToTheDream.style.display = "none";
+			exploreDreams.style.display = "none";
 
 			shared.signals.load.dispatch();
 
 		}, false );
 		uiContainer.appendChild( buttonEnter );
 
-		buttonStart = createRolloverButton( "10px 0 0 85px", "/files/start_idle.png", "/files/start_rollover.png" );
+		buttonStart = createRolloverButton( "30px 0 0 85px", "/files/start_idle.png", "/files/start_rollover.png" );
 		buttonStart.style.display = 'none';
 		buttonStart.addEventListener( 'click', function () {
 
@@ -90,7 +92,9 @@ var LauncherSection = function ( shared ) {
 
 		loading = new LoadingBar( function () {
 
-			loading.getDomElement().style.display = 'none';
+			// loading.getDomElement().style.display = 'none';
+			var mouseGif = loading.getMouseInfo();
+					mouseGif.style.display = 'none';
 			buttonStart.style.display = 'block';
 
 			isLoading = false;
