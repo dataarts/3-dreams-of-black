@@ -80,8 +80,7 @@ var UgcObject = function ( data ) {
 
 		var i, item,
 		voxel = new THREE.Mesh( new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ) ),
-		mesh = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshLambertMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } ) ),
-		group = new THREE.Object3D();
+		geometry = new THREE.Geometry();
 
 		for ( i in _grid ) {
 
@@ -97,11 +96,11 @@ var UgcObject = function ( data ) {
 
 			}
 
-			GeometryUtils.merge( mesh.geometry, voxel );
+			GeometryUtils.merge( geometry, voxel );
 
 		}
 
-		return mesh;
+		return new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } ) );
 
 	};
 
