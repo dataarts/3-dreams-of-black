@@ -155,11 +155,8 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72.2 ), tune.getPatternMS( 73.25 ), 3 ); // Below painter effect which renders directly to screen
 
 	// pointers
-	
-	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerImageEffect( shared, "/files/mouse_map.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1000 );
-	sequencer.add( new PointerImageEffect( shared, "/files/mouse_map.gif" ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1000 );
-	// sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1000 );
+	// sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1000 );
+	sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1000 );
 
 	// final render
 
