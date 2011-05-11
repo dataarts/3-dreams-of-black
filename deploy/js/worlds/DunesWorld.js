@@ -369,7 +369,7 @@ var DunesWorld = function ( shared ) {
 	
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var object = new UgcObject( objects[ i ] );
+			var object = new UgcObject( objects[ i ].data );
 
 			if ( ! object.isEmpty() ) {
 
