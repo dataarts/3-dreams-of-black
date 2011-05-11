@@ -2,6 +2,8 @@ var DunesWorld = function ( shared ) {
 
 	// vars
 
+	var ENABLE_WATERFALLS = false;
+	
 	var that = this;
 	var SCALE = 0.20;
 	var TILE_SIZE = 29990 * SCALE;
@@ -63,16 +65,19 @@ var DunesWorld = function ( shared ) {
 
 	// waterfall
 	
-	var waterfallPrairiePosition = new THREE.Object3D();
-	var waterfallCityPosition = new THREE.Object3D();
-	var waterfallPrairie = WaterfallShader.createWaterfall();
-	var waterfallCity = WaterfallShader.createWaterfall();
-	
-	waterfallCity.rotation.y = Math.PI;
-	
-	that.scene.addChild( waterfallPrairie );
-	that.scene.addChild( waterfallCity );
-	
+	if ( ENABLE_WATERFALLS ) {
+
+		var waterfallPrairiePosition = new THREE.Object3D();
+		var waterfallCityPosition = new THREE.Object3D();
+		var waterfallPrairie = WaterfallShader.createWaterfall();
+		var waterfallCity = WaterfallShader.createWaterfall();
+		
+		waterfallCity.rotation.y = Math.PI;
+		
+		that.scene.addChild( waterfallPrairie );
+		that.scene.addChild( waterfallCity );
+		
+	}
 
 	// generate base grid (rotations depend on where the grid is in space)
 	// 0-3 = tiles
@@ -405,8 +410,12 @@ var DunesWorld = function ( shared ) {
 		applyDunesShader( result, { "D_tile_Prairie_Collis": true, "D_tile_Prairie_Island": true }, { "D_tile_Prairie_Is.000": -0.05 }, { "D_tile_Prairie_Water": 0.65 } );
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 
-		waterfallPrairiePosition.position.set( -5165.693848, 1024.796875, 18247.871094 );
-		result.scene.addChild( waterfallPrairiePosition );
+		if ( ENABLE_WATERFALLS ) {
+		
+			waterfallPrairiePosition.position.set( -5165.693848, 1024.796875, 18247.871094 );
+			result.scene.addChild( waterfallPrairiePosition );
+
+		}
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
 		addInfluenceSphere( { name: "prairieSlowDown", object: result.empties.Prairie_Center, radius: 8000, type: 1 } );
@@ -423,8 +432,12 @@ var DunesWorld = function ( shared ) {
 		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 },  { "D_tile_City_Water": 0.65 } );
 		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
-		waterfallCityPosition.position.set( 750.267456, 709.979614, 29121.154297 );
-		result.scene.addChild( waterfallCityPosition );
+		if ( ENABLE_WATERFALLS ) {
+		
+			waterfallCityPosition.position.set( 750.267456, 709.979614, 29121.154297 );
+			result.scene.addChild( waterfallCityPosition );
+			
+		}
 
 		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2500, type: 0, destination: "city" } );
 		addInfluenceSphere( { name: "citySlowDown", object: result.empties.City_Center, radius: 10000, type: 1 } );
@@ -487,9 +500,13 @@ var DunesWorld = function ( shared ) {
 		that.updateTiles( camera ); 
 		updateDunesShader( delta, that.skyWhite );
 		
-		waterfallPrairie.position.copy( waterfallPrairiePosition.matrixWorld.getPosition());
-		waterfallCity.position.copy( waterfallCityPosition.matrixWorld.getPosition());
-		WaterfallShader.update( delta, that.skyWhite );
+		if ( ENABLE_WATERFALLS ) {
+		
+			waterfallPrairie.position.copy( waterfallPrairiePosition.matrixWorld.getPosition());
+			waterfallCity.position.copy( waterfallCityPosition.matrixWorld.getPosition());
+			WaterfallShader.update( delta, that.skyWhite );
+
+		}
 
 		skydome.position.copy( camera.matrixWorld.getPosition() );
 		skydome.updateMatrix();
