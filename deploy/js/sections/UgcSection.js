@@ -183,22 +183,27 @@ var UgcSection = function ( shared ) {
 		} );
 		*/
 
-  function gen_thumbnail() {
-    var dWidth = 300,
-        dHeight = 180,
-        num_images = 12,
-        dest = document.createElement('canvas'),
+  shared.ugcSignals.object_requestsnapshot.add(function() {
+    var image = gen_filmstrip(735,465);
+    shared.ugcSignals.object_receivesnapshot.dispatch(image);
+  });
+
+  function gen_filmstrip(dWidth, dHeight, num_frames) {
+    dWidth = dWidth || 300;
+    dHeight = dHeight || 180;
+    num_frames = num_frames || 15;
+    var dest = document.createElement('canvas'),
         stashed_cam_pos = camera.position.clone(),
         thetap = 45, phip = 15;
-    var rotationp = 360/num_images;
+    var rotationp = 360/num_frames;
     dest.width = dWidth;
-    dest.height = dHeight * num_images;
-    var orig = renderer.domElement;
+    dest.height = dHeight * num_frames;
+    var orig = shared.renderer.domElement;
     var origW = orig.width;
     var origH = orig.height;
     var ctx = dest.getContext('2d');
     that.resize(dWidth, dHeight);
-    for(var i=0;i<num_images;i++) {
+    for(var i=0;i<num_frames;i++) {
       // move camera
       camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
       camera.position.y = start_radius * Math.sin( phip * DEG2RAD );
@@ -211,19 +216,19 @@ var UgcSection = function ( shared ) {
     }
     that.resize(origW, origH);
     // create thumbnail
-    var thumbnail = dest.toDataURL('image/png');
+    var strip = dest.toDataURL('image/png');
     delete dest;
     camera.position = stashed_cam_pos;
-    renderer.clear();
-    renderer.render( that.scene, camera );
-    return thumbnail;
+    shared.renderer.clear();
+    shared.renderer.render( that.scene, camera );
+    return strip;
   }
 
 		var ugcHandler = new UgcHandler();
 
 		shared.ugcSignals.submit.add( function (title, email) {
 
-      var thumbnail = gen_thumbnail();
+      var image = gen_filmstrip();
       var obj = objectCreator.getPainter().getObject();
 
       var submission = {
@@ -233,7 +238,7 @@ var UgcSection = function ( shared ) {
         data: obj.getJSON()
       };
 
-			ugcHandler.submitUGO( submission, thumbnail, function ( rsp ) {
+			ugcHandler.submitUGO( submission, image, function ( rsp ) {
 				console.log(rsp);
 			});
 
@@ -283,7 +288,7 @@ var UgcSection = function ( shared ) {
 
 		// objectCreator.update();
 		// soupCreator.update();
-//		ui.update();
+		ui.update();
 
 		// Background
 
@@ -306,7 +311,7 @@ var UgcSection = function ( shared ) {
 
 	};
 
-}
+};
 
 UgcSection.prototype = new Section();
 UgcSection.prototype.constructor = UgcSection;
