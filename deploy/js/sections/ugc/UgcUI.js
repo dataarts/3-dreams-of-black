@@ -302,6 +302,10 @@ var UgcUI = function (shared) {
       shared.ugcSignals.submit_dialogue.dispatch();
     });
 
+    onClick('ugcui-quit', function() {
+      shared.signals.showrelauncher.dispatch();
+    });
+
     onClick('ugcui-zoom-in', function() {
       shared.ugcSignals.object_zoomin.dispatch();
     });
@@ -423,8 +427,8 @@ var UgcUI = function (shared) {
   };
 
   this.update = function() {
-    animalSlide += (animalSlideTarget - animalSlide) * 0.5;
-    animalInnerDiv.style.left = Math.round(animalSlide) + 'px';
+//    animalSlide += (animalSlideTarget - animalSlide) * 0.5;
+//    animalInnerDiv.style.left = Math.round(animalSlide) + 'px';
   };
 
   this.getDomElement = function () {

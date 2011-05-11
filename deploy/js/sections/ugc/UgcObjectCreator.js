@@ -98,16 +98,6 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
 
 	};
 
-	this.resize = function ( width, height ) {
-
-
-	};
-
-	this.update = function () {
-
-
-	};
-
 	this.getPainter = function () {
 
 		return painter;

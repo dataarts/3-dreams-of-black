@@ -148,18 +148,10 @@ dt {
   color: #83b5ca;
 
 }
-dt:before {
-  content: '•';
-  padding: 0 3px;
-}
 dd {
   margin-bottom: 20px;
 }
 
-dl a {
-  padding-left: 20px;
-  color: #f4f4ec;
-}
 
 #get-the-code {
   margin-top: 43px;
