@@ -89,6 +89,7 @@ var Prairie = function ( shared ) {
 		
 			soup = new PrairieSoup( camera, world.scene, shared );
 			shared.soups.prairie = soup;
+			shared.prairieSoupHead = new THREE.Vector3();
 
 		}
 
