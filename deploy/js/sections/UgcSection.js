@@ -219,7 +219,7 @@ var UgcSection = function ( shared ) {
     // create thumbnail
     var strip = dest.toDataURL('image/png');
     delete dest;
-    camera.position = stashed_cam_pos;
+    camera.position.copy( stashed_cam_pos );
     renderer.clear();
     renderer.render( that.scene, camera );
     return strip;
