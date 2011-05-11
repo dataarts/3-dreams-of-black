@@ -143,33 +143,42 @@ a.guidat-toggle:hover {
     height: 20px;
 }
 
-#guidat-speed,#guidat-morph,#guidat-aperture,#guidat-focus,#guidat-radius,#guidat-background{
+#guidat-speed,#guidat-morph{
+  width: 472px;
 
+}
+#guidat-background{
+  width: 464px;
+}
+#guidat-radius{
+  width: 310px;
+}
+#guidat-aperture,#guidat-focus{
 }
 #guidat-wireframe,#guidat-texture,#guidat-component,#guidat-lighting,#guidat-grid,#guidat-occlusion,#guidat-depth_of_field,#guidat-vignette{
 
 }
 
 #guidat-morph .guidat-slider-bg{
-  width: 376px;
+  width: 370px;
 }
 #guidat-speed .guidat-slider-bg{
-  width: 376px;
+  width: 370px;
 }
 
 #guidat-component{
   padding-right:7px;
 }
 #guidat-background .guidat-slider-bg{
-  width: 347px;
+  width: 340px;
 }
 #guidat-background .guidat-slider-bg{
-  width: 347px;
+  width: 330px;
 }
 #guidat-focus .guidat-slider-bg,
 #guidat-aperture .guidat-slider-bg{
-  width: 74px;
+  width: 67px;
 }
 #guidat-radius .guidat-slider-bg{
-  width: 200px;
+  width: 193px;
 }
