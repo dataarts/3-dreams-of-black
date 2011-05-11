@@ -55,6 +55,15 @@ var DunesWorld = function ( shared ) {
 	DunesShader.init();
 
 
+	// waterfall
+	
+	var waterfall = WaterfallShader.createWaterfall();
+	waterfall.position.y = 500;
+	waterfall.position.z = -1000;
+
+	that.scene.addChild( waterfall );
+	
+
 	// generate base grid (rotations depend on where the grid is in space)
 	// 0-3 = tiles
 	// 4 = walk
@@ -263,12 +272,16 @@ var DunesWorld = function ( shared ) {
 		that.checkInfluenceSpheres( camera, portalsActive );
 		that.updateTiles( camera ); 
 		updateDunesShader( delta, that.skyWhite );
+		
+		WaterfallShader.update( delta );
 
 		skydome.position.copy( camera.matrixWorld.getPosition() );
 		skydome.updateMatrix();
 
 		that.lensFlareRotate.position.copy( camera.matrixWorld.getPosition());
 		that.lensFlareRotate.updateMatrix();
+
+	//	waterfall.position.copy( camera.target.matrixWorld.getPosition());
 
 	};
 
