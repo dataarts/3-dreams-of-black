@@ -111,18 +111,39 @@ var PrairieWorld = function ( shared, camera, callbackSoup ) {
 		var loader = new THREE.JSONLoader();
 		loader.load( { model: "/files/models/soup/cow.js", callback: addCows } );
 		
-		function addCows() {
+		function addCows( geometry ) {			
 			
 			for ( var o in result.objects ) {
-				
-				 if ( o.toLowerCase().indexOf( "cow" ) >= 0 ) {
-					 
-					console.log( o );
-					 
-					result.objects[ o ].visible = false;
 
-				 }
-				 
+				var obj = result.objects[ o ];
+				
+				if ( o.toLowerCase().indexOf( "cow" ) >= 0 ) {
+					 
+					obj.visible = false;
+
+					var morphObject = ROME.Animal( geometry, true );
+					
+					var mesh = morphObject.mesh;
+
+					//mesh.scale.set( 10, 10, 10 );
+					mesh.rotation.set( -1.57, 0, 3.14 );
+					mesh.matrixAutoUpdate = false;
+					mesh.update();					
+					mesh.updateMatrix();
+					 
+					obj.addChild( mesh );
+
+					var nameA = morphObject.availableAnimals[ 0 ],
+						nameB = morphObject.availableAnimals[ 0 ];
+
+					morphObject.play( nameA, nameB );
+
+				} else if ( o.toLowerCase().indexOf( "carcass" ) >= 0 ) {
+					
+					obj.visible = false;
+
+				}
+
 			}
 
 		}
