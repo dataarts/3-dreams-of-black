@@ -72,7 +72,7 @@ var Prairie = function ( shared ) {
 			waypoints: waypoints, duration: 28,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.0028, lookVertical: true, lookHorizontal: true,
+			lookSpeed: 0.001, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 

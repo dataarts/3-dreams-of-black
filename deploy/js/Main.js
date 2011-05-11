@@ -35,6 +35,7 @@
 
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
+		loadedContent: false,
 
 		signals : {
 
@@ -126,7 +127,6 @@
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	handleHistory();
-	// setSection( launcher );
 	animate();
 
 	//
@@ -153,9 +153,31 @@
 
 				if(folder.match(historySections[i])) {
 
-					historyDispatches[i].dispatch();
-					if(i == 0) {
-						shared.signals.startfilm.dispatch( 0, 1 );
+					if( shared.loadedContent ) {
+
+						historyDispatches[i].dispatch();
+						if(i == 0) {
+
+							shared.signals.startfilm.dispatch( 0, 1 );
+
+						} else if(i == 1) {
+
+							shared.signals.startexploration.dispatch( 'dunes' );
+
+						}
+
+					} else {
+
+						if(i != 0 && i != 1) {
+
+							historyDispatches[i].dispatch();
+
+						} else {
+
+							shared.signals.showlauncher.dispatch();
+
+						}
+
 					}
 					break;
 

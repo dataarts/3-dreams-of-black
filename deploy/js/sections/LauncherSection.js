@@ -47,6 +47,7 @@ var LauncherSection = function ( shared ) {
 
 			loading.getDomElement().style.display = 'block';
 			buttonEnter.style.display = 'none';
+			shared.loadedContent = true;
 
 			isLoading = true;
 
@@ -214,6 +215,7 @@ var LauncherSection = function ( shared ) {
 
 		clouds.show();
 		domElement.style.display = 'block';
+		if(!shared.loadedContent) buttonStart.style.display = 'none';
 
 	};
 
