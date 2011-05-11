@@ -27,6 +27,7 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 		var ribbonMesh = new THREE.Mesh( ribbon, ribbonMaterials[ i % ribbonMaterials.length ] );
 		ribbonMesh.dynamic = true;
 		ribbonMesh.doubleSided = true;
+		ribbonMesh.position.set( 0, -500, 0 ); // hide ribbons at the beginning
 		scene.addObject( ribbonMesh );
 
 		var offset = 3+Math.floor( Math.random()*10 );

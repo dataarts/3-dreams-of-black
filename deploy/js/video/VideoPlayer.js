@@ -10,9 +10,11 @@ var VIDEO_SMARTALPHA_DISTORT = 8;
 var VideoPlayer = function( shared, layers, conf ) {
 
 	var that = this;
-  var oldTime = new Date().getTime();
+	var oldTime = new Date().getTime();
 
 	SequencerItem.call( this );
+
+	var clearColor = new THREE.Color( 0x000000 );
 
 	var config = {};
 	var planes = [];
@@ -86,6 +88,8 @@ var VideoPlayer = function( shared, layers, conf ) {
 			else scene.addChild(p.mesh);
 			p.start( progress, mouseX, mouseY );
 		}
+		
+		renderer.setClearColor( clearColor );
 
 	};
 	

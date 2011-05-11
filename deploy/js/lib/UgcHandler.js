@@ -133,7 +133,7 @@ var UgcHandler = function () {
 
 	function uploadImage(upload_url, dataURI, opts) {
 		opts = opts || {};
-		opts.type = opts.type || 'image/png'; // image/jpg, application/octet-stream
+		opts.type = opts.type || 'image/png'; // image/jpeg, application/octet-stream
 		opts.filename = opts.filename || 'file';
 		function byteValue(x) {
 			return x.charCodeAt(0) & 0xff;
@@ -147,7 +147,8 @@ var UgcHandler = function () {
 				postTail = '\r\n--' + boundary + '--',
 				data,
 				arr;
-		data = b642ui8a(dataURI.slice(22));
+    data = b642ui8a(dataURI.slice(opts.type.length + 13));
+//    data = b642ui8a(dataURI.slice(22));
 		head = Array.prototype.map.call(postHead, byteValue);
 		tail = Array.prototype.map.call(postTail, byteValue);
 		var hl = head.length,

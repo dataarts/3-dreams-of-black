@@ -1,9 +1,9 @@
 // Add EMI content
-var emiBuyButtonUrl = 'http://widgets.platform.emi.com/widget/1.0/';
-var emiBuyButtonUuids = ["c9e456919b824bdeb2e3a326b122db43"];
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl.": "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-document.writeln(unescape("%3Cscript src='" + emiBuyButtonUrl + "js/emi_buy_button.js' type='text/javascript'%3E%3C/script%3E"));
+// var emiBuyButtonUrl = 'http://widgets.platform.emi.com/widget/1.0/';
+// var emiBuyButtonUuids = ["c9e456919b824bdeb2e3a326b122db43"];
+// var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl.": "http://www.");
+// document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+// document.writeln(unescape("%3Cscript src='" + emiBuyButtonUrl + "js/emi_buy_button.js' type='text/javascript'%3E%3C/script%3E"));
 
 var Footer = function(container, prefix) {
 
@@ -39,6 +39,7 @@ var Footer = function(container, prefix) {
 
     this.load = function() {
 
+        var EMIBuyButton = EMIBuyButton || null;
         if (EMIBuyButton) {
             emiButton = new EMIBuyButton({
 
@@ -52,20 +53,22 @@ var Footer = function(container, prefix) {
 
         }
 
-        handleLinkListeners(credits, "Credits", DEFAULT_POPUP_PROPERTIES);
-        handleLinkListeners(privacy, "Privacy", DEFAULT_POPUP_PROPERTIES);
-        handleLinkListeners(terms, "Terms", DEFAULT_POPUP_PROPERTIES);
+        Footer.handleLinkListeners(document.getElementById(credits), "Credits", DEFAULT_POPUP_PROPERTIES);
+        Footer.handleLinkListeners(document.getElementById(privacy), "Privacy", DEFAULT_POPUP_PROPERTIES);
+        Footer.handleLinkListeners(document.getElementById(terms), "Terms", DEFAULT_POPUP_PROPERTIES);
 
-        handleLinkListeners(twitter, "Twitter", DEFAULT_POPUP_SHARING);
-        handleLinkListeners(facebook, "Facebook", DEFAULT_POPUP_SHARING);
+        Footer.handleLinkListeners(document.getElementById(twitter), "Twitter", DEFAULT_POPUP_SHARING);
+        Footer.handleLinkListeners(document.getElementById(facebook), "Facebook", DEFAULT_POPUP_SHARING);
 
         return this;
 
     };
 
-    function handleLinkListeners(id, title, properties) {
+    Footer.handleLinkListeners = function(dom, title, properties) {
 
-      var dom = document.getElementById(id);
+      if(!properties) {
+        properties = DEFAULT_POPUP_PROPERTIES;
+      }
 
       dom.addEventListener("click", function(e) {
         e.preventDefault();
@@ -93,6 +96,7 @@ var Footer = function(container, prefix) {
 		'    <li><a id = "' + credits + '" href="/credits">Credits</a></li>',
 		'    <li><a href="http://romealbum.com/">Rome Album</a></li>',
 		'    <li id="' + divReplacement + '" class="rome_footer_buy_album">',
+		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html">Buy Album</a>',
 		'    </li>',
 		'    <li class="last">Share</li>',
 		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
