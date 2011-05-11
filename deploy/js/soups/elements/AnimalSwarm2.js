@@ -237,6 +237,17 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 				}
 			}
 
+			/*if (that.array[i].dead) {
+				
+				if (!that.settings.flying) {
+					toy -= normal.y*20;
+					tox -= normal.x*20;
+					toz -= normal.z*20;
+				} else {
+					toy += 10;
+				}
+			}*/
+
 			// morph
 			that.array[i].count += 0.04;
 			var morph = Math.max(Math.cos(that.array[i].count),0);
@@ -288,6 +299,17 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 			if ( moveZ < -maxSpeed )moveZ = -maxSpeed;
 
 
+			if (that.array[i].dead) {
+				
+				if (!that.settings.flying) {
+					moveY -= normal.y*2;
+					moveX -= normal.x*2;
+					moveZ -= normal.z*2;
+				} else {
+					moveY += 2;
+				}
+			}
+
 			// in city only
 			//if (that.settings.avoidCamera) {
 				if (animal.position.x+moveX < camPos.x+40 && animal.position.x+moveX > camPos.x-40 && animal.position.z+moveZ < camPos.z+40 && animal.position.z+moveZ > camPos.z-40) {
@@ -298,8 +320,8 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 			if (that.array[i].dead && !wasDead) {
 				// tween scale
 				var scaleTween = new TWEEN.Tween(that.array[i])
-					.to({scale: that.array[i].scale*0.1}, 500)
-					.easing(TWEEN.Easing.Quartic.EaseIn);
+					.to({scale: that.array[i].scale*0.1}, 400)
+					.easing(TWEEN.Easing.Linear.EaseNone);
 				scaleTween.start()
 			}
 

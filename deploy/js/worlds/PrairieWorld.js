@@ -1,4 +1,4 @@
-var PrairieWorld = function ( shared, camera ) {
+var PrairieWorld = function ( shared, camera, callbackSoup ) {
 
 	var that = this;
 
@@ -132,13 +132,15 @@ var PrairieWorld = function ( shared, camera ) {
 
 		that.scene.update( undefined, true );
 
+		callbackSoup();
+
 	};
 
 	loader.load( "files/models/prairie/Prairie.js", prairieLoaded );
 
 	this.update = function ( delta, camera, portalsActive ) {
 
-		TriggerUtils.effectorRadius = 50;
+		TriggerUtils.effectorRadius = 40;
 		TriggerUtils.update( "prairie" );
 
 		// check portals

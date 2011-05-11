@@ -10,10 +10,11 @@ var City = function ( shared ) {
 	
 	// private variables
 	
-	var camera, startCamera, switchCamera, world, soup,
+	var camera, startCamera, switchCamera, world, soup, 
 	renderer = shared.renderer, renderTarget = shared.renderTarget,
 	waypointsA = [], waypointsB = [];
-	var switchedCamera = false;
+	var switchedCamera = false, lookLocked = 0;
+
 
 	// temp debug, start with ?debug=true
 
@@ -44,7 +45,7 @@ var City = function ( shared ) {
 			fov: 64, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
 			waypoints: waypointsA, duration: 9.7, 
 			useConstantSpeed: true, resamplingCoef: 5,
-			createDebugPath: shared.debug, createDebugDummy: shared.debug,
+			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
@@ -66,7 +67,7 @@ var City = function ( shared ) {
 		*/
 		startCamera.position.set( 0, 0, 0 );
 		startCamera.lon = 180;
-		startCamera.lat = 4.5;
+		startCamera.lat = -20;
 
 		camera = startCamera;
 		
@@ -86,6 +87,11 @@ var City = function ( shared ) {
 		//camera = new THREE.Camera( 60, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 		//camera.position.set( 0, 20, -300 );
 
+		if (shared.debug) {
+			gui = new GUI();
+			gui.add( camera, 'fov', 50, 120 ).name( 'Lens' );		
+		}
+
 		world = new CityWorld( shared );
 		soup = new CitySoup( camera, world.scene, shared );
 		
@@ -94,11 +100,11 @@ var City = function ( shared ) {
 		shared.sequences.city = this;
 		 
 		
-		if ( shared.debug ) {
+		/*if ( shared.debug ) {
 
 			world.scene.addObject( camera.debugPath );
 
-		}
+		}*/
 
 		world.scene.addObject( camera.animationParent );
 		
@@ -138,6 +144,18 @@ var City = function ( shared ) {
 			delta = 1000/60;
 		}
 
+		lookLocked += delta;
+
+		if (lookLocked < 2000) {
+			camera.lon = 180;
+			camera.lat = -20;
+		}
+
+
+		if (shared.debug) {
+			camera.updateProjectionMatrix();		
+		}
+
 		/*camera.position.z -= 0.9 * delta / 8;
 
 		if ( camera.position.z < -3300 ) {
@@ -164,10 +182,15 @@ var City = function ( shared ) {
 				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1650 ], [ 110, 18, -1740 ], [ 1670, 18, -1740 ] ];
 			}
 
+			var fov = 64;
+			if (shared.debug) {
+				fov = startCamera.fov
+			}
+
 			switchCamera = new THREE.PathCamera( {
 
-				fov: 64, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
-				waypoints: waypointsB, duration: 15.4, 
+				fov: fov, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 100000,
+				waypoints: waypointsB, duration: 15.6, 
 				useConstantSpeed: true, resamplingCoef: 5,
 				createDebugPath: false, createDebugDummy: false,
 				lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
@@ -190,6 +213,10 @@ var City = function ( shared ) {
 
 			startCamera.animation.stop();
 			
+		if (shared.debug) {
+			gui.add( camera, 'fov', 50, 120 ).name( 'Lens' );		
+		}
+
 			//console.log("switched camera");
 			switchedCamera = true;
 

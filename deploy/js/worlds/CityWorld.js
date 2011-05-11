@@ -85,7 +85,7 @@ var CityWorld = function ( shared ) {
 
 		}
 
-		//TriggerUtils.setupCityTriggers( result );
+		TriggerUtils.setupCityTriggers( result );
 
 		// fix texture wrapping for skydome
 
@@ -108,11 +108,11 @@ var CityWorld = function ( shared ) {
 
 	};
 
-	if ( !shared.debug ) {
+	//if ( !shared.debug ) {
 
 		loader.load( "files/models/city/City.js", sceneLoaded );
 
-	}
+	//}
 
 	var cameraPosition, d;
 
@@ -120,8 +120,8 @@ var CityWorld = function ( shared ) {
 
 		cameraPosition = camera.matrixWorld.getPosition();
 
-		//TriggerUtils.effectorRadius = 50;
-		//TriggerUtils.update( "city" );
+		TriggerUtils.effectorRadius = 80;
+		TriggerUtils.update( "city" );
 
 		//updateCityShader( delta );
 

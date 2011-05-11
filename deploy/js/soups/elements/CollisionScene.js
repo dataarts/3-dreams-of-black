@@ -55,18 +55,18 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 	realscene.addObject( emitterFollowReal );
 */
 
-// follow test with turn constraints
-var pi = Math.PI;
-var pi2 = pi*2;
-var degToRad = pi/180;
+	// follow test with turn constraints
+	var pi = Math.PI;
+	var pi2 = pi*2;
+	var degToRad = pi/180;
 
-var rotationLimit = 15;
-var innerRadius = 0;
-var outerRadius = 5;
+	var rotationLimit = 12;
+	var innerRadius = 4;
+	var outerRadius = 8;
 
-that.emitterFollow.rotationx = 0;
-that.emitterFollow.rotationy = 0;
-that.emitterFollow.rotationz = 0;
+	that.emitterFollow.rotationx = 0;
+	that.emitterFollow.rotationy = 0;
+	that.emitterFollow.rotationz = 0;
 
 	// collision boxes
 
@@ -92,26 +92,27 @@ that.emitterFollow.rotationz = 0;
 
 	} else {
 		
-		scene.addObject( front );
+/*		scene.addObject( front );
 		scene.addObject( back );
 		scene.addObject( left );
 		scene.addObject( right );
 		scene.addObject( top );
 		scene.addObject( bottom );
-/*
+
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( front ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( back ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( left ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( right ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( top ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( bottom ) );
-*/
+
 		front.visible = false;
 		back.visible = false;
 		left.visible = false;
 		right.visible = false;
 		top.visible = false;
 		bottom.visible = false;
+*/
 	}
 
 	this.addLoaded = function ( geometry, scale, rotation, position, realscene ) {
@@ -138,41 +139,43 @@ that.emitterFollow.rotationz = 0;
 
 	this.update = function ( camPos, delta ) {
 		
-		right.position.x = camPos.x + that.settings.collisionDistance;
-		left.position.x  = camPos.x - that.settings.collisionDistance;
-		right.position.z = camPos.z;
-		right.position.y = camPos.y;
-		left.position.z  = camPos.z;
-		left.position.y  = camPos.y;
+		if (that.settings.useOldRay) {
+			right.position.x = camPos.x + that.settings.collisionDistance;
+			left.position.x  = camPos.x - that.settings.collisionDistance;
+			right.position.z = camPos.z;
+			right.position.y = camPos.y;
+			left.position.z  = camPos.z;
+			left.position.y  = camPos.y;
 
-		front.position.z = camPos.z - that.settings.collisionDistance;
-		back.position.z  = camPos.z + that.settings.collisionDistance;
-		front.position.x = camPos.x;
-		front.position.y = camPos.y;
-		back.position.x  = camPos.x;
-		back.position.y  = camPos.y;
+			front.position.z = camPos.z - that.settings.collisionDistance;
+			back.position.z  = camPos.z + that.settings.collisionDistance;
+			front.position.x = camPos.x;
+			front.position.y = camPos.y;
+			back.position.x  = camPos.x;
+			back.position.y  = camPos.y;
 
-		bottom.position.y = camPos.y - that.settings.collisionDistance;
-		top.position.y    = camPos.y + that.settings.collisionDistance;
-		bottom.position.x = camPos.x;
-		bottom.position.z = camPos.z;
-		top.position.x    = camPos.x;
-		top.position.z    = camPos.z;
+			bottom.position.y = camPos.y - that.settings.collisionDistance;
+			top.position.y    = camPos.y + that.settings.collisionDistance;
+			bottom.position.x = camPos.x;
+			bottom.position.z = camPos.z;
+			top.position.x    = camPos.x;
+			top.position.z    = camPos.z;
 
-		if ( that.settings.capBottom != null ) {
+			if ( that.settings.capBottom != null ) {
 
-			if ( bottom.position.y < that.settings.capBottom ) {
-				 bottom.position.y = that.settings.capBottom;
+				if ( bottom.position.y < that.settings.capBottom ) {
+					 bottom.position.y = that.settings.capBottom;
+				}
+
 			}
 
-		}
+			if ( that.settings.capTop != null ) {
 
-		if ( that.settings.capTop != null ) {
+				if ( top.position.y < that.settings.capTop ) {
+					 top.position.y = that.settings.capTop;
+				}
 
-			if ( top.position.y < that.settings.capTop ) {
-				 top.position.y = that.settings.capTop;
 			}
-
 		}
 
 		if (!that.settings.useOldRay) {

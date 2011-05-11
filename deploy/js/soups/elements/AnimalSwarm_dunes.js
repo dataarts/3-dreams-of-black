@@ -157,13 +157,13 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 
 			var inc = (Math.PI*2)/6;
 			var thisinc = i*inc;
-			var offsetx = Math.cos(thisinc+((i-r*2)/8))*that.settings.xPositionMultiplier;
-			var offsetz = Math.sin(thisinc+((i-r*2)/8))*that.settings.zPositionMultiplier;
+			var offsetx = Math.cos(thisinc+((i-r*2)/5))*that.settings.xPositionMultiplier;
+			var offsetz = Math.sin(thisinc+((i-r*2)/5))*that.settings.zPositionMultiplier;
 			var offsety = offsetz;
 			
-			if (f >= vectorArray.length-1) {
+			/*if (f >= vectorArray.length-1) {
 				f = vectorArray.length-1;
-			}
+			}*/
 
 			var cNormal = vectorArray[f].normal;
 
@@ -171,28 +171,34 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 			var amountz = 1-Math.abs(cNormal.z);
 			var amounty = 1-Math.abs(cNormal.y);
 
-			var tox = vectorArray[f].position.x+(offsetx*amountx);
+/*			var tox = vectorArray[f].position.x+(offsetx*amountx);
 			var toy = vectorArray[f].position.y+(offsety*amounty);
 			var toz = vectorArray[f].position.z+(offsetz*amountz);
+*/
+			var tox = vectorArray[f].position.x+(offsetx);
+			var toy = vectorArray[f].position.y+(offsety);
+			var toz = vectorArray[f].position.z+(offsetz);
 
-			if (!clockwise) {
+
+			/*if (!clockwise) {
 				tox = vectorArray[f].position.x-(offsetx*amountx);
 				toy = vectorArray[f].position.y-(offsety*amounty);
 				toz = vectorArray[f].position.z-(offsetz*amountz);
-			}
+			}*/
 
-			if (cNormal.y > 0.5) {
+			/*if (cNormal.y > 0.5) {
 				toy = vectorArray[f].position.y - 6*1.75;
 			}
 
 			if (that.settings.capy != null && toy < that.settings.capy) {
 				toy = that.settings.capy;
-			}
+			}*/
 
 			// flying
-			if (that.settings.flying) {
-				var pulse = Math.cos((i-r*10)/15)*10
-				var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/10)*30);			
+			/*if (that.settings.flying) {
+				//var pulse = Math.cos((i-r*10)/15)*10
+				//var flyAmount = that.settings.flyingDistance+Math.abs(Math.sin((thisinc+pulse)/10)*50);			
+				var flyAmount = that.settings.flyingDistance;			
 
 				if (cNormal.x < -0.8) {
 					tox -= flyAmount;
@@ -209,7 +215,7 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 				if (cNormal.z > 0.8) {
 					toz += flyAmount;
 				}
-			}
+			}*/
 
 			/*if (that.settings.butterfly) {
 				var flyAmount = that.settings.flyingDistance-Math.sin((i+r))*20;			
@@ -232,13 +238,14 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			//var divider = delta/10;
+			//var divider = 10;
 			var divider = 10;
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
 			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
 
-			var maxSpeed = delta;//12;
+/*			var maxSpeed = 50//delta;//12;
 
 			if ( moveY > maxSpeed )	moveY = maxSpeed;
 			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
@@ -248,13 +255,13 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 
 			if ( moveZ > maxSpeed )	moveZ = maxSpeed;
 			if ( moveZ < -maxSpeed )moveZ = -maxSpeed;
-
+*/
 			var zvec = new THREE.Vector3(animal.position.x+moveX,animal.position.y+moveY,animal.position.z+moveZ);
 			zvec.subSelf( animal.position ).normalize();
 
 			var xvec = new THREE.Vector3();
 			var yvec = new THREE.Vector3(vectorArray[f].normal.x*-1, vectorArray[f].normal.y*-1, vectorArray[f].normal.z*-1);
-			if (that.settings.flying && !that.settings.butterfly) {
+			if (that.settings.flying) {
 				yvec = new THREE.Vector3(0, -1, 0);
 			}
 
@@ -265,7 +272,7 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 			animal.matrixWorld.n21 = xvec.y*scale; animal.matrixWorld.n22 = yvec.y*scale; animal.matrixWorld.n23 = zvec.y*scale; animal.matrixWorld.n24 = animal.position.y;
 			animal.matrixWorld.n31 = xvec.z*scale; animal.matrixWorld.n32 = yvec.z*scale; animal.matrixWorld.n33 = zvec.z*scale; animal.matrixWorld.n34 = animal.position.z;
 
-			if (that.settings.addaptiveSpeed) {
+			/*if (that.settings.addaptiveSpeed) {
 				var dx = animal.position.x - (animal.position.x+moveX), dy = animal.position.y - (animal.position.y+moveY), dz = animal.position.z - (animal.position.z+moveZ);
 				var distance =  Math.abs(dx * dx + dy * dy + dz * dz);
 
@@ -274,7 +281,7 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 				
 				that.array[i].a.animalA.timeScale = speed;
 				that.array[i].a.animalB.timeScale = speed;
-			}
+			}*/
 
 			animal.position.x += moveX;
 			animal.position.y += moveY;

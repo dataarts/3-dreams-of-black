@@ -137,37 +137,63 @@ ROME.TrailShaderUtils = ( function() {
 		
 		deltaTime = deltaTime !== undefined ? deltaTime : 1;
 		
-		ROME.TrailShader.uniforms.lavaHeadPosition.value.set( x !== undefined ? x : 0, 0, z != undefined ? z : 0 );
-
-	//	ROME.TrailShader.uniforms.lavaTime.value += 0.000001 * deltaTime;
+		//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( x !== undefined ? x : 0, 0, z != undefined ? z : 0 );
 		ROME.TrailShader.uniforms.lavaTime.value += deltaTime;
-		/*if(ROME.TrailShader.uniforms.lavaTime.value > 1.0)	
-			ROME.TrailShader.uniforms.lavaTime.value = 0.0;	
-		if(ROME.TrailShader.uniforms.lavaTime.value < 0.0)	
-			ROME.TrailShader.uniforms.lavaTime.value = 0.0;	
-*/
+
 	}
 	
 	
 	//--- set mark at ---
 	
+	var oldU = NaN;
+	var oldV = NaN;
+	
 	that.setMarkAtWorldPosition = function( worldX, worldZ ) {
 
-		if( trailTextureSize ) {
+		if( trailTextureSize && worldX && worldZ ) {
 			
 			var u = (( worldX - minX ) / width ) * trailTextureSize;
 			var v = (( worldZ - minZ ) / depth ) * trailTextureSize;
+
+			var markSize = markTexture.image.width;
+
+
+			if( u >= 0 && u < trailTextureSize - markSize && 
+				v >= 0 && v < trailTextureSize - markSize ) {
 			
-			if( u >= 0 && u < trailTextureSize - markTexture.image.width && 
-				v >= 0 && v < trailTextureSize - markTexture.image.height ) {
+				if( isNaN( oldU )) {
 					
+					oldU = u;
+					oldV = v;
+				}
+				
+				var du = u - oldU;
+				var dv = v - oldV;
+				var dist = Math.sqrt( du * du + dv * dv ) + 1;
+	
+				du = ( markSize * du / dist ) * 0.8;
+				dv = ( markSize * dv / dist ) * 0.8;
+	
 				GL.bindTexture( GL.TEXTURE_2D, trailTexture );
-				GL.texSubImage2D( GL.TEXTURE_2D, 0, u, v, GL.RGB, GL.UNSIGNED_BYTE, markTexture.image );
+
+				var currentU = oldU;
+				var currentV = oldV;
+	
+				do {
 					
+					GL.texSubImage2D( GL.TEXTURE_2D, 0, Math.floor( currentU ), Math.floor( currentV ), GL.RGB, GL.UNSIGNED_BYTE, markTexture.image );
+							
+					currentU += du;
+					currentV += dv;
+					
+					dist -= markSize * 0.8;
+					
+				} while( dist > markSize )
+				
+				oldU = u;
+				oldV = v;
+
 			}
-			
-
-
 		}
 
 	}
@@ -267,27 +293,7 @@ ROME.TrailShader = {
 				"}",
 	
 			"#endif",
-	/*
-			"#if MAX_POINT_LIGHTS > 0",
-	
-				/*"for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {",
-	
-					"vec4 lPosition = viewMatrix * vec4( pointLightPosition[ i ], 1.0 );",
-					"vec3 lVector = lPosition.xyz - mvPosition.xyz;",
-					"float lDistance = 1.0;",
-	
-					"if ( pointLightDistance[ i ] > 0.0 )",
-						"lDistance = 1.0 - min( ( length( lVector ) / pointLightDistance[ i ] ), 1.0 );",
-	
-					"lVector = normalize( lVector );",
-	
-					"float pointLightWeighting = max( dot( transformedNormal, lVector ), 0.0 );",
-					"vLightWeighting.xyz += pointLightColor[ i ] * pointLightWeighting * lDistance;",
-	
-				"}",
-	
-			"#endif",
-*/
+
 			"vUV = uv;",
 			"vTrailUV = trailUV;",
 			"vColor = color;",
@@ -345,22 +351,16 @@ ROME.TrailShader = {
 			"gl_FragColor = vec4( vColor, 1.0 ) * texture2D(faceMap, vUV);",
 			"lookup = texture2D(lavaNoiseMap, vTrailUV * vec2(65.0)).rg;",
 			"f = texture2D(trailMap, vTrailUV + vec2(0.01) * lookup).r;",
-			"mixValue = f + max(1.0 - length(vec2(0.030) * vec2(vPos.xy - lavaHeadPosition.xz) + lookup * vec2(0.4)), 0.0);",
-			//"mixValue = dot(vPos - lavaHeadPosition.xz,  vPos - lavaHeadPosition.xz);",
-			"if(mixValue > 0.5)",
+//			"mixValue = f + max(1.0 - length(vec2(0.030) * vec2(vPos.xy - lavaHeadPosition.xz) + lookup * vec2(0.4)), 0.0);",
+//			"if(mixValue > 0.5)",
+			"if( f > 0.5)",
 			"{",
-//				"gl_FragColor = gl_FragColor.gggg * vec4(0.27, 0.25, 0.3, 1.0) - vec4(0.1, 0.1, 0.1, 1.0);",
 				"mixValue = abs((texture2D(lavaNoiseMap, vTrailUV.yx * vec2(40.0, -40.0)).r - 0.5));",
 				"mixValue = max(max(1.0 - mixValue * 32.0, 0.0) * (lookup.r - 0.5) * 8.0, 0.0);",
 				"gl_FragColor = vec4(mixValue) * texture2D( lavaMap, vTrailUV * vec2(200.0) - vec2( lavaTime * 2.5)) * texture2D(lavaNoiseMap, vTrailUV * vec2(10.0) - vec2( lavaTime * 2.5)).rrrr * vec4(2.0);",
-			"}/* else {",
-			"}*/",
+			"}",
 
 			"gl_FragColor = gl_FragColor * vLightWeighting;",
-
-			// add up
-			
-			//"gl_FragColor = lookup.rrrr;",
 			"gl_FragColor.a = 1.0;",
 
 		"}"

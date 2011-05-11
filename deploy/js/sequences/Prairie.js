@@ -15,6 +15,13 @@ var Prairie = function ( shared ) {
 	renderTarget = shared.renderTarget,
 	cameraPath, waypoints = [], lookToRight = 0;
 
+	shared.debug = false;
+
+	if ( getParameterByName( "debug" ) == "true" ) {
+
+		shared.debug = true;
+
+	}
 
 	function initScene () {
 		
@@ -70,7 +77,7 @@ var Prairie = function ( shared ) {
 		cameraPath = new THREE.PathCamera( {
 
 			fov: 64, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
-			waypoints: waypoints, duration: 27.4,
+			waypoints: waypoints, duration: 26.5,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0028, lookVertical: true, lookHorizontal: true,
@@ -84,11 +91,23 @@ var Prairie = function ( shared ) {
 
 		camera = cameraPath;
 
-		world = new PrairieWorld( shared, camera );
-		soup = new PrairieSoup( camera, world.scene, shared );
+		if (shared.debug) {
+			gui = new GUI();
+			gui.add( camera, 'fov', 50, 120 ).name( 'Lens' );		
+		}
+
+		//world = new PrairieWorld( shared, camera );
+		//soup = new PrairieSoup( camera, world.scene, shared );
+		world = new PrairieWorld( shared, camera, callbackSoup );
+		
+		function callbackSoup() {
+			soup = new PrairieSoup( camera, world.scene, shared );
+			shared.soups.prairie = soup;
+		}
+
 
 		shared.worlds.prairie = world;
-		shared.soups.prairie = soup;
+		//shared.soups.prairie = soup;
 		shared.sequences.prairie = this;
 
 		//world.scene.addObject( cameraPath.debugPath );
@@ -143,6 +162,10 @@ var Prairie = function ( shared ) {
 			camera.lon = 360;
 		}
 
+		if (shared.debug) {
+			camera.updateProjectionMatrix();		
+		}
+
 		THREE.AnimationHandler.update( delta );
 
 		// slight camera roll
@@ -163,7 +186,9 @@ var Prairie = function ( shared ) {
 		world.scene.lights[2].color.setRGB(a,a,a);*/
 
 		world.update( delta, camera, false );
-		soup.update( delta );
+		if ( soup ) {
+			soup.update( delta );
+		}
 
 		renderer.render( world.scene, camera, renderTarget );
 
@@ -172,6 +197,15 @@ var Prairie = function ( shared ) {
 		shared.logger.log( 'draw calls: ' + renderer.data.drawCalls );
 
 	};
+
+	function getParameterByName(name) {
+
+		var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+
+		return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+
+	}
+
 
 };
 

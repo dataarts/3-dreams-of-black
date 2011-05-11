@@ -233,8 +233,8 @@ var ExplorationSection = function ( shared ) {
 
 
 				// FREE FLIGHT SOUP AND TRIGGERS IS TURNED OFF RIGHT NOW
-				//if( soup ) soup.update( delta, camera.camera );
-				//THREE.AnimationHandler.update( delta );
+				if( soup ) soup.update( delta, camera.camera );
+				THREE.AnimationHandler.update( delta );
 
 				camera.updateCamera( progress, delta, time );
 				world.update( delta, camera.camera, true );
