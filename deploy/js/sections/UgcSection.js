@@ -198,7 +198,7 @@ var UgcSection = function ( shared ) {
     var rotationp = 360/num_frames;
     dest.width = dWidth;
     dest.height = dHeight * num_frames;
-    var orig = shared.renderer.domElement;
+    var orig = renderer.domElement;
     var origW = orig.width;
     var origH = orig.height;
     var ctx = dest.getContext('2d');
@@ -219,8 +219,8 @@ var UgcSection = function ( shared ) {
     var strip = dest.toDataURL('image/png');
     delete dest;
     camera.position = stashed_cam_pos;
-    shared.renderer.clear();
-    shared.renderer.render( that.scene, camera );
+    renderer.clear();
+    renderer.render( that.scene, camera );
     return strip;
   }
 
