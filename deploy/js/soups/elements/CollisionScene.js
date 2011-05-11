@@ -54,6 +54,20 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 	realscene.addObject( emitterReal );
 	realscene.addObject( emitterFollowReal );
 */
+
+	// follow test with turn constraints
+	var pi = Math.PI;
+	var pi2 = pi*2;
+	var degToRad = pi/180;
+
+	var rotationLimit = 12;
+	var innerRadius = 4;
+	var outerRadius = 8;
+
+	that.emitterFollow.rotationx = 0;
+	that.emitterFollow.rotationy = 0;
+	that.emitterFollow.rotationz = 0;
+
 	// collision boxes
 
 	var cube = new THREE.Cube( 50000,50000,10, 1,1,1 );
@@ -75,34 +89,35 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		collisionScene.addObject( right );
 		collisionScene.addObject( top );
 		collisionScene.addObject( bottom );
-	
+
 	} else {
 		
-		scene.addObject( front );
+/*		scene.addObject( front );
 		scene.addObject( back );
 		scene.addObject( left );
 		scene.addObject( right );
 		scene.addObject( top );
 		scene.addObject( bottom );
-/*
+
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( front ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( back ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( left ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( right ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( top ) );
 		scene.collisions.colliders.push( THREE.CollisionUtils.MeshOBB( bottom ) );
-*/
+
 		front.visible = false;
 		back.visible = false;
 		left.visible = false;
 		right.visible = false;
 		top.visible = false;
 		bottom.visible = false;
+*/
 	}
 
 	this.addLoaded = function ( geometry, scale, rotation, position, realscene ) {
 
-		var material = new THREE.MeshLambertMaterial( { color: 0xFF0000, opacity: 0.5 } );
+		var material = new THREE.MeshLambertMaterial( { color: 0xFF00FF, opacity: 1.0 } );
 
 		var mesh = new THREE.Mesh( geometry, material );
 
@@ -118,47 +133,49 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		mesh2.rotation = rotation || new THREE.Vector3();
 		mesh2.position = position || new THREE.Vector3();
 				
-		realscene.addObject( mesh2 );
-		*/
+		realscene.addObject( mesh2 );*/
+		
 	};
 
 	this.update = function ( camPos, delta ) {
 		
-		right.position.x = camPos.x + that.settings.collisionDistance;
-		left.position.x  = camPos.x - that.settings.collisionDistance;
-		right.position.z = camPos.z;
-		right.position.y = camPos.y;
-		left.position.z  = camPos.z;
-		left.position.y  = camPos.y;
+		if (that.settings.useOldRay) {
+			right.position.x = camPos.x + that.settings.collisionDistance;
+			left.position.x  = camPos.x - that.settings.collisionDistance;
+			right.position.z = camPos.z;
+			right.position.y = camPos.y;
+			left.position.z  = camPos.z;
+			left.position.y  = camPos.y;
 
-		front.position.z = camPos.z - that.settings.collisionDistance;
-		back.position.z  = camPos.z + that.settings.collisionDistance;
-		front.position.x = camPos.x;
-		front.position.y = camPos.y;
-		back.position.x  = camPos.x;
-		back.position.y  = camPos.y;
+			front.position.z = camPos.z - that.settings.collisionDistance;
+			back.position.z  = camPos.z + that.settings.collisionDistance;
+			front.position.x = camPos.x;
+			front.position.y = camPos.y;
+			back.position.x  = camPos.x;
+			back.position.y  = camPos.y;
 
-		bottom.position.y = camPos.y - that.settings.collisionDistance;
-		top.position.y    = camPos.y + that.settings.collisionDistance;
-		bottom.position.x = camPos.x;
-		bottom.position.z = camPos.z;
-		top.position.x    = camPos.x;
-		top.position.z    = camPos.z;
+			bottom.position.y = camPos.y - that.settings.collisionDistance;
+			top.position.y    = camPos.y + that.settings.collisionDistance;
+			bottom.position.x = camPos.x;
+			bottom.position.z = camPos.z;
+			top.position.x    = camPos.x;
+			top.position.z    = camPos.z;
 
-		if ( that.settings.capBottom != null ) {
+			if ( that.settings.capBottom != null ) {
 
-			if ( bottom.position.y < that.settings.capBottom ) {
-				 bottom.position.y = that.settings.capBottom;
+				if ( bottom.position.y < that.settings.capBottom ) {
+					 bottom.position.y = that.settings.capBottom;
+				}
+
 			}
 
-		}
+			if ( that.settings.capTop != null ) {
 
-		if ( that.settings.capTop != null ) {
+				if ( top.position.y < that.settings.capTop ) {
+					 top.position.y = that.settings.capTop;
+				}
 
-			if ( top.position.y < that.settings.capTop ) {
-				 top.position.y = that.settings.capTop;
 			}
-
 		}
 
 		if (!that.settings.useOldRay) {
@@ -325,29 +342,186 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		}
 
 		var maxSpeed = delta / that.settings.maxSpeedDivider;
+		
+		if (!that.settings.useOldRay) {
 
-		var tox = that.emitter.position.x;
-		var moveX = ( tox - that.emitterFollow.position.x ) / that.settings.emitterDivider;
+			var tox = that.emitter.position.x;
+			var moveX = ( tox - that.emitterFollow.position.x ) / that.settings.emitterDivider;
 
-		var toy = that.emitter.position.y;
-		var moveY = ( toy - that.emitterFollow.position.y ) / that.settings.emitterDivider;
+			var toy = that.emitter.position.y;
+			var moveY = ( toy - that.emitterFollow.position.y ) / that.settings.emitterDivider;
 
-		var toz = that.emitter.position.z;
-		var moveZ = ( toz - that.emitterFollow.position.z ) / that.settings.emitterDivider;
+			var toz = that.emitter.position.z;
+			var moveZ = ( toz - that.emitterFollow.position.z ) / that.settings.emitterDivider;
 
-		if ( moveY > maxSpeed ) moveY = maxSpeed;
-		if ( moveY < -maxSpeed ) moveY = -maxSpeed;
+			if ( moveY > maxSpeed ) moveY = maxSpeed;
+			if ( moveY < -maxSpeed ) moveY = -maxSpeed;
 
-		if ( moveX > maxSpeed ) moveX = maxSpeed;
-		if ( moveX < -maxSpeed ) moveX = -maxSpeed;
+			if ( moveX > maxSpeed ) moveX = maxSpeed;
+			if ( moveX < -maxSpeed ) moveX = -maxSpeed;
 
-		if ( moveZ > maxSpeed )	moveZ = maxSpeed;
-		if ( moveZ < -maxSpeed ) moveZ = -maxSpeed;
+			if ( moveZ > maxSpeed )	moveZ = maxSpeed;
+			if ( moveZ < -maxSpeed ) moveZ = -maxSpeed;
 
-		that.emitterFollow.position.x += moveX;
-		that.emitterFollow.position.y += moveY;
-		that.emitterFollow.position.z += moveZ;	
+			that.emitterFollow.position.x += moveX;
+			that.emitterFollow.position.y += moveY;
+			that.emitterFollow.position.z += moveZ;	
 
+		} else {
+			
+			// test turn constraints...
+			// Y
+			if (that.currentNormal.y > 0.5 || that.currentNormal.y < -0.5) {
+
+			var rotationy = that.emitterFollow.rotationy/180*pi;
+			var oldRy = rotationy;
+			rotationy += pi*0*0.5-pi*0*Math.random();
+
+			var tx = that.emitter.position.x;
+			var tz = that.emitter.position.z;
+			var dx = tx-that.emitterFollow.position.x;
+			var dz = tz-that.emitterFollow.position.z;
+			var d = Math.sqrt(dx*dx+dz*dz);
+			var a = Math.atan2(dz,dx);
+			var pstr = 0;
+
+			if (outerRadius > 0) {
+			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+			if (dstr > 1) { dstr = 1; }
+			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationy += getShortRotation(a-rotationy)*pstr;
+
+			var rotationD = rotationy-oldRy;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) {
+			rotationy = oldRy+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
+
+			//var speed = delta/2;
+			var speed = d/4;
+			if (speed > maxSpeed) {
+			speed = maxSpeed;
+			}
+			that.emitterFollow.position.x += Math.cos(rotationy)*speed;
+			that.emitterFollow.position.z += Math.sin(rotationy)*speed;
+			that.emitterFollow.rotationy = rotationy/degToRad;
+
+			var toy = that.emitter.position.y;
+
+			var moveY = (toy-that.emitterFollow.position.y)/that.settings.emitterDivider;
+			if (moveY > maxSpeed) {
+			moveY = maxSpeed;
+			}
+			if (moveY < -maxSpeed) {
+			moveY = -maxSpeed;
+			}
+			that.emitterFollow.position.y += moveY;
+
+			}
+
+			// X
+			if (that.currentNormal.x > 0.5 || that.currentNormal.x < -0.5) {
+
+			var rotationx = that.emitterFollow.rotationx/180*pi;
+			var oldRx = rotationx;
+			rotationx += pi*0*0.5-pi*0*Math.random();
+
+			var ty = that.emitter.position.y;
+			var tz = that.emitter.position.z;
+			var dy = ty-that.emitterFollow.position.y;
+			var dz = tz-that.emitterFollow.position.z;
+			var d = Math.sqrt(dz*dz+dy*dy);
+			var a = Math.atan2(dz,dy);
+			var pstr = 0;
+
+			if (outerRadius > 0) {
+			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+			if (dstr > 1) { dstr = 1; }
+			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationx += getShortRotation(a-rotationx)*pstr;
+
+			var rotationD = rotationx-oldRx;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) {
+			rotationx = oldRx+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
+
+			//var speed = delta/2;
+			var speed = d/4;
+			if (speed > maxSpeed) {
+			speed = maxSpeed;
+			}
+
+			that.emitterFollow.position.y += Math.cos(rotationx)*speed;
+			that.emitterFollow.position.z += Math.sin(rotationx)*speed;
+			that.emitterFollow.rotationx = rotationx/degToRad;
+
+			var tox = that.emitter.position.x;
+
+			var moveX = (tox-that.emitterFollow.position.x)/that.settings.emitterDivider;
+			if (moveX > maxSpeed) {
+			moveX = maxSpeed;
+			}
+			if (moveX < -maxSpeed) {
+			moveX = -maxSpeed;
+			}
+
+			that.emitterFollow.position.x += moveX;
+
+			}
+
+			// Z
+			if (that.currentNormal.z > 0.5 || that.currentNormal.z < -0.5) {
+
+			var rotationz = that.emitterFollow.rotationz/180*pi;
+			var oldRz = rotationz;
+			rotationz += pi*0*0.5-pi*0*Math.random();
+
+			var tx = that.emitter.position.x;
+			var ty = that.emitter.position.y;
+			var dx = tx-that.emitterFollow.position.x;
+			var dy = ty-that.emitterFollow.position.y;
+			var d = Math.sqrt(dx*dx+dy*dy);
+			var a = Math.atan2(dx,dy);
+			var pstr = 0;
+
+			if (outerRadius > 0) {
+			var dstr = (d-innerRadius)/(outerRadius-innerRadius);
+			if (dstr > 1) { dstr = 1; }
+			if (dstr > 0) { pstr += (1-pstr)*(dstr*dstr); }
+			}
+			rotationz += getShortRotation(a-rotationz)*pstr;
+
+			var rotationD = rotationz-oldRz;
+			if (Math.abs(rotationD) > rotationLimit*degToRad) {
+			rotationz = oldRz+rotationLimit*degToRad*(rotationD<0?-1:1);
+			}
+
+			//var speed = delta/2;
+			var speed = d/4;
+			if (speed > maxSpeed) {
+			speed = maxSpeed;
+			}
+
+			that.emitterFollow.position.y += Math.cos(rotationz)*speed;
+			that.emitterFollow.position.x += Math.sin(rotationz)*speed;
+			that.emitterFollow.rotationz = rotationz/degToRad;
+
+			var toz = that.emitter.position.z;
+
+			var moveZ = (toz-that.emitterFollow.position.z)/that.settings.emitterDivider;
+			if (moveZ > maxSpeed) {
+			moveZ = maxSpeed;
+			}
+			if (moveZ < -maxSpeed) {
+			moveZ = -maxSpeed;
+			}
+
+			that.emitterFollow.position.z += moveZ;
+
+			}
+
+		}
 
 		if ( that.settings.keepEmitterFollowDown && !that.settings.useOldRay ) {
 
@@ -370,9 +544,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		}
 
 		if (that.settings.useOldRay) {
-	
+
 			// shoot rays in all directions from emitterFollow, clamp in the direction of the shortest distance
-/*			var direction = new THREE.Vector3();
+			var direction = new THREE.Vector3();
 			var rayOld = new THREE.Ray( that.emitterFollow.position, direction );
 			var shortestDistance = 10000;
 			var shortestPoint = that.emitterFollow.position;
@@ -483,7 +657,7 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 				var normal = shortestObject.matrixRotationWorld.multiplyVector3( shortestFace.normal.clone() );
 				that.currentNormal = normal;
 			}
-*/
+
 			/*var amount = 5;
 
 			that.emitterFollow.position.x += that.currentNormal.x*amount;
@@ -521,9 +695,9 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 				that.cameraTarget.position.z = camPos.z-80;
 			}
 			*/
-	/*		emitterReal.position = that.emitter.position;
+/*			emitterReal.position = that.emitter.position;
 			emitterFollowReal.position = that.emitterFollow.position;
-	*/
+*/				
 			shared.renderer.render( collisionScene, that.settings.camera );
 			//shared.renderer.render( scene, camera, renderTarget );
 			shared.renderer.clear();
@@ -531,6 +705,13 @@ var CollisionScene = function ( camera, scene, scale, shared, collisionDistance,
 		}
 
 	};
+
+	function getShortRotation(rot) {
+		rot %= pi2;
+		if (rot > pi) { rot -= pi2; }
+		else if (rot < -pi) { rot += pi2; }
+		return rot;
+	}
 
 	function addMesh( geometry, scale, x, y, z, rx, ry, rz, material ) {
 

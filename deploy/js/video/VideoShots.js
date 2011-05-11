@@ -193,6 +193,7 @@ var VideoShots = {
         path: "/files/videos/dunes/s03_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
         z: -100,
+		removeAt: 0.3,
 		locked: true
     }]
 };

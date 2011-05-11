@@ -8,6 +8,11 @@ var LauncherSection = function ( shared ) {
 	exploreDreams, addToTheDream,
 	loading, footer, footNav;
 
+	var delta, time, oldTime = start_time = new Date().getTime();
+	
+	var fade;
+	var at, alpha = 1;
+
 	domElement = document.createElement( 'div' );
 	domElement.style.background = '-moz-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
 	domElement.style.background = '-webkit-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
@@ -31,6 +36,16 @@ var LauncherSection = function ( shared ) {
 		clouds.getDomElement().style.height = window.innerHeight+"px";
 		domElement.appendChild( clouds.getDomElement() );
 
+		// Fade
+		
+		fade = document.createElement( 'div' );
+		fade.style.background = "rgba(255,255,255,1)";
+		fade.style.width = "100%";
+		fade.style.height = "100%";
+		fade.style.position = "absolute";
+		fade.style.zIndex = 1000;
+		domElement.appendChild( fade);
+		
 		// UI
 
 		uiContainer = document.createElement( 'div' );
@@ -261,12 +276,31 @@ var LauncherSection = function ( shared ) {
 
 	};
 
-	this.update = function () {
+	this.update = function ( ) {
 
+		time = new Date().getTime();
+		delta = time - oldTime;
+		oldTime = time;
+		
 		if ( ! isLoading ) {
 		
 			clouds.update();
 			
+		}
+		
+		if ( alpha > 0 ) {
+			
+			alpha -= 0.0004 * delta;
+			
+			at = TWEEN.Easing.Exponential.EaseOut( alpha );
+			
+			fade.style.background = "rgba(255,255,255," + at + ")";
+			
+		} else {
+			
+			fade.style.display = "none";
+			fade.style.zIndex = 0;
+
 		}
 
 	};

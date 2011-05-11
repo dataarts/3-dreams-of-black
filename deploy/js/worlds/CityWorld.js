@@ -57,7 +57,7 @@ var CityWorld = function ( shared ) {
 
 	// Init City Shader
 	
-	CityShader.init();
+	//CityShader.init();
 
 
 	// Scene
@@ -85,7 +85,6 @@ var CityWorld = function ( shared ) {
 
 		}
 
-
 		TriggerUtils.setupCityTriggers( result );
 
 		// fix texture wrapping for skydome
@@ -102,18 +101,18 @@ var CityWorld = function ( shared ) {
 
 		// setup custom materials
 
-		var excludeIds = [ "Backdrop_City" ];
-		applyCityShader( result, excludeIds );
+		//var excludeIds = [ "Backdrop_City" ];
+		//applyCityShader( result, excludeIds );
 
 		that.scene.update( undefined, true );
 
 	};
 
-	if ( !shared.debug ) {
+	//if ( !shared.debug ) {
 
-		loader.load( "/files/models/city/City.js", sceneLoaded );
+		loader.load( "files/models/city/City.js", sceneLoaded );
 
-	}
+	//}
 
 	var cameraPosition, d;
 
@@ -121,10 +120,10 @@ var CityWorld = function ( shared ) {
 
 		cameraPosition = camera.matrixWorld.getPosition();
 
-		TriggerUtils.effectorRadius = 330;
+		TriggerUtils.effectorRadius = 80;
 		TriggerUtils.update( "city" );
 
-		updateCityShader( delta );
+		//updateCityShader( delta );
 
 		if( portalsActive ) {
 

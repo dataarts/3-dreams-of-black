@@ -7,7 +7,7 @@ var Clouds = function ( shared, isRelaunch ) {
 	var boids = [];
 	var morphObject = [];
 
-	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0}, delta, time, oldTime = start_time = new Date().getTime(),
+	var mouse = { x: 0, y: 0 }, vector = { x: 0, y: 0, z: 0 }, delta, time, oldTime = start_time = new Date().getTime(),
 	camera, postCamera, scene, postScene, birdsScene, renderer, context, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos,
 	wantedCameraUpX = 0;
 
@@ -111,8 +111,8 @@ var Clouds = function ( shared, isRelaunch ) {
 
 	renderer.sortObjects = false;
 	renderer.autoClear = false;
-	renderTargetClouds = new THREE.WebGLRenderTarget( window.innerWidth/2, window.innerHeight/2, { minFilter: THREE.NearestFilter, magFilter: THREE.LinearFilter } );
-	renderTargetFlamingos = new THREE.WebGLRenderTarget( window.innerWidth*2, window.innerHeight*2, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
+	renderTargetClouds = new THREE.WebGLRenderTarget( 512, 512, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
+	renderTargetFlamingos = new THREE.WebGLRenderTarget( 1024, 512, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter } );
 	renderTargetClouds.depthBuffer = false;
 	renderTargetClouds.stencilBuffer = false;
 	renderTargetFlamingos.depthBuffer = false;
@@ -130,6 +130,7 @@ var Clouds = function ( shared, isRelaunch ) {
 	"height": { type: "f", value: window.innerHeight },
 	"fogColor" : {type: "c", value: fog.color}
 	};
+
 	postMaterial = new THREE.MeshShaderMaterial( {
         uniforms: postUniforms,
         vertexShader: [
@@ -250,9 +251,9 @@ var Clouds = function ( shared, isRelaunch ) {
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
 
-    renderer.setSize( width, height );
+		renderer.setSize( width, height );
 
-    renderer.domElement.style.width = width + 'px';
+		renderer.domElement.style.width = width + 'px';
 		renderer.domElement.style.height = height + 'px';
 
 	};
@@ -260,15 +261,15 @@ var Clouds = function ( shared, isRelaunch ) {
 	this.update = function () {
 
 		position = ( ( new Date().getTime() - start_time ) * 0.03 ) % 4000;
-    time = new Date().getTime();
-    delta = time - oldTime;
-    oldTime = time;
+		time = new Date().getTime();
+		delta = time - oldTime;
+		oldTime = time;
 
 		camera.position.x += (  mouse.x - camera.position.x ) * 0.009;
 		camera.position.y += ( -mouse.y - camera.position.y ) * 0.009;
 		camera.position.z = - position + 4000;
-    birdsGroup.position.z = camera.position.z - 500;
-    birdsGroup.position.y = - 50;
+		birdsGroup.position.z = camera.position.z - 500;
+		birdsGroup.position.y = - 50;
 
 		/*
 		wantedCameraUpX = Math.min( Math.max( -0.3, ( mouse.x - camera.position.x ) * 0.005 ), 0.3 );
@@ -283,29 +284,31 @@ var Clouds = function ( shared, isRelaunch ) {
 		renderer.clear();
 
 		renderer.render( scene, camera, renderTargetClouds, true );
-    renderer.render( birdsScene, camera, renderTargetFlamingos, true );
+		renderer.render( birdsScene, camera, renderTargetFlamingos, true );
 
-  	renderer.render( postScene, postCamera );
+		renderer.render( postScene, postCamera );
 
-//    render.render( scene, camera );
+		// render.render( scene, camera );
 
-    for ( var i = 0, il = birds.length; i < il; i++ ) {
-      boid = boids[ i ];
+		for ( var i = 0, il = birds.length; i < il; i++ ) {
+			
+			boid = boids[ i ];
       
 			vector.z = boid.position.z;
 
 			//boid.repulse( vector );
 
-      boid.run( boids );
-      bird = birds[ i ];
+			boid.run( boids );
+			bird = birds[ i ];
 
-      bird.rotation.y = (Math.atan2( - boid.velocity.z, boid.velocity.x )+Math.PI/2);
-      bird.rotation.z = (Math.asin( boid.velocity.y / boid.velocity.length()));
+			bird.rotation.y = (Math.atan2( - boid.velocity.z, boid.velocity.x )+Math.PI/2);
+			bird.rotation.z = (Math.asin( boid.velocity.y / boid.velocity.length()));
 
-		  bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
+			bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
 
-      morphObject[i].update(delta*bird.phase/100);
-    }
+			morphObject[i].update(delta*bird.phase/100);
+		}
+
 	};
 
 };

@@ -1,6 +1,6 @@
 var LoadingBar = function ( callback ) {
 
-	var domElement, loadBar, loadVal,
+	var domElement, loadBar, loadVal, mouseGif,
 	totalItems = 0, doneItems = 0, maxProgress = 0;
 
 	domElement = document.createElement( 'div' );
@@ -24,8 +24,14 @@ var LoadingBar = function ( callback ) {
 	loadVal.style.background = '#fff';
 	loadVal.style.borderRadius = '5px';
 	domElement.appendChild( loadVal );
-	
-	domElement.style.margin = "30px 0 0 0";
+
+	// mouseGif = document.createElement( 'div' );
+	// mouseGif.style.position = 'absolute';
+	// mouseGif.innerHTML = "<img src = '/files/mouse_loading.gif' alt = 'arrows' />";
+	// mouseGif.style.marginTop = "30px";
+	// domElement.appendChild( mouseGif );
+
+	domElement.style.margin = "-5px 0 0 0";
 
 	function updateProgress() {
 

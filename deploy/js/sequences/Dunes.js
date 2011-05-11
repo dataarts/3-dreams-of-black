@@ -33,7 +33,7 @@ var Dunes = function ( shared ) {
 		shared.sequences.dunes = this;
 		camera = DunesCamera( shared );
 		soup = new DunesSoup( camera.camera, world.scene, shared );
-
+		shared.soups.dunes = soup;
 		console.log( "dunes init" );
 
 	};
@@ -115,7 +115,7 @@ var Dunes = function ( shared ) {
 		// update everything
 
 		if( progress > 0.38 ) soup.update( delta );
-
+		//soup.update( delta );
 
 		camera.updateCamera( progress, delta, time );
 

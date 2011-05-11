@@ -240,7 +240,7 @@ var RelauncherSection = function( shared ) {
 
 		function handleReturn(e) {
 
-		  if(e.keyCode == 13 || !e) {
+		  if(e.keyCode == 13 || !e.keyCode) {
 
 				shared.signals.showexploration.dispatch();
 				shared.signals.startexploration.dispatch( 'dunes' );

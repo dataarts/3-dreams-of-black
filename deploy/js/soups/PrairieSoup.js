@@ -6,32 +6,21 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	shared.camPos = new THREE.Vector3( 302.182, -9.045, -105.662 );
 
+	var lastCamPos = new THREE.Vector3();
+	var camPosVector = new THREE.Vector3();
+	var camVector = new THREE.Vector3();
+
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
-/*	var pointLight = new THREE.PointLight( 0x999999, -1.25, 400 );
-	pointLight.position.x = shared.camPos.x;
-	pointLight.position.y = shared.camPos.y;
-	pointLight.position.z = shared.camPos.z;
-	scene.addLight( pointLight, 1.0 );
-*/
 	// setup the different parts of the soup
-
 	var spawnAnimal = 0;
 	var spawnBird = 0;
 
 	var oldEmitterPos = [];
 
-	var vectors;
-	var ribbons;
-	var trail;
-	var runningAnimals;
-	var flyingAnimals;
-	var particles;
-
 	// collision scene
-	
 	var collisionScene = new CollisionScene( camera, scene, 1.0, shared, 1100 );
 
 	collisionScene.settings.maxSpeedDivider = 1;
@@ -49,27 +38,9 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// vector trail
 	var startPosition = new THREE.Vector3( shared.camPos.x - 10, shared.camPos.y, shared.camPos.z + 30 );
-	vectors = new Vectors( 30, 10, 10, startPosition );
+	var vectors = new Vectors( 30, 10, 10, startPosition );
 	//vectors.absoluteTrail = true;
-	// ribbons
 
-	/*var ribbonMaterials = [
-
-		new THREE.MeshLambertMaterial( { color:0x000000 } ),
-		new THREE.MeshLambertMaterial( { color:0x555555 } ),
-		new THREE.MeshLambertMaterial( { color:0x000000 } ),
-		new THREE.MeshLambertMaterial( { color:0x555555 } ),
-		new THREE.MeshLambertMaterial( { color:0x000000 } ),
-		new THREE.MeshLambertMaterial( { color:0x555555 } )
-
-	];
-
-	ribbons = new Ribbons( 6, vectors.array, scene, ribbonMaterials );
-	ribbons.settings.ribbonPulseMultiplier_1 = 4;
-	ribbons.settings.ribbonPulseMultiplier_2 = 4;
-	ribbons.settings.ribbonMin = 0.2;
-	ribbons.settings.ribbonMax = 0.2;
-	*/
 
 	// particles
 
@@ -80,13 +51,13 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var sprite4 = THREE.ImageUtils.loadTexture( "/files/textures/dark_4.png" );
 
 	var particleSprites = [sprite0,sprite1,sprite2,sprite3,sprite4];
-	particles = new Particles(20, scene, 1.5, particleSprites, 70, 60);
+	var particles = new Particles(20, scene, 1.5, particleSprites, 70, 60);
 	particles.settings.zeroAlphaStart = false;
 	particles.settings.aliveDivider = 2;
 
 	// running animals
 
-	runningAnimals = new AnimalSwarm( 40, scene, vectors.array );
+	var runningAnimals = new AnimalSwarm( 40, scene, vectors.array );
 	runningAnimals.settings.xPositionMultiplier = 22;
 	runningAnimals.settings.zPositionMultiplier = 18;
 	runningAnimals.settings.shootRayDown = true;
@@ -286,7 +257,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	// flying animals
 
-	flyingAnimals = new AnimalSwarm( 10, scene, vectors.array );
+	var flyingAnimals = new AnimalSwarm( 10, scene, vectors.array );
 	flyingAnimals.settings.flying = true;
 	flyingAnimals.settings.xPositionMultiplier = 24;
 	flyingAnimals.settings.zPositionMultiplier = 12;
@@ -299,7 +270,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	function birdsALoadedProxy( geometry ) {
 		
 		var animal,
-			morphArray = [0,0,0,0,1,0,0,1,0,1];
+			morphArray = [0,0,0,0,1,0,0,0,0,1];
 		var speedArray = [12, 14];
 
 		animal = flyingAnimals.addAnimal( geometry, null, 0.4, morphArray, speedArray );
@@ -307,20 +278,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		
 	};
 	
-	// trail - of grass/trees/etc
-	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x010101 } )
-	];
-
+	// trail - blobs...
 	var trail = new Trail( 80, scene );
-
-	// preoccupy for differnt grass
-	for ( i=0; i<80; ++i ) {
-
-		//var type = i%2;
-		//trail.array[i] = "0"+(type+1);
-		trail.array[i] = "01";
-
-	}
 
 	trail.settings.spread = 10;
 	trail.settings.aliveDivider = 40;
@@ -330,43 +289,11 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	trail.settings.yscale = 0.15;
 
 	loader.load( { model: "/files/models/soup/darkblob01.js", callback: blob01LoadedProxy } );
-	loader.load( { model: "/files/models/soup/darkblob02.js", callback: blob02LoadedProxy } );
-	loader.load( { model: "/files/models/soup/grass03.js", callback: blob03LoadedProxy } );
-	loader.load( { model: "/files/models/soup/grass04.js", callback: blob04LoadedProxy } );
-	loader.load( { model: "/files/models/soup/grass05.js", callback: blob05LoadedProxy } );
 
 
 	function blob01LoadedProxy( geometry ) {
 
-		var object = trail.addInstance( geometry, "01", false, false );
-		preInitModel( geometry, renderer, scene, object );
-
-	}
-
-	function blob02LoadedProxy( geometry ) {
-
-		var object = trail.addInstance( geometry, "02", false, false );
-		preInitModel( geometry, renderer, scene, object );
-
-	}
-
-	function blob03LoadedProxy( geometry ) {
-
-		var object = trail.addInstance( geometry, "03", false, false, trailMaterials );
-		preInitModel( geometry, renderer, scene, object );
-
-	}
-
-	function blob04LoadedProxy( geometry ) {
-
-		var object = trail.addInstance( geometry, "04", false, false, trailMaterials );
-		preInitModel( geometry, renderer, scene, object );
-
-	}
-
-	function blob05LoadedProxy( geometry ) {
-
-		var object = trail.addInstance( geometry, "05", false, false );
+		var object = trail.addInstance( geometry, null, false, false );
 		preInitModel( geometry, renderer, scene, object );
 
 	}
@@ -394,6 +321,10 @@ var PrairieSoup = function ( camera, scene, shared ) {
 			collisionScene.settings.camera = otherCamera;
 		}
 
+		
+		camPosVector.copy(shared.camPos);
+		camVector.copy(camPosVector.subSelf(lastCamPos).normalize());
+		lastCamPos.copy(shared.camPos);
 
 		// temp reset
 
@@ -410,10 +341,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
-		//ribbons.update( collisionScene.emitterFollow.position );
 		particles.update( delta, vectors.array[0].position );
-		//runningAnimals.update();
-		//flyingAnimals.update();
 		runningAnimals.update( delta, shared.camPos );
 		flyingAnimals.update( delta, shared.camPos );
 
@@ -421,27 +349,16 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		// spawn animal test
 		if ( spawnAnimal >= 100 ) {
-
-			//runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
-			var rndx = (Math.random()*20)-10;
-			var rndz = (Math.random()*20)-10;
-			var pos1 = new THREE.Vector3();
-			var pos2 = new THREE.Vector3();
-			pos1.copy(collisionScene.emitterFollow.position);
-			pos2.copy(collisionScene.emitter.position);
-			pos1.x += rndx;
-			pos2.x += rndx;
-			pos1.z += rndz;
-			pos2.z += rndz;
-			runningAnimals.create(pos1, collisionScene.currentNormal, pos2);
+	
+			runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, camVector);
 			spawnAnimal = 0;
 
 		}
 
 		if ( spawnBird >= 500 ) {
 
-			//flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
-			flyingAnimals.create( collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position );
+			flyingAnimals.create( collisionScene.emitterFollow.position, collisionScene.currentNormal, camVector );
+
 			spawnBird = 0;
 
 		}			
@@ -451,47 +368,20 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		var pos = new THREE.Vector3(collisionScene.emitter.position.x, collisionScene.emitter.position.y, collisionScene.emitter.position.z);
 		oldEmitterPos.unshift(pos);
 
-		if (oldEmitterPos.length > 40) {
-			var pos = oldEmitterPos[40];
-			
-			shared.lavatrailx = pos.x;
-			shared.lavatrailz = pos.z;
+		if (oldEmitterPos.length > 10) {
+			var pos = oldEmitterPos[10];
 
-			ROME.TrailShader.uniforms.lavaHeadPosition.value.set( pos.x, 0, -pos.z );
+			ROME.TrailShaderUtils.updateLava( delta * 0.0001, pos.x, -pos.z );
+			ROME.TrailShaderUtils.setMarkAtWorldPosition( pos.x, -pos.z );
+
+			//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( pos.x, 0, -pos.z );
 		}
 
-
-		//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( collisionScene.emitter.position.x, 0, -collisionScene.emitter.position.z );
-
-
-/*		var moveDistance = (collisionScene.distance-emitterDistance)/40;
-		emitterDistance += moveDistance;
-		var zoom = emitterDistance/15;
-		zoom = Math.min(30, zoom);
-		camera.fov = 60-zoom;
-		camera.updateProjectionMatrix();
-*/
-/*		TriggerUtils.effectors[ 0 ] = vectors.array[0].position.x;
-		TriggerUtils.effectors[ 1 ] = vectors.array[0].position.y;
-		TriggerUtils.effectors[ 2 ] = vectors.array[0].position.z;
-*/
-		TriggerUtils.effectors[ 0 ] = collisionScene.emitter.position.x;
-		TriggerUtils.effectors[ 1 ] = collisionScene.emitter.position.y;
-		TriggerUtils.effectors[ 2 ] = collisionScene.emitter.position.z;
-
-		//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( vectors.array[15].position.x, 0, -vectors.array[15].position.z );
-		//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( 0, 0, 0 );
-
-		//shared.lavatrailx = vectors.array[4].position.x;
-		//shared.lavatrailz = vectors.array[4].position.z;
-
-		// pointlight
-
-/*		pointLight.position.x = vectors.array[0].position.x;
-		pointLight.position.y = vectors.array[0].position.y + 30;
-		pointLight.position.z = vectors.array[0].position.z;
-*/
-
+		TriggerUtils.effectors[ 0 ] = vectors.array[1].position.x;
+		TriggerUtils.effectors[ 1 ] = vectors.array[1].position.y;
+		TriggerUtils.effectors[ 2 ] = vectors.array[1].position.z;
+		
+		shared.prairieSoupHead.copy( collisionScene.emitter.position );
 
 	};
 
