@@ -124,8 +124,9 @@ var DunesSoup = function ( camera, scene, shared ) {
 			
 		} else {
 			
-			shared.camPos.copy( otherCamera.matrixWorld.getPosition());
+			shared.camPos.copy( otherCamera.matrixWorld.getPosition() );
 			collisionScene.settings.camera = otherCamera;
+
 		}
 
 		// update the soup parts

@@ -110,18 +110,21 @@ var Dunes = function ( shared ) {
 			
 		}
 
-
-
 		// update everything
 
 		if( progress > 0.38 ) soup.update( delta );
-		//soup.update( delta );
 
 		camera.updateCamera( progress, delta, time );
 
 		THREE.AnimationHandler.update( delta );
 
 		world.update( delta, camera.camera, false );
+		
+		var currentPosition = camera.camera.matrixWorld.getPosition();
+		var currentTarget = camera.camera.target.matrixWorld.getPosition();
+
+		DunesShaderEffectors.position[ 0 ].copy( currentPosition );
+		DunesShaderEffectors.position[ 1 ].copy( currentTarget );
 
 		renderer.render( world.scene, camera.camera, renderTarget );
 
