@@ -93,8 +93,8 @@ var RelauncherSection = function( shared ) {
 	outer.showFill = false;
 	outer.insides = true;
 	inner.showFill = false;
-	// outer.setRadius(.19);
-	// core.setRadius(.12);
+	outer.setRadius(.09);
+	core.setRadius(.06);
 
 	var heart = {
 
@@ -241,6 +241,7 @@ var RelauncherSection = function( shared ) {
 		function handleReturn(e) {
 
 			e.preventDefault();
+
 		  if(e.keyCode == 13 || !e.keyCode) {
 
 				shared.signals.showexploration.dispatch();
