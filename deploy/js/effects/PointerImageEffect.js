@@ -24,7 +24,7 @@ var PointerImageEffect = function ( shared, url ) {
 	this.show = function ( progress ) {
 		
 		// document.body.style.cursor = 'url("/files/pointer-transparent.png"), auto';
-		document.body.style.cursor = "none";
+		document.body.style.cursor = "none !important";
 		imgElement.style.display = "block";
 
 	};
@@ -57,7 +57,7 @@ var PointerImageEffect = function ( shared, url ) {
 	this.hide = function () {
 		
 		imgElement.style.display = "none";
-		document.body.style.cursor = "auto";
+		document.body.style.cursor = "auto !important";
 
 	};
 	
