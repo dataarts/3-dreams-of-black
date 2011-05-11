@@ -11,6 +11,11 @@
 		"relauncher",
 		"tool",
 	];
+  var stickyHistory = [
+      '/',
+      '/film',
+      '/explore'
+  ];
 	var historyDispatches = [];
 
 	// debug
@@ -201,8 +206,15 @@
 		section.resize( window.innerWidth, window.innerHeight );
 		section.show();
 
-		if(title && path) {
 
+		if(title && path) {
+      var i = stickyHistory.length;
+      while (i--) {
+        if (stickyHistory[i] === path) {
+          path += window.location.search;
+          break;
+        }
+      }
 			if(history) history.pushState( null, title, path );
 
 		}

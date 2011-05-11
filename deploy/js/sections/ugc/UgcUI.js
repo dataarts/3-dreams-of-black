@@ -9,13 +9,11 @@ var UgcUI = function (shared) {
   var SIZE_MED = 3;
   var SIZE_LARGE = 5;
 
-
   var numAnimals = 10; // TODO
   var animalSlideTarget = 0;
   var animalSlide = 0;
 
   var css = getCSS();
-
 
   var domElement = document.createElement('div');
 
@@ -174,6 +172,8 @@ var UgcUI = function (shared) {
 
   }, false);
 
+  var colormode = false;
+
   submit.appendChild(submitImage);
   submit.appendChild(submitText);
   submit.appendChild(submitInputs);
@@ -187,6 +187,20 @@ var UgcUI = function (shared) {
 
 
   domElement.appendChild(submit);
+
+  var colorDOM = document.createElement('div');
+  var picker = new ColorPicker(colorDOM);
+  picker.onColorChange = function(hex) {
+    shared.ugcSignals.object_changecolor.dispatch(hex);
+  }
+  colorDOM.style.position = 'fixed';
+  colorDOM.style.left = '50%';
+  colorDOM.style.top = '50%';
+  colorDOM.style.display = 'none';
+  colorDOM.style.marginTop = -230 + 'px';
+  colorDOM.style.marginLeft = -175 + 'px';
+
+  domElement.appendChild(colorDOM);
 
   var theBR = document.createElement('span');
   theBR.innerHTML += '<br/>';
@@ -279,6 +293,15 @@ var UgcUI = function (shared) {
 //      shared.ugcSignals.object_smoothdown.dispatch();
 //    });
 
+    onClick('ugcui-color', function() {
+      if (colormode) {
+        shared.ugcSignals.object_createmode.dispatch();
+      } else {
+        shared.ugcSignals.object_colormode.dispatch();
+      }
+
+    });
+
     onClick('ugcui-size-small', function() {
       shared.ugcSignals.object_changesize.dispatch(SIZE_SMALL);
     });
@@ -334,21 +357,39 @@ var UgcUI = function (shared) {
     });
 
     shared.ugcSignals.object_rotatemode.add(function() {
+      colormode = false;
       addClass(document.getElementById('ugcui-rotate'), 'active');
       removeClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-erase'), 'active');
+      removeClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'none';
     });
 
     shared.ugcSignals.object_erasemode.add(function() {
+      colormode = false;
       addClass(document.getElementById('ugcui-erase'), 'active');
       removeClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-rotate'), 'active');
+      removeClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'none';
     });
 
     shared.ugcSignals.object_createmode.add(function() {
+      colormode = false;
       addClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-erase'), 'active');
       removeClass(document.getElementById('ugcui-rotate'), 'active');
+      removeClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'none';
+    });
+
+    shared.ugcSignals.object_colormode.add(function() {
+      colormode = true;
+      removeClass(document.getElementById('ugcui-create'), 'active');
+      removeClass(document.getElementById('ugcui-erase'), 'active');
+      removeClass(document.getElementById('ugcui-rotate'), 'active');
+      addClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'block';
     });
 
 

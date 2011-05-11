@@ -10,6 +10,7 @@ files = [
 'js/lib/Logger.js',
 'js/lib/Stats.js',
 'js/lib/gui.min.js',
+'js/lib/color.js',
 
 'js/lib/js-signals.min.js',
 'js/lib/Tween.js',
@@ -97,6 +98,7 @@ files = [
 
 'js/sections/launcher/Clouds.js',
 
+'js/sections/ugc/ColorPicker.js',
 'js/sections/ugc/UgcIntro.js',
 'js/sections/ugc/UgcUI.js',
 'js/sections/ugc/UgcObjectCreator.js',
