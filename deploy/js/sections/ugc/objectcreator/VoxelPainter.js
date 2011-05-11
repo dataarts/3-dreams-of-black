@@ -213,6 +213,13 @@ var VoxelPainter = function ( camera, scene ) {
 
 	};
 
+	this.hideCursor = function () {
+
+		_brush[ 0 ].visible = false;
+		_brush[ 1 ].visible = false;
+
+	};
+
 	this.moveMouse = function ( x, y ) {
 
 		mouse2D.x = x * 2 - 1;

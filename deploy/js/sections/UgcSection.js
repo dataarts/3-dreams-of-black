@@ -5,6 +5,7 @@ var UgcSection = function ( shared ) {
 	var intro, objectCreator/*, soupCreator*/, ui;
 
 	var domElement = document.createElement( 'div' );
+
 	domElement.style.display = 'none';
 
 	var DEG2RAD = Math.PI / 180,
@@ -124,6 +125,7 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals.object_symmetrymode = new Signal();
 		shared.ugcSignals.object_rotatemode = new Signal();
 		shared.ugcSignals.object_changecolor = new Signal();
+		shared.ugcSignals.object_colormode = new Signal();
 		shared.ugcSignals.object_changesize = new Signal();
 		shared.ugcSignals.object_zoomin = new Signal();
 		shared.ugcSignals.object_zoomout = new Signal();
@@ -203,6 +205,7 @@ var UgcSection = function ( shared ) {
     var origH = orig.height;
     var ctx = dest.getContext('2d');
     that.resize(dWidth, dHeight);
+    objectCreator.getPainter().hideCursor();
     for(var i=0;i<num_frames;i++) {
       // move camera
       camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
@@ -218,7 +221,7 @@ var UgcSection = function ( shared ) {
     // create thumbnail
     var strip = dest.toDataURL('image/png');
     delete dest;
-    camera.position = stashed_cam_pos;
+    camera.position.copy( stashed_cam_pos );
     renderer.clear();
     renderer.render( that.scene, camera );
     return strip;
