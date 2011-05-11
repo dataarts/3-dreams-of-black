@@ -8,13 +8,14 @@ var LoadingBar = function ( callback ) {
 	loadBar = document.createElement( 'div' );
 	loadBar.style.position = 'absolute';
 	loadBar.style.display = 'block';
-	loadBar.style.width = '300px';
+	loadBar.style.width = '275px';
 	loadBar.style.height = '8px';
 	loadBar.style.borderStyle = 'solid';
 	loadBar.style.borderColor = 'rgba(255,255,255,0.5)';
 	//loadBar.style.background = 'rgba(255,255,255,0.15)';
 	loadBar.style.borderWidth = '1px';
 	loadBar.style.borderRadius = '5px';
+	loadBar.style.marginLeft = '12px';
 	domElement.appendChild( loadBar );
 
 	loadVal = document.createElement( 'div' );
@@ -23,13 +24,14 @@ var LoadingBar = function ( callback ) {
 	loadVal.style.width = '0px';
 	loadVal.style.background = '#fff';
 	loadVal.style.borderRadius = '5px';
+	loadVal.style.marginLeft = '12px';
 	domElement.appendChild( loadVal );
 
-	// mouseGif = document.createElement( 'div' );
-	// mouseGif.style.position = 'absolute';
-	// mouseGif.innerHTML = "<img src = '/files/mouse_loading.gif' alt = 'arrows' />";
-	// mouseGif.style.marginTop = "30px";
-	// domElement.appendChild( mouseGif );
+	mouseGif = document.createElement( 'div' );
+	mouseGif.setAttribute("style", "margin: 30px auto 0 auto;");
+	mouseGif.innerHTML = "<img src = '/files/mouse_loading.png' alt = 'arrows' />";
+	mouseGif.style.marginLeft = '53px';
+	domElement.appendChild( mouseGif );
 
 	domElement.style.margin = "-5px 0 0 0";
 
@@ -40,7 +42,7 @@ var LoadingBar = function ( callback ) {
 		if ( progress > maxProgress ) {
 
 			maxProgress = progress;
-			loadVal.style.width = progress * 300 + "px";
+			loadVal.style.width = progress * 275 + "px";
 
 		}
 
@@ -64,6 +66,12 @@ var LoadingBar = function ( callback ) {
 			callback();
 
 		}
+
+	};
+
+	this.getMouseInfo = function() {
+
+		return mouseGif;
 
 	};
 

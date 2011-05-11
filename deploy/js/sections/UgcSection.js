@@ -205,6 +205,7 @@ var UgcSection = function ( shared ) {
     var origH = orig.height;
     var ctx = dest.getContext('2d');
     that.resize(dWidth, dHeight);
+    objectCreator.getPainter().hideCursor();
     for(var i=0;i<num_frames;i++) {
       // move camera
       camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
@@ -220,7 +221,7 @@ var UgcSection = function ( shared ) {
     // create thumbnail
     var strip = dest.toDataURL('image/png');
     delete dest;
-    camera.position = stashed_cam_pos;
+    camera.position.copy( stashed_cam_pos );
     renderer.clear();
     renderer.render( that.scene, camera );
     return strip;
