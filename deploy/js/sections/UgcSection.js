@@ -289,7 +289,7 @@ var UgcSection = function ( shared ) {
 
 		// objectCreator.update();
 		// soupCreator.update();
-		ui.update();
+//		ui.update();
 
 		// Background
 

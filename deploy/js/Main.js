@@ -140,6 +140,8 @@
 
 	function handleHistory() {
 
+
+		console.log(shared.loadedContent);
 		// Handle History API stuff
 		var folder = window.location.pathname.toString();
 
