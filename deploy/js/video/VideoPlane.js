@@ -11,9 +11,9 @@ var VideoPlane = function( shared, layer, conf ) {
   this.params = {
     "radius": 0.95,
     "trail": 4,
-    "random": 0.0,
-    "bulge": 0.65,
-    "polyDetail": 0.45,
+    "random": 0.16,
+    "bulge": 0.7,
+    "polyDetail": 0.55,
     "softEdge": 0.77,
     "softTail": 0
   };
