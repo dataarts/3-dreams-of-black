@@ -16,7 +16,7 @@ WonderWall.Point = function(gee, x, y) {
   // Public variables
   this.x = x;
   this.y = y;
-  this.r = .15;
+  this.r = .07;
   this.threshold = 0.1;
   this.easing = 0.125;
   this.updating = false;

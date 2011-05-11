@@ -4,6 +4,8 @@ var City = function ( shared ) {
 
 	SequencerItem.call( this );
 
+	var LOOK_SPEED = 0.001;
+	
 	// signals
 	
 	shared.signals.initscenes.add( initScene );
@@ -46,7 +48,7 @@ var City = function ( shared ) {
 			waypoints: waypointsA, duration: 9.7, 
 			useConstantSpeed: true, resamplingCoef: 5,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+			lookSpeed: LOOK_SPEED, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
@@ -192,7 +194,7 @@ var City = function ( shared ) {
 				waypoints: waypointsB, duration: 15.6, 
 				useConstantSpeed: true, resamplingCoef: 5,
 				createDebugPath: false, createDebugDummy: false,
-				lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+				lookSpeed: LOOK_SPEED, lookVertical: true, lookHorizontal: true,
 				verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.0 ] },
 				horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
