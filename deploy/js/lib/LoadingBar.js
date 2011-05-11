@@ -30,7 +30,7 @@ var LoadingBar = function ( callback ) {
 	mouseGif = document.createElement( 'div' );
 	mouseGif.setAttribute("style", "margin: 30px auto 0 auto;");
 	mouseGif.innerHTML = "<img src = '/files/mouse_loading.png' alt = 'arrows' />";
-	mouseGif.style.marginLeft = '53px';
+	mouseGif.style.marginLeft = '8px';
 	domElement.appendChild( mouseGif );
 
 	domElement.style.margin = "-5px 0 0 0";

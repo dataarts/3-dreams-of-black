@@ -12,8 +12,9 @@ var UgcSection = function ( shared ) {
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
 	isRotateMode = false, isMouseDown = false, start_radius = 1500,
-	radius = start_radius, oldRadius = start_radius, newRadius = start_radius,
-	theta = 45, phi = 15;
+	onMouseDownTheta, onMouseDownPhi, onMouseDownPositionX, onMouseDownPositionY,
+	theta = 45, onMouseDownTheta = 45, phi = 15, onMouseDownPhi = 15,
+	radius = start_radius, oldRadius = start_radius, newRadius = start_radius;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 20;
@@ -21,7 +22,7 @@ var UgcSection = function ( shared ) {
 	// Background
 
 	that.scene = new THREE.Scene();
-	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.000075 );
+	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.00015 );
 	that.scene.fog.color.setHSV( 0.576, 0.382, 0.9 );
 
 	// Lights
@@ -58,8 +59,8 @@ var UgcSection = function ( shared ) {
 
 				object.rotation.x = - 90 * Math.PI / 180;
 				object.position.y = - 100;
-				object.position.x = 500;
-				object.scale.x = object.scale.y = object.scale.z = 0.5;
+				object.position.x = 1000;
+				object.scale.x = object.scale.y = object.scale.z = 0.75;
 				that.scene.addObject( object );
 
 			}
@@ -78,27 +79,49 @@ var UgcSection = function ( shared ) {
 	renderer.autoClear = false;
 	domElement.appendChild( renderer.domElement );
 
-	function onKeyDown( event ) {
+	function zoom( amount ) {
 
-		switch ( event.keyCode ) {
+		newRadius += amount;
+		newRadius = newRadius < 100 ? 100 : newRadius > 5000 ? 5000 : newRadius;
 
-			case 16: isRotateMode = true; break;
-			// case 17: isEraseMode = true; break;
-			// case 18: isEraseMode = true; break;
+	}
+
+	function onMouseDown( event ) {
+
+		isMouseDown = true;
+
+		if ( isRotateMode ) {
+
+			onMouseDownTheta = theta;
+			onMouseDownPhi = phi;
+			onMouseDownPositionX = event.clientX;
+			onMouseDownPositionY = event.clientY;
 
 		}
 
 	}
 
-	function onKeyUp( event ) {
+	function onMouseUp( event ) {
 
-		switch ( event.keyCode ) {
+		isMouseDown = false;
 
-			case 16: isRotateMode = false; break;
-			// case 17: isEraseMode = false; break;
-			// case 18: isEraseMode = false; break;
+	}
+
+	function onMouseMove( event ) {
+
+		if ( isRotateMode && isMouseDown ) {
+
+			theta = onMouseDownTheta - ( ( event.clientX - onMouseDownPositionX ) * 0.1 );
+			phi = onMouseDownPhi + ( ( event.clientY - onMouseDownPositionY ) * 0.1 );
+			phi = phi > 90 ? 90 : phi < 0 ? 0 : phi;
 
 		}
+
+	}
+
+	function onMouseWheel( event ) {
+
+		zoom( - event.wheelDeltaY * 0.5 );
 
 	}
 
@@ -170,6 +193,8 @@ var UgcSection = function ( shared ) {
 
 		shared.ugcSignals.showobjectcreator.add( function ( mode ) {
 
+			console.log( mode );
+
 			intro.getDomElement().style.display = 'none';
 
 			objectCreator.enable();
@@ -184,6 +209,38 @@ var UgcSection = function ( shared ) {
 
 		} );
 		*/
+		
+		//
+
+		shared.ugcSignals.object_createmode.add( function () {
+
+			isRotateMode = false;
+
+		} );
+
+		shared.ugcSignals.object_erasemode.add( function () {
+
+			isRotateMode = false;
+
+		} );
+
+		shared.ugcSignals.object_rotatemode.add( function () {
+
+			isRotateMode = true;
+
+		} );
+
+		shared.ugcSignals.object_zoomin.add( function () {
+
+			zoom( - 200 );
+
+		} );
+
+		shared.ugcSignals.object_zoomout.add( function () {
+
+			zoom( 200 );
+
+		} );
 
   shared.ugcSignals.object_requestsnapshot.add(function() {
     var image = gen_filmstrip(735,465);
@@ -205,7 +262,7 @@ var UgcSection = function ( shared ) {
     var origH = orig.height;
     var ctx = dest.getContext('2d');
     that.resize(dWidth, dHeight);
-    objectCreator.getPainter().hideCursor();
+    objectCreator.getPainter().hideBrush();
     for(var i=0;i<num_frames;i++) {
       // move camera
       camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
@@ -254,8 +311,10 @@ var UgcSection = function ( shared ) {
 		domElement.style.display = 'block';
 		objectCreator.show();
 
-		shared.signals.keydown.add( onKeyDown );
-		shared.signals.keyup.add( onKeyUp );
+		shared.signals.mousedown.add( onMouseDown );
+		shared.signals.mouseup.add( onMouseUp );
+		shared.signals.mousemoved.add( onMouseMove );
+		shared.signals.mousewheel.add( onMouseWheel );
 
 		// soupCreator.init();
 
@@ -266,8 +325,10 @@ var UgcSection = function ( shared ) {
 		domElement.style.display = 'none';
 		objectCreator.hide();
 
-		shared.signals.keydown.remove( onKeyDown );
-		shared.signals.keyup.remove( onKeyUp );
+		shared.signals.mousedown.remove( onMouseDown );
+		shared.signals.mouseup.remove( onMouseUp );
+		shared.signals.mousemoved.remove( onMouseMove );
+		shared.signals.mousewheel.remove( onMouseWheel );
 
 	};
 
@@ -289,21 +350,11 @@ var UgcSection = function ( shared ) {
 
 	this.update = function () {
 
-		// objectCreator.update();
-		// soupCreator.update();
 		ui.update();
 
 		// Background
 
-		if ( isRotateMode ) {
-
-			theta += ( shared.mouse.x / shared.screenWidth ) * 4 - 2;
-			phi += - ( shared.mouse.y / shared.screenHeight ) * 4 + 2;
-			phi = phi > 90 ? 90 : phi < 0 ? 0 : phi;
-
-		}
-
-		radius += (newRadius-radius)/20;
+		radius += ( newRadius - radius ) / 20;
 
 		camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 		camera.position.y = radius * Math.sin( phi * DEG2RAD );

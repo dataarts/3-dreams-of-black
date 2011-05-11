@@ -176,7 +176,8 @@ var LauncherSection = function ( shared ) {
 				exploreDreams.addEventListener("click", function(e) {
 
 					e.preventDefault();
-					window.location = "/gallery";
+					window.open("/gallery", "Gallery");
+					// window.location = "/gallery";
 
 				}, false);
 
