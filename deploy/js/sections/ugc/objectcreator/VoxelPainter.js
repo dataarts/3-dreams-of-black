@@ -12,7 +12,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _collider = new THREE.Object3D();
 	_collider.matrixAutoUpdate = false;
-	// _collider.visible = false;
+	_collider.visible = false;
 
 	var _colliderArray = [];
 
