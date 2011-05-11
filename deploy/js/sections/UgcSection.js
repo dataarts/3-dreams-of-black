@@ -203,6 +203,7 @@ var UgcSection = function ( shared ) {
     var origH = orig.height;
     var ctx = dest.getContext('2d');
     that.resize(dWidth, dHeight);
+    objectCreator.getPainter().hideCursor();
     for(var i=0;i<num_frames;i++) {
       // move camera
       camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
