@@ -21,13 +21,13 @@ function ColorPicker(container) {
   var color = new DAT.Color(255, 255, 255);
 
   var img = document.createElement('img');
-  img.src = 'wheel.png';
+  img.src = '/files/wheel.png';
 
   var value = 100;
 
-  this.getColorHex = function() {
-    return color.hex;
-  }
+  this.onColorChange = function(hex) {
+    alert(hex);
+  };
 
   img.onload = function() {
     width = brightnessCanvas.width = bufferCanvas.width = wheelCanvas.width = img.width + PADDING * 2;
@@ -61,7 +61,7 @@ function ColorPicker(container) {
     wheelCtx.save();
     wheelCtx.translate(width / 2, height / 2);
     wheelCtx.rotate(Math.PI / 2);
-    hex(176, 0, 0);
+    hex(177, 0, 0);
     wheelCtx.fill();
     wheelCtx.restore();
     var gradient = brightnessCtx.createLinearGradient(PADDING, 0, width - PADDING, 0);
@@ -118,10 +118,13 @@ function ColorPicker(container) {
     wheelCtx.fill();
     wheelCtx.stroke();
 
+
   }
 
   wheelCanvas.addEventListener('mousedown', function(e) {
     //document.body.style.cursor = 'none';
+    e.stopImmediatePropagation();
+    e.stopPropagation();
     onWheelCanvasMouseDrag(e);
     document.addEventListener('mousemove', onWheelCanvasMouseDrag, false);
     document.addEventListener('mouseup', onDocumentMouseUp, false);
@@ -129,6 +132,8 @@ function ColorPicker(container) {
 
   brightnessCanvas.addEventListener('mousedown', function(e) {
     //document.body.style.cursor = 'none';
+    e.stopImmediatePropagation();
+    e.stopPropagation();
     onBrightnessCanvasMouseDrag(e);
     document.addEventListener('mousemove', onBrightnessCanvasMouseDrag, false);
     document.addEventListener('mouseup', onDocumentMouseUp, false);
@@ -136,13 +141,19 @@ function ColorPicker(container) {
 
   function onDocumentMouseUp(e) {
     //document.body.style.cursor = 'auto';
+    e.stopImmediatePropagation();
+    e.stopPropagation();
     document.removeEventListener('mousemove', onWheelCanvasMouseDrag, false);
     document.removeEventListener('mousemove', onBrightnessCanvasMouseDrag, false);
     document.removeEventListener('mouseup', onDocumentMouseUp, false);
+
+    console.log(color.hex.toString(16));
+    _this.onColorChange(color.hex);
   }
 
   function onBrightnessCanvasMouseDrag(e) {
-
+    e.stopImmediatePropagation();
+    e.stopPropagation();
     var x = e.pageX - getOffset(brightnessCanvas).left; // TODO account for offset;
 
 
@@ -171,7 +182,8 @@ function ColorPicker(container) {
   }
 
   function onWheelCanvasMouseDrag(e) {
-
+    e.stopImmediatePropagation();
+    e.stopPropagation();
     var offset = getOffset(wheelCanvas);
 
     var x = e.pageX - offset.left; // TODO account for offset;

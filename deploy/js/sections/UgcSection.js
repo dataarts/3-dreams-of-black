@@ -5,6 +5,7 @@ var UgcSection = function ( shared ) {
 	var intro, objectCreator/*, soupCreator*/, ui;
 
 	var domElement = document.createElement( 'div' );
+
 	domElement.style.display = 'none';
 
 	var DEG2RAD = Math.PI / 180,
@@ -124,6 +125,7 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals.object_symmetrymode = new Signal();
 		shared.ugcSignals.object_rotatemode = new Signal();
 		shared.ugcSignals.object_changecolor = new Signal();
+		shared.ugcSignals.object_colormode = new Signal();
 		shared.ugcSignals.object_changesize = new Signal();
 		shared.ugcSignals.object_zoomin = new Signal();
 		shared.ugcSignals.object_zoomout = new Signal();
