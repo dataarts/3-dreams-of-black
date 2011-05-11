@@ -139,8 +139,6 @@ var VoxelPainter = function ( camera, scene ) {
 		if ( y < 0 || y > 40 ) return;
 		if ( z < - 40 || z > 40 ) return;
 
-		_color = Math.random() * 0xffffff;
-
 		var voxel = _object.getVoxel( x, y, z );
 
 		if ( voxel ) {
