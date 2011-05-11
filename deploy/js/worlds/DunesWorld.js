@@ -172,22 +172,14 @@ var DunesWorld = function ( shared ) {
 	var ugcCollider = new THREE.SphereCollider( new THREE.Vector3( 0, -5000, 0 ), 1 );
 	var ugcTileDisplacement = [
 	
-		{ x: -1, z: -2 },		// -pi
-		{ x: -2, z: -2 },
-		{ x: -2, z: -1 },
-		{ x: -2, z: 0 },
-		{ x: -2, z: 1 },
-		{ x: -2, z: 2 },
-		{ x: -1, z: 2 },
-		{ x: 0, z: 2 },			// 0
-		{ x: 1, z: 2 },
-		{ x: 2, z: 2 },
-		{ x: 2, z: 1 },
-		{ x: 2, z: 0 },
-		{ x: 2, z: -1 },
-		{ x: 2, z: -2 },
-		{ x: 1, z: -2 },
-		{ x: 0, z: -2 },		// +pi
+		{ x: -1, z: -1 },		// -pi
+		{ x: -1, z: 0 },
+		{ x: -1, z: 1 },
+		{ x: 0, z: 1 },			// 0
+		{ x: 1, z: 1 },
+		{ x: 1, z: 0 },
+		{ x: 1, z: -1 },
+		{ x: 0, z: -1 }
 	
 	];
 
@@ -275,7 +267,7 @@ var DunesWorld = function ( shared ) {
 			var d, dl = ugcTileDisplacement.length;
 			
 			var cameraDirection = camera.matrixWorld.getColumnZ().negate();
-			var tileDisplacementIndex = 7 + Math.ceil( 7 * Math.atan2( cameraDirection.x, cameraDirection.z ) / Math.PI );
+			var tileDisplacementIndex = 3 + Math.ceil( 3 * Math.atan2( cameraDirection.x, cameraDirection.z ) / Math.PI );
 			if( tileDisplacementIndex < 0 ) tileDisplacementIndex = 0;
 
 
