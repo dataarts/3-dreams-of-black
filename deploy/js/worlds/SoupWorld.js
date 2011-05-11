@@ -37,5 +37,4 @@ var SoupWorld = function ( shared ) {
 	that.refFloor.scale.x = that.refFloor.scale.z = 500;
 	that.scene.addObject( that.refFloor );
 
-
-}
+};

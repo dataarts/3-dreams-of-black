@@ -43,8 +43,9 @@ var UgcSection = function ( shared ) {
 	that.scene.addLight( directionalLight1 );
 	that.scene.addLight( directionalLight2 );
 
-	initLensFlares( that, new THREE.Vector3( 0, 0, - 7500 ), 60, 292 );
-
+	var flares = initLensFlares( new THREE.Vector3( 0, 0, - 7500 ), 60, 292 );
+	that.scene.addChild( flares );
+	
 	var loader = new THREE.SceneLoader();
 	loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {
 
