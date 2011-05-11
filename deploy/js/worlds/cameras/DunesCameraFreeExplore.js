@@ -174,7 +174,7 @@ DunesCameraFreeExplore = function( shared ) {
 
 		if( c && c.distance !== -1 ) {
 			
-			recalculatedDistance = c.distance * 0.1;
+			recalculatedDistance = c.distance * world.scale;
 			
 			if( direction !== "down" ) {
 				
