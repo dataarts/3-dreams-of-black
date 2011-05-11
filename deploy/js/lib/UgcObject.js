@@ -1,6 +1,6 @@
 var UgcObject = function ( data ) {
 
-	var VERSION = 4, UNIT_SIZE = 50,
+	var VERSION = 5, UNIT_SIZE = 50,
 	_type = UgcObject.TYPE_GROUND, _grid = {}, _count = 0;
 
 	this.addVoxel = function ( x, y, z, color, object ) {
@@ -10,9 +10,11 @@ var UgcObject = function ( data ) {
 
 	};
 
-  this.getType = function() {
-    return _type;
-  };
+	this.getType = function () {
+
+		return _type;
+
+	};
 
 	this.getVoxel = function ( x, y, z ) {
 
@@ -64,7 +66,7 @@ var UgcObject = function ( data ) {
 
 			}
 
-			items.push( item.x + 20, item.y, item.z + 20 );
+			items.push( item.x, item.y, item.z );
 			itemsCount ++;
 
 		}
@@ -76,27 +78,30 @@ var UgcObject = function ( data ) {
 
 	this.getMesh = function () {
 
-		var i, item, voxel,
-		geometry = new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ),
+		var i, item,
+		voxel = new THREE.Mesh( new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ) ),
+		mesh = new THREE.Mesh( new THREE.Geometry(), new THREE.MeshLambertMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } ) ),
 		group = new THREE.Object3D();
 
 		for ( i in _grid ) {
 
 			item = _grid[ i ];
 
-			voxel = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: item.color } ) );
 			voxel.position.x = item.x * UNIT_SIZE;
 			voxel.position.y = item.y * UNIT_SIZE;
 			voxel.position.z = item.z * UNIT_SIZE;
-			voxel.matrixAutoUpdate = false;
-			voxel.updateMatrix();
-			voxel.update();
 
-			group.addChild( voxel );
+			for (i = 0; i < voxel.geometry.faces.length; i++) {
+
+				voxel.geometry.faces[i].color.setHex( item.color );
+
+			}
+
+			GeometryUtils.merge( mesh.geometry, voxel );
 
 		}
 
-		return group;
+		return mesh;
 
 	};
 
@@ -114,9 +119,9 @@ var UgcObject = function ( data ) {
 			for ( j = 0; j < itemsCount; j ++ ) {
 
 				this.addVoxel(
-					Math.min( 40, Math.max( 0, data[ i ++ ] ) ) - 20,
-					Math.min( 40, Math.max( 0, data[ i ++ ] ) ),
-					Math.min( 40, Math.max( 0, data[ i ++ ] ) ) - 20,
+					data[ i ++ ],
+					data[ i ++ ],
+					data[ i ++ ],
 					currentColor
 				);
 

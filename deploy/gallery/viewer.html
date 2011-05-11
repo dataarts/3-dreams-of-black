@@ -35,18 +35,22 @@
 
 				// Lights
 
-				var ambient = new THREE.AmbientLight();
+				var ambient = new THREE.AmbientLight( 0x221100 );
+				var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
+				var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
+
 				ambient.color.setHSV( 0, 0, 0.1 );
+
+				directionalLight1.color.setHSV( 0.088, 0, 1 );
+				directionalLight1.position.set( 0.8, 0.3, - 0.5 );
+				directionalLight1.position.normalize();
+
+				directionalLight2.color.setHSV( 0, 0, 0.564 );
+				directionalLight2.position.set( 0.1, 0.5, 0.2 );
+				directionalLight2.position.normalize();
+
 				scene.addLight( ambient );
-
-				var directionalLight1 = new THREE.DirectionalLight();
-				directionalLight1.position.set( 0.8085776615544399,  0.30962281305702444,  - 0.500335766130914 );
-				directionalLight1.color.setHSV( 0.08823529411764706,  0,  1 );
 				scene.addLight( directionalLight1 );
-
-				var directionalLight2 = new THREE.DirectionalLight();
-				directionalLight2.position.set( 0.09386404300915006,  0.9829903100365339,  0.15785940518149455 );
-				directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
 				scene.addLight( directionalLight2 );
 
 				// Renderer
