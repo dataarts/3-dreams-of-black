@@ -53,7 +53,7 @@ var PrairieWorld = function ( shared, camera, callbackSoup ) {
 	// Lens flares
 
 
-	var flares = initLensFlares( new THREE.Vector3( 0, 0, -3000 ), 14, 311 );		
+	var flares = initLensFlares( new THREE.Vector3( 0, 0, -3000 ), 14, 311 );
 	that.scene.addChild( flares );
 
 	// Trail

@@ -81,9 +81,9 @@ function initLensFlares( position, sx, sy ) {
 
 	if ( LensFlareTextures.texture0 === undefined ) {
 		
-		LensFlareTextures.texture0 = THREE.ImageUtils.loadTexture( "files/textures/lensflare0.png" );
-		LensFlareTextures.texture1 = THREE.ImageUtils.loadTexture( "files/textures/lensflare2.png" );
-		LensFlareTextures.texture2 = THREE.ImageUtils.loadTexture( "files/textures/lensflare3.png" );
+		LensFlareTextures.texture0 = THREE.ImageUtils.loadTexture( "/files/textures/lensflare0.png" );
+		LensFlareTextures.texture1 = THREE.ImageUtils.loadTexture( "/files/textures/lensflare2.png" );
+		LensFlareTextures.texture2 = THREE.ImageUtils.loadTexture( "/files/textures/lensflare3.png" );
 		
 	}
 
