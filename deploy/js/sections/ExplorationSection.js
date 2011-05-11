@@ -46,13 +46,19 @@ var ExplorationSection = function ( shared ) {
 
 	// audio
 	
-	var environmentSound = document.createElement( "audio" );
-	environmentSound.volume = 0;
-	environmentSound.loop = true;
-	environmentSound.src = "files/nature.mp3";
-	environmentSound.autoplay = false;
+	var ENV_SOUND_ENABLED = false;
 
-	document.body.appendChild( environmentSound );
+	if ( ENV_SOUND_ENABLED ) {
+
+		var environmentSound = document.createElement( "audio" );
+		environmentSound.volume = 0;
+		environmentSound.loop = true;
+		environmentSound.src = "files/nature.mp3";
+		environmentSound.autoplay = false;
+
+		document.body.appendChild( environmentSound );
+		
+	}
 	
 
 	// init cameras
@@ -111,8 +117,13 @@ var ExplorationSection = function ( shared ) {
 		soup  = shared.soups[ worldId ];
 
 		fadeInTime = 0;
-		environmentSound.play();
-		environmentSound.volume = 0;
+		
+		if ( ENV_SOUND_ENABLED ) {
+		
+			environmentSound.play();
+			environmentSound.volume = 0;
+			
+		}
 		
 		
 		if( worldId == "city" ) {
@@ -204,9 +215,14 @@ var ExplorationSection = function ( shared ) {
 
 	this.hide = function () {
 
-		domElement.style.display = 'z';
+		domElement.style.display = 'none';
 		shared.signals.keyup.remove( stop );
-		environmentSound.pause();
+		
+		if ( ENV_SOUND_ENABLED ) {
+		
+			environmentSound.pause();
+			
+		}
 
 	};
 
@@ -252,15 +268,24 @@ var ExplorationSection = function ( shared ) {
 
 					fadeInTime += delta;
 					fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
-					environmentSound.volume = Math.max( 0, Math.min( 1, fadeInTime / 1000 ));
+					
+					if ( ENV_SOUND_ENABLED ) {
+					
+						environmentSound.volume = Math.max( 0, Math.min( 1, fadeInTime / 1000 ) );
+						
+					}
 
 				} else {
 
-					for( var i = 0; i < portals.length; i++ ) {
+					if ( ENV_SOUND_ENABLED ) {
 
-						if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+						for( var i = 0; i < portals.length; i++ ) {
 
-							environmentSound.volume = fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ));
+							if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
+
+								environmentSound.volume = fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ) );
+
+							}
 
 						}
 
