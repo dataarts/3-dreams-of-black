@@ -10,7 +10,7 @@ var UgcSection = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, radius = 150, oldRadius = 150, newRadius = 150, theta = 45, phi = 15;
+	isRotateMode = false, isMouseDown = false, radius = 300, oldRadius = 300, newRadius = 300, theta = 45, phi = 15;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 20;
@@ -53,7 +53,7 @@ var UgcSection = function ( shared ) {
 			if ( object.visible ) {
 
 				object.rotation.x = - 90 * Math.PI / 180;
-				object.position.y = - 10;
+				object.position.y = - 20;
 				object.position.x = 500;
 				object.scale.x = object.scale.y = object.scale.z = 0.1;
 				that.scene.addObject( object );
@@ -104,6 +104,12 @@ var UgcSection = function ( shared ) {
 			// case 18: isEraseMode = false; break;
 
 		}
+
+	}
+
+	function onMouseWheel( event ) {
+
+		newRadius = radius + ( event.wheelDeltaY / 2 );
 
 	}
 
@@ -217,6 +223,8 @@ var UgcSection = function ( shared ) {
 		shared.signals.keydown.add( onKeyDown );
 		shared.signals.keyup.add( onKeyUp );
 
+		shared.signals.mousewheel.add( onMouseWheel );
+
 		// soupCreator.init();
 
 	};
@@ -228,6 +236,8 @@ var UgcSection = function ( shared ) {
 
 		shared.signals.keydown.remove( onKeyDown );
 		shared.signals.keyup.remove( onKeyUp );
+
+		shared.signals.mousewheel.remove( onMouseWheel );
 
 	};
 

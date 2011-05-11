@@ -54,10 +54,9 @@ var UgcIntro = function( shared ) {
 
 	ground.appendChild( groundImage );
 
-	// domElement.appendChild( sky );
+	domElement.appendChild( sky );
 	domElement.appendChild( ground );
 
-	/*
 	sky.addEventListener("mouseover", function() {
 
 		skyImage.style.marginTop = "-71px";
@@ -75,7 +74,6 @@ var UgcIntro = function( shared ) {
 		shared.ugcSignals.showobjectcreator.dispatch( 1 );
 
 	}, false);
-	*/
 	
 	ground.addEventListener("mouseover", function() {
 

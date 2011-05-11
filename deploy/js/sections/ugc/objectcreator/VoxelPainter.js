@@ -12,7 +12,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _collider = new THREE.Object3D();
 	_collider.matrixAutoUpdate = false;
-	_collider.visible = false;
+	// _collider.visible = false;
 
 	var _colliderArray = [];
 
@@ -54,7 +54,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _voxelsArray = [];
 
-	var _ground = new THREE.Mesh( new THREE.Plane( 200, 200, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
+	var _ground = new THREE.Mesh( new THREE.Plane( 400, 400, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
 	_ground.position.x = - UNIT_SIZE / 2;
 	_ground.position.y = - UNIT_SIZE / 2;
 	_ground.position.z = - UNIT_SIZE / 2;
@@ -127,9 +127,9 @@ var VoxelPainter = function ( camera, scene ) {
 
 	function addVoxel( x, y, z ) {
 
-		if ( x < - 20 || x > 20 ) return;
+		if ( x < - 40 || x > 40 ) return;
 		if ( y < 0 || y > 40 ) return;
-		if ( z < - 20 || z > 20 ) return;
+		if ( z < - 40 || z > 40 ) return;
 
 		var voxel = _object.getVoxel( x, y, z );
 
