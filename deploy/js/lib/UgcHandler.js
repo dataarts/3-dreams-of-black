@@ -1,6 +1,24 @@
+// START TEMPORARY, PLEASE REMOVE ON LAUNCH!
+
+JSONP = {
+	
+	callback: undefined
+		
+};
+
+// END TEMPORARY, PLEASE REMOVE ON LAUNCH!
+
+
 var UgcHandler = function () {
 
 	var base_url = '/ugc/objects';
+	var jsonpSavedCallback;
+
+	this.jsonpCallback = function( data ) {
+		
+		jsonpSavedCallback( data );
+		
+	}
 
 	this.getLatestUGOs = function ( callback, index ) {
 
@@ -8,7 +26,17 @@ var UgcHandler = function () {
 
 		// START TEMPORARY, PLEASE REMOVE ON LAUNCH
 
-		if( window.location.host === "localhost" ) url = "temporaryProxies/latest.php?index=" + index;
+		if( window.location.host === "localhost" )
+		{
+			JSONP.callback = callback;
+			
+			var script = document.createElement( 'script' );
+			script.src = "http://4.radicalvid.appspot.com/ugc/objects/latest?callback=JSONP.callback";
+			
+			document.body.appendChild( script );
+			
+			return;
+		}
 
 		// END TEMPORARY, PLEASE REMOVE ON LAUNCH
 

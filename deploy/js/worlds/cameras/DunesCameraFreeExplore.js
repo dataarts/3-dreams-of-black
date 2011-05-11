@@ -9,13 +9,13 @@ DunesCameraFreeExplore = function( shared ) {
 	var CAMERA_LOWEST_Y = 50;
 	var CAMERA_LOWEST_Y_NULL_ATTENUATION = 200;
 	var CAMERA_HIGHEST_Y = 4500;
-	var CAMERA_FORWARD_SPEED = 12;
+	var CAMERA_FORWARD_SPEED = 15;
 	var CAMERA_FORWARD_SPEED_MAX = 25;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 20;
 	var CAMERA_VERTICAL_LIMIT = 120;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
-	var CAMERA_INERTIA = 0.02;
+	var CAMERA_INERTIA = 0.05;
 	var CAMERA_ROLL_FACTOR = 0.4;
 	var CAMERA_COLLISION_SLOWDOWN_DISTANCE = 60;
 	var CAMERA_COLLISION_DISTANCE = 200;			// if this+slowdown > 280 there's a collision with a mysterious box collider
@@ -92,7 +92,7 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = delta * ( 1000 / 30 ) / 1000;
+		delta = 1;//delta * ( 1000 / 30 ) / 1000;
 		if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
 		
 		
@@ -170,11 +170,11 @@ DunesCameraFreeExplore = function( shared ) {
 
 
 		var c = world.scene.collisions.rayCastNearest( ray );
-		var recalculatedDistance = -1;
+		var recalculatedDistance = NaN;
 
 		if( c && c.distance !== -1 ) {
 			
-			recalculatedDistance = c.distance * 0.1;
+			recalculatedDistance = c.distance * world.scale;
 			
 			if( direction !== "down" ) {
 				
@@ -231,14 +231,14 @@ DunesCameraFreeExplore = function( shared ) {
 
 		// special case if collision is with ground (no speed attenuation)
 
-		if( direction === "down" && recalculatedDistance < CAMERA_COLLISION_DISTANCE_DOWN ) {
+		if( !isNaN( recalculatedDistance ) && direction === "down" && recalculatedDistance < CAMERA_COLLISION_DISTANCE_DOWN ) {
 			
 			var oldY = wantedCamera.position.y;
 			
 			wantedCamera.position.y = ray.origin.addSelf( ray.direction.multiplyScalar( recalculatedDistance )).y + CAMERA_LOWEST_Y;
 			wantedCameraTarget.position.y += ( wantedCamera.position.y - oldY );
 			
-		} else if( ray.origin.addSelf( ray.direction.multiplyScalar( recalculatedDistance )).y < CAMERA_LOWEST_Y_NULL_ATTENUATION ) {
+		} else if( !isNaN( recalculatedDistance ) && ray.origin.addSelf( ray.direction.multiplyScalar( recalculatedDistance )).y < CAMERA_LOWEST_Y_NULL_ATTENUATION ) {
 			
 			wantedCameraSpeedFactor[ direction ] = 1;
 			
@@ -259,7 +259,7 @@ DunesCameraFreeExplore = function( shared ) {
 
 		if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
 			
-			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR * delta;
+			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
 			
 		} else {
 			
@@ -276,8 +276,8 @@ DunesCameraFreeExplore = function( shared ) {
 
 		wantedCameraDirection.sub( wantedCameraTarget.position, wantedCamera.position ).normalize();
 
-		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE * delta - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
-		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE * delta + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+		wantedCameraTarget.position.x = wantedCamera.position.x + wantedCameraDirection.x * CAMERA_COLLISION_DISTANCE - wantedCameraDirection.z * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
+		wantedCameraTarget.position.z = wantedCamera.position.z + wantedCameraDirection.z * CAMERA_COLLISION_DISTANCE + wantedCameraDirection.x * CAMERA_HORIZONTAL_FACTOR * mouseX * delta;
 
 			
 		// calc camera speed (dependent on hight)
