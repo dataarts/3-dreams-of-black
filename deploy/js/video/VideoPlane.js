@@ -28,7 +28,7 @@ var VideoPlane = function( shared, layer, conf ) {
 		
 	    video = document.createElement('video');
 	    video.src = layer.path;  
-		video.preload = true;
+		video.preload = 'auto';
 		video.load();
 		
 		shared.signals.loadItemAdded.dispatch();
