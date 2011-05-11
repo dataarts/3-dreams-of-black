@@ -31,8 +31,11 @@ var UgcSection = function ( shared ) {
 		shared.ugcSignals.object_createmode = new Signal();
 		shared.ugcSignals.object_erasemode = new Signal();
 		shared.ugcSignals.object_symmetrymode = new Signal();
+		shared.ugcSignals.object_rotatemode = new Signal();
 		shared.ugcSignals.object_changecolor = new Signal();
 		shared.ugcSignals.object_changesize = new Signal();
+		shared.ugcSignals.object_zoomin = new Signal();
+		shared.ugcSignals.object_zoomout = new Signal();
 
 		shared.ugcSignals.submit_dialogue = new Signal();
 		shared.ugcSignals.submit = new Signal();
@@ -55,8 +58,8 @@ var UgcSection = function ( shared ) {
 
 		ui = new UgcUI( shared );
 		ui.getDomElement().style.position = 'absolute';
-		ui.getDomElement().style.left = '20px';
-		ui.getDomElement().style.top = '20px';
+		ui.getDomElement().style.left = '0px';
+		ui.getDomElement().style.top = '0px';
 		ui.getDomElement().style.display = 'none';
 		domElement.appendChild( ui.getDomElement() );
 
@@ -106,7 +109,6 @@ var UgcSection = function ( shared ) {
 
 	this.resize = function ( width, height ) {
 
-		ui.resize(width, height);
 		objectCreator.resize( width, height );
 
 	};
