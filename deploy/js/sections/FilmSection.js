@@ -13,7 +13,7 @@ var FilmSection = function ( shared ) {
 	// audio
 
 	audio = document.createElement( 'audio' );
-	audio.preload = true;
+	audio.preload = 'auto';
 	domElement.appendChild( audio );
 
 	source = document.createElement( 'source' );

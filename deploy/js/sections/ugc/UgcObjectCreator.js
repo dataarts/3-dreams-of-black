@@ -82,20 +82,11 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
 
 	}
 
-	function onMouseWheel( event ) {
-
-		newRadius = radius + event.wheelDeltaY;
-
-		painter.update( isMouseDown );
-
-	}
-
 	this.show = function () {
 
 		shared.signals.mousedown.add( onMouseDown );
 		shared.signals.mouseup.add( onMouseUp );
 		shared.signals.mousemoved.add( onMouseMove );
-		shared.signals.mousewheel.add( onMouseWheel );
 
 	};
 
@@ -104,7 +95,6 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
 		shared.signals.mousedown.remove( onMouseDown );
 		shared.signals.mouseup.remove( onMouseUp );
 		shared.signals.mousemoved.remove( onMouseMove );
-		shared.signals.mousewheel.remove( onMouseWheel );
 
 	};
 
