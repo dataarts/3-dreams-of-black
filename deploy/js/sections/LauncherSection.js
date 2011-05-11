@@ -9,9 +9,9 @@ var LauncherSection = function ( shared ) {
 	loading, footer, footNav;
 
 	domElement = document.createElement( 'div' );
-	domElement.style.background = '-moz-linear-gradient(top, #0e223a 0%, #4584b4 35%, #75B4E4 50%, #4584b4 100%)';
-	domElement.style.background = '-webkit-linear-gradient(top, #0e223a 0%, #4584b4 35%, #75B4E4 50%, #4584b4 100%)';
-	domElement.style.background = 'linear-gradient(top, #0e223a 0%, #4584b4 35%, #75B4E4 50%, #4584b4 100%)';
+	domElement.style.background = '-moz-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
+	domElement.style.background = '-webkit-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
+	domElement.style.background = 'linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
 	domElement.style.textAlign = 'center';
 
 	var isLoading = false;
@@ -47,6 +47,7 @@ var LauncherSection = function ( shared ) {
 
 			loading.getDomElement().style.display = 'block';
 			buttonEnter.style.display = 'none';
+			shared.loadedContent = true;
 
 			isLoading = true;
 
@@ -214,6 +215,7 @@ var LauncherSection = function ( shared ) {
 
 		clouds.show();
 		domElement.style.display = 'block';
+		if(!shared.loadedContent) buttonStart.style.display = 'none';
 
 	};
 

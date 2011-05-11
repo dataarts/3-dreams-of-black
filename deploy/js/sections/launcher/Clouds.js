@@ -11,7 +11,7 @@ var Clouds = function ( shared, isRelaunch ) {
 	camera, postCamera, scene, postScene, birdsScene, renderer, context, birdsGroup, mesh, mesh2, geometry, fog, material, postMaterial, renderTargetClouds, renderTargetFlamingos,
 	wantedCameraUpX = 0;
 
-	fog = new THREE.Fog( 0x75B4E4, - 100, 3000 );
+	fog = new THREE.Fog( 0x5299d1, - 100, 3000 );
 
 	camera = new THREE.Camera( 30, window.innerWidth / window.innerHeight, 1, 3000 );
 	camera.position.z = 6000;

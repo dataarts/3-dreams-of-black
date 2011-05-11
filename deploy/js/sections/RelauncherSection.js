@@ -238,15 +238,23 @@ var RelauncherSection = function( shared ) {
 
 		enter.addEventListener("click", handleReturn, false);
 
-		function handleReturn() {
-			shared.signals.showexploration.dispatch();
-			shared.signals.startexploration.dispatch( 'dunes' );
-			var divs = container.getElementsByTagName('div');
-			for(var i = 0; i < divs.length; i++) {
-				divs[i].style.display = "block";
-			}
-			enter.style.display = "none";
-			shared.signals.keyup.remove( handleReturn )
+		function handleReturn(e) {
+
+		  if(e.keyCode == 13 || !e.keyCode) {
+
+				shared.signals.showexploration.dispatch();
+				shared.signals.startexploration.dispatch( 'dunes' );
+				var divs = container.getElementsByTagName('div');
+
+				for(var i = 0; i < divs.length; i++) {
+
+					divs[i].style.display = "block";
+
+				}
+
+				enter.style.display = "none";
+				shared.signals.keyup.remove( handleReturn );
+		  }
 		}
 
 		start.addEventListener("click", function(e) {
@@ -316,6 +324,9 @@ var RelauncherSection = function( shared ) {
 
 	this.resize = function( width, height ) {
 
+    var halfWidth = window.innerWidth / 2.0;
+    var halfHeight = window.innerHeight / 2.0
+
 		domElement.style.width = width + 'px';
 		domElement.style.height = height + 'px';
 
@@ -323,13 +334,13 @@ var RelauncherSection = function( shared ) {
 		footer.style.top = (window.innerHeight - 78) + "px";
 
 		offset = {
-			x: (window.innerWidth / 2.0 - 225),
-			y: (window.innerHeight / 2.0 - 175)
+			x: (halfWidth - 225),
+			y: (halfHeight - 175)
 		};
 		container.setAttribute("style", "position: absolute; top: " + offset.y + "px; left: " + offset.x + "px;");
 
-		enter.style.left = (window.innerWidth / 2.0 - 117) + "px";
-		enter.style.top = (window.innerHeight / 2.0 - 104) + "px";
+		enter.style.left = (halfWidth - 117) + "px";
+		enter.style.top = (halfHeight - 104) + "px";
 
 		updateDomElementsPosition();
 

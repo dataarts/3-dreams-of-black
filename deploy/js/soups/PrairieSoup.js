@@ -458,6 +458,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 			shared.lavatrailz = pos.z;
 
 			ROME.TrailShader.uniforms.lavaHeadPosition.value.set( pos.x, 0, -pos.z );
+
 		}
 
 
@@ -479,6 +480,8 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		TriggerUtils.effectors[ 1 ] = collisionScene.emitter.position.y;
 		TriggerUtils.effectors[ 2 ] = collisionScene.emitter.position.z;
 
+		shared.prairieSoupHead.copy( collisionScene.emitter.position );
+		
 		//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( vectors.array[15].position.x, 0, -vectors.array[15].position.z );
 		//ROME.TrailShader.uniforms.lavaHeadPosition.value.set( 0, 0, 0 );
 

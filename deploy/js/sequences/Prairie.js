@@ -72,7 +72,7 @@ var Prairie = function ( shared ) {
 			waypoints: waypoints, duration: 28,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.0028, lookVertical: true, lookHorizontal: true,
+			lookSpeed: 0.001, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
@@ -83,11 +83,17 @@ var Prairie = function ( shared ) {
 
 		camera = cameraPath;
 
-		world = new PrairieWorld( shared, camera );
-		soup = new PrairieSoup( camera, world.scene, shared );
+		world = new PrairieWorld( shared, camera, callbackSoup );
+		 
+		function callbackSoup() {
+		
+			soup = new PrairieSoup( camera, world.scene, shared );
+			shared.soups.prairie = soup;
+			shared.prairieSoupHead = new THREE.Vector3();
+
+		}
 
 		shared.worlds.prairie = world;
-		shared.soups.prairie = soup;
 		shared.sequences.prairie = this;
 
 		//world.scene.addObject( cameraPath.debugPath );
@@ -163,7 +169,12 @@ var Prairie = function ( shared ) {
 		world.scene.lights[2].color.setRGB(a,a,a);*/
 
 		world.update( delta, camera, false );
-		soup.update( delta );
+		
+		if ( soup ) {
+			
+			soup.update( delta );
+			
+		}
 
 		renderer.render( world.scene, camera, renderTarget );
 

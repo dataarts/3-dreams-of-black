@@ -13,7 +13,7 @@ var FilmSection = function ( shared ) {
 	// audio
 
 	audio = document.createElement( 'audio' );
-	audio.preload = true;
+	audio.preload = 'auto';
 	domElement.appendChild( audio );
 
 	source = document.createElement( 'source' );
@@ -76,11 +76,11 @@ var FilmSection = function ( shared ) {
 	
 	// intro
 	
-	sequencer.add( new VideoPlayer( shared, VideoShots.introLayers ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
+	sequencer.add( new VideoPlayer( shared, VideoShots.introLayers ), tune.getPatternMS( 0 ), tune.getPatternMS( 7.9 ), 1 );
 
 	// city animation
 
-	var s01start = tune.getPatternMS( 8 );
+	var s01start = tune.getPatternMS( 7.9 );
 	var s01end = tune.getPatternMS( 16 );
 	
 	sequencer.add( s01_01, s01start, s01start + s01_01.duration, 1 );
@@ -98,12 +98,12 @@ var FilmSection = function ( shared ) {
 	
 	var cityStart = tune.getPatternMS( 16 ) - cityTransitionTime; // 1 sec is enough for this transition
 	
-	sequencer.add( new City( shared ),        cityStart, tune.getPatternMS( 24 ), 1 );
-	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 24 ), 5 );
+	sequencer.add( new City( shared ),        cityStart, tune.getPatternMS( 23.9 ), 1 );
+	sequencer.add( new PaintEffect( shared ), cityStart, tune.getPatternMS( 23.9 ), 5 );
 
 	// prairie animation
 
-	var s02start = tune.getPatternMS( 24 );
+	var s02start = tune.getPatternMS( 23.9 );
 	var s02end = tune.getPatternMS( 32 );
 	
 	sequencer.add( s02_01, s02start, s02start + s02_01.duration, 1 );
@@ -157,8 +157,9 @@ var FilmSection = function ( shared ) {
 	// pointers
 	
 	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerImageEffect( shared, "/files/cursor_arrow.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1 );
-	sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1 );
+	sequencer.add( new PointerImageEffect( shared, "/files/mouse_map.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1000 );
+	sequencer.add( new PointerImageEffect( shared, "/files/mouse_map.gif" ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1000 );
+	// sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1000 );
 
 	// final render
 

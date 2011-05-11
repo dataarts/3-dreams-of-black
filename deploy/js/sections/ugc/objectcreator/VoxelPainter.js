@@ -1,6 +1,6 @@
 var VoxelPainter = function ( camera, scene ) {
 
-	var UNIT_SIZE = 50, _size = 3, _size_half = 1, _color = 0xffffff,
+	var UNIT_SIZE = 50, _size = 1, _size_half = 0, _color = 0xffffff,
 	_mode = VoxelPainter.MODE_CREATE,
 	_symmetry = false,
 	_object = new UgcObject();
@@ -8,15 +8,22 @@ var VoxelPainter = function ( camera, scene ) {
 	var _intersectPoint, _intersectFace, _intersectObject,
 	_intersectEraseObjects = [], _tempVector = new THREE.Vector3();
 
+	var _grid = new THREE.Mesh( new THREE.Plane( 4000, 4000, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
+	_grid.position.x = - UNIT_SIZE / 2;
+	_grid.position.y = - UNIT_SIZE / 2;
+	_grid.position.z = - UNIT_SIZE / 2;
+	_grid.rotation.x = - 90 * Math.PI / 180;
+	scene.addObject( _grid );
+
 	// Colliders
 
 	var _collider = new THREE.Object3D();
 	_collider.matrixAutoUpdate = false;
-	_collider.visible = false;
+	// _collider.visible = false;
 
 	var _colliderArray = [];
 
-	var _geometry = new THREE.Plane( 2000, 2000, 16, 16 );
+	var _geometry = new THREE.Plane( 2000, 2000, 2, 2 );
 	var _material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true, wireframe: true } );
 
 	_plane = new THREE.Mesh( _geometry, _material );
@@ -54,12 +61,13 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _voxelsArray = [];
 
-	var _ground = new THREE.Mesh( new THREE.Plane( 2000, 2000, 40, 40 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
-	_ground.position.x = - 25;
-	_ground.position.y = - 25;
-	_ground.position.z = - 25;
+	var _ground = new THREE.Mesh( new THREE.Plane( 4000, 4000 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
+	_ground.position.x = - UNIT_SIZE / 2;
+	_ground.position.y = - UNIT_SIZE / 2;
+	_ground.position.z = - UNIT_SIZE / 2;
 	_ground.rotation.x = - 90 * Math.PI / 180;
-	scene.addObject( _ground );
+	_ground.updateMatrix();
+	_ground.update();
 
 	_voxelsArray.push( _ground );
 
@@ -127,9 +135,11 @@ var VoxelPainter = function ( camera, scene ) {
 
 	function addVoxel( x, y, z ) {
 
-		if ( x < - 20 || x > 20 ) return;
+		if ( x < - 40 || x > 40 ) return;
 		if ( y < 0 || y > 40 ) return;
-		if ( z < - 20 || z > 20 ) return;
+		if ( z < - 40 || z > 40 ) return;
+
+		_color = Math.random() * 0xffffff;
 
 		var voxel = _object.getVoxel( x, y, z );
 

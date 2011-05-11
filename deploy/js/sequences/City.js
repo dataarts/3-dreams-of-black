@@ -45,7 +45,7 @@ var City = function ( shared ) {
 			waypoints: waypointsA, duration: 9, 
 			useConstantSpeed: true, resamplingCoef: 30,
 			createDebugPath: shared.debug, createDebugDummy: shared.debug,
-			lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+			lookSpeed: 0.0005, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.8 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
@@ -155,13 +155,20 @@ var City = function ( shared ) {
 
 			waypointsB = [ [ 0, 18, camz ], [ 0, 18, -3400 ] ];
 
-			if (camera.theta < 1.2) {
+			if ( camera.theta < 1.2 ) {
+				
 				// turn left
+
 				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1600 ], [ -110, 18, -1740 ], [ -1670, 18, -1740 ] ];
+
 			}
-			if (camera.theta > 1.8) {
+			
+			if ( camera.theta > 1.8 ) {
+
 				// turn right
+
 				waypointsB = [ [ 0, 18, camz ], [ 0, 18, -1600 ], [ 110, 18, -1740 ], [ 1670, 18, -1740 ] ];
+
 			}
 
 			switchCamera = new THREE.PathCamera( {
@@ -170,7 +177,7 @@ var City = function ( shared ) {
 				waypoints: waypointsB, duration: 15, 
 				useConstantSpeed: true, resamplingCoef: 5,
 				createDebugPath: false, createDebugDummy: false,
-				lookSpeed: 0.0025, lookVertical: true, lookHorizontal: true,
+				lookSpeed: 0.0005, lookVertical: true, lookHorizontal: true,
 				verticalAngleMap:   { srcRange: [ 0.09, 3.05 ], dstRange: [ 0.4, 2.8 ] },
 				horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 

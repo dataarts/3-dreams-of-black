@@ -161,7 +161,7 @@ var DunesWorld = function ( shared ) {
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var object = new UgcObject( objects[ i ] );
+			var object = new UgcObject( JSON.parse( objects[ i ].data ) );
 
 			if ( ! object.isEmpty() ) {
 
@@ -467,6 +467,8 @@ var DunesWorld = function ( shared ) {
 			if ( o.toLowerCase().indexOf( "cloud" ) >= 0 ) {
 
 				applyCloudsShader( result.objects[ o ], CloudsShader );
+				result.objects[ o ].position.z += 8000;
+				result.objects[ o ].updateMatrix();
 
 			}
 

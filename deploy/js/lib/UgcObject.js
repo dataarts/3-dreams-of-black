@@ -1,12 +1,18 @@
 var UgcObject = function ( data ) {
 
-	var VERSION = 4, UNIT_SIZE = 50,
-	_type = null, _grid = {}, _count = 0;
+	var VERSION = 5, UNIT_SIZE = 50,
+	_type = UgcObject.TYPE_GROUND, _grid = {}, _count = 0;
 
 	this.addVoxel = function ( x, y, z, color, object ) {
 
 		_grid[ x + "." + y + "." + z ] = { x: x, y: y, z: z, color: color, object: object };
 		_count ++;
+
+	};
+
+	this.getType = function () {
+
+		return _type;
 
 	};
 
@@ -60,7 +66,7 @@ var UgcObject = function ( data ) {
 
 			}
 
-			items.push( item.x + 20, item.y, item.z + 20 );
+			items.push( item.x, item.y, item.z );
 			itemsCount ++;
 
 		}
@@ -72,27 +78,29 @@ var UgcObject = function ( data ) {
 
 	this.getMesh = function () {
 
-		var i, item, voxel,
-		geometry = new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ),
-		group = new THREE.Object3D();
+		var i, item,
+		voxel = new THREE.Mesh( new THREE.Cube( UNIT_SIZE, UNIT_SIZE, UNIT_SIZE ) ),
+		geometry = new THREE.Geometry();
 
 		for ( i in _grid ) {
 
 			item = _grid[ i ];
 
-			voxel = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: item.color } ) );
 			voxel.position.x = item.x * UNIT_SIZE;
 			voxel.position.y = item.y * UNIT_SIZE;
 			voxel.position.z = item.z * UNIT_SIZE;
-			voxel.matrixAutoUpdate = false;
-			voxel.updateMatrix();
-			voxel.update();
 
-			group.addChild( voxel );
+			for (i = 0; i < voxel.geometry.faces.length; i++) {
+
+				voxel.geometry.faces[i].color.setHex( item.color );
+
+			}
+
+			GeometryUtils.merge( geometry, voxel );
 
 		}
 
-		return group;
+		return new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } ) );
 
 	};
 
@@ -110,9 +118,9 @@ var UgcObject = function ( data ) {
 			for ( j = 0; j < itemsCount; j ++ ) {
 
 				this.addVoxel(
-					Math.min( 40, Math.max( 0, data[ i ++ ] ) ) - 20,
-					Math.min( 40, Math.max( 0, data[ i ++ ] ) ),
-					Math.min( 40, Math.max( 0, data[ i ++ ] ) ) - 20,
+					data[ i ++ ],
+					data[ i ++ ],
+					data[ i ++ ],
 					currentColor
 				);
 
@@ -124,5 +132,5 @@ var UgcObject = function ( data ) {
 
 };
 
-UgcObject.TYPE_SAND = 'UgcObject.TYPE_SAND';
-UgcObject.TYPE_CLOUD = 'UgcObject.TYPE_CLOUD';
+UgcObject.TYPE_GROUND = 'ground';
+UgcObject.TYPE_SKY = 'sky';

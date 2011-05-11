@@ -35,6 +35,7 @@
 
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
+		loadedContent: false,
 
 		signals : {
 
@@ -102,8 +103,10 @@
 		shared.signals.showexploration.add( function () { setSection( exploration, historySections[1], "/" + historySections[1] ); } );
 
 	} );
+	shared.signals.showfilm.add( loadBuffer );
+	shared.signals.showexploration.add( loadBuffer );
 
-	shared.signals.showlauncher.add( function () { setSection( launcher ); } );
+	shared.signals.showlauncher.add( function () { setSection( launcher, "/", "/" ); } );
 	shared.signals.showrelauncher.add( function () { setSection( relauncher, historySections[2], "/" + historySections[2] ); } );
 	shared.signals.showugc.add( function () { setSection( ugc, historySections[3], "/" + historySections[3] ); } );
 
@@ -126,7 +129,6 @@
 	window.addEventListener( 'resize', onWindowResize, false );
 
 	handleHistory();
-	// setSection( launcher );
 	animate();
 
 	//
@@ -138,8 +140,20 @@
 
 	};
 
+	function loadBuffer() {
+
+		if(!shared.loadedContent) {
+
+			shared.signals.showlauncher.dispatch();
+
+		}
+
+	}
+
 	function handleHistory() {
 
+
+		console.log(shared.loadedContent);
 		// Handle History API stuff
 		var folder = window.location.pathname.toString();
 
@@ -155,7 +169,13 @@
 
 					historyDispatches[i].dispatch();
 					if(i == 0) {
+
 						shared.signals.startfilm.dispatch( 0, 1 );
+
+					} else if(i == 1) {
+
+						shared.signals.startexploration.dispatch( 'dunes' );
+
 					}
 					break;
 

@@ -7,7 +7,7 @@ body {
   width: 300px;
   margin: 0 auto;
   font: 500 11px/20px "FuturaBT-Medium", Arial, sans-serif;
-  background: url('files/footer/clouds-trans.png') center;
+  background: url('/files/footer/clouds-trans.png') center;
   background-attachment: fixed;
 }
 

@@ -8,7 +8,17 @@ var VideoPlane = function( shared, layer, conf ) {
 	var bendForce = layer.bendForce || 400;
 
 	var polyTrail = new PolyTrail();
-
+  this.params = {
+    "radius": 1,
+    "trail": 3,
+    "random": 0.5,
+    "bulge": 0.3,
+    "polyDetail": 0.9,
+    "polyType": 1,
+    "softEdge": 0.6,
+    "softTail": 0,
+    "gridType" : 1
+  };
 
 
 	var fps = layer.fps || 20;
@@ -28,7 +38,7 @@ var VideoPlane = function( shared, layer, conf ) {
 		
 	    video = document.createElement('video');
 	    video.src = layer.path;  
-		video.preload = true;
+		video.preload = 'auto';
 		video.load();
 		
 		shared.signals.loadItemAdded.dispatch();
@@ -222,7 +232,13 @@ var VideoPlane = function( shared, layer, conf ) {
         material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
         material.uniforms['mouseXY'].value.y = -mouseY;
         material.uniforms['mouseSpeed'].value = mouseSpeed;
-        material.uniforms['mouseRad'].value = mouseRad;
+
+        material.uniforms['mouseRad'].value = this.params.radius;
+        material.uniforms['polyRandom'].value = this.params.random;
+        material.uniforms['polyDetail'].value = this.params.polyDetail;
+        material.uniforms['bulge'].value = this.params.bulge;
+        material.uniforms['softEdge'].value = this.params.softEdge;
+
     }
 };
 
