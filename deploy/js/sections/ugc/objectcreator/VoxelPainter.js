@@ -16,7 +16,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _colliderArray = [];
 
-	var _geometry = new THREE.Plane( 200, 200, 16, 16 );
+	var _geometry = new THREE.Plane( 200, 200, 2, 2 );
 	var _material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true, wireframe: true } );
 
 	_plane = new THREE.Mesh( _geometry, _material );

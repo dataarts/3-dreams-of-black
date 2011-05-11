@@ -1,6 +1,6 @@
 var UgcObjectCreator = function ( shared, camera, scene ) {
 
-	var isMouseDown = false;
+	var _enabled = false, _isMouseDown = false;
 
 	// Painter
 
@@ -61,26 +61,38 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
 
 	function onMouseDown( event ) {
 
-		isMouseDown = true;
+		_isMouseDown = true;
 
-		painter.update( isMouseDown );
+		_enabled && painter.update( _isMouseDown );
 
 	}
 
 	function onMouseUp( event ) {
 
-		isMouseDown = false;
+		_isMouseDown = false;
 
-		painter.update( isMouseDown );
+		_enabled && painter.update( _isMouseDown );
 
 	}
 
 	function onMouseMove( event ) {
 
 		painter.moveMouse( shared.mouse.x / shared.viewportWidth, shared.mouse.y / shared.viewportHeight );
-		painter.update( isMouseDown );
+		_enabled && painter.update( _isMouseDown );
 
 	}
+
+	this.enable = function () {
+
+		_enabled = true;
+
+	};
+
+	this.disable = function () {
+
+		_enabled = false;
+
+	};
 
 	this.show = function () {
 

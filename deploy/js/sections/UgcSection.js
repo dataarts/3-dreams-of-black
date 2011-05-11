@@ -116,8 +116,6 @@ var UgcSection = function ( shared ) {
 
 	};
 
-
-
 	this.load = function () {
 
 		var Signal = signals.Signal;
@@ -171,13 +169,18 @@ var UgcSection = function ( shared ) {
 
 			intro.getDomElement().style.display = 'block';
 
+			objectCreator.disable();
+
 			ui.getDomElement().style.display = 'none';
+
 
 		} );
 
 		shared.ugcSignals.showobjectcreator.add( function ( mode ) {
 
 			intro.getDomElement().style.display = 'none';
+
+			objectCreator.enable();
 
 			ui.getDomElement().style.display = 'block';
 
