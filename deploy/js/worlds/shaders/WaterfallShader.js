@@ -4,68 +4,80 @@
 
 WaterfallShader = {
 	
+	geometry: undefined,
+	materia: undefined,
+	
 	createWaterfall: function() {
 
-		// create geo
-		
-		var geometry = new THREE.Geometry();
-		var v, f, fl = 4000;
-		var faces = geometry.faces;
-		var vertices = geometry.vertices;
-		var vertex;
-		var time = WaterfallShader.attributes.time.value;
-		var direction = WaterfallShader.attributes.direction.value;
-		var darkness = WaterfallShader.attributes.darkness.value;
-		
-		for( f = 0; f < fl; f++ ) {
-
-			faces.push( new THREE.Face3( f * 3 + 0, f * 3 + 2, f * 3 + 1 ));
-
-			time.push( Math.random() );
-			darkness.push( Math.random() * 0.4 + 0.6 );
-
-			direction.push( 0 );
-			direction.push( 120 * Math.PI / 180 );
-			direction.push( 240 * Math.PI / 180 );
-
-
-			vertex = new THREE.Vertex();
-
-			// set end position of particle
-
-			vertex.position.x = Math.random() * 250 - 125;	
-			vertex.position.y = -5000;
-			vertex.position.z = Math.random() * 250 + 120;
-
-			vertices.push( vertex );
-			vertices.push( vertex );
-			vertices.push( vertex );
+		if( WaterfallShader.geometry === undefined ) {
+			
+			// create geo
+			
+			var geometry = new THREE.Geometry();
+			var v, f, fl = 4000;
+			var faces = geometry.faces;
+			var vertices = geometry.vertices;
+			var vertex;
+			var time = WaterfallShader.attributes.time.value;
+			var direction = WaterfallShader.attributes.direction.value;
+			var darkness = WaterfallShader.attributes.darkness.value;
+			
+			for( f = 0; f < fl; f++ ) {
+	
+				faces.push( new THREE.Face3( f * 3 + 0, f * 3 + 2, f * 3 + 1 ));
+	
+				time.push( Math.random() );
+				darkness.push( Math.random() * 0.4 + 0.6 );
+	
+				direction.push( 0 );
+				direction.push( 120 * Math.PI / 180 );
+				direction.push( 240 * Math.PI / 180 );
+	
+	
+				vertex = new THREE.Vertex();
+	
+				// set end position of particle
+	
+				vertex.position.x = Math.random() * 250 - 125;	
+				vertex.position.y = -5900;
+				vertex.position.z = Math.random() * 250 + 120;
+	
+				vertices.push( vertex );
+				vertices.push( vertex );
+				vertices.push( vertex );
+				
+			}
+			
+			geometry.computeFaceNormals();
+			geometry.computeBoundingSphere();
+			geometry.boundingSphere.radius = 5000;
+			
+			// create material
+	
+			var material = new THREE.MeshShaderMaterial( { uniforms: WaterfallShader.uniforms,
+														   attributes: WaterfallShader.attributes,
+														   vertexShader: WaterfallShader.vertexShader,
+														   fragmentShader: WaterfallShader.fragmentShader,
+														   lights: false,
+														   fog: false } );
+			
+			WaterfallShader.geometry = geometry;
+			WaterfallShader.material = material;
 			
 		}
-		
-		geometry.computeFaceNormals();
-		geometry.computeBoundingSphere();
-		geometry.boundingSphere.radius = 5000;
-		
-		// create material
 
-		var material = new THREE.MeshShaderMaterial( { uniforms: WaterfallShader.uniforms,
-													   attributes: WaterfallShader.attributes,
-													   vertexShader: WaterfallShader.vertexShader,
-													   fragmentShader: WaterfallShader.fragmentShader,
-													   lights: false,
-													   fog: false } );
 
-		var mesh = new THREE.Mesh( geometry, material );
+		var mesh = new THREE.Mesh( WaterfallShader.geometry, WaterfallShader.material );
 		
 		mesh.doubleSided = true;
 		
 		return mesh;
 	},
 
-	update: function( delta ) {
+	update: function( delta, skyWhite ) {
 		
 		WaterfallShader.uniforms.globalTime.value += delta * 0.00005;
+		WaterfallShader.uniforms.skyWhite.value = skyWhite !== undefined ? skyWhite : 1.0;
 		
 	},
 	
@@ -103,12 +115,10 @@ WaterfallShader = {
 
 		"void main() {",
 
-			"vWorldVector = ( vec3( objectMatrix * vec4( position, 1.0 )).xyz - cameraPosition) * vec3(0.01, 0.02, 0.01);",
-
 			"float localTime = time + globalTime;",
 			"float modTime = mod( localTime, 1.0 );",
-			"float sinTime = sin( modTime * PI * 0.25 );",
-			"float pulse = sin( localTime * 2.5 ) * 25.0;",
+			"float sinTime = sin( modTime * PI * 0.5 );",
+			"vec2 pulse = vec2( sin( localTime * 10.0 ) * 100.0, cos( localTime * 10.0 ) * 100.0 );",
 
 			// color
 			
@@ -117,7 +127,7 @@ WaterfallShader = {
 
 			// position
 
-			"vec3 animated = vec3(( position.x + pulse ) * sinTime, position.y * modTime * modTime * modTime, ( position.z + pulse ) * sinTime );",
+			"vec3 animated = vec3(( position.x + pulse.x ) * sinTime, position.y * modTime * modTime * modTime, ( position.z + pulse.y ) * sinTime );",
 
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( animated, 1.0 );",
 			
@@ -126,6 +136,7 @@ WaterfallShader = {
 			"gl_Position.x += sin( direction + modTime * 15.0 * PI ) * 10.0 * distance;",
 			"gl_Position.y += cos( direction + modTime * 15.0 * PI ) * 10.0 * 2.0 * distance;",
 
+			"vWorldVector = ( vec3( objectMatrix * vec4( animated, 1.0 )).xyz - cameraPosition) * vec3(0.01, 0.02, 0.01);",
 		"}"
 
 	].join("\n"),
@@ -163,9 +174,9 @@ WaterfallShader = {
 			"f = max( 0.0, normalize( vWorldVector ).y + cameraPosition.y * 0.0002 - 0.05 );",
 			"sky_color = mix( vec3( skyWhite ), skyBlue, f );",
 
+			"gl_FragColor = vec4( vColor, 1.0 );",
 			"gl_FragColor = mix( gl_FragColor, vec4( sky_color, gl_FragColor.w ), fogFactor );",
 
-			"gl_FragColor = vec4( vColor, 0.9 );//vec4( 1.0, 0.0, 1.0, 1.0 );",
 		"}"
 
 	].join("\n")
