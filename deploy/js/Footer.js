@@ -151,7 +151,7 @@ var Footer = function(container, prefix) {
 		'  border: 0;',
 		'}',
 		'.rome-footer .shout-out li.divider {',
-		'  margin: 15px 0 15px 15px;',
+		'  margin: 15px -15px 15px 15px;',
 		'  height: 24px;',
 		'  border-left: 1px solid #a0a0a0;',
 		'  border-right: 0 !important;',
