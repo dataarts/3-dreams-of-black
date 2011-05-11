@@ -34,7 +34,7 @@ var Prairie = function ( shared ) {
 	this.init = function () {
 
 		waypoints = [
-		[ 302.182, 105.662, -15.045 ],
+		[ 332.182, 105.662, -15.045 ],
 		[ 352.207, 114.403, -16.674 ],
 		[ 402.111, 120.122, -17.990 ],
 		[ 452.904, 122.699, -19.151 ],
@@ -76,8 +76,8 @@ var Prairie = function ( shared ) {
 
 		cameraPath = new THREE.PathCamera( {
 
-			fov: 64, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
-			waypoints: waypoints, duration: 26.5,
+			fov: 73, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
+			waypoints: waypoints, duration: 26.2,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
 			lookSpeed: 0.0028, lookVertical: true, lookHorizontal: true,

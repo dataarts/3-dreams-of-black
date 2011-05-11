@@ -211,7 +211,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 
-
 	// flying animals
 	var flyingAnimals = new AnimalSwarm2( 10, scene, vectors.array );
 

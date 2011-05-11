@@ -32,7 +32,7 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 	var r = 0;
 	var i;
 
-	this.addAnimal = function( geometry, predefined, scale, morphArray, speedArray ) {
+	this.addAnimal = function( geometry, predefined, scale, morphArray, speedArray, sockPuppetSpecialCase ) {
 
 		var predefined = predefined || null;
 		var scaleMultiplier = scale || 1.2;
@@ -49,7 +49,13 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 				speedArray = [1];
 			}
 
-			var animal = ROME.Animal( geometry, false );
+			if (sockPuppetSpecialCase) {
+				var animal = ROME.Animal_old( geometry, false );
+			} else {
+				var animal = ROME.Animal( geometry, false );
+			}
+
+			//var animal = ROME.Animal( geometry, false );
 			var mesh = animal.mesh;
 			mesh.position.copy(that.settings.startPosition);
 
@@ -88,7 +94,7 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 			ray = new THREE.Ray();
 			ray.direction = new THREE.Vector3(0, -1, 0);
 
-			var obj = { c: mesh, a: animal, positionArray: [], normalArray: [], lifetime: 0, dead: false, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), toNormal: new THREE.Vector3(0, 1, 0), toPosition: new THREE.Vector3(), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray  };
+			var obj = { c: mesh, a: animal, positionArray: [], normalArray: [], lifetime: 0, dead: false, speeda: speeda, speedb: speedb, active: false, normal: new THREE.Vector3(0, 1, 0), toNormal: new THREE.Vector3(0, 1, 0), toPosition: new THREE.Vector3(), count: count, scale: scale * scaleMultiplier, origscale: scale * scaleMultiplier, ray: ray, sockPuppetSpecialCase: sockPuppetSpecialCase  };
 
 			that.array[i] = obj;
 
@@ -268,6 +274,10 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 
 			//var divider = 1.5;//15-animalSpeed;
 			var divider = 8;
+
+			if (that.array[i].sockPuppetSpecialCase) {
+				divider = 100;
+			}
 
 			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
 			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;

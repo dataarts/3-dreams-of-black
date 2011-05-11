@@ -63,7 +63,6 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 				var animal = ROME.Animal_old( geometry, false );
 			} else {
 				var animal = ROME.Animal( geometry, false );
-			
 			}
 			
 			var mesh = animal.mesh;
@@ -225,7 +224,7 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].scale = that.array[i].origscale;
 			that.array[i].keepRunning = false;
 			that.array[i].gravity = 0;
-			that.array[i].count = 0;
+			that.array[i].count = 1;
 
 			if (that.settings.gravity) {
 				that.array[i].c.matrixAutoUpdate = true;
@@ -346,11 +345,11 @@ var AnimalSwarm = function ( numOfAnimals, scene, vectorArray ) {
 			}
 
 			// morph
-			that.array[i].count += 0.05;
-			var morph = Math.max(Math.cos(that.array[i].count),0);
+			that.array[i].count += 0.06;
+			var morph = Math.max(Math.cos(that.array[i].count)-0.5,0);
 			morph = Math.min(morph, 1)
 			that.array[i].a.morph = morph;
-		
+
 			var animalSpeed = obj.speeda;
 			if (Math.round(morph) == 1) {
 				animalSpeed = obj.speedb;
