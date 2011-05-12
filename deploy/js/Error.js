@@ -62,7 +62,7 @@ function HandleErrors(d) {
         // Detector.message = Errors[5];
         if(hasLocalStorage()) {
           // go ahead darling
-          if(!localStorage.getItem("RomeError")) {
+          if(localStorage.getItem("RomeError") == "false") {
             // overlay our condition
             window.addEventListener("load", function() {
 
