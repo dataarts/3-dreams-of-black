@@ -195,8 +195,8 @@ var DunesWorld = function ( shared ) {
 	var ugcFirstThreePositions = [ new THREE.Vector3( TILE_SIZE * 0.15, -1000, -TILE_SIZE * 1.25 ), 
 								   new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
 
-  var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 4500, -TILE_SIZE * 1.25 ),
-    new THREE.Vector3( TILE_SIZE, 4000, -TILE_SIZE ) ];
+  var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 2500, -TILE_SIZE * 1.25 ),
+    new THREE.Vector3( TILE_SIZE, 3000, -TILE_SIZE ) ];
 
 
 	that.scene.collisions.colliders.push( ugcCollider );
@@ -220,7 +220,7 @@ var DunesWorld = function ( shared ) {
 			
 			ugc = loadedUGC[ u ];
 			
-			if( ugc.visible === true && ugc.placedOnGrid ) {
+			if( ugc.visible === true && ugc.placedOnGrid && ugc.category == 'ground') {
 				
 				ugcPos = ugc.position;
 				
@@ -363,7 +363,7 @@ var DunesWorld = function ( shared ) {
 							ugc.position.x += Math.random() * 200 - 100;
 							ugc.position.z += Math.random() * 200 - 100;
               if (ugc.category === 'sky') {
-                ugc.position.y = 7000 + Math.random() * 1000 - 500;
+                ugc.position.y = 2500 + Math.random() * 1000 - 500;
               }
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
 
