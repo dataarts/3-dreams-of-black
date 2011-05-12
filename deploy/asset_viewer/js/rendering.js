@@ -195,6 +195,15 @@ function initPostprocessingNoise( effect ) {
 }
 
 function render(){
+
+	if (document.body.scrollTop > 1794 || document.body.scrollTop + window.innerHeight < 1142) {
+
+		return;
+	}
+	
+	console.log(document.body.scrollTop);
+	
+	
     renderer.clear();
 
     lightmapShader.uniforms['shaderDebug'].value = params.component;
