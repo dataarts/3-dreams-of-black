@@ -59,12 +59,14 @@ var VIDEO_KEYED_DISTORT = 4;
 var camera, scene;
 
 var VideoPlane = function(layer, conf){
-  var video, texture, interval, shader, material, wireMaterial;
+  var texture, duration, interval, shader, video, currentTime, material, wireMaterial;
   var config = conf;
   var hasDistortion = false;
   var hasKey = false;
 
   var polyTrail = new PolyTrail();
+
+  var that = this;
 
   video = document.createElement('video');
   video.src = layer.path;
@@ -128,15 +130,26 @@ var VideoPlane = function(layer, conf){
   this.mesh.scale.x *= Math.abs(layer.z) * config.adj * config.aspect;
   this.mesh.scale.y *= Math.abs(layer.z) * config.adj;
 
-  this.start = function(t, mouseX, mouseY) {
+  this.loaded = false;
 
-    polyTrail.set(-mouseX * config.aspect, -mouseY);
-
-    video.currentTime = video.duration * t;
-    video.play();
-
+  this.init = function(t, mouseX, mouseY) {
     interval = setInterval(function(){
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        video.currentTime = video.duration * t;
+        this.loaded = true;
+        clearInterval( interval );
+        that.start();
+      }
+    }, 1000 / 24);
+  };
+
+  this.start = function(t, mouseX, mouseY) {
+    polyTrail.set(-mouseX * config.aspect, -mouseY);
+    video.play();
+    video.currentTime = video.duration * t;
+    interval = setInterval(function(){
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        if (video.currentTime >= video.duration) video.currentTime = 0;
         texture.needsUpdate = true;
       }
     }, 1000 / 24);
@@ -209,7 +222,6 @@ var VideoPlayer = function(shared, layers, conf){
     gridLoaded = true;
 
     document.addEventListener('mousemove', this.mouseMove, false);
-    document.addEventListener('mousedown', this.mouseDown, false);
     targetPos = new THREE.Vector2(0,0);
 
     config.fov = 54;
@@ -230,12 +242,13 @@ var VideoPlayer = function(shared, layers, conf){
       planes.push(p);
       scene.addObject(p.mesh);
     }
-    onPlayerReady();
+    player.show(0);
+    animate();
   };
 
   this.show = function(progress) {
     for (var i = 0; i < planes.length; i++) {
-      planes[i].start(progress, mouseX, mouseY);
+      planes[i].init(progress, mouseX, mouseY);
     }
   };
 
@@ -289,9 +302,6 @@ var VideoPlayer = function(shared, layers, conf){
     mouseV = (event.clientY) / viewHeight / aspect;
 
   };
-  this.mouseDown = function(){
-    mouseRad += 0.5;
-  }
 };
 
 var VideoShaderSource = {
@@ -489,18 +499,9 @@ function init(){
   player.init();
 }
 
-function onPlayerReady() {
-  player.show(0);
-  animate();
-}
-
 function animate(){
-  loop();
-  requestAnimationFrame(animate);
-}
-
-function loop(){
   player.update();
+  requestAnimationFrame(animate);
 }
 
 initGui();

@@ -26,16 +26,15 @@
       z-index:1000;
     }
 
-    #oldie {
-      background:rgb(200,100,0) !important;
-      color:#fff;
-    }
-
     #vt { display:none }
     #vt, #vt a { color:orange; }
     .code { }
 
     #log { position:absolute; top:50px; text-align:left; display:block; z-index:100 }
+
+    canvas{
+      cursor: move;
+    }
   </style>
 </head>
 
@@ -75,6 +74,9 @@
 
   var mouseX = 0;
   var mouseY = 0;
+  var orbitX = 0;
+  var orbitY = 0;
+  var drag = false;
 
   var windowHalfX = window.innerWidth / 2;
   var windowHalfY = window.innerHeight / 2;
@@ -162,6 +164,8 @@
     }
 
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    document.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
   }
 
@@ -177,12 +181,29 @@
 
   function onDocumentMouseMove(event) {
 
-    mouseX = ( event.clientX - windowHalfX ) * 10;
-    mouseY = ( event.clientY - windowHalfY ) * 10;
+    if (drag) {
+      var deltaX = mouseX - ( event.clientX - windowHalfX );
+      var deltaY = mouseY - ( event.clientY - windowHalfY );
+      mouseX = event.clientX - windowHalfX;
+      mouseY = event.clientY - windowHalfY;
+      orbitX -= deltaX*10;
+      orbitY -= deltaY*10;
+    }
+  }
+
+  function onDocumentMouseUp(event) {
+
+    drag = false;
 
   }
 
-  //
+  function onDocumentMouseDown(event) {
+
+    mouseX = ( event.clientX - windowHalfX ) ;
+    mouseY = ( event.clientY - windowHalfY ) ;
+    drag = true;
+
+  }
 
   function animate() {
 
@@ -195,7 +216,7 @@
 
   function render() {
 
-    var ry = mouseX * 0.0003, rx = mouseY * 0.0003;
+    var ry = orbitX * 0.0003, rx = orbitY * 0.0003;
 
     if( mesh1 ) {
 
