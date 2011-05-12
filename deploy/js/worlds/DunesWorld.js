@@ -249,11 +249,11 @@ var DunesWorld = function ( shared ) {
 		// set physics on closest ugc
 		
 		if( closestUgc !== undefined ) {
-			
+
 			ugcCollider.center.copy( closestUgc.matrixWorld.getPosition());
 			ugcCollider.radius   = closestUgc.boundRadius;
 			ugcCollider.radiusSq = ugcCollider.radius * ugcCollider.radius;
-			
+
 		}
 
 
@@ -670,7 +670,7 @@ var DunesWorld = function ( shared ) {
 
 						if( tileMesh ) {
 
-							tileMesh.position.x = px; 
+							tileMesh.position.x = px;
 							tileMesh.position.z = pz;
 							tileMesh.rotation.z = getRotation( px, pz );
 
@@ -772,7 +772,7 @@ var DunesWorld = function ( shared ) {
 
 	function markColliders( scene ) {
 
-		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
+		THREE.SceneUtils.traverseHierarchy( scene, function( node ) {
 
 			var colliders = scene.collisions.colliders;
 
@@ -780,7 +780,7 @@ var DunesWorld = function ( shared ) {
 
 				if ( colliders[ i ].mesh == node ) {
 
-					node.__isCollider = true; 
+					node.__isCollider = true;
 
 				}
 
