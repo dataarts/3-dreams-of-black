@@ -123,7 +123,7 @@ console.log(params);
                 $.each(data, function(key, value) {
                   var toAdd = itemHTML;
                   toAdd = toAdd.replace(/%title%/g, value.title);
-                  toAdd = toAdd.replace(/%img%/g, value.thumbnail_url || '/gallery/not-found.jpg');
+                  toAdd = toAdd.replace(/%img%/g, value.thumbnail_url || '/gallery/images/not-found.jpg');
                   toAdd = toAdd.replace(/%id%/g, value.id);
 
                   var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + value.id);
