@@ -41,6 +41,27 @@ var UgcObject = function ( data ) {
 
 	};
 
+	this.getGrid = function () {
+
+		return _grid;
+
+	};
+
+	this.setGrid = function ( grid ) {
+
+		_grid = grid;
+
+	};
+
+	this.clear = function () {
+
+		delete _grid;
+
+		_grid = {};
+		_count = 0;
+
+	};
+
 	this.getJSON = function () {
 
 		var i, item, array = [ VERSION ],
