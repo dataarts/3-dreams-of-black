@@ -261,6 +261,7 @@ var RelauncherSection = function( shared ) {
 
 				enter.style.display = "none";
 				shared.signals.keyup.remove( handleReturn );
+
 		  } else if(e.keyCode == 8 || e.keyCode == 46) {
 
 				var divs = container.getElementsByTagName('div');
@@ -340,6 +341,13 @@ var RelauncherSection = function( shared ) {
 		setTimeout( function() {
 			fadeIn.style.opacity = 0.0;
 		}, 1 );
+		if( enter ) {
+			enter.style.display = "none";
+		}
+		var divs = container.getElementsByTagName('div');
+		for(var i = 0; i < divs.length; i++) {
+			divs[i].style.display = "block";
+		}
 
 	};
 
