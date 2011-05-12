@@ -394,8 +394,6 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	function adjustColors( geometry ) {
-	
-		//geometry.materials[ 0 ][ 0 ] = new THREE.MeshLambertMaterial( { color: 0xaaffaa } );
 		
 		var i, il, c, f;
 		
