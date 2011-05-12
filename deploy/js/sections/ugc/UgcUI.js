@@ -12,6 +12,8 @@ var UgcUI = function (shared) {
   var numAnimals = 10; // TODO
   var animalSlideTarget = 0;
   var animalSlide = 0;
+    var _type = 0;
+
 
   var css = getCSS();
 
@@ -227,6 +229,18 @@ var UgcUI = function (shared) {
   makeUnselectable(colorDOM);
   makeUnselectable(tooltip);
 
+  this.setType = function(type) {
+    _type = type
+    if (type == 1) {
+      colorDOM.style.display = 'none';
+      shared.ugcSignals.object_changecolor.dispatch(0xffffff);
+      addClass(document.getElementById('ugcui-color'), 'disabled');
+    } else {
+      removeClass(document.getElementById('ugcui-color'), 'disabled')
+    }
+    picker.setType(type);
+  };
+
   this.updateCapacity = function (i) {
     document.getElementById('capacity').textContent = ( Math.round(i * 100) + '%' );
   };
@@ -281,6 +295,7 @@ var UgcUI = function (shared) {
     for (var i = 0; i < named.length; i++) {
       if (named[i].getAttribute('title') != undefined) {
         named[i].addEventListener('mouseover', function() {
+          if (hasClass(this, 'disabled')) return;
           tooltip.style.display = 'inline-block';
           tooltip.innerHTML = this.getAttribute('title');
         }, false);
@@ -309,7 +324,6 @@ var UgcUI = function (shared) {
 //    onClick('smoother-down', function() {
 //      shared.ugcSignals.object_smoothdown.dispatch();
 //    });
-
 
     window.addEventListener('keydown', function(e) {
       if (submitDialogueOpen) return;
@@ -437,6 +451,7 @@ var UgcUI = function (shared) {
     });
 
     shared.ugcSignals.object_colormode.add(function() {
+      if (_type == 1) return;
       colormode = true;
       rotatemode = false;
       removeClass(document.getElementById('ugcui-create'), 'active');
@@ -891,7 +906,7 @@ var UgcUI = function (shared) {
       '.ugcui g.button polygon.hex {',
       '  fill: rgba(255, 255, 255, 0.7);',
       '}',
-      '.ugcui g.button:hover polygon.hex {',
+      '.ugcui g.button:not(.disabled):hover polygon.hex {',
       '  fill: #fff;',
       '}',
       '.ugcui g.button.active polygon.hex {',
@@ -903,6 +918,7 @@ var UgcUI = function (shared) {
       '.ugcui g.folder g.options, .ugcui g.folder polygon.hitbox {',
       '  display: none;',
       '}',
+      '.ugcui g.disabled { opacity: 0.1; cursor: auto; }',
       '.ugcui g.folder:hover g.options {',
       '  display: block;',
       '}',

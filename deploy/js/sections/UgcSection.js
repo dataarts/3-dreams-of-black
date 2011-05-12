@@ -264,6 +264,7 @@ var UgcSection = function ( shared ) {
 
 			objectCreator.enable();
 
+      ui.setType( type );
 			ui.getDomElement().style.display = 'block';
 
 			switch( _type ) {
