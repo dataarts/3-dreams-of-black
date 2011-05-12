@@ -19,7 +19,8 @@ function HandleErrors(d) {
     "<p>We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again.</p>",
     "<p>We are sorry, but it appears that your browser does not support WebGL. &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a> in mind. Please try launching this site again on a computer with up-to-date graphics drivers. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site, and learn more about WebGL technology.</p>" + Trailer,
 		"<p>This project is very experimental. With your current configuration, you may experience problems such as video flickering, so you may want to try this in Chrome Canary, the cutting-edge experimental version of Google Chrome. Download Google Chrome Canary <a href = 'http://tools.google.com/dlpage/chromesxs?platform=win'>here</a>, or <a id = 'escape-from-warning' href = '#'>try the experience anyway</a>.</p>",
-    "<p>We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.</p>"
+    "<p>We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.</p>",
+		"<p>You appear to be running an older version of Chrome. Please click on the wrench icon on the browser toolbar, and select 'Update Google Chrome' before viewing ROME.</p>"
   ];
 
   this.getUrlVars = function() {
@@ -127,7 +128,14 @@ function HandleErrors(d) {
           // go ahead darling
           // if(localStorage.getItem("RomeError") == "false") {
             // overlay our condition
-						if(isChrome11OrLess()) {
+						if(isChromeVerOrLess(11)) {
+
+							if(isChromeVerOrLess(10)) {
+
+								// Throw back
+								window.location = destination + "?" + this.MagicVariable + "=7";
+
+							} else {
 
 			            window.addEventListener("load", function() {
 
@@ -184,8 +192,8 @@ function HandleErrors(d) {
 			            HandleErrors.isWebGLAndBeta = true;
 			          // }
 			        // }
-
 						}
+					}
 
 			}
     } else {
@@ -208,7 +216,7 @@ function HandleErrors(d) {
     return navigator.userAgent.match(condition);
   }
 
-	function isChrome11OrLess() {
+	function isChromeVerOrLess() {
 
 		var string = navigator.userAgent
 		var regex = /[Cc]hrome\/([0-9]{1,2})/;
