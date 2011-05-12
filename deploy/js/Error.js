@@ -161,7 +161,8 @@ if(variables) {
 			window.addEventListener("load", function() {
 	      var iterator = variables[romeErrors.MagicVariable];
 	      var error = document.getElementById("error");
-	          error.innerHTML = romeErrors.Errors[iterator];
+						error.innerHTML = romeErrors.Errors[(iterator % romeErrors.Errors.length)];
+
 	    }, false);
 
 		} else {
@@ -169,8 +170,9 @@ if(variables) {
 			window.attachEvent("load", function() {
 	      var iterator = variables[romeErrors.MagicVariable];
 	      var error = document.getElementById("error");
-	          error.innerHTML = romeErrors.Errors[iterator];
+						error.innerHTML = romeErrors.Errors[(iterator % romeErrors.Errors.length)];
 				return false;
+
 	    });
 
 		}
