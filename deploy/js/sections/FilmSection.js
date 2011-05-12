@@ -156,8 +156,9 @@ var FilmSection = function ( shared ) {
 
 	// pointers
 	// sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1000 );
-	//sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1000 );
+	sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1000 );
 
+	/*
 	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 1000 ); // city animation
 	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 16 ) - cityTransitionTime, tune.getPatternMS( 24 ), 1000 ); // city
 	
@@ -166,6 +167,7 @@ var FilmSection = function ( shared ) {
 	
 	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 1000 ); // dunes animation
 	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 48 ) - dunesTransitionTime, tune.getPatternMS( 73.25 ), 1000 ); // dunes
+	*/
 
 	// final render
 
