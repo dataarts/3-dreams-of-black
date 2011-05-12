@@ -8,7 +8,7 @@ function HandleErrors(d) {
   var destination = d || "/alternate";
 	var fired = false;
 
-  Trailer = "<ul id = 'trailer'><li class = 'first'><a href = 'http://www.youtube.com/watch?v=ReH7zzj5GPc'>Watch the Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
+  Trailer = "<ul id = 'trailer'><li class = 'first'><a href = 'http://www.youtube.com/watch?v=ReH7zzj5GPc'>Watch the Trailer</a></li><li><a href = '/album'>Rome Album</a></li><li class = 'last'><a href = '/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
   this.MagicVariable = "case";
 
@@ -18,6 +18,7 @@ function HandleErrors(d) {
     "<p>We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again. If you are unable to install a new web browser, you can try downloading the <a href = 'http://www.google.com/chromeframe'>Google Chrome Frame plugin</a> instead.</p>",
     "<p>We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again.</p>",
     "<p>We are sorry, but it appears that your browser does not support WebGL. &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a> in mind. Please try launching this site again on a computer with up-to-date graphics drivers. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site, and learn more about WebGL technology.</p>" + Trailer,
+		"<p>This project is very experimental. With your current configuration, you may experience problems such as video flickering, so we recommend you to try this in Chrome Canary, the cutting-edge experimental version of Google Chrome. Download Google Chrome Canary <a href = 'http://tools.google.com/dlpage/chromesxs?platform=win'>here</a>, or <a id = 'escape-from-warning' href = '#'>try the experience anyway</a>.</p>",
     "<p>We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.</p>"
   ];
 
@@ -51,7 +52,7 @@ function HandleErrors(d) {
                       ( function () { return hasUserAgent(/[Ff]ire[Ff]ox\/[4-9]/); } )(),
                       ( function () { return hasUserAgent(/[Mm][Ss][Ii][Ee] [789]/) && hasUserAgent(/[Ww]indows [Nn][Tt] [6789]/); } )(),
                       ( function () { return hasUserAgent(/[Ss]afari/) && hasUserAgent(/[Mm]ac [Oo][Ss] [Xx] 10\_[6789]/); } )(),
-                      ( function () { return hasUserAgent(/i[Pp]hone/) || hasUserAgent(/i[Pp]ad/) || hasUserAgent(/[Aa]ndroid/); } )()
+                      ( function () { return hasUserAgent(/i[Pp]hone/) || hasUserAgent(/i[Pp]ad/) || hasUserAgent(/[Aa]ndroid/); } )(),
                       ],
         message : ""
     };
@@ -60,7 +61,6 @@ function HandleErrors(d) {
       // We're good!
       if(Detector.conditions[1]) {
         // Overlay condition check with localStorage
-        // Detector.message = Errors[5];
         // if(hasLocalStorage()) {
           // go ahead darling
           // if(localStorage.getItem("RomeError") == "false") {
@@ -87,7 +87,7 @@ function HandleErrors(d) {
               errorContainer.setAttribute("style", errorContainerStyle);
               var errorStyle = "width: 330px; padding: 50px 35px; background: rgba(0, 0, 0, 0.3); color: #fff; font: color: #fff; font: 500 12px/18px 'Futura', Arial, sans-serif; letter-spacing: 1px; text-align: center;";
               error.setAttribute("style", errorStyle);
-              error.innerHTML = that.Errors[5];
+              error.innerHTML = that.Errors[6];
 
               // Add Event Listeners
               var windowResize = function() {
@@ -117,10 +117,77 @@ function HandleErrors(d) {
                   }, false);
             }, false);
 
-            HandleErrors.isWebGLAndFireFox = true;
+            HandleErrors.isWebGLAndBeta = true;
           // }
         // }
-      }
+      } else if(hasUserAgent(/[Ww]indows/)) {
+
+        // Overlay condition check with localStorage
+        // if(hasLocalStorage()) {
+          // go ahead darling
+          // if(localStorage.getItem("RomeError") == "false") {
+            // overlay our condition
+						if(isChrome11OrLess()) {
+
+			            window.addEventListener("load", function() {
+
+			              var uiContainer = document.getElementById('ui-container');
+			              if(uiContainer) {
+			                uiContainer.style.display = "none";
+			              }
+
+			              var shade = document.createElement("div");
+			              var errorContainer = document.createElement("div");
+			              var error = document.createElement("div");
+			                  error.setAttribute("id", "rome-error");
+			              var styles = document.createElement("style");
+			                  styles.innerHTML = "a { color: #fff; }";
+			                  document.getElementsByTagName("head")[0].appendChild(styles);
+
+			              // Styling
+			              var shadeStyle = "width: 100%; height: 100%; position: fixed; margin: 0; padding: 0; top: 0; left: 0;";
+			              shade.setAttribute("style", shadeStyle);
+			              var errorContainerStyle = "position: fixed; width: 400px; margin: 0 auto; top: " + (window.innerHeight - 200) / 2.0 + "px; left: " + (window.innerWidth - 400) / 2.0 + "px;";
+			              errorContainer.setAttribute("style", errorContainerStyle);
+			              var errorStyle = "width: 330px; padding: 50px 35px; background: rgba(0, 0, 0, 0.3); color: #fff; font: color: #fff; font: 500 12px/18px 'Futura', Arial, sans-serif; letter-spacing: 1px; text-align: center;";
+			              error.setAttribute("style", errorStyle);
+			              error.innerHTML = that.Errors[5];
+
+			              // Add Event Listeners
+			              var windowResize = function() {
+			                errorContainer.style.left = (window.innerWidth - 400) / 2.0 + "px";
+			                errorContainer.style.top = (window.innerHeight) / 2.0 + "px";
+			              };
+			              var removeErrors = function() {
+			                document.body.removeChild(shade);
+			                document.body.removeChild(errorContainer);
+			                window.removeEventListener("resize", windowResize, false);
+			                LauncherSection.showUI();
+			                localStorage.setItem("RomeError", true);
+			              };
+			              shade.addEventListener("click", function() {
+			                removeErrors();
+			              }, false);
+			              window.addEventListener("resize", windowResize, false);
+
+			              errorContainer.appendChild(error);
+			              document.body.appendChild(shade);
+			              document.body.appendChild(errorContainer);
+
+			              var escape = document.getElementById("escape-from-warning");
+			                  escape.addEventListener("click", function(e) {
+			                    e.preventDefault();
+			                    removeErrors();
+			                  }, false);
+			            }, false);
+
+			            HandleErrors.isWebGLAndBeta = true;
+			          // }
+			        // }
+
+						}
+
+			}
     } else {
       // run other conditions
       for(var i = 0; i < Detector.conditions.length; i++) {
@@ -141,6 +208,19 @@ function HandleErrors(d) {
     return navigator.userAgent.match(condition);
   }
 
+	function isChrome11OrLess() {
+
+		var string = navigator.userAgent
+		var regex = /[Cc]hrome\/([0-9]{1,2})/;
+		var result = string.match(regex);
+		if(result) {
+			result = parseInt(result[1]);
+			return (result <= 11);
+		} else {
+			return false;
+		}
+	}
+
   function hasLocalStorage() {
     try {
       return 'localStorage' in window && window['localStorage'] !== null;
@@ -149,7 +229,7 @@ function HandleErrors(d) {
     }
   }
 }
-HandleErrors.isWebGLAndFireFox = false;
+HandleErrors.isWebGLAndBeta = false;
 
 // if has get contents of case then dont run else run HandleErrors
 // Read a page's GET URL variables and return them as an associative array.

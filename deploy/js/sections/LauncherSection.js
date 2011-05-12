@@ -125,7 +125,7 @@ var LauncherSection = function (shared) {
     shared.signals.loadItemAdded.add(loading.addItem);
     shared.signals.loadItemCompleted.add(loading.completeItem);
 
-    if (!HandleErrors.isWebGLAndFireFox) {
+    if (!HandleErrors.isWebGLAndBeta) {
 
       domElement.appendChild(uiContainer);
 

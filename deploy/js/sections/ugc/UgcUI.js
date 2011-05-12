@@ -543,7 +543,7 @@ var UgcUI = function (shared) {
 //frstyle.left = Math.round(animalSlide) + 'px';
     submitImage.style.backgroundPosition = '0px ' + -(frameCount * submitImage.offsetHeight) + 'px';
     _frameCount++;
-    if (_frameCount % 100 == 0) {
+    if (_frameCount % 10 == 0) {
       frameCount += 1;
     }
   };
