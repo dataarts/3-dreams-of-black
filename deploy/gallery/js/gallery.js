@@ -9,7 +9,6 @@ var GALLERY = function(params) {
 
   params['category'] = params['category'] || 'everyone';
 
-console.log(params);
 
   var OBJECTS_PER_PAGE = 15;
   var LOCAL_STORAGE_VOTE_PREFIX = 'vote';
@@ -22,7 +21,7 @@ console.log(params);
   var lightbox = $('#lightbox');
 
   var maxWidth = parseInt(maxWidthCSS.replace('px', ''));
-
+  var activeImage;
   var lightboxOpen = false;
 
   var activeObject = undefined; // The one in the lightbox ...
@@ -30,7 +29,7 @@ console.log(params);
 
   var itemHTML = [
     '<div class="object" id="object-%id%">',
-    '<div class="img-wrapper"><img src="%img%" alt=""/></div>',
+    '<div class="img-wrapper"><img style="background-image: url(%img%)" src="images/place-holder.gif" alt=""/></div>',
     '<div class="object-title">',
     '%title%',
     '</div>',
@@ -41,71 +40,69 @@ console.log(params);
     '</div>'].join("\n");
 
   populateObjects();
-	createPagination();
+  createPagination();
 
   function createPagination() {
 
     $.ajax({
           url: GALLERY.API_BASE + 'metadata/' + params['category'],
           success: function(data) {
-						if (!data.success) {
-							error(data.error);
-						} else { 
+            if (!data.success) {
+              error(data.error);
+            } else {
 
-                            console.log(data);
-							var numPages = Math.ceil(data.count/OBJECTS_PER_PAGE);
-                            console.log(numPages);
-							
-							if (numPages == 1) return;
-							
-							var ul = document.getElementById('pagination');
-							
-							var addPageLi = function(i) {
-								var classDec = i == params['page'] ? ' class="selected"' : '';
-								var url = '?c='+params['category']+'&p='+i;
-								ul.innerHTML += '<li'+classDec+'><a href="'+url+'">'+i+'</a></li>';
-							}
-							
-							var addHellipLi = function(i) {
-						    ul.innerHTML += '<li class="hellip"> &hellip; </li>';
-							}
-							
-							if (numPages <= 5) {
-								
-								for (var i = 1; i <= numPages; i++) {
-									addPageLi(i);
-								}
-								
-							} else if ( params['page'] < 3 ) {
-								
-									addPageLi(1);
-									addPageLi(2);
-									addPageLi(3);
-									addHellipLi();
-									addPageLi(numPages);
-								
-							} else if ( params['page'] > numPages - 2 ) {
-							
-									addPageLi(1);
-									addHellipLi();
-									addPageLi(numPages-2);
-									addPageLi(numPages-1);
-									addPageLi(numPages);
-								
-							} else { 
-								
-									addPageLi(1);
-									if ( params['page'] - 2 != 1 ) addHellipLi();
-									addPageLi(params['page']-1);
-									addPageLi(params['page']);
-									addPageLi(params['page']+1);
-									if ( params['page'] + 2 != numPages ) addHellipLi();
-									addPageLi(numPages);
-								
-							}
-							
-						
-						}
+              var numPages = Math.ceil(data.count / OBJECTS_PER_PAGE);
+
+              if (numPages == 1) return;
+
+              var ul = document.getElementById('pagination');
+
+              var addPageLi = function(i) {
+                var classDec = i == params['page'] ? ' class="selected"' : '';
+                var url = '?c=' + params['category'] + '&p=' + i;
+                ul.innerHTML += '<li' + classDec + '><a href="' + url + '">' + i + '</a></li>';
+              }
+
+              var addHellipLi = function(i) {
+                ul.innerHTML += '<li class="hellip"> &hellip; </li>';
+              }
+
+              if (numPages <= 5) {
+
+                for (var i = 1; i <= numPages; i++) {
+                  addPageLi(i);
+                }
+
+              } else if (params['page'] < 3) {
+
+                addPageLi(1);
+                addPageLi(2);
+                addPageLi(3);
+                addHellipLi();
+                addPageLi(numPages);
+
+              } else if (params['page'] > numPages - 2) {
+
+                addPageLi(1);
+                addHellipLi();
+                addPageLi(numPages - 2);
+                addPageLi(numPages - 1);
+                addPageLi(numPages);
+
+              } else {
+
+                addPageLi(1);
+                if (params['page'] - 2 != 1) addHellipLi();
+                addPageLi(params['page'] - 1);
+                addPageLi(params['page']);
+                addPageLi(params['page'] + 1);
+                if (params['page'] + 2 != numPages) addHellipLi();
+                addPageLi(numPages);
+
+              }
+
+
+            }
           },
           error: error('Error fetching object totals.')
 
@@ -157,15 +154,22 @@ console.log(params);
 
     window.addEventListener('resize', onWindowResize, false);
     onWindowResize();
-    
-    $('#'+params['category']).addClass('selected');
+
+    $('.img-wrapper img').hover(function() {
+      activeImage = this;
+    }, function() {
+      activeImage = undefined;
+    });
+
+
+    $('#' + params['category']).addClass('selected');
 
     $('#lightbox-close').click(closeLightbox);
 
     $('#lightbox-prev').click(function() {
 
-      var prev = objectData.indexOf(activeObject)-1;
-      if (prev < 0) prev = objectData.length-1;
+      var prev = objectData.indexOf(activeObject) - 1;
+      if (prev < 0) prev = objectData.length - 1;
       populateLightbox(objectData[prev]);
 
     });
@@ -173,7 +177,7 @@ console.log(params);
 
     $('#lightbox-next').click(function() {
 
-      var next = objectData.indexOf(activeObject)+1;
+      var next = objectData.indexOf(activeObject) + 1;
       if (next >= objectData.length) next = 0;
       populateLightbox(objectData[next]);
 
@@ -226,19 +230,19 @@ console.log(params);
             }
           });
 
-    }
+    };
 
-    sendVote(objectID, up, function( success ) {
+    sendVote(objectID, up, function(success) {
       if (up) {
         if (!success) return;
         localStorage.setItem(LOCAL_STORAGE_VOTE_PREFIX + objectID, 1);
-        $('#gallery .object#object-'+objectID+' .upvote').next().removeClass('selected');
-        $('#gallery .object#object-'+objectID+' .upvote').addClass('selected');
+        $('#gallery .object#object-' + objectID + ' .upvote').next().removeClass('selected');
+        $('#gallery .object#object-' + objectID + ' .upvote').addClass('selected');
       } else {
         if (!success) return;
         localStorage.setItem(LOCAL_STORAGE_VOTE_PREFIX + objectID, 0);
-        $('#gallery .object#object-'+objectID+' .downvote').prev().removeClass('selected');
-        $('#gallery .object#object-'+objectID+' .downvote').addClass('selected');
+        $('#gallery .object#object-' + objectID + ' .downvote').prev().removeClass('selected');
+        $('#gallery .object#object-' + objectID + ' .downvote').addClass('selected');
       }
     });
 
@@ -281,8 +285,8 @@ console.log(params);
       $('#lightbox-downvote').removeClass('selected');
     }
     console.log(activeObject.id);
-    $('#webgl').html($('<iframe style="border: 0;" width="100%" height="100%" src="/gallery/viewer.html#'+activeObject.id+'"></iframe>'));
-    $('#lightbox-experience').attr('href', '/?id='+activeObject.id)
+    $('#webgl').html($('<iframe style="border: 0;" width="100%" height="100%" src="/gallery/viewer.html#' + activeObject.id + '"></iframe>'));
+    $('#lightbox-experience').attr('href', '/?id=' + activeObject.id)
   }
 
   function closeLightbox() {
@@ -296,6 +300,21 @@ console.log(params);
     return function(jqXHR, msg) {
       alert(message);
     };
+  }
+
+  var frameCount = 0;
+  this.update = function() {
+    frameCount++;
+    if (activeImage != undefined) {
+
+      activeImage.frameCount = activeImage.frameCount == undefined ? 0 : activeImage.frameCount;
+      if (frameCount % 5 == 0) {
+        activeImage.frameCount++
+      }
+      var img = $(activeImage);
+      img.css('backgroundPosition', '0 ' + (-activeImage.frameCount * img.height()) + 'px');
+
+    }
   }
 
 };

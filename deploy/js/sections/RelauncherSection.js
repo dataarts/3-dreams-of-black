@@ -245,7 +245,12 @@ var RelauncherSection = function( shared ) {
 		  if(e.keyCode == 13 || !e.keyCode) {
 
 				shared.signals.showexploration.dispatch();
-				shared.signals.startexploration.dispatch( 'dunes' );
+				if( !shared.hasExplored ) {
+
+					shared.signals.startexploration.dispatch( 'dunes' );
+					shared.hasExplored = true;
+
+				}
 				var divs = container.getElementsByTagName('div');
 
 				for(var i = 0; i < divs.length; i++) {

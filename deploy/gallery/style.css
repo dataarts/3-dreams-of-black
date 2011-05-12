@@ -23,18 +23,18 @@ a:hover {
   text-decoration: underline;
 }
 
-div.object .img-wrapper:hover:before {
-  font: 11px/0px FuturaBT-Medium, sans-serif;
-  letter-spacing: 0.15em;
-  color: #fff;
-  content: 'PREVIEW';
-  position: absolute;
-  display: block;
-  padding: 20px;
-  margin-top: 73px;
-  margin-left: 105px;
-  background-color: rgba(246, 88, 36, 0.9);
-}
+/*div.object .img-wrapper:hover:before {*/
+  /*font: 11px/0px FuturaBT-Medium, sans-serif;*/
+  /*letter-spacing: 0.15em;*/
+  /*color: #fff;*/
+  /*content: 'PREVIEW';*/
+  /*position: absolute;*/
+  /*display: block;*/
+  /*padding: 20px;*/
+  /*margin-top: 73px;*/
+  /*margin-left: 105px;*/
+  /*background-color: rgba(246, 88, 36, 0.9);*/
+/*}*/
 
 ul#pagination li:last-child {
   margin-right: 0;
