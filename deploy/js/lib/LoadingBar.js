@@ -20,11 +20,11 @@ var LoadingBar = function ( callback ) {
 
 	loadVal = document.createElement( 'div' );
 	loadVal.style.position = 'absolute';
-	loadVal.style.height = '10px';
-	loadVal.style.width = '0px';
+	loadVal.style.height = '8px';
+	loadVal.style.width = '0';
 	loadVal.style.background = '#fff';
 	loadVal.style.borderRadius = '5px';
-	loadVal.style.marginLeft = '12px';
+	loadVal.style.margin = '1px 0 0 13px';
 	domElement.appendChild( loadVal );
 
 	mouseGif = document.createElement( 'div' );
@@ -63,6 +63,7 @@ var LoadingBar = function ( callback ) {
 
 		if ( totalItems != 0 && totalItems == doneItems ) {
 
+      if (totalItems == doneItems) loadVal.style.background = "#000";
 			callback();
 
 		}
