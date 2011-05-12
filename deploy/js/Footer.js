@@ -248,14 +248,15 @@ var Footer = function(container, prefix) {
         var rule = document.createTextNode(css);
         var head = document.getElementsByTagName('head')[0];
         var style = document.createElement('style');
+						style.type = "text/css";
 
-        if (style.stylesheet) {
+        if (style.styleSheet) {
 
             style.styleSheet.cssText = rule.nodeValue;
 
         } else {
 
-            style.appendChild(rule);
+          style.appendChild(rule);
 
         }
 
