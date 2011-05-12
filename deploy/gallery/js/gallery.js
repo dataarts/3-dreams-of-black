@@ -297,7 +297,7 @@ var GALLERY = function(params) {
 
   function error(message) {
     return function(jqXHR, msg) {
-      alert(message);
+      console.log(message);
     };
   }
 
