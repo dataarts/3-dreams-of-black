@@ -77,6 +77,10 @@ h2 {
   color: #83b5ca;
 }
 
+#curtain { 
+margin-bottom: 23px;
+}
+
 #behind-the-curtain {
   width: 804px;
   margin: 0 auto;
@@ -190,7 +194,7 @@ footer {
 body.demo {
   overflow: hidden;
 }
-iframe {
+body.demo iframe {
   border: 0;
   width: 100%;
   height: 100%;
