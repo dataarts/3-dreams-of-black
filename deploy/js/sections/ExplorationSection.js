@@ -22,21 +22,21 @@ var ExplorationSection = function ( shared ) {
 		'		cursor: pointer;',
 '	}'].join("\n");
 
-	var rule = document.createTextNode(svgCss);
-  var head = document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
+	var rule = document.createTextNode( svgCss );
+	var head = document.getElementsByTagName( 'head' )[ 0 ];
+	var style = document.createElement('style');
 
-  if (style.stylesheet) {
+	if ( style.stylesheet ) {
 
-      style.styleSheet.cssText = rule.nodeValue;
+		style.styleSheet.cssText = rule.nodeValue;
 
-  } else {
+	} else {
 
-      style.appendChild(rule);
+		style.appendChild( rule );
 
-  }
+	}
 
-  head.appendChild(style);
+	head.appendChild( style );
 
 	var svgHex = [
 		'<g id = "svgHex-container">',
@@ -143,6 +143,7 @@ var ExplorationSection = function ( shared ) {
 	function startExplore( worldId ) {
 
 		// UI
+
 		audioMenu.style.position = "absolute";
 		audioMenu.style.zIndex = 1000;
 		audioMenu.innerHTML = svgHexAudio;
@@ -172,6 +173,7 @@ var ExplorationSection = function ( shared ) {
 					
 					closestDistance = portals[ p ].currentDistance;
 					closestPortal = portals[ p ];
+
 				}
 				
 			}
@@ -231,9 +233,10 @@ var ExplorationSection = function ( shared ) {
 
 	//--- stop ---
 
-	function stop(e) {
+	function stop( e ) {
 
-		if(e.keyCode == 13) {
+		//if( e.keyCode == 13 ) 
+		{
 
 			toggleDisplay();
 		 
@@ -242,6 +245,7 @@ var ExplorationSection = function ( shared ) {
 	};
 
 	function toggleDisplay() {
+
 		paused = !paused;
 	
 	 	if( paused ) {
@@ -255,7 +259,8 @@ var ExplorationSection = function ( shared ) {
 			audioMenu.style.display = "none";
 	 		
 	 	}
-	}
+
+	};
 
 	//--- update viewport size ---
 
@@ -303,6 +308,7 @@ var ExplorationSection = function ( shared ) {
 		audioMenu.style.left = (window.innerWidth / 2.0 - 66) + "px";
 
 		paused = false;
+
 	};
 
 	this.hide = function () {
@@ -315,6 +321,7 @@ var ExplorationSection = function ( shared ) {
 			environmentSound.pause();
 			
 		}
+
 	};
 
 	this.resize = function ( width, height ) {
