@@ -5,9 +5,10 @@
 var UgcIntro = function( shared ) {
 
 	var domElement = document.createElement( 'div' );
-			domElement.style.width = window.innerWidth + 'px';
-			domElement.style.height = window.innerHeight + 'px';
-			domElement.style.backgroundColor = "#000";
+	domElement.style.position = 'absolute';
+	domElement.style.width = window.innerWidth + 'px';
+	domElement.style.height = window.innerHeight + 'px';
+	domElement.style.background = 'rgba(0,0,0,0.75)';
 
 	var instructions = document.createElement( 'div' );
 			// instructions.setAttribute('title', '3 Dreams of Black Dream Tool. Build your own object to add to the 3rd dream, a collective consciousness of a world gone by.')
@@ -18,7 +19,7 @@ var UgcIntro = function( shared ) {
 			instructions.style.height = "137px";
 			instructions.style.background = 'url(/files/ugcIntro/instructions.png) 0 0 no-repeat';
 
-	domElement.appendChild( instructions )
+	domElement.appendChild( instructions );
 
 	var sky = document.createElement( 'div' );
 			sky.style.position = "absolute";
