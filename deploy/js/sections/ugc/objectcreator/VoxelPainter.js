@@ -41,6 +41,19 @@ var VoxelPainter = function ( camera, scene ) {
 
 	scene.addObject( _collider );
 
+	// Trident
+
+	/*
+	var _trident = new THREE.Line( new THREE.Geometry(), new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true } ) );
+	_trident.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 1, 0 ) ) );
+	_trident.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 0 ) ) );
+	_trident.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 1, 0, 0 ) ) );
+	_trident.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 0 ) ) );
+	_trident.geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 1 ) ) );
+	_trident.scale.x = _trident.scale.y = _trident.scale.z = 1000;
+	scene.addObject( _trident );
+	*/
+
 	// Mouse projection
 
 	var projector, mouse2D, mouse3D, ray;
@@ -248,6 +261,11 @@ var VoxelPainter = function ( camera, scene ) {
 
 	this.update = function ( mousedown ) {
 
+		/*
+		_trident.lookAt( _tempVector.set( camera.position.x, _trident.position.y , camera.position.z ) );
+		_trident.rotation.y = ( Math.floor( ( ( _trident.rotation.y * 180 / Math.PI ) - 45 ) / 90 ) * 90 ) * Math.PI / 180;
+		*/
+
 		var intersects;
 
 		// Restore opacity of last intersected object.
@@ -292,6 +310,8 @@ var VoxelPainter = function ( camera, scene ) {
 
 						_brush[ 0 ].position.copy( _intersectPoint );
 						_brush[ 0 ].visible = true;
+
+						// _trident.position.copy( _intersectPoint );
 
 						if ( _symmetry ) {
 
