@@ -65,8 +65,10 @@ var LauncherSection = function (shared) {
       shared.loadedContent = true;
 
       isLoading = true;
-      addToTheDream.style.display = "none";
-      exploreDreams.style.display = "none";
+      if (addToTheDream != undefined && exploreDreams != undefined) {
+        addToTheDream.style.display = "none";
+        exploreDreams.style.display = "none";
+      }
 
       shared.signals.load.dispatch();
 
@@ -126,7 +128,7 @@ var LauncherSection = function (shared) {
     }
 
 
-    if (localStorage["RomeSeen"]) {
+    if (localStorage.getItem("RomeSeen") == "true") {
 
       // Append a CSS file
       if (!loadedOnce) {
@@ -185,7 +187,7 @@ var LauncherSection = function (shared) {
 
     } else {
 
-      localStorage["RomeSeen"] = true;
+      localStorage.setItem("RomeSeen", true);
 
     }
 

@@ -222,7 +222,12 @@
 				}
 			}
 
-			if( history ) history.pushState( null, title, path );
+			if( history ) {
+
+				var pState = window.location.pathname.toString();
+				history.pushState( { "pState": pState }, title, path );
+
+			}
 
 		}
 

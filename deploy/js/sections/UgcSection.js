@@ -422,9 +422,9 @@ var UgcSection = function ( shared ) {
 
 			ugcHandler.submitUGO( submission, image, function ( rsp ) {
 				if (rsp.success == false) {
-          alert("There was an error submitting your model.");
+          alert("There was an error submitting your model. Please try again in a moment.");
         } else {
-          window.open('/gallery', 'ROME | Gallery', 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, width=300, height=600');
+          window.location = '/gallery';
         }
 			});
 
