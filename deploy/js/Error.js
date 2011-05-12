@@ -56,7 +56,7 @@ function HandleErrors(d) {
     };
 
 		alert(Detecotr.webgl);
-		for(var i = 0; i Detector.conditions.length; i++) {
+		for(var i = 0; i < Detector.conditions.length; i++) {
 			alert("conditions: " + i + " returned: " + Detector.conditions[i]);
 		}
 
