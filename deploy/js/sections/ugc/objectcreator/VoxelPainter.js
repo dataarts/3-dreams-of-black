@@ -8,11 +8,6 @@ var VoxelPainter = function ( camera, scene ) {
 	var _intersectPoint, _intersectFace, _intersectObject,
 	_intersectEraseObjects = [], _tempVector = new THREE.Vector3();
 
-	var _grid = new THREE.Mesh( new THREE.Plane( 4050, 4050, 81, 81 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
-	_grid.position.y = - UNIT_SIZE / 2;
-	_grid.rotation.x = - 90 * Math.PI / 180;
-	scene.addObject( _grid );
-
 	// Colliders
 
 	var _collider = new THREE.Object3D();
@@ -285,7 +280,7 @@ var VoxelPainter = function ( camera, scene ) {
 						if ( _symmetry ) {
 
 							_brush[ 1 ].position.copy( _brush[ 0 ].position );
-							_brush[ 1 ].position.x = - _brush[ 1 ].position.x;
+							_brush[ 1 ].position.x = - _brush[ 1 ].position.x + UNIT_SIZE;
 							_brush[ 1 ].visible = true;
 
 						}
@@ -344,7 +339,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 									if ( _symmetry ) {
 
-										addVoxel( - x + xx, y + yy, z + zz );
+										addVoxel( - x + 1 + xx, y + yy, z + zz );
 
 									}
 

@@ -48,7 +48,7 @@ function HandleErrors(d) {
         conditions : [
                       ( function () { return hasUserAgent(/[cC]hrome/); } )(),
                       ( function () { return hasUserAgent(/[Ff]ire[Ff]ox\/[4-9]/); } )(),
-                      ( function () { return hasUserAgent(/MSIE [789]/) && hasUserAgent(/[Ww]indows ([Nn][Tt] [6789])?\./); } )(),
+                      ( function () { return hasUserAgent(/MSIE [789]/) && hasUserAgent(/[Ww]indows [Nn][Tt] [6789]\./); } )(),
                       ( function () { return hasUserAgent(/[Ss]afari/) && hasUserAgent(/[Mm]ac [Oo][Ss] [Xx] 10\_[6789]/); } )(),
                       ( function () { return hasUserAgent(/i[Pp]hone/) || hasUserAgent(/i[Pp]ad/) || hasUserAgent(/[Aa]ndroid/); } )()
                       ],
@@ -98,6 +98,7 @@ function HandleErrors(d) {
                 document.body.removeChild(errorContainer);
                 window.removeEventListener("resize", windowResize, false);
                 LauncherSection.showUI();
+                localStorage.setItem("RomeError", true);
               };
               shade.addEventListener("click", function() {
                 removeErrors();
@@ -116,7 +117,6 @@ function HandleErrors(d) {
             }, false);
 
             HandleErrors.isWebGLAndFireFox = true;
-            localStorage.setItem("RomeError", true);
           }
         }
       }
