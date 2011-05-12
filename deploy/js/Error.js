@@ -55,9 +55,9 @@ function HandleErrors(d) {
         message : ""
     };
 
-		alert(Detecotr.webgl);
-		for(var i = 0; i Detector.conditions.length; i++) {
-			alert("conditions: " + i + " returned: " + Detector.conditions[i]);
+		//alert(Detector.webgl);
+		for(var i = 0; i < Detector.conditions.length; i++) {
+			//alert("conditions: " + i + " returned: " + Detector.conditions[i]);
 		}
 
 
