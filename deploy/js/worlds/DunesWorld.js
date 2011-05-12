@@ -19,7 +19,7 @@ var DunesWorld = function ( shared ) {
 
 	that.scene = new THREE.Scene();
 
-	that.scene.collisions = new THREE.CollisionSystem();
+//	that.scene.collisions = new THREE.CollisionSystem();
 
 	that.scene.fog = new THREE.FogExp2( 0xffffff, 0.00000275 );
 	that.scene.fog.color.setHSV( 0.576, 0.382, 0.9 );
@@ -503,7 +503,7 @@ var DunesWorld = function ( shared ) {
 
 		// get collider
 
-		tileColliders[ tileNumber ] = scene.collisions.colliders[ 0 ].mesh;
+//		tileColliders[ tileNumber ] = scene.collisions.colliders[ 0 ].mesh;
 		tileColliders[ tileNumber ].rotation.x = -90 * Math.PI / 180;
 		tileColliders[ tileNumber ].scale.set( SCALE, SCALE, SCALE );
 
@@ -512,7 +512,7 @@ var DunesWorld = function ( shared ) {
 		//tileColliders[ tileNumber ].visible = true;
 
 		that.scene.addChild( tileColliders[ tileNumber ] );
-		that.scene.collisions.merge( scene.collisions );
+//		that.scene.collisions.merge( scene.collisions );
 
 
 		// duplicate gfx
@@ -728,11 +728,11 @@ var DunesWorld = function ( shared ) {
 
 		that.scene.addChild( scene );
 
-		if ( scene.collisions ) {
-
-			that.scene.collisions.merge( scene.collisions );
-
-		}
+//		if ( scene.collisions ) {
+//
+//			that.scene.collisions.merge( scene.collisions );
+//
+//		}
 
 		for ( var o in result.objects ) {
 
@@ -775,7 +775,7 @@ var DunesWorld = function ( shared ) {
 
 		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
 
-			var colliders = scene.collisions.colliders;
+//			var colliders = scene.collisions.colliders;
 
 			for( var i = 0; i < colliders.length; i++ ) {
 
