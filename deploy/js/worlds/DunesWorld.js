@@ -126,8 +126,8 @@ var DunesWorld = function ( shared ) {
 
 			} else if( x === 1 && z === 4 ) {							
 
-				tileRow.push( 0 );										// mountain
-				numTileInstances[ 0 ]++;
+				tileRow.push( 2 );										// flat for first UGC
+				numTileInstances[ 2 ]++;
 
 			} else {
 
@@ -191,6 +191,9 @@ var DunesWorld = function ( shared ) {
 		{ x: 0, z: -1 }
 	
 	];
+
+	var ugcFirstThreePositions = [ new THREE.Vector3( TILE_SIZE * 0.15, -1000, -TILE_SIZE * 1.25 ), 
+								   new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
 
 	that.scene.collisions.colliders.push( ugcCollider );
 	
@@ -290,41 +293,11 @@ var DunesWorld = function ( shared ) {
 				
 				if( !ugc.placedOnGrid ) {
 
-					// try find placement
+					// first three have special treatment
 					
-					for( d = 0; d < dl; d++ ) {
+					if( ugcFirstThreePositions.length ) {
 						
-						tx = txTemp = cameraTileX + ugcTileDisplacement[ tileDisplacementIndex ].x;
-						tz = tzTemp = cameraTileZ + ugcTileDisplacement[ tileDisplacementIndex ].z;
-						
-						txTemp %= tileGridSize;
-						tzTemp %= tileGridSize;
-						
-						while( txTemp < 0 ) txTemp += tileGridSize;
-						while( tzTemp < 0 ) tzTemp += tileGridSize;
-						
-						if( tileGrid[ tzTemp ][ txTemp ] < 4 ) {		// only place on tiles, not praire/city/walk
-							
-							if( !ugcOccupiedTiles[ tx + " " + tz ] ) {	// already occupied?
-								
-								ugcOccupiedTiles[ tx + " " + tz ] = true;
-								break;
-												  	
-							}
-							
-						}
-						
-						tileDisplacementIndex++;
-						tileDisplacementIndex %= ugcTileDisplacement.length;
-												
-					}
-					
-					
-					// found spot, place
-					
-					if( d !== dl ) {
-						
-						ugc.position.set( tx * TILE_SIZE, -1000, tz * TILE_SIZE );
+						ugc.position.copy( ugcFirstThreePositions.shift() );
 						ugc.position.x += Math.random() * 200 - 100;
 						ugc.position.z += Math.random() * 200 - 100;
 						ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
@@ -334,6 +307,60 @@ var DunesWorld = function ( shared ) {
 						ugc.placedOnGrid = true;
 						
 						that.scene.addChild( ugc );
+						
+						tx = Math.floor( ugc.position.x / TILE_SIZE );
+						tz = Math.floor( ugc.position.z / TILE_SIZE );
+						
+						ugcOccupiedTiles[ tx + " " + tz ] = true;
+						
+					} else {
+						
+						// try find placement
+						
+						for( d = 0; d < dl; d++ ) {
+							
+							tx = txTemp = cameraTileX + ugcTileDisplacement[ tileDisplacementIndex ].x;
+							tz = tzTemp = cameraTileZ + ugcTileDisplacement[ tileDisplacementIndex ].z;
+							
+							txTemp %= tileGridSize;
+							tzTemp %= tileGridSize;
+							
+							while( txTemp < 0 ) txTemp += tileGridSize;
+							while( tzTemp < 0 ) tzTemp += tileGridSize;
+							
+							if( tileGrid[ tzTemp ][ txTemp ] < 4 ) {		// only place on tiles, not praire/city/walk
+								
+								if( !ugcOccupiedTiles[ tx + " " + tz ] ) {	// already occupied?
+									
+									ugcOccupiedTiles[ tx + " " + tz ] = true;
+									break;
+													  	
+								}
+								
+							}
+							
+							tileDisplacementIndex++;
+							tileDisplacementIndex %= ugcTileDisplacement.length;
+													
+						}
+						
+						
+						// found spot, place
+						
+						if( d !== dl ) {
+							
+							ugc.position.set( tx * TILE_SIZE, -1000, tz * TILE_SIZE );
+							ugc.position.x += Math.random() * 200 - 100;
+							ugc.position.z += Math.random() * 200 - 100;
+							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
+	
+							ugc.wantedY = -5;
+							ugc.visible = true;
+							ugc.placedOnGrid = true;
+							
+							that.scene.addChild( ugc );
+							
+						}
 						
 					}
 					
