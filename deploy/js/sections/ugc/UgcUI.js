@@ -534,6 +534,7 @@ var UgcUI = function (shared) {
   };
 
   var frameCount = 0;
+  var _frameCount = 0;
   var lastTime = new Date();
 
   this.update = function() {
@@ -541,9 +542,8 @@ var UgcUI = function (shared) {
 //    animalInnerDiv.
 //frstyle.left = Math.round(animalSlide) + 'px';
     submitImage.style.backgroundPosition = '0px ' + -(frameCount * submitImage.offsetHeight) + 'px';
-    var cTime = new Date();
-    if (( cTime - lastTime ) > 200) {
-      lastTime = cTime;
+    _frameCount++;
+    if (_frameCount % 100 == 0) {
       frameCount += 1;
     }
   };

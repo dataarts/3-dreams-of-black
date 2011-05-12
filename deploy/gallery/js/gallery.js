@@ -61,11 +61,11 @@ var GALLERY = function(params) {
                 var classDec = i == params['page'] ? ' class="selected"' : '';
                 var url = '?c=' + params['category'] + '&p=' + i;
                 ul.innerHTML += '<li' + classDec + '><a href="' + url + '">' + i + '</a></li>';
-              }
+              };
 
               var addHellipLi = function(i) {
                 ul.innerHTML += '<li class="hellip"> &hellip; </li>';
-              }
+              };
 
               if (numPages <= 5) {
 
@@ -301,16 +301,12 @@ var GALLERY = function(params) {
     };
   }
 
-  var frameCount = 0,
-      lastTime = new Date(),
-      cTime;
+  var frameCount = 0
   this.update = function() {
     frameCount++;
     if (activeImage != undefined) {
       activeImage.frameCount = activeImage.frameCount == undefined ? 0 : activeImage.frameCount;
-      cTime = new Date();
-      if ((cTime - lastTime) > 200) {
-        lastTime = cTime;
+      if (frameCount % 10 == 0) {
         activeImage.frameCount++
       }
       var img = $(activeImage);
