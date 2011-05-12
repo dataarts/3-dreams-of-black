@@ -69,7 +69,7 @@ ul#pagination li a:hover {
 }
 
 body {
-  background: #f4f1e8 url(images/title.png) center 40px no-repeat;
+  background-color: #f4f1e8;
   color: #404040;
 }
 
@@ -78,7 +78,39 @@ body {
 }
 
 div#container {
-  padding: 120px 0px 0px;
+  padding: 0px 0px 0px;
+}
+
+div#header {
+  width: 950px;
+  margin: 0 auto;
+  padding: 40px 0 30px 0;
+  margin-bottom: 30px;
+}
+
+div#header a span {
+display: none;
+}
+
+a#title {
+  margin: 0 auto;
+  display: block;
+  width: 261px;
+  height: 48px;
+  background: url(images/title.png);
+}
+
+a#tool {
+  width: 210px;
+  height: 46px;
+  display: block;
+  float: left;
+  
+  background: url(images/tool-sprites.png) left bottom no-repeat;
+}
+
+a#tool:hover {
+background-position: left top;
 }
 
 div#gallery {
@@ -153,7 +185,7 @@ a.downvote.selected {
 }
 
 div#footer { 
-margin-top: 50px;
+margin-top: 90px;
 }
 
 div#lightbox {
