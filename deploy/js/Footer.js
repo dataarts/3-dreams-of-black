@@ -113,7 +113,7 @@ var Footer = function(container, prefix) {
     var html = ['<div class="rome-footer">',
 		'<div class="shout-out">',
 		'  <ul>',
-		'    <li class="last"><a href="http://chromeexperiments.com/webgl"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
+		'    <li class="last"><a href="http://www.chromeexperiments.com/webgl"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
 		'    <li class="divider">&nbsp;</li>',
 		'    <li class="last"><a href="http://google.com/"><img src="' + path + '/google-trans.png" alt="Made With Friends From Google" border="0" /></a></li>',
 		'    <li class="clear">&nbsp;</li>',
