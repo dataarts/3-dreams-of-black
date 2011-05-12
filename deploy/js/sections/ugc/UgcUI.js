@@ -1,7 +1,7 @@
 var UgcUI = function (shared) {
 
 
-  var VALID_EMAIL = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/;
+  var VALID_EMAIL = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
   var TITLE_STRING = 'GIVE YOUR DREAM A TITLE';
   var MAX_TITLE_LENGTH = 35;
   var ANIMAL_CONTAINER_HEIGHT = 114;
@@ -9,13 +9,11 @@ var UgcUI = function (shared) {
   var SIZE_MED = 3;
   var SIZE_LARGE = 5;
 
-
   var numAnimals = 10; // TODO
   var animalSlideTarget = 0;
   var animalSlide = 0;
 
   var css = getCSS();
-
 
   var domElement = document.createElement('div');
 
@@ -42,6 +40,7 @@ var UgcUI = function (shared) {
   tooltip.innerHTML = 'CREATE';
 
   domElement.appendChild(tooltip);
+
 
   var animalContainerDiv = classedElement('div', 'animal-container');
   animalContainerDiv.setAttribute('id', 'animal-container');
@@ -104,8 +103,8 @@ var UgcUI = function (shared) {
 
   var submitText = idElement('div', 'voxel-submit-text');
 
-  submitText.innerHTML = 'Beautiful! Thank you for contributing. If you give us your email, then we will email you when your object is approved.';
-
+  submitText.innerHTML = '<span id="agree-terms" class="foo"><input id="agree" type="checkbox" /> &nbsp;I agree to the <a id="terms-link" href="/terms">terms and conditions</a>.</span><br/>';
+  submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email you when <br/>your unique dream is approved for sharing.</small>';
   var submitImage = idElement('div', 'voxel-submit-image');
   var submitInputs = idElement('div', 'voxel-submit-inputs');
 
@@ -139,10 +138,11 @@ var UgcUI = function (shared) {
     var email = emailInput.value;
 
     var invalidEmail = function(email) {
-      return false; // TODO
-      if (email.match(VALID_EMAIL) == null) {
-        alert("")
+      if (!VALID_EMAIL.test(email)) {
+        alert("Please enter a valid email address");
+        return true;
       }
+      return false;
     };
 
     if (invalidEmail(email)) {
@@ -169,10 +169,22 @@ var UgcUI = function (shared) {
       return;
     }
 
+
+    if (!document.getElementById('agree').checked) {
+      alert("You must agree to the terms and conditions.");
+      addClass(document.getElementById('agree-terms'), 'error');
+      return;
+    }
+
     shared.ugcSignals.submit.dispatch(title, email);
     hideSubmitDialogue();
 
   }, false);
+
+  var colormode = false;
+  var symmetry_mode = false;
+  var submitDialogueOpen = false;
+  var rotatemode = false;
 
   submit.appendChild(submitImage);
   submit.appendChild(submitText);
@@ -188,6 +200,21 @@ var UgcUI = function (shared) {
 
   domElement.appendChild(submit);
 
+  var colorDOM = document.createElement('div');
+  var picker = new ColorPicker(colorDOM);
+  picker.onColorChange = function(hex) {
+    shared.ugcSignals.object_changecolor.dispatch(hex);
+  }
+  colorDOM.style.position = 'fixed';
+  colorDOM.style.left = '50%';
+  colorDOM.style.top = '50%';
+  colorDOM.style.display = 'none';
+  colorDOM.style.marginTop = -230 + 'px';
+  colorDOM.style.marginLeft = -175 + 'px';
+
+  domElement.appendChild(colorDOM);
+
+
   var theBR = document.createElement('span');
   theBR.innerHTML += '<br/>';
 
@@ -197,6 +224,8 @@ var UgcUI = function (shared) {
 
   //submitInputs.innerHTML = submitInputs.innerHTML.replace(/type\=\"text\" /, 'type="text" x-webkit-speech ');
 
+  makeUnselectable(colorDOM);
+  makeUnselectable(tooltip);
 
   this.updateCapacity = function (i) {
     document.getElementById('capacity').textContent = ( Math.round(i * 100) + '%' );
@@ -204,6 +233,7 @@ var UgcUI = function (shared) {
 
   this.addListeners = function() {
 
+    Footer.handleLinkListeners(document.getElementById('terms-link'), 'terms');
 
     // Make the tooltip follow
     domElement.addEventListener('mousemove', function(e) {
@@ -224,14 +254,12 @@ var UgcUI = function (shared) {
      */
 
     shared.ugcSignals.submit_dialogue.add(function() {
+      submitDialogueOpen = true;
       shared.ugcSignals.object_requestsnapshot.dispatch();
     });
 
-    shared.ugcSignals.object_requestsnapshot.add(function() {
-      shared.ugcSignals.object_receivesnapshot.dispatch();
-    });
-
-    shared.ugcSignals.object_receivesnapshot.add(function() {
+    shared.ugcSignals.object_receivesnapshot.add(function(image) {
+      submitImage.style.backgroundImage = 'url(' + image + ')';
       submitShade.style.zIndex = '20';
       submit.style.top = '50%';
       submit.style.opacity = 1;
@@ -282,6 +310,44 @@ var UgcUI = function (shared) {
 //      shared.ugcSignals.object_smoothdown.dispatch();
 //    });
 
+
+    window.addEventListener('keydown', function(e) {
+      if (submitDialogueOpen) return;
+      switch (e.keyCode) {
+        case 90:
+          shared.ugcSignals.object_undo.dispatch();
+          break;
+        case 68:
+          shared.ugcSignals.object_createmode.dispatch();
+          break;
+        case 70:
+          if (colormode) {
+            shared.ugcSignals.object_createmode.dispatch();
+          } else {
+            shared.ugcSignals.object_colormode.dispatch();
+          }
+          break;
+        case 83:
+          shared.ugcSignals.object_symmetrymode.dispatch(!symmetry_mode);
+          break;
+        case 69:
+          shared.ugcSignals.object_erasemode.dispatch();
+          break;
+        case 82:
+          shared.ugcSignals.object_rotatemode.dispatch();
+          break;
+      }
+    });
+
+    onClick('ugcui-color', function() {
+      if (colormode) {
+        shared.ugcSignals.object_createmode.dispatch();
+      } else {
+        shared.ugcSignals.object_colormode.dispatch();
+      }
+
+    });
+
     onClick('ugcui-size-small', function() {
       shared.ugcSignals.object_changesize.dispatch(SIZE_SMALL);
     });
@@ -290,9 +356,9 @@ var UgcUI = function (shared) {
       shared.ugcSignals.object_changesize.dispatch(SIZE_MED);
     });
 
-    onClick('ugcui-size-large', function() {
-      shared.ugcSignals.object_changesize.dispatch(SIZE_LARGE);
-    });
+//    onClick('ugcui-size-large', function() {
+//      shared.ugcSignals.object_changesize.dispatch(SIZE_LARGE);
+//    });
 
     onClick('ugcui-undo', function() {
       shared.ugcSignals.object_undo.dispatch();
@@ -309,7 +375,7 @@ var UgcUI = function (shared) {
     onClick('ugcui-zoom-in', function() {
       shared.ugcSignals.object_zoomin.dispatch();
     });
-    
+
     onClick('ugcui-zoom-out', function() {
       shared.ugcSignals.object_zoomout.dispatch();
     });
@@ -321,37 +387,63 @@ var UgcUI = function (shared) {
     onClick('ugcui-erase', function() {
       shared.ugcSignals.object_erasemode.dispatch();
     });
-    
+
     onClick('ugcui-rotate', function() {
       shared.ugcSignals.object_rotatemode.dispatch();
     });
 
     onClick('ugcui-reflect', function() {
-      if (!hasClass(this, 'active')) {
-        addClass(this, 'active');
-        shared.ugcSignals.object_symmetrymode.dispatch(true);
+      shared.ugcSignals.object_symmetrymode.dispatch(!symmetry_mode);
+    });
+
+    shared.ugcSignals.object_symmetrymode.add(function(bool) {
+      symmetry_mode = bool;
+      if (bool) {
+        addClass(document.getElementById('ugcui-reflect'), 'active');
       } else {
-        removeClass(this, 'active');
-        shared.ugcSignals.object_symmetrymode.dispatch(false);
+        removeClass(document.getElementById('ugcui-reflect'), 'active');
       }
+
     });
 
     shared.ugcSignals.object_rotatemode.add(function() {
+      colormode = false;
+      rotatemode = true;
       addClass(document.getElementById('ugcui-rotate'), 'active');
       removeClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-erase'), 'active');
+      removeClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'none';
     });
 
     shared.ugcSignals.object_erasemode.add(function() {
+      colormode = false;
+      rotatemode = false;
       addClass(document.getElementById('ugcui-erase'), 'active');
       removeClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-rotate'), 'active');
+      removeClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'none';
     });
 
     shared.ugcSignals.object_createmode.add(function() {
+      colormode = false;
+      rotatemode = false;
       addClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-erase'), 'active');
       removeClass(document.getElementById('ugcui-rotate'), 'active');
+      removeClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'none';
+    });
+
+    shared.ugcSignals.object_colormode.add(function() {
+      colormode = true;
+      rotatemode = false;
+      removeClass(document.getElementById('ugcui-create'), 'active');
+      removeClass(document.getElementById('ugcui-erase'), 'active');
+      removeClass(document.getElementById('ugcui-rotate'), 'active');
+      addClass(document.getElementById('ugcui-color'), 'active');
+      colorDOM.style.display = 'block';
     });
 
 
@@ -410,7 +502,7 @@ var UgcUI = function (shared) {
     shared.ugcSignals.object_changesize.add(function(size) {
       removeClass(document.getElementById('ugcui-size-small'), 'active');
       removeClass(document.getElementById('ugcui-size-med'), 'active');
-      removeClass(document.getElementById('ugcui-size-large'), 'active');
+//      removeClass(document.getElementById('ugcui-size-large'), 'active');
       switch (size) {
         case SIZE_SMALL:
           addClass(document.getElementById('ugcui-size-small'), 'active');
@@ -426,9 +518,19 @@ var UgcUI = function (shared) {
 
   };
 
+  var frameCount = 0;
+  var lastTime = new Date();
+
   this.update = function() {
-//    animalSlide += (animalSlideTarget - animalSlide) * 0.5;
-//    animalInnerDiv.style.left = Math.round(animalSlide) + 'px';
+    animalSlide += (animalSlideTarget - animalSlide) * 0.5;
+//    animalInnerDiv.
+//frstyle.left = Math.round(animalSlide) + 'px';
+    submitImage.style.backgroundPosition = '0px ' + -(frameCount * submitImage.offsetHeight) + 'px';
+    var cTime = new Date();
+    if (( cTime - lastTime ) > 200) {
+      lastTime = cTime;
+      frameCount += 1;
+    }
   };
 
   this.getDomElement = function () {
@@ -496,6 +598,9 @@ var UgcUI = function (shared) {
     submit.style.opacity = 0;
     submitTitle.value = TITLE_STRING;
     submitEmail.value = 'YOUR EMAIL ADDRESS';
+    removeClass(document.getElementById('agree-terms'), 'error');
+    document.getElementById('agree').checked = false;
+    submitDialogueOpen = true;
   }
 
 
@@ -553,7 +658,7 @@ var UgcUI = function (shared) {
       '     x="0px" y="0px" width="800px" height="600px" viewBox="0 -1.338 800 600"',
       '     enable-background="new 0 -1.338 800 600"',
       '     xml:space="preserve" >',
-      '    <g class="button" title="Mirror Mode" id="ugcui-reflect">',
+      '    <g class="button" title="Symmetry Mode [s]" id="ugcui-reflect">',
       '      <polygon class="hex"',
       '               points="13.126,93.332 0,70.598 13.126,47.862 39.377,47.862 52.503,70.598 39.377,93.332 "/>',
       '      <path fill="#404040" d="M26.195,77.438c-0.428,0-0.771,0.345-0.771,0.771v1.158c0,0.428,0.343,0.772,0.771,0.772',
@@ -572,21 +677,21 @@ var UgcUI = function (shared) {
       '  C26.966,63.886,26.623,63.541,26.195,63.541 M26.195,67.014c-0.428,0-0.771,0.346-0.771,0.772v1.158',
       '  c0,0.426,0.343,0.772,0.771,0.772s0.771-0.346,0.771-0.772v-1.158C26.966,67.36,26.623,67.014,26.195,67.014"/>',
       '    </g>',
-      '    <g class="button active" title="Draw" id="ugcui-create">',
+      '    <g class="button active" title="Draw [d]" id="ugcui-create">',
       '      <polygon class="hex" points="54.576,69.401 41.45,46.666 54.576,23.932 80.828,23.932 93.954,46.666',
       '  80.827,69.401 "/>',
       '      <path fill="#404040" d="M67.92,32.249l-12.121,7.29l-0.154-0.098v13.47l12.256,7.661l12.258-7.661V40.265L67.92,32.249z',
       '  M67.883,34.149l9.991,6.543l-9.978,6.405l-10.564-6.602L67.883,34.149z M57.255,42.346l9.842,6.151v9.673l-9.842-6.151V42.346z',
       '  M78.548,52.019l-9.842,6.15v-9.679l9.842-6.318V52.019z"/>',
       '    </g>',
-      '    <g class="button" title="Erase" id="ugcui-erase">',
+      '    <g class="button" title="Erase [e]" id="ugcui-erase">',
       '      <polygon class="hex" points="96.026,93.332 82.9,70.598 96.026,47.862 122.277,47.862 135.404,70.597',
       '  122.277,93.332 "/>',
       '      <path fill="#404040" d="M111.728,61.285l-13.493,7.131v5.163l9.462,5.387l13.086-7.798v-4.968L111.728,61.285z M113.478,69.723',
       '  l-5.788,3.394l-7.658-4.416l6.083-3.215L113.478,69.723z M108.238,74.062l5.928-3.477v3.252l-5.928,3.534V74.062z M99.328,69.556',
       '  l7.817,4.509v3.328l-7.817-4.45V69.556z"/>',
       '    </g>',
-      '    <g class="button" title="Color" id="ugcui-color">',
+      '    <g class="button" title="Fill Color [f]" id="ugcui-color">',
       '      <polygon class="hex" points="96.026,141.194 82.9,118.46 96.026,95.725 122.277,95.725 135.404,118.459',
       '  122.277,141.194 "/>',
       '      <path fill="#404040" d="M121.346,114.964c-2.85-3.684-8.097-1.808-8.097-1.808s3.946,3.913,5.455,5.42',
@@ -603,7 +708,7 @@ var UgcUI = function (shared) {
       '  c0,0.136-0.049,0.271-0.155,0.378c-0.104,0.104-0.239,0.153-0.374,0.153c-0.139,0-0.272-0.051-0.377-0.154',
       '  c-0.104-0.105-0.155-0.24-0.155-0.377C108.9,118.053,108.95,117.92,109.053,117.816"/>',
       '    </g>',
-      '    <g class="button" title="Undo" id="ugcui-undo">',
+      '    <g class="button" title="Undo [z]" id="ugcui-undo">',
       '      <polygon class="hex" points="54.576,165.125 41.45,142.391 54.576,119.657 80.827,119.657 93.953,142.391',
       '  80.827,165.125 "/>',
       '      <path fill="#404040" d="M66.954,131.614v-0.083v-0.826c0-0.561-0.399-0.79-0.885-0.51l-0.716,0.414',
@@ -618,7 +723,7 @@ var UgcUI = function (shared) {
 
       '      <g class="options">',
 
-      '        <g class="button" title="Medium" id="ugcui-size-med">',
+      '        <g class="button" title="Large" id="ugcui-size-med">',
       '<polygon transform="translate(0, 10)" class="hitbox" points="59.431,165.962 45.718,142.21 59.431,118.46 44.573,92.725 14.858,92.725 0,118.46 13.713,142.211 0,165.962 13.817,189.893 0,213.824 14.858,239.559 44.573,239.559 59.431,213.824 45.614,189.893 "/>',
       '          <polygon class="hex" points="13.126,188.696 0,165.962 13.126,143.227 39.377,143.227 52.503,165.962',
       '    39.377,188.696 "/>',
@@ -629,14 +734,14 @@ var UgcUI = function (shared) {
       '    L32.212,170.616z M32.732,170.297l5.404-3.31l5.52,3.276l-5.45,3.386L32.732,170.297z M14.253,166.988l5.383,3.297l-5.454,3.364',
       '    l-5.449-3.385L14.253,166.988z M20.675,177.683l5.52-3.381l5.519,3.381l-5.519,3.429L20.675,177.683z"/>',
       '        </g>',
-      '        <g class="button" title="Large" id="ugcui-size-large">',
-      '          <polygon class="hex" points="13.126,236.559 0,213.824 13.126,191.089 39.377,191.089 52.503,213.824',
-      '    39.377,236.559 "/>',
-      '          <path fill="#404040" d="M38.393,215.247v-13.17l-11.994-5.937l-12.195,6.057v12.926l-6.519,3.868l18.509,11.5l18.509-11.5',
-      '    L38.393,215.247z M25.674,222.721l-5.517,3.379l-5.459-3.392l5.458-3.366L25.674,222.721z M32.212,219.355l5.478,3.353l-5.458,3.392',
-      '    l-5.517-3.379L32.212,219.355z M32.732,219.035l5.404-3.31l5.52,3.276l-5.45,3.387L32.732,219.035z M14.253,215.725l5.383,3.299',
-      '    l-5.454,3.364l-5.449-3.387L14.253,215.725z M20.675,226.42l5.52-3.381l5.519,3.381l-5.519,3.43L20.675,226.42z"/>',
-      '        </g>',
+//      '        <g class="button" title="Large" id="ugcui-size-large">',
+//      '          <polygon class="hex" points="13.126,236.559 0,213.824 13.126,191.089 39.377,191.089 52.503,213.824',
+//      '    39.377,236.559 "/>',
+//      '          <path fill="#404040" d="M38.393,215.247v-13.17l-11.994-5.937l-12.195,6.057v12.926l-6.519,3.868l18.509,11.5l18.509-11.5',
+//      '    L38.393,215.247z M25.674,222.721l-5.517,3.379l-5.459-3.392l5.458-3.366L25.674,222.721z M32.212,219.355l5.478,3.353l-5.458,3.392',
+//      '    l-5.517-3.379L32.212,219.355z M32.732,219.035l5.404-3.31l5.52,3.276l-5.45,3.387L32.732,219.035z M14.253,215.725l5.383,3.299',
+//      '    l-5.454,3.364l-5.449-3.387L14.253,215.725z M20.675,226.42l5.52-3.381l5.519,3.381l-5.519,3.43L20.675,226.42z"/>',
+//      '        </g>',
       '      </g>',
       '      <g class="button active" title="Small" id="ugcui-size-small">',
       '        <polygon class="hex" points="13.126,141.194 0,118.46 13.126,95.725 39.377,95.725 52.503,118.46 39.377,141.194',
@@ -683,87 +788,98 @@ var UgcUI = function (shared) {
   function getSvgBottomRightContents() {
 
     return ['<svg id="ugcui-bottom-right" class="ugcui" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"',
-    '	 x="0px" y="0px" width="70px" height="70px" viewBox="-2 -2 60 60" xml:space="preserve">',
-    '<g class="button" transform="translate(-1, 0)" id="ugcui-submit">',
-    '<polygon class="hex" points="13.126,45.469 0,22.735 13.126,0 39.377,0 ',
-    '	52.504,22.734 39.377,45.469 "/><g transform="translate(0,-1)">',
-    '<path fill="#222222" d="M13.54,21.303l-0.883,0.523c-0.166-0.287-0.323-0.474-0.473-0.561c-0.155-0.1-0.356-0.15-0.603-0.15',
-    '	c-0.302,0-0.553,0.086-0.752,0.258c-0.199,0.168-0.299,0.381-0.299,0.636c0,0.353,0.262,0.636,0.784,0.851l0.72,0.295',
-    '	c0.586,0.237,1.014,0.526,1.285,0.867c0.271,0.342,0.406,0.76,0.406,1.256c0,0.664-0.221,1.213-0.663,1.646',
-    '	c-0.445,0.437-0.998,0.655-1.659,0.655c-0.626,0-1.143-0.187-1.551-0.559C9.451,26.647,9.2,26.125,9.1,25.452l1.103-0.242',
-    '	c0.05,0.424,0.137,0.717,0.262,0.878c0.224,0.312,0.551,0.468,0.98,0.468c0.34,0,0.622-0.113,0.846-0.342',
-    '	c0.225-0.227,0.337-0.515,0.337-0.863c0-0.14-0.02-0.268-0.059-0.385c-0.039-0.117-0.1-0.225-0.183-0.322',
-    '	c-0.082-0.098-0.188-0.189-0.319-0.275c-0.131-0.086-0.287-0.168-0.468-0.245l-0.696-0.29c-0.987-0.416-1.48-1.027-1.48-1.83',
-    '	c0-0.541,0.207-0.994,0.621-1.358c0.414-0.367,0.93-0.551,1.547-0.551C12.423,20.093,13.072,20.496,13.54,21.303z"/>',
-    '<path fill="#222222" d="M16.128,20.232v4.342c0,0.62,0.101,1.072,0.304,1.359c0.302,0.414,0.728,0.621,1.275,0.621',
-    '	c0.552,0,0.978-0.207,1.28-0.621c0.202-0.277,0.304-0.73,0.304-1.359v-4.342h1.089v4.645c0,0.76-0.237,1.387-0.711,1.879',
-    '	c-0.532,0.548-1.187,0.822-1.962,0.822s-1.428-0.274-1.958-0.822c-0.474-0.492-0.71-1.119-0.71-1.879v-4.645H16.128z"/>',
-    '<path fill="#222222" d="M22.108,27.447v-7.215h1.084c0.482,0,0.867,0.037,1.154,0.113c0.289,0.074,0.534,0.2,0.733,0.378',
-    '	c0.202,0.184,0.362,0.413,0.481,0.687c0.121,0.277,0.182,0.558,0.182,0.842c0,0.517-0.197,0.954-0.593,1.312',
-    '	c0.383,0.131,0.685,0.359,0.906,0.687c0.225,0.324,0.336,0.7,0.336,1.131c0,0.563-0.199,1.04-0.598,1.43',
-    '	c-0.24,0.239-0.51,0.406-0.809,0.5c-0.327,0.091-0.736,0.136-1.229,0.136h-1.647V27.447z M23.197,23.33h0.341',
-    '	c0.405,0,0.702-0.089,0.891-0.268c0.188-0.18,0.282-0.443,0.282-0.793c0-0.339-0.097-0.597-0.29-0.773',
-    '	c-0.192-0.176-0.474-0.264-0.841-0.264h-0.383V23.33z M23.197,26.424h0.673c0.492,0,0.854-0.097,1.084-0.29',
-    '	c0.243-0.208,0.364-0.474,0.364-0.794c0-0.312-0.117-0.573-0.351-0.785c-0.228-0.209-0.634-0.312-1.22-0.312h-0.551L23.197,26.424',
-    '	L23.197,26.424z"/>',
-    '<path fill="#222222" d="M27.515,27.447l1.519-7.756l2.476,5.605l2.565-5.605l1.364,7.756h-1.116l-0.696-4.355l-2.136,4.687',
-    '	l-2.074-4.69l-0.775,4.359h-1.127V27.447z"/>',
-    '<path fill="#222222" d="M38.055,20.232v7.215h-1.089v-7.215H38.055z"/>',
-    '<path fill="#222222" d="M41.778,21.256v6.191h-1.089v-6.191h-1.658v-1.023h4.401v1.023H41.778z"/>',
-    '</g></g>',
-    '</svg>'].join("\n");
+      '	 x="0px" y="0px" width="70px" height="70px" viewBox="-2 -2 60 60" xml:space="preserve">',
+      '<g class="button" transform="translate(-1, 0)" id="ugcui-submit">',
+      '<polygon class="hex" points="13.126,45.469 0,22.735 13.126,0 39.377,0 ',
+      '	52.504,22.734 39.377,45.469 "/><g transform="translate(0,-1)">',
+      '<path fill="#222222" d="M13.54,21.303l-0.883,0.523c-0.166-0.287-0.323-0.474-0.473-0.561c-0.155-0.1-0.356-0.15-0.603-0.15',
+      '	c-0.302,0-0.553,0.086-0.752,0.258c-0.199,0.168-0.299,0.381-0.299,0.636c0,0.353,0.262,0.636,0.784,0.851l0.72,0.295',
+      '	c0.586,0.237,1.014,0.526,1.285,0.867c0.271,0.342,0.406,0.76,0.406,1.256c0,0.664-0.221,1.213-0.663,1.646',
+      '	c-0.445,0.437-0.998,0.655-1.659,0.655c-0.626,0-1.143-0.187-1.551-0.559C9.451,26.647,9.2,26.125,9.1,25.452l1.103-0.242',
+      '	c0.05,0.424,0.137,0.717,0.262,0.878c0.224,0.312,0.551,0.468,0.98,0.468c0.34,0,0.622-0.113,0.846-0.342',
+      '	c0.225-0.227,0.337-0.515,0.337-0.863c0-0.14-0.02-0.268-0.059-0.385c-0.039-0.117-0.1-0.225-0.183-0.322',
+      '	c-0.082-0.098-0.188-0.189-0.319-0.275c-0.131-0.086-0.287-0.168-0.468-0.245l-0.696-0.29c-0.987-0.416-1.48-1.027-1.48-1.83',
+      '	c0-0.541,0.207-0.994,0.621-1.358c0.414-0.367,0.93-0.551,1.547-0.551C12.423,20.093,13.072,20.496,13.54,21.303z"/>',
+      '<path fill="#222222" d="M16.128,20.232v4.342c0,0.62,0.101,1.072,0.304,1.359c0.302,0.414,0.728,0.621,1.275,0.621',
+      '	c0.552,0,0.978-0.207,1.28-0.621c0.202-0.277,0.304-0.73,0.304-1.359v-4.342h1.089v4.645c0,0.76-0.237,1.387-0.711,1.879',
+      '	c-0.532,0.548-1.187,0.822-1.962,0.822s-1.428-0.274-1.958-0.822c-0.474-0.492-0.71-1.119-0.71-1.879v-4.645H16.128z"/>',
+      '<path fill="#222222" d="M22.108,27.447v-7.215h1.084c0.482,0,0.867,0.037,1.154,0.113c0.289,0.074,0.534,0.2,0.733,0.378',
+      '	c0.202,0.184,0.362,0.413,0.481,0.687c0.121,0.277,0.182,0.558,0.182,0.842c0,0.517-0.197,0.954-0.593,1.312',
+      '	c0.383,0.131,0.685,0.359,0.906,0.687c0.225,0.324,0.336,0.7,0.336,1.131c0,0.563-0.199,1.04-0.598,1.43',
+      '	c-0.24,0.239-0.51,0.406-0.809,0.5c-0.327,0.091-0.736,0.136-1.229,0.136h-1.647V27.447z M23.197,23.33h0.341',
+      '	c0.405,0,0.702-0.089,0.891-0.268c0.188-0.18,0.282-0.443,0.282-0.793c0-0.339-0.097-0.597-0.29-0.773',
+      '	c-0.192-0.176-0.474-0.264-0.841-0.264h-0.383V23.33z M23.197,26.424h0.673c0.492,0,0.854-0.097,1.084-0.29',
+      '	c0.243-0.208,0.364-0.474,0.364-0.794c0-0.312-0.117-0.573-0.351-0.785c-0.228-0.209-0.634-0.312-1.22-0.312h-0.551L23.197,26.424',
+      '	L23.197,26.424z"/>',
+      '<path fill="#222222" d="M27.515,27.447l1.519-7.756l2.476,5.605l2.565-5.605l1.364,7.756h-1.116l-0.696-4.355l-2.136,4.687',
+      '	l-2.074-4.69l-0.775,4.359h-1.127V27.447z"/>',
+      '<path fill="#222222" d="M38.055,20.232v7.215h-1.089v-7.215H38.055z"/>',
+      '<path fill="#222222" d="M41.778,21.256v6.191h-1.089v-6.191h-1.658v-1.023h4.401v1.023H41.778z"/>',
+      '</g></g>',
+      '</svg>'].join("\n");
 
   }
 
   function getSvgBottomLeftContents() {
     return ['<svg class="ugcui" id="ugcui-bottom-left" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="800px"',
-    '	 height="200px" viewBox="-2 -100 800 200" enable-background="new 0 0 800 200" xml:space="preserve">',
-    '<g class="button" id="ugcui-rotate" title="Rotate">',
-    '	<polygon class="hex" points="13.127,21.759 0,-0.975 13.127,-23.71 39.377,-23.71 52.504,-0.975 39.377,21.759"/>',
-    '	<path fill="#404040" d="M38.91-5.208c-0.406-0.224-0.83-0.434-1.266-0.633v-4.373l-10.986-5.962L15.162-10.47v4.656',
-    '		c-0.391,0.179-0.771,0.365-1.135,0.563C10.816-3.495,8.951-1.157,8.67,1.388H6.924L9.41,4.831l2.486-3.443h-1.66',
-    '		c0.295-1.96,1.875-3.812,4.539-5.27c0.123-0.067,0.26-0.125,0.387-0.19v5.677l11.496,6.545l10.986-6.18v-6.064',
-    '		c0.17,0.086,0.348,0.166,0.512,0.257c2.959,1.63,4.586,3.742,4.582,5.946c-0.004,2.202-1.639,4.308-4.604,5.928',
-    '		c-3.1,1.695-7.23,2.625-11.639,2.625h-0.055v0.001c-0.188,0-0.371-0.002-0.555-0.006l-0.031,1.562',
-    '		c0.195,0.003,0.387,0.005,0.582,0.005l0,0h0.059c4.664,0,9.062-1,12.387-2.816c3.486-1.906,5.41-4.498,5.416-7.297',
-    '		C44.303-0.69,42.391-3.287,38.91-5.208z"/>',
-    '	<path fill="#404040" d="M13.49,9.064c0.598,0.359,1.246,0.696,1.932,0.999l0.635-1.426c-0.627-0.281-1.219-0.586-1.766-0.912',
-    '		L13.49,9.064z"/>',
-    '	<path fill="#404040" d="M16.422,10.478c0.65,0.25,1.338,0.479,2.043,0.679l0.424-1.503c-0.658-0.188-1.299-0.398-1.906-0.635',
-    '		L16.422,10.478z"/>',
-    '	<path fill="#404040" d="M22.662,11.991c0.699,0.087,1.414,0.15,2.129,0.188l0.082-1.56c-0.678-0.037-1.357-0.096-2.021-0.178',
-    '		L22.662,11.991z"/>',
-    '	<path fill="#404040" d="M19.504,11.427c0.682,0.162,1.389,0.305,2.1,0.417L21.85,10.3c-0.674-0.105-1.34-0.24-1.984-0.392',
-    '		L19.504,11.427z"/>',
-    '</g>',
-    '<g class="folder"  id="ugcui-zoom">	',
-    '	<g class="options">',
-    '	<polygon class="hitbox" points="97.417,22.957 82.56,-2.779 52.844,-2.779 39.029,21.152 11.394,21.152 ',
-    '		-3.464,46.888 11.394,72.622 39.027,72.622 52.844,96.553 82.559,96.553 97.417,70.818 83.601,46.887 	"/>',
-    '		<g class="button" title="zoom in" id="ugcui-zoom-in">',
-    '		<polygon class="hex" points="54.576,45.69 41.451,22.957 54.576,0.221 80.828,0.221 93.953,22.957 80.828,45.69"/>',
-    '		<polygon fill="#404040" points="73.414,21.578 68.235,21.578 68.235,16.399 66.093,16.399 66.093,21.578 60.914,21.578 ',
-    '			60.914,23.721 66.093,23.721 66.093,28.899 68.235,28.899 68.235,23.721 73.414,23.721 	"/>',
-    '		</g>',
-    '		<g class="button" title="zoom out" id="ugcui-zoom-out">',
-    '		<polygon class="hex" points="54.576,93.553 41.45,70.818 54.576,48.084 80.828,48.084 93.953,70.818 80.827,93.553 "/>',
-    '		<rect x="60.914" y="68.899" fill="#404040" width="12.5" height="2.143"/>',
-    '		</g>',
-    '	</g><g class="button" title="zoom" id="ugcui-zoom-folder">',
-    '	<polygon class="hex" points="13.126,69.622 0,46.888 13.126,24.152 39.377,24.152 52.503,46.888 39.377,69.622"/>',
-    '	<path fill="#404040" d="M24.141,35.035c-4.986,0-9.029,4.043-9.029,9.029c0,4.988,4.043,9.03,9.029,9.03',
-    '		c4.988,0,9.031-4.042,9.031-9.03C33.172,39.078,29.129,35.035,24.141,35.035 M24.141,50.909c-3.779,0-6.844-3.065-6.844-6.845',
-    '		c0-3.778,3.064-6.843,6.844-6.843c3.781,0,6.844,3.064,6.844,6.843C30.984,47.844,27.922,50.909,24.141,50.909"/>',
-    '	<path fill="#404040" d="M37.717,55.305c0.264,0.275,0.213,0.758-0.109,1.065l-2.216,2.112c-0.323,0.312-0.804,0.343-1.069,0.063',
-    '		l-4.318-4.521c-0.266-0.276-0.215-0.756,0.111-1.065l2.212-2.114c0.326-0.311,0.808-0.341,1.073-0.062L37.717,55.305z"/>',
-    '	</g></g>',
-    '</g>',
-    '</svg>'].join("\n");
+      '	 height="200px" viewBox="-2 -100 800 200" enable-background="new 0 0 800 200" xml:space="preserve">',
+      '<g class="button" id="ugcui-rotate" title="Rotate [R]">',
+      '	<polygon class="hex" points="13.127,21.759 0,-0.975 13.127,-23.71 39.377,-23.71 52.504,-0.975 39.377,21.759"/>',
+      '	<path fill="#404040" d="M38.91-5.208c-0.406-0.224-0.83-0.434-1.266-0.633v-4.373l-10.986-5.962L15.162-10.47v4.656',
+      '		c-0.391,0.179-0.771,0.365-1.135,0.563C10.816-3.495,8.951-1.157,8.67,1.388H6.924L9.41,4.831l2.486-3.443h-1.66',
+      '		c0.295-1.96,1.875-3.812,4.539-5.27c0.123-0.067,0.26-0.125,0.387-0.19v5.677l11.496,6.545l10.986-6.18v-6.064',
+      '		c0.17,0.086,0.348,0.166,0.512,0.257c2.959,1.63,4.586,3.742,4.582,5.946c-0.004,2.202-1.639,4.308-4.604,5.928',
+      '		c-3.1,1.695-7.23,2.625-11.639,2.625h-0.055v0.001c-0.188,0-0.371-0.002-0.555-0.006l-0.031,1.562',
+      '		c0.195,0.003,0.387,0.005,0.582,0.005l0,0h0.059c4.664,0,9.062-1,12.387-2.816c3.486-1.906,5.41-4.498,5.416-7.297',
+      '		C44.303-0.69,42.391-3.287,38.91-5.208z"/>',
+      '	<path fill="#404040" d="M13.49,9.064c0.598,0.359,1.246,0.696,1.932,0.999l0.635-1.426c-0.627-0.281-1.219-0.586-1.766-0.912',
+      '		L13.49,9.064z"/>',
+      '	<path fill="#404040" d="M16.422,10.478c0.65,0.25,1.338,0.479,2.043,0.679l0.424-1.503c-0.658-0.188-1.299-0.398-1.906-0.635',
+      '		L16.422,10.478z"/>',
+      '	<path fill="#404040" d="M22.662,11.991c0.699,0.087,1.414,0.15,2.129,0.188l0.082-1.56c-0.678-0.037-1.357-0.096-2.021-0.178',
+      '		L22.662,11.991z"/>',
+      '	<path fill="#404040" d="M19.504,11.427c0.682,0.162,1.389,0.305,2.1,0.417L21.85,10.3c-0.674-0.105-1.34-0.24-1.984-0.392',
+      '		L19.504,11.427z"/>',
+      '</g>',
+      '<g class="folder"  id="ugcui-zoom">	',
+      '	<g class="options">',
+      '	<polygon class="hitbox" points="97.417,22.957 82.56,-2.779 52.844,-2.779 39.029,21.152 11.394,21.152 ',
+      '		-3.464,46.888 11.394,72.622 39.027,72.622 52.844,96.553 82.559,96.553 97.417,70.818 83.601,46.887 	"/>',
+      '		<g class="button" title="zoom in" id="ugcui-zoom-in">',
+      '		<polygon class="hex" points="54.576,45.69 41.451,22.957 54.576,0.221 80.828,0.221 93.953,22.957 80.828,45.69"/>',
+      '		<polygon fill="#404040" points="73.414,21.578 68.235,21.578 68.235,16.399 66.093,16.399 66.093,21.578 60.914,21.578 ',
+      '			60.914,23.721 66.093,23.721 66.093,28.899 68.235,28.899 68.235,23.721 73.414,23.721 	"/>',
+      '		</g>',
+      '		<g class="button" title="zoom out" id="ugcui-zoom-out">',
+      '		<polygon class="hex" points="54.576,93.553 41.45,70.818 54.576,48.084 80.828,48.084 93.953,70.818 80.827,93.553 "/>',
+      '		<rect x="60.914" y="68.899" fill="#404040" width="12.5" height="2.143"/>',
+      '		</g>',
+      '	</g><g class="button" title="zoom" id="ugcui-zoom-folder">',
+      '	<polygon class="hex" points="13.126,69.622 0,46.888 13.126,24.152 39.377,24.152 52.503,46.888 39.377,69.622"/>',
+      '	<path fill="#404040" d="M24.141,35.035c-4.986,0-9.029,4.043-9.029,9.029c0,4.988,4.043,9.03,9.029,9.03',
+      '		c4.988,0,9.031-4.042,9.031-9.03C33.172,39.078,29.129,35.035,24.141,35.035 M24.141,50.909c-3.779,0-6.844-3.065-6.844-6.845',
+      '		c0-3.778,3.064-6.843,6.844-6.843c3.781,0,6.844,3.064,6.844,6.843C30.984,47.844,27.922,50.909,24.141,50.909"/>',
+      '	<path fill="#404040" d="M37.717,55.305c0.264,0.275,0.213,0.758-0.109,1.065l-2.216,2.112c-0.323,0.312-0.804,0.343-1.069,0.063',
+      '		l-4.318-4.521c-0.266-0.276-0.215-0.756,0.111-1.065l2.212-2.114c0.326-0.311,0.808-0.341,1.073-0.062L37.717,55.305z"/>',
+      '	</g></g>',
+      '</g>',
+      '</svg>'].join("\n");
   }
 
   function getCSS() {
+//    var filmstrip = '@-webkit-keyframes filmstrip { ';
+//    for(var i=0;i<10;i++) {
+//      filmstrip += (i*10)+'% { background-position: 0px '+(i*465)+'px; } ';
+//      filmstrip += ((i+1)*10-1)+'% { background-position: 0px '+(i*465)+'px; } ';
+//    }
+//    filmstrip += '}';
+//    var filmstripImage = '#voxel-submit-image { ';
+//    filmstripImage += '-webkit-animation-name: filmstrip;';
+//    filmstripImage += '-webkit-animation-iteration-count: infinite;';
+//    filmstripImage += '-webkit-animation-direction: normal;';
+//    filmstripImage += '-webkit-animation-duration: 1s;';
+//    filmstripImage += '}';
     return [
-
       '.ugcui { position: fixed;  } ',
       '#ugcui-top-right { position: fixed; top: 40px; right: 40px; } ',
       '#ugcui-bottom-right { position: fixed; bottom: 40px; right: 40px; z-index: 5 } ',
@@ -797,16 +913,17 @@ var UgcUI = function (shared) {
       '#ugcui-size g.button.active polygon.hex { fill: rgba(255, 255, 255, 0.7); }',
       '#ugcui-size:hover g.button.active polygon.hex { fill: #F15C22; }',
       '#ugcui-size:hover g.button.active:hover polygon.hex { fill: #F77952; }',
-
+      '#agree-terms.error { background-color: rgba(255, 0, 0, 0.3); }',
       '#voxel-submit-text { float: left; width: 300px; margin-right: 10px; }',
       '#voxel-submit-inputs { margin-right: 10px; margin-top: -4px; float: left; }',
       '#voxel-submit-submit { cursor: pointer; letter-spacing: 0.025em; font: 17px/65px FuturaBT-Bold, sans-serif; float: left; border: 1px solid #d6d1c2; width: 200px; text-align: center; margin-top: -2px;  }',
       '#voxel-submit-submit:hover { border-color: #404040; background-color: #404040; color: #f4f1e8; }',
-      '#voxel-submit input { margin-bottom: 3px; color: #404040; font: 11px/22px FuturaBT-Bold, sans-serif; width: 200px; padding: 2px 4px  }',
-
+      '#voxel-submit input[type="text"] { margin-bottom: 3px; color: #404040; font: 11px/22px FuturaBT-Bold, sans-serif; width: 200px; padding: 2px 4px  }',
+      '#voxel-submit a { color: #000 } ',
       '#voxel-submit-image { margin-bottom: 20px; width: 735px; height: 465px; background-color: #000; }',
       '#voxel-submit-shade { z-index: -12; opacity: 0.4; -webkit-transition: opacity 0.2s linear; background-color: #f4f1e8; position: fixed; top: 0; left: 0; width: 100%; height: 100% }',
       '#voxel-submit { font: 12px/18px FuturaBT-Medium; color: #404040; z-index: 21; opacity: 0; -webkit-transition: opacity 0.2s linear; width: 735px; height: 556px; padding: 13px; margin-left: -380px; margin-top: -291px; background-color: #f4f1e8; box-shadow: 0px 0px 10px rgba(0,0,0,0.3) }',
+      '#voxel-submit small { line-height: 15px; display: block; margin-top: 7px }',
       '.animal-container { opacity: 1; -webkit-transition: opacity 0.3s linear; }',
       '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 120px; margin-right: 10px; }',
       '.animal:hover { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #fff; }',
@@ -814,8 +931,27 @@ var UgcUI = function (shared) {
       '.animal:hover .animal-controls { opacity: 1; }',
       '.animal-controls div { display: none; text-align: center; border: 1px solid #fff; border-right: 0; border-bottom: 0; display: inline-block; width: 20px;}',
       '.animal-controls div.animal-add:hover, .animal-controls div.animal-remove:hover { cursor: pointer; background-color: #f65824; }',
-      '.animal-controls div.animal-count { background-color: #fff; color: #777; width: 25px; }'
+      '.animal-controls div.animal-count { background-color: #fff; color: #777; width: 25px; }',
+//      filmstrip,
+//      filmstripImage
     ].join("\n");
+  }
+
+  function makeUnselectable(elem) {
+
+    if (elem == undefined || elem.style == undefined) return;
+    elem.onselectstart = function() {
+      return false;
+    };
+    elem.style.MozUserSelect = 'none';
+    elem.style.KhtmlUserSelect = 'none';
+    elem.unselectable = 'on';
+
+    var kids = elem.childNodes;
+    for (var i = 0; i < kids.length; i++) {
+      makeUnselectable(kids[i]);
+    }
+
   }
 
 }

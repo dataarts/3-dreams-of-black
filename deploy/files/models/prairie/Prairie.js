@@ -5,7 +5,7 @@
  *
  * objects:    217
  * geometries: 35
- * materials:  42
+ * materials:  38
  * textures:   3
  */
 
@@ -17,6 +17,20 @@ var scene = {
 
 "objects" :
 {
+    "Ground" : {
+        "geometry"  : "geo_Ground",
+        "groups"    : [  ],
+        "materials" : [ "GroundLit.001" ],
+        "position"  : [ 0.000000, 0.000000, 0.000000 ],
+        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
+        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
+        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+        "visible"       : true,
+        "castsShadow"   : false,
+        "meshCollider"  : false,
+        "trigger"       : "None"
+    },
+
     "Cow.006" : {
         "geometry"  : "geo_Cow.001",
         "groups"    : [  ],
@@ -327,20 +341,6 @@ var scene = {
         "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
         "scale"     : [ 9.640689, 9.640689, 9.640689 ],
         "trigger"   : "None"
-    },
-
-    "Ground" : {
-        "geometry"  : "geo_Ground.001",
-        "groups"    : [  ],
-        "materials" : [ "GroundLit" ],
-        "position"  : [ 0.000000, 0.000000, 0.000000 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : true,
-        "castsShadow"   : false,
-        "meshCollider"  : false,
-        "trigger"       : "None"
     },
 
     "Background_objects" : {
@@ -2949,6 +2949,11 @@ var scene = {
 
 "geometries" :
 {
+    "geo_Ground" : {
+        "type" : "ascii_mesh",
+        "url"  : "Prairie.Ground.js"
+    },
+
     "geo_Cow.001" : {
         "type" : "ascii_mesh",
         "url"  : "Prairie.Cow.001.js"
@@ -2992,11 +2997,6 @@ var scene = {
     "geo_Backdrop.001" : {
         "type" : "ascii_mesh",
         "url"  : "Prairie.Backdrop.001.js"
-    },
-
-    "geo_Ground.001" : {
-        "type" : "ascii_mesh",
-        "url"  : "Prairie.Ground.001.js"
     },
 
     "geo_Background_objects" : {
@@ -3149,21 +3149,6 @@ var scene = {
         "parameters": { "color": 0, "opacity": 1, "vertexColors": "vertex" }
     },
 
-    "_cow_carcass_colo.000" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { "color": 1447446, "opacity": 1, "vertexColors": "vertex" }
-    },
-
-    "_cow_carcass_colo.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { "color": 6818828, "opacity": 1, "vertexColors": "vertex" }
-    },
-
-    "_cow_carcass_colorMap" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { "color": 13021058, "opacity": 1, "vertexColors": "vertex" }
-    },
-
     "blinn1SG.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { "color": 12162908, "opacity": 1, "vertexColors": "vertex" }
@@ -3219,11 +3204,6 @@ var scene = {
         "parameters": { "color": 16721610, "opacity": 1 }
     },
 
-    "comp_cow_rig_blinn9SG" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { "color": 7049586, "opacity": 1, "vertexColors": "vertex" }
-    },
-
     "cow" : {
         "type": "MeshLambertMaterial",
         "parameters": { "color": 16777215, "opacity": 1, "vertexColors": "vertex" }
@@ -3234,8 +3214,8 @@ var scene = {
         "parameters": { "color": 16777215, "opacity": 1, "vertexColors": "vertex" }
     },
 
-    "GroundLit" : {
-        "type": "MeshBasicMaterial",
+    "GroundLit.001" : {
+        "type": "MeshLambertMaterial",
         "parameters": { "color": 16777215, "opacity": 1, "map": "Closeup_PaintDubs.jpg", "vertexColors": "vertex" }
     },
 

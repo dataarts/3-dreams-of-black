@@ -26,6 +26,12 @@ var UgcObjectCreator = function ( shared, camera, scene ) {
 
 	} );
 
+	shared.ugcSignals.object_rotatemode.add( function () {
+
+		painter.setMode( VoxelPainter.MODE_IDLE );
+
+	} );
+
 	shared.ugcSignals.object_changecolor.add( function ( hex ) {
 
 		painter.setColor( hex );

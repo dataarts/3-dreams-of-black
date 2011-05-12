@@ -15,9 +15,17 @@ var Prairie = function ( shared ) {
 	renderTarget = shared.renderTarget,
 	cameraPath, waypoints = [], lookToRight = 0;
 
+	shared.debug = false;
+
+	if ( getParameterByName( "debug" ) == "true" ) {
+
+		shared.debug = true;
+
+	}
+
 	function initScene () {
 		
-		console.log( "prairie initScene" );
+		//console.log( "prairie initScene" );
 		
 		that.update( 0.0009, 49.99, 90375 );
 
@@ -26,7 +34,7 @@ var Prairie = function ( shared ) {
 	this.init = function () {
 
 		waypoints = [
-		[ 302.182, 105.662, -15.045 ],
+		[ 332.182, 105.662, -15.045 ],
 		[ 352.207, 114.403, -16.674 ],
 		[ 402.111, 120.122, -17.990 ],
 		[ 452.904, 122.699, -19.151 ],
@@ -68,11 +76,11 @@ var Prairie = function ( shared ) {
 
 		cameraPath = new THREE.PathCamera( {
 
-			fov: 60, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
-			waypoints: waypoints, duration: 28,
+			fov: 73, aspect: shared.viewportWidth / shared.viewportHeight, near: 1, far: 1000000,
+			waypoints: waypoints, duration: 26.2,
 			useConstantSpeed: true, resamplingCoef: 1,
 			createDebugPath: false, createDebugDummy: false,
-			lookSpeed: 0.001, lookVertical: true, lookHorizontal: true,
+			lookSpeed: 0.0028, lookVertical: true, lookHorizontal: true,
 			verticalAngleMap:   { srcRange: [ 0.00, 6.28 ], dstRange: [ 1.7, 3.0 ] },
 			horizontalAngleMap: { srcRange: [ 0.00, 6.28 ], dstRange: [ 0, Math.PI ] }
 
@@ -83,17 +91,25 @@ var Prairie = function ( shared ) {
 
 		camera = cameraPath;
 
+		if (shared.debug) {
+			gui = new GUI();
+			gui.add( camera, 'fov', 50, 120 ).name( 'Lens' );		
+		}
+
+		//world = new PrairieWorld( shared, camera );
+		//soup = new PrairieSoup( camera, world.scene, shared );
 		world = new PrairieWorld( shared, camera, callbackSoup );
-		 
-		function callbackSoup() {
 		
+		function callbackSoup() {
 			soup = new PrairieSoup( camera, world.scene, shared );
 			shared.soups.prairie = soup;
 			shared.prairieSoupHead = new THREE.Vector3();
 
 		}
 
+
 		shared.worlds.prairie = world;
+		//shared.soups.prairie = soup;
 		shared.sequences.prairie = this;
 
 		//world.scene.addObject( cameraPath.debugPath );
@@ -104,7 +120,7 @@ var Prairie = function ( shared ) {
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
 		 
-		 console.log( "prairie init" );
+		//console.log( "prairie init" );
 
 	};
 
@@ -114,7 +130,7 @@ var Prairie = function ( shared ) {
 
 		shared.started.prairie = true;
 		
-		console.log( "show prairie" );
+		//console.log( "show prairie" );
 
 	};
 
@@ -148,6 +164,10 @@ var Prairie = function ( shared ) {
 			camera.lon = 360;
 		}
 
+		if (shared.debug) {
+			camera.updateProjectionMatrix();		
+		}
+
 		THREE.AnimationHandler.update( delta );
 
 		// slight camera roll
@@ -162,18 +182,14 @@ var Prairie = function ( shared ) {
 		// camera.animationParent.position.y += Math.sin( time / 100 ) * 0.2;
 		camera.animationParent.position.y += (Math.random()-0.5)*0.3;
 
-
 		// make it darker towards the end
 		/*var a =  Math.min(1, 1.2-(camera.animationParent.position.x/14000) );
 		world.scene.lights[1].color.setRGB(a,a,a);
 		world.scene.lights[2].color.setRGB(a,a,a);*/
 
 		world.update( delta, camera, false );
-		
 		if ( soup ) {
-			
 			soup.update( delta );
-			
 		}
 
 		renderer.render( world.scene, camera, renderTarget );
@@ -183,6 +199,15 @@ var Prairie = function ( shared ) {
 		shared.logger.log( 'draw calls: ' + renderer.data.drawCalls );
 
 	};
+
+	function getParameterByName(name) {
+
+		var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+
+		return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+
+	}
+
 
 };
 

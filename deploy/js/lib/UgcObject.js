@@ -16,6 +16,12 @@ var UgcObject = function ( data ) {
 
 	};
 
+	this.setType = function ( type ) {
+
+		_type = type;
+
+	};
+
 	this.getVoxel = function ( x, y, z ) {
 
 		return _grid[ x + "." + y + "." + z ];

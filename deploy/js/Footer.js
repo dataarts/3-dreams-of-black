@@ -70,21 +70,50 @@ var Footer = function(container, prefix) {
         properties = DEFAULT_POPUP_PROPERTIES;
       }
 
-      dom.addEventListener("click", function(e) {
-        e.preventDefault();
-        var url = this.getAttribute("href");
-        var win = window.open(url, title, properties);
-      }, false);
+			if(dom.addEventListener) {
+
+	      dom.addEventListener("click", function(e) {
+
+					handleDomEvent(this, e);
+
+				}, false);
+
+			} else {
+
+				dom.attachEvent("click", function(e) {
+
+					handleDomEvent(this, e);
+
+				});
+
+			}
       
+			function handleDomEvent(d, e) {
+
+				e.preventDefault();
+				var url = d.getAttribute("href");
+				var win = window.open(url, title, properties);
+				return false;
+
+			}
+
     }
 
-    window.addEventListener("load", this.load, false);
+		if(window.addEventListener) {
+
+			window.addEventListener("load", this.load, false);
+
+		} else {
+
+			window.attachEvent("load", this.load);
+
+		}
 
     // Add html
     var html = ['<div class="rome-footer">',
 		'<div class="shout-out">',
 		'  <ul>',
-		'    <li class="last"><a href="http://chromeexperiments.com/"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
+		'    <li class="last"><a href="http://chromeexperiments.com/webgl"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
 		'    <li class="divider">&nbsp;</li>',
 		'    <li class="last"><a href="http://google.com/"><img src="' + path + '/google-trans.png" alt="Made With Friends From Google" border="0" /></a></li>',
 		'    <li class="clear">&nbsp;</li>',
@@ -92,15 +121,15 @@ var Footer = function(container, prefix) {
 		'</div>',
 		'<div class="navigation">',
 		'  <ul class="primary">',
-		'    <li class="first"><a href="/tech">Technology</a></li>',
+		'    <li class="first"><a href="/tech" target="_blank">Technology</a></li>',
 		'    <li><a id = "' + credits + '" href="/credits">Credits</a></li>',
-		'    <li><a href="http://romealbum.com/">Rome Album</a></li>',
+		'    <li><a href="http://romealbum.com/" target="_blank">Rome Album</a></li>',
 		'    <li id="' + divReplacement + '" class="rome_footer_buy_album">',
-		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html">Buy Album</a>',
+		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html" target="blank">Buy Album</a>',
 		'    </li>',
 		'    <li class="last">Share</li>',
 		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
-		'    <li class="last icons"><a id = "' + twitter + '" href="http://twitter.com/share?text=“ROME”&amp;url=http://ro.me" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
+		'    <li class="last icons"><a id = "' + twitter + '" href="http://twitter.com/share?text=%E2%80%9C3%20Dreams%20of%20Black%E2%80%9D%20an%20interactive%20film%20by%20Chris%20Milk%20for%20Danger%20Mouse%20%26%20Daniele%20Luppi%E2%80%99s%20ROME%20album%20%E2%99%A5%20http%3A%2F%2Fro.me%20%23rome%20%23webgl&url=" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
 		'    <li class="clear last">&nbsp;</li>',
 		'  </ul>',
 		'  <ul class="secondary">',
@@ -151,7 +180,7 @@ var Footer = function(container, prefix) {
 		'  border: 0;',
 		'}',
 		'.rome-footer .shout-out li.divider {',
-		'  margin: 15px 0 15px 15px;',
+		'  margin: 15px -15px 15px 15px;',
 		'  height: 24px;',
 		'  border-left: 1px solid #a0a0a0;',
 		'  border-right: 0 !important;',
@@ -219,14 +248,15 @@ var Footer = function(container, prefix) {
         var rule = document.createTextNode(css);
         var head = document.getElementsByTagName('head')[0];
         var style = document.createElement('style');
+						style.type = "text/css";
 
-        if (style.stylesheet) {
+        if (style.styleSheet) {
 
             style.styleSheet.cssText = rule.nodeValue;
 
         } else {
 
-            style.appendChild(rule);
+          style.appendChild(rule);
 
         }
 

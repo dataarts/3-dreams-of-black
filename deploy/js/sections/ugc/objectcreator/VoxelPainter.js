@@ -8,23 +8,16 @@ var VoxelPainter = function ( camera, scene ) {
 	var _intersectPoint, _intersectFace, _intersectObject,
 	_intersectEraseObjects = [], _tempVector = new THREE.Vector3();
 
-	var _grid = new THREE.Mesh( new THREE.Plane( 4000, 4000, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
-	_grid.position.x = - UNIT_SIZE / 2;
-	_grid.position.y = - UNIT_SIZE / 2;
-	_grid.position.z = - UNIT_SIZE / 2;
-	_grid.rotation.x = - 90 * Math.PI / 180;
-	scene.addObject( _grid );
-
 	// Colliders
 
 	var _collider = new THREE.Object3D();
 	_collider.matrixAutoUpdate = false;
-	// _collider.visible = false;
+	_collider.visible = false;
 
 	var _colliderArray = [];
 
-	var _geometry = new THREE.Plane( 2000, 2000, 2, 2 );
-	var _material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true, wireframe: true } );
+	var _geometry = new THREE.Plane( 8100, 8100, 2, 2 );
+	var _material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } );
 
 	_plane = new THREE.Mesh( _geometry, _material );
 	_plane.doubleSided = true;
@@ -61,10 +54,8 @@ var VoxelPainter = function ( camera, scene ) {
 
 	var _voxelsArray = [];
 
-	var _ground = new THREE.Mesh( new THREE.Plane( 4000, 4000 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
-	_ground.position.x = - UNIT_SIZE / 2;
+	var _ground = new THREE.Mesh( new THREE.Plane( 4050, 4050 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
 	_ground.position.y = - UNIT_SIZE / 2;
-	_ground.position.z = - UNIT_SIZE / 2;
 	_ground.rotation.x = - 90 * Math.PI / 180;
 	_ground.updateMatrix();
 	_ground.update();
@@ -139,8 +130,6 @@ var VoxelPainter = function ( camera, scene ) {
 		if ( y < 0 || y > 40 ) return;
 		if ( z < - 40 || z > 40 ) return;
 
-		_color = Math.random() * 0xffffff;
-
 		var voxel = _object.getVoxel( x, y, z );
 
 		if ( voxel ) {
@@ -186,11 +175,23 @@ var VoxelPainter = function ( camera, scene ) {
 
 	//
 
+	this.getMode = function () {
+
+		return _mode;
+
+	};
+
 	this.setMode = function ( mode ) {
 
 		_mode = mode;
 
 	};
+
+  this.getMode = function() {
+
+    return _mode;
+    
+  };
 
 	this.setColor = function ( hex ) {
 
@@ -212,6 +213,13 @@ var VoxelPainter = function ( camera, scene ) {
 	this.setSymmetry = function ( bool ) {
 
 		_symmetry = bool;
+
+	};
+
+	this.hideBrush = function () {
+
+		_brush[ 0 ].visible = false;
+		_brush[ 1 ].visible = false;
 
 	};
 
@@ -239,6 +247,13 @@ var VoxelPainter = function ( camera, scene ) {
 
 		switch ( _mode ) {
 
+			case VoxelPainter.MODE_IDLE:
+
+				_brush[ 0 ].visible = false;
+				_brush[ 1 ].visible = false;
+
+			break;
+
 			case VoxelPainter.MODE_CREATE:
 
 				intersects = ray.intersectObjects( _voxelsArray );
@@ -265,7 +280,7 @@ var VoxelPainter = function ( camera, scene ) {
 						if ( _symmetry ) {
 
 							_brush[ 1 ].position.copy( _brush[ 0 ].position );
-							_brush[ 1 ].position.x = - _brush[ 1 ].position.x;
+							_brush[ 1 ].position.x = - _brush[ 1 ].position.x + UNIT_SIZE;
 							_brush[ 1 ].visible = true;
 
 						}
@@ -288,6 +303,12 @@ var VoxelPainter = function ( camera, scene ) {
 					intersects = ray.intersectObjects( _colliderArray );
 
 					if ( _intersectFace && intersects.length > 0 ) {
+
+						if ( _intersectObject == _ground ) {
+
+							intersects[ 0 ].point.y += 25;
+
+						}
 
 						var vector, x, y, z, dx, dy, dz, dmax;
 
@@ -318,7 +339,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 									if ( _symmetry ) {
 
-										addVoxel( - x + xx, y + yy, z + zz );
+										addVoxel( - x + 1 + xx, y + yy, z + zz );
 
 									}
 
@@ -392,5 +413,6 @@ var VoxelPainter = function ( camera, scene ) {
 
 }
 
+VoxelPainter.MODE_IDLE = 'VoxelPainter.MODE_IDLE';
 VoxelPainter.MODE_CREATE = 'VoxelPainter.MODE_CREATE';
 VoxelPainter.MODE_ERASE = 'VoxelPainter.MODE_ERASE';

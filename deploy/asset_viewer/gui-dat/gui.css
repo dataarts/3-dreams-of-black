@@ -148,15 +148,16 @@ a.guidat-toggle:hover {
 
 }
 #guidat-background{
-  width: 464px;
+  width: 398px;
 }
 #guidat-radius{
-  width: 310px;
+  width: 320px;
 }
 #guidat-aperture,#guidat-focus{
+  width: 166px;
 }
 #guidat-wireframe,#guidat-texture,#guidat-component,#guidat-lighting,#guidat-grid,#guidat-occlusion,#guidat-depth_of_field,#guidat-vignette{
-
+  width:80px;
 }
 
 #guidat-morph .guidat-slider-bg{
@@ -167,18 +168,15 @@ a.guidat-toggle:hover {
 }
 
 #guidat-component{
-  padding-right:7px;
+  width:174px;
 }
 #guidat-background .guidat-slider-bg{
-  width: 340px;
-}
-#guidat-background .guidat-slider-bg{
-  width: 330px;
+  width: 270px;
 }
 #guidat-focus .guidat-slider-bg,
 #guidat-aperture .guidat-slider-bg{
   width: 67px;
 }
 #guidat-radius .guidat-slider-bg{
-  width: 193px;
+  width: 208px;
 }

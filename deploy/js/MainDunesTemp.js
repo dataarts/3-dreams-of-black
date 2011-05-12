@@ -67,12 +67,13 @@ function init() {
 			stopfilm : new Signal(),
 
 			startexploration: new Signal(),
-			
+
 			initscenes: new Signal()
 
 		},
 
 		worlds: {},
+		soups: {},
 		sequences: {},
 		started: { "city": false, "prairie": false, "dunes" : false },
 

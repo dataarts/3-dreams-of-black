@@ -1,14 +1,22 @@
 var DunesShaderEffectors = {
-	
+	/*
 	position: [ new THREE.Vector3( 0, -2000, -1000 ), 
   			 	new THREE.Vector3( -100, -2000, -2500 ), 
-				new THREE.Vector3( 100, -2000, -4000 ), 
-				new THREE.Vector3( 2000, -2000, -2500 ) ],
-	radius: [ 500, 500, 500, 500 ],
-	darkness: [ 0.0, 1.0, 0.5, 0.0 ],
+				new THREE.Vector3( 100, -2000, -4000 )
+			],
+	radius: [ 250, 250, 250 ],
+	darkness: [ 0.4, 0.4, 0.4 ],
+	*/
+
+	position: [ new THREE.Vector3( 0, -2000, -1000 ), 
+  			 	new THREE.Vector3( -100, -2000, -2500 )
+			],
+	radius: [ 250, 250 ],
+	darkness: [ 0.4, 0.4 ],
 
 	positionFlat: [],
 	materials: []
+
 };
 
 

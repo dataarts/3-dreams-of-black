@@ -11,6 +11,12 @@
 		"relauncher",
 		"tool",
 	];
+	
+	var stickyHistory = [
+      '/',
+      '/film',
+      '/explore'
+	];
 	var historyDispatches = [];
 
 	// debug
@@ -36,6 +42,9 @@
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
 		loadedContent: false,
+		hasExplored: false,
+		originLink: window.location.pathname.toString(),
+		shouldSkip: false,
 
 		signals : {
 
@@ -107,6 +116,7 @@
 	shared.signals.showexploration.add( loadBuffer );
 
 	shared.signals.showlauncher.add( function () { setSection( launcher, "/", "/" ); } );
+	shared.signals.showlauncher.add( loadExploreOnLoad );
 	shared.signals.showrelauncher.add( function () { setSection( relauncher, historySections[2], "/" + historySections[2] ); } );
 	shared.signals.showugc.add( function () { setSection( ugc, historySections[3], "/" + historySections[3] ); } );
 
@@ -133,6 +143,16 @@
 
 	//
 
+	function loadExploreOnLoad() {
+
+		if( shared.originLink.match("/explore") && !shared.loadedContent ) {
+
+			// set some special load logic
+			shared.shouldSkip = true;
+
+		}
+	}
+
 	// Main listener for History API
 	window.onpopstate = function(e) {
 
@@ -152,9 +172,8 @@
 
 	function handleHistory() {
 
-
-		console.log(shared.loadedContent);
 		// Handle History API stuff
+
 		var folder = window.location.pathname.toString();
 
 		if(folder === "\/") {
@@ -201,9 +220,27 @@
 		section.resize( window.innerWidth, window.innerHeight );
 		section.show();
 
-		if(title && path) {
 
-			if(history) history.pushState( null, title, path );
+		if( title && path ) {
+		
+			var i = stickyHistory.length;
+			
+			while ( i-- ) {
+				
+				if ( stickyHistory[i] === path ) {
+
+					path += window.location.search;
+					break;
+
+				}
+			}
+
+			if( history ) {
+
+				var pState = window.location.pathname.toString();
+				history.pushState( { "pState": pState }, title, path );
+
+			}
 
 		}
 

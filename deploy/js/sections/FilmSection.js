@@ -155,11 +155,19 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new FadeOutEffect( 0x000000, shared ), tune.getPatternMS( 72.2 ), tune.getPatternMS( 73.25 ), 3 ); // Below painter effect which renders directly to screen
 
 	// pointers
+	// sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1000 );
+	sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 8 ), tune.getPatternMS( 73.25 ), 1000 );
+
+	/*
+	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 1000 ); // city animation
+	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 16 ) - cityTransitionTime, tune.getPatternMS( 24 ), 1000 ); // city
 	
-	//sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 0 ), tune.getPatternMS( 8 ), 1 );
-	sequencer.add( new PointerImageEffect( shared, "/files/mouse_map.gif" ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - 1000, 1000 );
-	sequencer.add( new PointerImageEffect( shared, "/files/mouse_map.gif" ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1000 );
-	// sequencer.add( new PointerEffect( shared, true ),  tune.getPatternMS( 16 ), tune.getPatternMS( 73.25 ), 1000 );
+	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 1000 ); // prairie animation
+	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 32 ) - prairieTransitionTime, tune.getPatternMS( 40 ), 1000 ); // prairie
+	
+	sequencer.add( new PointerEffect( shared, true ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 1000 ); // dunes animation
+	sequencer.add( new PointerEffect( shared, false ), tune.getPatternMS( 48 ) - dunesTransitionTime, tune.getPatternMS( 73.25 ), 1000 ); // dunes
+	*/
 
 	// final render
 
@@ -174,7 +182,7 @@ var FilmSection = function ( shared ) {
 	
 	//sequencer.add( new SharpenEffect( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 5 ); // prairie animation
 	//sequencer.add( new NoiseEffect( shared, 0.35, 0.0, 1024 ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 5 ); // prairie animation
-	sequencer.add( new PaintEffectPrairie( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 6 ); // prairie animation
+	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 6 ); // prairie animation
 	
 	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
 	

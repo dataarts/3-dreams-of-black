@@ -68,7 +68,7 @@ var VideoPlane = function(layer, conf){
   if(hasDistortion)
     this.mesh = new THREE.Mesh( config.grid, material );
   else
-    this.mesh = new THREE.Mesh( new Plane(1,1,1,1), material );
+    this.mesh = new THREE.Mesh( new THREE.Plane(1,1,1,1), material );
 
 
   this.mesh.scale.x = layer.width;
@@ -124,17 +124,17 @@ var VideoPlane = function(layer, conf){
 function PolyTrail(){
     this.target = new THREE.Vector2();
     this.s = [];
-    for (var i = 0; i <= 32; i++) {
+    for (var i = 0; i <= 50; i++) {
         this.s[i] = new THREE.Vector2();
     }
 }
 PolyTrail.prototype.set = function(x,y){
-    for (var i = 32; i >= 0; i = i - 1) {
+    for (var i = 50; i >= 0; i = i - 1) {
         this.s[i] = new THREE.Vector3(x,y,0);
     }
 };
 PolyTrail.prototype.update = function(){
-    for (var i = 32; i > 0; i = i - 1) {
+    for (var i = 50; i > 0; i = i - 1) {
         this.s[i].x = this.s[i - 1].x;
         this.s[i].y = this.s[i - 1].y;
     }
