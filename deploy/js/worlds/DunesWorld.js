@@ -178,7 +178,7 @@ var DunesWorld = function ( shared ) {
 	var loadingUgc = false;
 	var ugcOccupiedTiles = {};
 	var ugcTileLoaded = {};
-//	var ugcCollider = new THREE.SphereCollider( new THREE.Vector3( 0, -5000, 0 ), 1 );
+	var ugcCollider = new THREE.SphereCollider( new THREE.Vector3( 0, -5000, 0 ), 1 );
 	var ugcTileDisplacement = [
 	
 		{ x: -1, z: -1 },		// -pi
@@ -199,7 +199,7 @@ var DunesWorld = function ( shared ) {
     new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
 
 
-//	that.scene.collisions.colliders.push( ugcCollider );
+	that.scene.collisions.colliders.push( ugcCollider );
 	
 	
 	//--- update ugc ---
@@ -248,13 +248,13 @@ var DunesWorld = function ( shared ) {
 		
 		// set physics on closest ugc
 		
-//		if( closestUgc !== undefined ) {
-//
-//			ugcCollider.center.copy( closestUgc.matrixWorld.getPosition());
-//			ugcCollider.radius   = closestUgc.boundRadius;
-//			ugcCollider.radiusSq = ugcCollider.radius * ugcCollider.radius;
-//
-//		}
+		if( closestUgc !== undefined ) {
+
+			ugcCollider.center.copy( closestUgc.matrixWorld.getPosition());
+			ugcCollider.radius   = closestUgc.boundRadius;
+			ugcCollider.radiusSq = ugcCollider.radius * ugcCollider.radius;
+
+		}
 
 
 		// check if we've loaded on this tile
@@ -361,7 +361,6 @@ var DunesWorld = function ( shared ) {
 							ugc.position.x += Math.random() * 200 - 100;
 							ugc.position.z += Math.random() * 200 - 100;
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
-              console.log(ugc.category);
               if (ugc.category === 'sky') {
                 ugc.position.y = 2000 + Math.random() * 200 - 100;
               }
@@ -498,21 +497,21 @@ var DunesWorld = function ( shared ) {
 		var scene = result.scene;
 
 		applyDunesShader( result );
-//		markColliders( scene );
+		markColliders( scene );
 		showHierarchyNotColliders( scene, true );
 
 		// get collider
 
-//		tileColliders[ tileNumber ] = scene.collisions.colliders[ 0 ].mesh;
-//		tileColliders[ tileNumber ].rotation.x = -90 * Math.PI / 180;
-//		tileColliders[ tileNumber ].scale.set( SCALE, SCALE, SCALE );
+		tileColliders[ tileNumber ] = scene.collisions.colliders[ 0 ].mesh;
+		tileColliders[ tileNumber ].rotation.x = -90 * Math.PI / 180;
+		tileColliders[ tileNumber ].scale.set( SCALE, SCALE, SCALE );
 
 		// shows collision meshes
 		//tileColliders[ tileNumber ].materials[ 0 ] = new THREE.MeshLambertMaterial( { color: 0xff00ff, opacity: 0.5 });
 		//tileColliders[ tileNumber ].visible = true;
 
 		that.scene.addChild( tileColliders[ tileNumber ] );
-//		that.scene.collisions.merge( scene.collisions );
+		that.scene.collisions.merge( scene.collisions );
 
 
 		// duplicate gfx
@@ -671,7 +670,7 @@ var DunesWorld = function ( shared ) {
 
 						if( tileMesh ) {
 
-							tileMesh.position.x = px; 
+							tileMesh.position.x = px;
 							tileMesh.position.z = pz;
 							tileMesh.rotation.z = getRotation( px, pz );
 
@@ -722,17 +721,17 @@ var DunesWorld = function ( shared ) {
 		scene.scale.set( SCALE, SCALE, SCALE );
 		scene.matrixAutoUpdate = true;
 
-//		markColliders( scene );
+		markColliders( scene );
 		showHierarchyNotColliders( scene, true );
 		preInitScene( result, shared.renderer );
 
 		that.scene.addChild( scene );
 
-//		if ( scene.collisions ) {
-//
-//			that.scene.collisions.merge( scene.collisions );
-//
-//		}
+		if ( scene.collisions ) {
+
+			that.scene.collisions.merge( scene.collisions );
+
+		}
 
 		for ( var o in result.objects ) {
 
@@ -773,7 +772,7 @@ var DunesWorld = function ( shared ) {
 
 	function markColliders( scene ) {
 
-		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
+		THREE.SceneUtils.traverseHierarchy( scene, function( node ) {
 
 			var colliders = scene.collisions.colliders;
 
@@ -781,7 +780,7 @@ var DunesWorld = function ( shared ) {
 
 				if ( colliders[ i ].mesh == node ) {
 
-					node.__isCollider = true; 
+					node.__isCollider = true;
 
 				}
 
