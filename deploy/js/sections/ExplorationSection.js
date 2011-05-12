@@ -292,7 +292,8 @@ var ExplorationSection = function ( shared ) {
 
 		if( !shared.hasExplored ) {
 
-			//shared.hasExplored = true;
+			// TODO: Make sure to that routing is correct for this
+			shared.hasExplored = true;
 
 		}
 
