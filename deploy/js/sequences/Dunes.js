@@ -120,23 +120,24 @@ var Dunes = function ( shared ) {
 			
 		}
 		
+		/*
 		if( progress > 0.40 ) {
 
 			var currentPosition = camera.camera.matrixWorld.getPosition();
 			var currentTarget = camera.camera.target.matrixWorld.getPosition();
 
-			/*
-			extraTarget.sub( currentTarget, currentPosition );
-			extraTarget.normalize();
-			extraTarget.multiplyScalar( 100 );
-			extraTarget.addSelf( currentPosition );
-			*/
+			
+			//extraTarget.sub( currentTarget, currentPosition );
+			//extraTarget.normalize();
+			//extraTarget.multiplyScalar( 100 );
+			//extraTarget.addSelf( currentPosition );
 			
 			DunesShaderEffectors.position[ 0 ].copy( currentPosition );
 			DunesShaderEffectors.position[ 1 ].copy( currentTarget );
 			//DunesShaderEffectors.position[ 2 ].copy( extraTarget );
 
 		}
+		*/
 
 		camera.updateCamera( progress, delta, time );
 
