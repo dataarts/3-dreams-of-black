@@ -125,7 +125,7 @@ var Footer = function(container, prefix) {
 		'    <li><a id = "' + credits + '" href="/credits">Credits</a></li>',
 		'    <li><a href="http://romealbum.com/" target="_blank">Rome Album</a></li>',
 		'    <li id="' + divReplacement + '" class="rome_footer_buy_album">',
-		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html" target="blank">Buy Album</a>',
+		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html" onClick="_gaq.push([\'_trackPageview\', \'/buy_album\'])" target="blank">Buy Album</a>',
 		'    </li>',
 		'    <li class="last">Share</li>',
 		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',

@@ -84,6 +84,7 @@ var LauncherSection = function (shared) {
 				// set some special load logic
 				shared.signals.showexploration.dispatch();
 				shared.signals.startexploration.dispatch( 'dunes' );
+        _gaq.push(['_trackPageview', '/explore']);
 				shared.hasExplored = true;
 				shared.shouldSkip = false;
 			
@@ -95,7 +96,8 @@ var LauncherSection = function (shared) {
 			
 				      setTimeout(function () {
 			
-						shared.signals.startfilm.dispatch(0, 1);
+						    shared.signals.startfilm.dispatch(0, 1);
+                _gaq.push(['_trackPageview', '/launcher_start_film']);
 			
 				      }, 1000);
 			}
@@ -176,6 +178,7 @@ var LauncherSection = function (shared) {
 
         e.preventDefault();
         shared.signals.showugc.dispatch();
+        _gaq.push(['_trackPageview', '/launcher_add_to_dream']);
 
       }, false);
       exploreDreams = document.createElement("div");
@@ -188,6 +191,7 @@ var LauncherSection = function (shared) {
 
         e.preventDefault();
         window.open("/gallery", "Gallery");
+        _gaq.push(['_trackPageview', '/launcher_gallery']);
         // window.location = "/gallery";
 
       }, false);
