@@ -383,7 +383,9 @@ var UgcUI = function (shared) {
     });
 
     onClick('ugcui-quit', function() {
-      shared.signals.showrelauncher.dispatch();
+      if (confirm("Are you sure you want to quit?")) {
+        shared.signals.showrelauncher.dispatch();
+      }
     });
 
     onClick('ugcui-zoom-in', function() {
