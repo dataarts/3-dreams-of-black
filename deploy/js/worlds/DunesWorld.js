@@ -349,6 +349,8 @@ var DunesWorld = function ( shared ) {
 	//--- load ugc ---
 	
 	function loadUgc() {
+
+    console.log('logugc');
 		
 		if( !loadingUgc ) {
 			
@@ -365,6 +367,8 @@ var DunesWorld = function ( shared ) {
 	//--- on load ugc ---
 	
 	function onLoadUgc( objects ) {
+
+    console.log(objects);
 	
 		loadingUgc = false;
 	

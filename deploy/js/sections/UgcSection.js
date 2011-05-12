@@ -11,10 +11,10 @@ var UgcSection = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, start_radius = 1500,
+	isRotateMode = false, isMouseDown = false, start_radius = 2000,
 	onMouseDownTheta, onMouseDownPhi, onMouseDownPositionX, onMouseDownPositionY,
 	theta = 45, onMouseDownTheta, phi = 15, onMouseDownPhi,
-	radius = start_radius, oldRadius = start_radius, newRadius = start_radius;
+	radius = start_radius, newRadius = start_radius;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 20;
@@ -68,6 +68,23 @@ var UgcSection = function ( shared ) {
 		}
 
 	} );
+
+	var geometry = new THREE.Plane( 1000, 1000 ); 
+
+	for ( var i = 0; i < 100; i ++ ) {
+
+		var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.75, blending: THREE.AdditiveBlending } ) );
+		mesh.position.x = Math.random() * 20000 - 10000;
+		mesh.position.y = Math.random() * 2000 + 3000;
+		mesh.position.z = Math.random() * 20000 - 10000;
+		mesh.rotation.x = - 90 * Math.PI / 180;
+		mesh.scale.x = Math.random() * 2 + 1;
+		mesh.scale.y = Math.random() * 2 + 1;
+		mesh.doubleSided = true;
+
+		that.scene.addObject( mesh );
+
+	}
 
 	// Renderer
 
@@ -369,7 +386,7 @@ var UgcSection = function ( shared ) {
 
 		TWEEN.update();
 
-		if ( _type == null ) theta += 0.1;
+		if ( _type == null ) theta = ( theta += 0.1 ) % 360;
 
 		ui.update();
 
