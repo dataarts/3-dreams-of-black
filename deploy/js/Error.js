@@ -216,14 +216,14 @@ function HandleErrors(d) {
     return navigator.userAgent.match(condition);
   }
 
-	function isChromeVerOrLess() {
+	function isChromeVerOrLess(n) {
 
 		var string = navigator.userAgent
 		var regex = /[Cc]hrome\/([0-9]{1,2})/;
 		var result = string.match(regex);
 		if(result) {
 			result = parseInt(result[1]);
-			return (result <= 11);
+			return (result <= n);
 		} else {
 			return false;
 		}
