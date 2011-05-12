@@ -302,18 +302,20 @@ var GALLERY = function(params) {
     };
   }
 
-  var frameCount = 0;
+  var frameCount = 0,
+      lastTime = new Date(),
+      cTime;
   this.update = function() {
     frameCount++;
     if (activeImage != undefined) {
-
       activeImage.frameCount = activeImage.frameCount == undefined ? 0 : activeImage.frameCount;
-      if (frameCount % 5 == 0) {
+      cTime = new Date();
+      if ((cTime - lastTime) > 200) {
+        lastTime = cTime;
         activeImage.frameCount++
       }
       var img = $(activeImage);
       img.css('backgroundPosition', '0 ' + (-activeImage.frameCount * img.height()) + 'px');
-
     }
   }
 

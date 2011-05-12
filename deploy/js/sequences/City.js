@@ -30,7 +30,7 @@ var City = function ( shared ) {
 	
 	function initScene () {
 		
-		console.log( "city initScene" );
+		//console.log( "city initScene" );
 		
 		that.update( 0.001, 34.99, 45199 );
 
@@ -111,7 +111,7 @@ var City = function ( shared ) {
 		world.scene.addObject( camera.animationParent );
 		
 		
-		console.log( "city init" );
+		//console.log( "city init" );
 		
 	};
 

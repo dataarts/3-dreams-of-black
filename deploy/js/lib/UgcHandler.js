@@ -177,20 +177,31 @@ var UgcHandler = function () {
     var url = base_url;
     var xhr = new XMLHttpRequest();
     xhr.open( 'POST', url );
+    function fail() {
+      callback({"success": false})
+    }
     xhr.onreadystatechange = function () {
       if ( xhr.readyState == 4 ) {
         if ( xhr.status == 200 ) {
-          var obj = JSON.parse(xhr.responseText);
-                    var upload_url = obj.upload_url;
-                    delete obj.upload_url;
-                    uploadImage(upload_url, image, {
-                                filename: submission.title,
-                                callback : function() {
-                                    callback( obj );
-                                }
-                    });
+          try {
+            var obj = JSON.parse(xhr.responseText);
+            if (obj.success) {
+              var upload_url = obj.upload_url;
+              delete obj.upload_url;
+              uploadImage(upload_url, image, {
+                    filename: submission.title,
+                    callback : function() {
+                      callback( obj );
+                    }
+                  });
+            } else {
+              fail();
+            }
+          } catch (err) {
+            fail();
+          }
         } else {
-          console.log( 'Submission of model failed' );
+          fail();
         }
       }
     };

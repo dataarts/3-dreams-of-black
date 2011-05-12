@@ -11,10 +11,10 @@ var UgcSection = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, start_radius = 1500,
+	isRotateMode = false, isMouseDown = false, start_radius = 2000,
 	onMouseDownTheta, onMouseDownPhi, onMouseDownPositionX, onMouseDownPositionY,
 	theta = 45, onMouseDownTheta, phi = 15, onMouseDownPhi,
-	radius = start_radius, oldRadius = start_radius, newRadius = start_radius;
+	radius = start_radius, newRadius = start_radius;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 20;
@@ -282,7 +282,7 @@ var UgcSection = function ( shared ) {
   function gen_filmstrip(dWidth, dHeight, num_frames) {
     dWidth = dWidth || 300;
     dHeight = dHeight || 180;
-    num_frames = num_frames || 15;
+    num_frames = num_frames || 8;
     var dest = document.createElement('canvas'),
         stashed_cam_pos = camera.position.clone(),
         thetap = 45, phip = 15;

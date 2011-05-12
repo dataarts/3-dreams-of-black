@@ -11,11 +11,12 @@
 		"relauncher",
 		"tool",
 	];
-  var stickyHistory = [
+	
+	var stickyHistory = [
       '/',
       '/film',
       '/explore'
-  ];
+	];
 	var historyDispatches = [];
 
 	// debug
@@ -158,9 +159,8 @@
 
 	function handleHistory() {
 
-
-		console.log(shared.loadedContent);
 		// Handle History API stuff
+
 		var folder = window.location.pathname.toString();
 
 		if(folder === "\/") {
@@ -208,15 +208,21 @@
 		section.show();
 
 
-		if(title && path) {
-      var i = stickyHistory.length;
-      while (i--) {
-        if (stickyHistory[i] === path) {
-          path += window.location.search;
-          break;
-        }
-      }
-			if(history) history.pushState( null, title, path );
+		if( title && path ) {
+		
+			var i = stickyHistory.length;
+			
+			while ( i-- ) {
+				
+				if ( stickyHistory[i] === path ) {
+
+					path += window.location.search;
+					break;
+
+				}
+			}
+
+			if( history ) history.pushState( null, title, path );
 
 		}
 

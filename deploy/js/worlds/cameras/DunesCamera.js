@@ -86,8 +86,10 @@ DunesCamera = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = 1;//delta * ( 1000 / 30 ) / 1000;
-		if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
+		delta = ( delta > 30 ) ? 1 : delta / 30;
+
+		//delta = 1;//delta * ( 1000 / 30 ) / 1000;
+		//if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
 		
 		// get mouse
 		
