@@ -62,7 +62,7 @@ function HandleErrors(d) {
         // Detector.message = Errors[5];
         if(hasLocalStorage()) {
           // go ahead darling
-          if(!localStorage["RomeError"]) {
+          if(!localStorage.getItem("RomeError")) {
             // overlay our condition
             window.addEventListener("load", function() {
 
@@ -116,7 +116,7 @@ function HandleErrors(d) {
             }, false);
 
             HandleErrors.isWebGLAndFireFox = true;
-            localStorage["RomeError"] = true;
+            localStorage.setItem("RomeError", true);
           }
         }
       }
