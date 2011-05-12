@@ -175,6 +175,7 @@ var GALLERY = function(params) {
     });
 
 
+
     $('#lightbox-next').click(function() {
 
       var next = objectData.indexOf(activeObject) + 1;
@@ -210,6 +211,13 @@ var GALLERY = function(params) {
       $('#lightbox-downvote').addClass('selected');
       return false;
     });
+
+    if (GALLERY.GET['id'] !== undefined ) {
+      $.getJSON(GALLERY.API_BASE + 'objects/' + GALLERY.GET['id'] + '?property=data&property=title', function(data) {
+        openLightbox();
+        populateLightbox(data);
+      });
+    }
 
   }
 
@@ -266,7 +274,9 @@ var GALLERY = function(params) {
     return function() {
       lightbox.fadeIn(200);
       shade.get(0).addEventListener('mousedown', closeLightbox, false);
-      populateLightbox(objectData[index]);
+      if (index !== undefined) {
+        populateLightbox(objectData[index]);
+      }
     }
   }
 
