@@ -22,7 +22,7 @@ var Dunes = function ( shared ) {
 
 	function initScene () {
 		
-		console.log( "dunes initScene" );
+		//console.log( "dunes initScene" );
 		
 		that.update( 0.0009, 49.99, 90375 );
 
@@ -36,7 +36,8 @@ var Dunes = function ( shared ) {
 		camera = DunesCamera( shared );
 		soup = new DunesSoup( camera.camera, world.scene, shared );
 		shared.soups.dunes = soup;
-		console.log( "dunes init" );
+
+		//console.log( "dunes init" );
 
 	};
 
