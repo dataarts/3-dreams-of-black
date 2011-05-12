@@ -128,7 +128,7 @@ var Footer = function(container, prefix) {
 		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html" onClick="_gaq.push([\'_trackPageview\', \'/buy_album\'])" target="blank">Buy Album</a>',
 		'    </li>',
 		'    <li class="last">Share</li>',
-		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
+		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me?fb=1" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
 		'    <li class="last icons"><a id = "' + twitter + '" href="http://twitter.com/share?text=%E2%80%9C3%20Dreams%20of%20Black%E2%80%9D%20an%20interactive%20film%20by%20Chris%20Milk%20for%20Danger%20Mouse%20%26%20Daniele%20Luppi%E2%80%99s%20ROME%20album%20%E2%99%A5%20http%3A%2F%2Fro.me%20%23rome%20%23webgl&url=" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
 		'    <li class="clear last">&nbsp;</li>',
 		'  </ul>',
