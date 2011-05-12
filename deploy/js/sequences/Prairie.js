@@ -25,7 +25,7 @@ var Prairie = function ( shared ) {
 
 	function initScene () {
 		
-		console.log( "prairie initScene" );
+		//console.log( "prairie initScene" );
 		
 		that.update( 0.0009, 49.99, 90375 );
 
@@ -120,7 +120,7 @@ var Prairie = function ( shared ) {
 		gui.add( camera.position, 'z' ).name( 'Camera z' ).listen();
 		*/
 		 
-		 console.log( "prairie init" );
+		//console.log( "prairie init" );
 
 	};
 
@@ -130,7 +130,7 @@ var Prairie = function ( shared ) {
 
 		shared.started.prairie = true;
 		
-		console.log( "show prairie" );
+		//console.log( "show prairie" );
 
 	};
 
