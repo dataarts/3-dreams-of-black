@@ -1,7 +1,7 @@
 var UgcUI = function (shared) {
 
 
-  var VALID_EMAIL = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/;
+  var VALID_EMAIL = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
   var TITLE_STRING = 'GIVE YOUR DREAM A TITLE';
   var MAX_TITLE_LENGTH = 35;
   var ANIMAL_CONTAINER_HEIGHT = 114;
@@ -40,7 +40,6 @@ var UgcUI = function (shared) {
   tooltip.innerHTML = 'CREATE';
 
   domElement.appendChild(tooltip);
-
 
 
   var animalContainerDiv = classedElement('div', 'animal-container');
@@ -104,8 +103,8 @@ var UgcUI = function (shared) {
 
   var submitText = idElement('div', 'voxel-submit-text');
 
-  submitText.innerHTML = 'Beautiful! Thank you for contributing. If you give us your email, then we will email you when your object is approved.';
-
+  submitText.innerHTML = '<span id="agree-terms" class="foo"><input id="agree" type="checkbox" /> &nbsp;I agree to the <a id="terms-link" href="/terms">terms and conditions</a>.</span><br/>';
+submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email you when <br/>your unique dream is approved for sharing.</small>';
   var submitImage = idElement('div', 'voxel-submit-image');
   var submitInputs = idElement('div', 'voxel-submit-inputs');
 
@@ -139,10 +138,11 @@ var UgcUI = function (shared) {
     var email = emailInput.value;
 
     var invalidEmail = function(email) {
-      return false; // TODO
-      if (email.match(VALID_EMAIL) == null) {
-        alert("")
+      if (!VALID_EMAIL.test(email)) {
+        alert("Please enter a valid email address");
+        return true;
       }
+      return false;
     };
 
     if (invalidEmail(email)) {
@@ -166,6 +166,13 @@ var UgcUI = function (shared) {
     };
 
     if (invalidTitle(title)) {
+      return;
+    }
+
+
+    if (!document.getElementById('agree').checked) {
+      alert("You must agree to the terms and conditions.");
+      addClass(document.getElementById('agree-terms'), 'error');
       return;
     }
 
@@ -223,6 +230,7 @@ var UgcUI = function (shared) {
 
   this.addListeners = function() {
 
+    Footer.handleLinkListeners(document.getElementById('terms-link'), 'terms');
 
     // Make the tooltip follow
     domElement.addEventListener('mousemove', function(e) {
@@ -549,6 +557,8 @@ var UgcUI = function (shared) {
     submit.style.opacity = 0;
     submitTitle.value = TITLE_STRING;
     submitEmail.value = 'YOUR EMAIL ADDRESS';
+    removeClass(document.getElementById('agree-terms'), 'error');
+    document.getElementById('agree').checked = false;
   }
 
 
@@ -861,16 +871,17 @@ var UgcUI = function (shared) {
       '#ugcui-size g.button.active polygon.hex { fill: rgba(255, 255, 255, 0.7); }',
       '#ugcui-size:hover g.button.active polygon.hex { fill: #F15C22; }',
       '#ugcui-size:hover g.button.active:hover polygon.hex { fill: #F77952; }',
-
+      '#agree-terms.error { background-color: rgba(255, 0, 0, 0.3); }',
       '#voxel-submit-text { float: left; width: 300px; margin-right: 10px; }',
       '#voxel-submit-inputs { margin-right: 10px; margin-top: -4px; float: left; }',
       '#voxel-submit-submit { cursor: pointer; letter-spacing: 0.025em; font: 17px/65px FuturaBT-Bold, sans-serif; float: left; border: 1px solid #d6d1c2; width: 200px; text-align: center; margin-top: -2px;  }',
       '#voxel-submit-submit:hover { border-color: #404040; background-color: #404040; color: #f4f1e8; }',
-      '#voxel-submit input { margin-bottom: 3px; color: #404040; font: 11px/22px FuturaBT-Bold, sans-serif; width: 200px; padding: 2px 4px  }',
-
+      '#voxel-submit input[type="text"] { margin-bottom: 3px; color: #404040; font: 11px/22px FuturaBT-Bold, sans-serif; width: 200px; padding: 2px 4px  }',
+      '#voxel-submit a { color: #000 } ',
       '#voxel-submit-image { margin-bottom: 20px; width: 735px; height: 465px; background-color: #000; }',
       '#voxel-submit-shade { z-index: -12; opacity: 0.4; -webkit-transition: opacity 0.2s linear; background-color: #f4f1e8; position: fixed; top: 0; left: 0; width: 100%; height: 100% }',
       '#voxel-submit { font: 12px/18px FuturaBT-Medium; color: #404040; z-index: 21; opacity: 0; -webkit-transition: opacity 0.2s linear; width: 735px; height: 556px; padding: 13px; margin-left: -380px; margin-top: -291px; background-color: #f4f1e8; box-shadow: 0px 0px 10px rgba(0,0,0,0.3) }',
+      '#voxel-submit small { line-height: 15px; display: block; margin-top: 7px }',
       '.animal-container { opacity: 1; -webkit-transition: opacity 0.3s linear; }',
       '.animal { text-align: center; -webkit-transition: all 0.1s linear; float: left; height: ' + (ANIMAL_CONTAINER_HEIGHT - 22) + 'px; background: url(/files/soupthumbs/shadow.png); border: 1px solid rgba(0,0,0,0); width: 120px; margin-right: 10px; }',
       '.animal:hover { background-color: rgba(255, 255, 255, 0.4); border: 1px solid #fff; }',
@@ -898,7 +909,7 @@ var UgcUI = function (shared) {
     for (var i = 0; i < kids.length; i++) {
       makeUnselectable(kids[i]);
     }
-    
+
   }
 
 }

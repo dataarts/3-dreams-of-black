@@ -100,7 +100,7 @@ var Footer = function(container, prefix) {
 		'    </li>',
 		'    <li class="last">Share</li>',
 		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
-		'    <li class="last icons"><a id = "' + twitter + '" href="http://twitter.com/share?text=Have%20a%20daydream%20with%20%E2%80%9C3%20Dreams%20of%20Black%E2%80%9D%2C%20an%20interactive%20WebGL%20film%20featuring%20music%20from%20Dangers%20Mouse%E2%80%99s%20%23ROME%20album%20%E2%99%A5%20http%3A%2F%2Fro.me&url=" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
+		'    <li class="last icons"><a id = "' + twitter + '" href="http://twitter.com/share?text=%E2%80%9C3%20Dreams%20of%20Black%E2%80%9D%20an%20interactive%20film%20by%20Chris%20Milk%20for%20Danger%20Mouse%20%26%20Daniele%20Luppi%E2%80%99s%20ROME%20album%20%E2%99%A5%20http%3A%2F%2Fro.me%20%23rome%20%23webgl&url=" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
 		'    <li class="clear last">&nbsp;</li>',
 		'  </ul>',
 		'  <ul class="secondary">',
