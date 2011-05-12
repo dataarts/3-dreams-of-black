@@ -265,7 +265,7 @@ var UgcSection = function ( shared ) {
   function gen_filmstrip(dWidth, dHeight, num_frames) {
     dWidth = dWidth || 300;
     dHeight = dHeight || 180;
-    num_frames = num_frames || 15;
+    num_frames = num_frames || 8;
     var dest = document.createElement('canvas'),
         stashed_cam_pos = camera.position.clone(),
         thetap = 45, phip = 15;
