@@ -3452,77 +3452,14 @@ var scene = {
         "url": "Backdrop_City.jpg"
     },
 
-    "Console_02.jpg" : {
-        "url": "Console_02.jpg"
-    },
-
-    "Console_03.jpg" : {
-        "url": "Console_03.jpg"
-    },
-
-    "Console_10.jpg" : {
-        "url": "Console_10.jpg"
-    },
-
-    "Console_11.jpg" : {
-        "url": "Console_11.jpg"
-    },
-
-    "Console_12.jpg" : {
-        "url": "Console_12.jpg"
-    },
-
-    "Console_13.jpg" : {
-        "url": "Console_13.jpg"
-    },
-
-    "Console_14.jpg" : {
-        "url": "Console_14.jpg"
-    },
-
-    "Console_15.jpg" : {
-        "url": "Console_15.jpg"
-    },
-
-    "Console_5.jpg" : {
-        "url": "Console_5.jpg"
-    },
-
-    "Console_6.jpg" : {
-        "url": "Console_6.jpg"
-    },
-
-    "Console_7.jpg" : {
-        "url": "Console_7.jpg"
-    },
-
-    "Console_8.jpg" : {
-        "url": "Console_8.jpg"
-    },
-
-    "Exithead.jpg" : {
-        "url": "Exithead.jpg"
-    },
-
     "Ground1.jpg" : {
         "url": "Ground1.jpg"
     },
 
     "Ground1.jpg.001" : {
         "url": "Ground1.jpg"
-    },
-
-    "Rail_Console.jpg" : {
-        "url": "Rail_Console.jpg"
-    },
-
-    "Signs.jpg" : {
-        "url": "Signs.jpg"
-    },
-
-    "Vehicles.jpg" : {
-        "url": "Vehicles.jpg"
     }
+
 },
 
 
@@ -3883,46 +3820,6 @@ var scene = {
         "parameters": { color: 16592639, opacity: 1.00 }
     },
 
-    "Console_10" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_10.jpg" }
-    },
-
-    "Console_11.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_11.jpg" }
-    },
-
-    "Console_12.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_12.jpg" }
-    },
-
-    "Console_13.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_13.jpg" }
-    },
-
-    "Console_14" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16645629, opacity: 1.00, map: "Console_14.jpg" }
-    },
-
-    "Console_15" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_15.jpg" }
-    },
-
-    "Console_2" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_02.jpg" }
-    },
-
-    "Console_3.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_03.jpg" }
-    },
-
     "console_3_0005_ca.000" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
@@ -3951,11 +3848,6 @@ var scene = {
     "console_3_0005_car_00" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "Console_5" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_5.jpg" }
     },
 
     "console_5_0005_co.000" : {
@@ -4076,11 +3968,6 @@ var scene = {
     "Evergreen_TrunkSG.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "ExitHead.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Exithead.jpg" }
     },
 
     "flower_orangeSG" : {
@@ -4468,21 +4355,6 @@ var scene = {
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
-    "Rail_Console.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
-    },
-
-    "Rail_Console.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
-    },
-
-    "Rail_Console.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
-    },
-
     "railTrain_0006_gr.000" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
@@ -4606,36 +4478,6 @@ var scene = {
     "shrubsSG" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "Signs.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.005" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.006" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
     },
 
     "Tree_Generic_TrunkSG" : {
@@ -4796,31 +4638,6 @@ var scene = {
     "tulip_stemSG" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "Vehicles" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
     },
 
     "vines_0002_vinesS.001" : {
