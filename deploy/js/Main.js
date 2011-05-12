@@ -9,7 +9,7 @@
 		"film",
 		"explore",
 		"relauncher",
-		"tool",
+		"tool"
 	];
 	
 	var stickyHistory = [
@@ -43,6 +43,8 @@
 		screenHeight: window.innerHeight,
 		loadedContent: false,
 		hasExplored: false,
+		originLink: window.location.pathname.toString(),
+		shouldSkip: false,
 
 		signals : {
 
@@ -114,6 +116,7 @@
 	shared.signals.showexploration.add( loadBuffer );
 
 	shared.signals.showlauncher.add( function () { setSection( launcher, "/", "/" ); } );
+	shared.signals.showlauncher.add( loadExploreOnLoad );
 	shared.signals.showrelauncher.add( function () { setSection( relauncher, historySections[2], "/" + historySections[2] ); } );
 	shared.signals.showugc.add( function () { setSection( ugc, historySections[3], "/" + historySections[3] ); } );
 
@@ -139,6 +142,16 @@
 	animate();
 
 	//
+
+	function loadExploreOnLoad() {
+
+		if( shared.originLink.match("/explore") && !shared.loadedContent ) {
+
+			// set some special load logic
+			shared.shouldSkip = true;
+
+		}
+	}
 
 	// Main listener for History API
 	window.onpopstate = function(e) {
@@ -360,7 +373,13 @@
 		requestAnimationFrame( animate );
 
 		logger.clear();
-		currentSection.update();
+
+		if ( currentSection ) {
+
+			currentSection.update();
+
+		}
+
 		stats.update();
 
 	}
