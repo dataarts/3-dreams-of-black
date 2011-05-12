@@ -38,7 +38,7 @@ var UgcHandler = function () {
   };
 
   var getUGOs = function ( callback, index ) {
-    var url = base_url + '?category=favorite&offset='+(index*per_page)+'&limit='+per_page+'&property=data';
+    var url = base_url + '?category=favorite&offset='+(index*per_page)+'&limit='+per_page+'&property=data&property=category';
     var xhr = new XMLHttpRequest();
     xhr.open( 'GET', url, true);
     xhr.onreadystatechange = function () {
