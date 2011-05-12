@@ -36,7 +36,9 @@ Trigger = function( geometry, wantedDarkness ) {
 	var currentTime = 0;
 	var wantedDarkness = wantedDarkness !== undefined ? wantedDarkness : 0;
 	var morphTargetOrder = that.mesh.morphTargetForcedOrder;
-	var lengthInMS = ( geometry.morphTargets.length - 1 ) * 1000;
+	
+	//var lengthInMS = ( geometry.morphTargets.length - 1 ) * 1000;
+	var lengthInMS = 1000;
 
 	morphTargetOrder[ 0 ] = 0;
 	morphTargetOrder[ 1 ] = 1;
@@ -59,6 +61,8 @@ Trigger = function( geometry, wantedDarkness ) {
 	//--- update ---
 	
 	that.update = function( deltaTimeMS ) {
+		
+		if( deltaTimeMS < 5 || deltaTimeMS > 66 ) deltaTimeMS = 33;
 		
 		currentTime += deltaTimeMS * timeScale;
 		

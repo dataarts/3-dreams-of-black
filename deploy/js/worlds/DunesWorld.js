@@ -208,7 +208,7 @@ var DunesWorld = function ( shared ) {
 		var camZ = cameraPosition.z;
 		var u, ul = loadedUGC.length;
 		var ugc, ugcPos, dx, dz;
-		
+
 		for( u = 0; u < ul; u++ ) {
 			
 			ugc = loadedUGC[ u ];
@@ -350,10 +350,8 @@ var DunesWorld = function ( shared ) {
 	
 	function loadUgc() {
 
-    console.log('logugc');
-		
 		if( !loadingUgc ) {
-			
+
 			loadingUgc = true;
 			
 			ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
@@ -369,12 +367,12 @@ var DunesWorld = function ( shared ) {
 	function onLoadUgc( objects ) {
 
     console.log(objects);
-	
+
 		loadingUgc = false;
 	
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			var object = new UgcObject( objects[ i ].data );
+			var object = new UgcObject( JSON.parse(objects[ i ].data) );
 
 			if ( ! object.isEmpty() ) {
 
@@ -404,7 +402,7 @@ var DunesWorld = function ( shared ) {
 
 		that.scene.update( undefined, true );
 
-	};
+	}
 
 
 	//--- prairie loaded ---
@@ -426,7 +424,7 @@ var DunesWorld = function ( shared ) {
 
 		that.scene.update( undefined, true );
 
-	};
+	}
 
 
 	//--- city loaded ---

@@ -48,18 +48,12 @@ function HandleErrors(d) {
         conditions : [
                       ( function () { return hasUserAgent(/[cC]hrome/); } )(),
                       ( function () { return hasUserAgent(/[Ff]ire[Ff]ox\/[4-9]/); } )(),
-                      ( function () { return hasUserAgent(/MSIE [789]/) && hasUserAgent(/[Ww]indows [Nn][Tt] [6789]\./); } )(),
+                      ( function () { return hasUserAgent(/MSIE [789]/) && hasUserAgent(/[Ww]indows ([Nn][Tt] [6789])?\./); } )(),
                       ( function () { return hasUserAgent(/[Ss]afari/) && hasUserAgent(/[Mm]ac [Oo][Ss] [Xx] 10\_[6789]/); } )(),
                       ( function () { return hasUserAgent(/i[Pp]hone/) || hasUserAgent(/i[Pp]ad/) || hasUserAgent(/[Aa]ndroid/); } )()
                       ],
         message : ""
     };
-
-		alert(Detector.webgl);
-		for(var i = 0; i < Detector.conditions.length; i++) {
-			alert("conditions: " + i + " returned: " + Detector.conditions[i]);
-		}
-
 
     if(Detector.webgl) {
       // We're good!
@@ -68,7 +62,7 @@ function HandleErrors(d) {
         // Detector.message = Errors[5];
         if(hasLocalStorage()) {
           // go ahead darling
-          if(!localStorage["RomeError"]) {
+          if(!localStorage.getItem("RomeError")) {
             // overlay our condition
             window.addEventListener("load", function() {
 
@@ -122,7 +116,7 @@ function HandleErrors(d) {
             }, false);
 
             HandleErrors.isWebGLAndFireFox = true;
-            localStorage["RomeError"] = true;
+            localStorage.setItem("RomeError", true);
           }
         }
       }
@@ -135,7 +129,7 @@ function HandleErrors(d) {
           return false;
         }
       }
-			// window.location = destination + ?
+      window.location = destination + "?" + this.MagicVariable + "=" + (Detector.conditions.length - 1);
     }
   };
   // returns true or false based on 
