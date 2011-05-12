@@ -1,335 +1,325 @@
-var LauncherSection = function ( shared ) {
+var LauncherSection = function (shared) {
 
-	Section.call( this );
+  Section.call(this);
 
-	var domElement,
-	clouds, title, buttonEnter, buttonStart,
-	buttonEnterImg, uiContainer, ffTitle,
-	exploreDreams, addToTheDream,
-	loading, footer, footNav;
+  var domElement,
+      clouds, title, buttonEnter, buttonStart,
+      buttonEnterImg, uiContainer, ffTitle,
+      exploreDreams, addToTheDream,
+      loading, footer, footNav;
 
-	var delta, time, oldTime = start_time = new Date().getTime();
-	
-	var fade;
-	var at, alpha = 1;
+  var delta, time, oldTime = start_time = new Date().getTime();
 
-	domElement = document.createElement( 'div' );
-	domElement.style.background = '-moz-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
-	domElement.style.background = '-webkit-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
-	domElement.style.background = 'linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
-	domElement.style.textAlign = 'center';
+  var fade;
+  var at, alpha = 1;
 
-	var isLoading = false;
-	var loadedOnce = false;
+  domElement = document.createElement('div');
+  domElement.style.background = '-moz-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
+  domElement.style.background = '-webkit-linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
+  domElement.style.background = 'linear-gradient(top, #04142e 0%, #1d508f 35%, #5299d1 50%, #1d508f 100%)';
+  domElement.style.textAlign = 'center';
 
-	// localStorage stuff
+  var isLoading = false;
+  var loadedOnce = false;
 
-	this.load = function () {
+  // localStorage stuff
 
-		// Clouds
+  this.load = function () {
 
-		clouds = new Clouds( shared );
-		clouds.getDomElement().style.position = 'absolute';
-		clouds.getDomElement().style.left = "0px";
-		clouds.getDomElement().style.top = "0px";
-		clouds.getDomElement().style.width = window.innerWidth+"px";
-		clouds.getDomElement().style.height = window.innerHeight+"px";
-		domElement.appendChild( clouds.getDomElement() );
+    // Clouds
 
-		// Fade
-		
-		fade = document.createElement( 'div' );
-		fade.style.background = "rgba(255,255,255,1)";
-		fade.style.width = "100%";
-		fade.style.height = "100%";
-		fade.style.position = "absolute";
-		fade.style.zIndex = 1000;
-		domElement.appendChild( fade);
-		
-		// UI
+    clouds = new Clouds(shared);
+    clouds.getDomElement().style.position = 'absolute';
+    clouds.getDomElement().style.left = "0px";
+    clouds.getDomElement().style.top = "0px";
+    clouds.getDomElement().style.width = window.innerWidth + "px";
+    clouds.getDomElement().style.height = window.innerHeight + "px";
+    domElement.appendChild(clouds.getDomElement());
 
-		uiContainer = document.createElement( 'div' );
-		uiContainer.style.position = 'absolute';
-		uiContainer.setAttribute("id", "ui-container");
+    // Fade
 
-		title = document.createElement( 'div' );
-		title.style.position = 'absolute';
-		title.innerHTML = '<img src="/files/logo_heart.png">';
-		uiContainer.appendChild( title );
+    fade = document.createElement('div');
+    fade.style.background = "rgba(255,255,255,1)";
+    fade.style.width = "100%";
+    fade.style.height = "100%";
+    fade.style.position = "absolute";
+    fade.style.zIndex = 1000;
+    domElement.appendChild(fade);
 
-		buttonEnter = createRolloverButton( "10px 0 0 85px", "/files/enter_idle.png", "/files/enter_rollover.png" );
-		buttonEnter.addEventListener( 'click', function () {
+    // UI
 
-			loading.getDomElement().style.display = 'block';
-			buttonEnter.style.display = 'none';
-			shared.loadedContent = true;
+    uiContainer = document.createElement('div');
+    uiContainer.style.position = 'absolute';
+    uiContainer.setAttribute("id", "ui-container");
 
-			isLoading = true;
-			addToTheDream.style.display = "none";
-			exploreDreams.style.display = "none";
+    title = document.createElement('div');
+    title.style.position = 'absolute';
+    title.innerHTML = '<img src="/files/logo_heart.png">';
+    uiContainer.appendChild(title);
 
-			shared.signals.load.dispatch();
+    buttonEnter = createRolloverButton("10px 0 0 85px", "/files/enter_idle.png", "/files/enter_rollover.png");
+    buttonEnter.addEventListener('click', function () {
 
-		}, false );
-		uiContainer.appendChild( buttonEnter );
+      loading.getDomElement().style.display = 'block';
+      buttonEnter.style.display = 'none';
+      shared.loadedContent = true;
 
-		buttonStart = createRolloverButton( "30px 0 0 85px", "/files/start_idle.png", "/files/start_rollover.png" );
-		buttonStart.style.display = 'none';
-		buttonStart.addEventListener( 'click', function () {
+      isLoading = true;
+      addToTheDream.style.display = "none";
+      exploreDreams.style.display = "none";
 
-			shared.signals.showfilm.dispatch();
+      shared.signals.load.dispatch();
 
-			// Start in 1 second.
+    }, false);
+    uiContainer.appendChild(buttonEnter);
 
-			setTimeout( function () {
+    buttonStart = createRolloverButton("30px 0 0 85px", "/files/start_idle.png", "/files/start_rollover.png");
+    buttonStart.style.display = 'none';
+    buttonStart.addEventListener('click', function () {
 
-				shared.signals.startfilm.dispatch( 0, 1 );
+      shared.signals.showfilm.dispatch();
 
-			}, 1000 );
+      // Start in 1 second.
 
-		}, false );
-		uiContainer.appendChild( buttonStart );
+      setTimeout(function () {
 
-		loading = new LoadingBar( function () {
+        shared.signals.startfilm.dispatch(0, 1);
 
-			// loading.getDomElement().style.display = 'none';
-			var mouseGif = loading.getMouseInfo();
-					mouseGif.style.display = 'none';
-			buttonStart.style.display = 'block';
+      }, 1000);
 
-			isLoading = false;
+    }, false);
+    uiContainer.appendChild(buttonStart);
 
-			shared.signals.initscenes.dispatch();
+    loading = new LoadingBar(function () {
 
-		} );
+      // loading.getDomElement().style.display = 'none';
+      var mouseGif = loading.getMouseInfo();
+      mouseGif.style.display = 'none';
+      buttonStart.style.display = 'block';
 
-		loading.getDomElement().style.position = 'absolute';
-		loading.getDomElement().style.display = 'none';
+      isLoading = false;
 
-		uiContainer.appendChild( loading.getDomElement() );
+      shared.signals.initscenes.dispatch();
 
-		shared.signals.loadItemAdded.add( loading.addItem );
-		shared.signals.loadItemCompleted.add( loading.completeItem );
+    });
 
-		if(!HandleErrors.isWebGLAndFireFox) {
+    loading.getDomElement().style.position = 'absolute';
+    loading.getDomElement().style.display = 'none';
 
-			domElement.appendChild( uiContainer );
+    uiContainer.appendChild(loading.getDomElement());
 
-		} else {
+    shared.signals.loadItemAdded.add(loading.addItem);
+    shared.signals.loadItemCompleted.add(loading.completeItem);
 
-			ffTitle = document.createElement( 'div' );
-			ffTitle.style.paddingTop = "60px";
-			ffTitle.style.marginLeft = "-2px";	// Ugly
-			ffTitle.innerHTML = "<img src = '/files/footer/header-trans.png' alt = 'ROME' />";
-			domElement.appendChild( ffTitle );
+    if (!HandleErrors.isWebGLAndFireFox) {
 
-		}
+      domElement.appendChild(uiContainer);
 
-		if( hasLocalStorage() ) {
+    } else {
 
-			if( localStorage["RomeSeen"] ) {
+      ffTitle = document.createElement('div');
+      ffTitle.style.paddingTop = "60px";
+      ffTitle.style.marginLeft = "-2px";	// Ugly
+      ffTitle.innerHTML = "<img src = '/files/footer/header-trans.png' alt = 'ROME' />";
+      domElement.appendChild(ffTitle);
 
-				// Append a CSS file
-				if(!loadedOnce) {
-					var css = [
-						".seen-before {",
-						"	opacity: .35;",
-						"	cursor: pointer;",
-						"}",
-						".seen-before:hover {",
-						"	opacity: 1.0;",
-						"}"
-					].join('\n');
+    }
 
-					var rule = document.createTextNode(css);
-					var head = document.getElementsByTagName('head')[0];
-					var style = document.createElement('style');
 
-					if (style.stylesheet) {
-							style.styleSheet.cssText = rule.nodeValue;
-					} else {
-							style.appendChild(rule);
-					}
-					head.appendChild(style);
-					loadedOnce = true;
-				}
+    if (localStorage["RomeSeen"]) {
 
-				// Add shortcuts to gallery and tool
-				addToTheDream = document.createElement( "div" );
-				addToTheDream.setAttribute("class", "seen-before");
-				addToTheDream.setAttribute("style", "background: url('files/launcher/add-trans.png') 0 0 no-repeat; width: 145px; height: 10px;");
-				addToTheDream.style.position = "absolute";
-				addToTheDream.style.top = "248px";
-				addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
-				addToTheDream.addEventListener("click", function(e) {
+      // Append a CSS file
+      if (!loadedOnce) {
+        var css = [
+          ".seen-before {",
+          "	opacity: .35;",
+          "	cursor: pointer;",
+          "}",
+          ".seen-before:hover {",
+          "	opacity: 1.0;",
+          "}"
+        ].join('\n');
 
-					e.preventDefault();
-					shared.signals.showugc.dispatch();
+        var rule = document.createTextNode(css);
+        var head = document.getElementsByTagName('head')[0];
+        var style = document.createElement('style');
 
-				}, false);
-				exploreDreams = document.createElement( "div" );
-				exploreDreams.setAttribute("class", "seen-before");
-				exploreDreams.setAttribute("style", "background: url('files/launcher/explore-trans.png') 0 0 no-repeat; width: 199px; height: 10px;");
-				exploreDreams.style.position = "absolute";
-				exploreDreams.style.top = "248px";
-				exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
-				exploreDreams.addEventListener("click", function(e) {
+        if (style.stylesheet) {
+          style.styleSheet.cssText = rule.nodeValue;
+        } else {
+          style.appendChild(rule);
+        }
+        head.appendChild(style);
+        loadedOnce = true;
+      }
 
-					e.preventDefault();
-					window.open("/gallery", "Gallery");
-					// window.location = "/gallery";
+      // Add shortcuts to gallery and tool
+      addToTheDream = document.createElement("div");
+      addToTheDream.setAttribute("class", "seen-before");
+      addToTheDream.setAttribute("style", "background: url('files/launcher/add-trans.png') 0 0 no-repeat; width: 145px; height: 10px;");
+      addToTheDream.style.position = "absolute";
+      addToTheDream.style.top = "248px";
+      addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
+      addToTheDream.addEventListener("click", function(e) {
 
-				}, false);
+        e.preventDefault();
+        shared.signals.showugc.dispatch();
 
-				domElement.appendChild( addToTheDream );
-				domElement.appendChild( exploreDreams );
+      }, false);
+      exploreDreams = document.createElement("div");
+      exploreDreams.setAttribute("class", "seen-before");
+      exploreDreams.setAttribute("style", "background: url('files/launcher/explore-trans.png') 0 0 no-repeat; width: 199px; height: 10px;");
+      exploreDreams.style.position = "absolute";
+      exploreDreams.style.top = "248px";
+      exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
+      exploreDreams.addEventListener("click", function(e) {
 
-			} else {
+        e.preventDefault();
+        window.open("/gallery", "Gallery");
+        // window.location = "/gallery";
 
-				localStorage["RomeSeen"] = true;
+      }, false);
 
-			}
+      domElement.appendChild(addToTheDream);
+      domElement.appendChild(exploreDreams);
 
-		}
+    } else {
 
-		// Implemented Footer.js
-		footer = document.createElement( 'div' );
-		footer.style.position = 'absolute';
-		footer.style.left = '0';
-		footer.style.bottom = '0';
-		footer.style.width = "100%";
-		footNav = new Footer( footer );
-		domElement.appendChild( footer );
+      localStorage["RomeSeen"] = true;
 
-		function createRolloverButton( margin, imgIdle, imgRoll ) {
+    }
 
-			var button = document.createElement( 'div' );
-			button.style.position = 'absolute';
-			button.style.cursor = 'pointer';
-			button.style.margin = margin;
 
-			var buttonImg = document.createElement( 'img' );
-			buttonImg.src = imgIdle;
+    // Implemented Footer.js
+    footer = document.createElement('div');
+    footer.style.position = 'absolute';
+    footer.style.left = '0';
+    footer.style.bottom = '0';
+    footer.style.width = "100%";
+    footNav = new Footer(footer);
+    domElement.appendChild(footer);
 
-			button.appendChild( buttonImg );
+    function createRolloverButton(margin, imgIdle, imgRoll) {
 
-			button.addEventListener( 'mouseout', function () {
+      var button = document.createElement('div');
+      button.style.position = 'absolute';
+      button.style.cursor = 'pointer';
+      button.style.margin = margin;
 
-				buttonImg.src = imgIdle;
+      var buttonImg = document.createElement('img');
+      buttonImg.src = imgIdle;
 
-			}, false );
+      button.appendChild(buttonImg);
 
-			button.addEventListener( 'mouseover', function () {
+      button.addEventListener('mouseout', function () {
 
-				buttonImg.src = imgRoll;
+        buttonImg.src = imgIdle;
 
-			}, false );
+      }, false);
 
-			return button;
+      button.addEventListener('mouseover', function () {
 
-		}
+        buttonImg.src = imgRoll;
 
-	}
+      }, false);
 
-	this.show = function () {
+      return button;
 
-		clouds.show();
-		domElement.style.display = 'block';
-		if(!shared.loadedContent) buttonStart.style.display = 'none';
+    }
 
-	};
+  }
 
-	this.resize = function ( width, height ) {
+  this.show = function () {
 
-		clouds.resize( width, height );
+    clouds.show();
+    domElement.style.display = 'block';
+    if (!shared.loadedContent) buttonStart.style.display = 'none';
 
-		if( title ) {
+  };
 
-			title.style.top = '60px';
-			title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+  this.resize = function (width, height) {
 
-		}
+    clouds.resize(width, height);
 
-		if( buttonEnter ) {
+    if (title) {
 
-			buttonEnter.style.top = buttonStart.style.top = '210px';
-			buttonEnter.style.left = buttonStart.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
+      title.style.top = '60px';
+      title.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
 
-		}
+    }
 
-		if( loading ) {
+    if (buttonEnter) {
 
-			loading.getDomElement().style.top = '215px';
-			loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
+      buttonEnter.style.top = buttonStart.style.top = '210px';
+      buttonEnter.style.left = buttonStart.style.left = ( window.innerWidth - 358 ) / 2 + 'px';
 
-		}
+    }
 
-		if( exploreDreams && addToTheDream ) {
-			exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
-			addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
-		}
+    if (loading) {
 
-		domElement.style.width = width + 'px';
-		domElement.style.height = height + 'px';
+      loading.getDomElement().style.top = '215px';
+      loading.getDomElement().style.left = ( window.innerWidth - 300 ) / 2 + 'px';
 
-	};
+    }
 
-	this.hide = function () {
+    if (exploreDreams && addToTheDream) {
+      exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
+      addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
+    }
 
-		clouds.hide();
-		domElement.style.display = 'none';
+    domElement.style.width = width + 'px';
+    domElement.style.height = height + 'px';
 
-	};
+  };
 
-	this.update = function ( ) {
+  this.hide = function () {
 
-		time = new Date().getTime();
-		delta = time - oldTime;
-		oldTime = time;
-		
-		if ( ! isLoading ) {
-		
-			clouds.update();
-			
-		}
-		
-		if ( alpha > 0 ) {
-			
-			alpha -= 0.0004 * delta;
-			
-			at = TWEEN.Easing.Exponential.EaseOut( alpha );
-			
-			fade.style.background = "rgba(255,255,255," + at + ")";
-			
-		} else {
-			
-			fade.style.display = "none";
-			fade.style.zIndex = 0;
+    clouds.hide();
+    domElement.style.display = 'none';
 
-		}
+  };
 
-	};
+  this.update = function () {
 
-	LauncherSection.showUI = function() {
+    time = new Date().getTime();
+    delta = time - oldTime;
+    oldTime = time;
 
-		domElement.removeChild( ffTitle );
-		domElement.appendChild( uiContainer );
+    if (! isLoading) {
 
-	};
+      clouds.update();
 
-	this.getDomElement = function () {
+    }
 
-		return domElement;
+    if (alpha > 0) {
 
-	};
+      alpha -= 0.0004 * delta;
 
-	function hasLocalStorage() {
-		try {
-			return 'localStorage' in window && window['localStorage'] !== null;
-		} catch (e) {
-			return false;
-		}
-	}
+      at = TWEEN.Easing.Exponential.EaseOut(alpha);
+
+      fade.style.background = "rgba(255,255,255," + at + ")";
+
+    } else {
+
+      fade.style.display = "none";
+      fade.style.zIndex = 0;
+
+    }
+
+  };
+
+  LauncherSection.showUI = function() {
+
+    domElement.removeChild(ffTitle);
+    domElement.appendChild(uiContainer);
+
+  };
+
+  this.getDomElement = function () {
+
+    return domElement;
+
+  };
 
 };
 

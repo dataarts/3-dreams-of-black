@@ -186,6 +186,12 @@ var VoxelPainter = function ( camera, scene ) {
 
 	};
 
+  this.getMode = function() {
+
+    return _mode;
+    
+  };
+
 	this.setColor = function ( hex ) {
 
 		_color = hex;
