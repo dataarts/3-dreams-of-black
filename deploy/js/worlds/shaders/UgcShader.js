@@ -85,7 +85,7 @@ var UgcShader = {
 		"void main() {",
 
 			"gl_FragColor = vec4(vColor,1.);",
-      "gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
+      "gl_FragColor = gl_FragColor * vec4( (vLightWeighting * 0.75 + 0.25), 1.0 );",
 
 			"const float viewDistance = 6000.0 * 2.0;",
 			"float fogFactor = clamp(( gl_FragCoord.z / gl_FragCoord.w ) / viewDistance, 0.0, 1.0 );",
