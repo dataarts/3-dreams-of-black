@@ -106,7 +106,18 @@ var UgcObject = function ( data ) {
 
 		}
 
-		return new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } ) );
+    UgcShader.uniforms = THREE.UniformsUtils.clone(UgcShader.uniforms);
+    var UgcMat =  new THREE.MeshShaderMaterial( {
+            uniforms: UgcShader.uniforms,
+            vertexShader: UgcShader.vertexShader,
+            fragmentShader: UgcShader.fragmentShader,
+            shading: THREE.FlatShading,
+            lights: true,
+            vertexColors: 1,
+          });
+    
+    return new THREE.Mesh( geometry, UgcMat );
+    //return new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors } ) );
 
 	};
 

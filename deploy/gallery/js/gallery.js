@@ -284,7 +284,6 @@ var GALLERY = function(params) {
       $('#lightbox-upvote').removeClass('selected');
       $('#lightbox-downvote').removeClass('selected');
     }
-    console.log(activeObject.id);
     $('#webgl').html($('<iframe style="border: 0;" width="100%" height="100%" src="/gallery/viewer.html#' + activeObject.id + '"></iframe>'));
     $('#lightbox-experience').attr('href', '/?id=' + activeObject.id)
   }
@@ -298,7 +297,7 @@ var GALLERY = function(params) {
 
   function error(message) {
     return function(jqXHR, msg) {
-      alert(message);
+      console.log(message);
     };
   }
 
