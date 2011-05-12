@@ -2,7 +2,7 @@ var UgcSection = function ( shared ) {
 
 	var that = this, _type;
 
-	var intro, objectCreator/*, soupCreator*/, ui;
+	var intro, objectCreator, ui;
 
 	var domElement = document.createElement( 'div' );
 
@@ -247,12 +247,12 @@ var UgcSection = function ( shared ) {
 
 			_type = null;
 
-			intro.getDomElement().style.display = 'block';
-
 			objectCreator.disable();
 
+			intro.getDomElement().style.display = 'block';
 			ui.getDomElement().style.display = 'none';
 
+			objectCreator.getPainter().clear();
 
 		} );
 
@@ -260,10 +260,9 @@ var UgcSection = function ( shared ) {
 
 			_type = type;
 
-			intro.getDomElement().style.display = 'none';
-
 			objectCreator.enable();
 
+			intro.getDomElement().style.display = 'none';
 			ui.getDomElement().style.display = 'block';
 
 			switch( _type ) {
@@ -385,6 +384,7 @@ var UgcSection = function ( shared ) {
     var ctx = dest.getContext('2d');
     that.resize(dWidth, dHeight);
     objectCreator.getPainter().hideBrush();
+    grid.visible = false;
     for(var i=0;i<num_frames;i++) {
       // move camera
       camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
@@ -401,6 +401,7 @@ var UgcSection = function ( shared ) {
     var strip = dest.toDataURL('image/png');
     delete dest;
     camera.position.copy( stashed_cam_pos );
+    grid.visible = true;
     renderer.clear();
     renderer.render( that.scene, camera );
     return strip;

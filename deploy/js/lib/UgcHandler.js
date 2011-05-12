@@ -59,7 +59,7 @@ var UgcHandler = function () {
   };
 
   this.getUGO = function( id, callback ) {
-    var url = base_url+"/"+id+'?property=data';
+    var url = base_url+"/"+id+'?property=data&property=category';
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);

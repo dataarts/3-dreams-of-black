@@ -74,12 +74,37 @@
 						if ( object.visible ) {
 
 							object.rotation.x = - 90 * Math.PI / 180;
-							object.position.y = - 100;
-							object.position.x = 1750;
-							object.scale.x = object.scale.y = object.scale.z = 0.5;
+							object.position.y = - 50;
+							object.position.x = 1000;
+							object.scale.x = object.scale.y = object.scale.z = 0.75;
 							scene.addObject( object );
 
 						}
+
+					}
+
+					// Clouds
+
+					var geometry = new THREE.Plane( 1000, 1000 ); 
+
+					for ( var i = 0; i < 100; i ++ ) {
+
+						var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.5, blending: THREE.AdditiveBlending } ) );
+						mesh.position.x = Math.random() - 0.5;
+						mesh.position.y = Math.random();
+						mesh.position.z = Math.random() - 0.5;
+						mesh.position.normalize();
+
+						mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 );
+						mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 5000 ) + 2500;
+						mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 );
+
+						mesh.rotation.x = - 90 * Math.PI / 180;
+						mesh.scale.x = Math.random() * 2 + 1;
+						mesh.scale.y = Math.random() * 2 + 1;
+						mesh.doubleSided = true;
+
+						scene.addObject( mesh );
 
 					}
 
@@ -91,6 +116,8 @@
 
 				var ugcHandler = new UgcHandler();
 				ugcHandler.getUGO( id, function ( object ) {
+
+					console.log( object );
 
 					var ugo = new UgcObject( JSON.parse( object.data ) );
 
