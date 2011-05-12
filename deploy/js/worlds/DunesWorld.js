@@ -178,7 +178,7 @@ var DunesWorld = function ( shared ) {
 	var loadingUgc = false;
 	var ugcOccupiedTiles = {};
 	var ugcTileLoaded = {};
-	var ugcCollider = new THREE.SphereCollider( new THREE.Vector3( 0, -5000, 0 ), 1 );
+//	var ugcCollider = new THREE.SphereCollider( new THREE.Vector3( 0, -5000, 0 ), 1 );
 	var ugcTileDisplacement = [
 	
 		{ x: -1, z: -1 },		// -pi
@@ -199,7 +199,7 @@ var DunesWorld = function ( shared ) {
     new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
 
 
-	that.scene.collisions.colliders.push( ugcCollider );
+//	that.scene.collisions.colliders.push( ugcCollider );
 	
 	
 	//--- update ugc ---
@@ -248,13 +248,13 @@ var DunesWorld = function ( shared ) {
 		
 		// set physics on closest ugc
 		
-		if( closestUgc !== undefined ) {
-			
-			ugcCollider.center.copy( closestUgc.matrixWorld.getPosition());
-			ugcCollider.radius   = closestUgc.boundRadius;
-			ugcCollider.radiusSq = ugcCollider.radius * ugcCollider.radius;
-			
-		}
+//		if( closestUgc !== undefined ) {
+//
+//			ugcCollider.center.copy( closestUgc.matrixWorld.getPosition());
+//			ugcCollider.radius   = closestUgc.boundRadius;
+//			ugcCollider.radiusSq = ugcCollider.radius * ugcCollider.radius;
+//
+//		}
 
 
 		// check if we've loaded on this tile
@@ -361,6 +361,7 @@ var DunesWorld = function ( shared ) {
 							ugc.position.x += Math.random() * 200 - 100;
 							ugc.position.z += Math.random() * 200 - 100;
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
+              console.log(ugc.category);
               if (ugc.category === 'sky') {
                 ugc.position.y = 2000 + Math.random() * 200 - 100;
               }
