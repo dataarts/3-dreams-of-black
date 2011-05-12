@@ -70,15 +70,44 @@ var Footer = function(container, prefix) {
         properties = DEFAULT_POPUP_PROPERTIES;
       }
 
-      dom.addEventListener("click", function(e) {
-        e.preventDefault();
-        var url = this.getAttribute("href");
-        var win = window.open(url, title, properties);
-      }, false);
+			if(dom.addEventListener) {
+
+	      dom.addEventListener("click", function(e) {
+
+					handleDomEvent(e);
+
+				}, false);
+
+			} else {
+
+				dom.attachEvent("click", function(e) {
+
+					handleDomEvent(e);
+
+				});
+
+			}
       
+			function handleDomEvent(e) {
+
+				e.preventDefault();
+				var url = this.getAttribute("href");
+				var win = window.open(url, title, properties);
+				return false;
+
+			}
+
     }
 
-    window.addEventListener("load", this.load, false);
+		if(window.addEventListener) {
+
+			window.addEventListener("load", this.load, false);
+
+		} else {
+
+			window.attachEvent("load", this.load);
+
+		}
 
     // Add html
     var html = ['<div class="rome-footer">',

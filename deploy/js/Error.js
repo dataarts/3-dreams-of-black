@@ -52,6 +52,12 @@ function HandleErrors(d) {
         message : ""
     };
 
+		alert(Detecotr.webgl);
+		for(var i = 0; i Detector.conditions.length; i++) {
+			alert("conditions: " + i + " returned: " + Detector.conditions[i]);
+		}
+
+
     if(Detector.webgl) {
       // We're good!
       if(Detector.conditions[1]) {
@@ -123,7 +129,7 @@ function HandleErrors(d) {
         if(Detector.conditions[i]) {
           // Then we've found what we're looking for!
           window.location = destination + "?" + this.MagicVariable + "=" + i;
-          break;
+          return false;
         }
       }
     }
@@ -150,11 +156,24 @@ var variables = romeErrors.getUrlVars();
 if(variables) {
   if(variables[romeErrors.MagicVariable]) {
     // this means we are in the error page
-    window.addEventListener("load", function() {
-      var iterator = variables[romeErrors.MagicVariable];
-      var error = document.getElementById("error");
-          error.innerHTML = romeErrors.Errors[iterator];
-    }, false);
+		if(window.addEventListener) {
+
+			window.addEventListener("load", function() {
+	      var iterator = variables[romeErrors.MagicVariable];
+	      var error = document.getElementById("error");
+	          error.innerHTML = romeErrors.Errors[iterator];
+	    }, false);
+
+		} else {
+
+			window.attachEvent("load", function() {
+	      var iterator = variables[romeErrors.MagicVariable];
+	      var error = document.getElementById("error");
+	          error.innerHTML = romeErrors.Errors[iterator];
+				return false;
+	    });
+
+		}
   }
 } else {
   romeErrors.checkForErrors();
