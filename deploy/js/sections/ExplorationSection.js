@@ -75,6 +75,7 @@ var ExplorationSection = function ( shared ) {
 
 	var pauseMenu = document.createElement( 'div' );
 	var audioMenu = document.createElement( 'div' );
+
 	// renderer and post effects
 
 	var progress = 0, start = 0, lastTime = 0;
@@ -85,8 +86,9 @@ var ExplorationSection = function ( shared ) {
 	var fadeInTime = 0;
 	var lastWorldId = "";
 	var paused = false;
-	var environmentSound;
 	var scale;
+
+	var environmentSound;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -340,10 +342,10 @@ var ExplorationSection = function ( shared ) {
 		lastTime = time;
 
 		delta = Math.min( 1000, Math.max( 0, delta ));
-
 		
 		
 		// update world
+
 		if( !paused ) {
 
 			if( world && world.scene ) {
@@ -369,7 +371,8 @@ var ExplorationSection = function ( shared ) {
 					
 					if ( ENV_SOUND_ENABLED ) {
 					
-						environmentSound.volume = Math.max( 0, Math.min( 1, fadeInTime / 1000 ) );
+						//environmentSound.volume = Math.max( 0, Math.min( 1, fadeInTime / 1000 ) );
+						environmentSound.volume = 1;
 						
 					}
 
@@ -381,7 +384,8 @@ var ExplorationSection = function ( shared ) {
 
 							if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
 
-								environmentSound.volume = fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ) );
+								//environmentSound.volume = fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ) );
+								environmentSound.volume = 1;
 
 							}
 
