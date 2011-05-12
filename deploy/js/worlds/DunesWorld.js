@@ -360,9 +360,9 @@ var DunesWorld = function ( shared ) {
 						if( d !== dl ) {
 							
 							ugc.position.set( tx * TILE_SIZE, 0, tz * TILE_SIZE );
-							ugc.position.x += Math.random() * 200 - 100;
-							ugc.position.z += Math.random() * 200 - 100;
               if (ugc.category === 'sky') {
+                ugc.position.x += Math.random() * 200 - 100;
+                ugc.position.z += Math.random() * 200 - 100;
                 ugc.position.y = 2500 + Math.random() * 1000 - 500;
               }
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
