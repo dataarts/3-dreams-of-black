@@ -159,7 +159,10 @@ if(variables) {
 			window.addEventListener("load", function() {
 	      var iterator = variables[romeErrors.MagicVariable];
 	      var error = document.getElementById("error");
-						error.innerHTML = romeErrors.Errors[(iterator % romeErrors.Errors.length)];
+						if(iterator > romeErrors.Errors.length) {
+							iterator = 4;
+						}
+						error.innerHTML = romeErrors.Errors[iterator];
 
 	    }, false);
 
