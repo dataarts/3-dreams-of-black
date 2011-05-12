@@ -2,6 +2,7 @@ var UgcHandler = function () {
 
   var base_url = '/ugc/objects';
   var per_page = 10;
+  var that = this;
 
   function getParameterByName( name )
   {
@@ -24,7 +25,7 @@ var UgcHandler = function () {
       if (index === 0) {
         var id = getParameterByName('id');
         if (id !== undefined) {
-          getUGO(id, function(ugo) {
+          that.getUGO(id, function(ugo) {
             callback([ugo].concat(ugos))
           });
         }
@@ -55,7 +56,7 @@ var UgcHandler = function () {
     xhr.send( null );
   };
 
-  var getUGO = function( id, callback ) {
+  this.getUGO = function( id, callback ) {
     var url = base_url+"/"+id+'?property=data';
 
     var xhr = new XMLHttpRequest();
