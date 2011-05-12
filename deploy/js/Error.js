@@ -6,6 +6,7 @@ function HandleErrors(d) {
 
   var that = this;
   var destination = d || "/alternate";
+	var fired = false;
 
   Trailer = "<ul id = 'trailer'><li class = 'first'><a href = 'http://www.youtube.com/watch?v=ReH7zzj5GPc'>Watch the Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
@@ -126,10 +127,13 @@ function HandleErrors(d) {
         if(Detector.conditions[i]) {
           // Then we've found what we're looking for!
           window.location = destination + "?" + this.MagicVariable + "=" + i;
-          return false;
+					fired = true;
+					break;
         }
       }
-      window.location = destination + "?" + this.MagicVariable + "=" + (Detector.conditions.length - 1);
+			if(!fired) {
+				window.location = destination + "?" + this.MagicVariable + "=" + (Detector.conditions.length - 1);
+			}
     }
   };
   // returns true or false based on 
