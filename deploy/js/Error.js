@@ -7,7 +7,7 @@ function HandleErrors(d) {
   var that = this;
   var destination = d || "/alternate";
 
-  Trailer = "<ul id = 'trailer'><li class = 'first'><a href = '#'>Watch Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
+  Trailer = "<ul id = 'trailer'><li class = 'first'><a href = 'http://www.youtube.com/watch?v=ReH7zzj5GPc'>Watch the Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
   this.MagicVariable = "case";
 
@@ -60,9 +60,9 @@ function HandleErrors(d) {
       if(Detector.conditions[1]) {
         // Overlay condition check with localStorage
         // Detector.message = Errors[5];
-        if(hasLocalStorage()) {
+        // if(hasLocalStorage()) {
           // go ahead darling
-          if(localStorage.getItem("RomeError") == "false") {
+          // if(localStorage.getItem("RomeError") == "false") {
             // overlay our condition
             window.addEventListener("load", function() {
 
@@ -117,8 +117,8 @@ function HandleErrors(d) {
             }, false);
 
             HandleErrors.isWebGLAndFireFox = true;
-          }
-        }
+          // }
+        // }
       }
     } else {
       // run other conditions
