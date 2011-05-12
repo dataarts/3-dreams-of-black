@@ -354,7 +354,7 @@ var UgcSection = function ( shared ) {
 
 			ugcHandler.submitUGO( submission, image, function ( rsp ) {
 				if (rsp.success == false) {
-          alert("There was an error submitting your model.");
+          alert("There was an error submitting your model. Please try again in a moment.");
         } else {
           window.location = '/gallery';
         }
