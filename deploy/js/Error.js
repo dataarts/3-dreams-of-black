@@ -135,6 +135,7 @@ function HandleErrors(d) {
           return false;
         }
       }
+			// window.location = destination + ?
     }
   };
   // returns true or false based on 
