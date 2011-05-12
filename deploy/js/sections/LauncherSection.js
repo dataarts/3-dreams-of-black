@@ -127,8 +127,6 @@ var LauncherSection = function (shared) {
 
     }
 
-console.log("have we seen rome? " + localStorage.getItem("RomeSeen"));
-
 
     if (localStorage.getItem("RomeSeen") == "true") {
 

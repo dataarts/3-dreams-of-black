@@ -366,8 +366,6 @@ var DunesWorld = function ( shared ) {
 	
 	function onLoadUgc( objects ) {
 
-    console.log(objects);
-
 		loadingUgc = false;
 	
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
@@ -385,8 +383,6 @@ var DunesWorld = function ( shared ) {
 			}
 
 		}
-		
-		console.log( "Loaded new UGC" );
 		
 	}
 	
@@ -446,7 +442,7 @@ var DunesWorld = function ( shared ) {
 
 		that.scene.update( undefined, true );
 
-	};
+	}
 
 
 	//--- tile loaded ---
@@ -674,7 +670,7 @@ var DunesWorld = function ( shared ) {
 
 		}
 
-	};
+	}
 
 	//--- add dunes part ---
 
@@ -711,14 +707,14 @@ var DunesWorld = function ( shared ) {
 
 		return scene;
 
-	};
+	}
 
 
 	function getRotation ( x, z ) {
 
 		return Math.round( Math.sin( x * 0.001 ) * Math.cos( z * 0.005 ) * 4 ) * ( Math.PI / 2 );
 
-	};
+	}
 
 	function showHierarchyNotColliders( scene, visible ) {
 
@@ -732,7 +728,7 @@ var DunesWorld = function ( shared ) {
 
 		} );
 
-	};
+	}
 
 	function markColliders( scene ) {
 
@@ -752,7 +748,7 @@ var DunesWorld = function ( shared ) {
 
 		} );
 
-	};
+	}
 
 	function addInfluenceSphere( info ) {
 

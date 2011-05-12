@@ -82,16 +82,16 @@ var Footer = function(container, prefix) {
 
 				dom.attachEvent("click", function(e) {
 
-					handleDomEvent(e);
+					handleDomEvent(this, e);
 
 				});
 
 			}
       
-			function handleDomEvent(e) {
+			function handleDomEvent(d, e) {
 
 				e.preventDefault();
-				var url = this.getAttribute("href");
+				var url = d.getAttribute("href");
 				var win = window.open(url, title, properties);
 				return false;
 
