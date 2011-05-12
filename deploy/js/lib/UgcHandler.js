@@ -28,6 +28,8 @@ var UgcHandler = function () {
           that.getUGO(id, function(ugo) {
             callback([ugo].concat(ugos))
           });
+        } else {
+          callback(ugos);
         }
       } else {
         callback(ugos);
