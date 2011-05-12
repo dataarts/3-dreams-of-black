@@ -79,16 +79,26 @@ var LauncherSection = function (shared) {
     buttonStart.style.display = 'none';
     buttonStart.addEventListener('click', function () {
 
-      shared.signals.showfilm.dispatch();
-
-      // Start in 1 second.
-
-      setTimeout(function () {
-
-        shared.signals.startfilm.dispatch(0, 1);
-
-      }, 1000);
-
+			if( shared.originLink == "/explore" && shared.shouldSkip ) {
+			
+				// set some special load logic
+				shared.signals.showexploration.dispatch();
+				shared.signals.startexploration.dispatch( 'dunes' );
+				shared.hasExplored = true;
+				shared.shouldSkip = false;
+			
+			} else {
+			
+				      shared.signals.showfilm.dispatch();
+			
+				      // Start in 1 second.
+			
+				      setTimeout(function () {
+			
+						shared.signals.startfilm.dispatch(0, 1);
+			
+				      }, 1000);
+			}
     }, false);
     uiContainer.appendChild(buttonStart);
 
