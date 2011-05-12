@@ -28,8 +28,8 @@ var Footer = function(container, prefix) {
       x: (window.screenX + window.innerWidth / 2.0),
       y: (window.screenY + window.innerHeight / 2.0)
     };
-    var DEFAULT_POPUP_PROPERTIES = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, left=' + (popupPosition.x - 150) + ', top=' + (popupPosition.y - 300) + ', width=300, height=600';
-    var DEFAULT_POPUP_SHARING = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, left=' + (popupPosition.x - 225) + ', top=' + (popupPosition.y - 250) + ', width=550, height=500';
+    var DEFAULT_POPUP_PROPERTIES = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=1, titlebar=0, left=' + (popupPosition.x - 150) + ', top=' + (popupPosition.y - 300) + ', width=330, height=600';
+    var DEFAULT_POPUP_SHARING = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=1, titlebar=0, left=' + (popupPosition.x - 225) + ', top=' + (popupPosition.y - 250) + ', width=550, height=500';
 
     this.getDomElement = function() {
 
@@ -113,7 +113,7 @@ var Footer = function(container, prefix) {
     var html = ['<div class="rome-footer">',
 		'<div class="shout-out">',
 		'  <ul>',
-		'    <li class="last"><a href="http://chromeexperiments.com/webgl"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
+		'    <li class="last"><a href="http://www.chromeexperiments.com/webgl"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
 		'    <li class="divider">&nbsp;</li>',
 		'    <li class="last"><a href="http://google.com/"><img src="' + path + '/google-trans.png" alt="Made With Friends From Google" border="0" /></a></li>',
 		'    <li class="clear">&nbsp;</li>',

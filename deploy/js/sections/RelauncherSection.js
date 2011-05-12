@@ -289,6 +289,7 @@ var RelauncherSection = function( shared ) {
 			e.preventDefault();
 			shared.signals.showfilm.dispatch();
 			shared.signals.startfilm.dispatch( 0, 1 );
+      _gaq.push(['_trackPageview', '/relauncher_start_over']);
 
 		}, false);
 
@@ -297,6 +298,7 @@ var RelauncherSection = function( shared ) {
 			e.preventDefault();
 			// window.location = "/tech";
 			window.open("/tech", "Technology");
+      _gaq.push(['_trackPageview', '/relauncher_tech']);
 
 		}, false);
 
@@ -304,6 +306,7 @@ var RelauncherSection = function( shared ) {
 
 			e.preventDefault();
 			shared.signals.showugc.dispatch();
+      _gaq.push(['_trackPageview', '/relauncher_add_to_dream']);
 
 		}, false);
 
@@ -312,6 +315,7 @@ var RelauncherSection = function( shared ) {
 			e.preventDefault();
 			// window.location = "/gallery";
 			window.open("/gallery", "Gallery");
+      _gaq.push(['_trackPageview', '/relauncher_gallery']);
 
 		}, false);
 
@@ -321,6 +325,7 @@ var RelauncherSection = function( shared ) {
 			
 			shared.signals.showexploration.dispatch();
 			shared.signals.startexploration.dispatch( 'dunes' );
+      _gaq.push(['_trackPageview', '/relauncher_continue_explore']);
 			shared.hasExplored = true;
 			
 			/*

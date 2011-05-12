@@ -6,17 +6,18 @@ function HandleErrors(d) {
 
   var that = this;
   var destination = d || "/alternate";
+	var fired = false;
 
   Trailer = "<ul id = 'trailer'><li class = 'first'><a href = 'http://www.youtube.com/watch?v=ReH7zzj5GPc'>Watch the Trailer</a></li><li><a href = 'http://ro.me/album'>Rome Album</a></li><li class = 'last'><a href = 'http://ro.me/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
   this.MagicVariable = "case";
 
   this.Errors = [
-    "<p>We are very sorry, but &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears that your computer&#39;s graphics card doesn&#39;t support WebGL technology. You can find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards. Although you are unable to participate in the full experience today, we expect this website to be up for a while, so please check back if you&#39;re on a different computer. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site and learn more about WebGL technology.</p>" + Trailer,
-    "<p>Apologies for the tech trouble. &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears your computer&#39;s graphics card doesn&#39;t support WebGL technology. You can find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards. Although you are unable to participate in the full experience today, we expect this website to be up for a while, so please check back if you&#39;re on a different computer. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site and learn more about WebGL technology.<p>" + Trailer,
+    "<p>We are very sorry, but &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears that your computer&#39;s graphics card doesn&#39;t support WebGL technology. You can find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards.</p>" + Trailer,
+    "<p>Apologies for the tech trouble. &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears your computer&#39;s graphics card doesn&#39;t support WebGL in Mozilla Firefox. We recommend you try it in <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a>. You can also find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards. <p>" + Trailer,
     "<p>We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again. If you are unable to install a new web browser, you can try downloading the <a href = 'http://www.google.com/chromeframe'>Google Chrome Frame plugin</a> instead.</p>",
     "<p>We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again.</p>",
-    "<p>We are sorry, but it appears that your browser does not support WebGL. &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. Please try launching this site again on a computer with up-to-date graphics drivers. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site, and learn more about WebGL technology.</p>" + Trailer,
+    "<p>We are sorry, but it appears that your browser does not support WebGL. &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a> in mind. Please try launching this site again on a computer with up-to-date graphics drivers. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site, and learn more about WebGL technology.</p>" + Trailer,
     "<p>We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.</p>"
   ];
 
@@ -48,7 +49,7 @@ function HandleErrors(d) {
         conditions : [
                       ( function () { return hasUserAgent(/[cC]hrome/); } )(),
                       ( function () { return hasUserAgent(/[Ff]ire[Ff]ox\/[4-9]/); } )(),
-                      ( function () { return hasUserAgent(/MSIE [789]/) && hasUserAgent(/[Ww]indows [Nn][Tt] [6789]\./); } )(),
+                      ( function () { return hasUserAgent(/[Mm][Ss][Ii][Ee] [789]/) && hasUserAgent(/[Ww]indows [Nn][Tt] [6789]/); } )(),
                       ( function () { return hasUserAgent(/[Ss]afari/) && hasUserAgent(/[Mm]ac [Oo][Ss] [Xx] 10\_[6789]/); } )(),
                       ( function () { return hasUserAgent(/i[Pp]hone/) || hasUserAgent(/i[Pp]ad/) || hasUserAgent(/[Aa]ndroid/); } )()
                       ],
@@ -126,10 +127,13 @@ function HandleErrors(d) {
         if(Detector.conditions[i]) {
           // Then we've found what we're looking for!
           window.location = destination + "?" + this.MagicVariable + "=" + i;
-          return false;
+					fired = true;
+					break;
         }
       }
-      window.location = destination + "?" + this.MagicVariable + "=" + (Detector.conditions.length - 1);
+			if(!fired) {
+				window.location = destination + "?" + this.MagicVariable + "=" + (Detector.conditions.length - 1);
+			}
     }
   };
   // returns true or false based on 
@@ -159,7 +163,10 @@ if(variables) {
 			window.addEventListener("load", function() {
 	      var iterator = variables[romeErrors.MagicVariable];
 	      var error = document.getElementById("error");
-						error.innerHTML = romeErrors.Errors[(iterator % romeErrors.Errors.length)];
+						if(iterator > romeErrors.Errors.length) {
+							iterator = 4;
+						}
+						error.innerHTML = romeErrors.Errors[iterator];
 
 	    }, false);
 
@@ -168,7 +175,10 @@ if(variables) {
 			window.attachEvent("load", function() {
 	      var iterator = variables[romeErrors.MagicVariable];
 	      var error = document.getElementById("error");
-						error.innerHTML = romeErrors.Errors[(iterator % romeErrors.Errors.length)];
+						if(iterator > romeErrors.Errors.length) {
+							iterator = 4;
+						}
+						error.innerHTML = romeErrors.Errors[iterator];
 				return false;
 
 	    });
