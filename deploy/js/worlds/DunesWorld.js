@@ -194,9 +194,11 @@ var DunesWorld = function ( shared ) {
 
 	var ugcFirstThreePositions = [ new THREE.Vector3( TILE_SIZE * 0.15, -1000, -TILE_SIZE * 1.25 ), 
 								   new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
+  ugcFirstThreePositions = [];
 
   var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 2500, -TILE_SIZE * 1.25 ),
     new THREE.Vector3( TILE_SIZE, 3000, -TILE_SIZE ) ];
+  ugcFirstThreePositionsSky = [];
 
 
 	that.scene.collisions.colliders.push( ugcCollider );
