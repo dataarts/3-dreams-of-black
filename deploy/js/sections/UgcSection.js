@@ -28,7 +28,7 @@ var UgcSection = function ( shared ) {
 
 	// Lights
 
-	var ambient = new THREE.AmbientLight( 0x221100 );
+	var ambient = new THREE.AmbientLight( 0x442200 );
 	var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
 	var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
 
@@ -49,6 +49,9 @@ var UgcSection = function ( shared ) {
 	var flares = initLensFlares( new THREE.Vector3( 0, 0, - 7500 ), 60, 292 );
 	that.scene.addChild( flares );
 
+	var environment = new THREE.Object3D();
+	that.scene.addChild( environment );
+
 	var loader = new THREE.SceneLoader();
 	loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {
 
@@ -62,30 +65,45 @@ var UgcSection = function ( shared ) {
 				object.position.y = - 100;
 				object.position.x = 1000;
 				object.scale.x = object.scale.y = object.scale.z = 0.75;
-				that.scene.addObject( object );
+				environment.addChild( object );
 
 			}
 
 		}
 
+		// Clouds
+
+		var geometry = new THREE.Plane( 1000, 1000 ); 
+
+		for ( var i = 0; i < 200; i ++ ) {
+
+			var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.5, blending: THREE.AdditiveBlending } ) );
+			mesh.position.x = Math.random() - 0.5;
+			mesh.position.y = Math.random();
+			mesh.position.z = Math.random() - 0.5;
+			mesh.position.normalize();
+
+			mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 );
+			mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 10000 );
+			mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 );
+
+			mesh.rotation.x = - 90 * Math.PI / 180;
+			mesh.scale.x = Math.random() * 2 + 1;
+			mesh.scale.y = Math.random() * 2 + 1;
+			mesh.doubleSided = true;
+
+			environment.addChild( mesh );
+
+		}
+
 	} );
 
-	var geometry = new THREE.Plane( 1000, 1000 ); 
+	// Grid
 
-	for ( var i = 0; i < 100; i ++ ) {
-
-		var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.75, blending: THREE.AdditiveBlending } ) );
-		mesh.position.x = Math.random() * 20000 - 10000;
-		mesh.position.y = Math.random() * 2000 + 3000;
-		mesh.position.z = Math.random() * 20000 - 10000;
-		mesh.rotation.x = - 90 * Math.PI / 180;
-		mesh.scale.x = Math.random() * 2 + 1;
-		mesh.scale.y = Math.random() * 2 + 1;
-		mesh.doubleSided = true;
-
-		that.scene.addObject( mesh );
-
-	}
+	var grid = new THREE.Mesh( new THREE.Plane( 4050, 4050, 81, 81 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
+	grid.position.y = - 25;
+	grid.rotation.x = - 90 * Math.PI / 180;
+	environment.addChild( grid );
 
 	// Renderer
 
@@ -242,18 +260,53 @@ var UgcSection = function ( shared ) {
 
 			ui.getDomElement().style.display = 'block';
 
-			var tweenParams = { theta: theta, phi: phi };
+			switch( _type ) {
 
-			new TWEEN.Tween( tweenParams )
-				.to( { theta: 45, phi: 15 }, 2000 )
-				.easing( TWEEN.Easing.Exponential.EaseOut )
-				.onUpdate( function () {
+				case 0:
 
-					theta = tweenParams.theta;
-					phi = tweenParams.phi;
+					var tweenParams = { theta: theta, phi: phi };
 
-				} )
-				.start();
+					new TWEEN.Tween( tweenParams )
+						.to( { theta: 45, phi: 15 }, 2000 )
+						.easing( TWEEN.Easing.Exponential.EaseOut )
+						.onUpdate( function () {
+
+							theta = tweenParams.theta;
+							phi = tweenParams.phi;
+
+						} )
+						.start();
+
+					new TWEEN.Tween( environment.position )
+						.to( { y: 0 }, 4000 )
+						.easing( TWEEN.Easing.Exponential.EaseOut )
+						.start();
+
+				break;
+
+				case 1:
+
+					var tweenParams = { theta: theta, phi: phi };
+
+					new TWEEN.Tween( tweenParams )
+						.to( { theta: 45, phi: 15 }, 2000 )
+						.easing( TWEEN.Easing.Exponential.EaseOut )
+						.onUpdate( function () {
+
+							theta = tweenParams.theta;
+							phi = tweenParams.phi;
+
+						} )
+						.start();
+
+					new TWEEN.Tween( environment.position )
+						.to( { y: - 5000 }, 4000 )
+						.easing( TWEEN.Easing.Exponential.EaseOut )
+						.start();
+
+				break;
+
+			}
 
 		} );
 
