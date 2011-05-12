@@ -417,6 +417,8 @@ var UgcSection = function ( shared ) {
       var image = gen_filmstrip();
       var obj = objectCreator.getPainter().getObject();
 
+      console.log(obj.getType());
+
       var submission = {
         title: title,
         email: email,
@@ -426,7 +428,7 @@ var UgcSection = function ( shared ) {
       
 
 			ugcHandler.submitUGO( submission, image, function ( rsp ) {
-				if (rsp.success == false) {
+				if (!rsp.success) {
           alert("There was an error submitting your model. Please try again in a moment.");
         } else {
           window.location = '/gallery';

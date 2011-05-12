@@ -12,7 +12,7 @@ var UgcUI = function (shared) {
   var numAnimals = 10; // TODO
   var animalSlideTarget = 0;
   var animalSlide = 0;
-    var _type = 0;
+  var _type = 0;
 
 
   var css = getCSS();
