@@ -7,10 +7,11 @@ function ColorPicker(container) {
   var bufferCanvas = document.createElement('canvas');
 
   var brightnessCanvas = document.createElement('canvas');
-  brightnessCanvas.style.marginTop = '380px';
+  brightnessCanvas.style.position = 'relative';
 
   var wheelCanvas = document.createElement('canvas');
-  wheelCanvas.style.position = 'absolute';
+  wheelCanvas.style.position = 'relative';
+  wheelCanvas.style.top = 0;
 
   this.domElement = document.createElement('div');
   this.domElement.setAttribute('id', 'ugcui-color-picker');
@@ -20,18 +21,40 @@ function ColorPicker(container) {
   var pickerX, pickerY;
   var color = new DAT.Color(255, 255, 255);
 
-  var img = document.createElement('img');
-  img.src = '/files/wheel.png';
+  var imgGround = document.createElement('img');
+  var imgSky = document.createElement('img');
+  imgGround.src = '/files/wheel.png';
+  imgSky.src = '/files/wheel-sky.png';
+
+  var _type = 0;
 
   var value = 100;
 
   this.onColorChange = function(hex) {
-    alert(hex);
   };
 
-  img.onload = function() {
-    width = brightnessCanvas.width = bufferCanvas.width = wheelCanvas.width = img.width + PADDING * 2;
-    height = bufferCanvas.height = wheelCanvas.height = img.height + PADDING * 2;
+  this.setType = function(type) {
+
+    _type = type;
+    if (type == 1) {
+      
+      brightnessCanvas.style.display = 'none';
+      bufferCtx.drawImage(imgSky, PADDING, PADDING);
+    } else {
+      brightnessCanvas.style.display = 'block';
+      bufferCtx.drawImage(imgGround, PADDING, PADDING);
+    }
+
+    pickColor();
+    _this.onColorChange(color.hex);
+    redraw();
+    drawSelected();
+
+  };
+
+  imgGround.onload = function() {
+    width = brightnessCanvas.width = bufferCanvas.width = wheelCanvas.width = imgGround.width + PADDING * 2;
+    height = bufferCanvas.height = wheelCanvas.height = imgGround.height + PADDING * 2;
 
     brightnessCanvas.height = BRIGHTNESS_CANVAS_HEIGHT + PADDING * 2;
     brightnessCtx = brightnessCanvas.getContext('2d');
@@ -42,7 +65,7 @@ function ColorPicker(container) {
     container.appendChild(_this.domElement);
 
     bufferCtx = bufferCanvas.getContext('2d');
-    bufferCtx.drawImage(img, PADDING, PADDING);
+    bufferCtx.drawImage(imgGround, PADDING, PADDING);
 
     wheelCtx = wheelCanvas.getContext('2d');
     brightnessCtx.shadowBlur = wheelCtx.shadowBlur = 4;
@@ -56,7 +79,7 @@ function ColorPicker(container) {
 
   function redraw() {
     wheelCtx.clearRect(0, 0, width, height);
-    wheelCtx.drawImage(img, PADDING, PADDING);
+    wheelCtx.drawImage(_type == 0 ? imgGround : imgSky, PADDING, PADDING);
     wheelCtx.fillStyle = 'rgba(0,0,0,' + (1 - value / 100) + ')';
     wheelCtx.save();
     wheelCtx.translate(width / 2, height / 2);
@@ -147,7 +170,6 @@ function ColorPicker(container) {
     document.removeEventListener('mousemove', onBrightnessCanvasMouseDrag, false);
     document.removeEventListener('mouseup', onDocumentMouseUp, false);
 
-    console.log(color.hex.toString(16));
     _this.onColorChange(color.hex);
   }
 
@@ -191,19 +213,29 @@ function ColorPicker(container) {
 
     // TODO if not within padding
 
-    var pixel = bufferCtx.getImageData(x, y, 1, 1).data;
-
-    if (pixel[3] < 255) {
+    if (!pickColor(x, y)) {
       return;
+    }
+
+    redraw();
+    drawSelected(x, y);
+
+  }
+
+  function pickColor(x, y) {
+
+    x = x || pickerX;
+    y = y || pickerY;
+    var pixel = bufferCtx.getImageData(x, y, 1, 1).data;
+    if (pixel[3] < 255) {
+      return false;
     }
     color.r = pixel[0];
     color.g = pixel[1];
     color.b = pixel[2];
 
     color.v = value;
-
-    redraw();
-    drawSelected(x, y);
+    return true;
 
   }
 
