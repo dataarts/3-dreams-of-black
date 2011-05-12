@@ -62,7 +62,6 @@ var LauncherSection = function (shared) {
 
       loading.getDomElement().style.display = 'block';
       buttonEnter.style.display = 'none';
-      shared.loadedContent = true;
 
       isLoading = true;
       if (addToTheDream != undefined && exploreDreams != undefined) {
@@ -110,7 +109,7 @@ var LauncherSection = function (shared) {
       var mouseGif = loading.getMouseInfo();
       mouseGif.style.display = 'none';
       buttonStart.style.display = 'block';
-
+      shared.loadedContent = true;
       isLoading = false;
 
       shared.signals.initscenes.dispatch();
