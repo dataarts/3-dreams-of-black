@@ -104,7 +104,7 @@ var UgcUI = function (shared) {
   var submitText = idElement('div', 'voxel-submit-text');
 
   submitText.innerHTML = '<span id="agree-terms" class="foo"><input id="agree" type="checkbox" /> &nbsp;I agree to the <a id="terms-link" href="/terms">terms and conditions</a>.</span><br/>';
-submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email you when <br/>your unique dream is approved for sharing.</small>';
+  submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email you when <br/>your unique dream is approved for sharing.</small>';
   var submitImage = idElement('div', 'voxel-submit-image');
   var submitInputs = idElement('div', 'voxel-submit-inputs');
 
@@ -182,6 +182,8 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
   }, false);
 
   var colormode = false;
+  var symmetry_mode = false;
+  var rotatemode = false;
 
   submit.appendChild(submitImage);
   submit.appendChild(submitText);
@@ -306,6 +308,35 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
 //      shared.ugcSignals.object_smoothdown.dispatch();
 //    });
 
+
+    window.addEventListener('keydown', function(e) {
+      console.log(e.keyCode);
+      switch (e.keyCode) {
+        case 90:
+          shared.ugcSignals.object_undo.dispatch();
+          break;
+        case 68:
+          shared.ugcSignals.object_createmode.dispatch();
+          break;
+        case 70:
+          if (colormode) {
+            shared.ugcSignals.object_createmode.dispatch();
+          } else {
+            shared.ugcSignals.object_colormode.dispatch();
+          }
+          break;
+        case 83:
+          shared.ugcSignals.object_symmetrymode.dispatch(!symmetry_mode);
+          break;
+        case 69:
+          shared.ugcSignals.object_erasemode.dispatch();
+          break;
+        case 82:
+          shared.ugcSignals.object_rotatemode.dispatch();
+          break;
+      }
+    });
+
     onClick('ugcui-color', function() {
       if (colormode) {
         shared.ugcSignals.object_createmode.dispatch();
@@ -323,9 +354,9 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
       shared.ugcSignals.object_changesize.dispatch(SIZE_MED);
     });
 
-    onClick('ugcui-size-large', function() {
-      shared.ugcSignals.object_changesize.dispatch(SIZE_LARGE);
-    });
+//    onClick('ugcui-size-large', function() {
+//      shared.ugcSignals.object_changesize.dispatch(SIZE_LARGE);
+//    });
 
     onClick('ugcui-undo', function() {
       shared.ugcSignals.object_undo.dispatch();
@@ -360,17 +391,26 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
     });
 
     onClick('ugcui-reflect', function() {
-      if (!hasClass(this, 'active')) {
-        addClass(this, 'active');
+      if (symmetry_mode) {
         shared.ugcSignals.object_symmetrymode.dispatch(true);
       } else {
-        removeClass(this, 'active');
         shared.ugcSignals.object_symmetrymode.dispatch(false);
       }
     });
 
+    shared.ugcSignals.object_symmetrymode.add(function(bool) {
+      symmetry_mode = bool;
+      if (bool) {
+        addClass(document.getElementById('ugcui-reflect'), 'active');
+      } else {
+        removeClass(document.getElementById('ugcui-reflect'), 'active');
+      }
+
+    });
+
     shared.ugcSignals.object_rotatemode.add(function() {
       colormode = false;
+      rotatemode = true;
       addClass(document.getElementById('ugcui-rotate'), 'active');
       removeClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-erase'), 'active');
@@ -380,6 +420,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
 
     shared.ugcSignals.object_erasemode.add(function() {
       colormode = false;
+      rotatemode = false;
       addClass(document.getElementById('ugcui-erase'), 'active');
       removeClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-rotate'), 'active');
@@ -389,6 +430,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
 
     shared.ugcSignals.object_createmode.add(function() {
       colormode = false;
+      rotatemode = false;
       addClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-erase'), 'active');
       removeClass(document.getElementById('ugcui-rotate'), 'active');
@@ -398,6 +440,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
 
     shared.ugcSignals.object_colormode.add(function() {
       colormode = true;
+      rotatemode = false;
       removeClass(document.getElementById('ugcui-create'), 'active');
       removeClass(document.getElementById('ugcui-erase'), 'active');
       removeClass(document.getElementById('ugcui-rotate'), 'active');
@@ -461,7 +504,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
     shared.ugcSignals.object_changesize.add(function(size) {
       removeClass(document.getElementById('ugcui-size-small'), 'active');
       removeClass(document.getElementById('ugcui-size-med'), 'active');
-      removeClass(document.getElementById('ugcui-size-large'), 'active');
+//      removeClass(document.getElementById('ugcui-size-large'), 'active');
       switch (size) {
         case SIZE_SMALL:
           addClass(document.getElementById('ugcui-size-small'), 'active');
@@ -616,7 +659,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
       '     x="0px" y="0px" width="800px" height="600px" viewBox="0 -1.338 800 600"',
       '     enable-background="new 0 -1.338 800 600"',
       '     xml:space="preserve" >',
-      '    <g class="button" title="Mirror Mode" id="ugcui-reflect">',
+      '    <g class="button" title="Symmetry Mode [s]" id="ugcui-reflect">',
       '      <polygon class="hex"',
       '               points="13.126,93.332 0,70.598 13.126,47.862 39.377,47.862 52.503,70.598 39.377,93.332 "/>',
       '      <path fill="#404040" d="M26.195,77.438c-0.428,0-0.771,0.345-0.771,0.771v1.158c0,0.428,0.343,0.772,0.771,0.772',
@@ -635,21 +678,21 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
       '  C26.966,63.886,26.623,63.541,26.195,63.541 M26.195,67.014c-0.428,0-0.771,0.346-0.771,0.772v1.158',
       '  c0,0.426,0.343,0.772,0.771,0.772s0.771-0.346,0.771-0.772v-1.158C26.966,67.36,26.623,67.014,26.195,67.014"/>',
       '    </g>',
-      '    <g class="button active" title="Draw" id="ugcui-create">',
+      '    <g class="button active" title="Draw [d]" id="ugcui-create">',
       '      <polygon class="hex" points="54.576,69.401 41.45,46.666 54.576,23.932 80.828,23.932 93.954,46.666',
       '  80.827,69.401 "/>',
       '      <path fill="#404040" d="M67.92,32.249l-12.121,7.29l-0.154-0.098v13.47l12.256,7.661l12.258-7.661V40.265L67.92,32.249z',
       '  M67.883,34.149l9.991,6.543l-9.978,6.405l-10.564-6.602L67.883,34.149z M57.255,42.346l9.842,6.151v9.673l-9.842-6.151V42.346z',
       '  M78.548,52.019l-9.842,6.15v-9.679l9.842-6.318V52.019z"/>',
       '    </g>',
-      '    <g class="button" title="Erase" id="ugcui-erase">',
+      '    <g class="button" title="Erase [e]" id="ugcui-erase">',
       '      <polygon class="hex" points="96.026,93.332 82.9,70.598 96.026,47.862 122.277,47.862 135.404,70.597',
       '  122.277,93.332 "/>',
       '      <path fill="#404040" d="M111.728,61.285l-13.493,7.131v5.163l9.462,5.387l13.086-7.798v-4.968L111.728,61.285z M113.478,69.723',
       '  l-5.788,3.394l-7.658-4.416l6.083-3.215L113.478,69.723z M108.238,74.062l5.928-3.477v3.252l-5.928,3.534V74.062z M99.328,69.556',
       '  l7.817,4.509v3.328l-7.817-4.45V69.556z"/>',
       '    </g>',
-      '    <g class="button" title="Color" id="ugcui-color">',
+      '    <g class="button" title="Fill Color [f]" id="ugcui-color">',
       '      <polygon class="hex" points="96.026,141.194 82.9,118.46 96.026,95.725 122.277,95.725 135.404,118.459',
       '  122.277,141.194 "/>',
       '      <path fill="#404040" d="M121.346,114.964c-2.85-3.684-8.097-1.808-8.097-1.808s3.946,3.913,5.455,5.42',
@@ -666,7 +709,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
       '  c0,0.136-0.049,0.271-0.155,0.378c-0.104,0.104-0.239,0.153-0.374,0.153c-0.139,0-0.272-0.051-0.377-0.154',
       '  c-0.104-0.105-0.155-0.24-0.155-0.377C108.9,118.053,108.95,117.92,109.053,117.816"/>',
       '    </g>',
-      '    <g class="button" title="Undo" id="ugcui-undo">',
+      '    <g class="button" title="Undo [z]" id="ugcui-undo">',
       '      <polygon class="hex" points="54.576,165.125 41.45,142.391 54.576,119.657 80.827,119.657 93.953,142.391',
       '  80.827,165.125 "/>',
       '      <path fill="#404040" d="M66.954,131.614v-0.083v-0.826c0-0.561-0.399-0.79-0.885-0.51l-0.716,0.414',
@@ -681,7 +724,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
 
       '      <g class="options">',
 
-      '        <g class="button" title="Medium" id="ugcui-size-med">',
+      '        <g class="button" title="Large" id="ugcui-size-med">',
       '<polygon transform="translate(0, 10)" class="hitbox" points="59.431,165.962 45.718,142.21 59.431,118.46 44.573,92.725 14.858,92.725 0,118.46 13.713,142.211 0,165.962 13.817,189.893 0,213.824 14.858,239.559 44.573,239.559 59.431,213.824 45.614,189.893 "/>',
       '          <polygon class="hex" points="13.126,188.696 0,165.962 13.126,143.227 39.377,143.227 52.503,165.962',
       '    39.377,188.696 "/>',
@@ -692,14 +735,14 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
       '    L32.212,170.616z M32.732,170.297l5.404-3.31l5.52,3.276l-5.45,3.386L32.732,170.297z M14.253,166.988l5.383,3.297l-5.454,3.364',
       '    l-5.449-3.385L14.253,166.988z M20.675,177.683l5.52-3.381l5.519,3.381l-5.519,3.429L20.675,177.683z"/>',
       '        </g>',
-      '        <g class="button" title="Large" id="ugcui-size-large">',
-      '          <polygon class="hex" points="13.126,236.559 0,213.824 13.126,191.089 39.377,191.089 52.503,213.824',
-      '    39.377,236.559 "/>',
-      '          <path fill="#404040" d="M38.393,215.247v-13.17l-11.994-5.937l-12.195,6.057v12.926l-6.519,3.868l18.509,11.5l18.509-11.5',
-      '    L38.393,215.247z M25.674,222.721l-5.517,3.379l-5.459-3.392l5.458-3.366L25.674,222.721z M32.212,219.355l5.478,3.353l-5.458,3.392',
-      '    l-5.517-3.379L32.212,219.355z M32.732,219.035l5.404-3.31l5.52,3.276l-5.45,3.387L32.732,219.035z M14.253,215.725l5.383,3.299',
-      '    l-5.454,3.364l-5.449-3.387L14.253,215.725z M20.675,226.42l5.52-3.381l5.519,3.381l-5.519,3.43L20.675,226.42z"/>',
-      '        </g>',
+//      '        <g class="button" title="Large" id="ugcui-size-large">',
+//      '          <polygon class="hex" points="13.126,236.559 0,213.824 13.126,191.089 39.377,191.089 52.503,213.824',
+//      '    39.377,236.559 "/>',
+//      '          <path fill="#404040" d="M38.393,215.247v-13.17l-11.994-5.937l-12.195,6.057v12.926l-6.519,3.868l18.509,11.5l18.509-11.5',
+//      '    L38.393,215.247z M25.674,222.721l-5.517,3.379l-5.459-3.392l5.458-3.366L25.674,222.721z M32.212,219.355l5.478,3.353l-5.458,3.392',
+//      '    l-5.517-3.379L32.212,219.355z M32.732,219.035l5.404-3.31l5.52,3.276l-5.45,3.387L32.732,219.035z M14.253,215.725l5.383,3.299',
+//      '    l-5.454,3.364l-5.449-3.387L14.253,215.725z M20.675,226.42l5.52-3.381l5.519,3.381l-5.519,3.43L20.675,226.42z"/>',
+//      '        </g>',
       '      </g>',
       '      <g class="button active" title="Small" id="ugcui-size-small">',
       '        <polygon class="hex" points="13.126,141.194 0,118.46 13.126,95.725 39.377,95.725 52.503,118.46 39.377,141.194',
@@ -781,7 +824,7 @@ submitText.innerHTML += '<small>Thank you for contributing a model! We\'ll email
   function getSvgBottomLeftContents() {
     return ['<svg class="ugcui" id="ugcui-bottom-left" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="800px"',
       '	 height="200px" viewBox="-2 -100 800 200" enable-background="new 0 0 800 200" xml:space="preserve">',
-      '<g class="button" id="ugcui-rotate" title="Rotate">',
+      '<g class="button" id="ugcui-rotate" title="Rotate [R]">',
       '	<polygon class="hex" points="13.127,21.759 0,-0.975 13.127,-23.71 39.377,-23.71 52.504,-0.975 39.377,21.759"/>',
       '	<path fill="#404040" d="M38.91-5.208c-0.406-0.224-0.83-0.434-1.266-0.633v-4.373l-10.986-5.962L15.162-10.47v4.656',
       '		c-0.391,0.179-0.771,0.365-1.135,0.563C10.816-3.495,8.951-1.157,8.67,1.388H6.924L9.41,4.831l2.486-3.443h-1.66',
