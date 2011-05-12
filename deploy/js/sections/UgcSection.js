@@ -1,6 +1,6 @@
 var UgcSection = function ( shared ) {
 
-	var that = this;
+	var that = this, _type;
 
 	var intro, objectCreator/*, soupCreator*/, ui;
 
@@ -13,7 +13,7 @@ var UgcSection = function ( shared ) {
 	intersects, intersectedFace, intersectedObject,
 	isRotateMode = false, isMouseDown = false, start_radius = 1500,
 	onMouseDownTheta, onMouseDownPhi, onMouseDownPositionX, onMouseDownPositionY,
-	theta = 45, onMouseDownTheta = 45, phi = 15, onMouseDownPhi = 15,
+	theta = 45, onMouseDownTheta, phi = 15, onMouseDownPhi,
 	radius = start_radius, oldRadius = start_radius, newRadius = start_radius;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
@@ -47,7 +47,7 @@ var UgcSection = function ( shared ) {
 
 	var flares = initLensFlares( new THREE.Vector3( 0, 0, - 7500 ), 60, 292 );
 	that.scene.addChild( flares );
-	
+
 	var loader = new THREE.SceneLoader();
 	loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {
 
@@ -182,6 +182,8 @@ var UgcSection = function ( shared ) {
 
 		shared.ugcSignals.showintro.add( function () {
 
+			_type = null;
+
 			intro.getDomElement().style.display = 'block';
 
 			objectCreator.disable();
@@ -191,15 +193,28 @@ var UgcSection = function ( shared ) {
 
 		} );
 
-		shared.ugcSignals.showobjectcreator.add( function ( mode ) {
+		shared.ugcSignals.showobjectcreator.add( function ( type ) {
 
-			console.log( mode );
+			_type = type;
 
 			intro.getDomElement().style.display = 'none';
 
 			objectCreator.enable();
 
 			ui.getDomElement().style.display = 'block';
+
+			var tweenParams = { theta: theta, phi: phi };
+
+			new TWEEN.Tween( tweenParams )
+				.to( { theta: 45, phi: 15 }, 2000 )
+				.easing( TWEEN.Easing.Exponential.EaseOut )
+				.onUpdate( function () {
+
+					theta = tweenParams.theta;
+					phi = tweenParams.phi;
+
+				} )
+				.start();
 
 		} );
 
@@ -250,7 +265,7 @@ var UgcSection = function ( shared ) {
   function gen_filmstrip(dWidth, dHeight, num_frames) {
     dWidth = dWidth || 300;
     dHeight = dHeight || 180;
-    num_frames = num_frames || 15;
+    num_frames = num_frames || 8;
     var dest = document.createElement('canvas'),
         stashed_cam_pos = camera.position.clone(),
         thetap = 45, phip = 15;
@@ -351,6 +366,10 @@ var UgcSection = function ( shared ) {
 	};
 
 	this.update = function () {
+
+		TWEEN.update();
+
+		if ( _type == null ) theta += 0.1;
 
 		ui.update();
 
