@@ -76,10 +76,10 @@ var VideoShots = {
         shaderId: VIDEO_OPAQUE,
 		width: 1.5625, height: 1,
 		paralax: true,
-		paralaxHorizontal: 900,
+		paralaxHorizontal: 600,
 		paralaxVertical: 0,
-		bendForce: 300,
-        z: -700,
+		bendForce: 73,
+        z: -200,
 		duration: 9230
     },{
         path: "/files/videos/prairie/s01_layer01.webm",
