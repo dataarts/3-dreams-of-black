@@ -55,12 +55,6 @@ function HandleErrors(d) {
         message : ""
     };
 
-		alert(Detector.webgl);
-		for(var i = 0; i < Detector.conditions.length; i++) {
-			alert("conditions: " + i + " returned: " + Detector.conditions[i]);
-		}
-
-
     if(Detector.webgl) {
       // We're good!
       if(Detector.conditions[1]) {
