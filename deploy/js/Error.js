@@ -98,6 +98,7 @@ function HandleErrors(d) {
                 document.body.removeChild(errorContainer);
                 window.removeEventListener("resize", windowResize, false);
                 LauncherSection.showUI();
+                localStorage.setItem("RomeError", true);
               };
               shade.addEventListener("click", function() {
                 removeErrors();
@@ -116,7 +117,6 @@ function HandleErrors(d) {
             }, false);
 
             HandleErrors.isWebGLAndFireFox = true;
-            localStorage.setItem("RomeError", true);
           }
         }
       }
