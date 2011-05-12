@@ -183,6 +183,7 @@ var UgcUI = function (shared) {
 
   var colormode = false;
   var symmetry_mode = false;
+  var submitDialogueOpen = false;
   var rotatemode = false;
 
   submit.appendChild(submitImage);
@@ -253,6 +254,7 @@ var UgcUI = function (shared) {
      */
 
     shared.ugcSignals.submit_dialogue.add(function() {
+      submitDialogueOpen = true;
       shared.ugcSignals.object_requestsnapshot.dispatch();
     });
 
@@ -310,7 +312,7 @@ var UgcUI = function (shared) {
 
 
     window.addEventListener('keydown', function(e) {
-      console.log(e.keyCode);
+      if (submitDialogueOpen) return;
       switch (e.keyCode) {
         case 90:
           shared.ugcSignals.object_undo.dispatch();
@@ -391,11 +393,7 @@ var UgcUI = function (shared) {
     });
 
     onClick('ugcui-reflect', function() {
-      if (symmetry_mode) {
-        shared.ugcSignals.object_symmetrymode.dispatch(true);
-      } else {
-        shared.ugcSignals.object_symmetrymode.dispatch(false);
-      }
+      shared.ugcSignals.object_symmetrymode.dispatch(!symmetry_mode);
     });
 
     shared.ugcSignals.object_symmetrymode.add(function(bool) {
@@ -602,6 +600,7 @@ var UgcUI = function (shared) {
     submitEmail.value = 'YOUR EMAIL ADDRESS';
     removeClass(document.getElementById('agree-terms'), 'error');
     document.getElementById('agree').checked = false;
+    submitDialogueOpen = true;
   }
 
 
