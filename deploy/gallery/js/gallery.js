@@ -230,7 +230,7 @@ var GALLERY = function(params) {
             }
           });
 
-    }
+    };
 
     sendVote(objectID, up, function(success) {
       if (up) {
