@@ -10,10 +10,13 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 	var lastFollowPos = new THREE.Vector3();
 
 	that.initSettings = {
-		numOfAnimals : numOfAnimals || 30,
-	}
+
+		numOfAnimals : numOfAnimals || 30
+
+	};
 
 	that.settings = {
+
 		divider : 2,
 		flying : false,
 		flyingDistance : 35,
@@ -25,9 +28,10 @@ var AnimalSwarm2 = function ( numOfAnimals, scene, vectorArray ) {
 		addaptiveSpeed : false,
 		capy : null,
 		startPosition : new THREE.Vector3(0,0,0),
-		switchPosition : false,
+		switchPosition : false
 		//butterfly : false,
-	}
+
+	};
 
 	var r = 0;
 	var i;

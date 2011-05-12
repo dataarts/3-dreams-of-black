@@ -9,7 +9,7 @@
 		"film",
 		"explore",
 		"relauncher",
-		"tool",
+		"tool"
 	];
 	
 	var stickyHistory = [
@@ -373,7 +373,13 @@
 		requestAnimationFrame( animate );
 
 		logger.clear();
-		currentSection.update();
+
+		if ( currentSection ) {
+
+			currentSection.update();
+
+		}
+
 		stats.update();
 
 	}

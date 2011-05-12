@@ -619,20 +619,29 @@ var UgcUI = function (shared) {
   }
 
 
-  function hasClass(elem, class) {
-    return elem.getAttribute('class').indexOf(class) != -1;
-  }
+	function hasClass( elem, zclass ) {
 
-  function addClass(elem, class) {
-    if (hasClass(elem, class)) return;
-    elem.setAttribute('class', elem.getAttribute('class') + ' ' + class);
-  }
+		return elem.getAttribute('class').indexOf(zclass) != -1;
 
-  function removeClass(elem, class) {
-    if (!hasClass(elem, class)) return;
-    var reg = new RegExp(' ' + class, 'g');
-    elem.setAttribute('class', elem.getAttribute('class').replace(reg, ''));
-  }
+	}
+
+	function addClass( elem, zclass ) {
+
+		if ( hasClass( elem, zclass ) ) return;
+		elem.setAttribute( 'class', elem.getAttribute( 'class' ) + ' ' + zclass );
+
+	}
+
+  
+	function removeClass( elem, zclass ) {
+
+		if ( !hasClass( elem, zclass ) ) return;
+    
+		var reg = new RegExp(' ' + zclass, 'g');
+    
+		elem.setAttribute( 'class', elem.getAttribute( 'class' ).replace( reg, '' ) );
+
+	}
 
   function makeAnimalDiv() {
 
@@ -947,7 +956,7 @@ var UgcUI = function (shared) {
       '.animal:hover .animal-controls { opacity: 1; }',
       '.animal-controls div { display: none; text-align: center; border: 1px solid #fff; border-right: 0; border-bottom: 0; display: inline-block; width: 20px;}',
       '.animal-controls div.animal-add:hover, .animal-controls div.animal-remove:hover { cursor: pointer; background-color: #f65824; }',
-      '.animal-controls div.animal-count { background-color: #fff; color: #777; width: 25px; }',
+      '.animal-controls div.animal-count { background-color: #fff; color: #777; width: 25px; }'
 //      filmstrip,
 //      filmstripImage
     ].join("\n");

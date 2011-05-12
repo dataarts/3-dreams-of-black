@@ -1232,20 +1232,6 @@ var scene = {
         "trigger"       : "Small"
     },
 
-    "Shadow.009" : {
-        "geometry"  : "geo_Cube.006",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 15126.458984, 21608.470703, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
     "Console_14.006" : {
         "groups"    : [ "Hide_Mesh" ],
         "position"  : [ -14115.177734, 13651.149414, 2058.872314 ],
@@ -1514,230 +1500,6 @@ var scene = {
         "quaternion": [ 0.000001, 0.000000, 0.000000, 1.000000 ],
         "scale"     : [ 1.000000, 1.000000, 1.000000 ],
         "trigger"   : "Small"
-    },
-
-    "Shadow.019" : {
-        "geometry"  : "geo_Cube.020",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ -13063.978516, 13431.791992, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.008" : {
-        "geometry"  : "geo_Cube.019",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ -13743.511719, 20373.382812, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
-        "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.007" : {
-        "geometry"  : "geo_Cube.018",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ -8734.033203, 20302.673828, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 1.570797 ],
-        "quaternion": [ 0.707107, 0.000000, 0.000000, 0.707107 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.018" : {
-        "geometry"  : "geo_Cube.017",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 13008.787109, 21566.839844, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.015" : {
-        "geometry"  : "geo_Cube.014",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 2703.317139, 8649.890625, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.014" : {
-        "geometry"  : "geo_Cube.013",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 9370.992188, 13501.388672, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.013" : {
-        "geometry"  : "geo_Cube.012",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 2748.550293, 13669.660156, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.003" : {
-        "geometry"  : "geo_Cube.011",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 2735.020752, 31279.333984, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.001" : {
-        "geometry"  : "geo_Cube.010",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 2708.477295, 26143.230469, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.012" : {
-        "geometry"  : "geo_Cube.009",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ -9645.447266, 13658.494141, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.010" : {
-        "geometry"  : "geo_Cube.008",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ -3599.839355, 19367.046875, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 0.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.006" : {
-        "geometry"  : "geo_Cube.002",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 4002.840820, 21151.269531, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.005" : {
-        "geometry"  : "geo_Cube.004",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 9635.623047, 21346.500000, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.004" : {
-        "geometry"  : "geo_Cube.005",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 13544.235352, 13732.351562, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow.002" : {
-        "geometry"  : "geo_Cube.003",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 6075.614258, 13749.921875, 1744.303955 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
-    },
-
-    "Shadow" : {
-        "geometry"  : "geo_Cube",
-        "groups"    : [  ],
-        "materials" : [  ],
-        "position"  : [ 2763.774902, 2448.814453, 985.609375 ],
-        "rotation"  : [ 0.000000, -0.000000, 0.000000 ],
-        "quaternion": [ 1.000000, 0.000000, 0.000000, 0.000000 ],
-        "scale"     : [ 1.000000, 1.000000, 1.000000 ],
-        "visible"       : false,
-        "castsShadow"   : true,
-        "meshCollider"  : false,
-        "trigger"       : "None"
     },
 
     "Ground1_.008" : {
@@ -3672,91 +3434,6 @@ var scene = {
         "url"  : "City.TriggerMesh_LampPost_.js"
     },
 
-    "geo_Cube.006" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.006.js"
-    },
-
-    "geo_Cube.020" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.020.js"
-    },
-
-    "geo_Cube.019" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.019.js"
-    },
-
-    "geo_Cube.018" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.018.js"
-    },
-
-    "geo_Cube.017" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.017.js"
-    },
-
-    "geo_Cube.014" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.014.js"
-    },
-
-    "geo_Cube.013" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.013.js"
-    },
-
-    "geo_Cube.012" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.012.js"
-    },
-
-    "geo_Cube.011" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.011.js"
-    },
-
-    "geo_Cube.010" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.010.js"
-    },
-
-    "geo_Cube.009" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.009.js"
-    },
-
-    "geo_Cube.008" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.008.js"
-    },
-
-    "geo_Cube.002" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.002.js"
-    },
-
-    "geo_Cube.004" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.004.js"
-    },
-
-    "geo_Cube.005" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.005.js"
-    },
-
-    "geo_Cube.003" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.003.js"
-    },
-
-    "geo_Cube" : {
-        "type" : "ascii_mesh",
-        "url"  : "City.Cube.js"
-    },
-
     "geo_LampPost_" : {
         "type" : "ascii_mesh",
         "url"  : "City.LampPost_.js"
@@ -3775,77 +3452,14 @@ var scene = {
         "url": "Backdrop_City.jpg"
     },
 
-    "Console_02.jpg" : {
-        "url": "Console_02.jpg"
-    },
-
-    "Console_03.jpg" : {
-        "url": "Console_03.jpg"
-    },
-
-    "Console_10.jpg" : {
-        "url": "Console_10.jpg"
-    },
-
-    "Console_11.jpg" : {
-        "url": "Console_11.jpg"
-    },
-
-    "Console_12.jpg" : {
-        "url": "Console_12.jpg"
-    },
-
-    "Console_13.jpg" : {
-        "url": "Console_13.jpg"
-    },
-
-    "Console_14.jpg" : {
-        "url": "Console_14.jpg"
-    },
-
-    "Console_15.jpg" : {
-        "url": "Console_15.jpg"
-    },
-
-    "Console_5.jpg" : {
-        "url": "Console_5.jpg"
-    },
-
-    "Console_6.jpg" : {
-        "url": "Console_6.jpg"
-    },
-
-    "Console_7.jpg" : {
-        "url": "Console_7.jpg"
-    },
-
-    "Console_8.jpg" : {
-        "url": "Console_8.jpg"
-    },
-
-    "Exithead.jpg" : {
-        "url": "Exithead.jpg"
-    },
-
     "Ground1.jpg" : {
         "url": "Ground1.jpg"
     },
 
     "Ground1.jpg.001" : {
         "url": "Ground1.jpg"
-    },
-
-    "Rail_Console.jpg" : {
-        "url": "Rail_Console.jpg"
-    },
-
-    "Signs.jpg" : {
-        "url": "Signs.jpg"
-    },
-
-    "Vehicles.jpg" : {
-        "url": "Vehicles.jpg"
     }
+
 },
 
 
@@ -4206,46 +3820,6 @@ var scene = {
         "parameters": { color: 16592639, opacity: 1.00 }
     },
 
-    "Console_10" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_10.jpg" }
-    },
-
-    "Console_11.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_11.jpg" }
-    },
-
-    "Console_12.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_12.jpg" }
-    },
-
-    "Console_13.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_13.jpg" }
-    },
-
-    "Console_14" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16645629, opacity: 1.00, map: "Console_14.jpg" }
-    },
-
-    "Console_15" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_15.jpg" }
-    },
-
-    "Console_2" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_02.jpg" }
-    },
-
-    "Console_3.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_03.jpg" }
-    },
-
     "console_3_0005_ca.000" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
@@ -4274,11 +3848,6 @@ var scene = {
     "console_3_0005_car_00" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "Console_5" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_5.jpg" }
     },
 
     "console_5_0005_co.000" : {
@@ -4399,11 +3968,6 @@ var scene = {
     "Evergreen_TrunkSG.001" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "ExitHead.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Exithead.jpg" }
     },
 
     "flower_orangeSG" : {
@@ -4791,21 +4355,6 @@ var scene = {
         "parameters": { color: 10724259, opacity: 1.00 }
     },
 
-    "Rail_Console.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
-    },
-
-    "Rail_Console.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
-    },
-
-    "Rail_Console.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Rail_Console.jpg" }
-    },
-
     "railTrain_0006_gr.000" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
@@ -4929,36 +4478,6 @@ var scene = {
     "shrubsSG" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "Signs.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.005" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
-    },
-
-    "Signs.006" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Signs.jpg" }
     },
 
     "Tree_Generic_TrunkSG" : {
@@ -5119,31 +4638,6 @@ var scene = {
     "tulip_stemSG" : {
         "type": "MeshLambertMaterial",
         "parameters": { color: 10724259, opacity: 1.00 }
-    },
-
-    "Vehicles" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.001" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.002" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.003" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
-    },
-
-    "Vehicles.004" : {
-        "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Vehicles.jpg" }
     },
 
     "vines_0002_vinesS.001" : {
