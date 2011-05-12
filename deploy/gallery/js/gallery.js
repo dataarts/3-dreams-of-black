@@ -213,8 +213,8 @@ var GALLERY = function(params) {
     });
 
     if (GALLERY.GET['id'] !== undefined ) {
-      $.getJSON(GALLERY.API_BASE + 'objects/' + GALLERY.GET['id'] + '?property=data&property=title', function(data) {
-        openLightbox();
+      $.getJSON(GALLERY.API_BASE + 'objects/' + GALLERY.GET['id'] + '?property=title', function(data) {
+        openLightbox()();
         populateLightbox(data);
       });
     }
