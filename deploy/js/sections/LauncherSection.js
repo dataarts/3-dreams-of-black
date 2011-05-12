@@ -192,8 +192,8 @@ var LauncherSection = function (shared) {
 
       }, false);
 
-      domElement.appendChild(addToTheDream);
-      domElement.appendChild(exploreDreams);
+      uiContainer.appendChild(addToTheDream);
+      uiContainer.appendChild(exploreDreams);
 
     } else {
 
