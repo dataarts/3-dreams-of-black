@@ -42,7 +42,7 @@ DunesCameraFreeExplore = function( shared ) {
 	// construct
 
 	world = shared.worlds.dunes;
-	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 25, 100000 );
+	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 
 	camera.target.position.set( 0, 0, -100 );
 

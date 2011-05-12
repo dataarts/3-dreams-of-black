@@ -85,7 +85,7 @@ function HandleErrors(d) {
               shade.setAttribute("style", shadeStyle);
               var errorContainerStyle = "position: fixed; width: 400px; margin: 0 auto; top: " + (window.innerHeight - 200) / 2.0 + "px; left: " + (window.innerWidth - 400) / 2.0 + "px;";
               errorContainer.setAttribute("style", errorContainerStyle);
-              var errorStyle = "width: 330px; padding: 50px 35px; background: rgba(0, 0, 0, 0.3); color: #fff; color: #fff; line-height: 18px; font: 500 12px/18px 'Futura', Arial, sans-serif; letter-spacing: 1px; text-align: center;";
+              var errorStyle = "width: 330px; padding: 50px 35px; background: rgba(0, 0, 0, 0.3); color: #fff; color: #fff; line-height: 18px !important; font: 500 12px/18px 'Futura', Arial, sans-serif; letter-spacing: 1px; text-align: center;";
               error.setAttribute("style", errorStyle);
               error.innerHTML = that.Errors[6];
 
