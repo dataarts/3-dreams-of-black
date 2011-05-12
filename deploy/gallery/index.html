@@ -67,6 +67,7 @@
         href="http://www.ro.me/files/share.jpg"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="text/javascript" src="/js/Error.js"></script>
+  <script type="text/javascript" src="/js/lib/RequestAnimationFrame.js"></script>
   <script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
   <script type="text/javascript" src="js/gallery.js"></script>
   <script type="text/javascript" src="/js/Footer.js"></script>
@@ -87,10 +88,17 @@
       })();
 
       GALLERY.API_BASE = '/ugc/';
-      GALLERY({ page: GALLERY.GET['p'], category: GALLERY.GET['c'] });
+      var gallery = new GALLERY({ page: GALLERY.GET['p'], category: GALLERY.GET['c'] });
 
       var footer = new Footer(document.getElementById('footer'), '/files/footer');
       footer.load();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        gallery.update();
+      }
+
+      animate();
 
     };
 

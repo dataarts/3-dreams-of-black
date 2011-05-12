@@ -41,6 +41,7 @@
 		screenWidth: window.innerWidth,
 		screenHeight: window.innerHeight,
 		loadedContent: false,
+		hasExplored: false,
 
 		signals : {
 
