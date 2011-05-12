@@ -15,7 +15,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	var collisionScene = new CollisionScene( camera, scene, 0.15, shared, 1000 );
 	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.maxSpeedDivider = 0.1;
-	collisionScene.settings.capBottom = 0;
+	collisionScene.settings.capBottom = -500;
 	collisionScene.settings.allowFlying = true;
 	//collisionScene.settings.normalOffsetAmount = 50;
 
