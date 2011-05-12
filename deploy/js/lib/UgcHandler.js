@@ -40,7 +40,7 @@ var UgcHandler = function () {
     var url = base_url + '?category=favorite&offset='+(index*per_page)+'&limit='+per_page+'&property=data';
     console.log(url);
     var xhr = new XMLHttpRequest();
-    xhr.open( 'GET', url);
+    xhr.open( 'GET', url, true);
     xhr.onreadystatechange = function () {
       if ( xhr.readyState == 4 ) {
         if ( xhr.status == 200 ) {
@@ -62,7 +62,7 @@ var UgcHandler = function () {
     var url = base_url+"/"+id+'?property=data';
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
+    xhr.open('GET', url, true);
     xhr.onreadystatechange = function () {
       if ( xhr.readyState == 4 ) {
         if ( xhr.status == 200 ) {
