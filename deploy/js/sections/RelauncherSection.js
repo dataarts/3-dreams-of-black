@@ -343,6 +343,13 @@ var RelauncherSection = function( shared ) {
 		setTimeout( function() {
 			fadeIn.style.opacity = 0.0;
 		}, 1 );
+		if( enter ) {
+			enter.style.display = "none";
+		}
+		var divs = container.getElementsByTagName('div');
+		for(var i = 0; i < divs.length; i++) {
+			divs[i].style.display = "block";
+		}
 
 	};
 
