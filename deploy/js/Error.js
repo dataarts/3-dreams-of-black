@@ -127,7 +127,14 @@ function HandleErrors(d) {
           // go ahead darling
           // if(localStorage.getItem("RomeError") == "false") {
             // overlay our condition
-						if(isChrome11OrLess()) {
+						if(isChromeVerOrLess(11)) {
+
+							if(isChromeVerOrLess(10)) {
+
+								// Throw back
+								window.location = destination + "?" + this.MagicVariable + "=7";
+
+							} else {
 
 			            window.addEventListener("load", function() {
 
@@ -184,8 +191,8 @@ function HandleErrors(d) {
 			            HandleErrors.isWebGLAndBeta = true;
 			          // }
 			        // }
-
 						}
+					}
 
 			}
     } else {
@@ -208,14 +215,14 @@ function HandleErrors(d) {
     return navigator.userAgent.match(condition);
   }
 
-	function isChrome11OrLess() {
+	function isChromeVerOrLess(n) {
 
 		var string = navigator.userAgent
 		var regex = /[Cc]hrome\/([0-9]{1,2})/;
 		var result = string.match(regex);
 		if(result) {
 			result = parseInt(result[1]);
-			return (result <= 11);
+			return (result <= n);
 		} else {
 			return false;
 		}
