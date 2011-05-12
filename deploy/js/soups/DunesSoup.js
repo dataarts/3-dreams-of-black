@@ -15,9 +15,10 @@ var DunesSoup = function ( camera, scene, shared ) {
 	var collisionScene = new CollisionScene( camera, scene, 0.15, shared, 1000 );
 	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.maxSpeedDivider = 0.1;
-	//collisionScene.settings.capBottom = 50;
+	collisionScene.settings.capBottom = 0;
 	collisionScene.settings.allowFlying = true;
 	//collisionScene.settings.normalOffsetAmount = 50;
+
 
 	var startPosition = new THREE.Vector3( shared.camPos.x, shared.camPos.y-1000, shared.camPos.z );
 
@@ -106,6 +107,67 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	};
 
+
+	// trail - of grass/trees/etc
+
+	var trail = new Trail( 80, scene );
+	trail.settings.freeRotation = true;
+	trail.settings.tweenTime = 2500;
+	trail.settings.aliveDivider = 30;
+	trail.settings.offsetAmount = 50;
+	trail.settings.shootRayDown = true;
+
+	trail.settings.scale = 1.5;
+
+	// preoccupy for differnt grass
+
+	for ( i = 0; i < 80; ++i ) {
+
+		var type = i%4;
+		trail.array[i] = "0" + ( type + 1 );
+
+	}
+
+	loader.load( { model: "/files/models/soup/grass01.js", callback: grass01LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass02.js", callback: grass02LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grass03.js", callback: grass03LoadedProxy } );
+	loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
+
+	function grass01LoadedProxy( geometry ) {
+
+		//adjustColors( geometry );
+		
+		var object = trail.addInstance( geometry, "01", false );
+
+	}
+
+	function grass02LoadedProxy( geometry ) {
+
+		//adjustColors( geometry );
+		
+		var object = trail.addInstance( geometry, "02", false );
+		preInitModel( geometry, renderer, scene, object );
+
+	}
+
+	function grass03LoadedProxy( geometry ) {
+
+		//adjustColors( geometry );
+		
+		var object = trail.addInstance( geometry, "03", false );
+		preInitModel( geometry, renderer, scene, object );
+
+	}
+
+	function grass04LoadedProxy( geometry ) {
+
+		//adjustColors( geometry );
+		
+		var object = trail.addInstance( geometry, "04", false );
+		preInitModel( geometry, renderer, scene, object );
+
+	}
+
 	this.update = function ( delta, otherCamera ) {
 
 		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
@@ -130,14 +192,16 @@ var DunesSoup = function ( camera, scene, shared ) {
 		}
 
 		// update the soup parts
-
 		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
 		ribbons.update( collisionScene.emitterFollow.position );
 		//flyingAnimals.update();
 		flyingAnimals.update(delta, shared.camPos);
 		//particles.update(delta, vectors.array[0].position);
-		
+		if (shared.camPos.y < 800) {
+			trail.update(collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta);
+			TWEEN.update();
+		}
 	}
 
 
