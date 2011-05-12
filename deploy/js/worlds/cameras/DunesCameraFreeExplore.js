@@ -42,7 +42,7 @@ DunesCameraFreeExplore = function( shared ) {
 	// construct
 
 	world = shared.worlds.dunes;
-	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 20, 100000 );
+	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
 
 	camera.target.position.set( 0, 0, -100 );
 
@@ -92,10 +92,8 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = ( delta > 30 ) ? 1 : delta / 30;
-		
-		//delta = 1;//delta * ( 1000 / 30 ) / 1000;
-		//if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
+		delta = 1;//delta * ( 1000 / 30 ) / 1000;
+		if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
 		
 		
 		// check collision round-robin (can't afford to do all every frame)

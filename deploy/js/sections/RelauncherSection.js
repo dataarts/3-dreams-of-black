@@ -326,7 +326,7 @@ var RelauncherSection = function( shared ) {
 			shared.signals.showexploration.dispatch();
 			shared.signals.startexploration.dispatch( 'dunes' );
       _gaq.push(['_trackPageview', '/relauncher_continue_explore']);
-			shared.hasExplored = true;
+			// shared.hasExplored = true;
 			
 			/*
 			var divs = container.getElementsByTagName('div');
