@@ -75,7 +75,7 @@ var UgcSection = function ( shared ) {
 
 		var geometry = new THREE.Plane( 1000, 1000 ); 
 
-		for ( var i = 0; i < 200; i ++ ) {
+		for ( var i = 0; i < 100; i ++ ) {
 
 			var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.5, blending: THREE.AdditiveBlending } ) );
 			mesh.position.x = Math.random() - 0.5;
@@ -84,7 +84,7 @@ var UgcSection = function ( shared ) {
 			mesh.position.normalize();
 
 			mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 );
-			mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 10000 );
+			mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 5000 ) + 2500;
 			mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 );
 
 			mesh.rotation.x = - 90 * Math.PI / 180;
@@ -164,7 +164,13 @@ var UgcSection = function ( shared ) {
 
 			theta = onMouseDownTheta - ( ( event.clientX - onMouseDownPositionX ) * 0.1 );
 			phi = onMouseDownPhi + ( ( event.clientY - onMouseDownPositionY ) * 0.1 );
-			phi = phi > 90 ? 90 : phi < 0 ? 0 : phi;
+
+			switch( _type ) {
+
+				case 0: phi = phi > 90 ? 90 : phi < 0 ? 0 : phi; break;
+				case 1: phi = phi > 90 ? 90 : phi < - 90 ? - 90 : phi; break;
+
+			}
 
 		}
 
@@ -264,6 +270,8 @@ var UgcSection = function ( shared ) {
 
 				case 0:
 
+					objectCreator.getPainter().getObject().setType( UgcObject.TYPE_GROUND );
+
 					var tweenParams = { theta: theta, phi: phi };
 
 					new TWEEN.Tween( tweenParams )
@@ -278,7 +286,7 @@ var UgcSection = function ( shared ) {
 						.start();
 
 					new TWEEN.Tween( environment.position )
-						.to( { y: 0 }, 4000 )
+						.to( { y: 0 }, 3000 )
 						.easing( TWEEN.Easing.Exponential.EaseOut )
 						.start();
 
@@ -286,6 +294,8 @@ var UgcSection = function ( shared ) {
 
 				case 1:
 
+					objectCreator.getPainter().getObject().setType( UgcObject.TYPE_GROUND );
+
 					var tweenParams = { theta: theta, phi: phi };
 
 					new TWEEN.Tween( tweenParams )
@@ -300,13 +310,18 @@ var UgcSection = function ( shared ) {
 						.start();
 
 					new TWEEN.Tween( environment.position )
-						.to( { y: - 5000 }, 4000 )
+						.to( { y: - 5000 }, 3000 )
 						.easing( TWEEN.Easing.Exponential.EaseOut )
 						.start();
 
 				break;
 
 			}
+
+			new TWEEN.Tween( camera.target.position )
+				.to( { y: 20 }, 1000 )
+				.easing( TWEEN.Easing.Exponential.EaseOut )
+				.start();
 
 		} );
 
