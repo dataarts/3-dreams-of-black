@@ -256,7 +256,7 @@ var ExplorationSection = function ( shared ) {
 
 		if( !shared.hasExplored ) {
 
-			shared.hasExplored = true;
+			//shared.hasExplored = true;
 
 		}
 

@@ -236,17 +236,18 @@ var RelauncherSection = function( shared ) {
 		enter.style.display = "none";
 		domElement.appendChild(enter);
 
-		enter.addEventListener("click", handleReturn, false);
+		enter.addEventListener( "click", handleReturn, false );
 
 		function handleReturn(e) {
 
 			e.preventDefault();
-
-		  if(e.keyCode == 13 || !e.keyCode) {
-
+			
+			if( e.keyCode == 13 || !e.keyCode ) {
+				
 				shared.signals.showexploration.dispatch();
-				if( !shared.hasExplored ) {
 
+				if( !shared.hasExplored ) {
+					
 					shared.signals.startexploration.dispatch( 'dunes' );
 					shared.hasExplored = true;
 
@@ -261,6 +262,7 @@ var RelauncherSection = function( shared ) {
 
 				enter.style.display = "none";
 				shared.signals.keyup.remove( handleReturn );
+
 		  } else if(e.keyCode == 8 || e.keyCode == 46) {
 
 				var divs = container.getElementsByTagName('div');
@@ -274,6 +276,7 @@ var RelauncherSection = function( shared ) {
 				enter.style.display = "none";
 				shared.signals.keyup.remove( handleReturn );
 			}
+
 		}
 
 		start.addEventListener("click", function(e) {
