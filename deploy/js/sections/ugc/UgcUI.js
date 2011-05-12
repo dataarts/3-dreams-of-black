@@ -79,28 +79,28 @@ var UgcUI = function (shared) {
   submit.addEventListener('mousemove', function(e) {
     e.stopImmediatePropagation();
     e.stopPropagation();
-  });
+  }, false);
   submit.addEventListener('mouseup', function(e) {
     e.stopImmediatePropagation();
     e.stopPropagation();
-  });
+  }, false);
   submit.addEventListener('mousedown', function(e) {
     e.stopImmediatePropagation();
     e.stopPropagation();
-  });
+  }, false);
   submitShade.addEventListener('mousemove', function(e) {
     e.stopImmediatePropagation();
     e.stopPropagation();
-  });
+  }, false);
   submitShade.addEventListener('mouseup', function(e) {
     e.stopImmediatePropagation();
     e.stopPropagation();
-  });
+  }, false);
   submitShade.addEventListener('mousedown', function(e) {
     hideSubmitDialogue();
     e.stopImmediatePropagation();
     e.stopPropagation();
-  });
+  }, false);
 
 
   var submitText = idElement('div', 'voxel-submit-text');
@@ -351,7 +351,7 @@ var UgcUI = function (shared) {
           shared.ugcSignals.object_rotatemode.dispatch();
           break;
       }
-    });
+    }, false);
 
     onClick('ugcui-color', function() {
       if (colormode) {
