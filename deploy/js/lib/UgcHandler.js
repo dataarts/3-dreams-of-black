@@ -21,7 +21,6 @@ var UgcHandler = function () {
   }
 
   this.getLatestUGOs = function ( callback, index ) {
-    console.log('latest UGO');
     getUGOs(function(ugos) {
       if (index === 0) {
         var id = getParameterByName('id');
@@ -29,6 +28,8 @@ var UgcHandler = function () {
           that.getUGO(id, function(ugo) {
             callback([ugo].concat(ugos))
           });
+        } else {
+          callback(ugos);
         }
       } else {
         callback(ugos);
@@ -38,7 +39,6 @@ var UgcHandler = function () {
 
   var getUGOs = function ( callback, index ) {
     var url = base_url + '?category=favorite&offset='+(index*per_page)+'&limit='+per_page+'&property=data';
-    console.log(url);
     var xhr = new XMLHttpRequest();
     xhr.open( 'GET', url, true);
     xhr.onreadystatechange = function () {

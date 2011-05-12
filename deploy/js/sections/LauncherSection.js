@@ -126,7 +126,7 @@ var LauncherSection = function (shared) {
     }
 
 
-    if (localStorage["RomeSeen"]) {
+    if (localStorage.getItem("RomeSeen")) {
 
       // Append a CSS file
       if (!loadedOnce) {
@@ -185,7 +185,7 @@ var LauncherSection = function (shared) {
 
     } else {
 
-      localStorage["RomeSeen"] = true;
+      localStorage.setItem("RomeSeen", true);
 
     }
 
