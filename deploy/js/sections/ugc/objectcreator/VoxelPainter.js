@@ -180,6 +180,12 @@ var VoxelPainter = function ( camera, scene ) {
 
 	//
 
+	this.getMode = function () {
+
+		return _mode;
+
+	};
+
 	this.setMode = function ( mode ) {
 
 		_mode = mode;

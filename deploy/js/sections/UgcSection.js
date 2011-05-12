@@ -14,7 +14,8 @@ var UgcSection = function ( shared ) {
 	isRotateMode = false, isMouseDown = false, start_radius = 2000,
 	onMouseDownTheta, onMouseDownPhi, onMouseDownPositionX, onMouseDownPositionY,
 	theta = 45, onMouseDownTheta, phi = 15, onMouseDownPhi,
-	radius = start_radius, newRadius = start_radius;
+	radius = start_radius, newRadius = start_radius,
+	currentPainterMode;
 
 	var camera = new THREE.Camera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
 	camera.target.position.y = 20;
@@ -105,6 +106,14 @@ var UgcSection = function ( shared ) {
 
 	function onMouseDown( event ) {
 
+		if ( event.button == 2 ) {
+
+			isRotateMode = true;
+			currentPainterMode = objectCreator.getPainter().getMode();
+			objectCreator.getPainter().setMode( VoxelPainter.MODE_IDLE );
+
+		}
+
 		isMouseDown = true;
 
 		if ( isRotateMode ) {
@@ -119,6 +128,13 @@ var UgcSection = function ( shared ) {
 	}
 
 	function onMouseUp( event ) {
+
+		if ( event.button == 2 ) {
+
+			isRotateMode = false;
+			objectCreator.getPainter().setMode( currentPainterMode );
+
+		}
 
 		isMouseDown = false;
 
@@ -139,6 +155,12 @@ var UgcSection = function ( shared ) {
 	function onMouseWheel( event ) {
 
 		zoom( - event.wheelDeltaY * 0.5 );
+
+	}
+
+	function onContextMenu ( event ) {
+
+		event.preventDefault();
 
 	}
 
@@ -340,29 +362,31 @@ var UgcSection = function ( shared ) {
 
 	this.show = function () {
 
-		domElement.style.display = 'block';
-		objectCreator.show();
-
 		shared.signals.mousedown.add( onMouseDown );
 		shared.signals.mouseup.add( onMouseUp );
 		shared.signals.mousemoved.add( onMouseMove );
 		shared.signals.mousewheel.add( onMouseWheel );
 
+		domElement.style.display = 'block';
+		objectCreator.show();
+
 		shared.ugcSignals.showintro.dispatch();
 
-		// soupCreator.init();
+		domElement.addEventListener( 'contextmenu', onContextMenu, false );
 
 	};
 
 	this.hide = function () {
 
-		domElement.style.display = 'none';
-		objectCreator.hide();
-
 		shared.signals.mousedown.remove( onMouseDown );
 		shared.signals.mouseup.remove( onMouseUp );
 		shared.signals.mousemoved.remove( onMouseMove );
 		shared.signals.mousewheel.remove( onMouseWheel );
+
+		domElement.style.display = 'none';
+		objectCreator.hide();
+
+		domElement.removeEventListener( 'contextmenu', onContextMenu, false );
 
 	};
 
