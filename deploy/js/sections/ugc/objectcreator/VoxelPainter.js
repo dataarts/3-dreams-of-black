@@ -8,7 +8,7 @@ var VoxelPainter = function ( camera, scene ) {
 	var _intersectPoint, _intersectFace, _intersectObject,
 	_intersectEraseObjects = [], _tempVector = new THREE.Vector3();
 
-	var _grid = new THREE.Mesh( new THREE.Plane( 4050, 4050, 80, 80 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
+	var _grid = new THREE.Mesh( new THREE.Plane( 4050, 4050, 81, 81 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.1, transparent: true, wireframe: true } ) );
 	_grid.position.y = - UNIT_SIZE / 2;
 	_grid.rotation.x = - 90 * Math.PI / 180;
 	scene.addObject( _grid );
@@ -296,6 +296,12 @@ var VoxelPainter = function ( camera, scene ) {
 					intersects = ray.intersectObjects( _colliderArray );
 
 					if ( _intersectFace && intersects.length > 0 ) {
+
+						if ( _intersectObject == _ground ) {
+
+							intersects[ 0 ].point.y += 25;
+
+						}
 
 						var vector, x, y, z, dx, dy, dz, dmax;
 

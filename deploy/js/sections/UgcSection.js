@@ -316,6 +316,8 @@ var UgcSection = function ( shared ) {
 		shared.signals.mousemoved.add( onMouseMove );
 		shared.signals.mousewheel.add( onMouseWheel );
 
+		shared.ugcSignals.showintro.dispatch();
+
 		// soupCreator.init();
 
 	};
