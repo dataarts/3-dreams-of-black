@@ -10,8 +10,8 @@ var VideoPlane = function( shared, layer, conf ) {
 	var polyTrail = new PolyTrail();
   this.params = {
     "radius": 0.95,
-    "trail": 4,
-    "random": 0.16,
+    "trail": 5,
+    "random": 0.23,
     "bulge": 0.7,
     "polyDetail": 0.55,
     "softEdge": 0.77,
@@ -224,8 +224,8 @@ var VideoPlane = function( shared, layer, conf ) {
         polyTrail.update();
 
         for (i = 0; i <= 4; i++) {
-            material.uniforms['trail' + i].value.x = polyTrail.s[i*4].x;
-            material.uniforms['trail' + i].value.y = polyTrail.s[i*4].y+0.0001*i;
+            material.uniforms['trail' + i].value.x = this.params.polyDetail * polyTrail.s[i*2*this.params.trail].x;
+            material.uniforms['trail' + i].value.y = this.params.polyDetail * polyTrail.s[i*2*this.params.trail].y+0.0001*i;
         }
         material.uniforms['mouseXY'].value.x = -mouseX * config.aspect;
         material.uniforms['mouseXY'].value.y = -mouseY;
@@ -243,17 +243,17 @@ var VideoPlane = function( shared, layer, conf ) {
 function PolyTrail(){
     this.target = new THREE.Vector2();
     this.s = [];
-    for (var i = 0; i <= 16; i++) {
+    for (var i = 0; i <= 50; i++) {
         this.s[i] = new THREE.Vector2();
     }
 }
 PolyTrail.prototype.set = function(x,y){
-    for (var i = 16; i >= 0; i = i - 1) {
+    for (var i = 50; i >= 0; i = i - 1) {
         this.s[i] = new THREE.Vector3(x,y,0);
     }
 };
 PolyTrail.prototype.update = function(){
-    for (var i = 16; i > 0; i = i - 1) {
+    for (var i = 50; i > 0; i = i - 1) {
         this.s[i].x = this.s[i - 1].x;
         this.s[i].y = this.s[i - 1].y;
     }
