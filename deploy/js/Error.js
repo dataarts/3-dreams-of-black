@@ -1,4 +1,7 @@
 // Create a class to handle emitting cases
+
+var console = console || function() {};
+
 function HandleErrors(d) {
 
   var that = this;
