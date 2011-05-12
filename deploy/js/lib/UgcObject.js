@@ -134,7 +134,7 @@ var UgcObject = function ( data ) {
             fragmentShader: UgcShader.fragmentShader,
             shading: THREE.FlatShading,
             lights: true,
-            vertexColors: 1,
+            vertexColors: 1
           });
     
     return new THREE.Mesh( geometry, UgcMat );

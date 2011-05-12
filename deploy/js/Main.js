@@ -96,7 +96,7 @@
 	document.body.appendChild( ugc.getDomElement() );
 
 	shortcuts = new Shortcuts( shared );
-	document.body.appendChild( shortcuts.getDomElement() );
+	//document.body.appendChild( shortcuts.getDomElement() );
 
 	shared.signals.load.add( function () {
 
