@@ -179,7 +179,9 @@ var RelauncherSection = function( shared ) {
 		for (var i = 0; i < points.length; i++) {
 
 			var point = points[i].getOriginPosition();
+			
 			// these are the center points of the objects
+			
 			var navItem = navigation.list[i];
 			var xpos = point.x + offset.x;
 			var ypos = point.y + offset.y;
@@ -228,6 +230,7 @@ var RelauncherSection = function( shared ) {
 		var otherDreams = createDomElement(container, "div", "explore-other-dreams", "after-experience", "<img src = '/files/relaunch_section/explore_dreams.png' alt = 'Explore Other Dreams' />");
 		var explore = createDomElement(container, "div", "continue-to-explore", "after-experience", "<img src = '/files/relaunch_section/continue.png' alt = 'Continue To Explore' />");
 
+		/*
 		enter = document.createElement( "div" );
 		enter.setAttribute("style", "width: 226px; height: 95px; cursor: pointer; background: url('/files/relaunch_section/return.png') 0 0 no-repeat;");
 		enter.style.position = "absolute";
@@ -237,6 +240,7 @@ var RelauncherSection = function( shared ) {
 		domElement.appendChild(enter);
 
 		enter.addEventListener( "click", handleReturn, false );
+		
 
 		function handleReturn(e) {
 
@@ -278,6 +282,7 @@ var RelauncherSection = function( shared ) {
 			}
 
 		}
+		*/
 
 		start.addEventListener("click", function(e) {
 
@@ -313,12 +318,19 @@ var RelauncherSection = function( shared ) {
 		explore.addEventListener("click", function(e) {
 
 			e.preventDefault();
+			
+			shared.signals.showexploration.dispatch();
+			shared.signals.startexploration.dispatch( 'dunes' );
+			shared.hasExplored = true;
+			
+			/*
 			var divs = container.getElementsByTagName('div');
 			for(var i = 0; i < divs.length; i++) {
 				divs[i].style.display = "none";
 			}
 			enter.style.display = "block";
 			shared.signals.keyup.add( handleReturn )
+			*/
 
 		}, false);
 
@@ -343,9 +355,12 @@ var RelauncherSection = function( shared ) {
 		setTimeout( function() {
 			fadeIn.style.opacity = 0.0;
 		}, 1 );
+		
+		/*
 		if( enter ) {
 			enter.style.display = "none";
 		}
+		*/
 		var divs = container.getElementsByTagName('div');
 		for(var i = 0; i < divs.length; i++) {
 			divs[i].style.display = "block";
@@ -370,9 +385,10 @@ var RelauncherSection = function( shared ) {
 		};
 		container.setAttribute("style", "position: absolute; top: " + offset.y + "px; left: " + offset.x + "px;");
 
+		/*
 		enter.style.left = (halfWidth - 117) + "px";
 		enter.style.top = (halfHeight - 104) + "px";
-
+		*/
 		updateDomElementsPosition();
 
 	};
