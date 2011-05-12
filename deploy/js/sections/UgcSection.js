@@ -11,7 +11,8 @@ var UgcSection = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, start_radius = 2000,
+	isRotateMode = false, isMouseDown = false, start_radius = 3000,
+  max_radius = 5000,
 	onMouseDownTheta, onMouseDownPhi, onMouseDownPositionX, onMouseDownPositionY,
 	theta = 45, onMouseDownTheta, phi = 15, onMouseDownPhi,
 	radius = start_radius, newRadius = start_radius,
@@ -390,9 +391,9 @@ var UgcSection = function ( shared ) {
     grid.visible = false;
     for(var i=0;i<num_frames;i++) {
       // move camera
-      camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
-      camera.position.y = start_radius * Math.sin( phip * DEG2RAD );
-      camera.position.z = start_radius * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.x = max_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.y = max_radius * Math.sin( phip * DEG2RAD );
+      camera.position.z = max_radius * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
       // draw to canvas
       renderer.clear();
       renderer.render( that.scene, camera );
