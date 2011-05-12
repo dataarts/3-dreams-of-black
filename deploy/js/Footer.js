@@ -74,7 +74,7 @@ var Footer = function(container, prefix) {
 
 	      dom.addEventListener("click", function(e) {
 
-					handleDomEvent(e);
+					handleDomEvent(this, e);
 
 				}, false);
 
