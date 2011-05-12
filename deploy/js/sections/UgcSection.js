@@ -417,8 +417,6 @@ var UgcSection = function ( shared ) {
       var image = gen_filmstrip();
       var obj = objectCreator.getPainter().getObject();
 
-      console.log(obj.getType());
-
       var submission = {
         title: title,
         email: email,
