@@ -73,6 +73,8 @@ function modelLoader(id) {
 }
 
 function switchModel(id) {
+  
+  _gaq.push(['_trackPageview', '/asset_viewer/?model='+models[id].name]);
 
   makeScene();
 
