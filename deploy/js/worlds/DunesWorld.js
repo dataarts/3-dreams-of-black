@@ -218,7 +218,7 @@ var DunesWorld = function ( shared ) {
 			
 			ugc = loadedUGC[ u ];
 			
-			if( ugc.visible === true && ugc.placedOnGrid && ugc.category == 'ground') {
+			if( ugc.visible === true && ugc.placedOnGrid && ugc.category == 'flythrougheverything') {
 				
 				ugcPos = ugc.position;
 				
