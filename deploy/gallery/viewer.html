@@ -161,7 +161,7 @@
             centerX = (minX+maxX)/2;
             centerY = (minY+maxY)/2;
             centerZ = (minZ+maxZ)/2;
-            newRadius = 1.5*Math.max(maxX-minX,Math.max(maxX-minX,maxZ-minZ));
+            newRadius = 1.5*Math.max(maxX-minX,Math.max(maxY-minY,maxZ-minZ));
 
             camera.target.position.y = centerY;
 
