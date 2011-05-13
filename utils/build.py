@@ -55,6 +55,7 @@ files = [
 'js/worlds/shaders/CityShader.js',
 'js/worlds/shaders/DunesShader.js',
 'js/worlds/shaders/CloudsShader.js',
+'js/worlds/shaders/UgcShader.js',
 'js/worlds/cameras/DunesCamera.js',
 'js/worlds/cameras/DunesCameraFreeExplore.js',
 'js/worlds/cameras/PrairieCameraFreeExplore.js',
@@ -73,6 +74,7 @@ files = [
 'js/soups/elements/Vectors.js',
 'js/soups/elements/Particles.js',
 'js/soups/elements/AnimalSwarm.js',
+'js/soups/elements/AnimalSwarm2.js',
 'js/soups/elements/AnimalSwarm_dunes.js',
 'js/soups/elements/AnimalInFrontOfCamera.js',
 'js/soups/elements/Trail.js',
@@ -98,8 +100,8 @@ files = [
 
 'js/sections/launcher/Clouds.js',
 
-'js/sections/ugc/ColorPicker.js',
 'js/sections/ugc/UgcIntro.js',
+'js/sections/ugc/ColorPicker.js',
 'js/sections/ugc/UgcUI.js',
 'js/sections/ugc/UgcObjectCreator.js',
 'js/sections/ugc/UgcSoupCreator.js',

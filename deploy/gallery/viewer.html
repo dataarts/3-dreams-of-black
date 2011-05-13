@@ -1,5 +1,6 @@
 <html>
 	<head>
+    <title>Gallery Viewer</title>
 		<style>
 			body {
 
@@ -16,6 +17,7 @@
 		<script src="/js/lib/RequestAnimationFrame.js"></script>
 
 		<script src="/js/lib/UgcObject.js"></script>
+    <script src="/js/worlds/shaders/UgcShader.js"></script>
 		<script src="/js/lib/UgcHandler.js"></script>
 
 		<script>
@@ -24,7 +26,7 @@
 
 				var WIDTH = window.innerWidth, HEIGHT = window.innerHeight,
 				DEG2RAD = Math.PI / 180, radius = 1500,
-				mouse = { x: 0, y: 0 }, theta = 45, phi = 15;
+				mouse = { x: 0, y: 0 }, theta = 45, phi = 15, type = null;
 
 				var camera = new THREE.Camera( 50, WIDTH / HEIGHT, 1, 20000 );
 				camera.target.position.y = 200;
@@ -53,6 +55,9 @@
 				scene.addLight( directionalLight1 );
 				scene.addLight( directionalLight2 );
 
+				var environment = new THREE.Object3D();
+				scene.addChild( environment );
+
 				// Renderer
 
 				var renderer = new THREE.WebGLRenderer();
@@ -74,12 +79,37 @@
 						if ( object.visible ) {
 
 							object.rotation.x = - 90 * Math.PI / 180;
-							object.position.y = - 100;
-							object.position.x = 1750;
-							object.scale.x = object.scale.y = object.scale.z = 0.5;
-							scene.addObject( object );
+							object.position.y = - 50;
+							object.position.x = 1000;
+							object.scale.x = object.scale.y = object.scale.z = 0.75;
+							environment.addChild( object );
 
 						}
+
+					}
+
+					// Clouds
+
+					var geometry = new THREE.Plane( 1000, 1000 ); 
+
+					for ( var i = 0; i < 100; i ++ ) {
+
+						var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.5, blending: THREE.AdditiveBlending } ) );
+						mesh.position.x = Math.random() - 0.5;
+						mesh.position.y = Math.random();
+						mesh.position.z = Math.random() - 0.5;
+						mesh.position.normalize();
+
+						mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 );
+						mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 5000 ) + 2500;
+						mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 );
+
+						mesh.rotation.x = - 90 * Math.PI / 180;
+						mesh.scale.x = Math.random() * 2 + 1;
+						mesh.scale.y = Math.random() * 2 + 1;
+						mesh.doubleSided = true;
+
+						environment.addChild( mesh );
 
 					}
 
@@ -91,6 +121,10 @@
 
 				var ugcHandler = new UgcHandler();
 				ugcHandler.getUGO( id, function ( object ) {
+
+					type = object.category;
+
+					if ( type == UgcObject.TYPE_SKY ) environment.position.y = - 5000;
 
 					var ugo = new UgcObject( JSON.parse( object.data ) );
 
@@ -120,7 +154,14 @@
 					theta += ( mouse.x / WIDTH ) - 0.5;
 
 					phi -= ( mouse.y / HEIGHT ) - 0.5;
-					phi = phi > 90 ? 90 : phi < 0 ? 0 : phi;
+
+					switch( type ) {
+
+						case UgcObject.TYPE_GROUND: phi = phi > 90 ? 90 : phi < 0 ? 0 : phi; break;
+						case UgcObject.TYPE_SKY: phi = phi > 90 ? 90 : phi < - 90 ? - 90 : phi; break;
+
+					}
+
 
 					camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 					camera.position.y = radius * Math.sin( phi * DEG2RAD );
@@ -133,6 +174,18 @@
 			} )();
 
 		</script>
+		<script type="text/javascript">
 
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-22949694-1']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script>
 	</body>
 </html>

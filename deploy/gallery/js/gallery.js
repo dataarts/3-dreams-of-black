@@ -61,11 +61,11 @@ var GALLERY = function(params) {
                 var classDec = i == params['page'] ? ' class="selected"' : '';
                 var url = '?c=' + params['category'] + '&p=' + i;
                 ul.innerHTML += '<li' + classDec + '><a href="' + url + '">' + i + '</a></li>';
-              }
+              };
 
               var addHellipLi = function(i) {
                 ul.innerHTML += '<li class="hellip"> &hellip; </li>';
-              }
+              };
 
               if (numPages <= 5) {
 
@@ -175,6 +175,7 @@ var GALLERY = function(params) {
     });
 
 
+
     $('#lightbox-next').click(function() {
 
       var next = objectData.indexOf(activeObject) + 1;
@@ -210,6 +211,13 @@ var GALLERY = function(params) {
       $('#lightbox-downvote').addClass('selected');
       return false;
     });
+
+    if (GALLERY.GET['id'] !== undefined ) {
+      $.getJSON(GALLERY.API_BASE + 'objects/' + GALLERY.GET['id'] + '?property=title', function(data) {
+        openLightbox()();
+        populateLightbox(data);
+      });
+    }
 
   }
 
@@ -266,12 +274,15 @@ var GALLERY = function(params) {
     return function() {
       lightbox.fadeIn(200);
       shade.get(0).addEventListener('mousedown', closeLightbox, false);
-      populateLightbox(objectData[index]);
+      if (index !== undefined) {
+        populateLightbox(objectData[index]);
+      }
     }
   }
 
   function populateLightbox(data) {
     activeObject = data;
+    history.pushState(null,activeObject.title,window.location.pathname+"?id="+activeImage.id)
     $('#lightbox-title').html(activeObject.title);
     var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + activeObject.id);
     if (savedVote == 1) {
@@ -284,7 +295,6 @@ var GALLERY = function(params) {
       $('#lightbox-upvote').removeClass('selected');
       $('#lightbox-downvote').removeClass('selected');
     }
-    console.log(activeObject.id);
     $('#webgl').html($('<iframe style="border: 0;" width="100%" height="100%" src="/gallery/viewer.html#' + activeObject.id + '"></iframe>'));
     $('#lightbox-experience').attr('href', '/?id=' + activeObject.id)
   }
@@ -298,20 +308,16 @@ var GALLERY = function(params) {
 
   function error(message) {
     return function(jqXHR, msg) {
-      alert(message);
+      console.log(message);
     };
   }
 
-  var frameCount = 0,
-      lastTime = new Date(),
-      cTime;
+  var frameCount = 0
   this.update = function() {
     frameCount++;
     if (activeImage != undefined) {
       activeImage.frameCount = activeImage.frameCount == undefined ? 0 : activeImage.frameCount;
-      cTime = new Date();
-      if ((cTime - lastTime) > 200) {
-        lastTime = cTime;
+      if (frameCount % 10 == 0) {
         activeImage.frameCount++
       }
       var img = $(activeImage);

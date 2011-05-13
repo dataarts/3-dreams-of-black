@@ -62,7 +62,6 @@ var LauncherSection = function (shared) {
 
       loading.getDomElement().style.display = 'block';
       buttonEnter.style.display = 'none';
-      shared.loadedContent = true;
 
       isLoading = true;
       if (addToTheDream != undefined && exploreDreams != undefined) {
@@ -84,6 +83,7 @@ var LauncherSection = function (shared) {
 				// set some special load logic
 				shared.signals.showexploration.dispatch();
 				shared.signals.startexploration.dispatch( 'dunes' );
+        _gaq.push(['_trackPageview', '/explore']);
 				shared.hasExplored = true;
 				shared.shouldSkip = false;
 			
@@ -95,7 +95,8 @@ var LauncherSection = function (shared) {
 			
 				      setTimeout(function () {
 			
-						shared.signals.startfilm.dispatch(0, 1);
+						    shared.signals.startfilm.dispatch(0, 1);
+                _gaq.push(['_trackPageview', '/launcher_start_film']);
 			
 				      }, 1000);
 			}
@@ -108,7 +109,7 @@ var LauncherSection = function (shared) {
       var mouseGif = loading.getMouseInfo();
       mouseGif.style.display = 'none';
       buttonStart.style.display = 'block';
-
+      shared.loadedContent = true;
       isLoading = false;
 
       shared.signals.initscenes.dispatch();
@@ -123,7 +124,7 @@ var LauncherSection = function (shared) {
     shared.signals.loadItemAdded.add(loading.addItem);
     shared.signals.loadItemCompleted.add(loading.completeItem);
 
-    if (!HandleErrors.isWebGLAndFireFox) {
+    if (!HandleErrors.isWebGLAndBeta) {
 
       domElement.appendChild(uiContainer);
 
@@ -176,6 +177,7 @@ var LauncherSection = function (shared) {
 
         e.preventDefault();
         shared.signals.showugc.dispatch();
+        _gaq.push(['_trackPageview', '/launcher_add_to_dream']);
 
       }, false);
       exploreDreams = document.createElement("div");
@@ -188,12 +190,13 @@ var LauncherSection = function (shared) {
 
         e.preventDefault();
         window.open("/gallery", "Gallery");
+        _gaq.push(['_trackPageview', '/launcher_gallery']);
         // window.location = "/gallery";
 
       }, false);
 
-      domElement.appendChild(addToTheDream);
-      domElement.appendChild(exploreDreams);
+      uiContainer.appendChild(addToTheDream);
+      uiContainer.appendChild(exploreDreams);
 
     } else {
 

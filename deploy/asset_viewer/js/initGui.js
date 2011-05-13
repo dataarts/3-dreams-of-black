@@ -2,7 +2,7 @@ var params, gui;
 
 function initGui(){
   params = {
-    "speed": 0.5,
+    "speed": 1,
     "morph": 1,
     "texture": true,
     "grid": true,

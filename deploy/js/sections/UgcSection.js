@@ -11,7 +11,8 @@ var UgcSection = function ( shared ) {
 	var DEG2RAD = Math.PI / 180,
 	light1, light2, loader,
 	intersects, intersectedFace, intersectedObject,
-	isRotateMode = false, isMouseDown = false, start_radius = 2000,
+	isRotateMode = false, isMouseDown = false, start_radius = 3000,
+  max_radius = 5000,
 	onMouseDownTheta, onMouseDownPhi, onMouseDownPositionX, onMouseDownPositionY,
 	theta = 45, onMouseDownTheta, phi = 15, onMouseDownPhi,
 	radius = start_radius, newRadius = start_radius,
@@ -247,11 +248,12 @@ var UgcSection = function ( shared ) {
 
 			_type = null;
 
-			intro.getDomElement().style.display = 'block';
-
 			objectCreator.disable();
 
+			intro.getDomElement().style.display = 'block';
 			ui.getDomElement().style.display = 'none';
+
+			objectCreator.getPainter().clear();
 
 
 		} );
@@ -264,6 +266,7 @@ var UgcSection = function ( shared ) {
 
 			objectCreator.enable();
 
+			ui.setType( type );
 			ui.getDomElement().style.display = 'block';
 
 			switch( _type ) {
@@ -294,7 +297,7 @@ var UgcSection = function ( shared ) {
 
 				case 1:
 
-					objectCreator.getPainter().getObject().setType( UgcObject.TYPE_GROUND );
+					objectCreator.getPainter().getObject().setType( UgcObject.TYPE_SKY );
 
 					var tweenParams = { theta: theta, phi: phi };
 
@@ -385,11 +388,12 @@ var UgcSection = function ( shared ) {
     var ctx = dest.getContext('2d');
     that.resize(dWidth, dHeight);
     objectCreator.getPainter().hideBrush();
+    grid.visible = false;
     for(var i=0;i<num_frames;i++) {
       // move camera
-      camera.position.x = start_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
-      camera.position.y = start_radius * Math.sin( phip * DEG2RAD );
-      camera.position.z = start_radius * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.x = max_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.y = max_radius * Math.sin( phip * DEG2RAD );
+      camera.position.z = max_radius * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
       // draw to canvas
       renderer.clear();
       renderer.render( that.scene, camera );
@@ -401,6 +405,7 @@ var UgcSection = function ( shared ) {
     var strip = dest.toDataURL('image/png');
     delete dest;
     camera.position.copy( stashed_cam_pos );
+    grid.visible = true;
     renderer.clear();
     renderer.render( that.scene, camera );
     return strip;
@@ -419,9 +424,10 @@ var UgcSection = function ( shared ) {
         category: obj.getType(),
         data: obj.getJSON()
       };
+      
 
 			ugcHandler.submitUGO( submission, image, function ( rsp ) {
-				if (rsp.success == false) {
+				if (!rsp.success) {
           alert("There was an error submitting your model. Please try again in a moment.");
         } else {
           window.location = '/gallery';
