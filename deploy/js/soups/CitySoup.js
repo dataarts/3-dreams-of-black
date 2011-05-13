@@ -405,7 +405,7 @@ var CitySoup = function ( camera, scene, shared ) {
 			
 				c = f.vertexColors[ j ];
 
-				THREE.ColorUtils.adjustHSV( c, 0, 0.25, -0.1 );
+				THREE.ColorUtils.adjustHSV( c, 0.13, 0.3, -0.05 );
 
 			}
 			
