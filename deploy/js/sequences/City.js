@@ -4,7 +4,7 @@ var City = function ( shared ) {
 
 	SequencerItem.call( this );
 
-	var LOOK_SPEED = 0.0025;
+	var LOOK_SPEED = 0.001;
 	
 	// signals
 	
