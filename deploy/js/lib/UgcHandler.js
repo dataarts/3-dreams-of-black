@@ -171,7 +171,11 @@ var UgcHandler = function () {
         }
       }
     };
-    xhr.send(arr.buffer);
+    if (xhr.sendAsBinary) {
+      xhr.sendAsBinary(arr.buffer);
+    } else {
+      xhr.send(arr.buffer);
+    }
     return xhr.responseText;
   }
 
@@ -200,6 +204,7 @@ var UgcHandler = function () {
               fail();
             }
           } catch (err) {
+            console.log(err);
             fail();
           }
         } else {
