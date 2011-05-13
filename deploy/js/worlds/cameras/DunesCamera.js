@@ -9,8 +9,8 @@ DunesCamera = function( shared ) {
 	var CAMERA_LOWEST_Y = 10;
 	var CAMERA_LOWEST_Y_NULL_ATTENUATION = 200;
 	var CAMERA_HIGHEST_Y = 4500;
-	var CAMERA_FORWARD_SPEED = 15;
-	var CAMERA_FORWARD_SPEED_MAX = 20;
+	var CAMERA_FORWARD_SPEED = 25;
+	var CAMERA_FORWARD_SPEED_MAX = 30;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 20;
 	var CAMERA_VERTICAL_LIMIT = 120;
@@ -46,7 +46,7 @@ DunesCamera = function( shared ) {
 	// construct
 
 	world = shared.worlds.dunes;
-	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 1, 100000 );
+	camera = new THREE.Camera( 50, shared.viewportWidth / shared.viewportHeight, 20, 100000 );
 
 	camera.target.position.set( 0, 0, -100 );
 
@@ -69,11 +69,14 @@ DunesCamera = function( shared ) {
 	//--- reset camera ---
 	
 	that.resetCamera = function() {
-		
-		wantedCamera.position.set( 0, 50, 300 );
-		wantedCameraTarget.position.set( 0, 50, -300 );
+
+    window.wantedCamera = wantedCamera;
+    window.camera = camera;
+//		wantedCamera.position.set( 0, 50, 300 );
+    wantedCamera.position.set( 0, 350, 600 );
+		wantedCameraTarget.position.set( 0, 150, -300 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
-		
+
 		camera.position.copy( wantedCamera.position );
 		camera.target.position.copy( wantedCameraTarget.position );
 		
@@ -452,10 +455,15 @@ DunesCamera = function( shared ) {
 				wantedCameraTarget.position.z = camera.target.position.z = -CAMERA_COLLISION_DISTANCE;
 
 			}
-			
+
+//      if(Math.random() < 0.1) {
+//        console.log(camera.x, camera.y, camera.z);
+//        console.log(cameraTarget.x, cameraTarget.y, cameraTarget.z);
+//      }
+
 		}
 
-	}
+	};
 
 	
 	return that;

@@ -195,6 +195,10 @@ var DunesWorld = function ( shared ) {
 	var ugcFirstThreePositions = [ new THREE.Vector3( TILE_SIZE * 0.15, -1000, -TILE_SIZE * 1.25 ), 
 								   new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
 
+  var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 2500, -TILE_SIZE * 1.25 ),
+    new THREE.Vector3( TILE_SIZE, 3000, -TILE_SIZE ) ];
+
+
 	that.scene.collisions.colliders.push( ugcCollider );
 	
 	
@@ -216,7 +220,7 @@ var DunesWorld = function ( shared ) {
 			
 			ugc = loadedUGC[ u ];
 			
-			if( ugc.visible === true && ugc.placedOnGrid ) {
+			if( ugc.visible === true && ugc.placedOnGrid && ugc.category == 'ground') {
 				
 				ugcPos = ugc.position;
 				
@@ -234,9 +238,11 @@ var DunesWorld = function ( shared ) {
 				
 				
 				// move up
-				
-				ugc.position.y += ( ugc.wantedY - ugc.position.y ) * 0.05;
-				
+
+        if (ugc.category === 'ground') {
+          ugc.position.y += ( ugc.wantedY - ugc.position.y ) * 0.05;
+        }
+
 			}
 			
 		}
@@ -245,11 +251,11 @@ var DunesWorld = function ( shared ) {
 		// set physics on closest ugc
 		
 		if( closestUgc !== undefined ) {
-			
+
 			ugcCollider.center.copy( closestUgc.matrixWorld.getPosition());
 			ugcCollider.radius   = closestUgc.boundRadius;
 			ugcCollider.radiusSq = ugcCollider.radius * ugcCollider.radius;
-			
+
 		}
 
 
@@ -294,29 +300,34 @@ var DunesWorld = function ( shared ) {
 				if( !ugc.placedOnGrid ) {
 
 					// first three have special treatment
+
+          var firstPos = ugcFirstThreePositions;
+          if (ugc.category == 'sky') {
+            firstPos = ugcFirstThreePositionsSky;
+          }
 					
-					if( ugcFirstThreePositions.length ) {
+					if( firstPos.length ) {
 						
-						ugc.position.copy( ugcFirstThreePositions.shift() );
+						ugc.position.copy( firstPos.shift() );
 						ugc.position.x += Math.random() * 200 - 100;
 						ugc.position.z += Math.random() * 200 - 100;
 						ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
 
-						ugc.wantedY = -5;
 						ugc.visible = true;
 						ugc.placedOnGrid = true;
-						
+            ugc.wantedY = -5;
+
 						that.scene.addChild( ugc );
 						
 						tx = Math.floor( ugc.position.x / TILE_SIZE );
 						tz = Math.floor( ugc.position.z / TILE_SIZE );
 						
-						ugcOccupiedTiles[ tx + " " + tz ] = true;
+						ugcOccupiedTiles[ tx + " " + tz + " " + ugc.category ] = true;
 						
 					} else {
 						
 						// try find placement
-						
+
 						for( d = 0; d < dl; d++ ) {
 							
 							tx = txTemp = cameraTileX + ugcTileDisplacement[ tileDisplacementIndex ].x;
@@ -330,9 +341,9 @@ var DunesWorld = function ( shared ) {
 							
 							if( tileGrid[ tzTemp ][ txTemp ] < 4 ) {		// only place on tiles, not praire/city/walk
 								
-								if( !ugcOccupiedTiles[ tx + " " + tz ] ) {	// already occupied?
+								if( !ugcOccupiedTiles[ tx + " " + tz + " " + ugc.category ] ) {	// already occupied?
 									
-									ugcOccupiedTiles[ tx + " " + tz ] = true;
+									ugcOccupiedTiles[ tx + " " + tz + " " + ugc.category ] = true;
 									break;
 													  	
 								}
@@ -341,7 +352,6 @@ var DunesWorld = function ( shared ) {
 							
 							tileDisplacementIndex++;
 							tileDisplacementIndex %= ugcTileDisplacement.length;
-													
 						}
 						
 						
@@ -349,14 +359,18 @@ var DunesWorld = function ( shared ) {
 						
 						if( d !== dl ) {
 							
-							ugc.position.set( tx * TILE_SIZE, -1000, tz * TILE_SIZE );
-							ugc.position.x += Math.random() * 200 - 100;
-							ugc.position.z += Math.random() * 200 - 100;
+							ugc.position.set( tx * TILE_SIZE, 0, tz * TILE_SIZE );
+              if (ugc.category === 'sky') {
+                ugc.position.x += Math.random() * 200 - 100;
+                ugc.position.z += Math.random() * 200 - 100;
+                ugc.position.y = 2500 + Math.random() * 1000 - 500;
+              }
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
-	
-							ugc.wantedY = -5;
+
+              ugc.wantedY = -5;
 							ugc.visible = true;
 							ugc.placedOnGrid = true;
+              ugc.updateMatrix();
 							
 							that.scene.addChild( ugc );
 							
@@ -398,10 +412,12 @@ var DunesWorld = function ( shared ) {
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
 			var object = new UgcObject( JSON.parse(objects[ i ].data) );
+      var category = objects[ i ].category;
 
 			if ( ! object.isEmpty() ) {
 
 				var mesh = object.getMesh();
+        mesh.category = category;
 				mesh.visible = false;
 				loadedUGC.push( mesh );
 				
@@ -657,7 +673,7 @@ var DunesWorld = function ( shared ) {
 
 						if( tileMesh ) {
 
-							tileMesh.position.x = px; 
+							tileMesh.position.x = px;
 							tileMesh.position.z = pz;
 							tileMesh.rotation.z = getRotation( px, pz );
 
@@ -759,7 +775,7 @@ var DunesWorld = function ( shared ) {
 
 	function markColliders( scene ) {
 
-		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
+		THREE.SceneUtils.traverseHierarchy( scene, function( node ) {
 
 			var colliders = scene.collisions.colliders;
 
@@ -767,7 +783,7 @@ var DunesWorld = function ( shared ) {
 
 				if ( colliders[ i ].mesh == node ) {
 
-					node.__isCollider = true; 
+					node.__isCollider = true;
 
 				}
 

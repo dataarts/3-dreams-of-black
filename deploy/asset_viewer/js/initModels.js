@@ -73,6 +73,8 @@ function modelLoader(id) {
 }
 
 function switchModel(id) {
+  
+  _gaq.push(['_trackPageview', '/asset_viewer/?model='+models[id].name]);
 
   makeScene();
 
@@ -97,7 +99,7 @@ function switchModel(id) {
 
       rootY.addChild( triggerBase );
 
-      lightmapShader.uniforms[ 'faceLight' ].texture = THREE.ImageUtils.loadTexture("/files/models/city/"+triggerBase.geometry.materials[0][0].map.sourceFile)
+      lightmapShader.uniforms[ 'faceLight' ].texture = THREE.ImageUtils.loadTexture("/asset_viewer/files/models/city/"+triggerBase.geometry.materials[0][0].map.sourceFile)
 
       effector = new THREE.Mesh( new THREE.Sphere( 1500, 8, 8 ), wireMat);
       effector.start = new THREE.Vector3(models[id].effector[0],models[id].effector[1],models[id].effector[2]);
