@@ -197,17 +197,19 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	function sockjumpLoadedProxy( geometry ) {
-		var animal;
-		animal = runningAnimals.addAnimal( geometry, "sockjump", 1.8, null, [3], true );
+
+		var animal = runningAnimals.addAnimal( geometry, "sockjump", 1.8, null, [3], true );
 
 		preinitAnimal( animal, shared.renderer, scene );
+
 	}
 
 	function sockpopupLoadedProxy( geometry ) {
-		var animal;
-		animal = runningAnimals.addAnimal( geometry, "sockpopup", 2.0, null, [0.1], true );
+
+		var animal = runningAnimals.addAnimal( geometry, "sockpopup", 2.0, null, [0.1], true );
 
 		preinitAnimal( animal, shared.renderer, scene );
+
 	}
 
 
