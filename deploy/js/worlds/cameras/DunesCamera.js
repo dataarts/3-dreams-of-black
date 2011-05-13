@@ -356,20 +356,22 @@ DunesCamera = function( shared ) {
 	
 	
 			// handle up/down (cap lowest, highest)
+
+			var wantedYMovement = -mouseY * CAMERA_VERTICAL_FACTOR;
 	
-			if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
+			if( Math.abs(( wantedCameraTarget.position.y + wantedYMovement ) - wantedCamera.position.y ) <= CAMERA_VERTICAL_LIMIT ) {
 				
-				wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
+				wantedCameraTarget.position.y += wantedYMovement;
 				
 			} else {
 				
-				if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y = wantedCamera.position.y + CAMERA_VERTICAL_FACTOR;
-				if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y = wantedCamera.position.y - CAMERA_VERTICAL_FACTOR;
+				if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y = wantedCamera.position.y + CAMERA_VERTICAL_LIMIT;
+				if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y = wantedCamera.position.y - CAMERA_VERTICAL_LIMIT;
 				
 			}
 	
-			wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
-			wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
+			wantedCameraTarget.position.y = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
+			wantedCameraTarget.position.y = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
 	
 	
 			// handle left/right		
