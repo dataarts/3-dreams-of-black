@@ -177,7 +177,7 @@ DunesCamera = function( shared ) {
 
 			// move forward
 
-			var localProgress = ( progress - CAMERA_STATIC_END ) / ( CAMERA_START_LIFT - CAMERA_STATIC_END );
+			var localProgress = Math.sin( 0.5 * Math.PI * ( progress - CAMERA_STATIC_END ) / ( CAMERA_START_LIFT - CAMERA_STATIC_END ));
 				
 			cameraSpeed = CAMERA_FORWARD_SPEED * 0.6 * localProgress * delta;
 			wantedCameraDirection.multiplyScalar( cameraSpeed );
@@ -363,8 +363,8 @@ DunesCamera = function( shared ) {
 				
 			} else {
 				
-				if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR;
-				if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR;
+				if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y = wantedCamera.position.y + CAMERA_VERTICAL_FACTOR;
+				if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y = wantedCamera.position.y - CAMERA_VERTICAL_FACTOR;
 				
 			}
 	
