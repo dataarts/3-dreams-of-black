@@ -6,6 +6,8 @@ var Trail = function ( numOfInstances, scene ) {
 	var scene = scene;
 	var spawnedLighthouse = false;
 	var time = 0;
+	var ray = new THREE.Ray();
+	ray.direction = new THREE.Vector3(0, -1, 0);
 
 	that.initSettings = {
 
@@ -22,8 +24,8 @@ var Trail = function ( numOfInstances, scene ) {
 		scale: 1,
 		offsetAmount: 6,
 		freeRotation: true,
-		yscale: 0.3
-
+		yscale: 0.3,
+		shootRayDown : false
 	};
 
 	var i;
@@ -116,8 +118,25 @@ var Trail = function ( numOfInstances, scene ) {
 
 				if (that.settings.freeRotation) {
 
+					if (that.settings.shootRayDown) {
+						ray.origin.copy( position );
+						ray.origin.y += 100;
+
+						var collision = scene.collisions.rayCastNearest(ray);
+
+						if(collision) {
+
+							// need scale setting...
+							c.position.y = ray.origin.y - ( ( collision.distance * 0.15 ) + amount );
+							//normal = collision.mesh.matrixRotationWorld.multiplyVector3( collision.normal ).normalize();
+							normal.set(0,1,0);
+						}
+					}
+
 					c.position.x = position.x-(normal.x*amount);
-					c.position.y = position.y-(normal.y*amount);
+					if (!that.settings.shootRayDown) {
+						c.position.y = position.y-(normal.y*amount);
+					}
 					c.position.z = position.z-(normal.z*amount);
 
 					c.position.x += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.x));
