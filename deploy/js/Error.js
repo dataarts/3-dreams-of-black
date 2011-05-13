@@ -13,13 +13,14 @@ function HandleErrors(d) {
   this.MagicVariable = "case";
 
   this.Errors = [
-    "<p>We are very sorry, but &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears that your computer&#39;s graphics card doesn&#39;t support WebGL technology. You can find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards.</p>" + Trailer,
-    "<p>Apologies for the tech trouble. &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears your computer&#39;s graphics card doesn&#39;t support WebGL in Mozilla Firefox. We recommend you try it in <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a>. You can also find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards. <p>" + Trailer,
-    "<p>We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again. If you are unable to install a new web browser, you can try downloading the <a href = 'http://www.google.com/chromeframe'>Google Chrome Frame plugin</a> instead.</p>",
-    "<p>We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again.</p>",
-    "<p>We are sorry, but it appears that your browser does not support WebGL. &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a> in mind. Please try launching this site again on a computer with up-to-date graphics drivers. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site, and learn more about WebGL technology.</p>" + Trailer,
-		"<p>This project is very experimental. With your current configuration, you may experience problems such as video flickering, so you may want to try this in Chrome Canary, the cutting-edge experimental version of Google Chrome. Download Google Chrome Canary <a href = 'http://tools.google.com/dlpage/chromesxs?platform=win'>here</a>, or <a id = 'escape-from-warning' href = '#'>try the experience anyway</a>.</p>",
-    "<p>We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.</p>"
+    "We are very sorry, but &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears that your computer&#39;s graphics card doesn&#39;t support WebGL technology. You can find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards." + Trailer,
+    "Apologies for the tech trouble. &#147;3 Dreams of Black&#148; is an experiment and unfortunately does not currently function on every configuration. It appears your computer&#39;s graphics card doesn&#39;t support WebGL in Mozilla Firefox. We recommend you try it in <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a>. You can also find more details for troubleshooting <a href = 'http://get.webgl.org/troubleshooting/'>here</a> and obtain a list of recommended graphics cards." + Trailer,
+    "We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again. If you are unable to install a new web browser, you can try downloading the <a href = 'http://www.google.com/chromeframe'>Google Chrome Frame plugin</a> instead.",
+    "We are sorry, but it appears that your browser does not support WebGL. Please <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and try launching this site again.",
+    "We are sorry, but it appears that your browser does not support WebGL. &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>Google Chrome</a> in mind. Please try launching this site again on a computer with up-to-date graphics drivers. Though not the full experience, you can also watch a video trailer, access the rest of the ROME album site, and learn more about WebGL technology." + Trailer,
+	"This project is very experimental. With your current configuration, you may experience problems such as video flickering, so you may want to try this in Chrome Canary, the cutting-edge experimental version of Google Chrome. Download Google Chrome Canary <a href = 'http://tools.google.com/dlpage/chromesxs?platform=win'>here</a>, or <a id = 'escape-from-warning' href = '#'>try the experience anyway</a>.",
+    "We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.",
+    "You appear to be running an older version of Chrome. Please click on the wrench icon on the browser toolbar, and select 'Update Google Chrome' before viewing ROME."
   ];
 
   this.getUrlVars = function() {
@@ -127,7 +128,14 @@ function HandleErrors(d) {
           // go ahead darling
           // if(localStorage.getItem("RomeError") == "false") {
             // overlay our condition
-						if(isChrome11OrLess()) {
+						if(isChromeVerOrLess(11)) {
+
+							if(isChromeVerOrLess(10)) {
+
+								// Throw back
+								window.location = destination + "?" + this.MagicVariable + "=7";
+
+							} else {
 
 			            window.addEventListener("load", function() {
 
@@ -184,8 +192,8 @@ function HandleErrors(d) {
 			            HandleErrors.isWebGLAndBeta = true;
 			          // }
 			        // }
-
 						}
+					}
 
 			}
     } else {
@@ -208,14 +216,14 @@ function HandleErrors(d) {
     return navigator.userAgent.match(condition);
   }
 
-	function isChrome11OrLess() {
+	function isChromeVerOrLess(n) {
 
 		var string = navigator.userAgent
 		var regex = /[Cc]hrome\/([0-9]{1,2})/;
 		var result = string.match(regex);
 		if(result) {
 			result = parseInt(result[1]);
-			return (result <= 11);
+			return (result <= n);
 		} else {
 			return false;
 		}
@@ -246,7 +254,7 @@ if(variables) {
 						if(iterator > romeErrors.Errors.length) {
 							iterator = 4;
 						}
-						error.innerHTML = romeErrors.Errors[iterator];
+						error.innerHTML = '<p style="line-height: 18px !important;">'+romeErrors.Errors[iterator]+'</p>';
 
 	    }, false);
 
@@ -258,7 +266,7 @@ if(variables) {
 						if(iterator > romeErrors.Errors.length) {
 							iterator = 4;
 						}
-						error.innerHTML = romeErrors.Errors[iterator];
+						error.innerHTML = '<p style="line-height: 18px !important;">'+romeErrors.Errors[iterator]+'</p>';
 				return false;
 
 	    });

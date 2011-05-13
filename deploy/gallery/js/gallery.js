@@ -213,8 +213,8 @@ var GALLERY = function(params) {
     });
 
     if (GALLERY.GET['id'] !== undefined ) {
-      $.getJSON(GALLERY.API_BASE + 'objects/' + GALLERY.GET['id'] + '?property=data&property=title', function(data) {
-        openLightbox();
+      $.getJSON(GALLERY.API_BASE + 'objects/' + GALLERY.GET['id'] + '?property=title', function(data) {
+        openLightbox()();
         populateLightbox(data);
       });
     }
@@ -282,6 +282,7 @@ var GALLERY = function(params) {
 
   function populateLightbox(data) {
     activeObject = data;
+    history.pushState(null,activeObject.title,window.location.pathname+"?id="+activeImage.id)
     $('#lightbox-title').html(activeObject.title);
     var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + activeObject.id);
     if (savedVote == 1) {
