@@ -203,6 +203,33 @@
 
         }, false );
 
+        document.addEventListener('mousewheel', mouseWheel, false);
+        document.addEventListener('DOMMouseScroll', mouseWheel, false);
+
+        function mouseWheel(e){
+            e.preventDefault();
+
+                  var delta = 0;
+                  if (!e)
+                          e = window.e;
+                  if (e.wheelDelta) {
+                          delta = e.wheelDelta/120;
+                          if (window.opera)
+                                  delta = -delta;
+                  } else if (e.detail) {
+                          delta = -e.detail/3;
+                  }
+
+            var steps = delta*30;
+
+            var maxZ = 8000;
+            var minZ = 600;
+
+            newRadius -= steps;
+            newRadius = Math.max(minZ,Math.min(maxZ,newRadius));
+          
+        }
+
 				animate();
 
 				//
