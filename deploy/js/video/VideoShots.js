@@ -80,7 +80,7 @@ var VideoShots = {
 		paralaxVertical: 0,
 		bendForce: 73,
         z: -200,
-		duration: 9230
+		duration: 9800
     },{
         path: "/files/videos/prairie/s01_layer01.webm",
         shaderId: VIDEO_SMARTALPHA,
@@ -93,7 +93,7 @@ var VideoShots = {
         path: "/files/videos/prairie/s02_layer03.jpg",
         shaderId: VIDEO_OPAQUE,
         z: -1010,
-		duration: 2020
+		duration: 2000
     },{
         path: "/files/videos/prairie/s02_layer02.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
@@ -108,7 +108,7 @@ var VideoShots = {
         path: "/files/videos/prairie/s03_layer03.webm",
         shaderId: VIDEO_OPAQUE,
         z: -1500,
-		duration: 2030
+		duration: 2125
     },{
         path: "/files/videos/prairie/s03_layer01.webm",
         shaderId: VIDEO_SMARTALPHA_DISTORT,
@@ -134,7 +134,7 @@ var VideoShots = {
         threshold: 2.4,
         alphaFadeout: 1,
         z: -1010,
-		duration: 6060
+		duration: 6000
     }
 	],
 	// DUNES - TRAIN
