@@ -1,22 +1,44 @@
 var UgcShader = {
 
-	uniforms: {
-
-    "skyWhite": { type: "f", value: 1 },
-
-		"invertLightY" : { type: "f", value: 1.0 },
+	update: function( skyWhite ) {
 		
-		"fogColor": { type: "c", value: new THREE.Color() },
-		"fogDensity": { type: "f", value: 0 },
+		skyWhite = skyWhite !== undefined ? Math.max( 0, Math.min( 1, skyWhite )) : 1;
+		
+		for( var i = 0; i < UgcShader.savedUniforms.length; i++ ) {
+			
+			UgcShader.savedUniforms[ i ].skyWhite.value = skyWhite;
+			
+		}
+		
+	},
+	
+	savedUniforms: [],
 
-		"enableLighting" : 				{ type: "i", value: 1 },
-		"ambientLightColor" : 			{ type: "fv", value: [] },
-		"directionalLightDirection" : 	{ type: "fv", value: [] },
-		"directionalLightColor" : 		{ type: "fv", value: [] },
-		"pointLightColor": 				{ type: "fv", value: [] },
-		"pointLightPosition": 			{ type: "fv", value: [] },
-		"pointLightDistance": 			{ type: "fv1", value: [] }
+	uniforms: function() {
+		
+		var uniform = {
 
+	    	"skyWhite": { type: "f", value: 1 },
+	
+			"invertLightY" : { type: "f", value: 1.0 },
+			
+			"fogColor": { type: "c", value: new THREE.Color() },
+			"fogDensity": { type: "f", value: 0 },
+	
+			"enableLighting" : 				{ type: "i", value: 1 },
+			"ambientLightColor" : 			{ type: "fv", value: [] },
+			"directionalLightDirection" : 	{ type: "fv", value: [] },
+			"directionalLightColor" : 		{ type: "fv", value: [] },
+			"pointLightColor": 				{ type: "fv", value: [] },
+			"pointLightPosition": 			{ type: "fv", value: [] },
+			"pointLightDistance": 			{ type: "fv1", value: [] }
+	
+		};
+		
+		UgcShader.savedUniforms.push( uniform );
+		
+		return 	uniform;
+		
 	},
 
 	vertexShader: [
@@ -72,7 +94,7 @@ var UgcShader = {
 		"const   vec3 	skyBlue = vec3( -0.37, -0.05, 0.15 );",
 		"const 	 vec3 	cloudMix = vec3( 0.83 * 0.83, 0.69 * 0.69, 0.51 * 0.51 );",
 
-    "uniform float  skyWhite;",
+	    "uniform float  skyWhite;",
 		"uniform vec3 fogColor;",
 		"uniform float fogDensity;",
 
@@ -85,7 +107,7 @@ var UgcShader = {
 		"void main() {",
 
 			"gl_FragColor = vec4(vColor,1.);",
-      "gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
+    	  "gl_FragColor = gl_FragColor * vec4( vLightWeighting, 1.0 );",
 
 			"const float viewDistance = 6000.0 * 2.0;",
 			"float fogFactor = clamp(( gl_FragCoord.z / gl_FragCoord.w ) / viewDistance, 0.0, 1.0 );",
