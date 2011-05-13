@@ -2,7 +2,7 @@ var DunesWorld = function ( shared ) {
 
 	// vars
 
-	var ENABLE_WATERFALLS = false;
+	var ENABLE_WATERFALLS = true;
 	
 	var that = this;
 	var SCALE = 0.20;
@@ -69,10 +69,8 @@ var DunesWorld = function ( shared ) {
 
 		var waterfallPrairiePosition = new THREE.Object3D();
 		var waterfallCityPosition = new THREE.Object3D();
-		var waterfallPrairie = WaterfallShader.createWaterfall();
-		var waterfallCity = WaterfallShader.createWaterfall();
-		
-		waterfallCity.rotation.y = Math.PI;
+		var waterfallPrairie = WaterfallShader.createWaterfall( 0 );
+		var waterfallCity = WaterfallShader.createWaterfall( 1 );
 		
 		that.scene.addChild( waterfallPrairie );
 		that.scene.addChild( waterfallCity );
@@ -466,7 +464,7 @@ var DunesWorld = function ( shared ) {
 		}
 		
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
-		addInfluenceSphere( { name: "prairieSlowDown", object: result.empties.Prairie_Center, radius: 8000, type: 1 } );
+		addInfluenceSphere( { name: "prairieSlowDown", object: result.empties.Prairie_Center, radius: 10000, type: 1 } );
 
 		that.scene.update( undefined, true );
 
@@ -489,7 +487,7 @@ var DunesWorld = function ( shared ) {
 		}
 
 		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 3500, type: 0, destination: "city" } );
-		addInfluenceSphere( { name: "citySlowDown", object: result.empties.City_Center, radius: 10000, type: 1 } );
+		addInfluenceSphere( { name: "citySlowDown", object: result.empties.City_Center, radius: 12000, type: 1 } );
 
 		that.scene.update( undefined, true );
 
@@ -563,8 +561,6 @@ var DunesWorld = function ( shared ) {
 
 		that.lensFlareRotate.position.copy( camera.matrixWorld.getPosition() );
 		that.lensFlareRotate.updateMatrix();
-
-	//	waterfall.position.copy( camera.target.matrixWorld.getPosition());
 
 	};
 
