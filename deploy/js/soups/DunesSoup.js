@@ -2,6 +2,8 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	var that = this;
 
+	var ENABLE_TRAIL = false;
+
 	shared.camPos = new THREE.Vector3( 0, 0, 0 );
 
 	var loader = new THREE.JSONLoader();
@@ -110,62 +112,66 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	// trail - of grass/trees/etc
 
-	var trail = new Trail( 80, scene );
-	trail.settings.freeRotation = true;
-	trail.settings.tweenTime = 2500;
-	trail.settings.aliveDivider = 30;
-	trail.settings.offsetAmount = 50;
-	trail.settings.shootRayDown = true;
+	if ( ENABLE_TRAIL ) {
 
-	trail.settings.scale = 1.5;
+		var trail = new Trail( 80, scene );
+		trail.settings.freeRotation = true;
+		trail.settings.tweenTime = 2500;
+		trail.settings.aliveDivider = 30;
+		trail.settings.offsetAmount = 50;
+		trail.settings.shootRayDown = true;
 
-	// preoccupy for differnt grass
+		trail.settings.scale = 1.5;
 
-	for ( i = 0; i < 80; ++i ) {
+		// preoccupy for differnt grass
 
-		var type = i%4;
-		trail.array[i] = "0" + ( type + 1 );
+		for ( i = 0; i < 80; ++i ) {
 
-	}
+			var type = i%4;
+			trail.array[i] = "0" + ( type + 1 );
 
-	loader.load( { model: "/files/models/soup/grass01.js", callback: grass01LoadedProxy } );
-	loader.load( { model: "/files/models/soup/grass02.js", callback: grass02LoadedProxy } );
-	loader.load( { model: "/files/models/soup/grass03.js", callback: grass03LoadedProxy } );
-	loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
+		}
 
-	function grass01LoadedProxy( geometry ) {
+		loader.load( { model: "/files/models/soup/grass01.js", callback: grass01LoadedProxy } );
+		loader.load( { model: "/files/models/soup/grass02.js", callback: grass02LoadedProxy } );
+		loader.load( { model: "/files/models/soup/grass03.js", callback: grass03LoadedProxy } );
+		loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
 
-		//adjustColors( geometry );
+		function grass01LoadedProxy( geometry ) {
+
+			//adjustColors( geometry );
+			
+			var object = trail.addInstance( geometry, "01", false );
+
+		}
+
+		function grass02LoadedProxy( geometry ) {
+
+			//adjustColors( geometry );
+			
+			var object = trail.addInstance( geometry, "02", false );
+			preInitModel( geometry, renderer, scene, object );
+
+		}
+
+		function grass03LoadedProxy( geometry ) {
+
+			//adjustColors( geometry );
+			
+			var object = trail.addInstance( geometry, "03", false );
+			preInitModel( geometry, renderer, scene, object );
+
+		}
+
+		function grass04LoadedProxy( geometry ) {
+
+			//adjustColors( geometry );
+			
+			var object = trail.addInstance( geometry, "04", false );
+			preInitModel( geometry, renderer, scene, object );
+
+		}
 		
-		var object = trail.addInstance( geometry, "01", false );
-
-	}
-
-	function grass02LoadedProxy( geometry ) {
-
-		//adjustColors( geometry );
-		
-		var object = trail.addInstance( geometry, "02", false );
-		preInitModel( geometry, renderer, scene, object );
-
-	}
-
-	function grass03LoadedProxy( geometry ) {
-
-		//adjustColors( geometry );
-		
-		var object = trail.addInstance( geometry, "03", false );
-		preInitModel( geometry, renderer, scene, object );
-
-	}
-
-	function grass04LoadedProxy( geometry ) {
-
-		//adjustColors( geometry );
-		
-		var object = trail.addInstance( geometry, "04", false );
-		preInitModel( geometry, renderer, scene, object );
-
 	}
 
 	this.update = function ( delta, otherCamera ) {
@@ -192,16 +198,25 @@ var DunesSoup = function ( camera, scene, shared ) {
 		}
 
 		// update the soup parts
+
 		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
 		ribbons.update( collisionScene.emitterFollow.position );
 		//flyingAnimals.update();
 		flyingAnimals.update(delta, shared.camPos);
 		//particles.update(delta, vectors.array[0].position);
-		if (shared.camPos.y < 800) {
-			trail.update(collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta);
-			TWEEN.update();
+		
+		if ( ENABLE_TRAIL ) {
+
+			if ( shared.camPos.y < 800 ) {
+			
+				trail.update( collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta );
+				TWEEN.update();
+
+			}
+
 		}
+
 	}
 
 
