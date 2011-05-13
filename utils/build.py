@@ -55,6 +55,7 @@ files = [
 'js/worlds/shaders/CityShader.js',
 'js/worlds/shaders/DunesShader.js',
 'js/worlds/shaders/CloudsShader.js',
+'js/worlds/shaders/UgcShader.js',
 'js/worlds/cameras/DunesCamera.js',
 'js/worlds/cameras/DunesCameraFreeExplore.js',
 'js/worlds/cameras/PrairieCameraFreeExplore.js',

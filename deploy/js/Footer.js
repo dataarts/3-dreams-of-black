@@ -28,8 +28,8 @@ var Footer = function(container, prefix) {
       x: (window.screenX + window.innerWidth / 2.0),
       y: (window.screenY + window.innerHeight / 2.0)
     };
-    var DEFAULT_POPUP_PROPERTIES = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, left=' + (popupPosition.x - 150) + ', top=' + (popupPosition.y - 300) + ', width=300, height=600';
-    var DEFAULT_POPUP_SHARING = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=0, titlebar=0, left=' + (popupPosition.x - 225) + ', top=' + (popupPosition.y - 250) + ', width=550, height=500';
+    var DEFAULT_POPUP_PROPERTIES = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=1, titlebar=0, left=' + (popupPosition.x - 150) + ', top=' + (popupPosition.y - 300) + ', width=330, height=600';
+    var DEFAULT_POPUP_SHARING = 'menubar=0, resizable=0, location=0, toolbar=0, status=0, scrollbars=1, titlebar=0, left=' + (popupPosition.x - 225) + ', top=' + (popupPosition.y - 250) + ', width=550, height=500';
 
     this.getDomElement = function() {
 
@@ -113,7 +113,7 @@ var Footer = function(container, prefix) {
     var html = ['<div class="rome-footer">',
 		'<div class="shout-out">',
 		'  <ul>',
-		'    <li class="last"><a href="http://chromeexperiments.com/webgl"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
+		'    <li class="last"><a href="http://www.chromeexperiments.com/webgl"><img src="' + path + '/chrome-trans.png" alt="This is a Chrome Experiment" border="0" /></a></li>',
 		'    <li class="divider">&nbsp;</li>',
 		'    <li class="last"><a href="http://google.com/"><img src="' + path + '/google-trans.png" alt="Made With Friends From Google" border="0" /></a></li>',
 		'    <li class="clear">&nbsp;</li>',
@@ -125,10 +125,10 @@ var Footer = function(container, prefix) {
 		'    <li><a id = "' + credits + '" href="/credits">Credits</a></li>',
 		'    <li><a href="http://romealbum.com/" target="_blank">Rome Album</a></li>',
 		'    <li id="' + divReplacement + '" class="rome_footer_buy_album">',
-		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html" target="blank">Buy Album</a>',
+		'      <a href = "http://widgets.platform.emi.com/landing/2520403d33984be0b70fca43945728e9.html" onClick="_gaq.push([\'_trackPageview\', \'/buy_album\'])" target="blank">Buy Album</a>',
 		'    </li>',
 		'    <li class="last">Share</li>',
-		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
+		'    <li class="last icons"><a id = "' + facebook + '" href="http://www.facebook.com/sharer.php?u=http://ro.me?fb=1" target="_blank"><img src="' + path + '/fb-trans.png" alt="facebook" border="0"  /></a></li>',
 		'    <li class="last icons"><a id = "' + twitter + '" href="http://twitter.com/share?text=%E2%80%9C3%20Dreams%20of%20Black%E2%80%9D%20an%20interactive%20film%20by%20Chris%20Milk%20for%20Danger%20Mouse%20%26%20Daniele%20Luppi%E2%80%99s%20ROME%20album%20%E2%99%A5%20http%3A%2F%2Fro.me%20%23rome%20%23webgl&url=" target="_blank"><img src="' + path + '/twitter-trans.png" alt="twitter" border="0" /></a></li>',
 		'    <li class="clear last">&nbsp;</li>',
 		'  </ul>',
