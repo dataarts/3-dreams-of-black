@@ -408,7 +408,7 @@ var UgcSection = function ( shared ) {
     centerX = (minX+maxX)/2;
     centerY = (minY+maxY)/2;
     centerZ = (minZ+maxZ)/2;
-    radius = 2*Math.max(maxX-minX,Math.max(maxX-minX,maxZ-minZ));
+    radius = 2*Math.max(maxX-minX,Math.max(maxY-minY,maxZ-minZ));
     camera.target.position.set(centerX,centerY,centerZ);
 
     for(var i=0;i<num_frames;i++) {
