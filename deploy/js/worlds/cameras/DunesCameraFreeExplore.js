@@ -6,14 +6,14 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	// setttings
 	
-	var CAMERA_LOWEST_Y = 50;
+	var CAMERA_LOWEST_Y = 75;
 	var CAMERA_LOWEST_Y_NULL_ATTENUATION = 200;
 	var CAMERA_HIGHEST_Y = 4500;
-	var CAMERA_FORWARD_SPEED = 15;
-	var CAMERA_FORWARD_SPEED_MAX = 25;
+	var CAMERA_FORWARD_SPEED = 25;
+	var CAMERA_FORWARD_SPEED_MAX = 35;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 120;
+	var CAMERA_VERTICAL_LIMIT = 250;
 	var CAMERA_HORIZONTAL_FACTOR = 15;
 	var CAMERA_INERTIA = 0.05;
 	var CAMERA_ROLL_FACTOR = 0.4;
@@ -92,8 +92,7 @@ DunesCameraFreeExplore = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = 1;//delta * ( 1000 / 30 ) / 1000;
-		if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
+		delta = ( delta > 30 || delta < 5 || isNaN( delta )) ? 1 : delta / 30;
 		
 		
 		// check collision round-robin (can't afford to do all every frame)
@@ -257,16 +256,18 @@ DunesCameraFreeExplore = function( shared ) {
 
 		// handle up/down (cap lowest, highest)
 
-		if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
+		var wantedYMovement = -mouseY * CAMERA_VERTICAL_FACTOR;
+
+		if( Math.abs( wantedCameraTarget.position.y + wantedYMovement - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT ) {
 			
-			wantedCameraTarget.position.y -= mouseY * CAMERA_VERTICAL_FACTOR;
+			wantedCameraTarget.position.y += wantedYMovement;
 			
-		} else {
+		}/* else {
 			
 			if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR;
 			if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR;
 			
-		}
+		}*/
 
 		wantedCameraTarget.position.y = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y );
 		wantedCameraTarget.position.y = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );

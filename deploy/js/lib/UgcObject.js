@@ -127,9 +127,9 @@ var UgcObject = function ( data ) {
 
 		}
 
-    UgcShader.uniforms = THREE.UniformsUtils.clone(UgcShader.uniforms);
+    //UgcShader.uniforms = THREE.UniformsUtils.clone(UgcShader.uniforms);
     var UgcMat =  new THREE.MeshShaderMaterial( {
-            uniforms: UgcShader.uniforms,
+            uniforms: UgcShader.uniforms(),
             vertexShader: UgcShader.vertexShader,
             fragmentShader: UgcShader.fragmentShader,
             shading: THREE.FlatShading,

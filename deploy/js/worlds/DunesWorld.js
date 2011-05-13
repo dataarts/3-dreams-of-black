@@ -52,7 +52,7 @@ var DunesWorld = function ( shared ) {
 	that.lensFlare = null;
 	that.lensFlareRotate = null;
 
-	var flares = initLensFlares( new THREE.Vector3( -5500, 3500, -10000 ), 0, 0 );		
+	var flares = initLensFlares( new THREE.Vector3( -5500, -2500, -10000 ), 0, 0 );		
 	that.scene.addChild( flares );
 	
 	that.lensFlareRotate = flares;
@@ -110,7 +110,7 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 5 );										// prairie
 
-			} else if( x === 1 && z === 3 ) {
+			} else if( x === 0 && z === 3 ) {
 
 				tileRow.push( 6 );										// city
 
@@ -195,8 +195,8 @@ var DunesWorld = function ( shared ) {
 	var ugcFirstThreePositions = [ new THREE.Vector3( TILE_SIZE * 0.15, -1000, -TILE_SIZE * 1.25 ), 
 								   new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
 
-  var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 2500, -TILE_SIZE * 1.25 ),
-    new THREE.Vector3( TILE_SIZE, 3000, -TILE_SIZE ) ];
+  	var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 2500, -TILE_SIZE * 1.25 ),
+    								  new THREE.Vector3( TILE_SIZE, 3000, -TILE_SIZE ) ];
 
 
 	that.scene.collisions.colliders.push( ugcCollider );
@@ -239,9 +239,10 @@ var DunesWorld = function ( shared ) {
 				
 				// move up
 
-        if (ugc.category === 'ground') {
-          ugc.position.y += ( ugc.wantedY - ugc.position.y ) * 0.05;
-        }
+       			if( ugc.category === 'ground' ) {
+       				
+          			ugc.position.y += ( ugc.wantedY - ugc.position.y ) * 0.05;
+        		}
 
 			}
 			
@@ -301,10 +302,13 @@ var DunesWorld = function ( shared ) {
 
 					// first three have special treatment
 
-          var firstPos = ugcFirstThreePositions;
-          if (ugc.category == 'sky') {
-            firstPos = ugcFirstThreePositionsSky;
-          }
+          			var firstPos = ugcFirstThreePositions;
+          			
+          			if( ugc.category == 'sky' ) {
+            
+            			firstPos = ugcFirstThreePositionsSky;
+         	 		
+         	 		}
 					
 					if( firstPos.length ) {
 						
@@ -315,7 +319,7 @@ var DunesWorld = function ( shared ) {
 
 						ugc.visible = true;
 						ugc.placedOnGrid = true;
-            ugc.wantedY = -5;
+            			ugc.wantedY = -5;
 
 						that.scene.addChild( ugc );
 						
@@ -360,17 +364,20 @@ var DunesWorld = function ( shared ) {
 						if( d !== dl ) {
 							
 							ugc.position.set( tx * TILE_SIZE, 0, tz * TILE_SIZE );
-              if (ugc.category === 'sky') {
-                ugc.position.x += Math.random() * 200 - 100;
-                ugc.position.z += Math.random() * 200 - 100;
-                ugc.position.y = 2500 + Math.random() * 1000 - 500;
-              }
+              
+              				if( ugc.category === 'sky' ) {
+			
+				                ugc.position.x += Math.random() * 200 - 100;
+            				    ugc.position.z += Math.random() * 200 - 100;
+            				    ugc.position.y = 2500 + Math.random() * 1000 - 500;
+              				}
+              				
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
 
-              ugc.wantedY = -5;
+				            ugc.wantedY = -5;
 							ugc.visible = true;
 							ugc.placedOnGrid = true;
-              ugc.updateMatrix();
+             				ugc.updateMatrix();
 							
 							that.scene.addChild( ugc );
 							
@@ -473,6 +480,7 @@ var DunesWorld = function ( shared ) {
 		applyDunesShader( result, { "D_tile_City_Collision":true, "D_tile_City_Island_Co": true }, { "D_tile_City_Island": -1.0 },  { "D_tile_City_Water": 0.65 } );
 		tileMeshes[ 6 ][ 0 ] = addDunesPart( result );
 
+
 		if ( ENABLE_WATERFALLS ) {
 		
 			waterfallCityPosition.position.set( 750.267456, 709.979614, 29121.154297 );
@@ -480,7 +488,7 @@ var DunesWorld = function ( shared ) {
 			
 		}
 
-		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 2500, type: 0, destination: "city" } );
+		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 3500, type: 0, destination: "city" } );
 		addInfluenceSphere( { name: "citySlowDown", object: result.empties.City_Center, radius: 10000, type: 1 } );
 
 		that.scene.update( undefined, true );
@@ -536,6 +544,7 @@ var DunesWorld = function ( shared ) {
 
 	that.update = function ( delta, camera, portalsActive ) {
 
+		UgcShader.update( that.skyWhite );
 		updateUgc( camera );
 		that.checkInfluenceSpheres( camera, portalsActive );
 		that.updateTiles( camera ); 

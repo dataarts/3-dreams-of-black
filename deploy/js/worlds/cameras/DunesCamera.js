@@ -13,11 +13,11 @@ DunesCamera = function( shared ) {
 	var CAMERA_FORWARD_SPEED_MAX = 30;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
 	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 120;
+	var CAMERA_VERTICAL_LIMIT = 250;
 	var CAMERA_HORIZONTAL_FACTOR = 12;
 	var CAMERA_INERTIA = 0.05;
 	var CAMERA_ROLL_FACTOR = 0.4;
-	var CAMERA_COLLISION_SLOWDOWN_DISTANCE = 50;
+	var CAMERA_COLLISION_SLOWDOWN_DISTANCE = 60;
 	var CAMERA_COLLISION_DISTANCE = 200;			// if this+slowdown > 280 there's a collision with a mysterious box collider
 	var CAMERA_COLLISION_DISTANCE_SIDES = 40;
 	var CAMERA_COLLISION_DISTANCE_DOWN = 50;
@@ -70,10 +70,12 @@ DunesCamera = function( shared ) {
 	
 	that.resetCamera = function() {
 
-    window.wantedCamera = wantedCamera;
-    window.camera = camera;
-//		wantedCamera.position.set( 0, 50, 300 );
-    wantedCamera.position.set( 0, 350, 600 );
+    	window.wantedCamera = wantedCamera;
+    	window.camera = camera;
+
+		CAMERA_LOWEST_Y = 10;
+
+    	wantedCamera.position.set( 0, 350, 600 );
 		wantedCameraTarget.position.set( 0, 150, -300 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
 
@@ -89,10 +91,8 @@ DunesCamera = function( shared ) {
 	
 	that.updateCamera = function( progress, delta, time ) {
 		
-		delta = ( delta > 30 ) ? 1 : delta / 30;
+		delta = ( delta > 30 || delta < 5 ) ? 1 : delta / 30;
 
-		//delta = 1;//delta * ( 1000 / 30 ) / 1000;
-		//if( delta < 0.5 || delta > 2 || isNaN( delta )) delta = 1;
 		
 		// get mouse
 		
@@ -123,7 +123,7 @@ DunesCamera = function( shared ) {
 			
 			// handle left/right		
 	
-			wantedCameraTarget.position.x = wantedCamera.position.x + CAMERA_HORIZONTAL_FACTOR * mouseX * 0.5;
+			wantedCameraTarget.position.x = wantedCamera.position.x + CAMERA_HORIZONTAL_FACTOR * mouseX;
 			wantedCameraTarget.position.x = Math.min( 300, Math.max( -300, wantedCameraTarget.position.x ));
 			wantedCameraTarget.position.z = wantedCamera.position.z - CAMERA_COLLISION_DISTANCE;
 
@@ -131,8 +131,8 @@ DunesCamera = function( shared ) {
 
 			camera.position.y = camera.target.position.y = wantedCameraTarget.position.y = wantedCamera.position.y;
 
-			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.15;
-			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.15;
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.35;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.35;
 
 						
 		} else if( progress < CAMERA_START_LIFT ) {
@@ -149,25 +149,22 @@ DunesCamera = function( shared ) {
 			if( c && c.distance !== -1 ) {
 				
 				recalculatedDistance = c.distance * 0.1;
-				wantedCamera.position.y = ray.origin.y - recalculatedDistance + CAMERA_LOWEST_Y * 0.5;
+				wantedCamera.position.y = ray.origin.y - recalculatedDistance + CAMERA_LOWEST_Y;
 			}
 			
 			// handle up/down (cap lowest, highest)
 	
-	/*		if( Math.abs( wantedCameraTarget.position.y - wantedCamera.position.y ) < CAMERA_VERTICAL_LIMIT * 2 ) {
+			var wantedYMovement = -mouseY * CAMERA_VERTICAL_FACTOR;
+	
+			if( wantedCameraTarget.position.y + wantedYMovement - wantedCamera.position.y <= CAMERA_VERTICAL_LIMIT * 0.5 ) {
 				
-				wantedCameraTarget.position.y += Math.max( 0, -mouseY ) * CAMERA_VERTICAL_FACTOR * 0.5;
+				wantedCameraTarget.position.y += wantedYMovement;
 				
-			} else {
-				
-				if( wantedCameraTarget.position.y > wantedCamera.position.y ) wantedCameraTarget.position.y -= CAMERA_VERTICAL_FACTOR * 0.5;
-				if( wantedCameraTarget.position.y < wantedCamera.position.y ) wantedCameraTarget.position.y += CAMERA_VERTICAL_FACTOR * 0.5;
-				
-			}
+			} 
 
-			wantedCameraTarget.position.y  = Math.max( wantedCameraTarget.position.y, CAMERA_LOWEST_Y * 0.5 );
-			wantedCameraTarget.position.y  = Math.min( wantedCameraTarget.position.y, CAMERA_HIGHEST_Y );
-	*/
+			wantedCameraTarget.position.y = Math.max( wantedCameraTarget.position.y, wantedCamera.position.y );
+			wantedCameraTarget.position.y = Math.min( wantedCameraTarget.position.y, wantedCamera.position.y + CAMERA_VERTICAL_LIMIT * 0.5 );
+	
 	
 			// handle left/right		
 
@@ -182,23 +179,23 @@ DunesCamera = function( shared ) {
 
 			var localProgress = Math.sin( 0.5 * Math.PI * ( progress - CAMERA_STATIC_END ) / ( CAMERA_START_LIFT - CAMERA_STATIC_END ));
 				
-			cameraSpeed = CAMERA_FORWARD_SPEED * 0.6 * localProgress * delta;
+			cameraSpeed = CAMERA_FORWARD_SPEED * 0.2 * localProgress * delta;
 			wantedCameraDirection.multiplyScalar( cameraSpeed );
 
 			wantedCamera.position.x += wantedCameraDirection.x;
-			wantedCamera.position.y += Math.sin(( wantedCamera.position.x + wantedCamera.position.z ) * 0.035 ) * 2.0 * ( 1 - localProgress );
+			wantedCamera.position.y += Math.sin(( wantedCamera.position.x + wantedCamera.position.z ) * 0.1 ) * 5.0 * ( 1.5 - localProgress );
 			wantedCamera.position.z += wantedCameraDirection.z;
 
 
 			// position intertia
 	
-			camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * 0.5;
-			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * 0.75;
-			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * 0.5;
+			camera.position.x += ( wantedCamera.position.x - camera.position.x ) * CAMERA_INERTIA * 2;
+			camera.position.y += ( wantedCamera.position.y - camera.position.y ) * CAMERA_INERTIA * 2;
+			camera.position.z += ( wantedCamera.position.z - camera.position.z ) * CAMERA_INERTIA * 2;
 	
-			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * 0.25;
-			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * 0.25;
-			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * 0.25;
+			camera.target.position.x += ( wantedCameraTarget.position.x - camera.target.position.x ) * CAMERA_INERTIA * 2;
+			camera.target.position.y += ( wantedCameraTarget.position.y - camera.target.position.y ) * CAMERA_INERTIA * 2;
+			camera.target.position.z += ( wantedCameraTarget.position.z - camera.target.position.z ) * CAMERA_INERTIA * 2;
 
 
 		} else {
@@ -345,8 +342,8 @@ DunesCamera = function( shared ) {
 				
 				wantedCameraSpeedFactor[ direction ] = 1;
 				
-			}
-	
+			} 
+				
 	
 			// calculate sum of all factors 
 	
@@ -409,6 +406,11 @@ DunesCamera = function( shared ) {
 				wantedCameraTarget.position.y += CAMERA_LIFT_SPEED * 0.9 * delta;
 		
 			}
+
+
+			// adjust lowest y
+
+			CAMERA_LOWEST_Y += ( 75 - CAMERA_LOWEST_Y ) * 0.25;
 	
 	
 			// cap height
@@ -455,11 +457,6 @@ DunesCamera = function( shared ) {
 				wantedCameraTarget.position.z = camera.target.position.z = -CAMERA_COLLISION_DISTANCE;
 
 			}
-
-//      if(Math.random() < 0.1) {
-//        console.log(camera.x, camera.y, camera.z);
-//        console.log(cameraTarget.x, cameraTarget.y, cameraTarget.z);
-//      }
 
 		}
 
