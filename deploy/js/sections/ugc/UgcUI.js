@@ -77,28 +77,28 @@ var UgcUI = function (shared) {
   var submit = document.createElement('div');
 
   submit.addEventListener('mousemove', function(e) {
-    e.stopImmediatePropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     e.stopPropagation();
   }, false);
   submit.addEventListener('mouseup', function(e) {
-    e.stopImmediatePropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     e.stopPropagation();
   }, false);
   submit.addEventListener('mousedown', function(e) {
-    e.stopImmediatePropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     e.stopPropagation();
   }, false);
   submitShade.addEventListener('mousemove', function(e) {
-    e.stopImmediatePropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     e.stopPropagation();
   }, false);
   submitShade.addEventListener('mouseup', function(e) {
-    e.stopImmediatePropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     e.stopPropagation();
   }, false);
   submitShade.addEventListener('mousedown', function(e) {
     hideSubmitDialogue();
-    e.stopImmediatePropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     e.stopPropagation();
   }, false);
 
@@ -468,15 +468,15 @@ var UgcUI = function (shared) {
     for (var i = 0; i < uis.length; i++) {
       var elem = uis[i];
       elem.addEventListener('mousemove', function(e) {
-        e.stopImmediatePropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
         e.stopPropagation();
       }, false);
       elem.addEventListener('mouseup', function(e) {
-        e.stopImmediatePropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
         e.stopPropagation();
       }, false);
       elem.addEventListener('mousedown', function(e) {
-        e.stopImmediatePropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
         e.stopPropagation();
       }, false);
     }

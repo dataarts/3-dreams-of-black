@@ -325,7 +325,9 @@ var LauncherSection = function (shared) {
 
   LauncherSection.showUI = function() {
 
-    domElement.removeChild(ffTitle);
+		if(ffTitle) {
+			ffTitle.style.display = "none";
+		}
     domElement.appendChild(uiContainer);
 
   };
