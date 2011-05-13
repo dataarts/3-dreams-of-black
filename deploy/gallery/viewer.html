@@ -149,9 +149,6 @@
             minX = vertices[0].position.x, minY = vertices[0].position.y, minZ = vertices[0].position.z;
 
             for (var i in vertices){
-              centerX += vertices[i].position.x;
-              centerY += vertices[i].position.y;
-              centerZ += vertices[i].position.z;
 
               (vertices[i].position.x > maxX) ? maxX = vertices[i].position.x : null;
               (vertices[i].position.y > maxY) ? maxY = vertices[i].position.y : null;
@@ -161,9 +158,9 @@
               (vertices[i].position.z < minZ) ? minZ = vertices[i].position.z : null;
                             
             }
-            centerX = centerX/vertices.length;
-            centerY = centerY/vertices.length;
-            centerZ = centerZ/vertices.length;
+            centerX = (minX+maxX)/2;
+            centerY = (minY+maxY)/2;
+            centerZ = (minZ+maxZ)/2;
             newRadius = 1.5*Math.max(maxX-minX,Math.max(maxX-minX,maxZ-minZ));
 
             camera.target.position.y = centerY;
