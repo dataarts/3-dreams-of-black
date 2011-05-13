@@ -104,7 +104,6 @@ function init() {
 	//sequencer.add( new NoiseEffect( shared, 0.096, 0.0, 4096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 	sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 5 );
 	//sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 5 );
-
 }
 
 function start( pattern ) {

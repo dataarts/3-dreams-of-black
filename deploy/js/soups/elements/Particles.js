@@ -32,7 +32,6 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 	for (var i = 0; i < that.initSettings.numOfParticleSystems; i++) {
 
-		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: false, blending: THREE.AdditiveBlending } );
 		var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: true, blending: blendMode } );
 		//var particleMaterial = new THREE.ParticleBasicMaterial( { size: that.initSettings.particleSize, map: spriteArray[i%spriteArray.length], transparent: true, depthTest: true, blending: THREE.NormalBlending } );
 
@@ -65,7 +64,6 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 
 			if (particleArray[i].alivetime >= numOfParticleSystems) {
 				particleArray[i].alivetime = 0;
-				//particles.scale.x = particles.scale.y = particles.scale.z = 0.1;
 				particles.scale.x = particles.scale.y = particles.scale.z = 0.5;
 
 				particles.position.x = position.x;
@@ -79,7 +77,7 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 						extrax = 100;
 					}
 
-					particleArray[i].c.tox = position.x-extrax//camPos.x+extrax;
+					particleArray[i].c.tox = position.x-extrax;
 					particleArray[i].c.toy = 0;
 					particleArray[i].c.toz = position.z-100;//camPos.z-400; // hack for in front of camera
 
@@ -137,7 +135,6 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 				particles.rotation.z += 0.010;
 
 				var scale = Math.max(alivetime/15, 1);
-				//scale = Math.max(scale,0.05);
 				particles.scale.x = particles.scale.y = particles.scale.z = 0.5+scale;	
 
 			}
@@ -151,8 +148,6 @@ var Particles = function ( numOfParticleSystems, scene, particleSize, spriteArra
 			}
 			alpha = Math.min(alpha,1.0);
 			particles.materials[0].opacity = alpha;
-
-			//particles.visible = that.settings.visible;
 
 		}
 
