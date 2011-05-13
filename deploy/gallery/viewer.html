@@ -22,13 +22,24 @@
 
 		<script>
 
+      var ground, camera, renderer, gl;
+
+      var mouseX = 0;
+      var mouseY = 0;
+      var orbitX = 20000;
+      var orbitY = 20000;
+      var drag = false;
+      var radius = 1500, newRadius = 1500;
+      var centerX = 0, centerY = 0, centerZ = 0;
+      var maxX = 0, maxY = 0, maxZ = 0;
+      var minX = 0, minY = 0, minZ = 0;
+
 			( function() {
 
 				var WIDTH = window.innerWidth, HEIGHT = window.innerHeight,
-				DEG2RAD = Math.PI / 180, radius = 1500,
-				mouse = { x: 0, y: 0 }, theta = 45, phi = 15, type = null;
+				DEG2RAD = Math.PI / 180, theta = 45, phi = 15, type = null;
 
-				var camera = new THREE.Camera( 50, WIDTH / HEIGHT, 1, 20000 );
+				camera = new THREE.Camera( 50, WIDTH / HEIGHT, 1, 20000 );
 				camera.target.position.y = 200;
 
 				var scene = new THREE.Scene();
@@ -37,13 +48,13 @@
 
 				// Lights
 
-				var ambient = new THREE.AmbientLight( 0x221100 );
+				var ambient = new THREE.AmbientLight( 0x664433 );
 				var directionalLight1 = new THREE.DirectionalLight( 0xffeedd );
 				var directionalLight2 = new THREE.DirectionalLight( 0xffeedd );
 
-				ambient.color.setHSV( 0, 0, 0.1 );
+				ambient.color.setHSV( 0, 0, 0.3 );
 
-				directionalLight1.color.setHSV( 0.088, 0, 1 );
+				directionalLight1.color.setHSV( 0.088, 0, 0.7 );
 				directionalLight1.position.set( 0.8, 0.3, - 0.5 );
 				directionalLight1.position.normalize();
 
@@ -60,7 +71,7 @@
 
 				// Renderer
 
-				var renderer = new THREE.WebGLRenderer();
+				renderer = new THREE.WebGLRenderer();
 				renderer.domElement.style.position = 'absolute';
 				renderer.setSize( WIDTH, HEIGHT );
 				renderer.setClearColor( scene.fog.color );
@@ -74,15 +85,15 @@
 
 					for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
 
-						var object = result.scene.objects[ i ];
+						ground = result.scene.objects[ i ];
 
-						if ( object.visible ) {
+						if ( ground.visible ) {
 
-							object.rotation.x = - 90 * Math.PI / 180;
-							object.position.y = - 50;
-							object.position.x = 1000;
-							object.scale.x = object.scale.y = object.scale.z = 0.75;
-							environment.addChild( object );
+							ground.rotation.x = - 90 * Math.PI / 180;
+							ground.position.y = - 50;
+							ground.position.x = 1000;
+							ground.scale.x = ground.scale.y = ground.scale.z = 0.75;
+							environment.addChild( ground );
 
 						}
 
@@ -130,7 +141,35 @@
 
 					if ( ! ugo.isEmpty() ) {
 
-						scene.addObject( ugo.getMesh() );
+            var mesh = ugo.getMesh();
+
+            var vertices = mesh.geometry.vertices;
+
+            maxX = vertices[0].position.x, maxY = vertices[0].position.y, maxZ = vertices[0].position.z;
+            minX = vertices[0].position.x, minY = vertices[0].position.y, minZ = vertices[0].position.z;
+
+            for (var i in vertices){
+              centerX += vertices[i].position.x;
+              centerY += vertices[i].position.y;
+              centerZ += vertices[i].position.z;
+
+              (vertices[i].position.x > maxX) ? maxX = vertices[i].position.x : null;
+              (vertices[i].position.y > maxY) ? maxY = vertices[i].position.y : null;
+              (vertices[i].position.z > maxZ) ? maxZ = vertices[i].position.z : null;
+              (vertices[i].position.x < minX) ? minX = vertices[i].position.x : null;
+              (vertices[i].position.y < minY) ? minY = vertices[i].position.y : null;
+              (vertices[i].position.z < minZ) ? minZ = vertices[i].position.z : null;
+                            
+            }
+            centerX = centerX/vertices.length;
+            centerY = centerY/vertices.length;
+            centerZ = centerZ/vertices.length;
+            newRadius = 1.5*Math.max(maxX-minX,Math.max(maxX-minX,maxZ-minZ));
+
+            camera.target.position.y = centerY;
+
+            mesh.position.set(-centerX, -minY, -centerZ);
+						scene.addObject( mesh );
 
 					}
 
@@ -138,10 +177,31 @@
 
 				document.addEventListener( 'mousemove', function onDocumentMouseMove( event ) {
 
-					mouse.x = event.clientX;
-					mouse.y = event.clientY;
+          if (drag) {
+            var deltaX = mouseX - ( event.clientX - WIDTH/2 );
+            var deltaY = mouseY - ( event.clientY - HEIGHT/2 );
+            mouseX = event.clientX - WIDTH/2;
+            mouseY = event.clientY - HEIGHT/2;
+            orbitX += deltaX*140;
+            orbitY -= deltaY*140;
+          }
 
 				}, false );
+
+        document.addEventListener( 'mouseup', function onDocumentMouseUp( event ) {
+
+          drag = false;
+
+        }, false );
+
+
+       document.addEventListener( 'mousedown', function onDocumentMouseDown( event ) {
+
+          mouseX = ( event.clientX - WIDTH/2 ) ;
+          mouseY = ( event.clientY - HEIGHT/2 ) ;
+          drag = true;
+
+        }, false );
 
 				animate();
 
@@ -151,9 +211,11 @@
 
 					requestAnimationFrame( animate );
 
-					theta += ( mouse.x / WIDTH ) - 0.5;
+          radius += (newRadius-radius)/20;
 
-					phi -= ( mouse.y / HEIGHT ) - 0.5;
+					theta = ( orbitX / WIDTH ) - 0.5;
+
+					phi = ( orbitY / HEIGHT ) - 0.5;
 
 					switch( type ) {
 
@@ -161,7 +223,6 @@
 						case UgcObject.TYPE_SKY: phi = phi > 90 ? 90 : phi < - 90 ? - 90 : phi; break;
 
 					}
-
 
 					camera.position.x = radius * Math.sin( theta * DEG2RAD ) * Math.cos( phi * DEG2RAD );
 					camera.position.y = radius * Math.sin( phi * DEG2RAD );
