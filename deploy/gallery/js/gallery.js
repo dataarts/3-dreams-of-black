@@ -282,7 +282,7 @@ var GALLERY = function(params) {
 
   function populateLightbox(data) {
     activeObject = data;
-    history.pushState(null,activeObject.title,window.location.pathname+"?id="+activeImage.id)
+    history.pushState(null,activeObject.title,window.location.pathname+"?id="+activeObject.id)
     $('#lightbox-title').html(activeObject.title);
     var savedVote = localStorage.getItem(LOCAL_STORAGE_VOTE_PREFIX + activeObject.id);
     if (savedVote == 1) {
