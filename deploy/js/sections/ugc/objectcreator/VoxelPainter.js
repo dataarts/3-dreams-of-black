@@ -410,7 +410,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 						if ( _symmetry ) {
 
-							var voxel = _object.getVoxel( - toGridScale( _intersectObject.position.x ), toGridScale( _intersectObject.position.y ), toGridScale( _intersectObject.position.z ) );
+							var voxel = _object.getVoxel( - toGridScale( _intersectObject.position.x ) + 1, toGridScale( _intersectObject.position.y ), toGridScale( _intersectObject.position.z ) );
 
 							if ( voxel !== undefined ) {
 
@@ -427,7 +427,7 @@ var VoxelPainter = function ( camera, scene ) {
 
 						if ( _symmetry ) {
 
-							var voxel = _object.getVoxel( - toGridScale( _intersectObject.position.x ), toGridScale( _intersectObject.position.y ), toGridScale( _intersectObject.position.z ) );
+							var voxel = _object.getVoxel( - toGridScale( _intersectObject.position.x ) + 1, toGridScale( _intersectObject.position.y ), toGridScale( _intersectObject.position.z ) );
 
 							if ( voxel !== undefined ) deleteVoxel( voxel.object );
 
