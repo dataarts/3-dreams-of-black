@@ -51,7 +51,7 @@ ROME.Animal_old = function( geometry, parseMorphTargetsNames ) {
 		
 		hd = 0 * Math.random() + 0;
 		sd = 0 * Math.random() + 0;
-		vd = 0.4 * Math.random() + -0.3;
+		vd = 0.4 * Math.random() + -0.1;
 
 		THREE.ColorUtils.adjustHSV( c, hd, sd, vd );							
 		

@@ -52,7 +52,7 @@ var Dunes = function ( shared ) {
 		world.ambient.color.setHSV( 0, 0, 0 );
 		world.directionalLight1.color.setHSV( 0.08823529411764706, 0, 0 );
 		world.directionalLight2.color.setHSV( 0, 0, 0 );
-		world.lensFlare.position.y = -500;
+		world.lensFlare.position.y = -2500;
 		world.skyWhite = 0.02;
 		
 		console.log( "show dunes" );
@@ -84,7 +84,7 @@ var Dunes = function ( shared ) {
 			
 			var localProgress = Math.sin( ( progress - 0.05 ) / ( 0.15 - 0.05 ) * Math.PI * 0.5 );
 			
-			world.lensFlare.position.y = -1000 + 4500 * localProgress;
+			world.lensFlare.position.y = -2500 + 6000 * localProgress;
 
 			world.skyWhite = 0.02 + 0.98 * localProgress;
 			world.ambient.color.setHSV( 0, 0, 0.1 * localProgress );
