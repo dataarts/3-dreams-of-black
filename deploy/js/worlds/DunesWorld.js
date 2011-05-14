@@ -7,6 +7,7 @@ var DunesWorld = function ( shared ) {
 	var that = this;
 	var SCALE = 0.20;
 	var TILE_SIZE = 29990 * SCALE;
+  var MAX_UGC_PAGES = 4;
 	var LOAD_NEW_UGC_DISTANCE = TILE_SIZE * TILE_SIZE;
 	var scenePrairie, sceneCity, sceneWalk;
 
@@ -399,10 +400,12 @@ var DunesWorld = function ( shared ) {
 		if( !loadingUgc ) {
 
 			loadingUgc = true;
-			
-			ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
-			ugcPageIndex++;
-				
+
+      if (ugcPageIndex < MAX_UGC_PAGES) {
+        ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
+        ugcPageIndex++;
+      }
+
 		}		
 		
 	}
