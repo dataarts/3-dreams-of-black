@@ -167,39 +167,39 @@ var DunesWorld = function ( shared ) {
 	loader.load( "/files/models/dunes/D_tile_3.js", tile2Loaded );
 	loader.load( "/files/models/dunes/D_tile_4.js", tile3Loaded );
 
-	
+
 	var loader = new THREE.JSONLoader();
 	loader.load( { model: "/files/models/dunes/D_tile_1_clouds.js", callback: function( geo ) { addClouds( geo, 100 ) } } );
-	
+
 	function addClouds( geometry, n ) {
-		
+
 		var material = new THREE.MeshFaceMaterial();
 		//var material = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
-		
+
 		var x, y, z;
-		
+
 		for ( var i = 0; i < n; i++ ) {
-		
+
 			var model = new THREE.Mesh( geometry, material );
-			
-			
+
+
 			x = 150000 * ( Math.random() - 0.5 );
 			y = 3000;
 			z = 150000 * ( Math.random() - 0.5 );
-			
+
 			model.scale.set( SCALE, SCALE, SCALE );
 			model.position.set( x, y, z );
 			model.updateMatrix();
 			model.matrixAutoUpdate = false;
 
 			applyCloudsShader( model, CloudsShader );
-			
+
 			that.scene.addChild( model );
-			
+
 		}
-		
+
 	};
-	
+
 	// create UGC handler
 
 	var ugcHandler = new UgcHandler();
@@ -348,7 +348,7 @@ var DunesWorld = function ( shared ) {
 						ugc.visible = true;
 						ugc.placedOnGrid = true;
 						if (ugc.category === 'sky') {
-						  ugc.wantedY = 3000;
+						  ugc.wantedY = 2500;
 						} else {
 						  ugc.wantedY = -5;
                         }
