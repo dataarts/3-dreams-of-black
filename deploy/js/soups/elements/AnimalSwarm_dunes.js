@@ -106,6 +106,69 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 
 	};
 
+	// switch animal test
+	this.switchAnimal = function (geometry, scale, speed, morph, arrayIndex) {
+		//console.log("adding on index = "+index);
+	
+		var scaleMultiplier = scale || 1.2;
+
+		for ( i = 0; i < that.initSettings.numOfAnimals; ++i ) {
+			if (arrayIndex != undefined) {
+				i = arrayIndex;
+			}
+
+			var a = that.array[i].a;
+
+			var startMorph = that.array[i].startMorph;
+			var endMorph = that.array[i].endMorph;
+
+			if (a != undefined && a.mesh.geometry == geometry && arrayIndex == undefined && (startMorph == morph || endMorph == morph)) {
+				continue;
+			}
+
+			var oldPosition = that.array[i].c.position;
+
+			var animal = ROME.Animal( geometry, false );
+			var mesh = animal.mesh;
+
+			var scale = 0.02+(Math.random()/8);
+			if (i<2) {
+				scale = 0.15;
+			}
+
+			scale = Math.max(scale, 0.1);
+			mesh.position = oldPosition;
+			mesh.visible = false;
+			mesh.scale.set(0.00001,0.00001,0.00001);
+
+			mesh.updateMatrix();
+
+			mesh.matrixAutoUpdate = false;
+			
+			scene.removeChild( that.array[i].c );
+			scene.addChild( mesh );
+			
+			var speeda = speed;
+			var speedb = speed;
+
+			animal.play( animal.availableAnimals[ morph ], animal.availableAnimals[ morph ], 0, Math.random(), Math.random() );
+
+			that.array[i].c = mesh;
+			that.array[i].a = animal;
+			that.array[i].scale = scale * scaleMultiplier;
+			that.array[i].origscale = scale * scaleMultiplier;
+			that.array[i].speeda = speed;
+			that.array[i].speedb = speed;
+			that.array[i].active = false;
+			that.array[i].startMorph = morph;
+			that.array[i].endMorph = morph;
+
+			break;
+
+		}
+		
+	}
+
 	this.update = function (delta) {
 
 		r += 0.1

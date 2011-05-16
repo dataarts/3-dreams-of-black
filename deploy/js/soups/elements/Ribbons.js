@@ -39,6 +39,13 @@ var Ribbons = function ( numOfRibbons, vectorArray, scene, ribbonMaterials ) {
 
 	}
 
+	this.changeColor = function (colorArray, opacity) {
+		for ( i = 0; i < that.initSettings.numOfRibbons; ++i ) {
+			ribbonArray[i].rm.materials[0].color.setHex(colorArray[i%colorArray.length]);
+			ribbonArray[i].rm.materials[0].opacity = opacity;
+		}
+	}
+
 	this.update = function (position) {
 
 		r += 0.1;
