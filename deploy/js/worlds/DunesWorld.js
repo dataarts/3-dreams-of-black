@@ -7,8 +7,7 @@ var DunesWorld = function ( shared ) {
 	var that = this;
 	var SCALE = 0.20;
 	var TILE_SIZE = 29990 * SCALE;
-  var MAX_UGC_PAGES = 4;
-	var LOAD_NEW_UGC_DISTANCE = TILE_SIZE * TILE_SIZE;
+  	var MAX_UGC_PAGES = 4;
 	var scenePrairie, sceneCity, sceneWalk;
 
 	that.scale = SCALE;
@@ -288,10 +287,10 @@ var DunesWorld = function ( shared ) {
 		}
 
 
-		// check if we've loaded on this tile
+		// check if we've loaded on this tile ( * 2 for every second tile )
 
-		var cameraTileX = Math.floor( cameraPosition.x / TILE_SIZE );
-		var cameraTileZ = Math.floor( cameraPosition.z / TILE_SIZE );
+		var cameraTileX = Math.floor( cameraPosition.x / ( TILE_SIZE * 2 ));
+		var cameraTileZ = Math.floor( cameraPosition.z / ( TILE_SIZE * 2 ));
 
 		if( !ugcTileLoaded[ cameraTileX + " " + cameraTileZ ] ) {
 
@@ -307,6 +306,9 @@ var DunesWorld = function ( shared ) {
 		if( newUgcLoaded ) {
 
 			newUgcLoaded = false;
+
+			cameraTileX = Math.floor( cameraPosition.x / TILE_SIZE );
+			cameraTileZ = Math.floor( cameraPosition.z / TILE_SIZE );
 
 			var tx, tz;
 			var txTemp, tzTemp;
@@ -332,7 +334,7 @@ var DunesWorld = function ( shared ) {
 
           			var firstPos = ugcFirstThreePositions;
 
-          			if( ugc.category == 'sky' ) {
+          			if( ugc.category === 'sky' ) {
 
             			firstPos = ugcFirstThreePositionsSky;
 
@@ -347,10 +349,15 @@ var DunesWorld = function ( shared ) {
 
 						ugc.visible = true;
 						ugc.placedOnGrid = true;
-						if (ugc.category === 'sky') {
+						
+						if( ugc.category === 'sky' ) {
+							
 						  ugc.wantedY = 2500;
+						
 						} else {
+						
 						  ugc.wantedY = -5;
+                        
                         }
 
 						that.scene.addChild( ugc );
@@ -403,8 +410,11 @@ var DunesWorld = function ( shared ) {
             				    ugc.position.z += Math.random() * 200 - 100;
             				    ugc.wantedY = 2500 + Math.random() * 1000 - 500;
             				    ugc.position.y = 10000;
+            				    
               				} else {
+              				  
               				  ugc.wantedY = -5;
+                            
                             }
 
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
@@ -436,10 +446,12 @@ var DunesWorld = function ( shared ) {
 
 			loadingUgc = true;
 
-      if (ugcPageIndex < MAX_UGC_PAGES) {
-        ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
-        ugcPageIndex++;
-      }
+	      	if( ugcPageIndex < MAX_UGC_PAGES ) {
+	      	
+	        	ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
+	        	ugcPageIndex++;
+
+	      	}
 
 		}
 

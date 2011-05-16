@@ -14,7 +14,7 @@ WaterfallShader = {
 			// create geo
 			
 			var geometry = new THREE.Geometry();
-			var v, f, fl = 1500;
+			var v, f, fl = 800;
 			var faces = geometry.faces;
 			var vertices = geometry.vertices;
 			var vertex;
@@ -78,7 +78,7 @@ WaterfallShader = {
 				
 				// size
 				
-				s = Math.random() * 25 + 5;
+				s = Math.random() * 30 + 5;
 				
 				size.push( s );
 				size.push( s );
@@ -158,7 +158,7 @@ WaterfallShader = {
 		"const float 	PI 			= 3.14159265;",
 		"const vec3 	BASECOLOR 	= vec3(  16.0 / 255.0,  93.0 / 255.0, 118.0 / 255.0 );",
 		"const vec3     HIGHLIGHT   = vec3( 235.0 / 255.0, 237.0 / 255.0, 245.0 / 255.0 );",
-		"const vec3 	ENDCOLOR 	= vec3( 168.0 / 255.0, 231.0 / 255.0, 239.0 / 255.0 );",
+		"const vec3 	ENDCOLOR 	= vec3( 99.00 / 255.0, 239.0 / 255.0, 253.0 / 255.0 );",
 
 		"uniform 	float	globalTime;",
 		"uniform    float   shrinkTop;",
@@ -197,8 +197,10 @@ WaterfallShader = {
 
 			"vec3 rotatedDirection;",
 			"float rotation = modTime * size;",
-			"rotatedDirection.x = ( cos( rotation ) * direction.x - sin( rotation ) * direction.y );",
-			"rotatedDirection.y = ( sin( rotation ) * direction.x + cos( rotation ) * direction.y );",
+			"float cosRot = cos( rotation );",
+			"float sinRot = sin( rotation );",
+			"rotatedDirection.x = ( cosRot * direction.x - sinRot * direction.y );",
+			"rotatedDirection.y = ( sinRot * direction.x + cosRot * direction.y );",
 			"rotatedDirection.z = direction.z;",
 			
 			
@@ -206,11 +208,11 @@ WaterfallShader = {
 			
 			"animated += rotatedDirection * size * ( sin( localTime * 150.0 ) * 0.1 + 1.1 );",
 			
-			// rotate
+			
+			// project
 
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( animated, 1.0 );",
-			
-			"vWorldVector = ( vec3( objectMatrix * vec4( animated, 1.0 )).xyz - cameraPosition) * vec3(0.01, 0.02, 0.01);",
+			"vWorldVector = ( vec3( objectMatrix * vec4( animated, 1.0 )).xyz - cameraPosition ) * vec3( 0.01, 0.02, 0.01 );",
 		"}"
 
 	].join("\n"),
