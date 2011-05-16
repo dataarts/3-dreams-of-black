@@ -45,13 +45,13 @@ var ExplorationSection = function ( shared ) {
 		'	<polygon opacity="0.5" points="119.064,47.554 91.827,0.377 14.897,133.629 69.37,133.629 "/>',
 		'	<g id="rome-explore-hex-poly-top" onClick="ExplorationSection.handleHexClick(1)">',
 		'		<polygon opacity="0.5" points="120.01,47.177 248.861,47.177 276.098,0 92.773,0 92.825,0.089 "/>',
-		'		<text x="168" y="28" font-size="14" font-family="Futura-Std-Bold, Futura, sans-serif" fill="#fff" letter-spacing="1">EXIT</text>',
+		'		<text x="168" y="28" font-size="14" font-family="Futura, sans-serif" fill="#fff" letter-spacing="1">EXIT</text>',
 		'	</g>',
 		'	<polygon opacity="0.5" points="353.868,134.629 299.394,134.629 313.714,159.433 298.996,184.925 353.471,184.925 368.188,159.433 "/>',
 		'	<polygon opacity="0.5" points="298.419,185.925 249.267,271.062 276.503,318.239 352.894,185.925 "/>',
 		'	<g id="rome-explore-hex-poly-bottom" onClick="ExplorationSection.handleHexClick(0)">',
 		'		<polygon opacity="0.5" points="120.405,271.692 93.168,318.869 275.702,318.869 248.466,271.692 "/>',
-		'		<text x="156" y="300" font-size="14" font-family="Futura-Std-Bold, Futura, sans-serif" fill="#fff" letter-spacing="1">RESUME</text>',
+		'		<text x="156" y="300" font-size="14" font-family="Futura, sans-serif" fill="#fff" letter-spacing="1">RESUME</text>',
 		'	</g>',
 		'	<polygon opacity="0.5" points="69.767,185.925 15.294,185.925 92.024,318.833 119.262,271.656 "/>',
 		'	<polygon opacity="0.5" points="54.473,159.433 68.793,134.629 14.728,134.629 14.728,133.922 0,159.433 14.728,184.944 14.728,184.925 69.19,184.925 "/>',
@@ -68,7 +68,7 @@ var ExplorationSection = function ( shared ) {
 		'		<polygon opacity="0.5" points="0,0 27.237,47.176 156.857,47.176 184.095,0 "/>',
 		'		<path id="rome-explore-hex-audio-play" display="none" fill="#FFFFFF" d="M118.749,14.089c-5.246,0-9.499,4.253-9.499,9.499s4.253,9.499,9.499,9.499s9.499-4.253,9.499-9.499 S123.995,14.089,118.749,14.089z M116.27,27.811v-7.75l6.875,3.527L116.27,27.811z"/>',
 		'		<path id="rome-explore-hex-audio-pause" fill="#FFFFFF" d="M118.75,14.089c-5.246,0-9.5,4.253-9.5,9.499s4.254,9.499,9.5,9.499s9.498-4.253,9.498-9.499 S123.996,14.089,118.75,14.089z M118.031,27.463h-2v-7.75h2V27.463z M121.469,27.463h-2v-7.75h2V27.463z"/>',
-		'		<text x="50" y="28" font-size="12" font-family="Futura-Std-Bold, Futura, sans-serif" fill="#fff" letter-spacing="1">AUDIO</text>',
+		'		<text x="50" y="28" font-size="12" font-family="Futura, sans-serif" fill="#fff" letter-spacing="1">AUDIO</text>',
 		'	</g>',
 		'</svg>'
 	].join('\n');
@@ -235,7 +235,7 @@ var ExplorationSection = function ( shared ) {
 
 	function stop( e ) {
 
-		//if( e.keyCode == 13 ) 
+		if( e.keyCode == 13 || e.keyCode == 32 || e.keyCode == 27 ) 
 		{
 
 			toggleDisplay();
