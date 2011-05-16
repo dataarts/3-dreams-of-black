@@ -2,14 +2,99 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	var that = this;
 
-	var ENABLE_TRAIL = false;
-
 	shared.camPos = new THREE.Vector3( 0, 0, 0 );
+	var currentSoup = 0;
+	var started = false;
 
 	var loader = new THREE.JSONLoader();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
-	
+
+	// switch soup
+	shared.signals.mousedown.add( switchSoup );
+
+	function switchSoup () {
+		if (!started) {
+			return;
+		}
+
+		if (currentSoup == 0) {
+			that.set("raven|raven|raven|vulture|vulture|raven|raven|raven|raven|raven|vulture");
+			ribbons.changeColor([0x000000,0x111111,0x000000,0x111111,0x000000,0x111111], 0.5);
+			currentSoup = 1;
+		} else {
+			that.set("eagle|owl|parrot|flamingo|hummingbird|eagle|owl|stork|parrot|hummingbird|eagle");
+			ribbons.changeColor([0xd9f3fb,0xe4f1f5,0xffffff,0xeeeeee,0xdcf3fa,0xd2f3fc], 0.25);
+			currentSoup = 0;
+		}
+
+	}
+
+	that.addAnimal = function ( id, arrayIndex ) {
+		
+		if (id == undefined) {
+			id = "eagle";
+		}
+		
+		var geometry = allAnimals[id].geometry;
+		var scale = allAnimals[id].scale;
+		var speed = allAnimals[id].speed;
+		var morph = allAnimals[id].index;
+		var flying = allAnimals[id].flying;
+		
+		if (flying) {
+			flyingAnimals.switchAnimal(geometry, scale, speed, morph, arrayIndex);
+		} else {
+			runningAnimals.switchAnimal(geometry, scale, speed, morph, arrayIndex);
+		}
+
+	};
+
+
+	that.set = function ( str ) {
+		
+		var array = str.split("|");
+
+		var runningIndex = 0;
+		var flyingIndex = 0;
+
+		for (var i=0; i<array.length; ++i ) {
+			var id = array[i];
+			var isRunning = true;
+
+			if (allAnimals[id].flying) {
+				isRunning = false;
+			}
+
+			if (isRunning) {
+				that.addAnimal(id, runningIndex);
+				++runningIndex;
+			} else {
+				that.addAnimal(id, flyingIndex);
+				++flyingIndex;
+			}
+			
+		}
+
+	}
+
+	// id:s
+
+	var allAnimals = {};
+
+	// birds
+	allAnimals.eagle = {geometry: null, index: 0, speed: 4.848, scale: 1.3, flying: true};
+	allAnimals.owl = {geometry: null, index: 1, speed: 7, scale: 1.3, flying: true};
+	allAnimals.parrot = {geometry: null, index: 2, speed: 7.5, scale: 1.3, flying: true};
+	allAnimals.hummingbird = {geometry: null, index: 3, speed: 3.5, scale: 1.3, flying: true};
+
+	allAnimals.flamingo = {geometry: null, index: 0, speed: 8.5, scale: 1.3, flying: true};
+	allAnimals.stork = {geometry: null, index: 1, speed: 8.623, scale: 1.3, flying: true};
+
+	allAnimals.raven = {geometry: null, index: 0, speed: 14, scale: 1.75, flying: true};
+	allAnimals.vulture = {geometry: null, index: 1, speed: 12, scale: 1.55, flying: true};
+
+
 	// setup the different parts of the soup
 
 	// collision scene
@@ -88,8 +173,14 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	loader.load( { model: "/files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
 	loader.load( { model: "/files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
-	
+	loader.load( { model: "/files/models/soup/birds_A_black.js", callback: birdsABlackLoadedProxy } );
+
 	function birdsALoadedProxy( geometry ) {
+
+		allAnimals.eagle.geometry = geometry;
+		allAnimals.owl.geometry = geometry;
+		allAnimals.parrot.geometry = geometry;
+		allAnimals.hummingbird.geometry = geometry;
 
 		var animal,
 			morphArray = [0,1,2,3];
@@ -101,6 +192,9 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	function birdsBLoadedProxy( geometry ) {
 		
+		allAnimals.flamingo.geometry = geometry;
+		allAnimals.stork.geometry = geometry;
+
 		var animal,
 			morphArray = [1,0];
 		
@@ -109,69 +203,11 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 	};
 
+	function birdsABlackLoadedProxy( geometry ) {
 
-	// trail - of grass/trees/etc
+		allAnimals.raven.geometry = geometry;
+		allAnimals.vulture.geometry = geometry;
 
-	if ( ENABLE_TRAIL ) {
-
-		var trail = new Trail( 80, scene );
-		trail.settings.freeRotation = true;
-		trail.settings.tweenTime = 2500;
-		trail.settings.aliveDivider = 30;
-		trail.settings.offsetAmount = 50;
-		trail.settings.shootRayDown = true;
-
-		trail.settings.scale = 1.5;
-
-		// preoccupy for differnt grass
-
-		for ( i = 0; i < 80; ++i ) {
-
-			var type = i%4;
-			trail.array[i] = "0" + ( type + 1 );
-
-		}
-
-		loader.load( { model: "/files/models/soup/grass01.js", callback: grass01LoadedProxy } );
-		loader.load( { model: "/files/models/soup/grass02.js", callback: grass02LoadedProxy } );
-		loader.load( { model: "/files/models/soup/grass03.js", callback: grass03LoadedProxy } );
-		loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
-
-		function grass01LoadedProxy( geometry ) {
-
-			//adjustColors( geometry );
-			
-			var object = trail.addInstance( geometry, "01", false );
-
-		}
-
-		function grass02LoadedProxy( geometry ) {
-
-			//adjustColors( geometry );
-			
-			var object = trail.addInstance( geometry, "02", false );
-			preInitModel( geometry, renderer, scene, object );
-
-		}
-
-		function grass03LoadedProxy( geometry ) {
-
-			//adjustColors( geometry );
-			
-			var object = trail.addInstance( geometry, "03", false );
-			preInitModel( geometry, renderer, scene, object );
-
-		}
-
-		function grass04LoadedProxy( geometry ) {
-
-			//adjustColors( geometry );
-			
-			var object = trail.addInstance( geometry, "04", false );
-			preInitModel( geometry, renderer, scene, object );
-
-		}
-		
 	}
 
 	this.update = function ( delta, otherCamera ) {
@@ -198,24 +234,14 @@ var DunesSoup = function ( camera, scene, shared ) {
 		}
 
 		// update the soup parts
-
 		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
 		ribbons.update( collisionScene.emitterFollow.position );
 		//flyingAnimals.update();
 		flyingAnimals.update(delta, shared.camPos);
 		//particles.update(delta, vectors.array[0].position);
-		
-		if ( ENABLE_TRAIL ) {
 
-			if ( shared.camPos.y < 800 ) {
-			
-				trail.update( collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta );
-				TWEEN.update();
-
-			}
-
-		}
+		started = true;
 
 	}
 

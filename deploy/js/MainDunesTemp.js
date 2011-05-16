@@ -137,6 +137,8 @@ function start( pattern ) {
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
 	animate();
 
@@ -184,6 +186,25 @@ function onDocumentKeyDown( event ) {
 	}
 
 }
+
+function onDocumentMouseDown( event ) {
+
+	shared.signals.mousedown.dispatch( event );
+
+	event.preventDefault();
+	event.stopPropagation();
+
+}
+
+function onDocumentMouseUp( event ) {
+
+	shared.signals.mouseup.dispatch( event );
+
+	event.preventDefault();
+	event.stopPropagation();
+
+}
+
 
 function onDocumentMouseMove( event ) {
 
