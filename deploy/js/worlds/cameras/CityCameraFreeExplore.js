@@ -6,8 +6,8 @@ CityCameraFreeExplore = function( shared ) {
 	
 	// setttings
 	
-	var CAMERA_FORWARD_SPEED = 10;
-	var CAMERA_FORWARD_SPEED_MAX = 12;
+	var CAMERA_FORWARD_SPEED = 6;
+	var CAMERA_FORWARD_SPEED_MAX = 9;
 	var CAMERA_VERTICAL_FACTOR = 20;
 	var CAMERA_VERTICAL_LIMIT = 50;
 	var CAMERA_HORIZONTAL_FACTOR = 25;
