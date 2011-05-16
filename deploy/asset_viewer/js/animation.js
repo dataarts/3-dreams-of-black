@@ -1,4 +1,4 @@
-var delta, time, oldTime = new Date().getTime();
+var delta, time = new Date().getTime(), oldTime = new Date().getTime();
 
 var sineTime = 0;
 var drag = false;

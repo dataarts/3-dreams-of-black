@@ -9,8 +9,6 @@ var aspect = width/height;
 
 function initRenderer() {
 
-
-
   container = document.createElement('div');
   container.id = "viewerCanvas";
 
@@ -196,10 +194,10 @@ function initPostprocessingNoise( effect ) {
 
 function render(){
 
-	if (document.body.scrollTop > 1794 || document.body.scrollTop + window.innerHeight < 1142) {
-
-		return;
-	}
+//	if (document.body.scrollTop > 1794 || document.body.scrollTop + window.innerHeight < 1142) {
+//
+//		return;
+//	}
 	
 	console.log(document.body.scrollTop);
 	
