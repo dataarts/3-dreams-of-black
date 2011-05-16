@@ -3,10 +3,11 @@ var DunesWorld = function ( shared ) {
 	// vars
 
 	var ENABLE_WATERFALLS = true;
-	
+
 	var that = this;
 	var SCALE = 0.20;
 	var TILE_SIZE = 29990 * SCALE;
+  var MAX_UGC_PAGES = 4;
 	var LOAD_NEW_UGC_DISTANCE = TILE_SIZE * TILE_SIZE;
 	var scenePrairie, sceneCity, sceneWalk;
 
@@ -52,29 +53,29 @@ var DunesWorld = function ( shared ) {
 	that.lensFlare = null;
 	that.lensFlareRotate = null;
 
-	var flares = initLensFlares( new THREE.Vector3( -5500, -2500, -10000 ), 0, 0 );		
+	var flares = initLensFlares( new THREE.Vector3( -5500, -2500, -10000 ), 0, 0 );
 	that.scene.addChild( flares );
-	
+
 	that.lensFlareRotate = flares;
 	that.lensFlare = flares.children[ 0 ];
 
 	// init shader
-	
+
 	DunesShader.init();
 
 
 	// waterfall
-	
+
 	if ( ENABLE_WATERFALLS ) {
 
 		var waterfallPrairiePosition = new THREE.Object3D();
 		var waterfallCityPosition = new THREE.Object3D();
 		var waterfallPrairie = WaterfallShader.createWaterfall( 0 );
 		var waterfallCity = WaterfallShader.createWaterfall( 1 );
-		
+
 		that.scene.addChild( waterfallPrairie );
 		that.scene.addChild( waterfallCity );
-		
+
 	}
 
 	// generate base grid (rotations depend on where the grid is in space)
@@ -112,7 +113,7 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 6 );										// city
 
-			} else if( x === 4 && z === 4 ) {							
+			} else if( x === 4 && z === 4 ) {
 
 				tileRow.push( 0 );										// mountain
 				numTileInstances[ 0 ]++;
@@ -122,7 +123,7 @@ var DunesWorld = function ( shared ) {
 				tileRow.push( 0 );										// mountain
 				numTileInstances[ 0 ]++;
 
-			} else if( x === 1 && z === 4 ) {							
+			} else if( x === 1 && z === 4 ) {
 
 				tileRow.push( 2 );										// flat for first UGC
 				numTileInstances[ 2 ]++;
@@ -138,7 +139,7 @@ var DunesWorld = function ( shared ) {
 		}
 
 	}
-	
+
 
 
 	// create skydome
@@ -210,7 +211,7 @@ var DunesWorld = function ( shared ) {
 	var ugcTileLoaded = {};
 	var ugcCollider = new THREE.SphereCollider( new THREE.Vector3( 0, -5000, 0 ), 1 );
 	var ugcTileDisplacement = [
-	
+
 		{ x: -1, z: -1 },		// -pi
 		{ x: -1, z: 0 },
 		{ x: -1, z: 1 },
@@ -219,26 +220,26 @@ var DunesWorld = function ( shared ) {
 		{ x: 1, z: 0 },
 		{ x: 1, z: -1 },
 		{ x: 0, z: -1 }
-	
+
 	];
 
-	var ugcFirstThreePositions = [ new THREE.Vector3( TILE_SIZE * 0.15, -1000, -TILE_SIZE * 1.25 ), 
+	var ugcFirstThreePositions = [ new THREE.Vector3( TILE_SIZE * 0.15, -1000, -TILE_SIZE * 1.25 ),
 								   new THREE.Vector3( TILE_SIZE, -1000, -TILE_SIZE ) ];
 
-  	var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 2500, -TILE_SIZE * 1.25 ),
-    								  new THREE.Vector3( TILE_SIZE, 3000, -TILE_SIZE ) ];
+  	var ugcFirstThreePositionsSky = [ new THREE.Vector3( TILE_SIZE * 0.15, 10000, -TILE_SIZE * 1.25 ),
+    								  new THREE.Vector3( TILE_SIZE, 10000, -TILE_SIZE ) ];
 
 
 	that.scene.collisions.colliders.push( ugcCollider );
-	
-	
+
+
 	//--- update ugc ---
-	
+
 	function updateUgc( camera ) {
-		
+
 		// find closest to place physics
 		// make new ones pop up through the ground
-		
+
 		var closestDistance = 99999999999, tempDistance, closestUgc = undefined;
 		var cameraPosition = camera.matrixWorld.getPosition();
 		var camX = cameraPosition.x;
@@ -247,40 +248,37 @@ var DunesWorld = function ( shared ) {
 		var ugc, ugcPos, dx, dz;
 
 		for( u = 0; u < ul; u++ ) {
-			
+
 			ugc = loadedUGC[ u ];
-			
-			if( ugc.visible === true && ugc.placedOnGrid && ugc.category == 'flythrougheverything') {
-				
-				ugcPos = ugc.position;
-				
-				dx = ugcPos.x - camX;
-				dz = ugcPos.z - camZ;
-				
-				tempDistance = Math.min( closestDistance, dx * dx + dz * dz );
-				
-				if( tempDistance < closestDistance ) {
-					
-					closestDistance = tempDistance;
-					closestUgc = ugc;
-					
-				}
-				
-				
+
+			if( ugc.visible === true && ugc.placedOnGrid) {
+
+				//ugcPos = ugc.position;
+
+				//dx = ugcPos.x - camX;
+				//dz = ugcPos.z - camZ;
+
+				//tempDistance = Math.min( closestDistance, dx * dx + dz * dz );
+
+				//if( tempDistance < closestDistance ) {
+
+					//closestDistance = tempDistance;
+					//closestUgc = ugc;
+
+				//}
+
+
 				// move up
 
-       			if( ugc.category === 'ground' ) {
-       				
-          			ugc.position.y += ( ugc.wantedY - ugc.position.y ) * 0.05;
-        		}
+          		ugc.position.y += ( ugc.wantedY - ugc.position.y ) * 0.05;
 
 			}
-			
+
 		}
-			
-		
+
+
 		// set physics on closest ugc
-		
+
 		if( closestUgc !== undefined ) {
 
 			ugcCollider.center.copy( closestUgc.matrixWorld.getPosition());
@@ -296,52 +294,52 @@ var DunesWorld = function ( shared ) {
 		var cameraTileZ = Math.floor( cameraPosition.z / TILE_SIZE );
 
 		if( !ugcTileLoaded[ cameraTileX + " " + cameraTileZ ] ) {
-			
+
 			ugcTileLoaded[ cameraTileX + " " + cameraTileZ ] = true;
 			loadUgc();
-			
-		} 
-		
-		
-		
+
+		}
+
+
+
 		// need to place any new?
-		
+
 		if( newUgcLoaded ) {
-			
+
 			newUgcLoaded = false;
-	
+
 			var tx, tz;
 			var txTemp, tzTemp;
 			var c, tileCollider;
 			var d, dl = ugcTileDisplacement.length;
-			
+
 			var cameraDirection = camera.matrixWorld.getColumnZ().negate();
 			var tileDisplacementIndex = 3 + Math.ceil( 3 * Math.atan2( cameraDirection.x, cameraDirection.z ) / Math.PI );
 			if( tileDisplacementIndex < 0 ) tileDisplacementIndex = 0;
 
 
-			// loop throug all loaded ugc			
+			// loop throug all loaded ugc
 
 			for( u = 0; u < ul; u++ ) {
-				
+
 				ugc = loadedUGC[ u ];
-				
+
 				// place?
-				
+
 				if( !ugc.placedOnGrid ) {
 
 					// first three have special treatment
 
           			var firstPos = ugcFirstThreePositions;
-          			
+
           			if( ugc.category == 'sky' ) {
-            
+
             			firstPos = ugcFirstThreePositionsSky;
-         	 		
+
          	 		}
-					
+
 					if( firstPos.length ) {
-						
+
 						ugc.position.copy( firstPos.shift() );
 						ugc.position.x += Math.random() * 200 - 100;
 						ugc.position.z += Math.random() * 200 - 100;
@@ -349,103 +347,111 @@ var DunesWorld = function ( shared ) {
 
 						ugc.visible = true;
 						ugc.placedOnGrid = true;
-            			ugc.wantedY = -5;
+						if (ugc.category === 'sky') {
+						  ugc.wantedY = 3000;
+						} else {
+						  ugc.wantedY = -5;
+                        }
 
 						that.scene.addChild( ugc );
-						
+
 						tx = Math.floor( ugc.position.x / TILE_SIZE );
 						tz = Math.floor( ugc.position.z / TILE_SIZE );
-						
+
 						ugcOccupiedTiles[ tx + " " + tz + " " + ugc.category ] = true;
-						
+
 					} else {
-						
+
 						// try find placement
 
 						for( d = 0; d < dl; d++ ) {
-							
+
 							tx = txTemp = cameraTileX + ugcTileDisplacement[ tileDisplacementIndex ].x;
 							tz = tzTemp = cameraTileZ + ugcTileDisplacement[ tileDisplacementIndex ].z;
-							
+
 							txTemp %= tileGridSize;
 							tzTemp %= tileGridSize;
-							
+
 							while( txTemp < 0 ) txTemp += tileGridSize;
 							while( tzTemp < 0 ) tzTemp += tileGridSize;
-							
+
 							if( tileGrid[ tzTemp ][ txTemp ] < 4 ) {		// only place on tiles, not praire/city/walk
-								
+
 								if( !ugcOccupiedTiles[ tx + " " + tz + " " + ugc.category ] ) {	// already occupied?
-									
+
 									ugcOccupiedTiles[ tx + " " + tz + " " + ugc.category ] = true;
 									break;
-													  	
+
 								}
-								
+
 							}
-							
+
 							tileDisplacementIndex++;
 							tileDisplacementIndex %= ugcTileDisplacement.length;
 						}
-						
-						
+
+
 						// found spot, place
-						
+
 						if( d !== dl ) {
-							
+
 							ugc.position.set( tx * TILE_SIZE, 0, tz * TILE_SIZE );
-              
+
               				if( ugc.category === 'sky' ) {
-			
+
 				                ugc.position.x += Math.random() * 200 - 100;
             				    ugc.position.z += Math.random() * 200 - 100;
-            				    ugc.position.y = 2500 + Math.random() * 1000 - 500;
-              				}
-              				
+            				    ugc.wantedY = 2500 + Math.random() * 1000 - 500;
+            				    ugc.position.y = 10000;
+              				} else {
+              				  ugc.wantedY = -5;
+                            }
+
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
 
-				            ugc.wantedY = -5;
 							ugc.visible = true;
 							ugc.placedOnGrid = true;
              				ugc.updateMatrix();
-							
+
 							that.scene.addChild( ugc );
-							
+
 						}
-						
+
 					}
-					
+
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	}
-	
-	
+
+
 	//--- load ugc ---
-	
+
 	function loadUgc() {
 
 		if( !loadingUgc ) {
 
 			loadingUgc = true;
-			
-			ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
-			ugcPageIndex++;
-				
-		}		
-		
+
+      if (ugcPageIndex < MAX_UGC_PAGES) {
+        ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
+        ugcPageIndex++;
+      }
+
+		}
+
 	}
-	
-	
+
+
 	//--- on load ugc ---
-	
+
 	function onLoadUgc( objects ) {
 
 		loadingUgc = false;
-	
+
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
 			var object = new UgcObject( JSON.parse(objects[ i ].data) );
@@ -457,16 +463,16 @@ var DunesWorld = function ( shared ) {
 				mesh.category = category;
 				mesh.visible = false;
 				loadedUGC.push( mesh );
-				
+
 				newUgcLoaded = true;
-				
+
 			}
 
 		}
-		
+
 	}
-	
-	
+
+
 
 
 	//--- walk loaded ---
@@ -489,12 +495,12 @@ var DunesWorld = function ( shared ) {
 		tileMeshes[ 5 ][ 0 ] = addDunesPart( result );
 
 		if ( ENABLE_WATERFALLS ) {
-		
+
 			waterfallPrairiePosition.position.set( -5165.693848, 1024.796875, 18247.871094 );
 			result.scene.addChild( waterfallPrairiePosition );
 
 		}
-		
+
 		addInfluenceSphere( { name: "prairiePortal", object: result.empties.Prairie_Portal, radius: 2000, type: 0, destination: "prairie" } );
 		addInfluenceSphere( { name: "prairieSlowDown", object: result.empties.Prairie_Center, radius: 10000, type: 1 } );
 
@@ -512,10 +518,10 @@ var DunesWorld = function ( shared ) {
 
 
 		if ( ENABLE_WATERFALLS ) {
-		
+
 			waterfallCityPosition.position.set( 750.267456, 709.979614, 29121.154297 );
 			result.scene.addChild( waterfallCityPosition );
-			
+
 		}
 
 		addInfluenceSphere( { name: "cityPortal", object: result.empties.City_Portal, radius: 3500, type: 0, destination: "city" } );
@@ -577,11 +583,11 @@ var DunesWorld = function ( shared ) {
 		UgcShader.update( that.skyWhite );
 		updateUgc( camera );
 		that.checkInfluenceSpheres( camera, portalsActive );
-		that.updateTiles( camera ); 
+		that.updateTiles( camera );
 		updateDunesShader( delta, that.skyWhite );
-		
+
 		if ( ENABLE_WATERFALLS ) {
-		
+
 			waterfallPrairie.position.copy( waterfallPrairiePosition.matrixWorld.getPosition());
 			waterfallCity.position.copy( waterfallCityPosition.matrixWorld.getPosition());
 			WaterfallShader.update( delta, that.skyWhite );
@@ -653,7 +659,7 @@ var DunesWorld = function ( shared ) {
 		var gridCenterPosition = camera.matrixWorld.getPosition();
 		var camX = gridCenterPosition.x;
 		var camZ = gridCenterPosition.z;
-		
+
 		gridCenterPosition.addSelf( camera.matrixWorld.getColumnZ().multiplyScalar( -TILE_SIZE * 1.5 ) );
 		gridCenterPosition.x = Math.floor( gridCenterPosition.x / TILE_SIZE );
 		gridCenterPosition.z = Math.floor( gridCenterPosition.z / TILE_SIZE );
@@ -687,7 +693,7 @@ var DunesWorld = function ( shared ) {
 
 				if( tileMesh ) {
 
-					tileMesh.position.x = px; 
+					tileMesh.position.x = px;
 					tileMesh.position.z = pz;
 					tileMesh.rotation.z = getRotation( px, pz );
 
@@ -799,11 +805,11 @@ var DunesWorld = function ( shared ) {
 
 	function showHierarchyNotColliders( scene, visible ) {
 
-		THREE.SceneUtils.traverseHierarchy( scene, function( node ) { 
+		THREE.SceneUtils.traverseHierarchy( scene, function( node ) {
 
 			if ( ! node.__isCollider ) {
 
-				node.visible = visible; 
+				node.visible = visible;
 
 			}
 

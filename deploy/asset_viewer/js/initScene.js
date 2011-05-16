@@ -15,9 +15,9 @@ window.onload = function(){
   makeScene();
   initMouse();
   animate();
-}
+};
 
-function makeScene(){
+function makeScene()  {
   scene = new THREE.Scene();
   sceneSky = new THREE.Scene();
   rootY = new THREE.Object3D();

@@ -101,9 +101,9 @@
 
 					// Clouds
 
-					var geometry = new THREE.Plane( 1000, 1000 ); 
+					var geometry = new THREE.Plane( 1000, 1000 );
 
-					for ( var i = 0; i < 100; i ++ ) {
+					for ( var i = 0; i < 50; i ++ ) {
 
 						var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: 0xffffff, opacity: 0.5, blending: THREE.AdditiveBlending } ) );
 						mesh.position.x = Math.random() - 0.5;
@@ -111,9 +111,9 @@
 						mesh.position.z = Math.random() - 0.5;
 						mesh.position.normalize();
 
-						mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 );
-						mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 5000 ) + 2500;
-						mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 );
+						mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 )*3;
+						mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 5000 ) - 2000;
+						mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 )*3;
 
 						mesh.rotation.x = - 90 * Math.PI / 180;
 						mesh.scale.x = Math.random() * 2 + 1;
@@ -161,11 +161,11 @@
             centerX = (minX+maxX)/2;
             centerY = (minY+maxY)/2;
             centerZ = (minZ+maxZ)/2;
-            newRadius = 1.5*Math.max(maxX-minX,Math.max(maxX-minX,maxZ-minZ));
+            newRadius = 1.5*Math.max(maxX-minX,Math.max(maxY-minY,maxZ-minZ));
 
             camera.target.position.y = centerY;
 
-            mesh.position.set(-centerX, -minY, -centerZ);
+            mesh.position.set(-centerX, 0, -centerZ);
 						scene.addObject( mesh );
 
 					}
