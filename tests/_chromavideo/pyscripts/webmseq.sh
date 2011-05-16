@@ -1,1 +1,1 @@
-ffmpeg -b 4500k -minrate 4500k -maxrate 4500k -bufsize 1835k -i $1%5d.png -r 24 -s $2 $3.webm
+ffmpeg -r 24 -b 4500k -minrate 4500k -maxrate 4500k -bufsize 1835k -i $1%5d.png -r 24 -s $2 $3.webm

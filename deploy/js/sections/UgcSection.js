@@ -375,10 +375,10 @@ var UgcSection = function ( shared ) {
   function gen_filmstrip(dWidth, dHeight, num_frames) {
     dWidth = dWidth || 300;
     dHeight = dHeight || 180;
-    num_frames = num_frames || 8;
+    num_frames = num_frames || 7;
     var dest = document.createElement('canvas'),
         stashed_cam_pos = camera.position.clone(),
-        thetap = 45, phip = 15;
+        thetap = 45, phip = 35;
     var rotationp = 360/num_frames;
     dest.width = dWidth;
     dest.height = dHeight * num_frames;
@@ -389,17 +389,42 @@ var UgcSection = function ( shared ) {
     that.resize(dWidth, dHeight);
     objectCreator.getPainter().hideBrush();
     grid.visible = false;
+
+    var vertices = objectCreator.getPainter().getObject().getMesh().geometry.vertices;
+    var maxX = vertices[0].position.x, maxY = vertices[0].position.y, maxZ = vertices[0].position.z;
+    var minX = vertices[0].position.x, minY = vertices[0].position.y, minZ = vertices[0].position.z;
+    var centerX, centerY, centerZ;
+
+    for (var i in vertices){
+
+      (vertices[i].position.x > maxX) ? maxX = vertices[i].position.x : null;
+      (vertices[i].position.y > maxY) ? maxY = vertices[i].position.y : null;
+      (vertices[i].position.z > maxZ) ? maxZ = vertices[i].position.z : null;
+      (vertices[i].position.x < minX) ? minX = vertices[i].position.x : null;
+      (vertices[i].position.y < minY) ? minY = vertices[i].position.y : null;
+      (vertices[i].position.z < minZ) ? minZ = vertices[i].position.z : null;
+
+    }
+    centerX = (minX+maxX)/2;
+    centerY = (minY+maxY)/2;
+    centerZ = (minZ+maxZ)/2;
+    radius = 2*Math.max(maxX-minX,Math.max(maxY-minY,maxZ-minZ));
+    camera.target.position.set(centerX,centerY,centerZ);
+
     for(var i=0;i<num_frames;i++) {
       // move camera
-      camera.position.x = max_radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
-      camera.position.y = max_radius * Math.sin( phip * DEG2RAD );
-      camera.position.z = max_radius * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD );
+      camera.position.x = radius * Math.sin( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD ) + centerX;
+      camera.position.y = radius * Math.sin( phip * DEG2RAD );
+      camera.position.z = radius * Math.cos( thetap * DEG2RAD ) * Math.cos( phip * DEG2RAD ) + centerZ;
       // draw to canvas
       renderer.clear();
       renderer.render( that.scene, camera );
       ctx.drawImage(orig, 0, 0, dWidth, dHeight, 0, dHeight*i, dWidth, dHeight);
       thetap += rotationp;
     }
+
+    camera.target.position.set(0,0,0);
+
     that.resize(origW, origH);
     // create thumbnail
     var strip = dest.toDataURL('image/png');
@@ -417,7 +442,6 @@ var UgcSection = function ( shared ) {
 
       var image = gen_filmstrip();
       var obj = objectCreator.getPainter().getObject();
-
       var submission = {
         title: title,
         email: email,

@@ -198,7 +198,7 @@ var ExplorationSection = function ( shared ) {
 		if ( ENV_SOUND_ENABLED ) {
 		
 			environmentSound.play();
-			environmentSound.volume = 0;
+			environmentSound.volume = 1;
 			
 		}
 		
@@ -376,26 +376,14 @@ var ExplorationSection = function ( shared ) {
 
 					fadeInTime += delta;
 					fadeOutEffect.update( 1.0 - fadeInTime / 1000 );
-					
-					if ( ENV_SOUND_ENABLED ) {
-					
-						//environmentSound.volume = Math.max( 0, Math.min( 1, fadeInTime / 1000 ) );
-						environmentSound.volume = 1;
-						
-					}
 
 				} else {
 
-					if ( ENV_SOUND_ENABLED ) {
+					for( var i = 0; i < portals.length; i++ ) {
 
-						for( var i = 0; i < portals.length; i++ ) {
+						if( portals[ i ].currentDistance < portals[ i ].radius * 1.25 ) {
 
-							if( portals[ i ].currentDistance < portals[ i ].radius * 1.5 ) {
-
-								//environmentSound.volume = fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.5 ) );
-								environmentSound.volume = 1;
-
-							}
+							fadeOutEffect.update( 1.0 - ( portals[ i ].currentDistance - portals[ i ].radius ) / ( portals[ i ].radius * 0.25 ) );
 
 						}
 

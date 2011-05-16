@@ -617,7 +617,7 @@ var UgcUI = function (shared) {
     submitEmail.value = 'YOUR EMAIL ADDRESS';
     removeClass(document.getElementById('agree-terms'), 'error');
     document.getElementById('agree').checked = false;
-    submitDialogueOpen = true;
+    submitDialogueOpen = false;
   }
 
 
