@@ -163,6 +163,14 @@ var AnimalSwarm_dunes = function ( numOfAnimals, scene, vectorArray ) {
 			that.array[i].startMorph = morph;
 			that.array[i].endMorph = morph;
 
+			that.array[i].scale = 0.001;
+			var toscale = that.array[i].origscale;
+			// tween scale
+			var scaleTween = new TWEEN.Tween(that.array[i])
+				.to({scale: toscale}, 500)
+				.easing(TWEEN.Easing.Linear.EaseNone);
+			scaleTween.start();	
+
 			break;
 
 		}
