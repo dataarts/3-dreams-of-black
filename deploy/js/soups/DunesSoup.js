@@ -11,12 +11,31 @@ var DunesSoup = function ( camera, scene, shared ) {
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
 	// switch soup
-	shared.signals.mousedown.add( switchSoup );
+	shared.signals.mousedown.add( scaleDown );
 
-	function switchSoup () {
+	function scaleDown () {
 		if (!started) {
 			return;
 		}
+
+		for ( var i = 0; i < flyingAnimals.initSettings.numOfAnimals; ++i ) {
+			// tween scale
+			if (i==0) {
+				var scaleTween = new TWEEN.Tween(flyingAnimals.array[i])
+					.to({scale: 0.001}, 300)
+					.easing(TWEEN.Easing.Linear.EaseNone)
+					.onComplete(switchSoup);
+				scaleTween.start();
+			} else {
+				var scaleTween = new TWEEN.Tween(flyingAnimals.array[i])
+					.to({scale: 0.001}, 300)
+					.easing(TWEEN.Easing.Linear.EaseNone);
+				scaleTween.start();
+			}
+		}
+	}
+
+	function switchSoup () {
 
 		if (currentSoup == 0) {
 			that.set("raven|raven|raven|vulture|vulture|raven|raven|raven|raven|raven|vulture");
@@ -240,6 +259,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 		//flyingAnimals.update();
 		flyingAnimals.update(delta, shared.camPos);
 		//particles.update(delta, vectors.array[0].position);
+		TWEEN.update();
 
 		started = true;
 
