@@ -104,7 +104,6 @@ function init() {
 	//sequencer.add( new NoiseEffect( shared, 0.096, 0.0, 4096 ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 4 );
 	sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 5 );
 	//sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 0 ), tune.getPatternMS( 75 ), 5 );
-
 }
 
 function start( pattern ) {
@@ -138,6 +137,8 @@ function start( pattern ) {
 
 	document.addEventListener( 'keydown', onDocumentKeyDown, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+	document.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
 	animate();
 
@@ -185,6 +186,25 @@ function onDocumentKeyDown( event ) {
 	}
 
 }
+
+function onDocumentMouseDown( event ) {
+
+	shared.signals.mousedown.dispatch( event );
+
+	event.preventDefault();
+	event.stopPropagation();
+
+}
+
+function onDocumentMouseUp( event ) {
+
+	shared.signals.mouseup.dispatch( event );
+
+	event.preventDefault();
+	event.stopPropagation();
+
+}
+
 
 function onDocumentMouseMove( event ) {
 

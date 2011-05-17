@@ -7,8 +7,7 @@ var DunesWorld = function ( shared ) {
 	var that = this;
 	var SCALE = 0.20;
 	var TILE_SIZE = 29990 * SCALE;
-  var MAX_UGC_PAGES = 4;
-	var LOAD_NEW_UGC_DISTANCE = TILE_SIZE * TILE_SIZE;
+  	var MAX_UGC_PAGES = 4;
 	var scenePrairie, sceneCity, sceneWalk;
 
 	that.scale = SCALE;
@@ -168,6 +167,38 @@ var DunesWorld = function ( shared ) {
 	loader.load( "/files/models/dunes/D_tile_4.js", tile3Loaded );
 
 
+	var loader = new THREE.JSONLoader();
+	loader.load( { model: "/files/models/dunes/D_tile_1_clouds.js", callback: function( geo ) { addClouds( geo, 100 ) } } );
+
+	function addClouds( geometry, n ) {
+
+		var material = new THREE.MeshFaceMaterial();
+		//var material = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
+
+		var x, y, z;
+
+		for ( var i = 0; i < n; i++ ) {
+
+			var model = new THREE.Mesh( geometry, material );
+
+
+			x = 150000 * ( Math.random() - 0.5 );
+			y = 3000;
+			z = 150000 * ( Math.random() - 0.5 );
+
+			model.scale.set( SCALE, SCALE, SCALE );
+			model.position.set( x, y, z );
+			model.updateMatrix();
+			model.matrixAutoUpdate = false;
+
+			applyCloudsShader( model, CloudsShader );
+
+			that.scene.addChild( model );
+
+		}
+
+	};
+
 	// create UGC handler
 
 	var ugcHandler = new UgcHandler();
@@ -256,10 +287,10 @@ var DunesWorld = function ( shared ) {
 		}
 
 
-		// check if we've loaded on this tile
+		// check if we've loaded on this tile ( * 2 for every second tile )
 
-		var cameraTileX = Math.floor( cameraPosition.x / TILE_SIZE );
-		var cameraTileZ = Math.floor( cameraPosition.z / TILE_SIZE );
+		var cameraTileX = Math.floor( cameraPosition.x / ( TILE_SIZE * 2 ));
+		var cameraTileZ = Math.floor( cameraPosition.z / ( TILE_SIZE * 2 ));
 
 		if( !ugcTileLoaded[ cameraTileX + " " + cameraTileZ ] ) {
 
@@ -275,6 +306,9 @@ var DunesWorld = function ( shared ) {
 		if( newUgcLoaded ) {
 
 			newUgcLoaded = false;
+
+			cameraTileX = Math.floor( cameraPosition.x / TILE_SIZE );
+			cameraTileZ = Math.floor( cameraPosition.z / TILE_SIZE );
 
 			var tx, tz;
 			var txTemp, tzTemp;
@@ -300,7 +334,7 @@ var DunesWorld = function ( shared ) {
 
           			var firstPos = ugcFirstThreePositions;
 
-          			if( ugc.category == 'sky' ) {
+          			if( ugc.category === 'sky' ) {
 
             			firstPos = ugcFirstThreePositionsSky;
 
@@ -315,10 +349,15 @@ var DunesWorld = function ( shared ) {
 
 						ugc.visible = true;
 						ugc.placedOnGrid = true;
-						if (ugc.category === 'sky') {
-						  ugc.wantedY = 3000;
+						
+						if( ugc.category === 'sky' ) {
+							
+						  ugc.wantedY = 2500;
+						
 						} else {
+						
 						  ugc.wantedY = -5;
+                        
                         }
 
 						that.scene.addChild( ugc );
@@ -371,8 +410,11 @@ var DunesWorld = function ( shared ) {
             				    ugc.position.z += Math.random() * 200 - 100;
             				    ugc.wantedY = 2500 + Math.random() * 1000 - 500;
             				    ugc.position.y = 10000;
+            				    
               				} else {
+              				  
               				  ugc.wantedY = -5;
+                            
                             }
 
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
@@ -404,10 +446,12 @@ var DunesWorld = function ( shared ) {
 
 			loadingUgc = true;
 
-      if (ugcPageIndex < MAX_UGC_PAGES) {
-        ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
-        ugcPageIndex++;
-      }
+	      	if( ugcPageIndex < MAX_UGC_PAGES ) {
+	      	
+	        	ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
+	        	ugcPageIndex++;
+
+	      	}
 
 		}
 
@@ -423,12 +467,12 @@ var DunesWorld = function ( shared ) {
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
 			var object = new UgcObject( JSON.parse(objects[ i ].data) );
-      var category = objects[ i ].category;
+			var category = objects[ i ].category;
 
 			if ( ! object.isEmpty() ) {
 
 				var mesh = object.getMesh();
-        mesh.category = category;
+				mesh.category = category;
 				mesh.visible = false;
 				loadedUGC.push( mesh );
 
@@ -752,8 +796,9 @@ var DunesWorld = function ( shared ) {
 			if ( o.toLowerCase().indexOf( "cloud" ) >= 0 ) {
 
 				applyCloudsShader( result.objects[ o ], CloudsShader );
-				result.objects[ o ].position.z += 8000;
+				result.objects[ o ].position.z += 4000;
 				result.objects[ o ].updateMatrix();
+				result.objects[ o ].matrixAutoUpdate = false;
 
 			}
 

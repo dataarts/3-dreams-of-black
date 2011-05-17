@@ -168,12 +168,11 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 				animalSpeed = obj.speedb;
 			}
 
-			//var divider = delta/10;
 			var divider = 5;
 
-			var moveX = (tox-animal.position.x)/divider;//that.settings.divider;
-			var moveY = (toy-animal.position.y)/divider;//that.settings.divider;
-			var moveZ = (toz-animal.position.z)/divider;//that.settings.divider;
+			var moveX = (tox-animal.position.x)/divider;
+			var moveY = (toy-animal.position.y)/divider;
+			var moveZ = (toz-animal.position.z)/divider;
 
 			var maxSpeed = animalSpeed//12;
 
@@ -204,12 +203,6 @@ var Stragglers = function ( numOfAnimals, scene, vectorArray ) {
 			animal.position.z += moveZ;
 
 			that.array[i].position.copy(animal.position);
-
-			// hack..
-			/*if (animal.position.z > camPos.z+100) {
-				that.array[i].active = false;
-				that.array[i].c.visible = false;
-			}*/
 
 		}
 

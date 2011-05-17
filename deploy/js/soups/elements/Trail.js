@@ -6,6 +6,8 @@ var Trail = function ( numOfInstances, scene ) {
 	var scene = scene;
 	var spawnedLighthouse = false;
 	var time = 0;
+	var ray = new THREE.Ray();
+	ray.direction = new THREE.Vector3(0, -1, 0);
 
 	that.initSettings = {
 
