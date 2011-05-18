@@ -639,6 +639,7 @@ var DunesWorld = function ( shared ) {
 
 					if( portalsActive ) {
 
+						shared.signals.showexploration.dispatch();
 						shared.signals.startexploration.dispatch( influenceSphere.destination );
 
 					}

@@ -144,7 +144,7 @@ var Dunes = function ( shared ) {
 
 		THREE.AnimationHandler.update( delta );
 
-		world.update( delta, camera.camera, false );
+		world.update( delta, camera.camera, true );
 
 		renderer.render( world.scene, camera.camera, renderTarget );
 
