@@ -296,8 +296,8 @@ var RelauncherSection = function( shared ) {
 		technology.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			// window.location = "/tech";
-			window.open("/tech", "Technology");
+      window.location = "/tech";
+      // window.open("/tech", "Technology");
       _gaq.push(['_trackPageview', '/relauncher_tech']);
 
 		}, false);
@@ -313,8 +313,8 @@ var RelauncherSection = function( shared ) {
 		otherDreams.addEventListener("click", function(e) {
 
 			e.preventDefault();
-			// window.location = "/gallery";
-			window.open("/gallery", "Gallery");
+      window.location = "/gallery";
+      // window.open("/gallery", "Gallery");
       _gaq.push(['_trackPageview', '/relauncher_gallery']);
 
 		}, false);
