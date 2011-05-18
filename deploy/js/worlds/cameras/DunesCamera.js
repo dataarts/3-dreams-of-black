@@ -76,10 +76,14 @@ DunesCamera = function( shared ) {
 		CAMERA_LOWEST_Y = 10;
 
     	wantedCamera.position.set( 0, 350, 600 );
+		wantedCamera.up.set( 0, 1, 0 );
+
 		wantedCameraTarget.position.set( 0, 150, -300 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
 
+
 		camera.position.copy( wantedCamera.position );
+		camera.up.set( 0, 1, 0 );
 		camera.target.position.copy( wantedCameraTarget.position );
 		
 	}
