@@ -73,7 +73,10 @@ var UgcSection = function ( shared ) {
 		}
 
 		// Clouds
-
+		
+		that.clouds = new THREE.Object3D();
+		environment.addChild( that.clouds );
+		
 		var geometry = new THREE.Plane( 1000, 1000 ); 
 
 		for ( var i = 0; i < 100; i ++ ) {
@@ -84,16 +87,16 @@ var UgcSection = function ( shared ) {
 			mesh.position.z = Math.random() - 0.5;
 			mesh.position.normalize();
 
-			mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 );
-			mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 5000 ) + 2500;
-			mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 );
+			mesh.position.x = mesh.position.x * ( Math.random() * 5000 + 2500 ) * 3;
+			mesh.position.y = mesh.position.y * ( Math.random() * 2500 + 5000 ) - 2800;
+			mesh.position.z = mesh.position.z * ( Math.random() * 5000 + 2500 ) * 3;
 
 			mesh.rotation.x = - 90 * Math.PI / 180;
 			mesh.scale.x = Math.random() * 2 + 1;
 			mesh.scale.y = Math.random() * 2 + 1;
 			mesh.doubleSided = true;
 
-			environment.addChild( mesh );
+			that.clouds.addChild( mesh );
 
 		}
 
@@ -389,6 +392,7 @@ var UgcSection = function ( shared ) {
     that.resize(dWidth, dHeight);
     objectCreator.getPainter().hideBrush();
     grid.visible = false;
+	THREE.SceneUtils.traverseHierarchy( that.clouds, function( node ) { node.visible = false; } );
 
     var vertices = objectCreator.getPainter().getObject().getMesh().geometry.vertices;
     var maxX = vertices[0].position.x, maxY = vertices[0].position.y, maxZ = vertices[0].position.z;
@@ -431,6 +435,7 @@ var UgcSection = function ( shared ) {
     delete dest;
     camera.position.copy( stashed_cam_pos );
     grid.visible = true;
+	THREE.SceneUtils.traverseHierarchy( that.clouds, function( node ) { node.visible = true; } );
     renderer.clear();
     renderer.render( that.scene, camera );
     return strip;
