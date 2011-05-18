@@ -707,7 +707,16 @@ var DunesWorld = function ( shared ) {
 
 					tileMesh.position.x = px;
 					tileMesh.position.z = pz;
-					tileMesh.rotation.z = getRotation( px, pz );
+					
+					if( tile !== 6 ) {
+						
+						tileMesh.rotation.z = getRotation( px, pz );
+						
+					} else {
+						
+						tileMesh.rotation.z = 1.5 * Math.PI;
+						
+					}
 
 				}
 
