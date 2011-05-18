@@ -12,8 +12,8 @@ DunesCamera = function( shared ) {
 	var CAMERA_FORWARD_SPEED = 25;
 	var CAMERA_FORWARD_SPEED_MAX = 30;
 	var CAMERA_FORWARD_SPEED_MAX_Y = 3000;
-	var CAMERA_VERTICAL_FACTOR = 20;
-	var CAMERA_VERTICAL_LIMIT = 250;
+	var CAMERA_VERTICAL_FACTOR = 35;
+	var CAMERA_VERTICAL_LIMIT = 200;
 	var CAMERA_HORIZONTAL_FACTOR = 12;
 	var CAMERA_INERTIA = 0.05;
 	var CAMERA_ROLL_FACTOR = 0.4;
@@ -76,10 +76,14 @@ DunesCamera = function( shared ) {
 		CAMERA_LOWEST_Y = 10;
 
     	wantedCamera.position.set( 0, 350, 600 );
+		wantedCamera.up.set( 0, 1, 0 );
+
 		wantedCameraTarget.position.set( 0, 150, -300 );
 		wantedCameraTarget.position.subSelf( wantedCamera.position ).normalize().multiplyScalar( CAMERA_COLLISION_DISTANCE ).addSelf( wantedCamera.position );
 
+
 		camera.position.copy( wantedCamera.position );
+		camera.up.set( 0, 1, 0 );
 		camera.target.position.copy( wantedCameraTarget.position );
 		
 	}
