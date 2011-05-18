@@ -144,7 +144,7 @@ var Prairie = function ( shared ) {
 		camera.position.set( 0, 0, 0 );
 		camera.lon = 360;
 
-		camera.animation.play( true, 0 );
+		camera.animation.play( false, 0 );
 
 		//renderer.setClearColor( world.scene.fog.color );
 

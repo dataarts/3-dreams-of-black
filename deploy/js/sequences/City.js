@@ -116,10 +116,17 @@ var City = function ( shared ) {
 	};
 
 	this.resetCamera = function() {
-		
-		camera.position.set( 0, 0, 0 );
+
+		switchedCamera = false;
+
+		startCamera.position.set( 0, 0, 0 );
+		startCamera.lon = 180;
+		startCamera.lat = -20;
+
+		camera = startCamera;
 		camera.animation.play( false, 0 );
-		//camera.animation.play( true, 0 );
+
+		soup.changeCamera(camera);
 
 		renderer.setClearColor( world.scene.fog.color );
 
