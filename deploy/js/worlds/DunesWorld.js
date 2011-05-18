@@ -7,7 +7,7 @@ var DunesWorld = function ( shared ) {
 	var that = this;
 	var SCALE = 0.20;
 	var TILE_SIZE = 29990 * SCALE;
-  	var MAX_UGC_PAGES = 4;
+  	var MAX_UGC_PAGES = 2;
 	var scenePrairie, sceneCity, sceneWalk;
 
 	that.scale = SCALE;
@@ -349,15 +349,15 @@ var DunesWorld = function ( shared ) {
 
 						ugc.visible = true;
 						ugc.placedOnGrid = true;
-						
+
 						if( ugc.category === 'sky' ) {
-							
+
 						  ugc.wantedY = 2500;
-						
+
 						} else {
-						
+
 						  ugc.wantedY = -5;
-                        
+
                         }
 
 						that.scene.addChild( ugc );
@@ -410,11 +410,11 @@ var DunesWorld = function ( shared ) {
             				    ugc.position.z += Math.random() * 200 - 100;
             				    ugc.wantedY = 2500 + Math.random() * 1000 - 500;
             				    ugc.position.y = 10000;
-            				    
+
               				} else {
-              				  
+
               				  ugc.wantedY = -5;
-                            
+
                             }
 
 							ugc.rotation.set( Math.random() * 0.03, Math.random() * Math.PI, Math.random() * 0.03 );
@@ -447,7 +447,7 @@ var DunesWorld = function ( shared ) {
 			loadingUgc = true;
 
 	      	if( ugcPageIndex < MAX_UGC_PAGES ) {
-	      	
+
 	        	ugcHandler.getLatestUGOs( onLoadUgc, ugcPageIndex );
 	        	ugcPageIndex++;
 
@@ -708,7 +708,16 @@ var DunesWorld = function ( shared ) {
 
 					tileMesh.position.x = px;
 					tileMesh.position.z = pz;
-					tileMesh.rotation.z = getRotation( px, pz );
+					
+					if( tile !== 6 ) {
+						
+						tileMesh.rotation.z = getRotation( px, pz );
+						
+					} else {
+						
+						tileMesh.rotation.z = 1.5 * Math.PI;
+						
+					}
 
 				}
 
