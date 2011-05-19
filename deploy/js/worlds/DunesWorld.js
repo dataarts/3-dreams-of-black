@@ -108,7 +108,7 @@ var DunesWorld = function ( shared ) {
 
 				tileRow.push( 5 );										// prairie
 
-			} else if( x === 0 && z === 3 ) {
+			} else if( x === 1 && z === 3 ) {
 
 				tileRow.push( 6 );										// city
 
@@ -708,15 +708,15 @@ var DunesWorld = function ( shared ) {
 
 					tileMesh.position.x = px;
 					tileMesh.position.z = pz;
-					
+
 					if( tile !== 6 ) {
-						
+
 						tileMesh.rotation.z = getRotation( px, pz );
-						
+
 					} else {
-						
+
 						tileMesh.rotation.z = 1.5 * Math.PI;
-						
+
 					}
 
 				}
