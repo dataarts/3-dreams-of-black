@@ -204,6 +204,8 @@ var FilmSection = function ( shared ) {
 		audio.currentTime = tune.getPatternMS( pattern ) / 1000;
 		audio.play();
 		audio.volume = volume;
+		
+		shared.isExperience = true;
 
 	};
 
@@ -313,6 +315,8 @@ var FilmSection = function ( shared ) {
 		}
 
 		sequencer.update( audio.currentTime * 1000 );
+		
+		shared.currentTime = audio.currentTime;
 
 	};
 
