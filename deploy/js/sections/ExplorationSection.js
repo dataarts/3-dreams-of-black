@@ -422,6 +422,18 @@ var ExplorationSection = function ( shared ) {
 				postEffect.update( progress, delta, time );
 
 			}
+			
+			
+			if ( songSound.volume > 0 && songSound.currentTime > 209 ) {
+					
+				songSound.pause();
+				songSound.volume = 0;
+				
+				shared.signals.showrelauncher.dispatch();
+
+				return;
+
+			}
 
 		}
 
@@ -441,7 +453,7 @@ var ExplorationSection = function ( shared ) {
 				if ( songSound.volume > 0 ) {
 					
 					songSound.pause();
-					songSound = 0;
+					songSound.volume = 0;
 					
 				}
 
