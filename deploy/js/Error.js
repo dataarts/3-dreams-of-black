@@ -254,7 +254,7 @@ if(variables) {
 	      var iterator = variables[romeErrors.MagicVariable];
 	      var error = document.getElementById("error");
 						if(iterator > romeErrors.Errors.length) {
-							iterator = 4;
+							iterator = 8;
 						}
 						error.innerHTML = '<p style="line-height: 18px !important;">'+romeErrors.Errors[iterator]+'</p>';
 
@@ -266,7 +266,7 @@ if(variables) {
 	      var iterator = variables[romeErrors.MagicVariable];
 	      var error = document.getElementById("error");
 						if(iterator > romeErrors.Errors.length) {
-							iterator = 4;
+							iterator = 8;
 						}
 						error.innerHTML = '<p style="line-height: 18px !important;">'+romeErrors.Errors[iterator]+'</p>';
 				return false;
