@@ -212,13 +212,13 @@ var DunesWorld = function ( shared ) {
 	var ugcTileDisplacement = [
 
 		{ x: -1, z: -1 },		// -pi
-		{ x: -1, z: 0 },
-		{ x: -1, z: 1 },
+		{ x: -1, z: -1 },
+		{ x: 0, z: 1 },
 		{ x: 0, z: 1 },			// 0
 		{ x: 1, z: 1 },
-		{ x: 1, z: 0 },
+		{ x: 1, z: 1 },
 		{ x: 1, z: -1 },
-		{ x: 0, z: -1 }
+		{ x: 1, z: -1 }
 
 	];
 
@@ -289,8 +289,8 @@ var DunesWorld = function ( shared ) {
 
 		// check if we've loaded on this tile ( * 2 for every second tile )
 
-		var cameraTileX = Math.floor( cameraPosition.x / ( TILE_SIZE * 2 ));
-		var cameraTileZ = Math.floor( cameraPosition.z / ( TILE_SIZE * 2 ));
+		var cameraTileX = Math.floor( cameraPosition.x / ( TILE_SIZE * 3 ));
+		var cameraTileZ = Math.floor( cameraPosition.z / ( TILE_SIZE * 3 ));
 
 		if( !ugcTileLoaded[ cameraTileX + " " + cameraTileZ ] ) {
 
