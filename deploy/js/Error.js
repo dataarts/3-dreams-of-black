@@ -8,7 +8,7 @@ function HandleErrors(d) {
   var destination = d || "/alternate";
 	var fired = false;
 
-  Trailer = "<ul id = 'trailer'><li class = 'first'><a href = 'http://www.youtube.com/watch?v=ReH7zzj5GPc'>Watch the Trailer</a></li><li><a href = 'http://romealbum.com/'>Rome Album</a></li><li class = 'last'><a href = '/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
+  Trailer = "<ul id = 'trailer'><li class = 'first'><a href = 'http://youtu.be/VUQSoHFMD8c'>Watch the Trailer</a></li><li><a href = 'http://romealbum.com/'>Rome Album</a></li><li class = 'last'><a href = '/tech'>The Technology</a></li><li class = 'clear'></li></ul>";
 
   this.MagicVariable = "case";
 
