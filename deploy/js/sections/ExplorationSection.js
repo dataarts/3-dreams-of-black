@@ -88,7 +88,10 @@ var ExplorationSection = function ( shared ) {
 	var paused = false;
 	var scale;
 
-	var environmentSound;
+	var normalExploration = true;
+	var playedOnce = false;
+	
+	var environmentSound, songSound;
 
 	clearEffect = new ClearEffect( shared );
 	clearEffect.init();
@@ -115,11 +118,19 @@ var ExplorationSection = function ( shared ) {
 		environmentSound = document.createElement( "audio" );
 		environmentSound.volume = 0;
 		environmentSound.loop = true;
-		environmentSound.src = "files/nature.mp3";
+		environmentSound.src = "/files/nature.mp3";
 		environmentSound.autoplay = false;
 
 		document.body.appendChild( environmentSound );
 		
+		songSound = document.createElement( "audio" );
+		songSound.volume = 0;
+		songSound.loop = false;
+		songSound.src = "/files/Black.ogg";
+		songSound.autoplay = false;
+
+		document.body.appendChild( songSound );
+
 	}
 	
 
@@ -140,7 +151,7 @@ var ExplorationSection = function ( shared ) {
 
 	//--- start explore ---
 
-	function startExplore( worldId ) {
+	function startExplore( worldId, useSong ) {
 
 		// UI
 
@@ -194,11 +205,42 @@ var ExplorationSection = function ( shared ) {
 		soup  = shared.soups[ worldId ];
 
 		fadeInTime = 0;
-		
+
 		if ( ENV_SOUND_ENABLED ) {
 		
-			environmentSound.play();
-			environmentSound.volume = 1;
+			if ( useSong || !playedOnce ) {
+				
+				if ( songSound.volume == 0 ) {
+
+					if ( useSong ) {
+
+						songSound.currentTime = shared.currentTime;
+
+					} else {
+						
+						songSound.currentTime = 0;
+						playedOnce = true;
+
+					}
+					
+					songSound.play();
+					songSound.volume = 1;
+					
+					normalExploration = !useSong;
+
+				} else {
+
+					environmentSound.play();
+					environmentSound.volume = 1;
+
+				}
+				
+			} else {
+
+				environmentSound.play();
+				environmentSound.volume = 1;
+				
+			}
 			
 		}
 		
@@ -235,8 +277,7 @@ var ExplorationSection = function ( shared ) {
 
 	function stop( e ) {
 
-		if( e.keyCode == 13 || e.keyCode == 32 || e.keyCode == 27 ) 
-		{
+		if( e.keyCode == 13 || e.keyCode == 32 || e.keyCode == 27 ) {
 
 			toggleDisplay();
 		 
@@ -293,6 +334,7 @@ var ExplorationSection = function ( shared ) {
 		if( !shared.hasExplored ) {
 
 			// TODO: Make sure to that routing is correct for this
+
 			shared.hasExplored = true;
 
 		}
@@ -395,43 +437,100 @@ var ExplorationSection = function ( shared ) {
 				postEffect.update( progress, delta, time );
 
 			}
+			
+			
+			if ( songSound.volume > 0 && songSound.currentTime > 209 ) {
+					
+				songSound.pause();
+				songSound.volume = 0;
+				
+				if ( ! normalExploration ) {
+				
+					shared.signals.showrelauncher.dispatch();
+
+					return;
+					
+				}
+
+			}
 
 		}
 
 	};
 
-	ExplorationSection.handleHexClick = function(args) {
+	ExplorationSection.handleHexClick = function( args ) {
 
-		switch(args) {
+		switch( args ) {
+
 			case 0:
+
 				toggleDisplay();
 				break;
+
 			case 1:
+
+				if ( songSound.volume > 0 ) {
+					
+					songSound.pause();
+					songSound.volume = 0;
+					
+				}
+
 				shared.signals.showrelauncher.dispatch();
 				break;
+
 			case 2:
+
 				if ( ENV_SOUND_ENABLED ) {
 
-					environmentSound.pause();
-					document.getElementById( 'rome-explore-hex-audio-pause' ).setAttribute("display", "none");
-					document.getElementById( 'rome-explore-hex-audio-play' ).setAttribute("display", "svg-path");
+					if ( songSound.volume > 0 ) {
+						
+						songSound.pause();
+						
+					}
+					
+					if ( environmentSound.volume > 0 ) {
+						
+						environmentSound.pause();
+
+					}
+					
+					
+					document.getElementById( 'rome-explore-hex-audio-pause' ).setAttribute( "display", "none" );
+					document.getElementById( 'rome-explore-hex-audio-play' ).setAttribute( "display", "svg-path" );
 					ENV_SOUND_ENABLED = false;
 
 				} else {
 
-					environmentSound.play();
-					document.getElementById( 'rome-explore-hex-audio-play' ).setAttribute("display", "none");
-					document.getElementById( 'rome-explore-hex-audio-pause' ).setAttribute("display", "svg-path");
+					if ( songSound.volume > 0 && songSound.currentTime < 208 ) {
+
+						songSound.play();
+						
+					}
+					
+					if ( environmentSound.volume > 0 ) {
+					
+						environmentSound.play();
+						
+					}
+					
+					document.getElementById( 'rome-explore-hex-audio-play' ).setAttribute( "display", "none" );
+					document.getElementById( 'rome-explore-hex-audio-pause' ).setAttribute( "display", "svg-path" );
 					ENV_SOUND_ENABLED = true;
 
 				}
 				break;
+
 			case 3:
+
 				var d = renderer.domElement;
-				window.open(d.toDataURL("image/png"), "Make ro.me your wallpaper!");
+				window.open( d.toDataURL("image/png"), "Make ro.me your wallpaper!" );
 				break;
+
 			default:
+
 				toggleDisplay();
+
 		}
 
 	};

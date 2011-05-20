@@ -82,7 +82,10 @@
 		worlds: {},
 		soups: {},
 		sequences: {},
-		started: { "city": false, "prairie": false, "dunes" : false }
+		started: { "city": false, "prairie": false, "dunes" : false },
+		
+		currentTime: 0,
+		isExperience: false
 
 	};
 

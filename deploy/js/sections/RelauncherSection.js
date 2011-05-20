@@ -289,16 +289,16 @@ var RelauncherSection = function( shared ) {
 			e.preventDefault();
 			shared.signals.showfilm.dispatch();
 			shared.signals.startfilm.dispatch( 0, 1 );
-      _gaq.push(['_trackPageview', '/relauncher_start_over']);
+			_gaq.push(['_trackPageview', '/relauncher_start_over']);
 
 		}, false);
 
 		technology.addEventListener("click", function(e) {
 
 			e.preventDefault();
-      window.location = "/tech";
-      // window.open("/tech", "Technology");
-      _gaq.push(['_trackPageview', '/relauncher_tech']);
+			window.location = "/tech";
+			// window.open("/tech", "Technology");
+			_gaq.push(['_trackPageview', '/relauncher_tech']);
 
 		}, false);
 
@@ -306,16 +306,16 @@ var RelauncherSection = function( shared ) {
 
 			e.preventDefault();
 			shared.signals.showugc.dispatch();
-      _gaq.push(['_trackPageview', '/relauncher_add_to_dream']);
+			_gaq.push(['_trackPageview', '/relauncher_add_to_dream']);
 
 		}, false);
 
 		otherDreams.addEventListener("click", function(e) {
 
 			e.preventDefault();
-      window.location = "/gallery";
-      // window.open("/gallery", "Gallery");
-      _gaq.push(['_trackPageview', '/relauncher_gallery']);
+			window.location = "/gallery";
+			// window.open("/gallery", "Gallery");
+			_gaq.push(['_trackPageview', '/relauncher_gallery']);
 
 		}, false);
 
@@ -323,9 +323,12 @@ var RelauncherSection = function( shared ) {
 
 			e.preventDefault();
 			
+			shared.isExperience = false;
+			
 			shared.signals.showexploration.dispatch();
-			shared.signals.startexploration.dispatch( 'dunes' );
-      _gaq.push(['_trackPageview', '/relauncher_continue_explore']);
+			shared.signals.startexploration.dispatch( 'dunes', false );
+			_gaq.push(['_trackPageview', '/relauncher_continue_explore']);
+
 			// shared.hasExplored = true;
 			
 			/*
