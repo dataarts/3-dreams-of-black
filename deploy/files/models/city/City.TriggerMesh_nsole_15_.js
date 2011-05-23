@@ -1,3 +1,7 @@
+// 3D assets and textures for ROME "3 Dreams of Black" at http://ro.me are licensed 
+// under a Creative CommonsAttribution-NonCommercial-ShareAlike 3.0 Unported License
+// ( http://creativecommons.org/licenses/by-nc-sa/3.0/ ).
+
 // Converted from: console_15/v001/console15_2.obj
 //  vertices: 5311
 //  faces: 9338
