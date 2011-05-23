@@ -1,3 +1,7 @@
+// 3D assets and textures for ROME "3 Dreams of Black" at http://ro.me are licensed 
+// under a Creative CommonsAttribution-NonCommercial-ShareAlike 3.0 Unported License
+// ( http://creativecommons.org/licenses/by-nc-sa/3.0/ ).
+
 // Converted from: Desert_Max20.max
 //  vertices: 108
 //  normals: 0
