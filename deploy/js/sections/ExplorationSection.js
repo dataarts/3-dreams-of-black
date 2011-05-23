@@ -88,6 +88,9 @@ var ExplorationSection = function ( shared ) {
 	var paused = false;
 	var scale;
 
+	var normalExploration = true;
+	var playedOnce = false;
+	
 	var environmentSound, songSound;
 
 	clearEffect = new ClearEffect( shared );
@@ -202,16 +205,28 @@ var ExplorationSection = function ( shared ) {
 		soup  = shared.soups[ worldId ];
 
 		fadeInTime = 0;
-		
+
 		if ( ENV_SOUND_ENABLED ) {
 		
-			if ( useSong ) {
+			if ( useSong || !playedOnce ) {
 				
 				if ( songSound.volume == 0 ) {
 
-					songSound.currentTime = shared.currentTime;
+					if ( useSong ) {
+
+						songSound.currentTime = shared.currentTime;
+
+					} else {
+						
+						songSound.currentTime = 0;
+						playedOnce = true;
+
+					}
+					
 					songSound.play();
 					songSound.volume = 1;
+					
+					normalExploration = !useSong;
 
 				} else {
 
@@ -422,12 +437,28 @@ var ExplorationSection = function ( shared ) {
 				postEffect.update( progress, delta, time );
 
 			}
+			
+			
+			if ( songSound.volume > 0 && songSound.currentTime > 209 ) {
+					
+				songSound.pause();
+				songSound.volume = 0;
+				
+				if ( ! normalExploration ) {
+				
+					shared.signals.showrelauncher.dispatch();
+
+					return;
+					
+				}
+
+			}
 
 		}
 
 	};
 
-	ExplorationSection.handleHexClick = function(args) {
+	ExplorationSection.handleHexClick = function( args ) {
 
 		switch( args ) {
 
@@ -441,7 +472,7 @@ var ExplorationSection = function ( shared ) {
 				if ( songSound.volume > 0 ) {
 					
 					songSound.pause();
-					songSound = 0;
+					songSound.volume = 0;
 					
 				}
 
