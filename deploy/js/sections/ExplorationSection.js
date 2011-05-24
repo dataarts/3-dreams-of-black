@@ -88,6 +88,9 @@ var ExplorationSection = function ( shared ) {
 	var paused = false;
 	var scale;
 
+	var normalExploration = true;
+	var playedOnce = false;
+
 	var environmentSound, songSound;
 
 	clearEffect = new ClearEffect( shared );
@@ -101,13 +104,13 @@ var ExplorationSection = function ( shared ) {
 
 	paintEffectPrairie = new PaintEffectPrairie( shared );
 	paintEffectPrairie.init();
-	
+
 	paintEffectDunes = new PaintEffectDunes( shared );
 	paintEffectDunes.init();
 
 
 	// audio
-	
+
 	var ENV_SOUND_ENABLED = true;
 
 	if ( ENV_SOUND_ENABLED ) {
@@ -119,7 +122,7 @@ var ExplorationSection = function ( shared ) {
 		environmentSound.autoplay = false;
 
 		document.body.appendChild( environmentSound );
-		
+
 		songSound = document.createElement( "audio" );
 		songSound.volume = 0;
 		songSound.loop = false;
@@ -129,7 +132,7 @@ var ExplorationSection = function ( shared ) {
 		document.body.appendChild( songSound );
 
 	}
-	
+
 
 	// init cameras
 
@@ -167,51 +170,63 @@ var ExplorationSection = function ( shared ) {
 		world   = shared.worlds[ worldId ];
 		portals = world.portals;
 		camera  = cameras[ worldId ];
-		
+
 		if( worldId === "dunes" && lastWorldId !== "" && lastWorldId !== "dunes" && portals ) {
-			
+
 			// find closest portal
-			
+
 			var closestDistance = 99999999999;
 			var closestPortal;
-			
+
 			for( var p = 0; p < portals.length; p++ ) {
-				
+
 				if( portals[ p ].currentDistance < closestDistance ) {
-					
+
 					closestDistance = portals[ p ].currentDistance;
 					closestPortal = portals[ p ];
 
 				}
-				
+
 			}
-			
+
 			// switch camera direction
-			
+
 			camera.switchDirection( closestPortal );
-			
+
 		} else {
-			
+
 			camera.resetCamera();
-			
+
 		}
-		
+
 		lastWorldId = worldId;
-		
+
 		scene = world.scene;
 		soup  = shared.soups[ worldId ];
 
 		fadeInTime = 0;
-		
+
 		if ( ENV_SOUND_ENABLED ) {
-		
-			if ( useSong ) {
-				
+
+			if ( useSong || !playedOnce ) {
+
 				if ( songSound.volume == 0 ) {
 
-					songSound.currentTime = shared.currentTime;
+					if ( useSong ) {
+
+						songSound.currentTime = shared.currentTime;
+
+					} else {
+
+						songSound.currentTime = 0;
+						playedOnce = true;
+
+					}
+
 					songSound.play();
 					songSound.volume = 1;
+
+					normalExploration = !useSong;
 
 				} else {
 
@@ -219,37 +234,37 @@ var ExplorationSection = function ( shared ) {
 					environmentSound.volume = 1;
 
 				}
-				
+
 			} else {
 
 				environmentSound.play();
 				environmentSound.volume = 1;
-				
+
 			}
-			
+
 		}
-		
-		
+
+
 		if( worldId == "city" ) {
-			
+
 			postEffect = paintEffect;
-		
+
 		} else if ( worldId == "prairie" ) {
 
 			postEffect = paintEffectPrairie;
-			
+
 		} else {
 
 			postEffect = paintEffectDunes;
-			
+
 			// set lights
-			
+
 			world.skyWhite = 1;
 			world.ambient.color.setHSV( 0, 0, 0.1 );
 			world.directionalLight1.color.setHSV( 0.08823529411764706, 0, 1 );
 			world.directionalLight2.color.setHSV( 0,  0,  0.8647058823529412 );
 			world.lensFlare.position.y = 3500;
-			
+
 		}
 
 		updateViewportSize();
@@ -265,7 +280,7 @@ var ExplorationSection = function ( shared ) {
 		if( e.keyCode == 13 || e.keyCode == 32 || e.keyCode == 27 ) {
 
 			toggleDisplay();
-		 
+
 		}
 
 	};
@@ -273,17 +288,17 @@ var ExplorationSection = function ( shared ) {
 	function toggleDisplay() {
 
 		paused = !paused;
-	
+
 	 	if( paused ) {
 
 			pauseMenu.style.display = "block";
 			audioMenu.style.display = "block";
 
 	 	} else {
-	 		
+
 			pauseMenu.style.display = "none";
 			audioMenu.style.display = "none";
-	 		
+
 	 	}
 
 	};
@@ -343,11 +358,11 @@ var ExplorationSection = function ( shared ) {
 
 		domElement.style.display = 'none';
 		shared.signals.keyup.remove( stop );
-		
-		if ( ENV_SOUND_ENABLED ) { 
-		
+
+		if ( ENV_SOUND_ENABLED ) {
+
 			environmentSound.pause();
-			
+
 		}
 
 	};
@@ -377,8 +392,8 @@ var ExplorationSection = function ( shared ) {
 		lastTime = time;
 
 		delta = Math.min( 1000, Math.max( 0, delta ));
-		
-		
+
+
 		// update world
 
 		if( !paused ) {
@@ -422,16 +437,20 @@ var ExplorationSection = function ( shared ) {
 				postEffect.update( progress, delta, time );
 
 			}
-			
-			
+
+
 			if ( songSound.volume > 0 && songSound.currentTime > 209 ) {
-					
+
 				songSound.pause();
 				songSound.volume = 0;
-				
-				shared.signals.showrelauncher.dispatch();
 
-				return;
+				if ( ! normalExploration ) {
+
+					shared.signals.showrelauncher.dispatch();
+
+					return;
+
+				}
 
 			}
 
@@ -439,7 +458,7 @@ var ExplorationSection = function ( shared ) {
 
 	};
 
-	ExplorationSection.handleHexClick = function(args) {
+	ExplorationSection.handleHexClick = function( args ) {
 
 		switch( args ) {
 
@@ -451,10 +470,10 @@ var ExplorationSection = function ( shared ) {
 			case 1:
 
 				if ( songSound.volume > 0 ) {
-					
+
 					songSound.pause();
 					songSound.volume = 0;
-					
+
 				}
 
 				shared.signals.showrelauncher.dispatch();
@@ -465,18 +484,18 @@ var ExplorationSection = function ( shared ) {
 				if ( ENV_SOUND_ENABLED ) {
 
 					if ( songSound.volume > 0 ) {
-						
+
 						songSound.pause();
-						
+
 					}
-					
+
 					if ( environmentSound.volume > 0 ) {
-						
+
 						environmentSound.pause();
 
 					}
-					
-					
+
+
 					document.getElementById( 'rome-explore-hex-audio-pause' ).setAttribute( "display", "none" );
 					document.getElementById( 'rome-explore-hex-audio-play' ).setAttribute( "display", "svg-path" );
 					ENV_SOUND_ENABLED = false;
@@ -486,15 +505,15 @@ var ExplorationSection = function ( shared ) {
 					if ( songSound.volume > 0 && songSound.currentTime < 208 ) {
 
 						songSound.play();
-						
+
 					}
-					
+
 					if ( environmentSound.volume > 0 ) {
-					
+
 						environmentSound.play();
-						
+
 					}
-					
+
 					document.getElementById( 'rome-explore-hex-audio-play' ).setAttribute( "display", "none" );
 					document.getElementById( 'rome-explore-hex-audio-pause' ).setAttribute( "display", "svg-path" );
 					ENV_SOUND_ENABLED = true;
