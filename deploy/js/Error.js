@@ -21,7 +21,8 @@ function HandleErrors(d) {
     "This project is very experimental. With your current configuration, you may experience problems such as video flickering, so you may want to try this in Chrome Canary, the cutting-edge experimental version of Google Chrome. Download Google Chrome Canary <a href = 'http://tools.google.com/dlpage/chromesxs?platform=win'>here</a>, or <a id = 'escape-from-warning' href = '#'>try the experience anyway</a>.",
     "We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.",
     "You appear to be running an older version of Chrome. Please click on the wrench icon on the browser toolbar, and select 'Update Google Chrome' before viewing ROME.",
-    "We are sorry, but it appears that your browser does not support WebGL. This could be due to a number of different reasons. For more information visit this <a href = 'http://get.webgl.org/troubleshooting/'>page</a>."
+    "We are sorry, but it appears that your browser does not support WebGL. This could be due to a number of different reasons. For more information visit this <a href = 'http://get.webgl.org/troubleshooting/'>page</a>.",
+    "We are sorry, but it appears that your browser will not support &#147;3 Dreams of Black&#148;. This could be due to a number of different reasons. For more information visit this <a href = 'http://get.webgl.org/troubleshooting/'>page</a>"
   ];
 
   this.getUrlVars = function() {
@@ -61,6 +62,15 @@ function HandleErrors(d) {
 
     if(Detector.webgl) {
       // We're good!
+      
+      if(hasUserAgent(/CrOS/)) {
+
+        // if chrome book
+
+        window.location = destination + "?" + this.MagicVariable + "=" + i;
+
+      }
+      
       if(Detector.conditions[1]) {
         // Overlay condition check with localStorage
         // if(hasLocalStorage()) {
