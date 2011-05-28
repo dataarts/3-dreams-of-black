@@ -194,10 +194,6 @@ var Prairie = function ( shared ) {
 
 		renderer.render( world.scene, camera, renderTarget );
 
-		shared.logger.log( "vertices: " + renderer.data.vertices );
-		shared.logger.log( 'faces: ' + renderer.data.faces );
-		shared.logger.log( 'draw calls: ' + renderer.data.drawCalls );
-
 	};
 
 	function getParameterByName(name) {

@@ -19,23 +19,7 @@
 	];
 	var historyDispatches = [];
 
-	// debug
-
-	logger = new Logger();
-	logger.domElement.style.position = 'fixed';
-	logger.domElement.style.right = '100px';
-	logger.domElement.style.top = '0px';
-	//document.body.appendChild( logger.domElement );
-
-	stats = new Stats();
-	stats.domElement.style.position = 'fixed';
-	stats.domElement.style.right = '0px';
-	stats.domElement.style.top = '0px';
-	//document.body.appendChild( stats.domElement );
-
 	shared = {
-
-		logger : logger,
 
 		mouse : { x: 0, y: 0 },
 
@@ -182,7 +166,7 @@
 
 		var folder = window.location.pathname.toString();
 
-		if(folder === "\/") {
+		if (folder === "\/" || folder === "/index.html" ) {
 
 			shared.signals.showlauncher.dispatch();
 
@@ -227,12 +211,12 @@
 		section.show();
 
 
-		if( title && path ) {
-		
+		if ( title && path ) {
+
 			var i = stickyHistory.length;
-			
+
 			while ( i-- ) {
-				
+
 				if ( stickyHistory[i] === path ) {
 
 					path += window.location.search;
@@ -241,7 +225,7 @@
 				}
 			}
 
-			if( history ) {
+			if ( history ) {
 
 				var pState = window.location.pathname.toString();
 				history.pushState( { "pState": pState }, title, path );
@@ -378,15 +362,11 @@
 
 		requestAnimationFrame( animate );
 
-		logger.clear();
-
 		if ( currentSection ) {
 
 			currentSection.update();
 
 		}
-
-		stats.update();
 
 	}
 

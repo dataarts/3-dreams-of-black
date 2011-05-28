@@ -30,8 +30,6 @@ var City = function ( shared ) {
 	
 	function initScene () {
 		
-		//console.log( "city initScene" );
-		
 		that.update( 0.001, 34.99, 45199 );
 
 	};
@@ -110,9 +108,6 @@ var City = function ( shared ) {
 
 		world.scene.addObject( camera.animationParent );
 		
-		
-		//console.log( "city init" );
-		
 	};
 
 	this.resetCamera = function() {
@@ -137,8 +132,6 @@ var City = function ( shared ) {
 		this.resetCamera();
 
 		shared.started.city = true;
-
-		console.log( "show city" );
 
 	};
 
@@ -225,7 +218,6 @@ var City = function ( shared ) {
 			gui.add( camera, 'fov', 50, 120 ).name( 'Lens' );		
 		}
 
-			//console.log("switched camera");
 			switchedCamera = true;
 
 		}
@@ -247,10 +239,6 @@ var City = function ( shared ) {
 		renderer.render( world.scene, camera, renderTarget );
 
 		world.update( delta, camera, false );
-		
-		shared.logger.log( "vertices: " + renderer.data.vertices );
-		shared.logger.log( 'faces: ' + renderer.data.faces );
-		shared.logger.log( 'draw calls: ' + renderer.data.drawCalls );
 
 	};
 

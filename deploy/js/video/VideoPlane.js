@@ -189,32 +189,48 @@ var VideoPlane = function( shared, layer, conf ) {
     if(isStatic) return;
 		
 		try {
+
 			video.currentTime = video.duration * t;
-		} catch (err) {
-			console.log(err);
-			video.currentTime = 0;
+
+		} catch ( error ) {
+
+			// console.error( error );
+			// video.currentTime = 0;
+
 		}
-			
-		video.play();		
-		texture.needsUpdate = true;		
-		
+
+		video.play();
+		texture.needsUpdate = true;
+
 		interval = setInterval(function(){
-			if (video.readyState === video.HAVE_ENOUGH_DATA) {
+
+			if ( video.readyState === video.HAVE_ENOUGH_DATA ) {
+
 				texture.needsUpdate = true;
 			}
-				
+
 		}, 1000 / fps);
 	};
-	
+
 	this.stop = function() {
-		
+
 		if(isStatic) return;
 		video.pause();
-		video.currentTime = 0;
+
+		try {
+
+			video.currentTime = 0;
+
+		} catch ( error ) {
+
+			// console.error( error );
+
+		}
+
 		clearInterval( interval );
-		
+
 	};
-    
+
     this.update = function(mouseX, mouseY, mouseSpeed, mouseRad){
         if (!hasDistortion) 
             return;

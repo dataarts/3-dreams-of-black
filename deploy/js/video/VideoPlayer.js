@@ -122,8 +122,8 @@ var VideoPlayer = function( shared, layers, conf ) {
         return Math.max(Math.min(speed,limit),-limit);
       }
 		
-		targetPos.x = mouseX * -2 * config.prx;
-		targetPos.y = mouseY * 2 * config.pry;
+		targetPos.x = mouseX * - 2 * config.prx;
+		targetPos.y = mouseY * - 2 * config.pry;
 		
 		targetPos.x = Math.min(targetPos.x, config.prx);
 		targetPos.x = Math.max(targetPos.x, -config.prx);
@@ -131,8 +131,8 @@ var VideoPlayer = function( shared, layers, conf ) {
 		targetPos.y = Math.min(targetPos.y, config.pry);
 		targetPos.y = Math.max(targetPos.y, -config.pry);
 		
-		camera.target.position.x += (targetPos.x - camera.target.position.x) / 2;
-		camera.target.position.y += (targetPos.y - camera.target.position.y) / 2;	
+		camera.target.position.x += (targetPos.x - camera.target.position.x) * 0.05;
+		camera.target.position.y += (targetPos.y - camera.target.position.y) * 0.05;	
 				
 		for ( var i = 0; i < planes.length; i++ ) {
 			var p = planes[i];

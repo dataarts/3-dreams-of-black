@@ -54,8 +54,6 @@ var Dunes = function ( shared ) {
 		world.directionalLight2.color.setHSV( 0, 0, 0 );
 		world.lensFlare.position.y = -2500;
 		world.skyWhite = 0.02;
-		
-		console.log( "show dunes" );
 
 	};
 
