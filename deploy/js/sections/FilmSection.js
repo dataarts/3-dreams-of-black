@@ -227,17 +227,36 @@ var FilmSection = function ( shared ) {
 			case 32:
 
 				audio.paused ? audio.play() : audio.pause();
+
 				break;
 
 			case 37:
 
-				audio.currentTime --;
+				try {
+
+					audio.currentTime --;
+
+				} catch ( error ) {
+
+					console.error( error );
+
+				}
+
 				sequencer.clear();
 				break;
 
 			case 39:
 
-				audio.currentTime ++;
+				try {
+
+					audio.currentTime ++;
+
+				} catch ( error ) {
+
+					console.error( error );
+
+				}
+
 				sequencer.clear();
 				break;
 
