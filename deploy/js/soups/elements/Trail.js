@@ -24,7 +24,8 @@ var Trail = function ( numOfInstances, scene ) {
 		scale: 1,
 		offsetAmount: 6,
 		freeRotation: true,
-		yscale: 0.3
+		yscale: 0.3,
+		shootRayDown : false
 
 	};
 
@@ -64,6 +65,35 @@ var Trail = function ( numOfInstances, scene ) {
 		return c;
 
 	};
+
+	this.switchGeometry = function( geometryArray ) {
+		for ( i = 0; i < that.initSettings.numOfInstances; ++i ) {
+			
+			var geometry = geometryArray[i%geometryArray.length];
+
+			var c = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+			
+			var pos = new THREE.Vector3();
+			pos.copy(that.array[i].c.position);
+
+			scene.removeChild( that.array[i].c );
+			scene.addChild( c );
+			c.position = pos;
+
+			that.array[i].c = c;
+
+			c.scale.x = c.scale.y = c.scale.z = 0.00000001;
+
+			var yscale = that.settings.yscale*that.settings.scale;
+			var xscale = zscale = 0.4*that.settings.scale;
+			// tween scale
+			var scaleTween = new TWEEN.Tween(that.array[i].c.scale)
+				.to({x: xscale, y: yscale, z: zscale}, 200)
+				.easing(TWEEN.Easing.Linear.EaseNone);
+			scaleTween.start();
+
+		}
+	}
 
 	this.update = function ( position, normal, camPos, delta ) {
 
@@ -118,8 +148,28 @@ var Trail = function ( numOfInstances, scene ) {
 
 				if (that.settings.freeRotation) {
 
+					if (that.settings.shootRayDown) {
+						
+						ray.origin.copy( position );
+						ray.origin.y += 10;
+
+						var collision = scene.collisions.rayCastNearest(ray);
+
+						if(collision) {
+							// need scale setting...
+							c.position.y = ray.origin.y - ( ( collision.distance * 0.20 ) - amount );
+
+							//normal = collision.mesh.matrixRotationWorld.multiplyVector3( collision.normal ).normalize();
+							normal.set(0,1,0);
+						}
+
+					}
+
 					c.position.x = position.x-(normal.x*amount);
-					c.position.y = position.y-(normal.y*amount);
+					//c.position.y = position.y-(normal.y*amount);
+					if (!that.settings.shootRayDown) {
+						c.position.y = position.y-(normal.y*amount);
+					}
 					c.position.z = position.z-(normal.z*amount);
 
 					c.position.x += ((Math.random()*that.settings.spread)-(that.settings.spread/2))*(1-Math.abs(normal.x));

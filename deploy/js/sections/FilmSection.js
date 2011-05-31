@@ -178,30 +178,32 @@ var FilmSection = function ( shared ) {
 	sequencer.add( new PaintEffect( shared ), tune.getPatternMS( 8 ), tune.getPatternMS( 16 ) - cityTransitionTime, 6 ); // city animation
 
 	// PaintEffectVideo
-	// !!!!!!!!! Here PaintEffect draws directly to frame buffer !!!!!!!!!!!!
-	
+
 	//sequencer.add( new SharpenEffect( shared ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 5 ); // prairie animation
 	//sequencer.add( new NoiseEffect( shared, 0.35, 0.0, 1024 ), 	tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 5 ); // prairie animation
 	sequencer.add( new PaintEffectPrairie( shared ), tune.getPatternMS( 24 ), tune.getPatternMS( 32 ) - prairieTransitionTime, 6 ); // prairie animation
-	
-	// !!!!!!!!! Here PaintEffectPrairie draws directly to frame buffer !!!!!!!!!!!!
-	
+
 	//sequencer.add( new PaintEffectDunes( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
 	sequencer.add( new RenderEffect( shared ), tune.getPatternMS( 40 ), tune.getPatternMS( 48 ) - dunesTransitionTime, 6 ); // dunes animation
-	
-	// !!!!!!!!! Here PaintEffectDunes draws directly to frame buffer !!!!!!!!!!!!
 
 	//
 
 	function start( pattern, volume ) {
 
-		//console.log( renderer.domElement );
-
 		domElement.appendChild( renderer.domElement );
 
 		playing = true;
 
-		audio.currentTime = tune.getPatternMS( pattern ) / 1000;
+		try {
+
+			audio.currentTime = tune.getPatternMS( pattern ) / 1000;
+
+		} catch ( error ) {
+
+			console.error( error );
+
+		}
+
 		audio.play();
 		audio.volume = volume;
 		
@@ -225,17 +227,36 @@ var FilmSection = function ( shared ) {
 			case 32:
 
 				audio.paused ? audio.play() : audio.pause();
+
 				break;
 
 			case 37:
 
-				audio.currentTime --;
+				try {
+
+					audio.currentTime --;
+
+				} catch ( error ) {
+
+					console.error( error );
+
+				}
+
 				sequencer.clear();
 				break;
 
 			case 39:
 
-				audio.currentTime ++;
+				try {
+
+					audio.currentTime ++;
+
+				} catch ( error ) {
+
+					console.error( error );
+
+				}
+
 				sequencer.clear();
 				break;
 
