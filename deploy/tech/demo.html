@@ -19,7 +19,10 @@
   <script type="text/javascript">
 
     var theCode, hashNum, openLink, pre, open = false, firstOpen = true;
+    var iframeContainer;
     $(function() {
+      
+      iframeContainer = $("#iframe-container");
 
       hashNum = parseInt(getId()) || 1;
 
@@ -63,6 +66,7 @@
 
     var onResize = function() {
       pre.height(window.innerHeight - 37);
+      iframeContainer.height(window.innerHeight - 37);
       if (open) resizePre();
     }
 

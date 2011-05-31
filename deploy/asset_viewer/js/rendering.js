@@ -199,16 +199,13 @@ function render(){
 //		return;
 //	}
 	
-	console.log(document.body.scrollTop);
-	
-	
     renderer.clear();
 
     lightmapShader.uniforms['shaderDebug'].value = params.component;
     triggerShader.uniforms['shaderDebug'].value = params.component;
     animalShader.uniforms['shaderDebug'].value = params.component;
     wireMat.opacity = .3*params.grid;
-
+2
     renderer.render( sceneSky, camera, postprocessing.textureColor, true );
     gl.clearDepth(true);// bug in three.js ??
     gl.clear(gl.DEPTH_BUFFER_BIT);
