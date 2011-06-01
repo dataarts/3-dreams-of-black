@@ -11,11 +11,11 @@
 		"relauncher",
 		"tool"
 	];
-	
+
 	var stickyHistory = [
-      '/',
-      '/film',
-      '/explore'
+		'/',
+		'/film',
+		'/explore'
 	];
 	var historyDispatches = [];
 
@@ -67,7 +67,7 @@
 		soups: {},
 		sequences: {},
 		started: { "city": false, "prairie": false, "dunes" : false },
-		
+
 		currentTime: 0,
 		isExperience: false
 
@@ -268,7 +268,9 @@
 	// Accelerometer data in question
 	function onWindowDeviceOrientation( event ) {
 
-		if( !event.gamma && !event.beta ) {
+		if ( currentSection == ugc ) return;
+
+		if ( ! event.gamma && !event.beta ) {
 
 			event.gamma = -(event.x * (180 / Math.PI));
 			event.beta = -(event.y * (180 / Math.PI));
@@ -284,10 +286,10 @@
 		var gamma = overThreshold ? event.gamma : 0;
 		var beta = overThreshold ? event.beta : 0;
 
-		if(lastGamma != gamma || lastBeta != beta) {
+		if ( lastGamma != gamma || lastBeta != beta) {
 
 			var x = Math.round( 1.5 * gamma ) + shared.mouse.x;
-			var y = ( -Math.round( 1.5 * beta ) ) + shared.mouse.y;
+			var y = ( - Math.round( 1.5 * beta ) ) + shared.mouse.y;
 
 			if( Math.abs( x ) > window.innerWidth ) {
 
