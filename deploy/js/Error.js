@@ -146,61 +146,61 @@ function HandleErrors(d) {
 								// Throw back
 								window.location = destination + "?" + this.MagicVariable + "=7";
 
-							} else {
-
-			            window.addEventListener("load", function() {
-
-			              var uiContainer = document.getElementById('ui-container');
-			              if(uiContainer) {
-			                uiContainer.style.display = "none";
-			              }
-
-			              var shade = document.createElement("div");
-			              var errorContainer = document.createElement("div");
-			              var error = document.createElement("div");
-			                  error.setAttribute("id", "rome-error");
-			              var styles = document.createElement("style");
-			                  styles.innerHTML = "a { color: #fff; }";
-			                  document.getElementsByTagName("head")[0].appendChild(styles);
-
-			              // Styling
-			              var shadeStyle = "width: 100%; height: 100%; position: fixed; margin: 0; padding: 0; top: 0; left: 0;";
-			              shade.setAttribute("style", shadeStyle);
-			              var errorContainerStyle = "position: fixed; width: 400px; margin: 0 auto; top: " + (window.innerHeight - 200) / 2.0 + "px; left: " + (window.innerWidth - 400) / 2.0 + "px;";
-			              errorContainer.setAttribute("style", errorContainerStyle);
-			              var errorStyle = "width: 330px; padding: 50px 35px; background: rgba(0, 0, 0, 0.3); color: #fff; color: #fff; line-height: 18px; font: 500 12px/18px 'Futura', Arial, sans-serif; letter-spacing: 1px; text-align: center;";
-			              error.setAttribute("style", errorStyle);
-			              error.innerHTML = that.Errors[5];
-
-			              // Add Event Listeners
-			              var windowResize = function() {
-			                errorContainer.style.left = (window.innerWidth - 400) / 2.0 + "px";
-			                errorContainer.style.top = (window.innerHeight) / 2.0 + "px";
-			              };
-			              var removeErrors = function() {
-			                document.body.removeChild(shade);
-			                document.body.removeChild(errorContainer);
-			                window.removeEventListener("resize", windowResize, false);
-			                LauncherSection.showUI();
-			                localStorage.setItem("RomeError", true);
-			              };
-			              shade.addEventListener("click", function() {
-			                removeErrors();
-			              }, false);
-			              window.addEventListener("resize", windowResize, false);
-
-			              errorContainer.appendChild(error);
-			              document.body.appendChild(shade);
-			              document.body.appendChild(errorContainer);
-
-			              var escape = document.getElementById("escape-from-warning");
-			                  escape.addEventListener("click", function(e) {
-			                    e.preventDefault();
-			                    removeErrors();
-			                  }, false);
-			            }, false);
-
-			            HandleErrors.isWebGLAndBeta = true;
+              // } else {
+              // 
+              //                  window.addEventListener("load", function() {
+              // 
+              //                    var uiContainer = document.getElementById('ui-container');
+              //                    if(uiContainer) {
+              //                      uiContainer.style.display = "none";
+              //                    }
+              // 
+              //                    var shade = document.createElement("div");
+              //                    var errorContainer = document.createElement("div");
+              //                    var error = document.createElement("div");
+              //                        error.setAttribute("id", "rome-error");
+              //                    var styles = document.createElement("style");
+              //                        styles.innerHTML = "a { color: #fff; }";
+              //                        document.getElementsByTagName("head")[0].appendChild(styles);
+              // 
+              //                    // Styling
+              //                    var shadeStyle = "width: 100%; height: 100%; position: fixed; margin: 0; padding: 0; top: 0; left: 0;";
+              //                    shade.setAttribute("style", shadeStyle);
+              //                    var errorContainerStyle = "position: fixed; width: 400px; margin: 0 auto; top: " + (window.innerHeight - 200) / 2.0 + "px; left: " + (window.innerWidth - 400) / 2.0 + "px;";
+              //                    errorContainer.setAttribute("style", errorContainerStyle);
+              //                    var errorStyle = "width: 330px; padding: 50px 35px; background: rgba(0, 0, 0, 0.3); color: #fff; color: #fff; line-height: 18px; font: 500 12px/18px 'Futura', Arial, sans-serif; letter-spacing: 1px; text-align: center;";
+              //                    error.setAttribute("style", errorStyle);
+              //                    error.innerHTML = that.Errors[5];
+              // 
+              //                    // Add Event Listeners
+              //                    var windowResize = function() {
+              //                      errorContainer.style.left = (window.innerWidth - 400) / 2.0 + "px";
+              //                      errorContainer.style.top = (window.innerHeight) / 2.0 + "px";
+              //                    };
+              //                    var removeErrors = function() {
+              //                      document.body.removeChild(shade);
+              //                      document.body.removeChild(errorContainer);
+              //                      window.removeEventListener("resize", windowResize, false);
+              //                      LauncherSection.showUI();
+              //                      localStorage.setItem("RomeError", true);
+              //                    };
+              //                    shade.addEventListener("click", function() {
+              //                      removeErrors();
+              //                    }, false);
+              //                    window.addEventListener("resize", windowResize, false);
+              // 
+              //                    errorContainer.appendChild(error);
+              //                    document.body.appendChild(shade);
+              //                    document.body.appendChild(errorContainer);
+              // 
+              //                    var escape = document.getElementById("escape-from-warning");
+              //                        escape.addEventListener("click", function(e) {
+              //                          e.preventDefault();
+              //                          removeErrors();
+              //                        }, false);
+              //                  }, false);
+              // 
+              //                  HandleErrors.isWebGLAndBeta = true;
 			          // }
 			        // }
 						}
