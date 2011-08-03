@@ -67,7 +67,7 @@ function HandleErrors(d) {
 
         // if chrome book
 
-        window.location = destination + "?" + this.MagicVariable + "=" + i;
+        window.location = destination + "?" + this.MagicVariable + "=" + 8;
 
       }
       
@@ -214,7 +214,7 @@ function HandleErrors(d) {
           // Then we've found what we're looking for!
           window.location = destination + "?" + this.MagicVariable + "=" + i;
 					fired = true;
-					break;
+					return false;
         }
       }
       // All purpose error message
