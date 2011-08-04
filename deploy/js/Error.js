@@ -22,7 +22,8 @@ function HandleErrors(d) {
     "We&#39;re sorry, but &#147;3 Dreams of Black&#148; is an experiment that was designed with the browser Google Chrome in mind. As a result, it may not work perfectly in your current browser. For the best viewing experience, you can <a href = 'http://www.google.com/chrome?brand=CHKX&utm_campaign=en&utm_source=en-rome-webgl&utm_medium=rome-webgl'>download Google Chrome</a> and launch this site again, or go ahead and <a id = 'escape-from-warning' href = '#'>try it anyway</a>.",
     "You appear to be running an older version of Chrome. Please click on the wrench icon on the browser toolbar, and select 'Update Google Chrome' before viewing ROME.",
     "We are sorry, but it appears that your browser does not support WebGL. This could be due to a number of different reasons. For more information visit this <a href = 'http://get.webgl.org/troubleshooting/'>page</a>.",
-    "We are sorry, but it appears that your browser will not support &#147;3 Dreams of Black&#148;. This could be due to a number of different reasons. For more information visit this <a href = 'http://get.webgl.org/troubleshooting/'>page</a>"
+    "We are sorry, but it appears that your browser will not support &#147;3 Dreams of Black&#148;. This could be due to a number of different reasons. For more information visit this <a href = 'http://get.webgl.org/troubleshooting/'>page</a>",
+    "We are sorry, but your Chromebook does not support WebGL. (Don't worry, this happens to many visitors.) Please visit again using a computer with a WebGL-compatible graphics card."
   ];
 
   this.getUrlVars = function() {
@@ -67,7 +68,7 @@ function HandleErrors(d) {
 
         // if chrome book
 
-        window.location = destination + "?" + this.MagicVariable + "=" + 8;
+        window.location = destination + "?" + this.MagicVariable + "=" + 9;
 
       }
       
