@@ -53,7 +53,7 @@ var UgcSection = function ( shared ) {
 	var environment = new THREE.Object3D();
 	that.scene.addChild( environment );
 
-	var loader = new THREE.SceneLoader();
+	var loader = new THREE.SceneLoaderAjax();
 	loader.load( "/files/models/dunes/D_tile_1.js", function ( result ) {
 
 		for ( var i = 0, l = result.scene.objects.length; i < l; i ++ ) {
@@ -73,11 +73,11 @@ var UgcSection = function ( shared ) {
 		}
 
 		// Clouds
-		
+
 		that.clouds = new THREE.Object3D();
 		environment.addChild( that.clouds );
-		
-		var geometry = new THREE.Plane( 1000, 1000 ); 
+
+		var geometry = new THREE.Plane( 1000, 1000 );
 
 		for ( var i = 0; i < 100; i ++ ) {
 
@@ -337,7 +337,7 @@ var UgcSection = function ( shared ) {
 
 		} );
 		*/
-		
+
 		//
 
 		shared.ugcSignals.object_createmode.add( function () {
@@ -453,7 +453,7 @@ var UgcSection = function ( shared ) {
         category: obj.getType(),
         data: obj.getJSON()
       };
-      
+
 
 			ugcHandler.submitUGO( submission, image, function ( rsp ) {
 				if (!rsp.success) {

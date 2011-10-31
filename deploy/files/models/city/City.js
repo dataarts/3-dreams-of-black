@@ -1,19 +1,4 @@
-// 3D assets and textures for ROME "3 Dreams of Black" at http://ro.me are licensed 
-// under a Creative CommonsAttribution-NonCommercial-ShareAlike 3.0 Unported License
-// ( http://creativecommons.org/licenses/by-nc-sa/3.0/ ).
-
-/* Converted from: City3_Export_all_triggers_24b.blend
- *
- * File generated with Blender 2.56 Exporter
- * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
- *
- * objects:    344
- * geometries: 46
- * materials:  267
- * textures:   19
- */
-
-var scene = {
+{
 
 "type" : "scene",
 "urlBaseType" : "relativeToScene",
@@ -3471,1217 +3456,1217 @@ var scene = {
 {
     "19 - Default.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Ground1.jpg" }
     },
 
     "assets" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16119285, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "assets.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16119285, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "assets.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16119285, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "assets.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16119285, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Backdrop_City.003" : {
         "type": "MeshBasicMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Backdrop_City.jpg" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Backdrop_City.jpg" }
     },
 
     "bus_0006_flowerSu.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_flowerSu.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_flowerSu.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_flowerSunflo" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_lambert2.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_lambert2SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_lambert3SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.008" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.009" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.010" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.011" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrai.012" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_railTrain_00" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_treeGene.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_treeGene.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_treeGene.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "bus_0006_treeGenericL" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.008" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.015" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.016" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.017" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.018" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.019" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.020" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.021" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.022" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.023" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.024" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.025" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006.026" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006_flo" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006_lam" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006_rai" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_bus_0006_tre" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_flowerDa.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_flowerDa.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_flowerDaisyL" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_glowbulb_000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_grass04_.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_grass04_0002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_lambert2.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "car_0003_lambert2SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "City.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 15790320, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 15790320, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "City.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 15790320, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 15790320, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "City.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 15790320, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 15790320, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Collision.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16592639, opacity: 1.00 }
+        "parameters": { "color": 16592639, "opacity": 1.00 }
     },
 
     "Collision.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16592639, opacity: 1.00 }
+        "parameters": { "color": 16592639, "opacity": 1.00 }
     },
 
     "Collision.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16592639, opacity: 1.00 }
+        "parameters": { "color": 16592639, "opacity": 1.00 }
     },
 
     "Collision.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16592639, opacity: 1.00 }
+        "parameters": { "color": 16592639, "opacity": 1.00 }
     },
 
     "console_3_0005_ca.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_3_0005_ca.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_3_0005_ca.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_3_0005_ca.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_3_0005_ca.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_3_0005_car_00" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_5_0005_co.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_5_0005_co.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_5_0005_co.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_5_0005_co.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_5_0005_co.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "console_5_0005_consol" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Console_6.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_6.jpg" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Console_6.jpg" }
     },
 
     "Console_6.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_6.jpg" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Console_6.jpg" }
     },
 
     "Console_7.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_7.jpg" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Console_7.jpg" }
     },
 
     "Console_8.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_8.jpg" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Console_8.jpg" }
     },
 
     "Console_8.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Console_8.jpg" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Console_8.jpg" }
     },
 
     "daisy_centerSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "daisy_lavenderSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Daisy_Petals_SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Daisy_Petals_SG1" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "daisy_pinkSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "daisy_purpleSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "daisy_whiteSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Evegreen_LeavesSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Evergreen_LeavesS.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Evergreen_LeavesS.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Evergreen_LeavesSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Evergreen_TrunkSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Evergreen_TrunkSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flower_orangeSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flower_orangeSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flower_pinkSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flower_purpleSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flower_whiteSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flower_yellowSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flower_yellowSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerDaisyLow_0003_D" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerDaisyLower_.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerDaisyLower_0001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerDaisyLowest.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerDaisyLowest_000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerSunflowerLo.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerSunflowerLowest" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerTulip_0002_.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "flowerTulip_0002_tuli" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "genericTree_0007_.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "genericTree_0007_.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "genericTree_0007_.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "genericTree_0007_.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "genericTree_0007_Tree" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "glowbulb_0002_glo.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "glowbulb_0002_glo.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "glowbulb_0002_glowbul" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "glowbulb_blinn_SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass02_0001_gras.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass02_0001_grass_la" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass03_0001_gras.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass03_0001_gras.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass03_0001_grass_la" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass04_0002_gras.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass04_0002_gras.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass04_0002_gras.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass04_0002_grass_la" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass05_0001_grass_la" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass06_0001_grass_la" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass_0002_grass_lamb" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass_aquaSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass_lambert_SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grass_yellowSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grassSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grassSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grassSG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grassSG.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "grassSG.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Ground" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Ground1.jpg.001", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Ground1.jpg.001", "vertexColors": "vertex" }
     },
 
     "hot_pinkSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert10SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert10SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert11SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert11SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert2SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert2SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert2SG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert2SG.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert2SG.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert2SG.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert2SG.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert3SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert3SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert3SG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert3SG.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert4SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert4SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert4SG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert5SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert5SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert5SG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert6SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert7SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert7SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert8SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert8SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert8SG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert9SG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "lambert9SG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "pink_shrubSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_gr.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_grass0" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_la.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_la.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_la.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_la.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_la.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_la.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_la.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_lamber" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_tr.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "railTrain_0006_treeEv" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub02_0003_shru.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub03_0001_shru.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub03_0001_shru.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub03_0001_shrub3_l" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub03_0001_shrubSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub_greenSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub_lt_blueSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub_lt_greenSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub_orangeSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub_redSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrub_redSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrubSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "shrubsSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "Tree_Generic_TrunkSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tree_magentaSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tree_orangeRedSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tree_orangeSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tree_orangeSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tree_pinkSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tree_pinkSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.008" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.009" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.012" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.013" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.014" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.015" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.016" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_.017" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_0002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeEvergreenLow_0004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeGenericLower_.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeGenericLower_.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeGenericLower_.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeGenericLower_.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "treeGenericLower_0001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tulip_low_0001_tu.000" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tulip_low_0001_tulip_" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tulip_petalsSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "tulip_stemSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "vines_0002_vinesS.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "vines_0002_vinesS.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "vines_0002_vinesSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "vinesSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "vinesSG.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "vinesSG.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "vinesSG.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     },
 
     "yellowSG" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 10724259, opacity: 1.00 }
+        "parameters": { "color": 10724259, "opacity": 1.00 }
     }
 },
 
@@ -4690,7 +4675,7 @@ var scene = {
 {
     "position"  : [ 0.000000, 0.000000, 0.000000 ],
     "rotation"  : [ -1.570796, 0.000000, 0.000000 ],
-    "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+    "scale"     : [ 1.000000, 1.000000, 1.000000 ]
 },
 
 "defaults" :
@@ -4701,6 +4686,3 @@ var scene = {
 }
 
 }
-
-postMessage( scene );
-close();

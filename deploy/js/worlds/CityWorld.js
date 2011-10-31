@@ -53,7 +53,7 @@ var CityWorld = function ( shared ) {
 
 	// Scene
 
-	var loader = new THREE.SceneLoader();
+	var loader = new THREE.SceneLoaderAjax();
 
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -83,7 +83,7 @@ var CityWorld = function ( shared ) {
 		result.objects[ "Backdrop_City" ].materials[ 0 ].map.wrapS = THREE.RepeatWrapping;
 		result.objects[ "Backdrop_City" ].materials[ 0 ].map.wrapT = THREE.RepeatWrapping;
 
-		// add portals 
+		// add portals
 
 		that.portals.push( { object: result.objects[ "Portal"     ], radius: 150, currentDistance: 9999999 } );
 		that.portals.push( { object: result.objects[ "Portal.001" ], radius: 150, currentDistance: 9999999 } );

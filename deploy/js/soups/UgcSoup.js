@@ -5,7 +5,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 	// init
 	shared.camPos = new THREE.Vector3( 0, 20, 0 );
-	var loader = new THREE.JSONLoader();
+	var loader = new THREE.JSONLoaderAjax();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
@@ -104,23 +104,23 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	that.setLife = function (  ) {
 		console.log("set soup type to life");
 	};
-	
+
 	that.setDark = function (  ) {
 		console.log("set soup type to dark");
 	};
 
 	that.addAnimal = function ( id, arrayIndex ) {
-		
+
 		if (id == undefined) {
 			id = "moose";
 		}
-		
+
 		var geometry = allAnimals[id].geometry;
 		var scale = allAnimals[id].scale;
 		var speed = allAnimals[id].speed;
 		var morph = allAnimals[id].index;
 		var flying = allAnimals[id].flying;
-		
+
 		if (flying) {
 			flyingAnimals.switchAnimal(geometry, scale, speed, morph, arrayIndex);
 		} else {
@@ -130,7 +130,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	};
 
 	that.removeAnimal = function ( id ) {
-		
+
 		if (id == undefined) {
 			id = "moose";
 		}
@@ -148,14 +148,14 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	};
 
 	that.get = function ( ) {
-		
+
 		var str = "";
 
 		// running
 		for (var i=0; i<runningAnimals.array.length; ++i ) {
 			var geometry = runningAnimals.array[i].a.mesh.geometry;
 			var startMorph = runningAnimals.array[i].startMorph;
-			
+
 			for (var j in allAnimals) {
 				var checkGeometry = allAnimals[j].geometry;
 				var morph = allAnimals[j].index;
@@ -172,7 +172,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		for (var i=0; i<flyingAnimals.array.length; ++i ) {
 			var geometry = flyingAnimals.array[i].a.mesh.geometry;
 			var startMorph = flyingAnimals.array[i].startMorph;
-			
+
 			for (var j in allAnimals) {
 				var checkGeometry = allAnimals[j].geometry;
 				var morph = allAnimals[j].index;
@@ -194,7 +194,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	}
 
 	that.set = function ( str ) {
-		
+
 		var array = str.split("|");
 		console.log(array);
 
@@ -216,7 +216,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 				that.addAnimal(id, flyingIndex);
 				++flyingIndex;
 			}
-			
+
 		}
 
 	}
@@ -258,7 +258,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	allAnimals.goat = {geometry: null, index: 0, speed: 5.2, scale: 1.65};
 	allAnimals.shadow = {geometry: null, index: 0, speed: 3.5, scale: 2.9};
 	allAnimals.arm = {geometry: null, index: 0, speed: 2.5, scale: 4.0};
-	
+
 	allAnimals.spider = {geometry: null, index: 0, speed: 1.629, scale: 1.05};
 	allAnimals.crab = {geometry: null, index: 1, speed: 3, scale: 1.05};
 	allAnimals.scorpion = {geometry: null, index: 2, speed: 1.7, scale: 1.05};
@@ -342,7 +342,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	loader.load( { model: "/files/models/soup/fish_life.js", callback: fishLoadedProxy } );
 	loader.load( { model: "/files/models/soup/sockpuppet_jump.js", callback: sockjumpLoadedProxy } );
 	loader.load( { model: "/files/models/soup/sockpuppet_popup.js", callback: sockpopupLoadedProxy } );
-	
+
 	loader.load( { model: "/files/models/soup/taruffalo_black.js", callback: taruffaloLoadedProxy } );
 	loader.load( { model: "/files/models/soup/animals_A_black.js", callback: blackAnimalsLoadedProxy } );
 	loader.load( { model: "/files/models/soup/gator_black.js", callback: gatorLoadedProxy } );
@@ -418,10 +418,10 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		allAnimals.wolf.geometry = geometry;
 		allAnimals.toad.geometry = geometry;
 
-		var animal, 
+		var animal,
 			morphArray = [0,0,1,2,1,2,0,2,3];
 		var speedArray = [13.12, 9.73, 6.7, 3.06];
-		
+
 		//animal = runningAnimals.addAnimal( geometry, "animal", 1.7, morphArray, speedArray );
 		preinitAnimal( animal, shared.renderer, scene );
 
@@ -430,7 +430,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	function taruffaloLoadedProxy( geometry ) {
 		allAnimals.taruffalo.geometry = geometry;
 		allAnimals.buffalo.geometry = geometry;
-		
+
 
 		var animal,
 			morphArray = [0,1,0,1];
@@ -452,9 +452,9 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 
 	function goatLoadedProxy( geometry ) {
 		allAnimals.goat.geometry = geometry;
-		
+
 		var animal;
-		
+
 		//animal = runningAnimals.addAnimal( geometry, "goat", 1.65, null, [5.2] );
 		preinitAnimal( animal, shared.renderer, scene );
 
@@ -526,7 +526,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	loader.load( { model: "/files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
 	loader.load( { model: "/files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
 	loader.load( { model: "/files/models/soup/birds_A_black.js", callback: birdsABlackLoadedProxy } );
-	
+
 	function birdsALoadedProxy( geometry ) {
 		allAnimals.eagle.geometry = geometry;
 		allAnimals.owl.geometry = geometry;
@@ -565,13 +565,13 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	loader.load( { model: "/files/models/soup/butterfly_hiD.js", callback: butterflysD.addAnimal } );
 	var butterflysC = new AnimalInFrontOfCamera(15, scene);
 	loader.load( { model: "/files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
-*/	
-	
+*/
+
 	// life trail - of grass/trees/etc
 	var trail = new Trail(80, scene);
 	trail.settings.freeRotation = false;
 	trail.settings.offsetAmount = 10;
-	
+
 	// preoccupy for differnt grass
 	for (i=0; i<80; ++i ) {
 		var type = i%4;
@@ -591,7 +591,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	loader.load( { model: "/files/models/soup/grass03.js", callback: grass03LoadedProxy } );
 	loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
 	//loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass05LoadedProxy } );
-	
+
 	loader.load( { model: "/files/models/soup/evergreen_low.js", callback: treeALoadedProxy } );
 	loader.load( { model: "/files/models/soup/evergreen_high.js", callback: treeBLoadedProxy } );
 	loader.load( { model: "/files/models/soup/treeGeneric.js", callback: treeCLoadedProxy } );
@@ -637,7 +637,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		trail.addInstance( geometry, "light", false, true );
 		trail.array[4].maxHeight = 12;
 	}
-	
+
 	// dark trail
 	// trail - of grass/trees/etc
 /*	var trailMaterials = [new THREE.MeshLambertMaterial( { color: 0x000000 } ),
@@ -697,7 +697,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 			runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			//runningAnimals.create(vectors.array[1].position, collisionScene.currentNormal, vectors.array[0].position);
 			spawnAnimal = 0;
-		}		
+		}
 		if (spawnBird >= 300) {
 			flyingAnimals.create(vectors.array[1].position, collisionScene.currentNormal);
 			spawnBird = 0;
@@ -705,7 +705,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 			stragglers.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position);
 		}
 
-		// update the soup parts	
+		// update the soup parts
 		collisionScene.update(shared.camPos, delta);
 
 		if (runInCircle) {
@@ -716,7 +716,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 			collisionScene.emitterFollow.position.x = collisionScene.emitter.position.x;
 			collisionScene.emitterFollow.position.z = collisionScene.emitter.position.z;
 		}
-	
+
 		vectors.update(collisionScene.emitterFollow.position, collisionScene.currentNormal);
 		//ribbons.update(collisionScene.emitterFollow.position);
 		particles.update(delta, vectors.array[0].position, shared.camPos);
@@ -727,7 +727,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		//butterflysD.update(shared.camPos, camera.theta, delta, true);
 
 		trail.update(collisionScene.emitter.position, collisionScene.emitterNormal, shared.camPos, delta);
-		
+
 		TWEEN.update();
 
 		// update for the green stuff shader
@@ -763,29 +763,29 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	}
 
 	function setupGui () {
-		
+
 		/*function toggle( e ) {
-		
-			if( e.style.display == "block" ) 
+
+			if( e.style.display == "block" )
 				e.style.display = "none";
 			else
 				e.style.display = "block";
-			
+
 		}
 
 		effectController = {
-		
+
 			ribbon_function: function() { for( var i = 0; i < ribbon_array.length; i++ ) toggle( ribbon_array[ i ].domElement ); },
 			running_function: function() { for( var i = 0; i < running_array.length; i++ ) toggle( running_array[ i ].domElement ); },
 			flying_function: function() { for( var i = 0; i < flying_array.length; i++ ) toggle( flying_array[ i ].domElement ); },
 			particle_function: function() { for( var i = 0; i < particle_array.length; i++ ) toggle( particle_array[ i ].domElement ); },
 			trail_function: function() { for( var i = 0; i < trail_array.length; i++ ) toggle( trail_array[ i ].domElement ); },
-			
+
 		};
 
-	
+
 		if (ribbons) {
-		
+
 			// ribbons
 			h  = gui.add( effectController, "ribbon_function" ).name( "Ribbons" );
 
@@ -803,7 +803,7 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		}
 
 		if (runningAnimals) {
-		
+
 			// running animals
 			h  = gui.add( effectController, "running_function" ).name( "Running animals" );
 
@@ -869,13 +869,13 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 		}
 		*/
 		gui.show();
-		
+
 	}
 
 	/*function setGuiHeaderStyle( g, h, s, v ) {
 
 		var color = "hsl(" + h + "," + s + "%, " + v + "%)";
-		
+
 		g.domElement.style.borderLeft = "solid 5px " + color;
 		g.domElement.style.background = color;
 		g.domElement.style.fontWeight = "bold";
@@ -885,13 +885,13 @@ var UgcSoup = function ( camera, scene, shared, runInCircle ) {
 	function setGuiElementStyle( a, h, s, v, display ) {
 
 		var s, color = "hsl(" + h + "," + s + "%, " + v + "%)";
-		
+
 		for( i = 0; i < a.length; i++ ) {
-			
+
 			s = a[ i ].domElement.style;
 			s.borderLeft = "solid 5px " + color;
 			s.display = display ? display : "none";
-			
+
 		}
 
 	}*/

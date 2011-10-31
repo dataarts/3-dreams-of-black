@@ -1,22 +1,4 @@
-// 3D assets and textures for ROME "3 Dreams of Black" at http://ro.me are licensed 
-// under a Creative CommonsAttribution-NonCommercial-ShareAlike 3.0 Unported License
-// ( http://creativecommons.org/licenses/by-nc-sa/3.0/ ).
-
-/*
- * File generated with Blender 2.56 Exporter
- * https://github.com/mrdoob/three.js/tree/master/utils/exporters/blender/
- *
- * vertices: 406
- * faces: 507
- * normals: 0
- * uvs: 178
- * colors: 163
- * materials: 1
- * edges: 0
- *
- */
-
-var model = {
+{
 
     "version" : 2,
 
@@ -54,7 +36,4 @@ var model = {
     "edges" : []
 
 
-};
-
-postMessage( model );
-close();
+}

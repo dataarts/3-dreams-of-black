@@ -1,19 +1,4 @@
-// 3D assets and textures for ROME "3 Dreams of Black" at http://ro.me are licensed 
-// under a Creative CommonsAttribution-NonCommercial-ShareAlike 3.0 Unported License
-// ( http://creativecommons.org/licenses/by-nc-sa/3.0/ ).
-
-/* Converted from: Prairie_export5.blend
- *
- * File generated with Blender 2.56 Exporter
- * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
- *
- * objects:    217
- * geometries: 35
- * materials:  38
- * textures:   3
- */
-
-var scene = {
+{
 
 "type" : "scene",
 "urlBaseType" : "relativeToScene",
@@ -3355,6 +3340,3 @@ var scene = {
 }
 
 }
-
-postMessage( scene );
-close();

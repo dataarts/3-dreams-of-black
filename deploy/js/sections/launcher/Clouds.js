@@ -95,7 +95,7 @@ var Clouds = function ( shared, isRelaunch ) {
     mesh = new THREE.Mesh( geometry, material );
     mesh2 = new THREE.Mesh( geometry, material );
 
-    var loader = new THREE.JSONLoader();
+    var loader = new THREE.JSONLoaderAjax();
     loader.load( { model: "/files/models/soup/birds_B_life.js", callback: makeScene } );
 
 	} );
@@ -291,9 +291,9 @@ var Clouds = function ( shared, isRelaunch ) {
 		// render.render( scene, camera );
 
 		for ( var i = 0, il = birds.length; i < il; i++ ) {
-			
+
 			boid = boids[ i ];
-      
+
 			vector.z = boid.position.z;
 
 			//boid.repulse( vector );

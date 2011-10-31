@@ -17,6 +17,9 @@ files = [
 'js/lib/ThreeWebGL.js',
 'js/lib/ThreeExtras.js',
 
+'js/lib/JSONLoaderAjax.js' ,
+'js/lib/SceneLoaderAjax.js',
+
 'js/lib/LoadingBar.js',
 'js/lib/RequestAnimationFrame.js',
 'js/lib/Sequencer.js',

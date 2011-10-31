@@ -8,7 +8,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	var darkTrailArray = [];
 	var lightTrailArray = [];
 
-	var loader = new THREE.JSONLoader();
+	var loader = new THREE.JSONLoaderAjax();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
@@ -63,17 +63,17 @@ var DunesSoup = function ( camera, scene, shared ) {
 	}
 
 	that.addAnimal = function ( id, arrayIndex ) {
-		
+
 		if (id == undefined) {
 			id = "eagle";
 		}
-		
+
 		var geometry = allAnimals[id].geometry;
 		var scale = allAnimals[id].scale;
 		var speed = allAnimals[id].speed;
 		var morph = allAnimals[id].index;
 		var flying = allAnimals[id].flying;
-		
+
 		if (flying) {
 			flyingAnimals.switchAnimal(geometry, scale, speed, morph, arrayIndex);
 		} else {
@@ -84,7 +84,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 
 
 	that.set = function ( str ) {
-		
+
 		var array = str.split("|");
 
 		var runningIndex = 0;
@@ -105,7 +105,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 				that.addAnimal(id, flyingIndex);
 				++flyingIndex;
 			}
-			
+
 		}
 
 	}
@@ -130,7 +130,7 @@ var DunesSoup = function ( camera, scene, shared ) {
 	// setup the different parts of the soup
 
 	// collision scene
-	
+
 	var collisionScene = new CollisionScene( camera, scene, 0.15, shared, 1200 );
 	collisionScene.settings.emitterDivider = 5;
 	collisionScene.settings.maxSpeedDivider = 0.1;
@@ -146,9 +146,9 @@ var DunesSoup = function ( camera, scene, shared ) {
 	var vectors = new Vectors(50, 3, 10, startPosition);
 
 	// ribbons
-	
+
 	var ribbonMaterials = [
-	
+
 		new THREE.MeshBasicMaterial( { color:0xd9f3fb, opacity: 0.25 } ),
 		new THREE.MeshBasicMaterial( { color:0xe4f1f5, opacity: 0.25 } ),
 		new THREE.MeshBasicMaterial( { color:0xffffff, opacity: 0.25 } ),
@@ -223,13 +223,13 @@ var DunesSoup = function ( camera, scene, shared ) {
 	};
 
 	function birdsBLoadedProxy( geometry ) {
-		
+
 		allAnimals.flamingo.geometry = geometry;
 		allAnimals.stork.geometry = geometry;
 
 		var animal,
 			morphArray = [1,0];
-		
+
 		animal = flyingAnimals.addAnimal( geometry, "b", 2.8, morphArray, 1.2 );
 		preinitAnimal( animal, shared.renderer, scene );
 
@@ -331,15 +331,15 @@ var DunesSoup = function ( camera, scene, shared ) {
 		// update to reflect _real_ camera position
 
 		if( !otherCamera ) {
-			
+
 			shared.camPos.x = camera.matrixWorld.n14;
 			shared.camPos.y = camera.matrixWorld.n24;
 			shared.camPos.z = camera.matrixWorld.n34;
-			
+
 			collisionScene.settings.camera = camera;
-			
+
 		} else {
-			
+
 			shared.camPos.copy( otherCamera.matrixWorld.getPosition() );
 			collisionScene.settings.camera = otherCamera;
 

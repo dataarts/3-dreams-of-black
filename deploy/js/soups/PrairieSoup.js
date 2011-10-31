@@ -10,7 +10,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	var camPosVector = new THREE.Vector3();
 	var camVector = new THREE.Vector3();
 
-	var loader = new THREE.JSONLoader();
+	var loader = new THREE.JSONLoaderAjax();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
@@ -131,7 +131,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 	function animalsLoadedProxy( geometry ) {
 
-		var animal, 
+		var animal,
 			morphArray = [3,1,2,0,1,0,2,0,2,3,0];
 		var speedArray = [11.12, 9.73, 6.7, 3.06];
 
@@ -141,7 +141,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 
 	function taruffaloLoadedProxy( geometry ) {
-		
+
 		var animal,
 			morphArray = [0,1,0,1];
 		var speedArray = [9.2, 9.2];
@@ -160,16 +160,16 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 
 	function goatLoadedProxy( geometry ) {
-		
+
 		var animal;
-		
+
 		animal = runningAnimals.addAnimal( geometry, "goat", 0.45, null, [5.2] );
 		preinitAnimal( animal, shared.renderer, scene );
 
 	};
 
 	function shadow2LoadedProxy( geometry ) {
-		
+
 		var animal;
 
 		animal = runningAnimals.addAnimal( geometry, "shadow2", 1.0, null, [2.5] );
@@ -178,7 +178,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 
 	function shadow5LoadedProxy( geometry ) {
-		
+
 		var animal;
 
 		animal = runningAnimals.addAnimal( geometry, "shadow5", 1.0, null, [2.5] );
@@ -187,7 +187,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 
 	function hand1LoadedProxy( geometry ) {
-		
+
 		var animal;
 
 		animal = runningAnimals.addAnimal( geometry, "hand1", 1.0, null, [2.5] );
@@ -196,7 +196,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 
 	function hand2LoadedProxy( geometry ) {
-		
+
 		var animal;
 
 		animal = runningAnimals.addAnimal( geometry, "hand2", 1.0, null, [2.5] );
@@ -206,7 +206,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 
 	function armLoadedProxy( geometry ) {
-		
+
 		var animal;
 
 		animal = runningAnimals.addAnimal( geometry, "arm", 3.0, null, [1.0] );
@@ -228,7 +228,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 
 	function centipedeLoadedProxy( geometry ) {
-		
+
 		var animal;
 
 		animal = runningAnimals.addAnimal( geometry, "centipede", 0.5, null, [1] );
@@ -237,7 +237,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	};
 
 	function sickleLoadedProxy( geometry ) {
-		
+
 		var animal;
 
 		animal = runningAnimals.addAnimal( geometry, "sickle", 1.5, null, [0.5] );
@@ -266,18 +266,18 @@ var PrairieSoup = function ( camera, scene, shared ) {
 	flyingAnimals.settings.flyingDistance = -15;
 
 	loader.load( { model: "/files/models/soup/birds_A_black.js", callback: birdsALoadedProxy } );
-	
+
 	function birdsALoadedProxy( geometry ) {
-		
+
 		var animal,
 			morphArray = [0,0,0,0,1,0,0,0,0,1];
 		var speedArray = [12, 14];
 
 		animal = flyingAnimals.addAnimal( geometry, null, 0.4, morphArray, speedArray );
 		preinitAnimal( animal, shared.renderer, scene );
-		
+
 	};
-	
+
 	// trail - blobs...
 	var trail = new Trail( 80, scene );
 
@@ -308,20 +308,20 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		// update to reflect _real_ camera position
 
 		if( !otherCamera ) {
-			
+
 			shared.camPos.x = camera.matrixWorld.n14;
 			shared.camPos.y = camera.matrixWorld.n24;
 			shared.camPos.z = camera.matrixWorld.n34;
-			
+
 			collisionScene.settings.camera = camera;
-			
+
 		} else {
-			
+
 			shared.camPos.copy( otherCamera.matrixWorld.getPosition());
 			collisionScene.settings.camera = otherCamera;
 		}
 
-		
+
 		camPosVector.copy(shared.camPos);
 		camVector.copy(camPosVector.subSelf(lastCamPos).normalize());
 		lastCamPos.copy(shared.camPos);
@@ -337,7 +337,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		spawnAnimal += delta;
 		spawnBird += delta;
 
-		// update the soup parts	
+		// update the soup parts
 
 		collisionScene.update( shared.camPos, delta );
 		vectors.update( collisionScene.emitterFollow.position, collisionScene.currentNormal );
@@ -349,7 +349,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 		// spawn animal test
 		if ( spawnAnimal >= 100 ) {
-	
+
 			runningAnimals.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, camVector);
 			spawnAnimal = 0;
 
@@ -361,7 +361,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 
 			spawnBird = 0;
 
-		}			
+		}
 
 		TWEEN.update();
 
@@ -380,7 +380,7 @@ var PrairieSoup = function ( camera, scene, shared ) {
 		TriggerUtils.effectors[ 0 ] = vectors.array[1].position.x;
 		TriggerUtils.effectors[ 1 ] = vectors.array[1].position.y;
 		TriggerUtils.effectors[ 2 ] = vectors.array[1].position.z;
-		
+
 		shared.prairieSoupHead.copy( collisionScene.emitter.position );
 
 	};

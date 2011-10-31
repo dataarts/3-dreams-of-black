@@ -8,8 +8,8 @@ var CitySoup = function ( camera, scene, shared ) {
 	var noiseCount = 0;
 	var shake = 0;
 	shared.camPos = new THREE.Vector3( 0, 0, -300 );
-	
-	var loader = new THREE.JSONLoader();
+
+	var loader = new THREE.JSONLoaderAjax();
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
 
@@ -162,17 +162,17 @@ var CitySoup = function ( camera, scene, shared ) {
 
 		var morphArray = [1,0,4,3,2,1,0,5,2,7,8,9,10,1,0,3,3,9,2,3];
 		var speedArray = [6.5, 13.12, 9.76, 7.47, 4.74, 4.94, 0.777, 6.252, 3.412, 5.52, 5.576];
-		
+
 		runningAnimals.addAnimal( geometry, null, 1.5, morphArray, speedArray );
 		// stragglers
-		morphArray = [8,9,7,9,10];		
+		morphArray = [8,9,7,9,10];
 		var animal = stragglers.addAnimal( geometry, null, 1.8, morphArray, speedArray );
 		preinitAnimal( animal, renderer, scene );
 
 	}
 
 	function elkLoadedProxy( geometry ) {
-		
+
 		var animal = runningAnimals.addAnimal( geometry, "elk", 2.2, null, [6] );
 		preinitAnimal( animal, renderer, scene );
 
@@ -232,7 +232,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	loader.load( { model: "files/models/soup/birds_A_life.js", callback: birdsALoadedProxy } );
 	loader.load( { model: "files/models/soup/birds_B_life.js", callback: birdsBLoadedProxy } );
-	
+
 	function birdsALoadedProxy( geometry ) {
 
 		var morphArray = [0,1,2,3,0,1,2,3,0,1];
@@ -261,7 +261,7 @@ var CitySoup = function ( camera, scene, shared ) {
 
 	var butterflysC = new AnimalInFrontOfCamera( 15, scene );
 	loader.load( { model: "/files/models/soup/butterfly_hiC.js", callback: butterflysC.addAnimal } );
-	
+
 	// trail - of grass/trees/etc
 
 	var trail = new Trail( 80, scene );
@@ -288,7 +288,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	trail.array[45] = "tree3";
 	trail.array[60] = "tree4";
 	trail.array[75] = "tree5";
-	
+
 	trail.array[70] = "light";
 
 	loader.load( { model: "/files/models/soup/grass01.js", callback: grass01LoadedProxy } );
@@ -296,7 +296,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	loader.load( { model: "/files/models/soup/grass03.js", callback: grass03LoadedProxy } );
 	loader.load( { model: "/files/models/soup/grassFlower.js", callback: grass04LoadedProxy } );
 	//loader.load( { model: "/files/models/soup/grass05.js", callback: grass05LoadedProxy } );
-	
+
 	loader.load( { model: "/files/models/soup/evergreen_low.js", callback: treeALoadedProxy } );
 	loader.load( { model: "/files/models/soup/evergreen_high.js", callback: treeBLoadedProxy } );
 	loader.load( { model: "/files/models/soup/treeGeneric.js", callback: treeCLoadedProxy } );
@@ -309,7 +309,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function grass01LoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "01", false );
 
 	}
@@ -317,7 +317,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function grass02LoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "02", false );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -326,7 +326,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function grass03LoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "03", false );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -335,7 +335,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function grass04LoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "04", false );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -344,7 +344,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function treeALoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "tree1", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -353,7 +353,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function treeBLoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "tree2", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -362,7 +362,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function treeCLoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "tree3", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -371,7 +371,7 @@ var CitySoup = function ( camera, scene, shared ) {
 	function treeDLoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "tree4", true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -380,14 +380,14 @@ var CitySoup = function ( camera, scene, shared ) {
 	function treeELoadedProxy( geometry ) {
 
 		adjustColors( geometry );
-		
+
 		var object = trail.addInstance( geometry, "tree5", true );
 		preInitModel( geometry, renderer, scene, object );
 
 	}
 
 	function ligthhouseLoadedProxy( geometry ) {
-		
+
 		var object = trail.addInstance( geometry, "light", false, true );
 		preInitModel( geometry, renderer, scene, object );
 
@@ -396,25 +396,25 @@ var CitySoup = function ( camera, scene, shared ) {
 	}
 
 	function adjustColors( geometry ) {
-		
+
 		var i, il, c, f;
-		
+
 		for( i = 0, il = geometry.faces.length; i < il; i++ ) {
-			
+
 			f = geometry.faces[ i ];
-			
+
 			for ( j = 0; j < f.vertexColors.length; j++ ) {
-			
+
 				c = f.vertexColors[ j ];
 
 				THREE.ColorUtils.adjustHSV( c, 0.13, 0.3, -0.05 );
 
 			}
-			
+
 		}
 
 	};
-	
+
 	this.update = function ( delta, otherCamera ) {
 
 		if (isNaN(delta) || delta > 1000 || delta == 0 ) {
@@ -426,15 +426,15 @@ var CitySoup = function ( camera, scene, shared ) {
 		//console.log(optimal+" | "+delta+" | "+percent);
 
 		if( !otherCamera ) {
-			
+
 			shared.camPos.x = that.camera.matrixWorld.n14;
 			shared.camPos.y = that.camera.matrixWorld.n24;
 			shared.camPos.z = that.camera.matrixWorld.n34;
-			
+
 			collisionScene.settings.camera = that.camera;
-			
+
 		} else {
-			
+
 			shared.camPos.copy( otherCamera.matrixWorld.getPosition());
 			collisionScene.settings.camera = otherCamera;
 		}
@@ -443,7 +443,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		/*if (shared.camPos.z <= -3290 || shared.camPos.x > 1640 || shared.camPos.x < -1640) {
 			reset();
 		}*/
-		
+
 		// straggler test
 		if (shake%8 == 7) {
 			stragglers.create(collisionScene.emitterFollow.position, collisionScene.currentNormal, collisionScene.emitter.position);
@@ -460,7 +460,7 @@ var CitySoup = function ( camera, scene, shared ) {
 		if (shake%2 == 0 && !otherCamera) {
 			that.camera.animationParent.position.y = 18+(Math.random()-0.5)*1.2;
 		}
-		
+
 		if (!otherCamera) {
 			that.camera.position.x = 0+xshake;
 		}

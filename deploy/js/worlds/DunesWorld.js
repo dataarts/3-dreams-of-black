@@ -152,7 +152,7 @@ var DunesWorld = function ( shared ) {
 
 	// start loading
 
-	var loader = new THREE.SceneLoader();
+	var loader = new THREE.SceneLoaderAjax();
 
 	loader.onLoadStart = function () { shared.signals.loadItemAdded.dispatch() };
 	loader.onLoadComplete = function () { shared.signals.loadItemCompleted.dispatch() };
@@ -167,7 +167,7 @@ var DunesWorld = function ( shared ) {
 	loader.load( "/files/models/dunes/D_tile_4.js", tile3Loaded );
 
 
-	var loader = new THREE.JSONLoader();
+	var loader = new THREE.JSONLoaderAjax();
 	loader.load( { model: "/files/models/dunes/D_tile_1_clouds.js", callback: function( geo ) { addClouds( geo, 100 ) } } );
 
 	function addClouds( geometry, n ) {

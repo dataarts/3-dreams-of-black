@@ -1,19 +1,4 @@
-// 3D assets and textures for ROME "3 Dreams of Black" at http://ro.me are licensed 
-// under a Creative CommonsAttribution-NonCommercial-ShareAlike 3.0 Unported License
-// ( http://creativecommons.org/licenses/by-nc-sa/3.0/ ).
-
-/* Converted from: Desert4.blend
- *
- * File generated with Blender 2.56 Exporter
- * https://github.com/alteredq/three.js/tree/master/utils/exporters/blender/
- *
- * objects:    2
- * geometries: 2
- * materials:  65
- * textures:   2
- */
-
-var scene = {
+{
 
 "type" : "scene",
 "urlBaseType" : "relativeToScene",
@@ -81,327 +66,327 @@ var scene = {
 {
     "08 - Default.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 9803157, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 9803157, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "11 - Default.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 4600096, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 4600096, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "12 - Default.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 0, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 0, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "assets.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16119285, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "assets.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16119285, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16119285, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Bush" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Closeup_PaintDubs.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "Closeup_PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "Closeup_PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Cloud1" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 12180479, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 12180479, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 12180479, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 12180479, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 12180479, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 12180479, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 12180479, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 12180479, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.008" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Cloud1.009" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Collision" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.008" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.009" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.011" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.015" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.017" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.019" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.020" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.021" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Collision.022" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 11876351, opacity: 1.00 }
+        "parameters": { "color": 11876351, "opacity": 1.00 }
     },
 
     "Desert3" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.009" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.011" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.012" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.014" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Desert3.015" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "PaintDubs.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.009" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.011" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.012" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.014" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "Rock3.015" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, map: "PaintDubs.jpg", vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "map": "PaintDubs.jpg", "vertexColors": "vertex" }
     },
 
     "RocksWhite.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 2960685, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 2960685, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Standard_10.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 1250067, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 1250067, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Standard_19" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 14408667, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 14408667, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Standard_19.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 14408667, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 14408667, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Stone" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Stone.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Stone.002" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Tree.004" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Tree.005" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Tree.006" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Tree.007" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 1.00, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 1.00, "vertexColors": "vertex" }
     },
 
     "Water" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 0.60, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 0.60, "vertexColors": "vertex" }
     },
 
     "Water.001" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 4878045, opacity: 0.50, vertexColors: "vertex" }
+        "parameters": { "color": 4878045, "opacity": 0.50, "vertexColors": "vertex" }
     },
 
     "Water.003" : {
         "type": "MeshLambertMaterial",
-        "parameters": { color: 16777215, opacity: 0.60, vertexColors: "vertex" }
+        "parameters": { "color": 16777215, "opacity": 0.60, "vertexColors": "vertex" }
     }
 },
 
@@ -519,7 +504,7 @@ var scene = {
 {
     "position"  : [ 0.000000, 0.000000, 0.000000 ],
     "rotation"  : [ -1.570796, 0.000000, 0.000000 ],
-    "scale"     : [ 1.000000, 1.000000, 1.000000 ],
+    "scale"     : [ 1.000000, 1.000000, 1.000000 ]
 },
 
 "defaults" :
@@ -530,6 +515,3 @@ var scene = {
 }
 
 }
-
-postMessage( scene );
-close();

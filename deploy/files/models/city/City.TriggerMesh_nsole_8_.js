@@ -1,21 +1,4 @@
-// 3D assets and textures for ROME "3 Dreams of Black" at http://ro.me are licensed 
-// under a Creative CommonsAttribution-NonCommercial-ShareAlike 3.0 Unported License
-// ( http://creativecommons.org/licenses/by-nc-sa/3.0/ ).
-
-// Converted from: console_8/v001/console8_2.obj
-//  vertices: 5232
-//  faces: 8860
-//  normals: 0
-//  colors: 17
-//  uvs: 7231
-//  materials: 17
-//  edges: 0
-//
-//  Generated with OBJ -> Three.js converter
-//  http://github.com/alteredq/three.js/blob/master/utils/exporters/convert_obj_three.py
-
-
-var model = {
+{
 
     "version" : 2,
     
@@ -227,7 +210,4 @@ var model = {
 
     "edges" : []
 
-};
-
-postMessage( model );
-close();
+}
