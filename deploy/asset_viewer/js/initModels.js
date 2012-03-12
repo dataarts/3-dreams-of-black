@@ -62,7 +62,7 @@ function initModels(){
 function modelLoader(id) {
   if(models[id].geometry !== 'undefined' ){
     link[models[id].name].style.backgroundImage = 'url("/asset_viewer/files/thumbnails/loading64.gif")';
-    loader = new THREE.JSONLoader();
+    loader = new THREE.JSONLoaderAjax();
     loader.load({ model: models[id].file, callback: function(g) {
       models[id].geometry = g;
       switchModel(id);
@@ -87,7 +87,7 @@ function switchModel(id) {
 
     trigger = new TriggerBig( models[id].geometry );
 
-    var baseLoader = new THREE.JSONLoader();
+    var baseLoader = new THREE.JSONLoaderAjax();
     baseLoader.load( { model: models[id].base, callback: function( geometry ) {
       triggerBase = new THREE.Mesh( geometry, lightmapMat);
       triggerBase.rotation.x = -90 * Math.PI / 180;
