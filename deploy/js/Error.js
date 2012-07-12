@@ -62,32 +62,7 @@ function HandleErrors(d) {
     };
 
     if(Detector.webgl) {
-      // We're good!
-      
-<<<<<<< HEAD
-      if(hasUserAgent(/CrOS/)) {
-
-        // if chrome book
-
-        window.location = destination + "?" + this.MagicVariable + "=" + 9;
-
-      }
-=======
-      // if(hasUserAgent(/CrOS/)) {
-      // 
-      //   // if chrome book
-      // 
-      //   if (!hasUserAgent(/[bB]ox/)) {
-      // 
-      //     window.location = destination + "?" + this.MagicVariable + "=" + 9;
-      // 
-      //   }
-      // 
-      //   // else chrome box — pass
-      // 
-      // }
->>>>>>> 21156e8... removed chromebook lock
-      
+      // We're good!      
       if(Detector.conditions[1]) {
         // Overlay condition check with localStorage
         // if(hasLocalStorage()) {
