@@ -52,9 +52,9 @@ function HandleErrors(d) {
     var Detector = {
         webgl : ( function () { try { return !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); } catch( e ) { return false; } } )(),
         conditions : [
-                      ( function () { return hasUserAgent(/[cC]hrome/); } )(),
-                      ( function () { return hasUserAgent(/[Ff]ire[Ff]ox\/[4-9]/); } )(),
-                      ( function () { return hasUserAgent(/[Mm][Ss][Ii][Ee] [789]/) && hasUserAgent(/[Ww]indows [Nn][Tt] [6789]/) && !hasUserAgent(/[Cc]hrome[Ff]rame/); } )(),
+                      ( function () { return hasUserAgent(/[cC]hrome/ig); } )(),
+                      ( function () { return hasUserAgent(/[Ff]ire[Ff]ox/ig); } )(),
+                      ( function () { return hasUserAgent(/[Mm][Ss][Ii][Ee] [7891]/) && hasUserAgent(/[Ww]indows [Nn][Tt] [67891]/) && !hasUserAgent(/[Cc]hrome[Ff]rame/); } )(),
                       ( function () { return hasUserAgent(/[Ss]afari/) && hasUserAgent(/[Mm]ac [Oo][Ss] [Xx] 10\_[6789]/); } )(),
                       ( function () { return hasUserAgent(/i[Pp]hone/) || hasUserAgent(/i[Pp]ad/) || hasUserAgent(/[Aa]ndroid/); } )()
                       ],
