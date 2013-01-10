@@ -59,6 +59,7 @@ var LauncherSection = function (shared) {
     uiContainer.appendChild(title);
 
     buttonEnter = createRolloverButton("10px 0 0 85px", "/files/enter_idle.png", "/files/enter_rollover.png");
+    buttonEnter.style.width = 180 + 'px';
     buttonEnter.addEventListener('click', function () {
 
       loading.getDomElement().style.display = 'block';
@@ -149,6 +150,7 @@ var LauncherSection = function (shared) {
           ".seen-before {",
           "	opacity: .35;",
           "	cursor: pointer;",
+          " padding: 15px 15px;",
           "}",
           ".seen-before:hover {",
           "	opacity: 1.0;",
@@ -171,9 +173,9 @@ var LauncherSection = function (shared) {
       // Add shortcuts to gallery and tool
       addToTheDream = document.createElement("div");
       addToTheDream.setAttribute("class", "seen-before");
-      addToTheDream.setAttribute("style", "background: url('files/launcher/add-trans.png') 0 0 no-repeat; width: 145px; height: 10px;");
+      addToTheDream.setAttribute("style", "background: url('files/launcher/add-trans.png') center center no-repeat; width: 145px; height: 10px;");
       addToTheDream.style.position = "absolute";
-      addToTheDream.style.top = "248px";
+      addToTheDream.style.top = "233px";
       addToTheDream.style.left = (window.innerWidth / 2.0 - 354) + "px";
       addToTheDream.addEventListener("click", function(e) {
 
@@ -184,16 +186,16 @@ var LauncherSection = function (shared) {
       }, false);
       exploreDreams = document.createElement("div");
       exploreDreams.setAttribute("class", "seen-before");
-      exploreDreams.setAttribute("style", "background: url('files/launcher/explore-trans.png') 0 0 no-repeat; width: 199px; height: 10px;");
+      exploreDreams.setAttribute("style", "background: url('files/launcher/explore-trans.png') center center no-repeat; width: 199px; height: 10px;");
       exploreDreams.style.position = "absolute";
-      exploreDreams.style.top = "248px";
+      exploreDreams.style.top = "233px";
       exploreDreams.style.left = (window.innerWidth / 2.0 + 168) + "px";
       exploreDreams.addEventListener("click", function(e) {
 
         e.preventDefault();
-        window.open("/gallery", "Gallery");
+        // window.open("/gallery", "Gallery");
         _gaq.push(['_trackPageview', '/launcher_gallery']);
-        // window.location = "/gallery";
+        window.location = "/gallery/?c=favorite";
 
       }, false);
 
