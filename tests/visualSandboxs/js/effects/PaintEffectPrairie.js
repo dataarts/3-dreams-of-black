@@ -71,7 +71,7 @@ var PaintEffectPrairie = function ( shared ) {
 					"vec2 vin;",				
 					"vec2 uv = vUv;",
 					
-					"add += color = org = texture2D( map, uv );",
+					"add = color = org = texture2D( map, uv );",
 
 					"vin = (uv - vec2(0.5)) * vec2( 1.4 /*vingenettingOffset * 2.0*/);",
 					"sample_dist =(dot( vin, vin ) * 2.0);",
