@@ -115,7 +115,7 @@ function animate() {
     triggerMat.vertexColors = params.texture;
   }
   if (typeof(morphObject) != "undefined"){
-    morphObject.material.wireframe = params.wireframe;
+    // morphObject.material.wireframe = params.wireframe;
     morphObject.morph = params.morph;
   }
 

@@ -1,17 +1,4 @@
-// Converted from: ../files/srcModels/02_life_soup/quadruped_A/tree_frog/frogLeap_A_v019/obj/frogLeap_A_001.obj
-//  vertices: 494
-//  faces: 984
-//  normals: 0
-//  colors: 5
-//  uvs: 679
-//  materials: 1
-//  edges: 0
-//
-//  Generated with OBJ -> Three.js converter
-//  http://github.com/alteredq/three.js/blob/master/utils/exporters/convert_obj_three.py
-
-
-var model = {
+{
 
     "version" : 2,
     
@@ -62,7 +49,4 @@ var model = {
 
     "edges" : []
 
-};
-
-postMessage( model );
-close();
+}

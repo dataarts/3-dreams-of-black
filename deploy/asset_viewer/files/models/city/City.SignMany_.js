@@ -1,18 +1,4 @@
-/*
- * File generated with Blender 2.56 Exporter
- * https://github.com/mrdoob/three.js/tree/master/utils/exporters/blender/
- *
- * vertices: 56
- * faces: 106
- * normals: 0
- * uvs: 148
- * colors: 0
- * materials: 1
- * edges: 0
- *
- */
-
-var model = {
+{
 
     "version" : 2,
 
@@ -47,7 +33,4 @@ var model = {
     "edges" : []
 
 
-};
-
-postMessage( model );
-close();
+}

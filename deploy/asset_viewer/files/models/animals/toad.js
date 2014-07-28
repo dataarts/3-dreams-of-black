@@ -1,17 +1,4 @@
-// Converted from: ../files/srcModels/01_black_soup/quadruped_A/toad/toadLeap_A_v019/obj/toadLeap_A_001.obj
-//  vertices: 494
-//  faces: 984
-//  normals: 0
-//  colors: 3
-//  uvs: 679
-//  materials: 1
-//  edges: 0
-//
-//  Generated with OBJ -> Three.js converter
-//  http://github.com/alteredq/three.js/blob/master/utils/exporters/convert_obj_three.py
-
-
-var model = {
+{
 
     "version" : 2,
     
@@ -77,7 +64,4 @@ var model = {
 
     "edges" : []
 
-};
-
-postMessage( model );
-close();
+}

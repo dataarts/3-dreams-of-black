@@ -27,11 +27,11 @@ function initRenderer() {
 
   container.appendChild(renderer.domElement);
 
-//  stats = new Stats();
-//  stats.domElement.style.position = 'fixed';
-//  stats.domElement.style.right = '0px';
-//  stats.domElement.style.top = '0px';
-//  container.appendChild( stats.domElement );
+ stats = new Stats();
+ stats.domElement.style.position = 'fixed';
+ stats.domElement.style.right = '0px';
+ stats.domElement.style.top = '0px';
+ container.appendChild( stats.domElement );
 
   initPostprocessingNoise(postprocessing);
 }
@@ -204,7 +204,7 @@ function render(){
     lightmapShader.uniforms['shaderDebug'].value = params.component;
     triggerShader.uniforms['shaderDebug'].value = params.component;
     animalShader.uniforms['shaderDebug'].value = params.component;
-    wireMat.opacity = .3*params.grid;
+    wireMat.opacity = 0.3*params.grid;
 
     renderer.render( sceneSky, camera, postprocessing.textureColor, true );
     gl.clearDepth(true);// bug in three.js ??

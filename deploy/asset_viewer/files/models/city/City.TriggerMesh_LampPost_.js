@@ -1,17 +1,4 @@
-// Converted from: lamp_post/v001/lamppost_2.obj
-//  vertices: 1005
-//  faces: 1768
-//  normals: 0
-//  colors: 4
-//  uvs: 1604
-//  materials: 4
-//  edges: 0
-//
-//  Generated with OBJ -> Three.js converter
-//  http://github.com/alteredq/three.js/blob/master/utils/exporters/convert_obj_three.py
-
-
-var model = {
+{
 
     "version" : 2,
     
@@ -79,7 +66,4 @@ var model = {
 
     "edges" : []
 
-};
-
-postMessage( model );
-close();
+}
