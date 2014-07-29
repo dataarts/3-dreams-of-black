@@ -69,6 +69,7 @@ var VideoPlane = function(layer, conf){
 
   video = document.createElement('video');
   video.src = layer.path;
+  video.setAttribute('loop', true);
 
   texture = new THREE.Texture(video);
   texture.minFilter = THREE.LinearFilter;
@@ -134,7 +135,7 @@ var VideoPlane = function(layer, conf){
   this.init = function(t, mouseX, mouseY) {
     interval = setInterval(function(){
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        video.currentTime = video.duration * t;
+        // video.currentTime = video.duration * t;
         this.loaded = true;
         clearInterval( interval );
         that.start();
@@ -145,10 +146,10 @@ var VideoPlane = function(layer, conf){
   this.start = function(t, mouseX, mouseY) {
     polyTrail.set(-mouseX * config.aspect, -mouseY);
     video.play();
-    video.currentTime = video.duration * t;
+    // video.currentTime = video.duration * t;
     interval = setInterval(function(){
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        if (video.currentTime >= video.duration) video.currentTime = 0;
+        // if (video.currentTime >= video.duration) video.currentTime = 0;
         texture.needsUpdate = true;
       }
     }, 1000 / 24);
