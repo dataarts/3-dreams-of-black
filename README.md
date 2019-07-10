@@ -1,9 +1,9 @@
- #3 Dreams of Black
+# 3 Dreams of Black
 This project takes you on a journey through three dream worlds constructed through a combination of rich 2D drawings and animations interwoven with interactive 3D sequences. 
 Throughout various points in these dream worlds, you can grab your pointer and guide the protagonist's point of view through the experience. This music experience also includes a 3D model creator that allows you to create your own relics and contribute to the shared collective dream. "3 Dreams of Black" is written and directed by Chris Milk, and developed with a few folks here at Google.
 
 - - -
-##About this Repository
+## About this Repository
 This repository mirrors the active <http://ro.me/> site and has been opened up with the _Apache License 2.0_ so that it is easier to look at the inner-workings of this project. This is meant to accompany the explanations on the [tech page](http://www.ro.me/tech/). As such there are probably some things you'll want to know in order to make your spelunking easier, namely the folder structure: 
 
 Three Dreams of Black runs on _Google AppEngine_. This makes the repository's ***/deploy*** folder the root of the server, in case you wanted to run it locally in the browser. Other than that the folder directory is as follows:
